@@ -42,7 +42,9 @@ class GtkPlayer extends GstPlayer.Player
     _onUriLoaded()
     {
         this.play();
-        this.loop.run();
+
+        if(!this.loop.is_running())
+            this.loop.run();
     }
 
     _onWidgetDestroy()
