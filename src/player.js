@@ -28,6 +28,11 @@ class GtkPlayer extends GstPlayer.Player
         this.widget.connect('destroy', this._onWidgetDestroy.bind(this));
     }
 
+    seek_seconds(position)
+    {
+        this.seek(position * 1000000000);
+    }
+
     _onStateChanged(player, state)
     {
         this.state = state;
