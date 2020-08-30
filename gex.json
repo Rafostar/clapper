@@ -1,6 +1,6 @@
 {
-  "name": "GtkPlayer",
+  "name": "clapper",
   "files": [
-    "GtkPlayer.js"
+    "src/player.js"
   ]
 }
