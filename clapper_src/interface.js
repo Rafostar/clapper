@@ -68,11 +68,10 @@ class ClapperInterface extends Gtk.Grid
             ? 1
             : duration / 100;
 
-        let adjustment = new Gtk.Adjustment({
-            upper: duration,
-            step_increment: increment,
-            page_increment: increment
-        });
+        let adjustment = this.controls.positionScale.get_adjustment();
+        adjustment.set_upper(duration);
+        adjustment.set_step_increment(increment);
+        adjustment.set_page_increment(increment);
         this.controls.positionScale.set_adjustment(adjustment);
     }
 
