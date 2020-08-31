@@ -32,9 +32,21 @@ class ClapperControls extends Gtk.HBox
         });
         this._prepareVolumeButton();
 
+        this.toggleFullscreenButton = Gtk.Button.new_from_icon_name(
+            'view-fullscreen-symbolic',
+            Gtk.IconSize.SMALL_TOOLBAR
+        );
+        this.unfullscreenButton = Gtk.Button.new_from_icon_name(
+            'view-restore-symbolic',
+            Gtk.IconSize.SMALL_TOOLBAR
+        );
+        this.fullscreenImage = this.toggleFullscreenButton.image;
+        this.unfullscreenImage = this.unfullscreenButton.image;
+
         this.pack_start(this.togglePlayButton, false, false, 4);
         this.pack_start(this.positionScale, true, true, 0);
-        this.pack_start(this.volumeButton, false, false, 4);
+        this.pack_start(this.volumeButton, false, false, 0);
+        this.pack_start(this.toggleFullscreenButton, false, false, 4);
     }
 
     _prepareVolumeButton()

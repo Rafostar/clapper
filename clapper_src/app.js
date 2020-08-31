@@ -1,4 +1,4 @@
-const { GLib, GObject, Gtk } = imports.gi;
+const { Gdk, GLib, GObject, Gtk } = imports.gi;
 const { Player } = imports.clapper_src.player;
 const { Interface } = imports.clapper_src.interface;
 
@@ -18,6 +18,7 @@ var App = GObject.registerClass({
 
         super._init();
 
+        this.isFullscreen = false;
         this.connect('startup', () => this._buildUI());
         this.connect('activate', () => this._openDialog());
     }
@@ -26,6 +27,12 @@ var App = GObject.registerClass({
     {
         arr = arr || [];
         super.run(arr);
+    }
+
+    toggleFullscreen()
+    {
+        let isUn = (this.isFullscreen) ? 'un' : '';
+        this.appWindow[`${isUn}fullscreen`]();
     }
 
     _buildUI()
@@ -39,11 +46,22 @@ var App = GObject.registerClass({
             width_request: 960,
             height_request: 642
         });
+        this.appWindow.connect(
+            'window-state-event', this._onWindowStateEvent.bind(this)
+        );
 
         this.interface = new Interface();
+        this.interface.controls.toggleFullscreenButton.connect(
+            'clicked', this.toggleFullscreen.bind(this)
+        );
 
         this.appWindow.add(this.interface);
         this.appWindow.connect('realize', this._onRealize.bind(this));
+    }
+
+    _openDialog()
+    {
+        this.appWindow.show_all();
     }
 
     _onRealize()
@@ -55,8 +73,17 @@ var App = GObject.registerClass({
         this.emit('player-ready', true);
     }
 
-    _openDialog()
+    _onWindowStateEvent(widget, event)
     {
-        this.appWindow.show_all();
+        let window = event.get_window();
+        let state = window.get_state();
+
+        this.isFullscreen = Boolean(state & Gdk.WindowState.FULLSCREEN);
+        this.interface.controls.toggleFullscreenButton.image = (this.isFullscreen)
+            ? this.interface.controls.unfullscreenImage
+            : this.interface.controls.fullscreenImage;
+
+        let action = (this.isFullscreen) ? 'hide' : 'show';
+        this.interface.controls[action]();
     }
 });
