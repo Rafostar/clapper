@@ -1,10 +1,19 @@
 const { GLib, GObject, Gst, GstPlayer } = imports.gi;
 
-var GtkPlayer = GObject.registerClass(
-class GtkPlayer extends GstPlayer.Player
+const DEFAULTS = {
+    position_update_interval: 1000,
+    seek_accurate: false,
+    user_agent: 'clapper',
+};
+
+var Player = GObject.registerClass(
+class ClapperPlayer extends GstPlayer.Player
 {
-    _init()
+    _init(opts)
     {
+        opts = opts || {};
+        Object.assign(opts, DEFAULTS);
+
         let gtkglsink = Gst.ElementFactory.make('gtkglsink', null);
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtkglsink;
@@ -19,6 +28,13 @@ class GtkPlayer extends GstPlayer.Player
             video_renderer: renderer
         });
 
+        let config = this.get_config();
+
+        for(let setting of Object.keys(DEFAULTS))
+            GstPlayer.Player[`config_set_${setting}`](config, opts[setting]);
+
+        this.set_config(config);
+
         this.loop = GLib.MainLoop.new(null, false);
         this.widget = gtkglsink.widget;
         this.state = GstPlayer.PlayerState.STOPPED;
@@ -31,6 +47,15 @@ class GtkPlayer extends GstPlayer.Player
     seek_seconds(position)
     {
         this.seek(position * 1000000000);
+    }
+
+    toggle_play()
+    {
+        let action = (this.state === GstPlayer.PlayerState.PLAYING)
+            ? 'pause'
+            : 'play';
+
+        this[action]();
     }
 
     _onStateChanged(player, state)
