@@ -84,7 +84,7 @@ class ClapperControls extends Gtk.HBox
         for(let child of boxChildren) {
             if(child.constructor === Gtk.Button)
                 box.remove(child);
-            if(child.constructor === Gtk.Scale) {
+            else if(child.constructor === Gtk.Scale) {
                 child.height_request = 200;
                 child.add_mark(0, Gtk.PositionType.LEFT, '0%');
                 child.add_mark(1, Gtk.PositionType.LEFT, '100%');
