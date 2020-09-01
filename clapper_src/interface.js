@@ -18,9 +18,9 @@ class ClapperInterface extends Gtk.Grid
     {
         this._player = player;
         this._player.widget.expand = true;
-        this._connectControlsToPlayer();
 
         this.attach(this._player.widget, 0, 0, 1, 1);
+        this._connectControlsToPlayer();
     }
 
     _connectControlsToPlayer()
@@ -68,11 +68,9 @@ class ClapperInterface extends Gtk.Grid
             ? 1
             : duration / 100;
 
-        let adjustment = this.controls.positionScale.get_adjustment();
-        adjustment.set_upper(duration);
-        adjustment.set_step_increment(increment);
-        adjustment.set_page_increment(increment);
-        this.controls.positionScale.set_adjustment(adjustment);
+        this.controls.positionAdjustment.set_upper(duration);
+        this.controls.positionAdjustment.set_step_increment(increment);
+        this.controls.positionAdjustment.set_page_increment(increment);
     }
 
     _onPlayerPositionUpdated(player, position)
