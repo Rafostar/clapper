@@ -1,14 +1,15 @@
-const { Gdk, GLib, GObject, Gtk } = imports.gi;
-const { Player } = imports.clapper_src.player;
+const { GLib, GObject, Gtk } = imports.gi;
 const { Interface } = imports.clapper_src.interface;
+const { Player } = imports.clapper_src.player;
+const { Window } = imports.clapper_src.window;
 
 const APP_NAME = 'Clapper';
 
 var App = GObject.registerClass({
     Signals: {
-        'player-ready': {
+        'ready': {
             param_types: [GObject.TYPE_BOOLEAN]
-        }
+        },
     }
 }, class ClapperApp extends Gtk.Application
 {
@@ -18,9 +19,12 @@ var App = GObject.registerClass({
 
         super._init();
 
-        this.isFullscreen = false;
+        this.window = null;
+        this.interface = null;
+        this.player = null;
+
         this.connect('startup', () => this._buildUI());
-        this.connect('activate', () => this._openDialog());
+        this.connect('activate', () => this._openWindow());
     }
 
     run(arr)
@@ -29,61 +33,43 @@ var App = GObject.registerClass({
         super.run(arr);
     }
 
-    toggleFullscreen()
-    {
-        let isUn = (this.isFullscreen) ? 'un' : '';
-        this.appWindow[`${isUn}fullscreen`]();
-    }
-
     _buildUI()
     {
-        this.appWindow = new Gtk.ApplicationWindow({
-            application: this,
-            title: APP_NAME,
-            border_width: 0,
-            resizable: true,
-            window_position: Gtk.WindowPosition.CENTER,
-            width_request: 960,
-            height_request: 642
-        });
-        this.appWindow.connect(
-            'window-state-event', this._onWindowStateEvent.bind(this)
+        this.window = new Window(this, APP_NAME);
+        this.window.connect('realize', this._onWindowRealize.bind(this));
+        this.window.connect(
+            'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
         );
 
         this.interface = new Interface();
         this.interface.controls.toggleFullscreenButton.connect(
-            'clicked', this.toggleFullscreen.bind(this)
+            'clicked', () => this.window.toggleFullscreen()
         );
 
-        this.appWindow.add(this.interface);
-        this.appWindow.connect('realize', this._onRealize.bind(this));
+        this.window.add(this.interface);
     }
 
-    _openDialog()
+    _openWindow()
     {
-        this.appWindow.show_all();
+        this.window.show_all();
     }
 
-    _onRealize()
+    _onWindowRealize()
     {
         this.player = new Player();
         this.interface.addPlayer(this.player);
 
         this.player.widget.show_all();
-        this.emit('player-ready', true);
+        this.emit('ready', true);
     }
 
-    _onWindowStateEvent(widget, event)
+    _onWindowFullscreenChanged(window, isFullscreen)
     {
-        let window = event.get_window();
-        let state = window.get_state();
-
-        this.isFullscreen = Boolean(state & Gdk.WindowState.FULLSCREEN);
-        this.interface.controls.toggleFullscreenButton.image = (this.isFullscreen)
+        this.interface.controls.toggleFullscreenButton.image = (isFullscreen)
             ? this.interface.controls.unfullscreenImage
             : this.interface.controls.fullscreenImage;
 
-        let action = (this.isFullscreen) ? 'hide' : 'show';
+        let action = (isFullscreen) ? 'hide' : 'show';
         this.interface.controls[action]();
     }
 });
