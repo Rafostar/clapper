@@ -8,6 +8,7 @@ class ClapperInterface extends Gtk.Grid
     {
         super._init();
 
+        this.lastVolumeValue = null;
         this.lastPositionValue = 0;
 
         this.controls = new Controls();
@@ -19,12 +20,6 @@ class ClapperInterface extends Gtk.Grid
         this._player = player;
         this._player.widget.expand = true;
 
-        this.attach(this._player.widget, 0, 0, 1, 1);
-        this._connectControlsToPlayer();
-    }
-
-    _connectControlsToPlayer()
-    {
         this._player.connect('state-changed', this._onPlayerStateChanged.bind(this));
         this._player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
         this._player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
@@ -39,6 +34,8 @@ class ClapperInterface extends Gtk.Grid
         this.controls.volumeButton.connect(
             'value-changed', this._onControlsVolumeChanged.bind(this)
         );
+
+        this.attach(this._player.widget, 0, 0, 1, 1);
     }
 
     _onPlayerStateChanged(player, state)
@@ -85,14 +82,14 @@ class ClapperInterface extends Gtk.Grid
         this.controls.positionScale.set_value(positionSeconds);
     }
 
-    _onPlayerVolumeChanged(player)
+    _onPlayerVolumeChanged()
     {
-        let volume = player.get_volume();
+        let volume = Number(this._player.get_volume().toFixed(2));
 
-        if(this.controls.volumeButton.value === volume)
+        if(volume === this.lastVolumeValue)
             return;
 
-        this.controls.volumeButton.value = volume;
+        this.controls.volumeButton.set_value(volume);
     }
 
     _onControlsTogglePlayClicked()
@@ -113,9 +110,10 @@ class ClapperInterface extends Gtk.Grid
 
     _onControlsVolumeChanged(widget, value)
     {
-        if(this._player.get_volume() === value)
+        if(value === this.lastVolumeValue)
             return;
 
+        this.lastVolumeValue = value;
         this._player.set_volume(value);
     }
 });
