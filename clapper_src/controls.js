@@ -26,10 +26,14 @@ class ClapperControls extends Gtk.HBox
             value_pos: Gtk.PositionType.LEFT,
             draw_value: false
         });
+        this.positionAdjustment = this.positionScale.get_adjustment();
 
         this.volumeButton = new Gtk.ScaleButton({
+            icons: ['audio-volume-muted-symbolic'],
             size: Gtk.IconSize.SMALL_TOOLBAR
         });
+        this.volumeButtonImage = this.volumeButton.get_child();
+        this.volumeAdjustment = this.volumeButton.get_adjustment();
         this._prepareVolumeButton();
 
         this.toggleFullscreenButton = Gtk.Button.new_from_icon_name(
@@ -51,31 +55,13 @@ class ClapperControls extends Gtk.HBox
 
     _prepareVolumeButton()
     {
-        this.volumeButtonAdjustment = this.volumeButton.get_adjustment();
+        this.volumeAdjustment.set_upper(2);
+        this.volumeAdjustment.set_step_increment(0.05);
+        this.volumeAdjustment.set_page_increment(0.05);
 
-        this.volumeButtonAdjustment.set_upper(2);
-        this.volumeButtonAdjustment.set_step_increment(0.05);
-        this.volumeButtonAdjustment.set_page_increment(0.05);
-
-        let basicIcons = [
-            "audio-volume-low-symbolic",
-            "audio-volume-medium-symbolic",
-            "audio-volume-medium-symbolic",
-            "audio-volume-high-symbolic"
-        ];
-
-        let iconsArr = [
-            "audio-volume-muted-symbolic"
-        ];
-
-        for(let icon of basicIcons)
-            iconsArr = this._addManyToArr(icon, iconsArr, 5);
-
-        iconsArr = this._addManyToArr(
-             "audio-volume-overamplified-symbolic", iconsArr, 18
+        this.volumeButton.connect(
+            'value-changed', this._onVolumeValueChanged.bind(this)
         );
-
-        this.volumeButton.set_icons(iconsArr);
 
         let popup = this.volumeButton.get_popup();
         let box = popup.get_child();
@@ -93,12 +79,22 @@ class ClapperControls extends Gtk.HBox
         }
     }
 
-    _addManyToArr(item, arr, count)
+    _onVolumeValueChanged(widget, value)
     {
-        for(let i = 0; i < count; i++) {
-            arr.push(item);
-        }
+        if(value <= 0)
+            return;
 
-        return arr;
+        let iconName = (value <= 0.25)
+            ? 'audio-volume-low-symbolic'
+            : (value <= 0.75)
+            ? 'audio-volume-medium-symbolic'
+            : (value <= 1)
+            ? 'audio-volume-high-symbolic'
+            : 'audio-volume-overamplified-symbolic';
+
+        if(this.volumeButtonImage.icon_name === iconName)
+            return;
+
+        this.volumeButtonImage.icon_name = iconName;
     }
 });
