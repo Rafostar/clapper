@@ -1,6 +1,6 @@
 const { GLib, GObject, Gst, GstPlayer } = imports.gi;
 
-const DEFAULTS = {
+const GSTPLAYER_DEFAULTS = {
     position_update_interval: 1000,
     seek_accurate: false,
     user_agent: 'clapper',
@@ -12,7 +12,7 @@ class ClapperPlayer extends GstPlayer.Player
     _init(opts)
     {
         opts = opts || {};
-        Object.assign(opts, DEFAULTS);
+        Object.assign(opts, GSTPLAYER_DEFAULTS);
 
         let gtkglsink = Gst.ElementFactory.make('gtkglsink', null);
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
@@ -30,12 +30,13 @@ class ClapperPlayer extends GstPlayer.Player
 
         let config = this.get_config();
 
-        for(let setting of Object.keys(DEFAULTS))
+        for(let setting of Object.keys(GSTPLAYER_DEFAULTS))
             GstPlayer.Player[`config_set_${setting}`](config, opts[setting]);
 
         this.set_config(config);
 
         this.loop = GLib.MainLoop.new(null, false);
+        this.run_loop = opts.run_loop || false;
         this.widget = gtkglsink.widget;
         this.state = GstPlayer.PlayerState.STOPPED;
 
@@ -58,12 +59,19 @@ class ClapperPlayer extends GstPlayer.Player
         this[action]();
     }
 
+    set_subtitle_font_desc(desc)
+    {
+        let pipeline = this.get_pipeline();
+        pipeline.subtitle_font_desc = desc;
+    }
+
     _onStateChanged(player, state)
     {
         this.state = state;
 
         if(
-            this.state === GstPlayer.PlayerState.STOPPED
+            this.run_loop
+            && this.state === GstPlayer.PlayerState.STOPPED
             && this.loop.is_running()
         )
             this.loop.quit();
@@ -73,7 +81,10 @@ class ClapperPlayer extends GstPlayer.Player
     {
         this.play();
 
-        if(!this.loop.is_running())
+        if(
+            this.run_loop
+            && !this.loop.is_running()
+        )
             this.loop.run();
     }
 
