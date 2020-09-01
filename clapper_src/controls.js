@@ -84,9 +84,9 @@ class ClapperControls extends Gtk.HBox
         if(value <= 0)
             return;
 
-        let iconName = (value <= 0.25)
+        let iconName = (value <= 0.33)
             ? 'audio-volume-low-symbolic'
-            : (value <= 0.75)
+            : (value <= 0.66)
             ? 'audio-volume-medium-symbolic'
             : (value <= 1)
             ? 'audio-volume-high-symbolic'
