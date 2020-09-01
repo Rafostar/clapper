@@ -13,11 +13,16 @@ var App = GObject.registerClass({
     }
 }, class ClapperApp extends Gtk.Application
 {
-    _init(args)
+    _init(opts)
     {
         GLib.set_prgname(APP_NAME);
 
         super._init();
+
+        let defaults = {
+            playlist: [],
+        };
+        Object.assign(this, defaults, opts);
 
         this.window = null;
         this.interface = null;
@@ -100,6 +105,9 @@ var App = GObject.registerClass({
 
         this.player.widget.show_all();
         this.emit('ready', true);
+
+        if(this.playlist.length)
+            this.player.set_uri(this.playlist[0]);
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)

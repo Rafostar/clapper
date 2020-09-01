@@ -8,5 +8,7 @@ Gst.init(null);
 
 function main()
 {
-    let clapper = new App(arguments).run();
+    let clapper = new App({
+        playlist: ARGV
+    }).run();
 }
