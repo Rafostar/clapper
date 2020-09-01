@@ -22,6 +22,7 @@ var App = GObject.registerClass({
         this.window = null;
         this.interface = null;
         this.player = null;
+        this.dragStartReady = false;
 
         this.connect('startup', () => this._buildUI());
         this.connect('activate', () => this._openWindow());
@@ -54,6 +55,27 @@ var App = GObject.registerClass({
         this.window.show_all();
     }
 
+    _handlePrimaryButtonPress(event, button)
+    {
+        let eventType = event.get_event_type();
+
+        switch(eventType) {
+            case Gdk.EventType.BUTTON_PRESS:
+                let [res, x, y] = event.get_root_coords();
+                if(!res)
+                    break;
+                this.dragStartX = x;
+                this.dragStartY = y;
+                this.dragStartReady = true;
+                break;
+            case Gdk.EventType.DOUBLE_BUTTON_PRESS:
+                this.window.toggleFullscreen();
+                break;
+            default:
+                break;
+        }
+    }
+
     _onWindowRealize()
     {
         this.player = new Player();
@@ -71,6 +93,9 @@ var App = GObject.registerClass({
         );
         this.player.widget.connect(
             'scroll-event', this._onPlayerScrollEvent.bind(this)
+        );
+        this.player.widget.connect(
+            'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
 
         this.player.widget.show_all();
@@ -118,8 +143,7 @@ var App = GObject.registerClass({
 
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
-                if(event.get_event_type() === Gdk.EventType.DOUBLE_BUTTON_PRESS)
-                    this.window.toggleFullscreen();
+                this._handlePrimaryButtonPress(event, button);
                 break;
             case Gdk.BUTTON_SECONDARY:
                 if(event.get_event_type() !== Gdk.EventType.DOUBLE_BUTTON_PRESS)
@@ -164,6 +188,30 @@ var App = GObject.registerClass({
             default:
                 break;
         }
+    }
+
+    _onPlayerMotionNotifyEvent(self, event)
+    {
+        if(!this.dragStartReady)
+            return;
+
+        let [res, x, y] = event.get_root_coords();
+        if(!res) return;
+
+        let startDrag = this.player.widget.drag_check_threshold(
+            this.dragStartX, this.dragStartY, x, y
+        );
+        if(!startDrag) return;
+
+        this.dragStartReady = false;
+        let timestamp = event.get_time();
+
+        this.window.begin_move_drag(
+            Gdk.BUTTON_PRIMARY,
+            this.dragStartX,
+            this.dragStartY,
+            timestamp
+        );
     }
 
     _onPlayerWarning(self, error)
