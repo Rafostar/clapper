@@ -1,7 +1,12 @@
 const { GObject, Gtk } = imports.gi;
 
-var Controls = GObject.registerClass(
-class ClapperControls extends Gtk.HBox
+var Controls = GObject.registerClass({
+    Signals: {
+        'position-seeking-changed': {
+            param_types: [GObject.TYPE_BOOLEAN]
+        },
+    }
+}, class ClapperControls extends Gtk.HBox
 {
     _init()
     {
@@ -27,6 +32,13 @@ class ClapperControls extends Gtk.HBox
             value_pos: Gtk.PositionType.LEFT,
             draw_value: false
         });
+        this.positionScale.connect(
+            'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
+        );
+        this.positionScale.connect(
+            'button-release-event', this._onPositionScaleButtonReleaseEvent.bind(this)
+        );
+
         this.positionAdjustment = this.positionScale.get_adjustment();
         this.pack_start(this.positionScale, true, true, 0);
 
@@ -107,5 +119,17 @@ class ClapperControls extends Gtk.HBox
                 child.add_mark(2, Gtk.PositionType.LEFT, '200%');
             }
         }
+    }
+
+    _onPositionScaleButtonPressEvent()
+    {
+        this.isPositionSeeking = true;
+        this.emit('position-seeking-changed', this.isPositionSeeking);
+    }
+
+    _onPositionScaleButtonReleaseEvent()
+    {
+        this.isPositionSeeking = false;
+        this.emit('position-seeking-changed', this.isPositionSeeking);
     }
 });

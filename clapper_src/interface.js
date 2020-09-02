@@ -4,9 +4,14 @@ const { Controls } = imports.clapper_src.controls;
 var Interface = GObject.registerClass(
 class ClapperInterface extends Gtk.Grid
 {
-    _init()
+    _init(opts)
     {
         super._init();
+
+        let defaults = {
+            seekOnDrop: true
+        };
+        Object.assign(this, defaults, opts);
 
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
@@ -33,6 +38,9 @@ class ClapperInterface extends Gtk.Grid
         );
         this.controls.volumeButton.connect(
             'value-changed', this._onControlsVolumeChanged.bind(this)
+        );
+        this.controls.connect(
+            'position-seeking-changed', this._onPositionSeekingChanged.bind(this)
         );
 
         this.attach(this._player.widget, 0, 0, 1, 1);
@@ -72,6 +80,9 @@ class ClapperInterface extends Gtk.Grid
 
     _onPlayerPositionUpdated(player, position)
     {
+        if(this.controls.isPositionSeeking)
+            return;
+
         let positionSeconds = position / 1000000000;
         let positionFloor = Math.floor(positionSeconds);
 
@@ -92,14 +103,25 @@ class ClapperInterface extends Gtk.Grid
         this.controls.volumeButton.set_value(volume);
     }
 
+    _onPositionSeekingChanged(self, isPositionSeeking)
+    {
+        if(isPositionSeeking || !this.seekOnDrop)
+            return;
+
+        this._onControlsPositionChanged(this.controls.positionScale);
+    }
+
     _onControlsTogglePlayClicked()
     {
         this._player.toggle_play();
     }
 
-    _onControlsPositionChanged(range)
+    _onControlsPositionChanged(positionScale)
     {
-        let position = Math.floor(range.get_value());
+        if(this.seekOnDrop && this.controls.isPositionSeeking)
+            return;
+
+        let position = Math.floor(positionScale.get_value());
 
         if(position === this.lastPositionValue)
             return;
