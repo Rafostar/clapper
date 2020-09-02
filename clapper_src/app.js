@@ -149,6 +149,8 @@ var App = GObject.registerClass({
         let [res, button] = event.get_button();
         if(!res) return;
 
+        this.dragStartReady = false;
+
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
                 this._handlePrimaryButtonPress(event, button);
