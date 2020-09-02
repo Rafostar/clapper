@@ -6,17 +6,18 @@ class ClapperControls extends Gtk.HBox
     _init()
     {
         super._init({
-            margin_top: 4,
-            margin_bottom: 4
+            margin: 4,
+            spacing: 4,
         });
 
-        this.togglePlayButton = Gtk.Button.new_from_icon_name(
+        this.togglePlayButton = this.addButton(
             'media-playback-pause-symbolic',
             Gtk.IconSize.LARGE_TOOLBAR
         );
-        this.pauseButton = Gtk.Button.new_from_icon_name(
+        this.pauseButton = this.addButton(
             'media-playback-start-symbolic',
-            Gtk.IconSize.LARGE_TOOLBAR
+            Gtk.IconSize.LARGE_TOOLBAR,
+            true
         );
         this.playImage = this.pauseButton.image;
         this.pauseImage = this.togglePlayButton.image;
@@ -27,6 +28,7 @@ class ClapperControls extends Gtk.HBox
             draw_value: false
         });
         this.positionAdjustment = this.positionScale.get_adjustment();
+        this.pack_start(this.positionScale, true, true, 0);
 
         this.volumeButton = new Gtk.ScaleButton({
             icons: [
@@ -44,22 +46,41 @@ class ClapperControls extends Gtk.HBox
         this.volumeButtonImage = this.volumeButton.get_child();
         this.volumeAdjustment = this.volumeButton.get_adjustment();
         this._prepareVolumeButton();
+        this.pack_start(this.volumeButton, false, false, 0);
 
-        this.toggleFullscreenButton = Gtk.Button.new_from_icon_name(
-            'view-fullscreen-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR
+        this.toggleFullscreenButton = this.addButton(
+            'view-fullscreen-symbolic'
         );
-        this.unfullscreenButton = Gtk.Button.new_from_icon_name(
+        this.unfullscreenButton = this.addButton(
             'view-restore-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR
+            Gtk.IconSize.SMALL_TOOLBAR,
+            true
         );
         this.fullscreenImage = this.toggleFullscreenButton.image;
         this.unfullscreenImage = this.unfullscreenButton.image;
 
-        this.pack_start(this.togglePlayButton, false, false, 4);
-        this.pack_start(this.positionScale, true, true, 0);
-        this.pack_start(this.volumeButton, false, false, 0);
-        this.pack_start(this.toggleFullscreenButton, false, false, 4);
+        this.forall(this.setDefaultWidgetBehaviour);
+    }
+
+    addButton(iconName, size, noPack)
+    {
+        size = size || Gtk.IconSize.SMALL_TOOLBAR;
+
+        let button = Gtk.Button.new_from_icon_name(iconName, size);
+        this.setDefaultWidgetBehaviour(button);
+
+        if(!noPack) {
+            this.pack_start(button, false, false, 0);
+            button.show();
+        }
+
+        return button;
+    }
+
+    setDefaultWidgetBehaviour(widget)
+    {
+        widget.can_focus = false;
+        widget.can_default = false;
     }
 
     _prepareVolumeButton()
@@ -78,6 +99,7 @@ class ClapperControls extends Gtk.HBox
                 child.destroy();
             }
             else if(child.constructor === Gtk.Scale) {
+                this.setDefaultWidgetBehaviour(child);
                 child.height_request = 200;
                 child.round_digits = 2;
                 child.add_mark(0, Gtk.PositionType.LEFT, '0%');
