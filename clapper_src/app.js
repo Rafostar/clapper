@@ -57,7 +57,13 @@ var App = GObject.registerClass({
     _buildUI()
     {
         this.window = new Window(this, APP_NAME);
-        this.window.connect('realize', this._onWindowRealize.bind(this));
+
+        this.window.connect(
+            'realize', this._onWindowRealize.bind(this)
+        );
+        this.window.connect(
+            'key-press-event', this._onWindowKeyPressEvent.bind(this)
+        );
         this.window.connect(
             'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
         );
@@ -88,9 +94,6 @@ var App = GObject.registerClass({
         this.player.connect('warning', this._onPlayerWarning.bind(this));
         this.player.connect('error', this._onPlayerError.bind(this));
 
-        this.player.widget.connect(
-            'key-press-event', this._onPlayerKeyPressEvent.bind(this)
-        );
         this.player.widget.connect(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
@@ -142,7 +145,7 @@ var App = GObject.registerClass({
         this.interface.controls[action]();
     }
 
-    _onPlayerKeyPressEvent(self, event)
+    _onWindowKeyPressEvent(self, event)
     {
         let [res, key] = event.get_keyval();
         if(!res) return;
