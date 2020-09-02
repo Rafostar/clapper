@@ -83,13 +83,12 @@ class ClapperInterface extends Gtk.Grid
         if(this.controls.isPositionSeeking)
             return;
 
-        let positionSeconds = position / 1000000000;
-        let positionFloor = Math.floor(positionSeconds);
+        let positionSeconds = Math.round(position / 1000000000);
 
-        if(positionFloor === this.lastPositionValue)
+        if(positionSeconds === this.lastPositionValue)
             return;
 
-        this.lastPositionValue = positionFloor;
+        this.lastPositionValue = positionSeconds;
         this.controls.positionScale.set_value(positionSeconds);
     }
 
@@ -100,6 +99,7 @@ class ClapperInterface extends Gtk.Grid
         if(volume === this.lastVolumeValue)
             return;
 
+        this.lastVolumeValue = volume;
         this.controls.volumeButton.set_value(volume);
     }
 
@@ -121,21 +121,21 @@ class ClapperInterface extends Gtk.Grid
         if(this.seekOnDrop && this.controls.isPositionSeeking)
             return;
 
-        let position = Math.floor(positionScale.get_value());
+        let positionSeconds = Math.round(positionScale.get_value());
 
-        if(position === this.lastPositionValue)
+        if(positionSeconds === this.lastPositionValue)
             return;
 
-        this.lastPositionValue = position;
-        this._player.seek_seconds(position);
+        this.lastPositionValue = positionSeconds;
+        this._player.seek_seconds(positionSeconds);
     }
 
-    _onControlsVolumeChanged(widget, value)
+    _onControlsVolumeChanged(widget, volume)
     {
-        if(value === this.lastVolumeValue)
+        if(volume === this.lastVolumeValue)
             return;
 
-        this.lastVolumeValue = value;
-        this._player.set_volume(value);
+        this.lastVolumeValue = volume;
+        this._player.set_volume(volume);
     }
 });
