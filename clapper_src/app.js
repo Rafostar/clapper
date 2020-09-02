@@ -39,6 +39,21 @@ var App = GObject.registerClass({
         super.run(arr);
     }
 
+    setHideCursorTimeout()
+    {
+        if(this.hideCursorTimeout)
+            GLib.source_remove(this.hideCursorTimeout);
+
+        this.hideCursorTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
+            this.hideCursorTimeout = null;
+
+            if(this.isCursorInPlayer)
+                this.playerWindow.set_cursor(this.blankCursor);
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
     _buildUI()
     {
         this.window = new Window(this, APP_NAME);
@@ -60,31 +75,14 @@ var App = GObject.registerClass({
         this.window.show_all();
     }
 
-    _handlePrimaryButtonPress(event, button)
-    {
-        let eventType = event.get_event_type();
-
-        switch(eventType) {
-            case Gdk.EventType.BUTTON_PRESS:
-                let [res, x, y] = event.get_root_coords();
-                if(!res)
-                    break;
-                this.dragStartX = x;
-                this.dragStartY = y;
-                this.dragStartReady = true;
-                break;
-            case Gdk.EventType.DOUBLE_BUTTON_PRESS:
-                this.window.toggleFullscreen();
-                break;
-            default:
-                break;
-        }
-    }
-
     _onWindowRealize()
     {
         this.player = new Player();
-        this.player.widget.add_events(Gdk.EventMask.SCROLL_MASK);
+        this.player.widget.add_events(
+            Gdk.EventMask.SCROLL_MASK
+            | Gdk.EventMask.ENTER_NOTIFY_MASK
+            | Gdk.EventMask.LEAVE_NOTIFY_MASK
+        );
         this.interface.addPlayer(this.player);
 
         this.player.connect('warning', this._onPlayerWarning.bind(this));
@@ -100,14 +98,38 @@ var App = GObject.registerClass({
             'scroll-event', this._onPlayerScrollEvent.bind(this)
         );
         this.player.widget.connect(
+            'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
+        );
+        this.player.widget.connect(
+            'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
+        );
+        this.player.widget.connect(
             'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
-
-        this.player.widget.show_all();
-        this.emit('ready', true);
+        this.player.widget.connect(
+            'realize', this._onPlayerRealize.bind(this)
+        );
 
         if(this.playlist.length)
             this.player.set_uri(this.playlist[0]);
+
+        this.player.widget.show_all();
+        this.emit('ready', true);
+    }
+
+    _onPlayerRealize()
+    {
+        let display = this.player.widget.get_display();
+
+        this.defaultCursor = Gdk.Cursor.new_from_name(
+            display, 'default'
+        );
+        this.blankCursor = Gdk.Cursor.new_for_display(
+            display, Gdk.CursorType.BLANK_CURSOR
+        );
+
+        this.playerWindow = this.player.widget.get_window();
+        this.setHideCursorTimeout();
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)
@@ -164,6 +186,27 @@ var App = GObject.registerClass({
         }
     }
 
+    _handlePrimaryButtonPress(event, button)
+    {
+        let eventType = event.get_event_type();
+
+        switch(eventType) {
+            case Gdk.EventType.BUTTON_PRESS:
+                let [res, x, y] = event.get_root_coords();
+                if(!res)
+                    break;
+                this.dragStartX = x;
+                this.dragStartY = y;
+                this.dragStartReady = true;
+                break;
+            case Gdk.EventType.DOUBLE_BUTTON_PRESS:
+                this.window.toggleFullscreen();
+                break;
+            default:
+                break;
+        }
+    }
+
     _onPlayerScrollEvent(self, event)
     {
         let [res, direction] = event.get_scroll_direction();
@@ -200,9 +243,22 @@ var App = GObject.registerClass({
         }
     }
 
+    _onPlayerEnterNotifyEvent(self, event)
+    {
+        this.isCursorInPlayer = true;
+    }
+
+    _onPlayerLeaveNotifyEvent(self, event)
+    {
+        this.isCursorInPlayer = false;
+    }
+
     _onPlayerMotionNotifyEvent(self, event)
     {
-        if(!this.dragStartReady)
+        this.playerWindow.set_cursor(this.defaultCursor);
+        this.setHideCursorTimeout();
+
+        if(!this.dragStartReady || this.window.isFullscreen)
             return;
 
         let [res, x, y] = event.get_root_coords();
