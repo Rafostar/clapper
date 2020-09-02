@@ -73,8 +73,10 @@ class ClapperControls extends Gtk.HBox
         let boxChildren = box.get_children();
 
         for(let child of boxChildren) {
-            if(child.constructor === Gtk.Button)
+            if(child.constructor === Gtk.Button) {
                 box.remove(child);
+                child.destroy();
+            }
             else if(child.constructor === Gtk.Scale) {
                 child.height_request = 200;
                 child.round_digits = 2;
