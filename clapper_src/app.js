@@ -1,9 +1,12 @@
 const { Gdk, GLib, GObject, Gtk } = imports.gi;
+const Debug = imports.clapper_src.debug;
 const { Interface } = imports.clapper_src.interface;
 const { Player } = imports.clapper_src.player;
 const { Window } = imports.clapper_src.window;
 
 const APP_NAME = 'Clapper';
+
+let { debug } = Debug;
 
 var App = GObject.registerClass({
     Signals: {
@@ -306,11 +309,11 @@ var App = GObject.registerClass({
 
     _onPlayerWarning(self, error)
     {
-        log(error.message);
+        debug(error.message, 'LEVEL_WARNING');
     }
 
     _onPlayerError(self, error)
     {
-        logError(error);
+        debug(error);
     }
 });

@@ -1,11 +1,16 @@
-const { GObject, Gtk, GstPlayer } = imports.gi;
+const { GObject, Gtk, Gst, GstPlayer } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
+const Debug = imports.clapper_src.debug;
+
+let { debug } = Debug;
 
 var Interface = GObject.registerClass(
 class ClapperInterface extends Gtk.Grid
 {
     _init(opts)
     {
+        Debug.gstVersionCheck();
+
         super._init();
 
         let defaults = {
