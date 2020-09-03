@@ -54,11 +54,10 @@ class ClapperInterface extends Gtk.Grid
     _onPlayerStateChanged(player, state)
     {
         switch(state) {
-            case GstPlayer.PlayerState.STOPPED:
-                break;
             case GstPlayer.PlayerState.BUFFERING:
                 break;
             case GstPlayer.PlayerState.PAUSED:
+            case GstPlayer.PlayerState.STOPPED:
                 this.controls.togglePlayButton.image = this.controls.playImage;
                 break;
             case GstPlayer.PlayerState.PLAYING:
