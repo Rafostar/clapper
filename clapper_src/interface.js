@@ -80,7 +80,10 @@ class ClapperInterface extends Gtk.Grid
 
     _onPlayerPositionUpdated(player, position)
     {
-        if(this.controls.isPositionSeeking)
+        if(
+            this.controls.isPositionSeeking
+            || this._player.state === GstPlayer.PlayerState.BUFFERING
+        )
             return;
 
         let positionSeconds = Math.round(position / 1000000000);
