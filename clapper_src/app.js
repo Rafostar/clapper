@@ -1,10 +1,11 @@
-const { Gdk, GLib, GObject, Gtk } = imports.gi;
+const { Gdk, GLib, GObject, Gtk, GstPlayer } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const { Interface } = imports.clapper_src.interface;
 const { Player } = imports.clapper_src.player;
 const { Window } = imports.clapper_src.window;
 
 const APP_NAME = 'Clapper';
+const APP_ID = `com.github.rafostar.${APP_NAME}`;
 
 let { debug } = Debug;
 
@@ -20,7 +21,9 @@ var App = GObject.registerClass({
     {
         GLib.set_prgname(APP_NAME);
 
-        super._init();
+        super._init({
+            application_id: APP_ID
+        });
 
         let defaults = {
             playlist: [],
@@ -96,6 +99,7 @@ var App = GObject.registerClass({
 
         this.player.connect('warning', this._onPlayerWarning.bind(this));
         this.player.connect('error', this._onPlayerError.bind(this));
+        this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 
         this.player.widget.connect(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
@@ -121,21 +125,6 @@ var App = GObject.registerClass({
 
         this.player.widget.show_all();
         this.emit('ready', true);
-    }
-
-    _onPlayerRealize()
-    {
-        let display = this.player.widget.get_display();
-
-        this.defaultCursor = Gdk.Cursor.new_from_name(
-            display, 'default'
-        );
-        this.blankCursor = Gdk.Cursor.new_for_display(
-            display, Gdk.CursorType.BLANK_CURSOR
-        );
-
-        this.playerWindow = this.player.widget.get_window();
-        this.setHideCursorTimeout();
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)
@@ -185,6 +174,50 @@ var App = GObject.registerClass({
             default:
                 break;
         }
+    }
+
+    _onPlayerRealize()
+    {
+        let display = this.player.widget.get_display();
+
+        this.defaultCursor = Gdk.Cursor.new_from_name(
+            display, 'default'
+        );
+        this.blankCursor = Gdk.Cursor.new_for_display(
+            display, Gdk.CursorType.BLANK_CURSOR
+        );
+
+        this.playerWindow = this.player.widget.get_window();
+        this.setHideCursorTimeout();
+    }
+
+    _onPlayerStateChanged(self, state)
+    {
+        if(state === GstPlayer.PlayerState.BUFFERING)
+            return;
+
+        let flags = Gtk.ApplicationInhibitFlags.SUSPEND
+            | Gtk.ApplicationInhibitFlags.IDLE;
+
+        if(state === GstPlayer.PlayerState.PLAYING) {
+            if(this.inhibitCookie)
+                return;
+
+            this.inhibitCookie = this.inhibit(
+                this.window,
+                flags,
+                'video is playing'
+            );
+        }
+        else {
+            if(!this.inhibitCookie)
+                return;
+
+            this.uninhibit(this.inhibitCookie);
+            this.inhibitCookie = null;
+        }
+
+        debug('set prevent suspend to: ' + this.is_inhibited(flags));
     }
 
     _onPlayerButtonPressEvent(self, event)
