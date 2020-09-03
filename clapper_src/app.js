@@ -69,7 +69,7 @@ var App = GObject.registerClass({
             this.hideControlsTimeout = null;
 
             if(this.window.isFullscreen)
-                this.interface.controls.hide();
+                this.interface.revealControls(false);
 
             return GLib.SOURCE_REMOVE;
         });
@@ -152,9 +152,10 @@ var App = GObject.registerClass({
             ? this.interface.controls.unfullscreenImage
             : this.interface.controls.fullscreenImage;
 
-        if(isFullscreen)
+        if(isFullscreen) {
+            this.interface.showControls(true);
             this.setHideControlsTimeout();
-
+        }
         this.interface.setControlsOnVideo(isFullscreen);
         this.interface.controls.setVolumeMarks(true);
     }
@@ -343,7 +344,7 @@ var App = GObject.registerClass({
 
         if(this.window.isFullscreen) {
             this.setHideControlsTimeout();
-            this.interface.controls.show();
+            this.interface.revealControls(true);
         }
         else if(this.hideControlsTimeout) {
             GLib.source_remove(this.hideControlsTimeout);

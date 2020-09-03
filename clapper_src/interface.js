@@ -21,9 +21,15 @@ class ClapperInterface extends Gtk.Grid
         this.controlsInVideo = false;
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
+        this.revealTime = 800;
 
         this.overlay = new Gtk.Overlay();
         this.controls = new Controls();
+        this.revealer= new Gtk.Revealer({
+            transition_duration: this.revealTime,
+            transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
+            valign: Gtk.Align.END,
+        });
 
         this.attach(this.overlay, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
@@ -55,6 +61,20 @@ class ClapperInterface extends Gtk.Grid
         this.overlay.add(this._player.widget);
     }
 
+    revealControls(isReveal)
+    {
+        this.revealer.set_transition_duration(this.revealTime);
+        this.revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_UP);
+        this.revealer.set_reveal_child(isReveal);
+    }
+
+    showControls(isShow)
+    {
+        this.revealer.set_transition_duration(0);
+        this.revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
+        this.revealer.set_reveal_child(isShow);
+    }
+
     setControlsOnVideo(isOnVideo)
     {
         if(isOnVideo && !this.controlsInVideo) {
@@ -62,10 +82,13 @@ class ClapperInterface extends Gtk.Grid
             this.controls.margin = 8;
             this.controls.margin_start = 10;
             this.controls.margin_end = 10;
-            this.overlay.add_overlay(this.controls);
+            this.overlay.add_overlay(this.revealer);
+            this.revealer.add(this.controls);
+            this.revealer.show();
         }
         else if(!isOnVideo && this.controlsInVideo) {
-            this.overlay.remove(this.controls);
+            this.revealer.remove(this.controls);
+            this.overlay.remove(this.revealer);
             this.controls.margin = 4;
             this.attach(this.controls, 0, 1, 1, 1);
             this.controls.show();
