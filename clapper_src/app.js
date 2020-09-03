@@ -91,7 +91,7 @@ var App = GObject.registerClass({
 
         this.interface = new Interface();
         this.interface.controls.toggleFullscreenButton.connect(
-            'clicked', () => this.window.toggleFullscreen()
+            'clicked', this._onInterfaceToggleFullscreenClicked.bind(this)
         );
 
         this.window.add(this.interface);
@@ -198,6 +198,16 @@ var App = GObject.registerClass({
             default:
                 break;
         }
+    }
+
+    _onInterfaceToggleFullscreenClicked()
+    {
+        // we need some way to refresh toggle fullscreen button on click
+        // otherwise it does not lose the hover effect after window transition
+        // for now hide->transition->show does the job done
+        this.interface.controls.toggleFullscreenButton.hide();
+        this.window.toggleFullscreen();
+        this.interface.controls.toggleFullscreenButton.show();
     }
 
     _onPlayerRealize()

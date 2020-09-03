@@ -56,6 +56,12 @@ var Controls = GObject.registerClass({
             ],
             size: Gtk.IconSize.SMALL_TOOLBAR
         });
+        let style = this.volumeButton.get_style_context();
+        let styleStr = style.to_string(Gtk.StyleContextPrintFlags.SHOW_STYLE);
+
+        if(!styleStr.includes('flat'))
+            style.add_class('flat');
+
         this.volumeButtonImage = this.volumeButton.get_child();
         this.volumeAdjustment = this.volumeButton.get_adjustment();
         this._prepareVolumeButton();
@@ -81,6 +87,7 @@ var Controls = GObject.registerClass({
 
         let button = Gtk.Button.new_from_icon_name(iconName, size);
         this.setDefaultWidgetBehaviour(button);
+        button.get_style_context().add_class('flat');
 
         if(!noPack) {
             this.pack_start(button, false, false, 0);
