@@ -151,11 +151,22 @@ var App = GObject.registerClass({
         if(!res) return;
 
         //let keyName = Gdk.keyval_name(key);
+        let bool = false;
 
         switch(key) {
             case Gdk.KEY_space:
             case Gdk.KEY_Return:
                 this.player.toggle_play();
+                break;
+            case Gdk.KEY_Right:
+                bool = true;
+            case Gdk.KEY_Left:
+                //this._handleScaleIncrement('position', 'Scale', bool);
+                break;
+            case Gdk.KEY_Up:
+                bool = true;
+            case Gdk.KEY_Down:
+                this._handleScaleIncrement('volume', 'Button', bool);
                 break;
             case Gdk.KEY_F11:
                 this.window.toggleFullscreen();
@@ -163,6 +174,10 @@ var App = GObject.registerClass({
             case Gdk.KEY_Escape:
                 if(this.window.isFullscreen)
                     this.window.unfullscreen();
+                break;
+            case Gdk.KEY_q:
+            case Gdk.KEY_Q:
+                this.quit();
                 break;
             default:
                 break;
@@ -225,25 +240,31 @@ var App = GObject.registerClass({
                 item = 'Scale';
             case Gdk.ScrollDirection.UP:
             case Gdk.ScrollDirection.DOWN:
-                let value = this.interface.controls[`${type}${item}`].get_value();
-                let maxValue = this.interface.controls[`${type}Adjustment`].get_upper();
-                let increment = this.interface.controls[`${type}Adjustment`].get_page_increment();
-                value += (
+                let isUp = (
                     direction === Gdk.ScrollDirection.UP
                     || direction === Gdk.ScrollDirection.RIGHT
-                )
-                    ? increment
-                    : -increment;
-                value = (value < 0)
-                    ? 0
-                    : (value > maxValue)
-                    ? maxValue
-                    : value;
-                this.interface.controls[`${type}${item}`].set_value(value);
+                );
+                this._handleScaleIncrement(type, item, isUp);
                 break;
             default:
                 break;
         }
+    }
+
+    _handleScaleIncrement(type, item, isUp)
+    {
+        let value = this.interface.controls[`${type}${item}`].get_value();
+        let maxValue = this.interface.controls[`${type}Adjustment`].get_upper();
+        let increment = this.interface.controls[`${type}Adjustment`].get_page_increment();
+
+        value += (isUp) ? increment : -increment;
+        value = (value < 0)
+            ? 0
+            : (value > maxValue)
+            ? maxValue
+            : value;
+
+        this.interface.controls[`${type}${item}`].set_value(value);
     }
 
     _onPlayerEnterNotifyEvent(self, event)
