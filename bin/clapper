@@ -1,0 +1,12 @@
+#!/usr/bin/gjs
+
+const Package = imports.package;
+
+Package.init({
+  name: "clapper",
+  version: "0.0.0",
+  prefix: "/usr/local",
+  libdir: "/usr/local/lib",
+  datadir: "/usr/local/share",
+});
+Package.run(imports.main);
