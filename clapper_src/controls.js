@@ -13,6 +13,7 @@ var Controls = GObject.registerClass({
         super._init({
             margin: 4,
             spacing: 4,
+            valign: Gtk.Align.END,
         });
 
         this.togglePlayButton = this.addButton(
@@ -95,6 +96,16 @@ var Controls = GObject.registerClass({
         widget.can_default = false;
     }
 
+    setVolumeMarks(isAdded)
+    {
+        if(!isAdded)
+            return this.volumeScale.clear_marks();
+
+        this.volumeScale.add_mark(0, Gtk.PositionType.LEFT, '0%');
+        this.volumeScale.add_mark(1, Gtk.PositionType.LEFT, '100%');
+        this.volumeScale.add_mark(2, Gtk.PositionType.LEFT, '200%');
+    }
+
     _prepareVolumeButton()
     {
         this.volumeAdjustment.set_upper(2.001);
@@ -114,9 +125,8 @@ var Controls = GObject.registerClass({
                 this.setDefaultWidgetBehaviour(child);
                 child.height_request = 200;
                 child.round_digits = 2;
-                child.add_mark(0, Gtk.PositionType.LEFT, '0%');
-                child.add_mark(1, Gtk.PositionType.LEFT, '100%');
-                child.add_mark(2, Gtk.PositionType.LEFT, '200%');
+                this.volumeScale = child;
+                this.setVolumeMarks(true);
             }
         }
     }

@@ -60,6 +60,21 @@ var App = GObject.registerClass({
         });
     }
 
+    setHideControlsTimeout()
+    {
+        if(this.hideControlsTimeout)
+            GLib.source_remove(this.hideControlsTimeout);
+
+        this.hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
+            this.hideControlsTimeout = null;
+
+            if(this.window.isFullscreen)
+                this.interface.controls.hide();
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
     _buildUI()
     {
         this.window = new Window(this, APP_NAME);
@@ -129,12 +144,19 @@ var App = GObject.registerClass({
 
     _onWindowFullscreenChanged(window, isFullscreen)
     {
+        // when changing fullscreen pango layout of popup is lost
+        // and we need to re-add marks to the new layout
+        this.interface.controls.setVolumeMarks(false);
+
         this.interface.controls.toggleFullscreenButton.image = (isFullscreen)
             ? this.interface.controls.unfullscreenImage
             : this.interface.controls.fullscreenImage;
 
-        let action = (isFullscreen) ? 'hide' : 'show';
-        this.interface.controls[action]();
+        if(isFullscreen)
+            this.setHideControlsTimeout();
+
+        this.interface.setControlsOnVideo(isFullscreen);
+        this.interface.controls.setVolumeMarks(true);
     }
 
     _onWindowKeyPressEvent(self, event)
@@ -153,6 +175,7 @@ var App = GObject.registerClass({
             case Gdk.KEY_Right:
                 bool = true;
             case Gdk.KEY_Left:
+                // disabled due to missing "seek on drop" support
                 //this._handleScaleIncrement('position', 'Scale', bool);
                 break;
             case Gdk.KEY_Up:
@@ -317,6 +340,15 @@ var App = GObject.registerClass({
     {
         this.playerWindow.set_cursor(this.defaultCursor);
         this.setHideCursorTimeout();
+
+        if(this.window.isFullscreen) {
+            this.setHideControlsTimeout();
+            this.interface.controls.show();
+        }
+        else if(this.hideControlsTimeout) {
+            GLib.source_remove(this.hideControlsTimeout);
+            this.hideControlsTimeout = null;
+        }
 
         if(!this.dragStartReady || this.window.isFullscreen)
             return;

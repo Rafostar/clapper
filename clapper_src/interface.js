@@ -18,10 +18,14 @@ class ClapperInterface extends Gtk.Grid
         };
         Object.assign(this, defaults, opts);
 
+        this.controlsInVideo = false;
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
 
+        this.overlay = new Gtk.Overlay();
         this.controls = new Controls();
+
+        this.attach(this.overlay, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
     }
 
@@ -48,7 +52,27 @@ class ClapperInterface extends Gtk.Grid
             'position-seeking-changed', this._onPositionSeekingChanged.bind(this)
         );
 
-        this.attach(this._player.widget, 0, 0, 1, 1);
+        this.overlay.add(this._player.widget);
+    }
+
+    setControlsOnVideo(isOnVideo)
+    {
+        if(isOnVideo && !this.controlsInVideo) {
+            this.remove_row(1);
+            this.controls.margin = 8;
+            this.controls.margin_start = 10;
+            this.controls.margin_end = 10;
+            this.overlay.add_overlay(this.controls);
+        }
+        else if(!isOnVideo && this.controlsInVideo) {
+            this.overlay.remove(this.controls);
+            this.controls.margin = 4;
+            this.attach(this.controls, 0, 1, 1, 1);
+            this.controls.show();
+        }
+
+        this.controlsInVideo = isOnVideo;
+        debug(`placed controls in overlay: ${isOnVideo}`);
     }
 
     _onPlayerStateChanged(player, state)
