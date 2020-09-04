@@ -31,7 +31,8 @@ var Controls = GObject.registerClass({
         this.positionScale = new Gtk.Scale({
             orientation: Gtk.Orientation.HORIZONTAL,
             value_pos: Gtk.PositionType.LEFT,
-            draw_value: false
+            draw_value: false,
+            hexpand: true,
         });
         this.positionScale.connect(
             'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)

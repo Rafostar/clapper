@@ -25,12 +25,15 @@ class ClapperInterface extends Gtk.Grid
 
         this.overlay = new Gtk.Overlay();
         this.controls = new Controls();
-        this.revealer= new Gtk.Revealer({
+        this.revealer = new Gtk.Revealer({
             transition_duration: this.revealTime,
             transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
             valign: Gtk.Align.END,
         });
+        this.revealerBox = new Gtk.Box();
+        this.revealerBox.get_style_context().add_class('background');
 
+        this.revealer.add(this.revealerBox);
         this.attach(this.overlay, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
     }
@@ -78,18 +81,15 @@ class ClapperInterface extends Gtk.Grid
     setControlsOnVideo(isOnVideo)
     {
         if(isOnVideo && !this.controlsInVideo) {
-            this.remove_row(1);
-            this.controls.margin = 8;
-            this.controls.margin_start = 10;
-            this.controls.margin_end = 10;
+            this.remove(this.controls);
             this.overlay.add_overlay(this.revealer);
-            this.revealer.add(this.controls);
+            this.revealerBox.pack_start(this.controls, false, true, 0);
             this.revealer.show();
+            this.revealerBox.show();
         }
         else if(!isOnVideo && this.controlsInVideo) {
-            this.revealer.remove(this.controls);
+            this.revealerBox.remove(this.controls);
             this.overlay.remove(this.revealer);
-            this.controls.margin = 4;
             this.attach(this.controls, 0, 1, 1, 1);
             this.controls.show();
         }
