@@ -21,6 +21,7 @@ class ClapperInterface extends Gtk.Grid
         this.controlsInVideo = false;
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
+        this.needsTracksUpdate = true;
         this.revealTime = 800;
 
         this.overlay = new Gtk.Overlay();
@@ -60,6 +61,9 @@ class ClapperInterface extends Gtk.Grid
         this.controls.connect(
             'position-seeking-changed', this._onPositionSeekingChanged.bind(this)
         );
+        this.controls.connect(
+            'track-change-requested', this._onTrackChangeRequested.bind(this)
+        );
 
         this.overlay.add(this._player.widget);
     }
@@ -98,17 +102,136 @@ class ClapperInterface extends Gtk.Grid
         debug(`placed controls in overlay: ${isOnVideo}`);
     }
 
+    updateMediaTracks()
+    {
+        let mediaInfo = this._player.get_media_info();
+
+        // titlebar from video title should be set from this (not implemented yet)
+        //let title = mediaInfo.get_title();
+
+        // we can also check if video is "live" or "seekable" (right now unused)
+        // it might be a good idea to hide position seek bar and disable seeking
+        // when playing not seekable media (not implemented yet)
+        //let isLive = mediaInfo.is_live();
+        //let isSeekable = mediaInfo.is_seekable();
+
+        let streamList = mediaInfo.get_stream_list();
+        let parsedInfo = {
+            videoTracks: [],
+            audioTracks: [],
+            subtitleTracks: []
+        };
+
+        for(let info of streamList) {
+            let type, text;
+
+            switch(info.constructor) {
+                case GstPlayer.PlayerVideoInfo:
+                    type = 'video';
+                    let fps = info.get_framerate();
+                    text = info.get_codec() + ', ' +
+                        + info.get_width() + 'x'
+                        + info.get_height() + '@'
+                        + Number((fps[0] / fps[1]).toFixed(2));
+                    break;
+                case GstPlayer.PlayerAudioInfo:
+                    type = 'audio';
+                    let codec = info.get_codec();
+                    // This one is too long to fit nicely in UI
+                    if(codec.startsWith('Free Lossless Audio Codec'))
+                        codec = 'FLAC';
+                    text = info.get_language() + ', '
+                        + codec + ', '
+                        + info.get_channels() + ' Channels';
+                    break;
+                case GstPlayer.PlayerSubtitleInfo:
+                    type = 'subtitle';
+                    text = info.get_language();
+                    break;
+                default:
+                    debug(`unrecognized media info type: ${info.constructor}`);
+                    break;
+            }
+            let tracksArr = parsedInfo[`${type}Tracks`];
+            if(!tracksArr.length)
+            {
+                tracksArr[0] = {
+                    label: 'Disabled',
+                    type: type,
+                    value: -1
+                };
+            }
+            tracksArr.push({
+                label: text,
+                type: type,
+                value: info.get_index(),
+            });
+        }
+
+        for(let type of ['video', 'audio', 'subtitle']) {
+            let currStream = this._player[`get_current_${type}_track`]();
+            let activeId = (currStream) ? currStream.get_index() : -1;
+
+            if(currStream && type !== 'subtitle') {
+                let caps = currStream.get_caps();
+                debug(`${type} caps: ${caps.to_string()}`, 'LEVEL_INFO');
+            }
+            this.controls.addRadioButtons(
+                this.controls[`${type}TracksButton`].popoverBox,
+                parsedInfo[`${type}Tracks`],
+                activeId
+            );
+        }
+    }
+
+    _onTrackChangeRequested(self, trackType, trackId)
+    {
+        // reenabling audio is slow (as expected),
+        // so it is better to toggle mute instead
+        if(trackType === 'audio') {
+            if(trackId < 0)
+                return this._player.set_mute(true);
+
+            if(this._player.get_mute())
+                this._player.set_mute(false);
+
+            return this._player[`set_${trackType}_track`](trackId);
+        }
+
+        if(trackId < 0) {
+            // disabling video leaves last frame frozen,
+            // so we also hide the widget
+            if(trackType === 'video')
+                this._player.widget.hide();
+
+            return this._player[`set_${trackType}_track_enabled`](false);
+        }
+
+        this._player[`set_${trackType}_track`](trackId);
+        this._player[`set_${trackType}_track_enabled`](true);
+
+        if(trackType === 'video' && !this._player.widget.get_visible()) {
+            this._player.widget.show();
+            this._player.renderer.expose();
+        }
+    }
+
     _onPlayerStateChanged(player, state)
     {
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
                 break;
-            case GstPlayer.PlayerState.PAUSED:
             case GstPlayer.PlayerState.STOPPED:
+                this.needsTracksUpdate = true;
+            case GstPlayer.PlayerState.PAUSED:
                 this.controls.togglePlayButton.image = this.controls.playImage;
                 break;
             case GstPlayer.PlayerState.PLAYING:
                 this.controls.togglePlayButton.image = this.controls.pauseImage;
+                if(this.needsTracksUpdate) {
+                    this.needsTracksUpdate = false;
+                    this.updateMediaTracks();
+                }
                 break;
             default:
                 break;

@@ -5,6 +5,9 @@ var Controls = GObject.registerClass({
         'position-seeking-changed': {
             param_types: [GObject.TYPE_BOOLEAN]
         },
+        'track-change-requested': {
+            param_types: [GObject.TYPE_STRING, GObject.TYPE_INT]
+        },
     }
 }, class ClapperControls extends Gtk.HBox
 {
@@ -43,6 +46,16 @@ var Controls = GObject.registerClass({
 
         this.positionAdjustment = this.positionScale.get_adjustment();
         this.pack_start(this.positionScale, true, true, 0);
+
+        this.videoTracksButton = this.addPopoverButton(
+            'emblem-videos-symbolic'
+        );
+        this.audioTracksButton = this.addPopoverButton(
+            'emblem-music-symbolic'
+        );
+        this.subtitleTracksButton = this.addPopoverButton(
+            'media-view-subtitles-symbolic'
+        );
 
         this.volumeButton = new Gtk.ScaleButton({
             icons: [
@@ -98,6 +111,48 @@ var Controls = GObject.registerClass({
         return button;
     }
 
+    addPopoverButton(iconName, size)
+    {
+        let button = this.addButton(iconName, size);
+
+        button.popover = new Gtk.Popover({
+            relative_to: button
+        });
+        button.popoverBox = new Gtk.VBox({
+            margin_top: 4,
+            margin_bottom: 4,
+        });
+        button.popover.add(button.popoverBox);
+        button.connect('clicked', () => button.popover.popup());
+
+        return button;
+    }
+
+    addRadioButtons(box, array, activeId)
+    {
+        let group = null;
+
+        for(let el of array) {
+            let radioButton = new Gtk.RadioButton({
+                label: el.label,
+                group: group,
+            });
+            radioButton.trackType = el.type;
+            radioButton.trackId = el.value;
+
+            if(radioButton.trackId === activeId)
+                radioButton.set_active(true);
+            if(!group)
+                group = radioButton;
+
+            radioButton.connect(
+                'toggled', this._onTrackRadioButtonToggled.bind(this, radioButton)
+            );
+            box.add(radioButton);
+        }
+        box.show_all();
+    }
+
     setDefaultWidgetBehaviour(widget)
     {
         widget.can_focus = false;
@@ -137,6 +192,18 @@ var Controls = GObject.registerClass({
                 this.setVolumeMarks(true);
             }
         }
+    }
+
+    _onTrackRadioButtonToggled(self, radioButton)
+    {
+        if(!radioButton.get_active())
+            return;
+
+        this.emit(
+            'track-change-requested',
+            radioButton.trackType,
+            radioButton.trackId
+        );
     }
 
     _onPositionScaleButtonPressEvent()
