@@ -28,6 +28,13 @@ class ClapperPlayer extends GstPlayer.Player
             video_renderer: renderer
         });
 
+        // assign elements to player for later access
+        // and make sure that GJS will not free them early
+        this.gtkglsink = gtkglsink;
+        this.glsinkbin = glsinkbin;
+        this.dispatcher = dispatcher;
+        this.renderer = renderer;
+
         let config = this.get_config();
 
         for(let setting of Object.keys(GSTPLAYER_DEFAULTS))
