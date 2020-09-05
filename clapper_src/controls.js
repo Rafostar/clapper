@@ -19,6 +19,9 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
+        this.fullscreenMode = false;
+        this.durationFormated = '00:00:00';
+
         this.togglePlayButton = this.addButton(
             'media-playback-pause-symbolic',
             Gtk.IconSize.LARGE_TOOLBAR
@@ -34,9 +37,12 @@ var Controls = GObject.registerClass({
         this.positionScale = new Gtk.Scale({
             orientation: Gtk.Orientation.HORIZONTAL,
             value_pos: Gtk.PositionType.LEFT,
-            draw_value: false,
+            draw_value: true,
             hexpand: true,
         });
+        this.positionScale.connect(
+            'format-value', this._onPositionScaleFormatValue.bind(this)
+        );
         this.positionScale.connect(
             'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
         );
@@ -122,8 +128,9 @@ var Controls = GObject.registerClass({
             margin_top: 4,
             margin_bottom: 4,
         });
+        button.osd = this.fullscreenMode;
         button.popover.add(button.popoverBox);
-        button.connect('clicked', () => button.popover.popup());
+        button.connect('clicked', this._onPopoverButtonClicked.bind(this, button));
 
         return button;
     }
@@ -175,13 +182,17 @@ var Controls = GObject.registerClass({
         this.volumeAdjustment.set_step_increment(0.05);
         this.volumeAdjustment.set_page_increment(0.05);
 
-        let popup = this.volumeButton.get_popup();
-        let box = popup.get_child();
-        let boxChildren = box.get_children();
+        this.volumeButton.popover = this.volumeButton.get_popup();
+        this.volumeButton.popoverBox = this.volumeButton.popover.get_child();
+        this.volumeButton.osd = this.fullscreenMode;
+        this.volumeButton.connect(
+            'clicked', this._onPopoverButtonClicked.bind(this, this.volumeButton.popoverBox)
+        );
+        let boxChildren = this.volumeButton.popoverBox.get_children();
 
         for(let child of boxChildren) {
             if(child.constructor === Gtk.Button) {
-                box.remove(child);
+                this.volumeButton.popoverBox.remove(child);
                 child.destroy();
             }
             else if(child.constructor === Gtk.Scale) {
@@ -194,6 +205,27 @@ var Controls = GObject.registerClass({
         }
     }
 
+    _getFormatedTime(time)
+    {
+        let hours = ('0' + Math.floor(time / 3600)).slice(-2);
+	time -= hours * 3600;
+	let minutes = ('0' + Math.floor(time / 60)).slice(-2);
+	time -= minutes * 60;
+	let seconds = ('0' + Math.floor(time)).slice(-2);
+
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
+    _onPopoverButtonClicked(self, button)
+    {
+        if(button.osd !== this.fullscreenMode) {
+            let action = (this.fullscreenMode) ? 'add_class' : 'remove_class';
+            button.popover.get_style_context()[action]('osd');
+            button.osd = this.fullscreenMode;
+        }
+        button.popover.popup();
+    }
+
     _onTrackRadioButtonToggled(self, radioButton)
     {
         if(!radioButton.get_active())
@@ -204,6 +236,12 @@ var Controls = GObject.registerClass({
             radioButton.trackType,
             radioButton.trackId
         );
+    }
+
+    _onPositionScaleFormatValue(self, value)
+    {
+        return this._getFormatedTime(value)
+            + '/' + this.durationFormated;
     }
 
     _onPositionScaleButtonPressEvent()

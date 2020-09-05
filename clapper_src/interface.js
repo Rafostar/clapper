@@ -32,7 +32,8 @@ class ClapperInterface extends Gtk.Grid
             valign: Gtk.Align.END,
         });
         this.revealerBox = new Gtk.Box();
-        this.revealerBox.get_style_context().add_class('background');
+        let revealerContext = this.revealerBox.get_style_context();
+        revealerContext.add_class('osd');
 
         this.revealer.add(this.revealerBox);
         this.attach(this.overlay, 0, 0, 1, 1);
@@ -250,6 +251,8 @@ class ClapperInterface extends Gtk.Grid
         this.controls.positionAdjustment.set_upper(duration);
         this.controls.positionAdjustment.set_step_increment(increment);
         this.controls.positionAdjustment.set_page_increment(increment);
+
+        this.controls.durationFormated = this.controls._getFormatedTime(duration);
     }
 
     _onPlayerPositionUpdated(player, position)
