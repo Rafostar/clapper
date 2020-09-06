@@ -1,10 +1,13 @@
 const { GLib, GObject, Gst, GstPlayer } = imports.gi;
+const Debug = imports.clapper_src.debug;
 
 const GSTPLAYER_DEFAULTS = {
     position_update_interval: 1000,
     seek_accurate: false,
     user_agent: 'clapper',
 };
+
+let { debug } = Debug;
 
 var Player = GObject.registerClass(
 class ClapperPlayer extends GstPlayer.Player
@@ -37,8 +40,14 @@ class ClapperPlayer extends GstPlayer.Player
 
         let config = this.get_config();
 
-        for(let setting of Object.keys(GSTPLAYER_DEFAULTS))
-            GstPlayer.Player[`config_set_${setting}`](config, opts[setting]);
+        for(let setting of Object.keys(GSTPLAYER_DEFAULTS)) {
+            let setOption = GstPlayer.Player[`config_set_${setting}`];
+            if(!setOption) {
+                debug(`unsupported option: ${setting}`, 'LEVEL_WARNING');
+                continue;
+            }
+            setOption(config, opts[setting]);
+        }
 
         this.set_config(config);
 
