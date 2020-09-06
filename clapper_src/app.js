@@ -30,6 +30,11 @@ var App = GObject.registerClass({
         };
         Object.assign(this, defaults, opts);
 
+        this.cssProvider = new Gtk.CssProvider();
+        this.cssProvider.load_from_path(
+            `${pkg.datadir}/${pkg.name}/css/styles.css`
+        );
+
         this.window = null;
         this.interface = null;
         this.player = null;
@@ -104,6 +109,12 @@ var App = GObject.registerClass({
 
     _onWindowRealize()
     {
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            this.cssProvider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
+
         this.player = new Player();
         this.player.widget.add_events(
             Gdk.EventMask.SCROLL_MASK

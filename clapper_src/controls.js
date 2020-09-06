@@ -19,8 +19,9 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
-        this.fullscreenMode = false;
+        this._fullscreenMode = false;
         this.durationFormated = '00:00:00';
+        this.buttonImages = [];
 
         this.togglePlayButton = this.addButton(
             'media-playback-pause-symbolic',
@@ -83,6 +84,10 @@ var Controls = GObject.registerClass({
             style.add_class('flat');
 
         this.volumeButtonImage = this.volumeButton.get_child();
+        this.volumeButtonImage.defaultSize = Gtk.IconSize.SMALL_TOOLBAR;
+        this.volumeButtonImage.fullscreenSize = Gtk.IconSize.LARGE_TOOLBAR;
+        this.buttonImages.push(this.volumeButtonImage);
+
         this.volumeAdjustment = this.volumeButton.get_adjustment();
         this._prepareVolumeButton();
         this.pack_start(this.volumeButton, false, false, 0);
@@ -101,11 +106,36 @@ var Controls = GObject.registerClass({
         this.forall(this.setDefaultWidgetBehaviour);
     }
 
+    set fullscreenMode(isFullscreen)
+    {
+        if(isFullscreen === this._fullscreenMode)
+            return;
+
+        for(let image of this.buttonImages) {
+            image.icon_size = (isFullscreen)
+                ? image.fullscreenSize
+                : image.defaultSize;
+        }
+
+        this.volumeButton.size = this.volumeButtonImage.icon_size;
+        this._fullscreenMode = isFullscreen;
+    }
+
+    get fullscreenMode()
+    {
+        return this._fullscreenMode;
+    }
+
     addButton(iconName, size, noPack)
     {
         size = size || Gtk.IconSize.SMALL_TOOLBAR;
 
         let button = Gtk.Button.new_from_icon_name(iconName, size);
+        button.image.defaultSize = size;
+        button.image.fullscreenSize = (size === Gtk.IconSize.SMALL_TOOLBAR)
+            ? Gtk.IconSize.LARGE_TOOLBAR
+            : Gtk.IconSize.DND;
+
         this.setDefaultWidgetBehaviour(button);
         button.get_style_context().add_class('flat');
 
@@ -114,6 +144,7 @@ var Controls = GObject.registerClass({
             button.show();
         }
 
+        this.buttonImages.push(button.image);
         return button;
     }
 
@@ -155,6 +186,7 @@ var Controls = GObject.registerClass({
             radioButton.connect(
                 'toggled', this._onTrackRadioButtonToggled.bind(this, radioButton)
             );
+            this.setDefaultWidgetBehaviour(radioButton);
             box.add(radioButton);
         }
         box.show_all();
