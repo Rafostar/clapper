@@ -40,8 +40,8 @@ var App = GObject.registerClass({
         this.player = null;
         this.dragStartReady = false;
 
-        this.connect('startup', () => this._buildUI());
-        this.connect('activate', () => this._openWindow());
+        this.connect('startup', this._buildUI.bind(this));
+        this.connect('activate', this._openWindow.bind(this));
     }
 
     run(arr)
@@ -84,7 +84,7 @@ var App = GObject.registerClass({
     {
         this.window = new Window(this, APP_NAME);
 
-        this.window.connect(
+        this.windowRealizeSignal = this.window.connect(
             'realize', this._onWindowRealize.bind(this)
         );
         this.window.connect(
@@ -109,6 +109,8 @@ var App = GObject.registerClass({
 
     _onWindowRealize()
     {
+        this.window.disconnect(this.windowRealizeSignal);
+
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             this.cssProvider,
@@ -142,15 +144,14 @@ var App = GObject.registerClass({
         this.player.widget.connect(
             'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
-        this.player.widget.connect(
+        this.playerRealizeSignal = this.player.widget.connect(
             'realize', this._onPlayerRealize.bind(this)
         );
+        this.playerDrawSignal = this.player.widget.connect(
+            'draw', this._onPlayerDraw.bind(this)
+        );
 
-        if(this.playlist.length)
-            this.player.set_uri(this.playlist[0]);
-
-        this.player.widget.show_all();
-        this.emit('ready', true);
+        this.player.widget.show();
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)
@@ -224,6 +225,9 @@ var App = GObject.registerClass({
 
     _onPlayerRealize()
     {
+        this.player.widget.disconnect(this.playerRealizeSignal);
+        this.player.renderer.expose();
+
         let display = this.player.widget.get_display();
 
         this.defaultCursor = Gdk.Cursor.new_from_name(
@@ -235,6 +239,17 @@ var App = GObject.registerClass({
 
         this.playerWindow = this.player.widget.get_window();
         this.setHideCursorTimeout();
+    }
+
+    _onPlayerDraw(self, data)
+    {
+         this.player.widget.disconnect(this.playerDrawSignal);
+         this.emit('ready', true);
+
+         if(!this.playlist.length)
+            return;
+
+         this.player.set_uri(this.playlist[0]);
     }
 
     _onPlayerStateChanged(self, state)
