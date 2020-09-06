@@ -141,13 +141,13 @@ class ClapperInterface extends Gtk.Grid
                     // This one is too long to fit nicely in UI
                     if(codec.startsWith('Free Lossless Audio Codec'))
                         codec = 'FLAC';
-                    text = info.get_language() + ', '
-                        + codec + ', '
+                    text = info.get_language() || 'Unknown';
+                    text += ', ' + codec + ', '
                         + info.get_channels() + ' Channels';
                     break;
                 case GstPlayer.PlayerSubtitleInfo:
                     type = 'subtitle';
-                    text = info.get_language();
+                    text = info.get_language() || 'Unknown';
                     break;
                 default:
                     debug(`unrecognized media info type: ${info.constructor}`);
