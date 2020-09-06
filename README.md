@@ -1,8 +1,11 @@
 # Clapper
 A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) and powered by [GStreamer](https://gstreamer.freedesktop.org) with [OpenGL](https://www.opengl.org) rendering. Can also be used as a pre-made widget for [GTK](https://www.gtk.org) apps.
 
-<b>WORK IN PROGRESS</b>
-
+### WORK IN PROGRESS
+This is still early WIP. Many features are not implemented yet and quite a few are still unstable. Right now Clapper can only play single file from URI. So if you want to test it, start it from terminal like this:
+```shell
+clapper file:///path/to/video.mkv
+```
 ## Requirements
 Clapper uses `GStreamer` bindings from `GI` repository, so if your repo ships them as separate package, they must be installed first.
 Additionally Clapper requires these `GStreamer` elements:
