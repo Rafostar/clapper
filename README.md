@@ -36,3 +36,11 @@ gst-inspect-1.0 vaapi
 On some older GPUs you might need to export `GST_VAAPI_ALL_DRIVERS=1` environment variable.
 
 Other acceleration methods (supported by `GStreamer`) should also work, but I have not tested them due to lack of hardware.
+
+## Performace Comparison
+Here is the average **CPU** and **RAM** usage (lower is better) when playing the same H.264 1080p video in Clapper and [Totem](https://wiki.gnome.org/Apps/Videos) (GNOME Videos) with **VA-API enabled** on an old AMD APU:
+
+| Player  | CPU |  RAM  |
+| ------- | --- | ----- |
+| Clapper |  3% | 52MB  |
+| Totem   | 12% | 124MB |
