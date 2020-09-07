@@ -19,6 +19,8 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
+        let style;
+
         this._fullscreenMode = false;
         this.durationFormated = '00:00:00';
         this.buttonImages = [];
@@ -41,6 +43,9 @@ var Controls = GObject.registerClass({
             draw_value: true,
             hexpand: true,
         });
+        style = this.positionScale.get_style_context();
+        style.add_class('positionscale');
+
         this.positionScale.connect(
             'format-value', this._onPositionScaleFormatValue.bind(this)
         );
@@ -77,7 +82,7 @@ var Controls = GObject.registerClass({
             ],
             size: Gtk.IconSize.SMALL_TOOLBAR
         });
-        let style = this.volumeButton.get_style_context();
+        style = this.volumeButton.get_style_context();
         let styleStr = style.to_string(Gtk.StyleContextPrintFlags.SHOW_STYLE);
 
         if(!styleStr.includes('flat'))
@@ -229,7 +234,7 @@ var Controls = GObject.registerClass({
             }
             else if(child.constructor === Gtk.Scale) {
                 this.setDefaultWidgetBehaviour(child);
-                child.height_request = 200;
+                child.get_style_context().add_class('volumescale');
                 child.round_digits = 2;
                 this.volumeScale = child;
                 this.setVolumeMarks(true);

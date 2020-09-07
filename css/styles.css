@@ -1,49 +1,60 @@
-scale value {
-  font-weight: 500;
-  color: currentColor;
-}
-
+/* Defaults */
 scale marks {
   color: currentColor;
 }
-
-scale trough highlight {
-  min-width: 4px;
-  min-height: 4px;
-}
-
 .osd {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
 }
-
-.osd scale value {
-  font-size: 24px;
-}
-
-.osd scale contents {
-  margin-left: 8px;
-  margin-right: 4px;
-}
-
 .osd button {
   margin: 2px;
   min-width: 36px;
   min-height: 36px;
 }
-
 .osd scale trough highlight {
   min-width: 6px;
   min-height: 6px;
 }
-
-.osd scale slider {
-  margin: -14px;
-}
-
 .osd radio {
   margin: 6px;
   border: 2px solid;
   min-width: 18px;
   min-height: 18px;
+}
+
+/* Position Scale */
+.positionscale value {
+  font-weight: 600;
+  color: currentColor;
+}
+.positionscale trough highlight {
+  min-height: 4px;
+}
+.osd .positionscale value {
+  font-size: 24px;
+}
+.positionscale contents {
+  margin-left: 4px;
+  margin-right: 2px;
+}
+.osd .positionscale contents {
+  margin-left: 12px;
+  margin-right: 6px;
+}
+.osd .positionscale trough slider {
+  color: transparent;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.osd .positionscale trough highlight {
+  min-height: 24px;
+}
+
+/* Volume Scale */
+.volumescale {
+  min-height: 180px;
+}
+.osd .volumescale {
+  min-height: 280px;
 }
