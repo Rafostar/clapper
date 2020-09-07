@@ -50,6 +50,7 @@ class ClapperPlayer extends GstPlayer.Player
         }
 
         this.set_config(config);
+        this.set_mute(false);
 
         this.loop = GLib.MainLoop.new(null, false);
         this.run_loop = opts.run_loop || false;
