@@ -38,8 +38,8 @@ scale marks {
   margin-right: 2px;
 }
 .osd .positionscale contents {
-  margin-left: 12px;
-  margin-right: 6px;
+  margin-left: 8px;
+  margin-right: 2px;
 }
 .osd .positionscale trough slider {
   color: transparent;
@@ -48,7 +48,7 @@ scale marks {
   box-shadow: none;
 }
 .osd .positionscale trough highlight {
-  min-height: 24px;
+  min-height: 22px;
 }
 
 /* Volume Scale */
