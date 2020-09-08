@@ -1,6 +1,6 @@
 imports.gi.versions.Gdk = '3.0';
 imports.gi.versions.Gtk = '3.0';
-imports.searchPath.unshift('@importsdir@');
+imports.searchPath.unshift('@importspath@');
 
 const ClapperSrc = imports.clapper_src;
 

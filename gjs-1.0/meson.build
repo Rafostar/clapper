@@ -1,5 +1,7 @@
+importspath = get_option('sharedir').split('/').join('.') + '[\'' + meson.project_name() + '\']'
+
 gjs_conf = configuration_data()
-gjs_conf.set('importsdir', join_paths(get_option('datadir'), meson.project_name()))
+gjs_conf.set('importspath', importspath)
 
 configure_file(
   input: 'clapper.js.in',

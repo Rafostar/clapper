@@ -13,7 +13,8 @@ endif
 
 conf = configuration_data()
 conf.set('bindir', join_paths([ get_option('prefix'), 'bin' ]))
-conf.set('gjsdir', join_paths([ get_option('datadir'), 'gjs-1.0' ]))
+conf.set('sharedir', join_paths([ get_option('prefix'), 'share' ]))
+conf.set('gjsdir', join_paths([ get_option('sharedir'), 'gjs-1.0' ]))
 
 srcdir = include_directories('clapper_src')
 cssdir = include_directories('css')
