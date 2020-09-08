@@ -19,7 +19,7 @@ Other required plugins (codecs) depend on video format.
 Run in terminal:
 ```shell
 meson builddir --prefix=/usr/local
-sudo ninja -C builddir install
+sudo meson install -C builddir
 ```
 
 ## Hardware acceleration

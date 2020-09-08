@@ -1,6 +1,7 @@
 project('com.github.rafostar.Clapper',
   version: '0.0.0',
   meson_version: '>= 0.47.0',
+  license: 'GPL3',
   default_options: [ 'warning_level=2' ]
 )
 
@@ -14,9 +15,12 @@ endif
 conf = configuration_data()
 conf.set('bindir', join_paths(get_option('prefix'), 'bin'))
 
-srcdir = include_directories('clapper_src')
-cssdir = include_directories('css')
 subdir('bin')
 subdir('gjs-1.0')
+
+installdir = join_paths(get_option('prefix'), 'share', meson.project_name())
+install_subdir('clapper_src', install_dir : installdir)
+install_subdir('css', install_dir : installdir)
+install_data('main.js', install_dir : installdir)
 
 meson.add_install_script('build-aux/meson/postinstall.py')

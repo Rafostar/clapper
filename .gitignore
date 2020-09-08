@@ -1,0 +1,4 @@
+# meson/ninja
+build/
+install/
+builddir/

@@ -11,5 +11,6 @@ configure_file(
   output: 'com.github.rafostar.Clapper',
   configuration: bin_conf,
   install: true,
-  install_dir: get_option('bindir')
+  install_dir: get_option('bindir'),
+  install_mode: 'rwxr-xr-x'
 )
