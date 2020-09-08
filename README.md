@@ -4,8 +4,9 @@ A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) and p
 ### WORK IN PROGRESS
 This is still early WIP. Many features are not implemented yet and quite a few are still unstable. Right now Clapper can only play single file. So if you want to test it, start it from terminal like this:
 ```shell
-clapper video.mp4
+com.github.rafostar.Clapper "video.mp4"
 ```
+
 ## Requirements
 Clapper uses `GStreamer` bindings from `GI` repository, so if your repo ships them as separate package, they must be installed first.
 Additionally Clapper requires these `GStreamer` elements:
@@ -16,10 +17,10 @@ Other required plugins (codecs) depend on video format.
 
 ## Installation
 Run in terminal:
-```sh
-sudo ./install.sh
+```shell
+meson builddir --prefix=/usr/local
+sudo ninja -C builddir install
 ```
-I know that this should be done using some sort of build system (like `meson`), but the player is still far from finished and a basic install script should be sufficient for the time being, if anyone wishes to test it.
 
 ## Hardware acceleration
 Using hardware acceleration is highly recommended. As stated in `GStreamer` wiki:

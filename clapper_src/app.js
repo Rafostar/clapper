@@ -4,8 +4,9 @@ const { Interface } = imports.clapper_src.interface;
 const { Player } = imports.clapper_src.player;
 const { Window } = imports.clapper_src.window;
 
-const APP_NAME = 'Clapper';
-const APP_ID = `com.github.rafostar.${APP_NAME}`;
+const APP_NAME = pkg.name.substring(
+    pkg.name.lastIndexOf('.') + 1
+);
 
 let { debug } = Debug;
 
@@ -22,7 +23,7 @@ var App = GObject.registerClass({
         GLib.set_prgname(APP_NAME);
 
         super._init({
-            application_id: APP_ID
+            application_id: pkg.name
         });
 
         let defaults = {
