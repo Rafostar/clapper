@@ -1,4 +1,4 @@
-const { GLib, GObject, Gst, GstPlayer } = imports.gi;
+const { Gio, GLib, GObject, Gst, GstPlayer } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
 const GSTPLAYER_DEFAULTS = {
@@ -60,6 +60,27 @@ class ClapperPlayer extends GstPlayer.Player
         this.connect('state_changed', this._onStateChanged.bind(this));
         this.connect('uri_loaded', this._onUriLoaded.bind(this));
         this.widget.connect('destroy', this._onWidgetDestroy.bind(this));
+    }
+
+    set_media(source)
+    {
+        if(Gst.uri_is_valid(source)) {
+            debug(`setting source URI: ${source}`);
+            return this.set_uri(source);
+        }
+
+        debug(`parsing source: ${source}`);
+        let uri = Gst.filename_to_uri(source);
+
+        if(!uri)
+            return debug('parsing to URI failed');
+
+        debug(`parsed source to URI: ${uri}`);
+
+        if(!Gio.file_new_for_uri(uri).query_exists(null))
+            return debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
+
+        this.set_uri(uri);
     }
 
     seek_seconds(position)

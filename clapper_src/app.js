@@ -249,7 +249,7 @@ var App = GObject.registerClass({
          if(!this.playlist.length)
             return;
 
-         this.player.set_uri(this.playlist[0]);
+         this.player.set_media(this.playlist[0]);
     }
 
     _onPlayerStateChanged(self, state)
