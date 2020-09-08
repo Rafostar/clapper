@@ -1,12 +1,12 @@
 project('com.github.rafostar.Clapper',
   version: '0.0.0',
-  meson_version: '>= 0.47.0',
+  meson_version: '>= 0.50.0',
   license: 'GPL3',
   default_options: [ 'warning_level=2' ]
 )
 
-python = import('python3')
-python_bin = python.find_python()
+python = import('python')
+python_bin = python.find_installation('python3')
 
 if not python_bin.found()
     error('No valid python3 binary found')
