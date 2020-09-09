@@ -1,0 +1,33 @@
+- [X] Implement GstPlayer API
+- [X] Inhibit screen locking
+- [X] Hide cursor on video window
+- [X] Adaptive UI (dark and bigger when viewing in fullscreen)
+- [X] Dragging player by video (MPV)
+- [X] Switching video/audio/subtitles tracks from bottom bar (MPV)
+- [X] Over-amplification supported by default (VLC)
+- [ ] Audio visualizations (VLC)
+- [ ] Clock with current hour and "Ends at" time on top overlay (Kodi)
+- [ ] Auto select subtitles matching OS language (Totem)
+- [ ] Picture-in-Picture mode window
+- [ ] Touch gestures/swipes support
+- [ ] Media playlists (with exporting to file e.g: .vplist)
+- [ ] Customizable seek time
+- [ ] Statistics and codec info page (VLC)
+- [ ] Resume playback from last position
+- [ ] Mobile friendly UI (libhandy)
+- [ ] Chapters support
+- [ ] Set tracks time offset
+  - [ ] Subtitles offset
+  - [ ] Audio offset
+- [ ] MDNS and UPNP (discovering media in local network)
+- [ ] DND files/folders from Nautilus to play (ignore incompatible ones)
+- [ ] Search for subtitles, download and activate (SMplayer)
+- [ ] Auto add subtitles from same folder
+  - [ ] Set global subtitles folders
+- [ ] RSTP streaming
+- [ ] Playback speed
+- [ ] Remote playback controls via HTTP (VLC) + WebSockets
+- [ ] Integration with the top bar
+  - [ ] MPRIS support
+  - [ ] Controls in the notifications panel
+  - [ ] Progress bar in the notifications panel (maybe via extension)
