@@ -53,9 +53,7 @@ var App = GObject.registerClass({
 
     setHideCursorTimeout()
     {
-        if(this.hideCursorTimeout)
-            GLib.source_remove(this.hideCursorTimeout);
-
+        this.clearTimeout('hideCursor');
         this.hideCursorTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
             this.hideCursorTimeout = null;
 
@@ -68,17 +66,24 @@ var App = GObject.registerClass({
 
     setHideControlsTimeout()
     {
-        if(this.hideControlsTimeout)
-            GLib.source_remove(this.hideControlsTimeout);
-
+        this.clearTimeout('hideControls');
         this.hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
             this.hideControlsTimeout = null;
 
-            if(this.window.isFullscreen)
+            if(this.window.isFullscreen && this.isCursorInPlayer)
                 this.interface.revealControls(false);
 
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    clearTimeout(name)
+    {
+        if(!this[`${name}Timeout`])
+            return;
+
+        GLib.source_remove(this[`${name}Timeout`]);
+        this[`${name}Timeout`] = null;
     }
 
     _buildUI()
@@ -366,11 +371,18 @@ var App = GObject.registerClass({
     _onPlayerEnterNotifyEvent(self, event)
     {
         this.isCursorInPlayer = true;
+
+        this.setHideCursorTimeout();
+        if(this.window.isFullscreen)
+            this.setHideControlsTimeout();
     }
 
     _onPlayerLeaveNotifyEvent(self, event)
     {
         this.isCursorInPlayer = false;
+
+        this.clearTimeout('hideCursor');
+        this.clearTimeout('hideControls');
     }
 
     _onPlayerMotionNotifyEvent(self, event)
@@ -383,8 +395,7 @@ var App = GObject.registerClass({
             this.interface.revealControls(true);
         }
         else if(this.hideControlsTimeout) {
-            GLib.source_remove(this.hideControlsTimeout);
-            this.hideControlsTimeout = null;
+            this.clearTimeout('hideControls');
         }
 
         if(!this.dragStartReady || this.window.isFullscreen)
