@@ -1,5 +1,8 @@
 const { GObject, Gtk } = imports.gi;
 
+const CONTROLS_MARGIN = 4;
+const CONTROLS_SPACING = 4;
+
 var Controls = GObject.registerClass({
     Signals: {
         'position-seeking-changed': {
@@ -14,8 +17,9 @@ var Controls = GObject.registerClass({
     _init()
     {
         super._init({
-            margin: 4,
-            spacing: 4,
+            margin_left: CONTROLS_MARGIN,
+            margin_right: CONTROLS_MARGIN,
+            spacing: CONTROLS_SPACING,
             valign: Gtk.Align.END,
         });
 
@@ -122,7 +126,10 @@ var Controls = GObject.registerClass({
         size = size || Gtk.IconSize.SMALL_TOOLBAR;
 
         let button = Gtk.Button.new_from_icon_name(iconName, size);
+        let box = new Gtk.Box();
 
+        button.margin_top = CONTROLS_MARGIN;
+        button.margin_bottom = CONTROLS_MARGIN;
         button.image.defaultSize = size;
         button.image.fullscreenSize = (size === Gtk.IconSize.SMALL_TOOLBAR)
             ? Gtk.IconSize.LARGE_TOOLBAR
@@ -132,8 +139,9 @@ var Controls = GObject.registerClass({
         button.get_style_context().add_class('flat');
 
         if(!noPack) {
-            this.pack_start(button, false, false, 0);
-            button.show();
+            box.pack_start(button, false, false, 0);
+            this.pack_start(box, false, false, 0);
+            box.show_all();
         }
 
         this.buttonImages.push(button.image);
@@ -145,7 +153,7 @@ var Controls = GObject.registerClass({
         let button = this.addButton(iconName, size);
 
         button.popover = new Gtk.Popover({
-            relative_to: button
+            relative_to: button.get_parent()
         });
         button.popoverBox = new Gtk.VBox();
         button.osd = this.fullscreenMode;
