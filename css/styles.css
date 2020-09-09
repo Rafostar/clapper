@@ -53,8 +53,19 @@ scale marks {
 
 /* Volume Scale */
 .volumescale {
+  margin-left: 4px;
   min-height: 180px;
 }
 .osd .volumescale {
+  margin: 6px;
+  margin-left: 10px;
   min-height: 280px;
+}
+.volumescale marks label {
+  margin-right: 4px;
+  margin-top: -4px;
+  margin-bottom: -6px;
+}
+.osd .volumescale marks label {
+  margin-bottom: -8px;
 }

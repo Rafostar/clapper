@@ -191,12 +191,12 @@ var App = GObject.registerClass({
                 bool = true;
             case Gdk.KEY_Left:
                 // disabled due to missing "seek on drop" support
-                //this._handleScaleIncrement('position', 'Scale', bool);
+                //this._handleScaleIncrement('position', bool);
                 break;
             case Gdk.KEY_Up:
                 bool = true;
             case Gdk.KEY_Down:
-                this._handleScaleIncrement('volume', 'Button', bool);
+                this._handleScaleIncrement('volume', bool);
                 break;
             case Gdk.KEY_F11:
                 this.window.toggleFullscreen();
@@ -329,29 +329,27 @@ var App = GObject.registerClass({
         if(!res) return;
 
         let type = 'volume';
-        let item = 'Button';
 
         switch(direction) {
             case Gdk.ScrollDirection.RIGHT:
             case Gdk.ScrollDirection.LEFT:
                 type = 'position';
-                item = 'Scale';
             case Gdk.ScrollDirection.UP:
             case Gdk.ScrollDirection.DOWN:
                 let isUp = (
                     direction === Gdk.ScrollDirection.UP
                     || direction === Gdk.ScrollDirection.RIGHT
                 );
-                this._handleScaleIncrement(type, item, isUp);
+                this._handleScaleIncrement(type, isUp);
                 break;
             default:
                 break;
         }
     }
 
-    _handleScaleIncrement(type, item, isUp)
+    _handleScaleIncrement(type, isUp)
     {
-        let value = this.interface.controls[`${type}${item}`].get_value();
+        let value = this.interface.controls[`${type}Scale`].get_value();
         let maxValue = this.interface.controls[`${type}Adjustment`].get_upper();
         let increment = this.interface.controls[`${type}Adjustment`].get_page_increment();
 
@@ -362,7 +360,7 @@ var App = GObject.registerClass({
             ? maxValue
             : value;
 
-        this.interface.controls[`${type}${item}`].set_value(value);
+        this.interface.controls[`${type}Scale`].set_value(value);
     }
 
     _onPlayerEnterNotifyEvent(self, event)

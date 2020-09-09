@@ -56,7 +56,7 @@ class ClapperInterface extends Gtk.Grid
         this.controls.positionScale.connect(
             'value-changed', this._onControlsPositionChanged.bind(this)
         );
-        this.controls.volumeButton.connect(
+        this.controls.volumeScale.connect(
             'value-changed', this._onControlsVolumeChanged.bind(this)
         );
         this.controls.connect(
@@ -280,7 +280,7 @@ class ClapperInterface extends Gtk.Grid
             return;
 
         this.lastVolumeValue = volume;
-        this.controls.volumeButton.set_value(volume);
+        this.controls.volumeScale.set_value(volume);
     }
 
     _onPositionSeekingChanged(self, isPositionSeeking)
@@ -310,12 +310,35 @@ class ClapperInterface extends Gtk.Grid
         this._player.seek_seconds(positionSeconds);
     }
 
-    _onControlsVolumeChanged(widget, volume)
+    _onControlsVolumeChanged(volumeScale)
     {
+        let volume = Number(volumeScale.get_value().toFixed(2));
+
         if(volume === this.lastVolumeValue)
             return;
 
         this.lastVolumeValue = volume;
         this._player.set_volume(volume);
+
+        let icon = (volume <= 0)
+            ? 'muted'
+            : (volume <= 0.33)
+            ? 'low'
+            : (volume <= 0.66)
+            ? 'medium'
+            : (volume <= 1)
+            ? 'high'
+            : 'overamplified';
+
+        let iconName = `audio-volume-${icon}-symbolic`;
+
+        if(this.controls.volumeButton.image.icon_name === iconName)
+            return;
+
+        debug(`set volume icon: ${icon}`);
+        this.controls.volumeButton.image.set_from_icon_name(
+            iconName,
+            this.controls.volumeButton.image.icon_size
+        );
     }
 });

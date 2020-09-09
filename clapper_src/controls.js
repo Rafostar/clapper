@@ -69,33 +69,20 @@ var Controls = GObject.registerClass({
             'media-view-subtitles-symbolic'
         );
 
-        this.volumeButton = new Gtk.ScaleButton({
-            icons: [
-                'audio-volume-muted-symbolic',
-                'audio-volume-overamplified-symbolic',
-                'audio-volume-low-symbolic',
-                'audio-volume-medium-symbolic',
-                'audio-volume-high-symbolic',
-                'audio-volume-overamplified-symbolic',
-                'audio-volume-overamplified-symbolic',
-                'audio-volume-overamplified-symbolic',
-            ],
-            size: Gtk.IconSize.SMALL_TOOLBAR
+        this.volumeButton = this.addPopoverButton(
+            'audio-volume-muted-symbolic'
+        );
+        this.volumeScale = new Gtk.Scale({
+            orientation: Gtk.Orientation.VERTICAL,
+            inverted: true,
+            value_pos: Gtk.PositionType.TOP,
+            draw_value: false,
+            round_digits: 2,
+            vexpand: true,
         });
-        style = this.volumeButton.get_style_context();
-        let styleStr = style.to_string(Gtk.StyleContextPrintFlags.SHOW_STYLE);
-
-        if(!styleStr.includes('flat'))
-            style.add_class('flat');
-
-        this.volumeButtonImage = this.volumeButton.get_child();
-        this.volumeButtonImage.defaultSize = Gtk.IconSize.SMALL_TOOLBAR;
-        this.volumeButtonImage.fullscreenSize = Gtk.IconSize.LARGE_TOOLBAR;
-        this.buttonImages.push(this.volumeButtonImage);
-
-        this.volumeAdjustment = this.volumeButton.get_adjustment();
+        this.volumeScale.get_style_context().add_class('volumescale');
+        this.volumeAdjustment = this.volumeScale.get_adjustment();
         this._prepareVolumeButton();
-        this.pack_start(this.volumeButton, false, false, 0);
 
         this.toggleFullscreenButton = this.addButton(
             'view-fullscreen-symbolic'
@@ -122,7 +109,6 @@ var Controls = GObject.registerClass({
                 : image.defaultSize;
         }
 
-        this.volumeButton.size = this.volumeButtonImage.icon_size;
         this._fullscreenMode = isFullscreen;
     }
 
@@ -136,6 +122,7 @@ var Controls = GObject.registerClass({
         size = size || Gtk.IconSize.SMALL_TOOLBAR;
 
         let button = Gtk.Button.new_from_icon_name(iconName, size);
+
         button.image.defaultSize = size;
         button.image.fullscreenSize = (size === Gtk.IconSize.SMALL_TOOLBAR)
             ? Gtk.IconSize.LARGE_TOOLBAR
@@ -160,10 +147,7 @@ var Controls = GObject.registerClass({
         button.popover = new Gtk.Popover({
             relative_to: button
         });
-        button.popoverBox = new Gtk.VBox({
-            margin_top: 4,
-            margin_bottom: 4,
-        });
+        button.popoverBox = new Gtk.VBox();
         button.osd = this.fullscreenMode;
         button.popover.add(button.popoverBox);
         button.connect('clicked', this._onPopoverButtonClicked.bind(this, button));
@@ -215,31 +199,15 @@ var Controls = GObject.registerClass({
 
     _prepareVolumeButton()
     {
-        this.volumeAdjustment.set_upper(2.001);
+        this.volumeAdjustment.set_upper(2);
         this.volumeAdjustment.set_step_increment(0.05);
         this.volumeAdjustment.set_page_increment(0.05);
+        this.setDefaultWidgetBehaviour(this.volumeScale);
 
-        this.volumeButton.popover = this.volumeButton.get_popup();
-        this.volumeButton.popoverBox = this.volumeButton.popover.get_child();
-        this.volumeButton.osd = this.fullscreenMode;
-        this.volumeButton.connect(
-            'clicked', this._onPopoverButtonClicked.bind(this, this.volumeButton.popoverBox)
-        );
-        let boxChildren = this.volumeButton.popoverBox.get_children();
+        this.volumeButton.popoverBox.add(this.volumeScale);
+        this.volumeButton.popoverBox.show_all();
 
-        for(let child of boxChildren) {
-            if(child.constructor === Gtk.Button) {
-                this.volumeButton.popoverBox.remove(child);
-                child.destroy();
-            }
-            else if(child.constructor === Gtk.Scale) {
-                this.setDefaultWidgetBehaviour(child);
-                child.get_style_context().add_class('volumescale');
-                child.round_digits = 2;
-                this.volumeScale = child;
-                this.setVolumeMarks(true);
-            }
-        }
+        this.setVolumeMarks(true);
     }
 
     _getFormatedTime(time)
