@@ -151,9 +151,12 @@ class ClapperInterface extends Gtk.Grid
                 case GstPlayer.PlayerAudioInfo:
                     type = 'audio';
                     let codec = info.get_codec();
-                    // This one is too long to fit nicely in UI
-                    if(codec.startsWith('Free Lossless Audio Codec'))
-                        codec = 'FLAC';
+                    if(codec.includes('(')) {
+                        codec = codec.substring(
+                            codec.indexOf('(') + 1,
+                            codec.indexOf(')')
+                        );
+                    }
                     text = info.get_language() || 'Unknown';
                     text += ', ' + codec + ', '
                         + info.get_channels() + ' Channels';
