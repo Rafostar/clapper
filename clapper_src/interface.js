@@ -93,15 +93,20 @@ class ClapperInterface extends Gtk.Grid
 
     setControlsOnVideo(isOnVideo)
     {
-        if(isOnVideo && !this.controlsInVideo) {
+        if(this.controlsInVideo === isOnVideo)
+            return;
+
+        if(isOnVideo) {
             this.remove(this.controls);
+            this.controls.pack_start(this.controls.unfullscreenButton, false, false, 0);
             this.overlay.add_overlay(this.revealer);
             this.revealerBox.pack_start(this.controls, false, true, 0);
             this.revealer.show();
             this.revealerBox.show();
         }
-        else if(!isOnVideo && this.controlsInVideo) {
+        else {
             this.revealerBox.remove(this.controls);
+            this.controls.remove(this.controls.unfullscreenButton);
             this.overlay.remove(this.revealer);
             this.attach(this.controls, 0, 1, 1, 1);
             this.controls.show();
@@ -260,10 +265,10 @@ class ClapperInterface extends Gtk.Grid
             case GstPlayer.PlayerState.STOPPED:
                 this.needsTracksUpdate = true;
             case GstPlayer.PlayerState.PAUSED:
-                this.controls.togglePlayButton.image = this.controls.playImage;
+                this.controls.togglePlayButton.setPlayImage();
                 break;
             case GstPlayer.PlayerState.PLAYING:
-                this.controls.togglePlayButton.image = this.controls.pauseImage;
+                this.controls.togglePlayButton.setPauseImage();
                 if(this.needsTracksUpdate) {
                     this.needsTracksUpdate = false;
                     this.updateMediaTracks();

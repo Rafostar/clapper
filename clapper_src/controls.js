@@ -23,46 +23,12 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
-        let style;
-
         this._fullscreenMode = false;
         this.durationFormated = '00:00:00';
         this.buttonImages = [];
 
-        this.togglePlayButton = this.addButton(
-            'media-playback-pause-symbolic',
-            Gtk.IconSize.LARGE_TOOLBAR
-        );
-        this.pauseButton = this.addButton(
-            'media-playback-start-symbolic',
-            Gtk.IconSize.LARGE_TOOLBAR,
-            true
-        );
-        this.playImage = this.pauseButton.image;
-        this.pauseImage = this.togglePlayButton.image;
-
-        this.positionScale = new Gtk.Scale({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            value_pos: Gtk.PositionType.LEFT,
-            draw_value: true,
-            hexpand: true,
-        });
-        style = this.positionScale.get_style_context();
-        style.add_class('positionscale');
-
-        this.positionScale.connect(
-            'format-value', this._onPositionScaleFormatValue.bind(this)
-        );
-        this.positionScale.connect(
-            'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
-        );
-        this.positionScale.connect(
-            'button-release-event', this._onPositionScaleButtonReleaseEvent.bind(this)
-        );
-
-        this.positionAdjustment = this.positionScale.get_adjustment();
-        this.pack_start(this.positionScale, true, true, 0);
-
+        this._addTogglePlayButton();
+        this._addPositionScale();
         this.videoTracksButton = this.addPopoverButton(
             'emblem-videos-symbolic'
         );
@@ -72,32 +38,23 @@ var Controls = GObject.registerClass({
         this.subtitleTracksButton = this.addPopoverButton(
             'media-view-subtitles-symbolic'
         );
-
-        this.volumeButton = this.addPopoverButton(
-            'audio-volume-muted-symbolic'
-        );
-        this.volumeScale = new Gtk.Scale({
-            orientation: Gtk.Orientation.VERTICAL,
-            inverted: true,
-            value_pos: Gtk.PositionType.TOP,
-            draw_value: false,
-            round_digits: 2,
-            vexpand: true,
-        });
-        this.volumeScale.get_style_context().add_class('volumescale');
-        this.volumeAdjustment = this.volumeScale.get_adjustment();
-        this._prepareVolumeButton();
-
-        this.toggleFullscreenButton = this.addButton(
-            'view-fullscreen-symbolic'
-        );
+        this._addVolumeButton();
         this.unfullscreenButton = this.addButton(
             'view-restore-symbolic',
             Gtk.IconSize.SMALL_TOOLBAR,
             true
         );
-        this.fullscreenImage = this.toggleFullscreenButton.image;
-        this.unfullscreenImage = this.unfullscreenButton.image;
+
+        this.fullscreenButton = Gtk.Button.new_from_icon_name(
+            'view-fullscreen-symbolic',
+            Gtk.IconSize.SMALL_TOOLBAR
+        );
+        this.setDefaultWidgetBehaviour(this.fullscreenButton);
+        this.openMenuButton = Gtk.Button.new_from_icon_name(
+            'open-menu-symbolic',
+            Gtk.IconSize.SMALL_TOOLBAR
+        );
+        this.setDefaultWidgetBehaviour(this.openMenuButton);
 
         this.forall(this.setDefaultWidgetBehaviour);
     }
@@ -205,8 +162,69 @@ var Controls = GObject.registerClass({
         this.volumeScale.add_mark(2, Gtk.PositionType.LEFT, '200%');
     }
 
-    _prepareVolumeButton()
+    _addTogglePlayButton()
     {
+        this.togglePlayButton = this.addButton(
+            'media-playback-pause-symbolic',
+            Gtk.IconSize.LARGE_TOOLBAR
+        );
+        this.togglePlayButton.setPlayImage = () =>
+        {
+            this.togglePlayButton.image.set_from_icon_name(
+                'media-playback-start-symbolic',
+                this.togglePlayButton.image.icon_size
+            );
+        }
+        this.togglePlayButton.setPauseImage = () =>
+        {
+            this.togglePlayButton.image.set_from_icon_name(
+                'media-playback-pause-symbolic',
+                this.togglePlayButton.image.icon_size
+            );
+        }
+    }
+
+    _addPositionScale()
+    {
+        this.positionScale = new Gtk.Scale({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            value_pos: Gtk.PositionType.LEFT,
+            draw_value: true,
+            hexpand: true,
+        });
+        let style = this.positionScale.get_style_context();
+        style.add_class('positionscale');
+
+        this.positionScale.connect(
+            'format-value', this._onPositionScaleFormatValue.bind(this)
+        );
+        this.positionScale.connect(
+            'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
+        );
+        this.positionScale.connect(
+            'button-release-event', this._onPositionScaleButtonReleaseEvent.bind(this)
+        );
+
+        this.positionAdjustment = this.positionScale.get_adjustment();
+        this.pack_start(this.positionScale, true, true, 0);
+    }
+
+    _addVolumeButton()
+    {
+        this.volumeButton = this.addPopoverButton(
+            'audio-volume-muted-symbolic'
+        );
+        this.volumeScale = new Gtk.Scale({
+            orientation: Gtk.Orientation.VERTICAL,
+            inverted: true,
+            value_pos: Gtk.PositionType.TOP,
+            draw_value: false,
+            round_digits: 2,
+            vexpand: true,
+        });
+        this.volumeScale.get_style_context().add_class('volumescale');
+        this.volumeAdjustment = this.volumeScale.get_adjustment();
+
         this.volumeAdjustment.set_upper(2);
         this.volumeAdjustment.set_step_increment(0.05);
         this.volumeAdjustment.set_page_increment(0.05);

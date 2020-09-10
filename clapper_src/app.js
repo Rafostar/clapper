@@ -105,9 +105,14 @@ var App = GObject.registerClass({
             title: APP_NAME,
             show_close_button: true,
         });
+        headerBar.pack_end(this.interface.controls.openMenuButton);
+        headerBar.pack_end(this.interface.controls.fullscreenButton);
         this.interface.addHeaderBar(headerBar, APP_NAME);
-        this.interface.controls.toggleFullscreenButton.connect(
-            'clicked', this._onInterfaceToggleFullscreenClicked.bind(this)
+        this.interface.controls.fullscreenButton.connect(
+            'clicked', () => this._onInterfaceToggleFullscreenClicked(true)
+        );
+        this.interface.controls.unfullscreenButton.connect(
+            'clicked', () => this._onInterfaceToggleFullscreenClicked(false)
         );
 
         this.window.set_titlebar(this.interface.headerBar);
@@ -172,14 +177,17 @@ var App = GObject.registerClass({
         // and we need to re-add marks to the new layout
         this.interface.controls.setVolumeMarks(false);
 
-        this.interface.controls.toggleFullscreenButton.image = (isFullscreen)
-            ? this.interface.controls.unfullscreenImage
-            : this.interface.controls.fullscreenImage;
-
         if(isFullscreen) {
             this.interface.showControls(true);
             this.setHideControlsTimeout();
+            this.interface.controls.unfullscreenButton.set_sensitive(true);
+            this.interface.controls.unfullscreenButton.show();
         }
+        else {
+            this.interface.controls.unfullscreenButton.set_sensitive(false);
+            this.interface.controls.unfullscreenButton.hide();
+        }
+
         this.interface.setControlsOnVideo(isFullscreen);
         this.interface.controls.setVolumeMarks(true);
         this.interface.controls.fullscreenMode = isFullscreen;
@@ -225,14 +233,12 @@ var App = GObject.registerClass({
         }
     }
 
-    _onInterfaceToggleFullscreenClicked()
+    _onInterfaceToggleFullscreenClicked(isFsRequested)
     {
-        // we need some way to refresh toggle fullscreen button on click
-        // otherwise it does not lose the hover effect after window transition
-        // for now hide->transition->show does the job done
-        this.interface.controls.toggleFullscreenButton.hide();
+        if(this.window.isFullscreen === isFsRequested)
+            return;
+
         this.window.toggleFullscreen();
-        this.interface.controls.toggleFullscreenButton.show();
     }
 
     _onPlayerRealize()
