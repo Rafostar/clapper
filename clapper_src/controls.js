@@ -1,7 +1,10 @@
 const { GObject, Gtk } = imports.gi;
+const Debug = imports.clapper_src.debug;
 
 const CONTROLS_MARGIN = 4;
 const CONTROLS_SPACING = 4;
+
+let { debug } = Debug;
 
 var Controls = GObject.registerClass({
     Signals: {
@@ -116,6 +119,7 @@ var Controls = GObject.registerClass({
         button.osd = this.fullscreenMode;
         button.popover.add(button.popoverBox);
         button.connect('clicked', this._onPopoverButtonClicked.bind(this, button));
+        button.popoverBox.show();
 
         return button;
     }
@@ -123,27 +127,53 @@ var Controls = GObject.registerClass({
     addRadioButtons(box, array, activeId)
     {
         let group = null;
+        let children = box.get_children();
+        let lastEl = (children.length > array.length)
+            ? children.length
+            : array.length;
 
-        for(let el of array) {
-            let radioButton = new Gtk.RadioButton({
-                label: el.label,
-                group: group,
-            });
+        for(let i = 0; i < lastEl; i++) {
+            if(i >= array.length) {
+                children[i].hide();
+                debug(`hiding unused ${children[i].trackType} radioButton nr: ${i}`);
+                continue;
+            }
+
+            let el = array[i];
+            let radioButton;
+
+            if(i < children.length) {
+                radioButton = children[i];
+                debug(`reusing ${el.type} radioButton nr: ${i}`);
+            }
+            else {
+                debug(`creating new ${el.type} radioButton nr: ${i}`);
+                radioButton = new Gtk.RadioButton({
+                    group: group,
+                });
+                radioButton.connect(
+                    'toggled',
+                    this._onTrackRadioButtonToggled.bind(this, radioButton)
+                );
+                this.setDefaultWidgetBehaviour(radioButton);
+                box.add(radioButton);
+            }
+            radioButton.label = el.label;
+            debug(`radioButton label: ${radioButton.label}`);
             radioButton.trackType = el.type;
+            debug(`radioButton type: ${radioButton.trackType}`);
             radioButton.trackId = el.value;
+            debug(`radioButton track id: ${radioButton.trackId}`);
 
-            if(radioButton.trackId === activeId)
+            if(radioButton.trackId === activeId) {
                 radioButton.set_active(true);
+                debug(`activated ${el.type} radioButton nr: ${i}`);
+            }
             if(!group)
                 group = radioButton;
 
-            radioButton.connect(
-                'toggled', this._onTrackRadioButtonToggled.bind(this, radioButton)
-            );
-            this.setDefaultWidgetBehaviour(radioButton);
-            box.add(radioButton);
+            radioButton.show();
         }
-        box.show_all();
     }
 
     setDefaultWidgetBehaviour(widget)
