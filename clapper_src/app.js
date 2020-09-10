@@ -264,10 +264,8 @@ var App = GObject.registerClass({
          this.player.widget.disconnect(this.playerDrawSignal);
          this.emit('ready', true);
 
-         if(!this.playlist.length)
-            return;
-
-         this.player.set_media(this.playlist[0]);
+         if(this.playlist.length)
+            this.player.set_playlist(this.playlist);
     }
 
     _onPlayerStateChanged(self, state)

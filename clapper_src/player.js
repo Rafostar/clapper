@@ -57,8 +57,12 @@ class ClapperPlayer extends GstPlayer.Player
         this.widget = gtkglsink.widget;
         this.state = GstPlayer.PlayerState.STOPPED;
 
-        this.connect('state_changed', this._onStateChanged.bind(this));
-        this.connect('uri_loaded', this._onUriLoaded.bind(this));
+        this._playlist = [];
+        this._trackId = 0;
+
+        this.connect('state-changed', this._onStateChanged.bind(this));
+        this.connect('uri-loaded', this._onUriLoaded.bind(this));
+        this.connect('end-of-stream', this._onStreamEnded.bind(this));
         this.widget.connect('destroy', this._onWidgetDestroy.bind(this));
     }
 
@@ -81,6 +85,22 @@ class ClapperPlayer extends GstPlayer.Player
             return debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
 
         this.set_uri(uri);
+    }
+
+    set_playlist(playlist)
+    {
+        if(!Array.isArray(playlist))
+            return;
+
+        this._trackId = 0;
+        this._playlist = playlist;
+
+        this.set_media(this._playlist[0]);
+    }
+
+    get_playlist()
+    {
+        return this._playlist;
     }
 
     seek_seconds(position)
@@ -113,6 +133,14 @@ class ClapperPlayer extends GstPlayer.Player
             && this.loop.is_running()
         )
             this.loop.quit();
+    }
+
+    _onStreamEnded(player)
+    {
+        this._trackId++;
+
+        if(this._trackId < this._playlist.length)
+            this.set_media(this._playlist[this._trackId]);
     }
 
     _onUriLoaded()
