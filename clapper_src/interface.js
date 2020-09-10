@@ -2,7 +2,6 @@ const { GLib, GObject, Gtk, Gst, GstPlayer } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
 
-const HOME_DIR = GLib.get_home_dir();
 let { debug } = Debug;
 
 var Interface = GObject.registerClass(
@@ -25,6 +24,7 @@ class ClapperInterface extends Gtk.Grid
         this.needsTracksUpdate = true;
         this.revealTime = 800;
         this.headerBar = null;
+        this.defaultTitle = null;
 
         this.overlay = new Gtk.Overlay();
         this.controls = new Controls();
@@ -71,9 +71,10 @@ class ClapperInterface extends Gtk.Grid
         this.overlay.add(this._player.widget);
     }
 
-    addHeaderBar(headerBar)
+    addHeaderBar(headerBar, defaultTitle)
     {
         this.headerBar = headerBar;
+        this.defaultTitle = defaultTitle || null;
     }
 
     revealControls(isReveal)
@@ -198,17 +199,25 @@ class ClapperInterface extends Gtk.Grid
             return;
 
         let title = mediaInfo.get_title();
-        let subtitle = mediaInfo.get_uri();
+        let subtitle = mediaInfo.get_uri() || null;
 
-        if(HOME_DIR && subtitle.startsWith('file://')) {
+        if(subtitle.startsWith('file://')) {
             subtitle = GLib.filename_from_uri(subtitle)[0];
-
-            if(subtitle.startsWith(HOME_DIR))
-                subtitle = '~' + subtitle.substring(HOME_DIR.length);
+            subtitle = GLib.path_get_basename(subtitle);
         }
 
-        this.headerBar.set_title(title || 'Clapper');
-        this.headerBar.set_subtitle(subtitle || null);
+        if(!title) {
+            title = (!subtitle)
+                ? this.defaultTitle
+                : (subtitle.includes('.'))
+                ? subtitle.split('.').slice(0, -1).join('.')
+                : subtitle;
+
+            subtitle = null;
+        }
+
+        this.headerBar.set_title(title);
+        this.headerBar.set_subtitle(subtitle);
     }
 
     _onTrackChangeRequested(self, trackType, trackId)

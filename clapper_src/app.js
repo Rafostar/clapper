@@ -102,9 +102,10 @@ var App = GObject.registerClass({
 
         this.interface = new Interface();
         let headerBar = new Gtk.HeaderBar({
-            show_close_button: true
+            title: APP_NAME,
+            show_close_button: true,
         });
-        this.interface.addHeaderBar(headerBar);
+        this.interface.addHeaderBar(headerBar, APP_NAME);
         this.interface.controls.toggleFullscreenButton.connect(
             'clicked', this._onInterfaceToggleFullscreenClicked.bind(this)
         );
