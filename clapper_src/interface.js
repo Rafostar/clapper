@@ -185,16 +185,23 @@ class ClapperInterface extends Gtk.Grid
         for(let type of ['video', 'audio', 'subtitle']) {
             let currStream = this._player[`get_current_${type}_track`]();
             let activeId = (currStream) ? currStream.get_index() : -1;
+            let buttonBox = this.controls[`${type}TracksButton`].get_parent();
 
             if(currStream && type !== 'subtitle') {
                 let caps = currStream.get_caps();
                 debug(`${type} caps: ${caps.to_string()}`, 'LEVEL_INFO');
+            }
+            if(!parsedInfo[`${type}Tracks`].length) {
+                debug(`hiding popover button without contents: ${type}`);
+                buttonBox.hide();
+                continue;
             }
             this.controls.addRadioButtons(
                 this.controls[`${type}TracksButton`].popoverBox,
                 parsedInfo[`${type}Tracks`],
                 activeId
             );
+            buttonBox.show();
         }
     }
 
