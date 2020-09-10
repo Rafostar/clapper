@@ -340,12 +340,6 @@ class ClapperInterface extends Gtk.Grid
     {
         let volume = Number(volumeScale.get_value().toFixed(2));
 
-        if(volume === this.lastVolumeValue)
-            return;
-
-        this.lastVolumeValue = volume;
-        this._player.set_volume(volume);
-
         let icon = (volume <= 0)
             ? 'muted'
             : (volume <= 0.33)
@@ -358,13 +352,19 @@ class ClapperInterface extends Gtk.Grid
 
         let iconName = `audio-volume-${icon}-symbolic`;
 
-        if(this.controls.volumeButton.image.icon_name === iconName)
+        if(this.controls.volumeButton.image.icon_name !== iconName)
+        {
+            debug(`set volume icon: ${icon}`);
+            this.controls.volumeButton.image.set_from_icon_name(
+                iconName,
+                this.controls.volumeButton.image.icon_size
+            );
+        }
+
+        if(volume === this.lastVolumeValue)
             return;
 
-        debug(`set volume icon: ${icon}`);
-        this.controls.volumeButton.image.set_from_icon_name(
-            iconName,
-            this.controls.volumeButton.image.icon_size
-        );
+        this.lastVolumeValue = volume;
+        this._player.set_volume(volume);
     }
 });
