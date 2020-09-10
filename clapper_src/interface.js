@@ -142,11 +142,13 @@ class ClapperInterface extends Gtk.Grid
             switch(info.constructor) {
                 case GstPlayer.PlayerVideoInfo:
                     type = 'video';
-                    let fps = info.get_framerate();
                     text = info.get_codec() + ', ' +
                         + info.get_width() + 'x'
-                        + info.get_height() + '@'
-                        + Number((fps[0] / fps[1]).toFixed(2));
+                        + info.get_height();
+                    let fps = info.get_framerate();
+                    fps = Number((fps[0] / fps[1]).toFixed(2));
+                    if(fps)
+                        text += `@${fps}`;
                     break;
                 case GstPlayer.PlayerAudioInfo:
                     type = 'audio';
