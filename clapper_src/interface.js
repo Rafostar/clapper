@@ -1,7 +1,8 @@
-const { GObject, Gtk, Gst, GstPlayer } = imports.gi;
+const { GLib, GObject, Gtk, Gst, GstPlayer } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
 
+const HOME_DIR = GLib.get_home_dir();
 let { debug } = Debug;
 
 var Interface = GObject.registerClass(
@@ -23,6 +24,7 @@ class ClapperInterface extends Gtk.Grid
         this.lastPositionValue = 0;
         this.needsTracksUpdate = true;
         this.revealTime = 800;
+        this.headerBar = null;
 
         this.overlay = new Gtk.Overlay();
         this.controls = new Controls();
@@ -69,6 +71,11 @@ class ClapperInterface extends Gtk.Grid
         this.overlay.add(this._player.widget);
     }
 
+    addHeaderBar(headerBar)
+    {
+        this.headerBar = headerBar;
+    }
+
     revealControls(isReveal)
     {
         this.revealer.set_transition_duration(this.revealTime);
@@ -107,8 +114,8 @@ class ClapperInterface extends Gtk.Grid
     {
         let mediaInfo = this._player.get_media_info();
 
-        // titlebar from video title should be set from this (not implemented yet)
-        //let title = mediaInfo.get_title();
+        // set titlebar media title and path
+        this.updateHeaderBar(mediaInfo);
 
         // we can also check if video is "live" or "seekable" (right now unused)
         // it might be a good idea to hide position seek bar and disable seeking
@@ -183,6 +190,25 @@ class ClapperInterface extends Gtk.Grid
                 activeId
             );
         }
+    }
+
+    updateHeaderBar(mediaInfo)
+    {
+        if(!this.headerBar)
+            return;
+
+        let title = mediaInfo.get_title();
+        let subtitle = mediaInfo.get_uri();
+
+        if(HOME_DIR && subtitle.startsWith('file://')) {
+            subtitle = GLib.filename_from_uri(subtitle)[0];
+
+            if(subtitle.startsWith(HOME_DIR))
+                subtitle = '~' + subtitle.substring(HOME_DIR.length);
+        }
+
+        this.headerBar.set_title(title || 'Clapper');
+        this.headerBar.set_subtitle(subtitle || null);
     }
 
     _onTrackChangeRequested(self, trackType, trackId)
