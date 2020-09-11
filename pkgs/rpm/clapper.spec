@@ -26,7 +26,7 @@ URL:				https://github.com/Rafostar/clapper
 BuildArchitectures:	noarch
 BuildRoot:			%{_builddir}/%{name}-%{version}-build
 BuildRequires:		meson gjs
-Requires:			gjs gstreamer gstreamer1(element-glsinkbin) gstreamer1(element-gtkglsink)
+Requires:			gjs gstreamer gstreamer-plugins-base gstreamer-plugins-good-gtk
 Source0:			_service
 %if 0%{?suse_version}
 Requires:			libgstplayer-1_0-0
