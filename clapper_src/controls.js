@@ -1,4 +1,5 @@
 const { GObject, Gtk } = imports.gi;
+const Buttons = imports.clapper_src.buttons;
 const Debug = imports.clapper_src.debug;
 
 const CONTROLS_MARGIN = 4;
@@ -94,9 +95,7 @@ var Controls = GObject.registerClass({
     {
         size = size || Gtk.IconSize.SMALL_TOOLBAR;
 
-        let button = Gtk.Button.new_from_icon_name(iconName, size);
-        let box = new Gtk.Box();
-
+        let button = new Buttons.BoxedIconButton(iconName, size);
         button.margin_top = CONTROLS_MARGIN;
         button.margin_bottom = CONTROLS_MARGIN;
         button.image.defaultSize = size;
@@ -107,11 +106,8 @@ var Controls = GObject.registerClass({
         this.setDefaultWidgetBehaviour(button);
         button.get_style_context().add_class('flat');
 
-        if(!noPack) {
-            box.pack_start(button, false, false, 0);
-            this.pack_start(box, false, false, 0);
-            box.show_all();
-        }
+        if(!noPack)
+            this.pack_start(button.box, false, false, 0);
 
         this.buttonImages.push(button.image);
         return button;

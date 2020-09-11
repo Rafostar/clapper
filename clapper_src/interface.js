@@ -101,7 +101,7 @@ class ClapperInterface extends Gtk.Grid
 
         if(isOnVideo) {
             this.remove(this.controls);
-            this.controls.pack_start(this.controls.unfullscreenButton, false, false, 0);
+            this.controls.pack_start(this.controls.unfullscreenButton.box, false, false, 0);
             this.overlay.add_overlay(this.revealer);
             this.revealerBox.pack_start(this.controls, false, true, 0);
             this.revealer.show();
@@ -109,7 +109,7 @@ class ClapperInterface extends Gtk.Grid
         }
         else {
             this.revealerBox.remove(this.controls);
-            this.controls.remove(this.controls.unfullscreenButton);
+            this.controls.remove(this.controls.unfullscreenButton.box);
             this.overlay.remove(this.revealer);
             this.attach(this.controls, 0, 1, 1, 1);
             this.controls.show();
