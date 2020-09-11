@@ -5,7 +5,7 @@
 - [X] Dragging player by video (MPV)
 - [X] Switching video/audio/subtitles tracks from bottom bar (MPV)
 - [X] Over-amplification supported by default (VLC)
-- [ ] Audio visualizations (VLC)
+- [X] Audio visualizations (VLC)
 - [ ] Clock with current hour and "Ends at" time on top overlay (Kodi)
 - [ ] Auto select subtitles matching OS language (Totem)
 - [ ] Picture-in-Picture mode window

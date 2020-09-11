@@ -14,6 +14,9 @@ var Controls = GObject.registerClass({
         'track-change-requested': {
             param_types: [GObject.TYPE_STRING, GObject.TYPE_INT]
         },
+        'visualization-change-requested': {
+            param_types: [GObject.TYPE_STRING]
+        },
     }
 }, class ClapperControls extends Gtk.HBox
 {
@@ -32,6 +35,9 @@ var Controls = GObject.registerClass({
 
         this._addTogglePlayButton();
         this._addPositionScale();
+        this.visualizationsButton = this.addPopoverButton(
+            'display-projector-symbolic'
+        );
         this.videoTracksButton = this.addPopoverButton(
             'emblem-videos-symbolic'
         );
@@ -58,8 +64,11 @@ var Controls = GObject.registerClass({
             Gtk.IconSize.SMALL_TOOLBAR
         );
         this.setDefaultWidgetBehaviour(this.openMenuButton);
-
         this.forall(this.setDefaultWidgetBehaviour);
+
+        this.realizeSignal = this.connect(
+            'realize', this._onControlsRealize.bind(this)
+        );
     }
 
     set fullscreenMode(isFullscreen)
@@ -135,7 +144,7 @@ var Controls = GObject.registerClass({
         for(let i = 0; i < lastEl; i++) {
             if(i >= array.length) {
                 children[i].hide();
-                debug(`hiding unused ${children[i].trackType} radioButton nr: ${i}`);
+                debug(`hiding unused ${children[i].type} radioButton nr: ${i}`);
                 continue;
             }
 
@@ -153,19 +162,20 @@ var Controls = GObject.registerClass({
                 });
                 radioButton.connect(
                     'toggled',
-                    this._onTrackRadioButtonToggled.bind(this, radioButton)
+                    this._onRadioButtonToggled.bind(this, radioButton)
                 );
                 this.setDefaultWidgetBehaviour(radioButton);
                 box.add(radioButton);
             }
+
             radioButton.label = el.label;
             debug(`radioButton label: ${radioButton.label}`);
-            radioButton.trackType = el.type;
-            debug(`radioButton type: ${radioButton.trackType}`);
-            radioButton.trackId = el.value;
-            debug(`radioButton track id: ${radioButton.trackId}`);
+            radioButton.type = el.type;
+            debug(`radioButton type: ${radioButton.type}`);
+            radioButton.activeId = el.activeId;
+            debug(`radioButton id: ${radioButton.activeId}`);
 
-            if(radioButton.trackId === activeId) {
+            if(radioButton.activeId === activeId) {
                 radioButton.set_active(true);
                 debug(`activated ${el.type} radioButton nr: ${i}`);
             }
@@ -195,7 +205,7 @@ var Controls = GObject.registerClass({
     _addTogglePlayButton()
     {
         this.togglePlayButton = this.addButton(
-            'media-playback-pause-symbolic',
+            'media-playback-start-symbolic',
             Gtk.IconSize.LARGE_TOOLBAR
         );
         this.togglePlayButton.setPlayImage = () =>
@@ -287,16 +297,30 @@ var Controls = GObject.registerClass({
         button.popover.popup();
     }
 
-    _onTrackRadioButtonToggled(self, radioButton)
+    _onRadioButtonToggled(self, radioButton)
     {
         if(!radioButton.get_active())
             return;
 
-        this.emit(
-            'track-change-requested',
-            radioButton.trackType,
-            radioButton.trackId
-        );
+        switch(radioButton.type) {
+            case 'video':
+            case 'audio':
+            case 'subtitle':
+                this.emit(
+                    'track-change-requested',
+                    radioButton.type,
+                    radioButton.activeId
+                );
+                break;
+            case 'visualization':
+                this.emit(
+                    `${radioButton.type}-change-requested`,
+                    radioButton.activeId
+                );
+                break;
+            default:
+                break;
+        }
     }
 
     _onPositionScaleFormatValue(self, value)
@@ -315,5 +339,20 @@ var Controls = GObject.registerClass({
     {
         this.isPositionSeeking = false;
         this.emit('position-seeking-changed', this.isPositionSeeking);
+    }
+
+    _onControlsRealize()
+    {
+        this.disconnect(this.realizeSignal);
+
+        let hiddenButtons = [
+            'visualizations',
+            'videoTracks',
+            'audioTracks',
+            'subtitleTracks'
+        ];
+
+        for(let name of hiddenButtons)
+            this[`${name}Button`].hide();
     }
 });

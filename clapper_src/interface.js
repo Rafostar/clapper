@@ -67,6 +67,9 @@ class ClapperInterface extends Gtk.Grid
         this.controls.connect(
             'track-change-requested', this._onTrackChangeRequested.bind(this)
         );
+        this.controls.connect(
+            'visualization-change-requested', this._onVisualizationChangeRequested.bind(this)
+        );
 
         this.overlay.add(this._player.widget);
     }
@@ -177,28 +180,33 @@ class ClapperInterface extends Gtk.Grid
                 tracksArr[0] = {
                     label: 'Disabled',
                     type: type,
-                    value: -1
+                    activeId: -1
                 };
             }
             tracksArr.push({
                 label: text,
                 type: type,
-                value: info.get_index(),
+                activeId: info.get_index(),
             });
         }
 
         for(let type of ['video', 'audio', 'subtitle']) {
             let currStream = this._player[`get_current_${type}_track`]();
             let activeId = (currStream) ? currStream.get_index() : -1;
-            let buttonBox = this.controls[`${type}TracksButton`].get_parent();
 
             if(currStream && type !== 'subtitle') {
                 let caps = currStream.get_caps();
                 debug(`${type} caps: ${caps.to_string()}`, 'LEVEL_INFO');
             }
+            if(type === 'video') {
+                let isShowVis = (parsedInfo[`${type}Tracks`].length === 0);
+                this.showVisualizationsButton(isShowVis);
+            }
             if(!parsedInfo[`${type}Tracks`].length) {
-                debug(`hiding popover button without contents: ${type}`);
-                buttonBox.hide();
+                if(this.controls[`${type}TracksButton`].visible) {
+                    debug(`hiding popover button without contents: ${type}`);
+                    this.controls[`${type}TracksButton`].hide();
+                }
                 continue;
             }
             this.controls.addRadioButtons(
@@ -206,7 +214,10 @@ class ClapperInterface extends Gtk.Grid
                 parsedInfo[`${type}Tracks`],
                 activeId
             );
-            buttonBox.show();
+            if(!this.controls[`${type}TracksButton`].visible) {
+                debug(`showing popover button with contents: ${type}`);
+                this.controls[`${type}TracksButton`].show();
+            }
         }
     }
 
@@ -237,35 +248,101 @@ class ClapperInterface extends Gtk.Grid
         this.headerBar.set_subtitle(subtitle);
     }
 
-    _onTrackChangeRequested(self, trackType, trackId)
+    showVisualizationsButton(isShow)
+    {
+        if(isShow && !this.controls.visualizationsButton.isVisList) {
+            debug('creating visualizations list');
+            let visArr = GstPlayer.Player.visualizations_get();
+            if(!visArr.length)
+                return;
+
+            let parsedVisArr = [{
+                label: 'Disabled',
+                type: 'visualization',
+                activeId: null
+            }];
+
+            visArr.forEach(vis => {
+                parsedVisArr.push({
+                    label: vis.name[0].toUpperCase() + vis.name.substring(1),
+                    type: 'visualization',
+                    activeId: vis.name,
+                });
+            });
+
+            this.controls.addRadioButtons(
+                this.controls.visualizationsButton.popoverBox,
+                parsedVisArr,
+                null
+            );
+            this.controls.visualizationsButton.isVisList = true;
+            debug(`total visualizations: ${visArr.length}`);
+        }
+
+        if(this.controls.visualizationsButton.visible === isShow)
+            return debug('visualizations button is already visible');
+
+        let action = (isShow) ? 'show' : 'hide';
+        this.controls.visualizationsButton[action]();
+        debug(`show visualizations button: ${isShow}`);
+    }
+
+    _onTrackChangeRequested(self, type, activeId)
     {
         // reenabling audio is slow (as expected),
         // so it is better to toggle mute instead
-        if(trackType === 'audio') {
-            if(trackId < 0)
+        if(type === 'audio') {
+            if(activeId < 0)
                 return this._player.set_mute(true);
 
             if(this._player.get_mute())
                 this._player.set_mute(false);
 
-            return this._player[`set_${trackType}_track`](trackId);
+            return this._player[`set_${type}_track`](activeId);
         }
 
-        if(trackId < 0) {
+        if(activeId < 0) {
             // disabling video leaves last frame frozen,
             // so we also hide the widget
-            if(trackType === 'video')
+            if(type === 'video')
                 this._player.widget.hide();
 
-            return this._player[`set_${trackType}_track_enabled`](false);
+            return this._player[`set_${type}_track_enabled`](false);
         }
 
-        this._player[`set_${trackType}_track`](trackId);
-        this._player[`set_${trackType}_track_enabled`](true);
+        this._player[`set_${type}_track`](activeId);
+        this._player[`set_${type}_track_enabled`](true);
 
-        if(trackType === 'video' && !this._player.widget.get_visible()) {
+        if(type === 'video' && !this._player.widget.get_visible()) {
             this._player.widget.show();
             this._player.renderer.expose();
+        }
+    }
+
+    _onVisualizationChangeRequested(self, visName)
+    {
+        let isEnabled = this._player.get_visualization_enabled();
+
+        if(!visName) {
+            if(isEnabled) {
+                this._player.set_visualization_enabled(false);
+                debug('disabled visualizations');
+            }
+
+            return;
+        }
+
+        let currVis = this._player.get_current_visualization();
+
+        if(currVis === visName)
+            return;
+
+        debug(`set visualization: ${visName}`);
+        this._player.set_visualization(visName);
+
+        if(!isEnabled) {
+            this._player.set_visualization_enabled(true);
+            debug('enabled visualizations');
         }
     }
 

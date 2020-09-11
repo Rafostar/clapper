@@ -56,6 +56,7 @@ class ClapperPlayer extends GstPlayer.Player
         this.run_loop = opts.run_loop || false;
         this.widget = gtkglsink.widget;
         this.state = GstPlayer.PlayerState.STOPPED;
+        this.visualization_enabled = false;
 
         this._playlist = [];
         this._trackId = 0;
@@ -101,6 +102,20 @@ class ClapperPlayer extends GstPlayer.Player
     get_playlist()
     {
         return this._playlist;
+    }
+
+    set_visualization_enabled(value)
+    {
+        if(value === this.visualization_enabled)
+            return;
+
+        super.set_visualization_enabled(value);
+        this.visualization_enabled = value;
+    }
+
+    get_visualization_enabled()
+    {
+        return this.visualization_enabled;
     }
 
     seek_seconds(position)
