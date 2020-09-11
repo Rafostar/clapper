@@ -1,0 +1,4 @@
+clapper-0.0.0
+clapper-*.pkg.tar.*
+pkg/
+src/
