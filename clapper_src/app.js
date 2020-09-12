@@ -190,7 +190,7 @@ var App = GObject.registerClass({
 
         this.interface.setControlsOnVideo(isFullscreen);
         this.interface.controls.setVolumeMarks(true);
-        this.interface.controls.fullscreenMode = isFullscreen;
+        this.interface.controls.setFullscreenMode(isFullscreen);
     }
 
     _onWindowKeyPressEvent(self, event)

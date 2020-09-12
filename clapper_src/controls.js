@@ -30,9 +30,9 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
-        this._fullscreenMode = false;
+        this.fullscreenMode = false;
         this.durationFormated = '00:00:00';
-        this.buttonImages = [];
+        this.buttonsArr = [];
 
         this._addTogglePlayButton();
         this._addPositionScale();
@@ -71,59 +71,49 @@ var Controls = GObject.registerClass({
         );
     }
 
-    set fullscreenMode(isFullscreen)
+    pack_start(widget, expand, fill, padding)
     {
-        if(isFullscreen === this._fullscreenMode)
-            return;
+        if(
+            widget.box
+            && widget.box.constructor
+            && widget.box.constructor === Gtk.Box
+        )
+            widget = widget.box;
 
-        for(let image of this.buttonImages) {
-            image.icon_size = (isFullscreen)
-                ? image.fullscreenSize
-                : image.defaultSize;
-        }
-
-        this._fullscreenMode = isFullscreen;
+        super.pack_start(widget, expand, fill, padding);
     }
 
-    get fullscreenMode()
+    setFullscreenMode(isFullscreen)
     {
-        return this._fullscreenMode;
+        if(isFullscreen === this.fullscreenMode)
+            return;
+
+        for(let button of this.buttonsArr)
+            button.setFullscreenMode(isFullscreen);
+
+        this.fullscreenMode = isFullscreen;
     }
 
     addButton(iconName, size, noPack)
     {
-        size = size || Gtk.IconSize.SMALL_TOOLBAR;
-
-        let button = new Buttons.BoxedIconButton(iconName, size);
-        button.margin_top = CONTROLS_MARGIN;
-        button.margin_bottom = CONTROLS_MARGIN;
-        button.image.defaultSize = size;
-        button.image.fullscreenSize = (size === Gtk.IconSize.SMALL_TOOLBAR)
-            ? Gtk.IconSize.LARGE_TOOLBAR
-            : Gtk.IconSize.DND;
-
-        this.setDefaultWidgetBehaviour(button);
-        button.get_style_context().add_class('flat');
+        let button = new Buttons.BoxedIconButton(
+            iconName, size, this.fullscreenMode
+        );
 
         if(!noPack)
-            this.pack_start(button.box, false, false, 0);
+            this.pack_start(button, false, false, 0);
 
-        this.buttonImages.push(button.image);
+        this.buttonsArr.push(button);
         return button;
     }
 
     addPopoverButton(iconName, size)
     {
-        let button = this.addButton(iconName, size);
-
-        button.popover = new Gtk.Popover({
-            relative_to: button.get_parent()
-        });
-        button.popoverBox = new Gtk.VBox();
-        button.osd = this.fullscreenMode;
-        button.popover.add(button.popoverBox);
-        button.connect('clicked', this._onPopoverButtonClicked.bind(this, button));
-        button.popoverBox.show();
+        let button = new Buttons.BoxedPopoverButton(
+            iconName, size, this.fullscreenMode
+        );
+        this.pack_start(button, false, false, 0);
+        this.buttonsArr.push(button);
 
         return button;
     }
@@ -280,16 +270,6 @@ var Controls = GObject.registerClass({
 	let seconds = ('0' + Math.floor(time)).slice(-2);
 
         return `${hours}:${minutes}:${seconds}`;
-    }
-
-    _onPopoverButtonClicked(self, button)
-    {
-        if(button.osd !== this.fullscreenMode) {
-            let action = (this.fullscreenMode) ? 'add_class' : 'remove_class';
-            button.popover.get_style_context()[action]('osd');
-            button.osd = this.fullscreenMode;
-        }
-        button.popover.popup();
     }
 
     _onRadioButtonToggled(self, radioButton)
