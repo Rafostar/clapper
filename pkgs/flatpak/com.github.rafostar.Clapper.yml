@@ -13,10 +13,7 @@ finish-args:
   - --share=network
   - --env=GST_PLUGIN_PATH=/app/lib/codecs/lib/gstreamer-1.0
 
-# maybe add additinal codecs?
-
 modules:
-  # gstreamer from the gnome runtime is outdated, maybe upgrade all modules?
   - name: gst-vaapi
     buildsystem: meson
     sources:
