@@ -82,15 +82,38 @@ class ClapperPlayer extends GstPlayer.Player
 
         debug(`parsed source to URI: ${uri}`);
 
-        if(!Gio.file_new_for_uri(uri).query_exists(null))
+        let file = Gio.file_new_for_uri(uri);
+
+        if(!file.query_exists(null))
             return debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
+
+        if(file.get_path().endsWith('.claps'))
+            return this.load_playlist_file(file);
 
         this.set_uri(uri);
     }
 
+    load_playlist_file(file)
+    {
+        let stream = new Gio.DataInputStream({
+            base_stream: file.read(null)
+        });
+        let plist = [];
+        let line;
+
+        while((line = stream.read_line(null)[0])) {
+            line = String(line);
+            debug(`new playlist item: ${line}`);
+            plist.push(line);
+        }
+
+        stream.close(null);
+        this.set_playlist(plist);
+    }
+
     set_playlist(playlist)
     {
-        if(!Array.isArray(playlist))
+        if(!Array.isArray(playlist) || !playlist.length)
             return;
 
         this._trackId = 0;
