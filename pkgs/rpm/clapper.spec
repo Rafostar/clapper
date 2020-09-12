@@ -19,22 +19,22 @@
 
 Name:				clapper
 Version:			0.0.0
-Release:			0man
+Release:			0
 Summary:			A GNOME media player
 License:			GPL-3.0
 URL:				https://github.com/Rafostar/clapper
 BuildArchitectures:	noarch
 BuildRoot:			%{_builddir}/%{name}-%{version}-build
 BuildRequires:		meson gjs
-Requires:			gjs gstreamer gstreamer-plugins-base gstreamer-plugins-good-gtk
+Requires:			gjs gstreamer
 Source0:			_service
 %if 0%{?suse_version}
-Requires:			libgstplayer-1_0-0
+Requires:			gstreamer-plugins-base gstreamer-plugins-good-gtk libgstplayer-1_0-0
 Recommends:			gstreamer-plugins-vaapi
 %endif
 %if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
 BuildRequires:		glibc-all-langpacks
-Requires:			gstreamer1-plugins-bad-free
+Requires:			gstreamer1-plugins-base gstreamer1-plugins-good-gtk gstreamer1-plugins-bad-free
 Recommends:			gstreamer1-vaapi
 %endif
 
