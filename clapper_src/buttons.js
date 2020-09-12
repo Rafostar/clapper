@@ -14,6 +14,8 @@ class BoxedIconButton extends Gtk.Button
 
         this.box = new Gtk.Box();
         this.box.pack_start(this, false, false, 0);
+
+        super.show();
     }
 
     get visible()

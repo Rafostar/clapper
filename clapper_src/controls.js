@@ -54,7 +54,6 @@ var Controls = GObject.registerClass({
             Gtk.IconSize.SMALL_TOOLBAR,
             true
         );
-
         this.fullscreenButton = Gtk.Button.new_from_icon_name(
             'view-fullscreen-symbolic',
             Gtk.IconSize.SMALL_TOOLBAR
