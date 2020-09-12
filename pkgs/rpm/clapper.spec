@@ -23,9 +23,9 @@ Release:			0
 Summary:			A GNOME media player
 License:			GPL-3.0
 URL:				https://github.com/Rafostar/clapper
-BuildArchitectures:	noarch
+BuildArchitectures:		noarch
 BuildRoot:			%{_builddir}/%{name}-%{version}-build
-BuildRequires:		meson gjs
+BuildRequires:			meson gjs
 Requires:			gjs gstreamer
 Source0:			_service
 %if 0%{?suse_version}
