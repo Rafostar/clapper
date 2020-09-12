@@ -11,6 +11,7 @@ pkgbase = clapper-git
 	depends = gst-plugins-base-libs
 	depends = gst-plugin-gtk
 	depends = gst-plugins-bad-libs
+	optdepends = gst-libav: Additional Codecs,
 	optdepends = gstreamer-vaapi: Hardware acceleration
 	provides = clapper
 	source = clapper-0.0.0::git+https://github.com/Rafostar/clapper.git
