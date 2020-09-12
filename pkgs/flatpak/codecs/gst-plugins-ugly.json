@@ -1,0 +1,19 @@
+{
+    "name": "gst-plugins-ugly",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dmpeg2dec=enabled"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-ugly.git",
+            "tag": "1.16.2",
+            "commit": "4b2943ee2788331e4000f0f7e226cd5ce2c135a4"
+        }
+    ],
+    "post-install": [
+        "mkdir -p /app/lib/codecs/lib/gstreamer-1.0",
+        "mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0"
+    ]
+}
