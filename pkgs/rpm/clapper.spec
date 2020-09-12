@@ -26,15 +26,15 @@ URL:				https://github.com/Rafostar/clapper
 BuildArchitectures:		noarch
 BuildRoot:			%{_builddir}/%{name}-%{version}-build
 BuildRequires:			meson gjs
-Requires:			gjs gstreamer
+Requires:			gjs
 Source0:			_service
 %if 0%{?suse_version}
-Requires:			gstreamer-plugins-base gstreamer-plugins-good-gtk libgstplayer-1_0-0
-Recommends:			gstreamer-plugins-vaapi
+Requires:			gstreamer gstreamer-plugins-base gstreamer-plugins-good-gtk libgstplayer-1_0-0
+Recommends:			gstreamer-plugins-vaapi gstreamer-plugins-libav
 %endif
 %if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
 BuildRequires:		glibc-all-langpacks
-Requires:			gstreamer1-plugins-base gstreamer1-plugins-good-gtk gstreamer1-plugins-bad-free
+Requires:			gstreamer1 gstreamer1-plugins-base gstreamer1-plugins-good-gtk gstreamer1-plugins-bad-free
 Recommends:			gstreamer1-vaapi
 %endif
 
