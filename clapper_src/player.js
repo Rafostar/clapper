@@ -60,6 +60,7 @@ class ClapperPlayer extends GstPlayer.Player
 
         this._playlist = [];
         this._trackId = 0;
+        this.playlist_ext = opts.playlist_ext || 'claps';
 
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
@@ -84,10 +85,17 @@ class ClapperPlayer extends GstPlayer.Player
 
         let file = Gio.file_new_for_uri(uri);
 
-        if(!file.query_exists(null))
-            return debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
+        if(!file.query_exists(null)) {
+            debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
+            this._trackId++;
 
-        if(file.get_path().endsWith('.claps'))
+            if(this._playlist.length <= this._trackId)
+                return debug('set media reached end of playlist');
+
+            return this.set_media(this._playlist[this._trackId]);
+        }
+
+        if(file.get_path().endsWith(`.${this.playlist_ext}`))
             return this.load_playlist_file(file);
 
         this.set_uri(uri);
@@ -98,17 +106,17 @@ class ClapperPlayer extends GstPlayer.Player
         let stream = new Gio.DataInputStream({
             base_stream: file.read(null)
         });
-        let plist = [];
+        let playlist = [];
         let line;
 
         while((line = stream.read_line(null)[0])) {
             line = String(line);
             debug(`new playlist item: ${line}`);
-            plist.push(line);
+            playlist.push(line);
         }
 
         stream.close(null);
-        this.set_playlist(plist);
+        this.set_playlist(playlist);
     }
 
     set_playlist(playlist)
