@@ -38,6 +38,8 @@ class ClapperPlayer extends GstPlayer.Player
         this.dispatcher = dispatcher;
         this.renderer = renderer;
 
+        this.gstRegistry = Gst.Registry.get();
+
         this._playerSignals = [];
         this._widgetSignals = [];
 
@@ -170,6 +172,20 @@ class ClapperPlayer extends GstPlayer.Player
     {
         let pipeline = this.get_pipeline();
         pipeline.subtitle_font_desc = desc;
+    }
+
+    set_codec_rank(codec, rank)
+    {
+        debug(`changing rank of codec: ${codec}`);
+
+        let feature = this.gstRegistry.lookup_feature(codec);
+        if(!feature)
+            return debug(`codec unavailable: ${codec}`);
+
+        let oldRank = feature.get_rank();
+        feature.set_rank(rank);
+
+        debug(`changed rank: ${oldRank} -> ${rank} for ${codec}`);
     }
 
     connect(signal, fn)
