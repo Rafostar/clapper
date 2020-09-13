@@ -146,25 +146,27 @@ var App = GObject.registerClass({
         this.player.connect('error', this._onPlayerError.bind(this));
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 
-        this.player.widget.connect(
+        this.player.connectWidget(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
-        this.player.widget.connect(
+        this.player.connectWidget(
             'scroll-event', this._onPlayerScrollEvent.bind(this)
         );
-        this.player.widget.connect(
+        this.player.connectWidget(
             'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
         );
-        this.player.widget.connect(
+        this.player.connectWidget(
             'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
         );
-        this.player.widget.connect(
+        this.player.connectWidget(
             'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
-        this.playerRealizeSignal = this.player.widget.connect(
+
+        /* Widget signals that are disconnected after first run */
+        this._playerRealizeSignal = this.player.widget.connect(
             'realize', this._onPlayerRealize.bind(this)
         );
-        this.playerDrawSignal = this.player.widget.connect(
+        this._playerDrawSignal = this.player.widget.connect(
             'draw', this._onPlayerDraw.bind(this)
         );
 
@@ -226,7 +228,7 @@ var App = GObject.registerClass({
                 break;
             case Gdk.KEY_q:
             case Gdk.KEY_Q:
-                this.quit();
+                this.window.destroy();
                 break;
             default:
                 break;
@@ -243,7 +245,7 @@ var App = GObject.registerClass({
 
     _onPlayerRealize()
     {
-        this.player.widget.disconnect(this.playerRealizeSignal);
+        this.player.widget.disconnect(this._playerRealizeSignal);
         this.player.renderer.expose();
 
         let display = this.player.widget.get_display();
@@ -261,7 +263,7 @@ var App = GObject.registerClass({
 
     _onPlayerDraw(self, data)
     {
-         this.player.widget.disconnect(this.playerDrawSignal);
+         this.player.widget.disconnect(this._playerDrawSignal);
          this.emit('ready', true);
 
          if(this.playlist.length)

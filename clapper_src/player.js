@@ -38,6 +38,9 @@ class ClapperPlayer extends GstPlayer.Player
         this.dispatcher = dispatcher;
         this.renderer = renderer;
 
+        this._playerSignals = [];
+        this._widgetSignals = [];
+
         let config = this.get_config();
 
         for(let setting of Object.keys(GSTPLAYER_DEFAULTS)) {
@@ -65,7 +68,7 @@ class ClapperPlayer extends GstPlayer.Player
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
-        this.widget.connect('destroy', this._onWidgetDestroy.bind(this));
+        this.connectWidget('destroy', this._onWidgetDestroy.bind(this));
     }
 
     set_media(source)
@@ -169,6 +172,16 @@ class ClapperPlayer extends GstPlayer.Player
         pipeline.subtitle_font_desc = desc;
     }
 
+    connect(signal, fn)
+    {
+        this._playerSignals.push(super.connect(signal, fn));
+    }
+
+    connectWidget(signal, fn)
+    {
+        this._widgetSignals.push(this.widget.connect(signal, fn));
+    }
+
     _onStateChanged(player, state)
     {
         this.state = state;
@@ -202,6 +215,12 @@ class ClapperPlayer extends GstPlayer.Player
 
     _onWidgetDestroy()
     {
+        while(this._widgetSignals.length)
+            this.widget.disconnect(this._widgetSignals.pop());
+
+        while(this._playerSignals.length)
+            this.disconnect(this._playerSignals.pop());
+
         if(this.state !== GstPlayer.PlayerState.STOPPED)
             this.stop();
     }
