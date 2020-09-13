@@ -110,7 +110,7 @@ class ClapperPlayer extends GstPlayer.Player
         let line;
 
         while((line = stream.read_line(null)[0])) {
-            line = String(line);
+            line = String(line).trim();
             debug(`new playlist item: ${line}`);
             playlist.push(line);
         }
