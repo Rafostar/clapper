@@ -1,0 +1,41 @@
+app-id: com.github.rafostar.Clapper
+runtime: org.gnome.Platform
+runtime-version: 3.36
+sdk: org.gnome.Sdk
+command: com.github.rafostar.Clapper
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=xdg-videos
+  - --socket=pulseaudio
+  - --share=network
+  - --env=GST_PLUGIN_PATH=/app/lib/codecs/lib/gstreamer-1.0
+
+modules:
+  - name: gst-vaapi
+    buildsystem: meson
+    sources:
+      - type: git
+        url: git://anongit.freedesktop.org/gstreamer/gstreamer-vaapi
+        tag: 1.16.2
+    post-install:
+      - mkdir -p /app/lib/codecs/lib/gstreamer-1.0
+      - mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0
+  #- codecs/liba52.json
+  #- codecs/libmpeg2.json
+  #- codecs/gst-plugins-ugly.json
+  #- codecs/libdvdcss.json
+  #- codecs/libdvdread.json
+  #- codecs/libdvdnav.json
+  #- codecs/libass.json
+  #- codecs/ffmpeg.json
+  - codecs/gst-libav.json
+  #- codecs/gst-plugins-bad.json
+  - name: clapper
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/Rafostar/clapper.git
+        commit: 6938f014332562e1b7c8f22bf755338268b98d5f

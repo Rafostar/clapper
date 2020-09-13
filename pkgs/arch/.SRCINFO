@@ -1,0 +1,21 @@
+pkgbase = clapper-git
+	pkgdesc = A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for Gtk apps.
+	pkgver = 0.0.0
+	pkgrel = 1
+	url = https://github.com/Rafostar/clapper
+	arch = any
+	license = GPL-3.0
+	makedepends = meson
+	makedepends = gjs
+	depends = gjs
+	depends = gst-plugins-base-libs
+	depends = gst-plugin-gtk
+	depends = gst-plugins-bad-libs
+	optdepends = gst-libav: Additional Codecs,
+	optdepends = gstreamer-vaapi: Hardware acceleration
+	provides = clapper
+	source = clapper-0.0.0::git+https://github.com/Rafostar/clapper.git
+	md5sums = SKIP
+
+pkgname = clapper-git
+
