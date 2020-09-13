@@ -39,7 +39,7 @@ Recommends:			gstreamer1-vaapi
 %endif
 
 %description
-A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for Gtk apps.
+A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps.
 
 %prep
 %setup -q -n %_sourcedir/%name-%version -T -D

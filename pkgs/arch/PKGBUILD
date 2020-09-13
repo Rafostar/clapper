@@ -21,7 +21,7 @@
 pkgname=clapper-git
 pkgver=0.0.0
 pkgrel=1
-pkgdesc="A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for Gtk apps."
+pkgdesc="A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps."
 arch=(any)
 url="https://github.com/Rafostar/clapper"
 license=("GPL-3.0")

@@ -1,5 +1,5 @@
 pkgbase = clapper-git
-	pkgdesc = A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for Gtk apps.
+	pkgdesc = A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps.
 	pkgver = 0.0.0
 	pkgrel = 1
 	url = https://github.com/Rafostar/clapper
