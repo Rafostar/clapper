@@ -36,6 +36,16 @@ sudo meson install -C builddir
 ## Packages
 The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats.
 
+### openSUSE, SLE & Fedora (rpm)
+Prebuilt packagages are available here: [software.opensuse.org//download.html?project=home:sp1rit&package=clapper](https://software.opensuse.org//download.html?project=home%3Asp1rit&package=clapper) ([See status](https://build.opensuse.org/package/show/home:sp1rit/clapper))
+
+### Arch Linux
+You can get clapper from the AUR: [clapper-git](https://aur.archlinux.org/packages/clapper-git), or
+```
+cd pkgs/arch
+makepkg -si
+```
+
 ## Hardware acceleration
 Using hardware acceleration is highly recommended. As stated in `GStreamer` wiki:
 ```
