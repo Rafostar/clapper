@@ -19,12 +19,18 @@ com.github.rafostar.Clapper "music.claps"
 And since the playlist is a normal text file with filepaths only, you can always edit it later in any text editor. Easy, right?
 
 ## Requirements
-Clapper uses `GStreamer` bindings from `GI` repository, so if your repo ships them as separate package, they must be installed first.
+Clapper uses `GStreamer` bindings from `GI` repository, so if your distro ships them as separate package, they must be installed first.
 Additionally Clapper requires these `GStreamer` elements:
 * [gtkglsink](https://gstreamer.freedesktop.org/documentation/gtk/gtkglsink.html)
 * [glsinkbin](https://gstreamer.freedesktop.org/documentation/opengl/glsinkbin.html)
 
 Other required plugins (codecs) depend on video format.
+
+Recommended additional packages you should install manually via package manager:
+* `gstreamer-libav` - codecs required to play most videos
+* `gstreamer-vaapi` - hardware acceleration
+
+Please note that packages naming varies by distro.
 
 ## Installation
 Run in terminal:
@@ -33,18 +39,62 @@ meson builddir --prefix=/usr/local
 sudo meson install -C builddir
 ```
 
-## Packages
-The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats.
+Additional GStreamer elements installation:
+<details>
+  <summary>Fedora</summary>
 
-### openSUSE, SLE & Fedora (rpm)
-Prebuilt packagages are available here: [software.opensuse.org//download.html?project=home:sp1rit&package=clapper](https://software.opensuse.org//download.html?project=home%3Asp1rit&package=clapper) ([See status](https://build.opensuse.org/package/show/home:sp1rit/clapper))
-
-### Arch Linux
-You can get clapper from the AUR: [clapper-git](https://aur.archlinux.org/packages/clapper-git), or
+Enable RPM Fusion and run:
+```shell
+sudo dnf install \
+  gstreamer1-plugins-base \
+  gstreamer1-plugins-good-gtk \
+  gstreamer1-libav \
+  gstreamer1-vaapi
 ```
+</details>
+
+<details>
+  <summary>openSUSE</summary>
+
+```shell
+sudo zypper install \
+  gstreamer-plugins-base \
+  gstreamer-plugins-good \
+  gstreamer-plugins-libav \
+  gstreamer-plugins-vaapi
+```
+</details>
+
+<details>
+  <summary>Arch Linux</summary>
+
+```shell
+sudo pacman -S \
+  gst-plugins-base \
+  gst-plugin-gtk \
+  gst-libav \
+  gstreamer-vaapi
+```
+</details>
+
+## Packages
+The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
+<details>
+  <summary>Fedora, openSUSE & SLE (rpm)</summary>
+  
+Pre-built packages are available here:<br>
+[software.opensuse.org//download.html?project=home:sp1rit&package=clapper](https://software.opensuse.org//download.html?project=home%3Asp1rit&package=clapper) ([See status](https://build.opensuse.org/package/show/home:sp1rit/clapper))
+</details>
+
+<details>
+<summary>Arch Linux</summary>
+  
+You can get clapper from the AUR: [clapper-git](https://aur.archlinux.org/packages/clapper-git), or
+```shell
 cd pkgs/arch
 makepkg -si
 ```
+</details>
 
 ## Hardware acceleration
 Using hardware acceleration is highly recommended. As stated in `GStreamer` wiki:
