@@ -26,19 +26,22 @@ class ClapperInterface extends Gtk.Grid
         this.headerBar = null;
         this.defaultTitle = null;
 
+        this.videoBox = new Gtk.Box();
         this.overlay = new Gtk.Overlay();
-        this.controls = new Controls();
         this.revealer = new Gtk.Revealer({
             transition_duration: this.revealTime,
             transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
             valign: Gtk.Align.END,
         });
         this.revealerBox = new Gtk.Box();
-        let revealerContext = this.revealerBox.get_style_context();
-        revealerContext.add_class('osd');
+        this.controls = new Controls();
 
+        this.videoBox.get_style_context().add_class('videobox');
+        this.revealerBox.get_style_context().add_class('osd');
+
+        this.videoBox.pack_start(this.overlay, true, true, 0);
         this.revealer.add(this.revealerBox);
-        this.attach(this.overlay, 0, 0, 1, 1);
+        this.attach(this.videoBox, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
     }
 
@@ -307,9 +310,9 @@ class ClapperInterface extends Gtk.Grid
 
         if(activeId < 0) {
             // disabling video leaves last frame frozen,
-            // so we also hide the widget
+            // so we hide it by making it transparent
             if(type === 'video')
-                this._player.widget.hide();
+                this._player.widget.set_opacity(0);
 
             return this._player[`set_${type}_track_enabled`](false);
         }
@@ -317,8 +320,8 @@ class ClapperInterface extends Gtk.Grid
         this._player[`set_${type}_track`](activeId);
         this._player[`set_${type}_track_enabled`](true);
 
-        if(type === 'video' && !this._player.widget.get_visible()) {
-            this._player.widget.show();
+        if(type === 'video' && !this._player.widget.opacity) {
+            this._player.widget.set_opacity(1);
             this._player.renderer.expose();
         }
     }

@@ -21,6 +21,9 @@ scale marks {
   min-width: 18px;
   min-height: 18px;
 }
+.videobox {
+  background: black;
+}
 
 /* Position Scale */
 .positionscale value {
