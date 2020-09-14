@@ -150,9 +150,6 @@ var App = GObject.registerClass({
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
         this.player.connectWidget(
-            'scroll-event', this._onPlayerScrollEvent.bind(this)
-        );
-        this.player.connectWidget(
             'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
         );
         this.player.connectWidget(
@@ -212,12 +209,12 @@ var App = GObject.registerClass({
                 bool = true;
             case Gdk.KEY_Left:
                 // disabled due to missing "seek on drop" support
-                //this._handleScaleIncrement('position', bool);
+                //this.interface.controls.handleScaleIncrement('position', bool);
                 break;
             case Gdk.KEY_Up:
                 bool = true;
             case Gdk.KEY_Down:
-                this._handleScaleIncrement('volume', bool);
+                this.interface.controls.handleScaleIncrement('volume', bool);
                 break;
             case Gdk.KEY_F11:
                 this.window.toggleFullscreen();
@@ -338,46 +335,6 @@ var App = GObject.registerClass({
             default:
                 break;
         }
-    }
-
-    _onPlayerScrollEvent(self, event)
-    {
-        let [res, direction] = event.get_scroll_direction();
-        if(!res) return;
-
-        let type = 'volume';
-
-        switch(direction) {
-            case Gdk.ScrollDirection.RIGHT:
-            case Gdk.ScrollDirection.LEFT:
-                type = 'position';
-            case Gdk.ScrollDirection.UP:
-            case Gdk.ScrollDirection.DOWN:
-                let isUp = (
-                    direction === Gdk.ScrollDirection.UP
-                    || direction === Gdk.ScrollDirection.RIGHT
-                );
-                this._handleScaleIncrement(type, isUp);
-                break;
-            default:
-                break;
-        }
-    }
-
-    _handleScaleIncrement(type, isUp)
-    {
-        let value = this.interface.controls[`${type}Scale`].get_value();
-        let maxValue = this.interface.controls[`${type}Adjustment`].get_upper();
-        let increment = this.interface.controls[`${type}Adjustment`].get_page_increment();
-
-        value += (isUp) ? increment : -increment;
-        value = (value < 0)
-            ? 0
-            : (value > maxValue)
-            ? maxValue
-            : value;
-
-        this.interface.controls[`${type}Scale`].set_value(value);
     }
 
     _onPlayerEnterNotifyEvent(self, event)

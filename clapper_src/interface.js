@@ -52,6 +52,10 @@ class ClapperInterface extends Gtk.Grid
         this._player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this._player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
 
+        this._player.connectWidget(
+            'scroll-event', (self, event) => this.controls._onScrollEvent(event)
+        );
+
         this.controls.togglePlayButton.connect(
             'clicked', this._onControlsTogglePlayClicked.bind(this)
         );

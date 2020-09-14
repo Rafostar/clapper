@@ -1,4 +1,4 @@
-const { GObject, Gtk } = imports.gi;
+const { GObject, Gdk, Gtk } = imports.gi;
 const Buttons = imports.clapper_src.buttons;
 const Debug = imports.clapper_src.debug;
 
@@ -187,6 +187,22 @@ var Controls = GObject.registerClass({
         this.volumeScale.add_mark(2, Gtk.PositionType.LEFT, '200%');
     }
 
+    handleScaleIncrement(type, isUp)
+    {
+        let value = this[`${type}Scale`].get_value();
+        let maxValue = this[`${type}Adjustment`].get_upper();
+        let increment = this[`${type}Adjustment`].get_page_increment();
+
+        value += (isUp) ? increment : -increment;
+        value = (value < 0)
+            ? 0
+            : (value > maxValue)
+            ? maxValue
+            : value;
+
+        this[`${type}Scale`].set_value(value);
+    }
+
     _addTogglePlayButton()
     {
         this.togglePlayButton = this.addButton(
@@ -238,6 +254,10 @@ var Controls = GObject.registerClass({
     {
         this.volumeButton = this.addPopoverButton(
             'audio-volume-muted-symbolic'
+        );
+        this.volumeButton.add_events(Gdk.EventMask.SCROLL_MASK);
+        this.volumeButton.connect(
+            'scroll-event', (self, event) => this._onScrollEvent(event)
         );
         this.volumeScale = new Gtk.Scale({
             orientation: Gtk.Orientation.VERTICAL,
@@ -329,5 +349,29 @@ var Controls = GObject.registerClass({
 
         for(let name of hiddenButtons)
             this[`${name}Button`].hide();
+    }
+
+    _onScrollEvent(event)
+    {
+        let [res, direction] = event.get_scroll_direction();
+        if(!res) return;
+
+        let type = 'volume';
+
+        switch(direction) {
+            case Gdk.ScrollDirection.RIGHT:
+            case Gdk.ScrollDirection.LEFT:
+                type = 'position';
+            case Gdk.ScrollDirection.UP:
+            case Gdk.ScrollDirection.DOWN:
+                let isUp = (
+                    direction === Gdk.ScrollDirection.UP
+                    || direction === Gdk.ScrollDirection.RIGHT
+                );
+                this.handleScaleIncrement(type, isUp);
+                break;
+            default:
+                break;
+        }
     }
 });
