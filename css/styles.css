@@ -24,6 +24,23 @@ scale marks {
 .videobox {
   background: black;
 }
+.reavealertop {
+  min-height: 100px;
+  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.4);
+  font-size: 32px;
+  font-weight: 500;
+  background: transparent;
+}
+.osdtime {
+  margin-top: 0px;
+  font-size: 40px;
+  font-weight: 700;
+}
+.osdendtime {
+  margin-top: 42px;
+  font-size: 24px;
+  font-weight: 600;
+}
 
 /* Position Scale */
 .positionscale value {

@@ -1,4 +1,4 @@
-const { GLib, GObject, Gtk, Gst, GstPlayer } = imports.gi;
+const { Gdk, GLib, GObject, Gtk, Gst, GstPlayer } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
 
@@ -26,23 +26,64 @@ class ClapperInterface extends Gtk.Grid
         this.headerBar = null;
         this.defaultTitle = null;
 
+        let initTime = GLib.DateTime.new_now_local().format('%X');
+        this.timeFormat = (initTime.length > 8)
+            ? '%I:%M %p'
+            : '%H:%M';
+
         this.videoBox = new Gtk.Box();
         this.overlay = new Gtk.Overlay();
-        this.revealer = new Gtk.Revealer({
+        this.revealerTop = new Gtk.Revealer({
+            transition_duration: this.revealTime,
+            transition_type: Gtk.RevealerTransitionType.CROSSFADE,
+            valign: Gtk.Align.START,
+        });
+        this.revealerBottom = new Gtk.Revealer({
             transition_duration: this.revealTime,
             transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
             valign: Gtk.Align.END,
         });
-        this.revealerBox = new Gtk.Box();
+        this.revealerGridTop = new Gtk.Grid();
+        this.revealerBoxBottom = new Gtk.Box();
         this.controls = new Controls();
 
+        this.fsTitle = new Gtk.Label({
+            expand: true,
+            margin_left: 12,
+            xalign: 0,
+            yalign: 0.22,
+        });
+
+        let timeLabelOpts = {
+            margin_right: 10,
+            xalign: 1,
+            yalign: 0,
+        };
+        this.fsTime = new Gtk.Label(timeLabelOpts);
+        this.fsEndTime = new Gtk.Label(timeLabelOpts);
+
+        this.revealerGridTop.attach(this.fsTitle, 0, 0, 1, 1);
+        this.revealerGridTop.attach(this.fsTime, 1, 0, 1, 1);
+        this.revealerGridTop.attach(this.fsEndTime, 1, 0, 1, 1);
+
         this.videoBox.get_style_context().add_class('videobox');
-        this.revealerBox.get_style_context().add_class('osd');
+        let revealerGridTopContext = this.revealerGridTop.get_style_context();
+        revealerGridTopContext.add_class('osd');
+        revealerGridTopContext.add_class('reavealertop');
+        this.revealerBoxBottom.get_style_context().add_class('osd');
+
+        this.fsTime.get_style_context().add_class('osdtime');
+        this.fsEndTime.get_style_context().add_class('osdendtime');
 
         this.videoBox.pack_start(this.overlay, true, true, 0);
-        this.revealer.add(this.revealerBox);
+        this.revealerBottom.add(this.revealerBoxBottom);
+        this.revealerTop.add(this.revealerGridTop);
         this.attach(this.videoBox, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
+
+        this.revealerTop.add_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+        this.revealerTop.show_all();
+        this.revealerBottom.show_all();
     }
 
     addPlayer(player)
@@ -89,16 +130,18 @@ class ClapperInterface extends Gtk.Grid
 
     revealControls(isReveal)
     {
-        this.revealer.set_transition_duration(this.revealTime);
-        this.revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_UP);
-        this.revealer.set_reveal_child(isReveal);
+        for(let pos of ['Bottom', 'Top']) {
+            this[`revealer${pos}`].set_transition_duration(this.revealTime);
+            this[`revealer${pos}`].set_reveal_child(isReveal);
+        }
     }
 
     showControls(isShow)
     {
-        this.revealer.set_transition_duration(0);
-        this.revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
-        this.revealer.set_reveal_child(isShow);
+        for(let pos of ['Bottom', 'Top']) {
+            this[`revealer${pos}`].set_transition_duration(0);
+            this[`revealer${pos}`].set_reveal_child(isShow);
+        }
     }
 
     setControlsOnVideo(isOnVideo)
@@ -109,17 +152,16 @@ class ClapperInterface extends Gtk.Grid
         if(isOnVideo) {
             this.remove(this.controls);
             this.controls.pack_start(this.controls.unfullscreenButton.box, false, false, 0);
-            this.overlay.add_overlay(this.revealer);
-            this.revealerBox.pack_start(this.controls, false, true, 0);
-            this.revealer.show();
-            this.revealerBox.show();
+            this.overlay.add_overlay(this.revealerBottom);
+            this.overlay.add_overlay(this.revealerTop);
+            this.revealerBoxBottom.pack_start(this.controls, false, true, 0);
         }
         else {
-            this.revealerBox.remove(this.controls);
+            this.revealerBoxBottom.remove(this.controls);
             this.controls.remove(this.controls.unfullscreenButton.box);
-            this.overlay.remove(this.revealer);
+            this.overlay.remove(this.revealerBottom);
+            this.overlay.remove(this.revealerTop);
             this.attach(this.controls, 0, 1, 1, 1);
-            this.controls.show();
         }
 
         this.controlsInVideo = isOnVideo;
@@ -253,6 +295,27 @@ class ClapperInterface extends Gtk.Grid
 
         this.headerBar.set_title(title);
         this.headerBar.set_subtitle(subtitle);
+
+        this.fsTitle.label = title;
+    }
+
+    updateTime()
+    {
+        let currTime = GLib.DateTime.new_now_local();
+        let endTime = currTime.add_seconds(
+            this.controls.positionAdjustment.get_upper() - this.lastPositionValue
+        );
+        let now = currTime.format(this.timeFormat);
+
+        this.fsTime.set_label(now);
+        this.fsEndTime.set_label(`Ends at: ${endTime.format(this.timeFormat)}`);
+
+        // Make sure that next timeout is always run after clock changes,
+        // by delaying it for additional few milliseconds
+        let nextUpdate = 60002 - parseInt(currTime.get_seconds() * 1000);
+        debug(`updated current time: ${now}`);
+
+        return nextUpdate;
     }
 
     showVisualizationsButton(isShow)
@@ -444,6 +507,9 @@ class ClapperInterface extends Gtk.Grid
 
         this.lastPositionValue = positionSeconds;
         this._player.seek_seconds(positionSeconds);
+
+        if(this.controls.fullscreenMode)
+            this.updateTime();
     }
 
     _onControlsVolumeChanged(volumeScale)

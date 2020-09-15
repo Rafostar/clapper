@@ -70,8 +70,24 @@ var App = GObject.registerClass({
         this.hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
             this.hideControlsTimeout = null;
 
-            if(this.window.isFullscreen && this.isCursorInPlayer)
+            if(this.window.isFullscreen && this.isCursorInPlayer) {
+                this.clearTimeout('updateTime');
                 this.interface.revealControls(false);
+            }
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    setUpdateTimeInterval()
+    {
+        this.clearTimeout('updateTime');
+        let nextUpdate = this.interface.updateTime();
+        this.updateTimeTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, nextUpdate, () => {
+            this.updateTimeTimeout = null;
+
+            if(this.window.isFullscreen)
+                this.setUpdateTimeInterval();
 
             return GLib.SOURCE_REMOVE;
         });
@@ -84,6 +100,9 @@ var App = GObject.registerClass({
 
         GLib.source_remove(this[`${name}Timeout`]);
         this[`${name}Timeout`] = null;
+
+        if(name === 'updateTime')
+            debug('cleared update time interval');
     }
 
     _buildUI()
@@ -146,6 +165,9 @@ var App = GObject.registerClass({
         this.player.connect('error', this._onPlayerError.bind(this));
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 
+        this.interface.revealerTop.connect(
+            'button-press-event', this._onPlayerButtonPressEvent.bind(this)
+        );
         this.player.connectWidget(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
@@ -177,12 +199,15 @@ var App = GObject.registerClass({
         this.interface.controls.setVolumeMarks(false);
 
         if(isFullscreen) {
+            this.setUpdateTimeInterval();
             this.interface.showControls(true);
             this.setHideControlsTimeout();
             this.interface.controls.unfullscreenButton.set_sensitive(true);
             this.interface.controls.unfullscreenButton.show();
         }
         else {
+            this.clearTimeout('updateTime');
+            this.interface.showControls(false);
             this.interface.controls.unfullscreenButton.set_sensitive(false);
             this.interface.controls.unfullscreenButton.hide();
         }
@@ -308,7 +333,7 @@ var App = GObject.registerClass({
                 this._handlePrimaryButtonPress(event, button);
                 break;
             case Gdk.BUTTON_SECONDARY:
-                if(event.get_event_type() !== Gdk.EventType.DOUBLE_BUTTON_PRESS)
+                if(event.get_event_type() === Gdk.EventType.BUTTON_PRESS)
                     this.player.toggle_play();
                 break;
             default:
@@ -360,8 +385,11 @@ var App = GObject.registerClass({
         this.setHideCursorTimeout();
 
         if(this.window.isFullscreen) {
+            if(!this.interface.revealerTop.get_reveal_child()) {
+                this.setUpdateTimeInterval();
+                this.interface.revealControls(true);
+            }
             this.setHideControlsTimeout();
-            this.interface.revealControls(true);
         }
         else if(this.hideControlsTimeout) {
             this.clearTimeout('hideControls');
