@@ -168,16 +168,13 @@ var App = GObject.registerClass({
         this.interface.revealerTop.connect(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
-        this.player.connectWidget(
-            'button-press-event', this._onPlayerButtonPressEvent.bind(this)
-        );
-        this.player.connectWidget(
+        this.interface.revealerTop.connect(
             'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
         );
-        this.player.connectWidget(
+        this.interface.revealerTop.connect(
             'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
         );
-        this.player.connectWidget(
+        this.interface.revealerTop.connect(
             'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
 
@@ -200,16 +197,16 @@ var App = GObject.registerClass({
 
         if(isFullscreen) {
             this.setUpdateTimeInterval();
-            this.interface.showControls(true);
             this.setHideControlsTimeout();
             this.interface.controls.unfullscreenButton.set_sensitive(true);
             this.interface.controls.unfullscreenButton.show();
+            this.interface.showControls(true);
         }
         else {
             this.clearTimeout('updateTime');
-            this.interface.showControls(false);
             this.interface.controls.unfullscreenButton.set_sensitive(false);
             this.interface.controls.unfullscreenButton.hide();
+            this.interface.showControls(false);
         }
 
         this.interface.setControlsOnVideo(isFullscreen);

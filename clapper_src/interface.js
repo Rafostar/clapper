@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, Gtk, Gst, GstPlayer } = imports.gi;
+const { Gdk, GLib, GObject, Gtk, Gst, GstPlayer, Pango } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
 
@@ -36,22 +36,25 @@ class ClapperInterface extends Gtk.Grid
         this.revealerTop = new Gtk.Revealer({
             transition_duration: this.revealTime,
             transition_type: Gtk.RevealerTransitionType.CROSSFADE,
-            valign: Gtk.Align.START,
         });
         this.revealerBottom = new Gtk.Revealer({
             transition_duration: this.revealTime,
             transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
             valign: Gtk.Align.END,
         });
-        this.revealerGridTop = new Gtk.Grid();
+        this.revealerGridTop = new Gtk.Grid({
+            column_spacing: 8
+        });
         this.revealerBoxBottom = new Gtk.Box();
         this.controls = new Controls();
 
         this.fsTitle = new Gtk.Label({
+            ellipsize: Pango.EllipsizeMode.END,
             expand: true,
+            margin_top: 14,
             margin_left: 12,
             xalign: 0,
-            yalign: 0.22,
+            yalign: 0,
         });
 
         let timeLabelOpts = {
@@ -61,6 +64,17 @@ class ClapperInterface extends Gtk.Grid
         };
         this.fsTime = new Gtk.Label(timeLabelOpts);
         this.fsEndTime = new Gtk.Label(timeLabelOpts);
+
+        this.revealerTop.set_events(
+            Gdk.EventMask.BUTTON_PRESS_MASK
+            | Gdk.EventMask.BUTTON_RELEASE_MASK
+            | Gdk.EventMask.TOUCH_MASK
+            | Gdk.EventMask.SCROLL_MASK
+            | Gdk.EventMask.TOUCHPAD_GESTURE_MASK
+            | Gdk.EventMask.POINTER_MOTION_MASK
+            | Gdk.EventMask.ENTER_NOTIFY_MASK
+            | Gdk.EventMask.LEAVE_NOTIFY_MASK
+        );
 
         this.revealerGridTop.attach(this.fsTitle, 0, 0, 1, 1);
         this.revealerGridTop.attach(this.fsTime, 1, 0, 1, 1);
@@ -96,10 +110,6 @@ class ClapperInterface extends Gtk.Grid
         this._player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this._player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
 
-        this._player.connectWidget(
-            'scroll-event', (self, event) => this.controls._onScrollEvent(event)
-        );
-
         this.controls.togglePlayButton.connect(
             'clicked', this._onControlsTogglePlayClicked.bind(this)
         );
@@ -120,6 +130,12 @@ class ClapperInterface extends Gtk.Grid
         );
 
         this.overlay.add(this._player.widget);
+        this.overlay.add_overlay(this.revealerTop);
+        this.overlay.add_overlay(this.revealerBottom);
+
+        this.revealerTop.connect(
+            'scroll-event', (self, event) => this.controls._onScrollEvent(event)
+        );
     }
 
     addHeaderBar(headerBar, defaultTitle)
@@ -152,15 +168,11 @@ class ClapperInterface extends Gtk.Grid
         if(isOnVideo) {
             this.remove(this.controls);
             this.controls.pack_start(this.controls.unfullscreenButton.box, false, false, 0);
-            this.overlay.add_overlay(this.revealerBottom);
-            this.overlay.add_overlay(this.revealerTop);
             this.revealerBoxBottom.pack_start(this.controls, false, true, 0);
         }
         else {
             this.revealerBoxBottom.remove(this.controls);
             this.controls.remove(this.controls.unfullscreenButton.box);
-            this.overlay.remove(this.revealerBottom);
-            this.overlay.remove(this.revealerTop);
             this.attach(this.controls, 0, 1, 1, 1);
         }
 
@@ -350,7 +362,7 @@ class ClapperInterface extends Gtk.Grid
         }
 
         if(this.controls.visualizationsButton.visible === isShow)
-            return debug('visualizations button is already visible');
+            return;
 
         let action = (isShow) ? 'show' : 'hide';
         this.controls.visualizationsButton[action]();
