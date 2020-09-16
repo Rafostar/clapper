@@ -185,8 +185,6 @@ var App = GObject.registerClass({
         this._playerDrawSignal = this.player.widget.connect(
             'draw', this._onPlayerDraw.bind(this)
         );
-
-        this.player.widget.show();
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)
