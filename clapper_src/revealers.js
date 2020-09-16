@@ -11,15 +11,55 @@ class ClapperCustomRevealer extends Gtk.Revealer
     _init(opts)
     {
         super._init(opts);
+
+        this.revealerName = '';
     }
 
     revealChild(isReveal)
     {
+        if(isReveal) {
+            this._clearTimeout();
+            if(!this.visible)
+                this.show();
+
+            this._setShowTimeout();
+        }
+        else
+            this._setHideTimeout();
+
         this._timedReveal(isReveal, REVEAL_TIME);
+    }
+
+    show()
+    {
+        if(this.visible)
+            return;
+
+        // Decreased size = lower CPU usage
+        this._setTopAlign('START');
+
+        super.show();
+        debug(`showing ${this.revealerName} revealer in drawing area`);
+    }
+
+    hide()
+    {
+        if(!this.visible)
+            return;
+
+        super.hide();
+        debug(`removed ${this.revealerName} revealer from drawing area`);
     }
 
     showChild(isReveal)
     {
+        this._clearTimeout();
+
+        if(isReveal)
+            this.show();
+        else if(!isReveal)
+            this.hide();
+
         this._timedReveal(isReveal, 0);
     }
 
@@ -27,6 +67,54 @@ class ClapperCustomRevealer extends Gtk.Revealer
     {
         this.set_transition_duration(time);
         this.set_reveal_child(isReveal);
+    }
+
+    // Drawing revealers on top of video frames
+    // increases CPU usage, so we hide them
+    _setHideTimeout()
+    {
+        this._clearTimeout();
+        this._setTopAlign('FILL');
+
+        this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
+            this._revealerTimeout = null;
+            this.hide();
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _setShowTimeout()
+    {
+        this._clearTimeout();
+        this._setTopAlign('FILL');
+
+        this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
+            this._revealerTimeout = null;
+            this._setTopAlign('START');
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _clearTimeout()
+    {
+        if(!this._revealerTimeout)
+            return;
+
+        GLib.source_remove(this._revealerTimeout);
+        this._revealerTimeout = null;
+    }
+
+    _setTopAlign(align)
+    {
+        if(
+            this.revealerName !== 'top'
+            || this.valign === Gtk.Align[align]
+        )
+            return;
+
+        this.valign = Gtk.Align[align];
     }
 });
 
@@ -38,7 +126,10 @@ class ClapperRevealerTop extends CustomRevealer
         super._init({
             transition_duration: REVEAL_TIME,
             transition_type: Gtk.RevealerTransitionType.CROSSFADE,
+            valign: Gtk.Align.START,
         });
+
+        this.revealerName = 'top';
 
         this.set_events(
             Gdk.EventMask.BUTTON_PRESS_MASK
@@ -88,6 +179,7 @@ class ClapperRevealerTop extends CustomRevealer
         this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
 
         this.add(this.revealerGrid);
+        this.revealerGrid.show_all();
     }
 
     setMediaTitle(title)
@@ -123,10 +215,12 @@ class ClapperRevealerBottom extends CustomRevealer
             valign: Gtk.Align.END,
         });
 
+        this.revealerName = 'bottom';
         this.revealerBox = new Gtk.Box();
         this.revealerBox.get_style_context().add_class('osd');
 
         this.add(this.revealerBox);
+        this.revealerBox.show_all();
     }
 
     addWidget(widget)

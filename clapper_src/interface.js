@@ -22,6 +22,7 @@ class ClapperInterface extends Gtk.Grid
         this.controlsInVideo = false;
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
+        this.lastRevealerEventTime = 0;
         this.needsTracksUpdate = true;
         this.headerBar = null;
         this.defaultTitle = null;
@@ -48,6 +49,9 @@ class ClapperInterface extends Gtk.Grid
         this._player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this._player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
 
+        this._player.connectWidget(
+            'scroll-event', (self, event) => this.controls._onScrollEvent(event)
+        );
         this.controls.togglePlayButton.connect(
             'clicked', this._onControlsTogglePlayClicked.bind(this)
         );
@@ -66,15 +70,14 @@ class ClapperInterface extends Gtk.Grid
         this.controls.connect(
             'visualization-change-requested', this._onVisualizationChangeRequested.bind(this)
         );
+        this.revealerTop.connect('event-after', (self, event) => this._player.widget.event(event));
 
         this.overlay.add(this._player.widget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
-        this.overlay.show_all();
 
-        this.revealerTop.connect(
-            'scroll-event', (self, event) => this.controls._onScrollEvent(event)
-        );
+        this.overlay.show();
+        this._player.widget.show();
     }
 
     addHeaderBar(headerBar, defaultTitle)

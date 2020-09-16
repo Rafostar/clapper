@@ -165,16 +165,16 @@ var App = GObject.registerClass({
         this.player.connect('error', this._onPlayerError.bind(this));
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 
-        this.interface.revealerTop.connect(
+        this.player.connectWidget(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
-        this.interface.revealerTop.connect(
+        this.player.connectWidget(
             'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
         );
-        this.interface.revealerTop.connect(
+        this.player.connectWidget(
             'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
         );
-        this.interface.revealerTop.connect(
+        this.player.connectWidget(
             'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
 
