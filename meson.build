@@ -17,6 +17,7 @@ conf.set('bindir', join_paths(get_option('prefix'), 'bin'))
 
 subdir('bin')
 subdir('gjs-1.0')
+subdir('data')
 
 installdir = join_paths(get_option('prefix'), 'share', meson.project_name())
 install_subdir('clapper_src', install_dir : installdir)

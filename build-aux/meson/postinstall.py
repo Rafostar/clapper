@@ -4,19 +4,20 @@ from os import environ, path
 from subprocess import call
 
 prefix = environ.get('MESON_INSTALL_PREFIX', '/usr/local')
-datadir = path.join(prefix, 'share')
+sharedir = path.join(prefix, 'share')
 destdir = environ.get('DESTDIR', '')
 
 # Package managers set this so we don't need to run
-#if not destdir:
-    # NO CLAPPER ICON YET
-    #print('Updating icon cache...')
-    #call(['gtk-update-icon-cache', '-qtf', path.join(datadir, 'icons', 'hicolor')])
+if not destdir:
+    print('Updating icon cache...')
+    call(['gtk-update-icon-cache', '-qtf', path.join(sharedir, 'icons', 'hicolor')])
 
-    # NO CLAPPER DESKTOP FILES YET
-    #print('Updating desktop database...')
-    #call(['update-desktop-database', '-q', path.join(datadir, 'applications')])
+    print('Updating mime database...')
+    call(['update-mime-database', path.join(sharedir, 'mime')])
+
+    print('Updating desktop database...')
+    call(['update-desktop-database', '-q', path.join(sharedir, 'applications')])
 
     # NO CLAPPER SCHEMAS YET
     #print('Compiling GSettings schemas...')
-    #call(['glib-compile-schemas', path.join(datadir, 'glib-2.0', 'schemas')])
+    #call(['glib-compile-schemas', path.join(sharedir, 'glib-2.0', 'schemas')])
