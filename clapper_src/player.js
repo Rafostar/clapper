@@ -1,4 +1,5 @@
 const { Gio, GLib, GObject, Gst, GstPlayer } = imports.gi;
+const ByteArray = imports.byteArray;
 const Debug = imports.clapper_src.debug;
 
 const GSTPLAYER_DEFAULTS = {
@@ -75,20 +76,18 @@ class ClapperPlayer extends GstPlayer.Player
 
     set_media(source)
     {
-        if(Gst.uri_is_valid(source)) {
-            debug(`setting source URI: ${source}`);
+        if(!Gst.uri_is_valid(source))
+            source = Gst.filename_to_uri(source);
+
+        if(!source)
+            return debug('parsing source to URI failed');
+
+        debug(`parsed source to URI: ${source}`);
+
+        if(Gst.Uri.get_protocol(source) !== 'file')
             return this.set_uri(source);
-        }
 
-        debug(`parsing source: ${source}`);
-        let uri = Gst.filename_to_uri(source);
-
-        if(!uri)
-            return debug('parsing to URI failed');
-
-        debug(`parsed source to URI: ${uri}`);
-
-        let file = Gio.file_new_for_uri(uri);
+        let file = Gio.file_new_for_uri(source);
 
         if(!file.query_exists(null)) {
             debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
@@ -103,7 +102,7 @@ class ClapperPlayer extends GstPlayer.Player
         if(file.get_path().endsWith(`.${this.playlist_ext}`))
             return this.load_playlist_file(file);
 
-        this.set_uri(uri);
+        this.set_uri(source);
     }
 
     load_playlist_file(file)
@@ -111,15 +110,25 @@ class ClapperPlayer extends GstPlayer.Player
         let stream = new Gio.DataInputStream({
             base_stream: file.read(null)
         });
+        let listdir = file.get_parent();
         let playlist = [];
         let line;
 
         while((line = stream.read_line(null)[0])) {
-            line = String(line).trim();
+            line = (line instanceof Uint8Array)
+                ? ByteArray.toString(line).trim()
+                : String(line).trim();
+
+            if(!Gst.uri_is_valid(line)) {
+                let lineFile = listdir.resolve_relative_path(line);
+                if(!lineFile)
+                    continue;
+
+                line = lineFile.get_path();
+            }
             debug(`new playlist item: ${line}`);
             playlist.push(line);
         }
-
         stream.close(null);
         this.set_playlist(playlist);
     }
