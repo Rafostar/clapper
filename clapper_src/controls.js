@@ -24,8 +24,8 @@ var Controls = GObject.registerClass({
     _init()
     {
         super._init({
-            margin_left: CONTROLS_MARGIN,
-            margin_right: CONTROLS_MARGIN,
+            margin_start: CONTROLS_MARGIN,
+            margin_end: CONTROLS_MARGIN,
             spacing: CONTROLS_SPACING,
             valign: Gtk.Align.END,
         });

@@ -158,13 +158,13 @@ class ClapperRevealerTop extends CustomRevealer
             ellipsize: Pango.EllipsizeMode.END,
             expand: true,
             margin_top: 14,
-            margin_left: 12,
+            margin_start: 12,
             xalign: 0,
             yalign: 0,
         });
 
         let timeLabelOpts = {
-            margin_right: 10,
+            margin_end: 10,
             xalign: 1,
             yalign: 0,
         };
