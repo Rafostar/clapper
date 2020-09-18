@@ -2,6 +2,7 @@
 # PKGBUILD file for package clapper
 #
 # Copyright (C) 2020  sp1rit
+# Copyright (C) 2020  Rafostar
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,6 +45,5 @@ build() {
 package() {
 	cd "${pkgname%-git}-$pkgver"
 	DESTDIR="$pkgdir" meson install -C build/
-	ln -s "$pkgdir/usr/bin/com.github.rafostar.Clapper" "$pkgdir/usr/bin/clapper"
 }
 

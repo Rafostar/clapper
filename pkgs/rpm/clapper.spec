@@ -24,7 +24,7 @@
 
 Name:           clapper
 Version:        0.0.0
-Release:        1
+Release:        0
 Summary:        Simple and modern GNOME media player
 
 License:        GPL-3.0
@@ -35,6 +35,8 @@ Source0:        _service
 
 BuildRequires:  meson
 BuildRequires:  gjs
+BuildRequires:  desktop-file-utils
+BuildRequires:  hicolor-icon-theme
 
 Requires:       gjs
 Requires:       gtk3 >= %{gtk3_version}
@@ -47,10 +49,13 @@ Requires:       gstreamer-plugins-good-gtk
 Requires:       gstreamer-plugins-bad
 Requires:       libgstplayer-1_0-0 >= %{gst_version}
 
-Recommends:     gstreamer-plugins-libav             # Popular video decoders
+# Popular video decoders
+Recommends:     gstreamer-plugins-libav
 
-Suggests:       gstreamer-plugins-ugly              # CD Playback
-Suggests:       gstreamer-plugins-vaapi             # Intel/AMD video acceleration
+# CD Playback
+Suggests:       gstreamer-plugins-ugly
+# Intel/AMD video acceleration
+Suggests:       gstreamer-plugins-vaapi
 %endif
 
 %if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
@@ -58,12 +63,16 @@ BuildRequires:  glibc-all-langpacks
 Requires:       gstreamer1
 Requires:       gstreamer1-plugins-base
 Requires:       gstreamer1-plugins-good-gtk
-Requires:       gstreamer1-plugins-bad-free >= %{gst_version} # Contains GstPlayer lib
+# Contains GstPlayer lib
+Requires:       gstreamer1-plugins-bad-free >= %{gst_version}
 
-Recommends:     gstreamer1-plugins-bad-free-extras  # ASS subtitles (assrender)
+# ASS subtitles (assrender)
+Recommends:     gstreamer1-plugins-bad-free-extras
 
-Suggests:       gstreamer1-plugins-ugly-free        # CD Playback
-Suggests:       gstreamer1-vaapi                    # Intel/AMD video acceleration
+# CD Playback
+Suggests:       gstreamer1-plugins-ugly-free
+# Intel/AMD video acceleration
+Suggests:       gstreamer1-vaapi
 %endif
 
 %description
@@ -78,7 +87,6 @@ A GNOME media player built using GJS and powered by GStreamer with OpenGL render
 
 %install
 %meson_install
-ln -s %{_bindir}/%{appname} %{buildroot}/%{_bindir}/%{name}
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
@@ -87,8 +95,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %license COPYING
 %doc README.md
 %{_bindir}/%{appname}
-%{_bindir}/%{name}
 %{_datadir}/%{appname}/
+%dir %{_datadir}/gjs-1.0
 %{_datadir}/gjs-1.0/*.js
 %{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.svg
