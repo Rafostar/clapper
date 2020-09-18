@@ -19,6 +19,8 @@
 
 
 %global appname com.github.rafostar.Clapper
+%global gst_version 1.16.0
+%global gtk3_version 3.19.4
 
 Name:           clapper
 Version:        0.0.0
@@ -35,6 +37,7 @@ BuildRequires:  meson
 BuildRequires:  gjs
 
 Requires:       gjs
+Requires:       gtk3 >= %{gtk3_version}
 Requires:       hicolor-icon-theme
 
 %if 0%{?suse_version}
@@ -42,7 +45,7 @@ Requires:       gstreamer
 Requires:       gstreamer-plugins-base
 Requires:       gstreamer-plugins-good-gtk
 Requires:       gstreamer-plugins-bad
-Requires:       libgstplayer-1_0-0
+Requires:       libgstplayer-1_0-0 >= %{gst_version}
 
 Recommends:     gstreamer-plugins-libav             # Popular video decoders
 
@@ -55,7 +58,7 @@ BuildRequires:  glibc-all-langpacks
 Requires:       gstreamer1
 Requires:       gstreamer1-plugins-base
 Requires:       gstreamer1-plugins-good-gtk
-Requires:       gstreamer1-plugins-bad-free
+Requires:       gstreamer1-plugins-bad-free >= %{gst_version} # Contains GstPlayer lib
 
 Recommends:     gstreamer1-plugins-bad-free-extras  # ASS subtitles (assrender)
 
