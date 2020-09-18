@@ -1,12 +1,14 @@
 <services>
   <service name="obs_scm">
-    <param name="url">https://github.com/Rafostar/clapper.git</param>
     <param name="scm">git</param>
+    <param name="url">https://github.com/Rafostar/clapper.git</param>
+    <param name="extract">pkgs/rpm/clapper.spec</param>
+    <param name="extract">pkgs/rpm/clapper.rpmlintrc</param>
   </service>
-  <service name="tar" mode="buildtime" />
+  <service name="tar" mode="buildtime"/>
   <service name="recompress" mode="buildtime">
-    <param name="file">*.tar</param>
     <param name="compression">xz</param>
+    <param name="file">*.tar</param>
   </service>
-  <service name="set_version" mode="buildtime" />
+  <service name="set_version" mode="buildtime"/>
 </services>

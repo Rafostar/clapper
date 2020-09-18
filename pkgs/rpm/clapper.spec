@@ -24,7 +24,7 @@
 
 Name:           clapper
 Version:        0.0.0
-Release:        0
+Release:        1%{?dist}
 Summary:        Simple and modern GNOME media player
 
 License:        GPL-3.0
@@ -43,6 +43,9 @@ Requires:       gtk3 >= %{gtk3_version}
 Requires:       hicolor-icon-theme
 
 %if 0%{?suse_version}
+# SUSE recommends group tag, while Fedora discourages their use
+Group:          Productivity/Multimedia/Video/Players
+
 Requires:       gstreamer
 Requires:       gstreamer-plugins-base
 Requires:       gstreamer-plugins-good-gtk
@@ -103,3 +106,5 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/mime/packages/%{appname}.xml
 
 %changelog
+* Fri Sep 18 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-1
+- Initial package
