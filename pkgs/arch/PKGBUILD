@@ -31,8 +31,9 @@ depends=(
 	"hicolor-icon-theme"
 	"gjs"
 	"gst-plugins-base-libs"
-	"gst-plugin-gtk"
+	"gst-plugins-good"
 	"gst-plugins-bad-libs>=1.16.0"
+	"gst-plugin-gtk"
 )
 makedepends=(
 	"meson>=0.50"

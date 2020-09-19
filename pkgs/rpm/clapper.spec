@@ -48,6 +48,7 @@ Group:          Productivity/Multimedia/Video/Players
 
 Requires:       gstreamer
 Requires:       gstreamer-plugins-base
+Requires:       gstreamer-plugins-good
 Requires:       gstreamer-plugins-good-gtk
 Requires:       gstreamer-plugins-bad
 Requires:       libgstplayer-1_0-0 >= %{gst_version}
@@ -65,6 +66,7 @@ Suggests:       gstreamer-plugins-vaapi
 BuildRequires:  glibc-all-langpacks
 Requires:       gstreamer1
 Requires:       gstreamer1-plugins-base
+Requires:       gstreamer1-plugins-good
 Requires:       gstreamer1-plugins-good-gtk
 # Contains GstPlayer lib
 Requires:       gstreamer1-plugins-bad-free >= %{gst_version}
