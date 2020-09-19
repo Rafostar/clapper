@@ -10,7 +10,8 @@ Build-Depends: debhelper (>= 10),
                hicolor-icon-theme,
                libglib2.0-dev,
                libglib2.0-bin,
-               meson (>= 0.50)
+               meson (>= 0.50),
+               brz
 Package-List:
  clapper deb gnome optional arch=all
 Description: Simple and modern GNOME media player
