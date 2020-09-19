@@ -1,0 +1,31 @@
+Source: clapper
+Section: gnome
+Priority: optional
+Maintainer: Rafostar <rafostar.github@gmail.com>
+Build-Depends: debhelper (>= 10),
+               desktop-file-utils,
+               gjs (>= 1.50),
+               hicolor-icon-theme,
+               libglib2.0-dev,
+               libglib2.0-bin,
+               meson (>= 0.50)
+
+Package: clapper
+Architecture: all
+Depends: gjs (>= 1.50),
+         gir1.2-gtk-3.0 (>= 3.19),
+         hicolor-icon-theme,
+         libgstreamer1.0-0,
+         gstreamer1.0-plugins-base,
+         gstreamer1.0-plugins-good,
+         gstreamer1.0-plugins-bad (>= 1.16),
+         gstreamer1.0-gl,
+         gstreamer1.0-gtk3
+Recommends: gstreamer1.0-libav,
+            gstreamer1.0-pulseaudio
+Suggests: gstreamer-plugins-ugly,
+          gstreamer-vaapi
+Description: Simple and modern GNOME media player
+ A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps.
+  .
+ More codecs/features and video acceleration can be enabled by installing the suggested packages.
