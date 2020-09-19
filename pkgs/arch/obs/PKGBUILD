@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Maintainer: sp1rit <sp1ritCS@protonmail.com>
+# Maintainer: Rafostar <rafostar.github@gmail.com>
 
-pkgname=clapper-git
+pkgname=clapper
 pkgver=0.0.0
 pkgrel=1
 pkgdesc="A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps."
@@ -37,29 +37,23 @@ depends=(
 makedepends=(
 	"meson>=0.50"
 	"gjs"
-	"git"
 )
 optdepends=(
 	"gst-libav: Popular video decoders"
 	"gstreamer-vaapi: Intel/AMD video acceleration"
 )
-source=("${pkgname%-git}::git+https://github.com/Rafostar/${pkgname%-git}.git#branch=master")
-provides=("${pkgname%-git}")
-replaces=("${pkgname%-git}")
-conflicts=("${pkgname%-git}")
+source=("$pkgname-$pkgver.tar.xz")
+provides=("${pkgname}")
+replaces=("${pkgname}")
+conflicts=("${pkgname}")
 md5sums=("SKIP")
 
-pkgver() {
-	cd "$srcdir"/"${pkgname%-git}"
-	echo "0.0.0.r0.$(git rev-parse --short HEAD)"
-}
-
 build() {
-	cd "$srcdir"/"${pkgname%-git}"
+	cd "$srcdir/$pkgname-$pkgver"
 	meson build/ --prefix=/usr
 }
 
 package() {
-	cd "$srcdir"/"${pkgname%-git}"
+	cd "$srcdir/$pkgname-$pkgver"
 	DESTDIR="$pkgdir" meson install -C build/
 }
