@@ -95,6 +95,9 @@ A GNOME media player built using GJS and powered by GStreamer with OpenGL render
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
+%if 0%{?suse_version}
+%suse_update_desktop_files %{appname}
+%endif
 
 %files
 %license COPYING
@@ -108,5 +111,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/mime/packages/%{appname}.xml
 
 %changelog
+* Sat Sep 19 22:02:00 CEST 2020 sp1rit - 0.0.0-2
+- Added %suse_update_desktop_files macro for SuSE packages
 * Fri Sep 18 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-1
 - Initial package
