@@ -46,6 +46,8 @@ Requires:       hicolor-icon-theme
 # SUSE recommends group tag, while Fedora discourages their use
 Group:          Productivity/Multimedia/Video/Players
 
+BuildRequires:  update-desktop-files
+
 Requires:       gstreamer
 Requires:       gstreamer-plugins-base
 Requires:       gstreamer-plugins-good
@@ -92,12 +94,12 @@ A GNOME media player built using GJS and powered by GStreamer with OpenGL render
 
 %install
 %meson_install
+%if 0%{?suse_version}
+%suse_update_desktop_file %{appname}
+%endif
 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
-%if 0%{?suse_version}
-%suse_update_desktop_files %{appname}
-%endif
 
 %files
 %license COPYING
@@ -112,6 +114,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
 %changelog
 * Sat Sep 19 22:02:00 CEST 2020 sp1rit - 0.0.0-2
-- Added %suse_update_desktop_files macro for SuSE packages
+- Added suse_update_desktop_file macro for SuSE packages
 * Fri Sep 18 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-1
 - Initial package
