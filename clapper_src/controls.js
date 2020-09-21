@@ -19,11 +19,12 @@ var Controls = GObject.registerClass({
             param_types: [GObject.TYPE_STRING]
         },
     }
-}, class ClapperControls extends Gtk.HBox
+}, class ClapperControls extends Gtk.Box
 {
     _init()
     {
         super._init({
+            orientation: Gtk.Orientation.HORIZONTAL,
             margin_start: CONTROLS_MARGIN,
             margin_end: CONTROLS_MARGIN,
             spacing: CONTROLS_SPACING,

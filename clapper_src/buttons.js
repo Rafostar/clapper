@@ -76,7 +76,9 @@ class BoxedPopoverButton extends BoxedIconButton
         this.popover = new Gtk.Popover({
             relative_to: this.box
         });
-        this.popoverBox = new Gtk.VBox();
+        this.popoverBox = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL
+        });
         this.popover.add(this.popoverBox);
         this.popoverBox.show();
         this.connect(
