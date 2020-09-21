@@ -16,7 +16,10 @@ class ClapperPlayer extends GstPlayer.Player
     _init(opts)
     {
         opts = opts || {};
-        Object.assign(opts, GSTPLAYER_DEFAULTS);
+        opts = Object.assign({}, GSTPLAYER_DEFAULTS, opts);
+
+        if(!Gst.is_initialized())
+            Gst.init(null);
 
         let gtkglsink = Gst.ElementFactory.make('gtkglsink', null);
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
@@ -183,18 +186,18 @@ class ClapperPlayer extends GstPlayer.Player
         pipeline.subtitle_font_desc = desc;
     }
 
-    set_codec_rank(codec, rank)
+    set_plugin_rank(name, rank)
     {
-        debug(`changing rank of codec: ${codec}`);
+        debug(`changing rank of plugin: ${name}`);
 
-        let feature = this.gstRegistry.lookup_feature(codec);
+        let feature = this.gstRegistry.lookup_feature(name);
         if(!feature)
-            return debug(`codec unavailable: ${codec}`);
+            return debug(`plugin unavailable: ${name}`);
 
         let oldRank = feature.get_rank();
         feature.set_rank(rank);
 
-        debug(`changed rank: ${oldRank} -> ${rank} for ${codec}`);
+        debug(`changed rank: ${oldRank} -> ${rank} for ${name}`);
     }
 
     connect(signal, fn)
@@ -248,5 +251,8 @@ class ClapperPlayer extends GstPlayer.Player
 
         if(this.state !== GstPlayer.PlayerState.STOPPED)
             this.stop();
+
+        if(this.run_loop && this.loop.is_running())
+            this.loop.quit();
     }
 });
