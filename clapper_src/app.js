@@ -40,9 +40,46 @@ var App = GObject.registerClass({
         this.interface = null;
         this.player = null;
         this.dragStartReady = false;
+    }
 
-        this.connect('startup', this._buildUI.bind(this));
-        this.connect('activate', this._openWindow.bind(this));
+    vfunc_startup()
+    {
+        super.vfunc_startup();
+        this.window = new Window(this, APP_NAME);
+
+        this.windowRealizeSignal = this.window.connect(
+            'realize', this._onWindowRealize.bind(this)
+        );
+        this.window.connect(
+            'key-press-event', this._onWindowKeyPressEvent.bind(this)
+        );
+        this.window.connect(
+            'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
+        );
+
+        this.interface = new Interface();
+        let headerBar = new Gtk.HeaderBar({
+            title: APP_NAME,
+            show_close_button: true,
+        });
+        headerBar.pack_end(this.interface.controls.openMenuButton);
+        headerBar.pack_end(this.interface.controls.fullscreenButton);
+        this.interface.addHeaderBar(headerBar, APP_NAME);
+        this.interface.controls.fullscreenButton.connect(
+            'clicked', () => this._onInterfaceToggleFullscreenClicked(true)
+        );
+        this.interface.controls.unfullscreenButton.connect(
+            'clicked', () => this._onInterfaceToggleFullscreenClicked(false)
+        );
+
+        this.window.set_titlebar(this.interface.headerBar);
+        this.window.add(this.interface);
+    }
+
+    vfunc_activate()
+    {
+        super.vfunc_activate();
+        this.window.show_all();
     }
 
     run(arr)
@@ -103,44 +140,6 @@ var App = GObject.registerClass({
 
         if(name === 'updateTime')
             debug('cleared update time interval');
-    }
-
-    _buildUI()
-    {
-        this.window = new Window(this, APP_NAME);
-
-        this.windowRealizeSignal = this.window.connect(
-            'realize', this._onWindowRealize.bind(this)
-        );
-        this.window.connect(
-            'key-press-event', this._onWindowKeyPressEvent.bind(this)
-        );
-        this.window.connect(
-            'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
-        );
-
-        this.interface = new Interface();
-        let headerBar = new Gtk.HeaderBar({
-            title: APP_NAME,
-            show_close_button: true,
-        });
-        headerBar.pack_end(this.interface.controls.openMenuButton);
-        headerBar.pack_end(this.interface.controls.fullscreenButton);
-        this.interface.addHeaderBar(headerBar, APP_NAME);
-        this.interface.controls.fullscreenButton.connect(
-            'clicked', () => this._onInterfaceToggleFullscreenClicked(true)
-        );
-        this.interface.controls.unfullscreenButton.connect(
-            'clicked', () => this._onInterfaceToggleFullscreenClicked(false)
-        );
-
-        this.window.set_titlebar(this.interface.headerBar);
-        this.window.add(this.interface);
-    }
-
-    _openWindow()
-    {
-        this.window.show_all();
     }
 
     _onWindowRealize()

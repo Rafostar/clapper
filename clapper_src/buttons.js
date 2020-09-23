@@ -81,9 +81,7 @@ class BoxedPopoverButton extends BoxedIconButton
         });
         this.popover.add(this.popoverBox);
         this.popoverBox.show();
-        this.connect(
-            'clicked', this._onPopoverButtonClicked.bind(this)
-        );
+
         if(this.isFullscreen)
             this.popover.get_style_context().add_class('osd');
     }
@@ -99,7 +97,7 @@ class BoxedPopoverButton extends BoxedIconButton
         super.setFullscreenMode(isEnabled);
     }
 
-    _onPopoverButtonClicked()
+    vfunc_clicked()
     {
         this.popover.popup();
     }

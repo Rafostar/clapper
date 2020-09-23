@@ -20,10 +20,6 @@ var Window = GObject.registerClass({
             height_request: 642
         });
         this.isFullscreen = false;
-
-        this.connect(
-            'window-state-event', this._onWindowStateEvent.bind(this)
-        );
     }
 
     toggleFullscreen()
@@ -32,12 +28,14 @@ var Window = GObject.registerClass({
         this[`${un}fullscreen`]();
     }
 
-    _onWindowStateEvent(self, event)
+    vfunc_window_state_event(event)
     {
-        let window = event.get_window();
-        let state = window.get_state();
+        super.vfunc_window_state_event(event);
 
-        let isFullscreen = Boolean(state & Gdk.WindowState.FULLSCREEN);
+        let isFullscreen = Boolean(
+            event.new_window_state
+            & Gdk.WindowState.FULLSCREEN
+        );
 
         if(this.isFullscreen === isFullscreen)
             return;
