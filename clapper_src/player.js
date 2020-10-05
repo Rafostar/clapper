@@ -21,7 +21,16 @@ class ClapperPlayer extends GstPlayer.Player
         if(!Gst.is_initialized())
             Gst.init(null);
 
-        let gtkglsink = Gst.ElementFactory.make('gtkglsink', null);
+        let plugin = 'gtk4glsink';
+        let gtkglsink = Gst.ElementFactory.make(plugin, null);
+
+        if(!gtkglsink) {
+            return debug(new Error(
+                `Could not load "${plugin}".`
+                    + ' Do you have gstreamer-plugins-good-gtk4 installed?'
+            ));
+        }
+
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtkglsink;
 
@@ -35,8 +44,7 @@ class ClapperPlayer extends GstPlayer.Player
             video_renderer: renderer
         });
 
-        // assign elements to player for later access
-        // and make sure that GJS will not free them early
+        /* Assign elements to player for later access */
         this.gtkglsink = gtkglsink;
         this.glsinkbin = glsinkbin;
         this.dispatcher = dispatcher;
@@ -60,6 +68,10 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.set_config(config);
         this.set_mute(false);
+
+        /* FIXME: remove once GUI buttons are back */
+        this.set_volume(0.5);
+        this.set_plugin_rank('vah264dec', 300);
 
         this.loop = GLib.MainLoop.new(null, false);
         this.run_loop = opts.run_loop || false;

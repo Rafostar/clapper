@@ -57,19 +57,18 @@ var Controls = GObject.registerClass({
         );
         this.fullscreenButton = Gtk.Button.new_from_icon_name(
             'view-fullscreen-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR
+            //Gtk.IconSize.SMALL_TOOLBAR
         );
         this.setDefaultWidgetBehaviour(this.fullscreenButton);
         this.openMenuButton = Gtk.Button.new_from_icon_name(
             'open-menu-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR
+            //Gtk.IconSize.SMALL_TOOLBAR
         );
         this.setDefaultWidgetBehaviour(this.openMenuButton);
-        this.forall(this.setDefaultWidgetBehaviour);
+        //this.forall(this.setDefaultWidgetBehaviour);
 
-        this.realizeSignal = this.connect(
-            'realize', this._onControlsRealize.bind(this)
-        );
+        this.realizeSignal = this.connect('realize', this._onControlsRealize.bind(this));
+        this.destroySignal = this.connect('destroy', this._onControlsDestroy.bind(this));
     }
 
     pack_start(widget, expand, fill, padding)
@@ -81,7 +80,7 @@ var Controls = GObject.registerClass({
         )
             widget = widget.box;
 
-        super.pack_start(widget, expand, fill, padding);
+        super.append(widget);
     }
 
     setFullscreenMode(isFullscreen)
@@ -121,6 +120,8 @@ var Controls = GObject.registerClass({
 
     addRadioButtons(box, array, activeId)
     {
+        return;
+
         let group = null;
         let children = box.get_children();
         let lastEl = (children.length > array.length)
@@ -175,7 +176,7 @@ var Controls = GObject.registerClass({
     setDefaultWidgetBehaviour(widget)
     {
         widget.can_focus = false;
-        widget.can_default = false;
+        //widget.can_default = false;
     }
 
     setVolumeMarks(isAdded)
@@ -212,17 +213,21 @@ var Controls = GObject.registerClass({
         );
         this.togglePlayButton.setPlayImage = () =>
         {
+/*
             this.togglePlayButton.image.set_from_icon_name(
                 'media-playback-start-symbolic',
                 this.togglePlayButton.image.icon_size
             );
+*/
         }
         this.togglePlayButton.setPauseImage = () =>
         {
+/*
             this.togglePlayButton.image.set_from_icon_name(
                 'media-playback-pause-symbolic',
                 this.togglePlayButton.image.icon_size
             );
+*/
         }
     }
 
@@ -234,19 +239,18 @@ var Controls = GObject.registerClass({
             draw_value: true,
             hexpand: true,
         });
-        let style = this.positionScale.get_style_context();
-        style.add_class('positionscale');
-
-        this.positionScale.connect(
-            'format-value', this._onPositionScaleFormatValue.bind(this)
+        this.positionScale.add_css_class('positionscale');
+        this.positionScale.set_format_value_func(
+            this._onPositionScaleFormatValue.bind(this)
         );
+/*
         this.positionScale.connect(
             'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
         );
         this.positionScale.connect(
             'button-release-event', this._onPositionScaleButtonReleaseEvent.bind(this)
         );
-
+*/
         this.positionAdjustment = this.positionScale.get_adjustment();
         this.pack_start(this.positionScale, true, true, 0);
     }
@@ -256,10 +260,10 @@ var Controls = GObject.registerClass({
         this.volumeButton = this.addPopoverButton(
             'audio-volume-muted-symbolic'
         );
-        this.volumeButton.add_events(Gdk.EventMask.SCROLL_MASK);
-        this.volumeButton.connect(
-            'scroll-event', (self, event) => this._onScrollEvent(event)
-        );
+        //this.volumeButton.add_events(Gdk.EventMask.SCROLL_MASK);
+        //this.volumeButton.connect(
+        //    'scroll-event', (self, event) => this._onScrollEvent(event)
+        //);
         this.volumeScale = new Gtk.Scale({
             orientation: Gtk.Orientation.VERTICAL,
             inverted: true,
@@ -268,7 +272,7 @@ var Controls = GObject.registerClass({
             round_digits: 2,
             vexpand: true,
         });
-        this.volumeScale.get_style_context().add_class('volumescale');
+        this.volumeScale.add_css_class('volumescale');
         this.volumeAdjustment = this.volumeScale.get_adjustment();
 
         this.volumeAdjustment.set_upper(2);
@@ -276,8 +280,8 @@ var Controls = GObject.registerClass({
         this.volumeAdjustment.set_page_increment(0.05);
         this.setDefaultWidgetBehaviour(this.volumeScale);
 
-        this.volumeButton.popoverBox.add(this.volumeScale);
-        this.volumeButton.popoverBox.show_all();
+        this.volumeButton.popoverBox.append(this.volumeScale);
+        //this.volumeButton.popoverBox.show_all();
 
         this.setVolumeMarks(true);
     }
@@ -374,5 +378,11 @@ var Controls = GObject.registerClass({
             default:
                 break;
         }
+    }
+
+    _onControlsDestroy()
+    {
+        this.disconnect(this.destroySignal);
+        this.positionScale.set_format_value_func(null);
     }
 });

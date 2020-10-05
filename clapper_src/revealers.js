@@ -130,7 +130,7 @@ class ClapperRevealerTop extends CustomRevealer
         });
 
         this.revealerName = 'top';
-
+/*
         this.set_events(
             Gdk.EventMask.BUTTON_PRESS_MASK
             | Gdk.EventMask.BUTTON_RELEASE_MASK
@@ -141,7 +141,7 @@ class ClapperRevealerTop extends CustomRevealer
             | Gdk.EventMask.ENTER_NOTIFY_MASK
             | Gdk.EventMask.LEAVE_NOTIFY_MASK
         );
-
+*/
         let initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
             ? '%I:%M %p'
@@ -150,13 +150,13 @@ class ClapperRevealerTop extends CustomRevealer
         this.revealerGrid = new Gtk.Grid({
             column_spacing: 8
         });
-        let gridContext = this.revealerGrid.get_style_context();
-        gridContext.add_class('osd');
-        gridContext.add_class('reavealertop');
+        this.revealerGrid.add_css_class('osd');
+        this.revealerGrid.add_css_class('reavealertop');
 
         this.mediaTitle = new Gtk.Label({
             ellipsize: Pango.EllipsizeMode.END,
-            expand: true,
+            vexpand: true,
+            hexpand: true,
             margin_top: 14,
             margin_start: 12,
             xalign: 0,
@@ -169,17 +169,17 @@ class ClapperRevealerTop extends CustomRevealer
             yalign: 0,
         };
         this.currentTime = new Gtk.Label(timeLabelOpts);
-        this.currentTime.get_style_context().add_class('osdtime');
+        this.currentTime.add_css_class('osdtime');
 
         this.endTime = new Gtk.Label(timeLabelOpts);
-        this.endTime.get_style_context().add_class('osdendtime');
+        this.endTime.add_css_class('osdendtime');
 
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
         this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
         this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
 
-        this.add(this.revealerGrid);
-        this.revealerGrid.show_all();
+        this.set_child(this.revealerGrid);
+        //this.revealerGrid.show_all();
     }
 
     setMediaTitle(title)
@@ -217,10 +217,10 @@ class ClapperRevealerBottom extends CustomRevealer
 
         this.revealerName = 'bottom';
         this.revealerBox = new Gtk.Box();
-        this.revealerBox.get_style_context().add_class('osd');
+        this.revealerBox.add_css_class('osd');
 
-        this.add(this.revealerBox);
-        this.revealerBox.show_all();
+        this.set_child(this.revealerBox);
+        //this.revealerBox.show_all();
     }
 
     addWidget(widget)

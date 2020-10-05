@@ -1,5 +1,6 @@
 const { Gdk, GLib, GObject, Gtk, GstPlayer } = imports.gi;
 const Debug = imports.clapper_src.debug;
+const { HeaderBar } = imports.clapper_src.headerbar;
 const { Interface } = imports.clapper_src.interface;
 const { Player } = imports.clapper_src.player;
 const { Window } = imports.clapper_src.window;
@@ -47,24 +48,31 @@ var App = GObject.registerClass({
         super.vfunc_startup();
         this.window = new Window(this, APP_NAME);
 
+        this.window.connect('close-request', this._onWindowCloseRequest.bind(this));
+        this.window.connect('unmap', () => this.quit());
+
         this.windowRealizeSignal = this.window.connect(
             'realize', this._onWindowRealize.bind(this)
         );
+/*
         this.window.connect(
             'key-press-event', this._onWindowKeyPressEvent.bind(this)
         );
+*/
         this.window.connect(
             'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
         );
 
         this.interface = new Interface();
-        let headerBar = new Gtk.HeaderBar({
-            title: APP_NAME,
-            show_close_button: true,
-        });
-        headerBar.pack_end(this.interface.controls.openMenuButton);
-        headerBar.pack_end(this.interface.controls.fullscreenButton);
+
+        let headerStart = [];
+        let headerEnd = [
+            this.interface.controls.openMenuButton,
+            this.interface.controls.fullscreenButton
+        ];
+        let headerBar = new HeaderBar(this.window, headerStart, headerEnd);
         this.interface.addHeaderBar(headerBar, APP_NAME);
+
         this.interface.controls.fullscreenButton.connect(
             'clicked', () => this._onInterfaceToggleFullscreenClicked(true)
         );
@@ -73,13 +81,19 @@ var App = GObject.registerClass({
         );
 
         this.window.set_titlebar(this.interface.headerBar);
-        this.window.add(this.interface);
+        this.window.set_child(this.interface);
     }
 
     vfunc_activate()
     {
         super.vfunc_activate();
-        this.window.show_all();
+
+        this.window.show();
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
+            this.cssProvider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
     }
 
     run(arr)
@@ -146,24 +160,23 @@ var App = GObject.registerClass({
     {
         this.window.disconnect(this.windowRealizeSignal);
 
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            this.cssProvider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
-
         this.player = new Player();
+
+        if(!this.player.widget)
+            return this.quit();
+/*
         this.player.widget.add_events(
             Gdk.EventMask.SCROLL_MASK
             | Gdk.EventMask.ENTER_NOTIFY_MASK
             | Gdk.EventMask.LEAVE_NOTIFY_MASK
         );
+*/
         this.interface.addPlayer(this.player);
 
         this.player.connect('warning', this._onPlayerWarning.bind(this));
         this.player.connect('error', this._onPlayerError.bind(this));
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
-
+/*
         this.player.connectWidget(
             'button-press-event', this._onPlayerButtonPressEvent.bind(this)
         );
@@ -176,13 +189,13 @@ var App = GObject.registerClass({
         this.player.connectWidget(
             'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
         );
-
+*/
         /* Widget signals that are disconnected after first run */
         this._playerRealizeSignal = this.player.widget.connect(
             'realize', this._onPlayerRealize.bind(this)
         );
-        this._playerDrawSignal = this.player.widget.connect(
-            'draw', this._onPlayerDraw.bind(this)
+        this._playerMapSignal = this.player.widget.connect(
+            'map', this._onPlayerMap.bind(this)
         );
     }
 
@@ -265,7 +278,7 @@ var App = GObject.registerClass({
         this.player.renderer.expose();
 
         let display = this.player.widget.get_display();
-
+/*
         this.defaultCursor = Gdk.Cursor.new_from_name(
             display, 'default'
         );
@@ -274,12 +287,13 @@ var App = GObject.registerClass({
         );
 
         this.playerWindow = this.player.widget.get_window();
+*/
         this.setHideCursorTimeout();
     }
 
-    _onPlayerDraw(self, data)
+    _onPlayerMap(self, data)
     {
-         this.player.widget.disconnect(this._playerDrawSignal);
+         this.player.widget.disconnect(this._playerMapSignal);
          this.emit('ready', true);
 
          if(this.playlist.length)
@@ -312,7 +326,7 @@ var App = GObject.registerClass({
             this.inhibitCookie = null;
         }
 
-        debug('set prevent suspend to: ' + this.is_inhibited(flags));
+        //debug('set prevent suspend to: ' + this.is_inhibited(flags));
     }
 
     _onPlayerButtonPressEvent(self, event)
@@ -419,5 +433,12 @@ var App = GObject.registerClass({
     _onPlayerError(self, error)
     {
         debug(error);
+    }
+
+    _onWindowCloseRequest()
+    {
+        this.window.destroy();
+        this.player.widget.emit('destroy');
+        this.interface.emit('destroy');
     }
 });

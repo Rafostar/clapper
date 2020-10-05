@@ -13,11 +13,12 @@ var Window = GObject.registerClass({
         super._init({
             application: application,
             title: title || 'Clapper',
-            border_width: 0,
+            //border_width: 0,
             resizable: true,
-            window_position: Gtk.WindowPosition.CENTER,
+            //window_position: Gtk.WindowPosition.CENTER,
             width_request: 960,
-            height_request: 642
+            height_request: 642,
+            destroy_with_parent: true,
         });
         this.isFullscreen = false;
     }
@@ -27,7 +28,7 @@ var Window = GObject.registerClass({
         let un = (this.isFullscreen) ? 'un' : '';
         this[`${un}fullscreen`]();
     }
-
+/*
     vfunc_window_state_event(event)
     {
         super.vfunc_window_state_event(event);
@@ -43,4 +44,5 @@ var Window = GObject.registerClass({
         this.isFullscreen = isFullscreen;
         this.emit('fullscreen-changed', this.isFullscreen);
     }
+*/
 });
