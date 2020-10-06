@@ -164,6 +164,9 @@ var App = GObject.registerClass({
 
         if(!this.player.widget)
             return this.quit();
+
+        this.player.widget.width_request = 960;
+        this.player.widget.height_request = 540;
 /*
         this.player.widget.add_events(
             Gdk.EventMask.SCROLL_MASK
