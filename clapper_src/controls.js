@@ -63,6 +63,8 @@ var Controls = GObject.registerClass({
         this.setDefaultWidgetBehaviour(this.openMenuButton);
         //this.forall(this.setDefaultWidgetBehaviour);
 
+        this.add_css_class('playercontrols');
+
         this.realizeSignal = this.connect('realize', this._onRealize.bind(this));
         this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
@@ -75,9 +77,12 @@ var Controls = GObject.registerClass({
         this.unfullscreenButton.set_visible(isFullscreen);
     }
 
-    addButton(iconName)
+    addButton(buttonIcon)
     {
-        let button = new Buttons.IconButton(iconName);
+        let button = (buttonIcon instanceof Gtk.Button)
+            ? buttonIcon
+            : new Buttons.IconButton(buttonIcon);
+
         this.append(button);
         this.buttonsArr.push(button);
 
@@ -87,10 +92,8 @@ var Controls = GObject.registerClass({
     addPopoverButton(iconName)
     {
         let button = new Buttons.PopoverButton(iconName);
-        this.append(button);
-        this.buttonsArr.push(button);
 
-        return button;
+        return this.addButton(button);
     }
 
     addCheckButtons(box, array, activeId)
@@ -172,28 +175,11 @@ var Controls = GObject.registerClass({
 
     _addTogglePlayButton()
     {
-        this.togglePlayButton = this.addButton(
+        this.togglePlayButton = new Buttons.IconToggleButton(
             'media-playback-start-symbolic',
-            Gtk.IconSize.LARGE_TOOLBAR
+            'media-playback-pause-symbolic'
         );
-        this.togglePlayButton.setPlayImage = () =>
-        {
-/*
-            this.togglePlayButton.image.set_from_icon_name(
-                'media-playback-start-symbolic',
-                this.togglePlayButton.image.icon_size
-            );
-*/
-        }
-        this.togglePlayButton.setPauseImage = () =>
-        {
-/*
-            this.togglePlayButton.image.set_from_icon_name(
-                'media-playback-pause-symbolic',
-                this.togglePlayButton.image.icon_size
-            );
-*/
-        }
+        this.addButton(this.togglePlayButton);
     }
 
     _addPositionScale()
@@ -203,7 +189,16 @@ var Controls = GObject.registerClass({
             value_pos: Gtk.PositionType.LEFT,
             draw_value: true,
             hexpand: true,
+            valign: Gtk.Align.CENTER,
         });
+
+        this.togglePlayButton.bind_property('margin_top',
+            this.positionScale, 'margin_top', GObject.BindingFlags.SYNC_CREATE
+        );
+        this.togglePlayButton.bind_property('margin_bottom',
+            this.positionScale, 'margin_bottom', GObject.BindingFlags.SYNC_CREATE
+        );
+
         this.positionScale.add_css_class('positionscale');
         this.positionScale.set_format_value_func(
             this._onPositionScaleFormatValue.bind(this)

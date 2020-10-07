@@ -7,9 +7,10 @@ scale marks {
   font-size: 22px;
   font-weight: 500;
 }
+.osd .playercontrols {
+  -gtk-icon-size: 24px;
+}
 .osd button {
-  margin-left: 1px;
-  margin-right: 1px;
   min-width: 36px;
   min-height: 36px;
 }
@@ -28,7 +29,7 @@ scale marks {
 }
 .reavealertop {
   min-height: 100px;
-  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.4);
+  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.3);
   font-family: 'Cantarell', 'Noto Sans', sans-serif;
   font-size: 30px;
   font-weight: 500;

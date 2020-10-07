@@ -1,18 +1,22 @@
 const { GObject, Gtk } = imports.gi;
 
-var IconButton = GObject.registerClass(
-class ClapperIconButton extends Gtk.Button
+var CustomButton = GObject.registerClass(
+class ClapperCustomButton extends Gtk.Button
 {
-    _init(icon)
+    _init(opts)
     {
-        super._init({
+        opts = opts || {};
+
+        let defaults = {
             margin_top: 4,
             margin_bottom: 4,
             margin_start: 1,
             margin_end: 1,
             can_focus: false,
-            icon_name: icon,
-        });
+        };
+        Object.assign(opts, defaults);
+
+        super._init(opts);
 
         this.isFullscreen = false;
         this.add_css_class('flat');
@@ -20,7 +24,44 @@ class ClapperIconButton extends Gtk.Button
 
     setFullscreenMode(isFullscreen)
     {
+        if(this.isFullscreen === isFullscreen)
+            return;
+
+        this.margin_top = (isFullscreen) ? 6 : 4;
         this.isFullscreen = isFullscreen;
+    }
+});
+
+var IconButton = GObject.registerClass(
+class ClapperIconButton extends CustomButton
+{
+    _init(icon)
+    {
+        super._init({
+            icon_name: icon,
+        });
+    }
+});
+
+var IconToggleButton = GObject.registerClass(
+class ClapperIconToggleButton extends IconButton
+{
+    _init(primaryIcon, secondaryIcon)
+    {
+        super._init(primaryIcon);
+
+        this.primaryIcon = primaryIcon;
+        this.secondaryIcon = secondaryIcon;
+    }
+
+    setPrimaryIcon()
+    {
+        this.icon_name = this.primaryIcon;
+    }
+
+    setSecondaryIcon()
+    {
+        this.icon_name = this.secondaryIcon;
     }
 });
 
@@ -53,7 +94,8 @@ class ClapperPopoverButton extends IconButton
         if(this.isFullscreen === isFullscreen)
             return;
 
-        this.margin_top = (isFullscreen) ? 6 : 4;
+        super.setFullscreenMode(isFullscreen);
+
         this.popover.set_offset(0, -this.margin_top);
 
         let cssClass = 'osd';
@@ -62,8 +104,6 @@ class ClapperPopoverButton extends IconButton
 
         let action = (isFullscreen) ? 'add' : 'remove';
         this.popover[action + '_css_class'](cssClass);
-
-        super.setFullscreenMode(isFullscreen);
     }
 
     vfunc_clicked()

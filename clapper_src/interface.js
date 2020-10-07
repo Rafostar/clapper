@@ -350,10 +350,10 @@ class ClapperInterface extends Gtk.Grid
             case GstPlayer.PlayerState.STOPPED:
                 this.needsTracksUpdate = true;
             case GstPlayer.PlayerState.PAUSED:
-                this.controls.togglePlayButton.setPlayImage();
+                this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstPlayer.PlayerState.PLAYING:
-                this.controls.togglePlayButton.setPauseImage();
+                this.controls.togglePlayButton.setSecondaryIcon();
                 if(this.needsTracksUpdate) {
                     this.needsTracksUpdate = false;
                     this.updateMediaTracks();
