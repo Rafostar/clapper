@@ -188,6 +188,7 @@ var Controls = GObject.registerClass({
             'media-playback-start-symbolic',
             'media-playback-pause-symbolic'
         );
+        this.togglePlayButton.add_css_class('playbackicon');
         this.addButton(this.togglePlayButton);
     }
 

@@ -24,6 +24,12 @@ scale marks {
   min-width: 18px;
   min-height: 18px;
 }
+.playbackicon {
+  -gtk-icon-size: 20px;
+}
+.osd .playbackicon {
+  -gtk-icon-size: 28px;
+}
 .labelbutton {
   font-family: 'Cantarell', 'Noto Sans', sans-serif;
   font-variant-numeric: tabular-nums;
