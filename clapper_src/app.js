@@ -84,7 +84,7 @@ var App = GObject.registerClass({
     {
         super.vfunc_activate();
 
-        this.window.show();
+        this.window.present();
         Gtk.StyleContext.add_provider_for_display(
             Gdk.Display.get_default(),
             this.cssProvider,
@@ -307,8 +307,10 @@ var App = GObject.registerClass({
             if(!this.inhibitCookie)
                 return;
 
+            /* Uninhibit seems to be broken as of GTK 3.99.2
             this.uninhibit(this.inhibitCookie);
             this.inhibitCookie = null;
+            */
         }
 
         debug(`set prevent suspend to: ${isInhibited}`);

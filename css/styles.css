@@ -24,6 +24,11 @@ scale marks {
   min-width: 18px;
   min-height: 18px;
 }
+.labelbutton {
+  font-family: 'Cantarell', 'Noto Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
 .videobox {
   background: black;
 }
@@ -45,25 +50,13 @@ scale marks {
   font-size: 24px;
   font-weight: 600;
 }
-
-/* Position Scale */
-.positionscale value {
-  font-weight: 600;
-  color: currentColor;
-}
-.positionscale trough highlight {
-  min-height: 4px;
-}
-.osd .positionscale value {
+.osd .labelbutton {
   font-size: 24px;
 }
-.positionscale contents {
-  margin-left: 4px;
-  margin-right: 2px;
-}
-.osd .positionscale contents {
-  margin-left: 8px;
-  margin-right: 2px;
+
+/* Position Scale */
+.positionscale trough highlight {
+  min-height: 4px;
 }
 .osd .positionscale trough slider {
   color: transparent;
@@ -77,12 +70,10 @@ scale marks {
 
 /* Volume Scale */
 .volumescale {
-  margin-left: 4px;
   min-height: 180px;
 }
 .osd .volumescale {
   margin: 6px;
-  margin-left: 10px;
   min-height: 280px;
 }
 .volumescale marks label {

@@ -65,6 +65,31 @@ class ClapperIconToggleButton extends IconButton
     }
 });
 
+var LabelButton = GObject.registerClass(
+class ClapperLabelButton extends CustomButton
+{
+    _init(text)
+    {
+        super._init({
+            margin_start: 0,
+            margin_end: 0,
+        });
+
+        this.customLabel = new Gtk.Label({
+            label: text,
+            single_line_mode: true,
+        });
+
+        this.customLabel.add_css_class('labelbutton');
+        this.set_child(this.customLabel);
+    }
+
+    set_label(text)
+    {
+        this.customLabel.set_text(text);
+    }
+});
+
 var PopoverButton = GObject.registerClass(
 class ClapperPopoverButton extends IconButton
 {

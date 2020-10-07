@@ -32,6 +32,7 @@ var Controls = GObject.registerClass({
         });
 
         this.durationFormated = '00:00:00';
+        this.elapsedInitial = '00:00:00/00:00:00';
         this.buttonsArr = [];
 
         this._addTogglePlayButton();
@@ -87,6 +88,14 @@ var Controls = GObject.registerClass({
         this.buttonsArr.push(button);
 
         return button;
+    }
+
+    addLabelButton(text)
+    {
+        text = text || '';
+        let button = new Buttons.LabelButton(text);
+
+        return this.addButton(button);
     }
 
     addPopoverButton(iconName)
@@ -184,10 +193,11 @@ var Controls = GObject.registerClass({
 
     _addPositionScale()
     {
+        this.elapsedButton = this.addLabelButton(this.elapsedInitial);
         this.positionScale = new Gtk.Scale({
             orientation: Gtk.Orientation.HORIZONTAL,
             value_pos: Gtk.PositionType.LEFT,
-            draw_value: true,
+            draw_value: false,
             hexpand: true,
             valign: Gtk.Align.CENTER,
         });
@@ -200,9 +210,7 @@ var Controls = GObject.registerClass({
         );
 
         this.positionScale.add_css_class('positionscale');
-        this.positionScale.set_format_value_func(
-            this._onPositionScaleFormatValue.bind(this)
-        );
+        this.positionScale.connect('value-changed', this._onPositionScaleValueChanged.bind(this));
 /*
         this.positionScale.connect(
             'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
@@ -284,10 +292,12 @@ var Controls = GObject.registerClass({
         }
     }
 
-    _onPositionScaleFormatValue(self, value)
+    _onPositionScaleValueChanged()
     {
-        return this._getFormatedTime(value)
+        let elapsed = this._getFormatedTime(this.positionScale.get_value())
             + '/' + this.durationFormated;
+
+        this.elapsedButton.set_label(elapsed);
     }
 
     _onPositionScaleButtonPressEvent()
@@ -345,7 +355,6 @@ var Controls = GObject.registerClass({
     {
         this.disconnect(this.destroySignal);
 
-        this.positionScale.set_format_value_func(null);
         this.visualizationsButton.emit('destroy');
         this.videoTracksButton.emit('destroy');
         this.audioTracksButton.emit('destroy');
