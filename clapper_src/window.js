@@ -17,6 +17,10 @@ var Window = GObject.registerClass({
             destroy_with_parent: true,
         });
         this.isFullscreen = false;
+
+        this.keyController = new Gtk.EventControllerKey();
+        this.add_controller(this.keyController);
+
         this.mapSignal = this.connect('map', this._onMap.bind(this));
     }
 

@@ -68,9 +68,6 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.set_config(config);
         this.set_mute(false);
-
-        /* FIXME: remove once GUI buttons are back */
-        this.set_volume(0.5);
         this.set_plugin_rank('vah264dec', 300);
 
         this.loop = GLib.MainLoop.new(null, false);
@@ -86,6 +83,8 @@ class ClapperPlayer extends GstPlayer.Player
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
+        this.connect('warning', this._onPlayerWarning.bind(this));
+        this.connect('error', this._onPlayerError.bind(this));
         this.connectWidget('destroy', this._onWidgetDestroy.bind(this));
     }
 
@@ -251,6 +250,16 @@ class ClapperPlayer extends GstPlayer.Player
             && !this.loop.is_running()
         )
             this.loop.run();
+    }
+
+    _onPlayerWarning(self, error)
+    {
+        debug(error.message, 'LEVEL_WARNING');
+    }
+
+    _onPlayerError(self, error)
+    {
+        debug(error);
     }
 
     _onWidgetDestroy()

@@ -453,16 +453,12 @@ class ClapperInterface extends Gtk.Grid
             : 'overamplified';
 
         let iconName = `audio-volume-${icon}-symbolic`;
-/*
-        if(this.controls.volumeButton.image.icon_name !== iconName)
+        if(this.controls.volumeButton.icon_name !== iconName)
         {
             debug(`set volume icon: ${icon}`);
-            this.controls.volumeButton.image.set_from_icon_name(
-                iconName,
-                this.controls.volumeButton.image.icon_size
-            );
+            this.controls.volumeButton.set_icon_name(iconName);
         }
-*/
+
         if(volume === this.lastVolumeValue)
             return;
 

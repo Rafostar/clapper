@@ -52,11 +52,9 @@ var App = GObject.registerClass({
         this.windowRealizeSignal = this.window.connect(
             'realize', this._onWindowRealize.bind(this)
         );
-/*
-        this.window.connect(
-            'key-press-event', this._onWindowKeyPressEvent.bind(this)
+        this.window.keyController.connect(
+            'key-pressed', this._onWindowKeyPressEvent.bind(this)
         );
-*/
         this.window.connect(
             'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
         );
@@ -173,9 +171,6 @@ var App = GObject.registerClass({
         );
 */
         this.interface.addPlayer(this.player);
-
-        this.player.connect('warning', this._onPlayerWarning.bind(this));
-        this.player.connect('error', this._onPlayerError.bind(this));
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 /*
         this.player.connectWidget(
@@ -213,15 +208,11 @@ var App = GObject.registerClass({
         this.interface.setFullscreenMode(isFullscreen);
     }
 
-    _onWindowKeyPressEvent(self, event)
+    _onWindowKeyPressEvent(self, keyval, keycode, state)
     {
-        let [res, key] = event.get_keyval();
-        if(!res) return;
-
-        //let keyName = Gdk.keyval_name(key);
         let bool = false;
 
-        switch(key) {
+        switch(keyval) {
             case Gdk.KEY_space:
             case Gdk.KEY_Return:
                 this.player.toggle_play();
@@ -294,6 +285,7 @@ var App = GObject.registerClass({
         if(state === GstPlayer.PlayerState.BUFFERING)
             return;
 
+        let isInhibited = false;
         let flags = Gtk.ApplicationInhibitFlags.SUSPEND
             | Gtk.ApplicationInhibitFlags.IDLE;
 
@@ -306,6 +298,10 @@ var App = GObject.registerClass({
                 flags,
                 'video is playing'
             );
+            if(!this.inhibitCookie)
+                debug(new Error('could not inhibit session!'));
+
+            isInhibited = (this.inhibitCookie > 0);
         }
         else {
             if(!this.inhibitCookie)
@@ -315,7 +311,7 @@ var App = GObject.registerClass({
             this.inhibitCookie = null;
         }
 
-        //debug('set prevent suspend to: ' + this.is_inhibited(flags));
+        debug(`set prevent suspend to: ${isInhibited}`);
     }
 
     _onPlayerButtonPressEvent(self, event)
@@ -412,16 +408,6 @@ var App = GObject.registerClass({
             this.dragStartY,
             timestamp
         );
-    }
-
-    _onPlayerWarning(self, error)
-    {
-        debug(error.message, 'LEVEL_WARNING');
-    }
-
-    _onPlayerError(self, error)
-    {
-        debug(error);
     }
 
     _onWindowCloseRequest()
