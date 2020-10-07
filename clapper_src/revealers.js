@@ -220,15 +220,14 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.add_css_class('osd');
 
         this.set_child(this.revealerBox);
-        //this.revealerBox.show_all();
     }
 
-    addWidget(widget)
+    append(widget)
     {
-        this.revealerBox.pack_start(widget, false, true, 0);
+        this.revealerBox.append(widget);
     }
 
-    removeWidget(widget)
+    remove(widget)
     {
         this.revealerBox.remove(widget);
     }

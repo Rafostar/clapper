@@ -31,7 +31,6 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
-        this.fullscreenMode = false;
         this.durationFormated = '00:00:00';
         this.buttonsArr = [];
 
@@ -52,124 +51,100 @@ var Controls = GObject.registerClass({
         this._addVolumeButton();
         this.unfullscreenButton = this.addButton(
             'view-restore-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR,
-            true
         );
+        this.unfullscreenButton.set_visible(false);
         this.fullscreenButton = Gtk.Button.new_from_icon_name(
             'view-fullscreen-symbolic',
-            //Gtk.IconSize.SMALL_TOOLBAR
         );
         this.setDefaultWidgetBehaviour(this.fullscreenButton);
         this.openMenuButton = Gtk.Button.new_from_icon_name(
             'open-menu-symbolic',
-            //Gtk.IconSize.SMALL_TOOLBAR
         );
         this.setDefaultWidgetBehaviour(this.openMenuButton);
         //this.forall(this.setDefaultWidgetBehaviour);
 
-        this.realizeSignal = this.connect('realize', this._onControlsRealize.bind(this));
-        this.destroySignal = this.connect('destroy', this._onControlsDestroy.bind(this));
-    }
-
-    pack_start(widget, expand, fill, padding)
-    {
-        if(
-            widget.box
-            && widget.box.constructor
-            && widget.box.constructor === Gtk.Box
-        )
-            widget = widget.box;
-
-        super.append(widget);
+        this.realizeSignal = this.connect('realize', this._onRealize.bind(this));
+        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
 
     setFullscreenMode(isFullscreen)
     {
-        if(isFullscreen === this.fullscreenMode)
-            return;
-
         for(let button of this.buttonsArr)
             button.setFullscreenMode(isFullscreen);
 
-        this.fullscreenMode = isFullscreen;
+        this.unfullscreenButton.set_visible(isFullscreen);
     }
 
-    addButton(iconName, size, noPack)
+    addButton(iconName)
     {
-        let button = new Buttons.BoxedIconButton(
-            iconName, size, this.fullscreenMode
-        );
-
-        if(!noPack)
-            this.pack_start(button, false, false, 0);
-
-        this.buttonsArr.push(button);
-        return button;
-    }
-
-    addPopoverButton(iconName, size)
-    {
-        let button = new Buttons.BoxedPopoverButton(
-            iconName, size, this.fullscreenMode
-        );
-        this.pack_start(button, false, false, 0);
+        let button = new Buttons.IconButton(iconName);
+        this.append(button);
         this.buttonsArr.push(button);
 
         return button;
     }
 
-    addRadioButtons(box, array, activeId)
+    addPopoverButton(iconName)
     {
-        return;
+        let button = new Buttons.PopoverButton(iconName);
+        this.append(button);
+        this.buttonsArr.push(button);
 
+        return button;
+    }
+
+    addCheckButtons(box, array, activeId)
+    {
         let group = null;
-        let children = box.get_children();
-        let lastEl = (children.length > array.length)
-            ? children.length
-            : array.length;
+        let child = box.get_first_child();
+        let i = 0;
 
-        for(let i = 0; i < lastEl; i++) {
+        while(child || i < array.length) {
             if(i >= array.length) {
-                children[i].hide();
-                debug(`hiding unused ${children[i].type} radioButton nr: ${i}`);
+                child.hide();
+                debug(`hiding unused ${child.type} checkButton nr: ${i}`);
+                i++;
+                child = child.get_next_sibling();
                 continue;
             }
 
             let el = array[i];
-            let radioButton;
+            let checkButton;
 
-            if(i < children.length) {
-                radioButton = children[i];
-                debug(`reusing ${el.type} radioButton nr: ${i}`);
+            if(child) {
+                checkButton = child;
+                debug(`reusing ${el.type} checkButton nr: ${i}`);
             }
             else {
-                debug(`creating new ${el.type} radioButton nr: ${i}`);
-                radioButton = new Gtk.RadioButton({
+                debug(`creating new ${el.type} checkButton nr: ${i}`);
+                checkButton = new Gtk.CheckButton({
                     group: group,
                 });
-                radioButton.connect(
+                checkButton.connect(
                     'toggled',
-                    this._onRadioButtonToggled.bind(this, radioButton)
+                    this._onCheckButtonToggled.bind(this, checkButton)
                 );
-                this.setDefaultWidgetBehaviour(radioButton);
-                box.add(radioButton);
+                this.setDefaultWidgetBehaviour(checkButton);
+                box.append(checkButton);
             }
 
-            radioButton.label = el.label;
-            debug(`radioButton label: ${radioButton.label}`);
-            radioButton.type = el.type;
-            debug(`radioButton type: ${radioButton.type}`);
-            radioButton.activeId = el.activeId;
-            debug(`radioButton id: ${radioButton.activeId}`);
+            checkButton.label = el.label;
+            debug(`checkButton label: ${checkButton.label}`);
+            checkButton.type = el.type;
+            debug(`checkButton type: ${checkButton.type}`);
+            checkButton.activeId = el.activeId;
+            debug(`checkButton id: ${checkButton.activeId}`);
 
-            if(radioButton.activeId === activeId) {
-                radioButton.set_active(true);
-                debug(`activated ${el.type} radioButton nr: ${i}`);
+            if(checkButton.activeId === activeId) {
+                checkButton.set_active(true);
+                debug(`activated ${el.type} checkButton nr: ${i}`);
             }
             if(!group)
-                group = radioButton;
+                group = checkButton;
 
-            radioButton.show();
+            i++;
+            if(child)
+                child = child.get_next_sibling();
         }
     }
 
@@ -177,16 +152,6 @@ var Controls = GObject.registerClass({
     {
         widget.can_focus = false;
         //widget.can_default = false;
-    }
-
-    setVolumeMarks(isAdded)
-    {
-        if(!isAdded)
-            return this.volumeScale.clear_marks();
-
-        this.volumeScale.add_mark(0, Gtk.PositionType.LEFT, '0%');
-        this.volumeScale.add_mark(1, Gtk.PositionType.LEFT, '100%');
-        this.volumeScale.add_mark(2, Gtk.PositionType.LEFT, '200%');
     }
 
     handleScaleIncrement(type, isUp)
@@ -252,7 +217,7 @@ var Controls = GObject.registerClass({
         );
 */
         this.positionAdjustment = this.positionScale.get_adjustment();
-        this.pack_start(this.positionScale, true, true, 0);
+        this.append(this.positionScale);
     }
 
     _addVolumeButton()
@@ -280,10 +245,11 @@ var Controls = GObject.registerClass({
         this.volumeAdjustment.set_page_increment(0.05);
         this.setDefaultWidgetBehaviour(this.volumeScale);
 
+        for(let i = 0; i <= 2; i++) {
+            let text = (i) ? `${i}00%` : '0%';
+            this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
+        }
         this.volumeButton.popoverBox.append(this.volumeScale);
-        //this.volumeButton.popoverBox.show_all();
-
-        this.setVolumeMarks(true);
     }
 
     _getFormatedTime(time)
@@ -297,25 +263,25 @@ var Controls = GObject.registerClass({
         return `${hours}:${minutes}:${seconds}`;
     }
 
-    _onRadioButtonToggled(self, radioButton)
+    _onCheckButtonToggled(self, checkButton)
     {
-        if(!radioButton.get_active())
+        if(!checkButton.get_active())
             return;
 
-        switch(radioButton.type) {
+        switch(checkButton.type) {
             case 'video':
             case 'audio':
             case 'subtitle':
                 this.emit(
                     'track-change-requested',
-                    radioButton.type,
-                    radioButton.activeId
+                    checkButton.type,
+                    checkButton.activeId
                 );
                 break;
             case 'visualization':
                 this.emit(
-                    `${radioButton.type}-change-requested`,
-                    radioButton.activeId
+                    `${checkButton.type}-change-requested`,
+                    checkButton.activeId
                 );
                 break;
             default:
@@ -341,7 +307,7 @@ var Controls = GObject.registerClass({
         this.emit('position-seeking-changed', this.isPositionSeeking);
     }
 
-    _onControlsRealize()
+    _onRealize()
     {
         this.disconnect(this.realizeSignal);
 
@@ -380,9 +346,15 @@ var Controls = GObject.registerClass({
         }
     }
 
-    _onControlsDestroy()
+    _onDestroy()
     {
         this.disconnect(this.destroySignal);
+
         this.positionScale.set_format_value_func(null);
+        this.visualizationsButton.emit('destroy');
+        this.videoTracksButton.emit('destroy');
+        this.audioTracksButton.emit('destroy');
+        this.subtitleTracksButton.emit('destroy');
+        this.volumeButton.emit('destroy');
     }
 });

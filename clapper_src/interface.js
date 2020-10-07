@@ -19,7 +19,7 @@ class ClapperInterface extends Gtk.Grid
         };
         Object.assign(this, defaults, opts);
 
-        this.controlsInVideo = false;
+        this.fullscreenMode = false;
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
         this.lastRevealerEventTime = 0;
@@ -38,7 +38,7 @@ class ClapperInterface extends Gtk.Grid
         this.attach(this.videoBox, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
 
-        this.destroySignal = this.connect('destroy', this._onInterfaceDestroy.bind(this));
+        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
 
     addPlayer(player)
@@ -102,24 +102,25 @@ class ClapperInterface extends Gtk.Grid
             this[`revealer${pos}`].showChild(isShow);
     }
 
-    setControlsOnVideo(isOnVideo)
+    setFullscreenMode(isFullscreen)
     {
-        if(this.controlsInVideo === isOnVideo)
+        if(this.fullscreenMode === isFullscreen)
             return;
 
-        if(isOnVideo) {
+        if(isFullscreen) {
             this.remove(this.controls);
-            this.controls.pack_start(this.controls.unfullscreenButton.box, false, false, 0);
-            this.revealerBottom.addWidget(this.controls);
+            this.revealerBottom.append(this.controls);
         }
         else {
-            this.revealerBottom.removeWidget(this.controls);
-            this.controls.remove(this.controls.unfullscreenButton.box);
+            this.revealerBottom.remove(this.controls);
             this.attach(this.controls, 0, 1, 1, 1);
         }
 
-        this.controlsInVideo = isOnVideo;
-        debug(`placed controls in overlay: ${isOnVideo}`);
+        this.controls.setFullscreenMode(isFullscreen);
+        this.showControls(isFullscreen);
+
+        this.fullscreenMode = isFullscreen;
+        debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
     updateMediaTracks()
@@ -212,7 +213,7 @@ class ClapperInterface extends Gtk.Grid
                 }
                 continue;
             }
-            this.controls.addRadioButtons(
+            this.controls.addCheckButtons(
                 this.controls[`${type}TracksButton`].popoverBox,
                 parsedInfo[`${type}Tracks`],
                 activeId
@@ -265,7 +266,7 @@ class ClapperInterface extends Gtk.Grid
                 });
             });
 
-            this.controls.addRadioButtons(
+            this.controls.addCheckButtons(
                 this.controls.visualizationsButton.popoverBox,
                 parsedVisArr,
                 null
@@ -433,7 +434,7 @@ class ClapperInterface extends Gtk.Grid
         this.lastPositionValue = positionSeconds;
         this._player.seek_seconds(positionSeconds);
 
-        if(this.controls.fullscreenMode)
+        if(this.fullscreenMode)
             this.updateTime();
     }
 
@@ -469,7 +470,7 @@ class ClapperInterface extends Gtk.Grid
         this._player.set_volume(volume);
     }
 
-    _onInterfaceDestroy()
+    _onDestroy()
     {
         this.disconnect(this.destroySignal);
         this.controls.emit('destroy');

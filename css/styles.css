@@ -8,7 +8,8 @@ scale marks {
   font-weight: 500;
 }
 .osd button {
-  margin: 2px;
+  margin-left: 1px;
+  margin-right: 1px;
   min-width: 36px;
   min-height: 36px;
 }

@@ -21,8 +21,6 @@ var App = GObject.registerClass({
 {
     _init(opts)
     {
-        GLib.set_prgname(APP_NAME);
-
         super._init({
             application_id: pkg.name
         });
@@ -204,27 +202,15 @@ var App = GObject.registerClass({
 
     _onWindowFullscreenChanged(window, isFullscreen)
     {
-        // when changing fullscreen pango layout of popup is lost
-        // and we need to re-add marks to the new layout
-        this.interface.controls.setVolumeMarks(false);
-
         if(isFullscreen) {
             this.setUpdateTimeInterval();
             this.setHideControlsTimeout();
-            this.interface.controls.unfullscreenButton.set_sensitive(true);
-            this.interface.controls.unfullscreenButton.show();
-            this.interface.showControls(true);
         }
         else {
             this.clearTimeout('updateTime');
-            this.interface.controls.unfullscreenButton.set_sensitive(false);
-            this.interface.controls.unfullscreenButton.hide();
-            this.interface.showControls(false);
         }
 
-        this.interface.setControlsOnVideo(isFullscreen);
-        this.interface.controls.setVolumeMarks(true);
-        this.interface.controls.setFullscreenMode(isFullscreen);
+        this.interface.setFullscreenMode(isFullscreen);
     }
 
     _onWindowKeyPressEvent(self, event)
