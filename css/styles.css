@@ -39,7 +39,7 @@ scale marks {
   background: black;
 }
 .reavealertop {
-  min-height: 100px;
+  min-height: 90px;
   box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.3);
   font-family: 'Cantarell', 'Noto Sans', sans-serif;
   font-size: 30px;

@@ -39,6 +39,9 @@ var App = GObject.registerClass({
         this.interface = null;
         this.player = null;
         this.dragStartReady = false;
+
+        this.posX = 0;
+        this.posY = 0;
     }
 
     vfunc_startup()
@@ -46,17 +49,14 @@ var App = GObject.registerClass({
         super.vfunc_startup();
         this.window = new Window(this, APP_NAME);
 
-        this.window.connect('close-request', this._onWindowCloseRequest.bind(this));
-        this.window.connect('unmap', () => this.quit());
-
         this.windowRealizeSignal = this.window.connect(
             'realize', this._onWindowRealize.bind(this)
         );
-        this.window.keyController.connect(
-            'key-pressed', this._onWindowKeyPressEvent.bind(this)
-        );
         this.window.connect(
             'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
+        );
+        this.window.connect(
+            'close-request', this._onWindowCloseRequest.bind(this)
         );
 
         this.interface = new Interface();
@@ -104,8 +104,8 @@ var App = GObject.registerClass({
         this.hideCursorTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
             this.hideCursorTimeout = null;
 
-            if(this.isCursorInPlayer)
-                this.playerWindow.set_cursor(this.blankCursor);
+            if(this.player.motionController.is_pointer)
+                this.player.widget.set_cursor(this.blankCursor);
 
             return GLib.SOURCE_REMOVE;
         });
@@ -182,10 +182,14 @@ var App = GObject.registerClass({
         this.player.connectWidget(
             'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
         );
-        this.player.connectWidget(
-            'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
-        );
 */
+        this.player.keyController.connect(
+            'key-pressed', this._onPlayerKeyPress.bind(this)
+        );
+        this.player.motionController.connect(
+            'motion', this._onPlayerMotion.bind(this)
+        );
+
         /* Widget signals that are disconnected after first run */
         this._playerRealizeSignal = this.player.widget.connect(
             'realize', this._onPlayerRealize.bind(this)
@@ -208,7 +212,7 @@ var App = GObject.registerClass({
         this.interface.setFullscreenMode(isFullscreen);
     }
 
-    _onWindowKeyPressEvent(self, keyval, keycode, state)
+    _onPlayerKeyPress(self, keyval, keycode, state)
     {
         let bool = false;
 
@@ -237,7 +241,7 @@ var App = GObject.registerClass({
                 break;
             case Gdk.KEY_q:
             case Gdk.KEY_Q:
-                this.window.destroy();
+                this._onWindowCloseRequest();
                 break;
             default:
                 break;
@@ -257,17 +261,9 @@ var App = GObject.registerClass({
         this.player.widget.disconnect(this._playerRealizeSignal);
         this.player.renderer.expose();
 
-        let display = this.player.widget.get_display();
-/*
-        this.defaultCursor = Gdk.Cursor.new_from_name(
-            display, 'default'
-        );
-        this.blankCursor = Gdk.Cursor.new_for_display(
-            display, Gdk.CursorType.BLANK_CURSOR
-        );
+        this.defaultCursor = Gdk.Cursor.new_from_name('default', null);
+        this.blankCursor = Gdk.Cursor.new_from_name('none', null);
 
-        this.playerWindow = this.player.widget.get_window();
-*/
         this.setHideCursorTimeout();
     }
 
@@ -374,9 +370,16 @@ var App = GObject.registerClass({
         this.clearTimeout('hideControls');
     }
 
-    _onPlayerMotionNotifyEvent(self, event)
+    _onPlayerMotion(self, posX, posY)
     {
-        this.playerWindow.set_cursor(this.defaultCursor);
+        /* GTK4 sometimes generates motions with same coords */
+        if(this.posX === posX && this.posY === posY)
+            return;
+
+        this.posX = posX;
+        this.posY = posY;
+
+        this.player.widget.set_cursor(this.defaultCursor);
         this.setHideCursorTimeout();
 
         if(this.window.isFullscreen) {
@@ -393,11 +396,8 @@ var App = GObject.registerClass({
         if(!this.dragStartReady || this.window.isFullscreen)
             return;
 
-        let [res, x, y] = event.get_root_coords();
-        if(!res) return;
-
         let startDrag = this.player.widget.drag_check_threshold(
-            this.dragStartX, this.dragStartY, x, y
+            this.dragStartX, this.dragStartY, posX, posY
         );
         if(!startDrag) return;
 
@@ -417,5 +417,7 @@ var App = GObject.registerClass({
         this.window.destroy();
         this.player.widget.emit('destroy');
         this.interface.emit('destroy');
+
+        this.quit();
     }
 });

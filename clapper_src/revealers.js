@@ -10,6 +10,13 @@ class ClapperCustomRevealer extends Gtk.Revealer
 {
     _init(opts)
     {
+        opts = opts || {};
+
+        let defaults = {
+            visible: false,
+        };
+        Object.assign(opts, defaults);
+
         super._init(opts);
 
         this.revealerName = '';

@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gst, GstPlayer } = imports.gi;
+const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.clapper_src.debug;
 
@@ -79,6 +79,12 @@ class ClapperPlayer extends GstPlayer.Player
         this._playlist = [];
         this._trackId = 0;
         this.playlist_ext = opts.playlist_ext || 'claps';
+
+        this.keyController = new Gtk.EventControllerKey();
+        this.motionController = new Gtk.EventControllerMotion();
+
+        this.widget.add_controller(this.keyController);
+        this.widget.add_controller(this.motionController);
 
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
