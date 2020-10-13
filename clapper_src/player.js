@@ -82,9 +82,11 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.keyController = new Gtk.EventControllerKey();
         this.motionController = new Gtk.EventControllerMotion();
+        this.dragGesture = new Gtk.GestureDrag();
 
         this.widget.add_controller(this.keyController);
         this.widget.add_controller(this.motionController);
+        this.widget.add_controller(this.dragGesture);
 
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));

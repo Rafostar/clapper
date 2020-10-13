@@ -38,7 +38,6 @@ var App = GObject.registerClass({
         this.window = null;
         this.interface = null;
         this.player = null;
-        this.dragStartReady = false;
 
         this.posX = 0;
         this.posY = 0;
@@ -189,6 +188,9 @@ var App = GObject.registerClass({
         this.player.motionController.connect(
             'motion', this._onPlayerMotion.bind(this)
         );
+        this.player.dragGesture.connect(
+            'drag-update', this._onPlayerDragUpdate.bind(this)
+        );
 
         /* Widget signals that are disconnected after first run */
         this._playerRealizeSignal = this.player.widget.connect(
@@ -317,8 +319,6 @@ var App = GObject.registerClass({
         let [res, button] = event.get_button();
         if(!res) return;
 
-        this.dragStartReady = false;
-
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
                 this._handlePrimaryButtonPress(event, button);
@@ -337,14 +337,6 @@ var App = GObject.registerClass({
         let eventType = event.get_event_type();
 
         switch(eventType) {
-            case Gdk.EventType.BUTTON_PRESS:
-                let [res, x, y] = event.get_root_coords();
-                if(!res)
-                    break;
-                this.dragStartX = x;
-                this.dragStartY = y;
-                this.dragStartReady = true;
-                break;
             case Gdk.EventType.DOUBLE_BUTTON_PRESS:
                 this.window.toggleFullscreen();
                 break;
@@ -392,24 +384,29 @@ var App = GObject.registerClass({
         else if(this.hideControlsTimeout) {
             this.clearTimeout('hideControls');
         }
+    }
 
-        if(!this.dragStartReady || this.window.isFullscreen)
-            return;
+    _onPlayerDragUpdate(gesture, offsetX, offsetY)
+    {
+        let { gtk_double_click_distance } = this.player.widget.get_settings();
 
-        let startDrag = this.player.widget.drag_check_threshold(
-            this.dragStartX, this.dragStartY, posX, posY
-        );
-        if(!startDrag) return;
+        if (
+            Math.abs(offsetX) > gtk_double_click_distance
+            || Math.abs(offsetY) > gtk_double_click_distance
+        ) {
+            let [isActive, startX, startY] = gesture.get_start_point();
+            if(!isActive) return;
 
-        this.dragStartReady = false;
-        let timestamp = event.get_time();
+            this.activeWindow.get_surface().begin_move(
+                gesture.get_device(),
+                gesture.get_current_button(),
+                startX,
+                startY,
+                gesture.get_current_event_time()
+            );
 
-        this.window.begin_move_drag(
-            Gdk.BUTTON_PRIMARY,
-            this.dragStartX,
-            this.dragStartY,
-            timestamp
-        );
+            gesture.reset();
+        }
     }
 
     _onWindowCloseRequest()
