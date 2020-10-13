@@ -38,6 +38,7 @@ var App = GObject.registerClass({
         this.window = null;
         this.interface = null;
         this.player = null;
+        this.dragAllowed = false;
 
         this.posX = 0;
         this.posY = 0;
@@ -69,10 +70,10 @@ var App = GObject.registerClass({
         this.interface.addHeaderBar(headerBar, APP_NAME);
 
         this.interface.controls.fullscreenButton.connect(
-            'clicked', () => this._onInterfaceToggleFullscreenClicked(true)
+            'clicked', () => this.activeWindow.fullscreen()
         );
         this.interface.controls.unfullscreenButton.connect(
-            'clicked', () => this._onInterfaceToggleFullscreenClicked(false)
+            'clicked', () => this.activeWindow.unfullscreen()
         );
 
         this.window.set_titlebar(this.interface.headerBar);
@@ -171,10 +172,11 @@ var App = GObject.registerClass({
 */
         this.interface.addPlayer(this.player);
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
-/*
-        this.player.connectWidget(
-            'button-press-event', this._onPlayerButtonPressEvent.bind(this)
+
+        this.player.clickGesture.connect(
+            'pressed', this._onPlayerPressed.bind(this)
         );
+/*
         this.player.connectWidget(
             'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
         );
@@ -183,7 +185,7 @@ var App = GObject.registerClass({
         );
 */
         this.player.keyController.connect(
-            'key-pressed', this._onPlayerKeyPress.bind(this)
+            'key-pressed', this._onPlayerKeyPressed.bind(this)
         );
         this.player.motionController.connect(
             'motion', this._onPlayerMotion.bind(this)
@@ -214,7 +216,7 @@ var App = GObject.registerClass({
         this.interface.setFullscreenMode(isFullscreen);
     }
 
-    _onPlayerKeyPress(self, keyval, keycode, state)
+    _onPlayerKeyPressed(self, keyval, keycode, state)
     {
         let bool = false;
 
@@ -248,14 +250,6 @@ var App = GObject.registerClass({
             default:
                 break;
         }
-    }
-
-    _onInterfaceToggleFullscreenClicked(isFsRequested)
-    {
-        if(this.window.isFullscreen === isFsRequested)
-            return;
-
-        this.window.toggleFullscreen();
     }
 
     _onPlayerRealize()
@@ -314,31 +308,19 @@ var App = GObject.registerClass({
         debug(`set prevent suspend to: ${isInhibited}`);
     }
 
-    _onPlayerButtonPressEvent(self, event)
+    _onPlayerPressed(gesture, nPress, x, y)
     {
-        let [res, button] = event.get_button();
-        if(!res) return;
+        let button = gesture.get_current_button();
+        let isDouble = (nPress % 2 == 0);
+        this.dragAllowed = !isDouble;
 
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
-                this._handlePrimaryButtonPress(event, button);
+                if(isDouble)
+                    this.window.toggleFullscreen();
                 break;
             case Gdk.BUTTON_SECONDARY:
-                if(event.get_event_type() === Gdk.EventType.BUTTON_PRESS)
-                    this.player.toggle_play();
-                break;
-            default:
-                break;
-        }
-    }
-
-    _handlePrimaryButtonPress(event, button)
-    {
-        let eventType = event.get_event_type();
-
-        switch(eventType) {
-            case Gdk.EventType.DOUBLE_BUTTON_PRESS:
-                this.window.toggleFullscreen();
+                this.player.toggle_play();
                 break;
             default:
                 break;
@@ -388,6 +370,9 @@ var App = GObject.registerClass({
 
     _onPlayerDragUpdate(gesture, offsetX, offsetY)
     {
+        if(!this.dragAllowed || this.activeWindow.isFullscreen)
+            return;
+
         let { gtk_double_click_distance } = this.player.widget.get_settings();
 
         if (
