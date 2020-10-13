@@ -28,8 +28,9 @@ var Window = GObject.registerClass({
 
     _onStateNotify(toplevel)
     {
-        let { state } = toplevel;
-        let isFullscreen = Boolean(state & Gdk.ToplevelState.FULLSCREEN);
+        let isFullscreen = Boolean(
+            toplevel.state & Gdk.ToplevelState.FULLSCREEN
+        );
 
         if(this.isFullscreen === isFullscreen)
             return;

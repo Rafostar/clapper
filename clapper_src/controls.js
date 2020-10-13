@@ -57,12 +57,9 @@ var Controls = GObject.registerClass({
         this.fullscreenButton = Gtk.Button.new_from_icon_name(
             'view-fullscreen-symbolic',
         );
-        this.setDefaultWidgetBehaviour(this.fullscreenButton);
         this.openMenuButton = Gtk.Button.new_from_icon_name(
             'open-menu-symbolic',
         );
-        this.setDefaultWidgetBehaviour(this.openMenuButton);
-        //this.forall(this.setDefaultWidgetBehaviour);
 
         this.add_css_class('playercontrols');
 
@@ -136,7 +133,6 @@ var Controls = GObject.registerClass({
                     'toggled',
                     this._onCheckButtonToggled.bind(this, checkButton)
                 );
-                this.setDefaultWidgetBehaviour(checkButton);
                 box.append(checkButton);
             }
 
@@ -158,12 +154,6 @@ var Controls = GObject.registerClass({
             if(child)
                 child = child.get_next_sibling();
         }
-    }
-
-    setDefaultWidgetBehaviour(widget)
-    {
-        widget.can_focus = false;
-        //widget.can_default = false;
     }
 
     handleScaleIncrement(type, isUp)
@@ -201,6 +191,7 @@ var Controls = GObject.registerClass({
             draw_value: false,
             hexpand: true,
             valign: Gtk.Align.CENTER,
+            can_focus: false,
         });
 
         this.togglePlayButton.bind_property('margin_top',
@@ -247,7 +238,6 @@ var Controls = GObject.registerClass({
         this.volumeAdjustment.set_upper(2);
         this.volumeAdjustment.set_step_increment(0.05);
         this.volumeAdjustment.set_page_increment(0.05);
-        this.setDefaultWidgetBehaviour(this.volumeScale);
 
         for(let i = 0; i <= 2; i++) {
             let text = (i) ? `${i}00%` : '0%';

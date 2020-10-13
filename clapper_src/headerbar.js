@@ -5,7 +5,9 @@ class ClapperHeaderBar extends Gtk.HeaderBar
 {
     _init(window, startButtons, endButtons)
     {
-        super._init();
+        super._init({
+            can_focus: false,
+        });
 
         this.set_title_widget(this._createWidgetForWindow(window));
         startButtons.forEach(btn => this.pack_start(btn));
@@ -43,7 +45,7 @@ class ClapperHeaderBar extends Gtk.HeaderBar
     {
         let box = new Gtk.Box ({
             orientation: Gtk.Orientation.VERTICAL,
-            valign: Gtk.Align.CENTER
+            valign: Gtk.Align.CENTER,
         });
 
         this.titleLabel = new Gtk.Label({
