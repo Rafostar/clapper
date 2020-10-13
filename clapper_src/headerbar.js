@@ -20,8 +20,9 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         let subtitle = mediaInfo.get_uri() || null;
 
         if(subtitle && subtitle.startsWith('file://')) {
-            subtitle = GLib.filename_from_uri(subtitle)[0];
-            subtitle = GLib.path_get_basename(subtitle);
+            subtitle = GLib.path_get_basename(
+                GLib.filename_from_uri(subtitle)[0]
+            );
         }
 
         if(!title) {

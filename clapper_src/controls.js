@@ -220,10 +220,14 @@ var Controls = GObject.registerClass({
         this.volumeButton = this.addPopoverButton(
             'audio-volume-muted-symbolic'
         );
-        //this.volumeButton.add_events(Gdk.EventMask.SCROLL_MASK);
-        //this.volumeButton.connect(
-        //    'scroll-event', (self, event) => this._onScrollEvent(event)
-        //);
+        let scrollController = new Gtk.EventControllerScroll();
+        scrollController.set_flags(
+            Gtk.EventControllerScrollFlags.VERTICAL
+            | Gtk.EventControllerScrollFlags.DISCRETE
+        );
+        scrollController.connect('scroll', this._onScroll.bind(this));
+        this.volumeButton.add_controller(scrollController);
+
         this.volumeScale = new Gtk.Scale({
             orientation: Gtk.Orientation.VERTICAL,
             inverted: true,
@@ -318,28 +322,15 @@ var Controls = GObject.registerClass({
             this[`${name}Button`].hide();
     }
 
-    _onScrollEvent(event)
+    _onScroll(controller, dx, dy)
     {
-        let [res, direction] = event.get_scroll_direction();
-        if(!res) return;
+        let isVertical = Math.abs(dy) >= Math.abs(dx);
+        let isIncrease = (isVertical) ? dy < 0 : dx < 0;
+        let type = (isVertical) ? 'volume' : 'position';
 
-        let type = 'volume';
+        this.handleScaleIncrement(type, isIncrease);
 
-        switch(direction) {
-            case Gdk.ScrollDirection.RIGHT:
-            case Gdk.ScrollDirection.LEFT:
-                type = 'position';
-            case Gdk.ScrollDirection.UP:
-            case Gdk.ScrollDirection.DOWN:
-                let isUp = (
-                    direction === Gdk.ScrollDirection.UP
-                    || direction === Gdk.ScrollDirection.RIGHT
-                );
-                this.handleScaleIncrement(type, isUp);
-                break;
-            default:
-                break;
-        }
+        return true;
     }
 
     _onDestroy()
