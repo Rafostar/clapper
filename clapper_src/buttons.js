@@ -12,7 +12,6 @@ class ClapperCustomButton extends Gtk.Button
             margin_bottom: 4,
             margin_start: 1,
             margin_end: 1,
-            can_focus: false,
         };
         Object.assign(opts, defaults);
 
@@ -111,6 +110,9 @@ class ClapperPopoverButton extends IconButton
         if(this.isFullscreen)
             this.popover.add_css_class('osd');
 
+        this.changeStateSignal = this.popover.connect('closed', () =>
+            this.unset_state_flags(Gtk.StateFlags.CHECKED)
+        );
         this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
 
@@ -133,6 +135,7 @@ class ClapperPopoverButton extends IconButton
 
     vfunc_clicked()
     {
+        this.set_state_flags(Gtk.StateFlags.CHECKED, false);
         this.popover.popup();
     }
 
@@ -140,6 +143,7 @@ class ClapperPopoverButton extends IconButton
     {
         this.disconnect(this.destroySignal);
 
+        this.popover.disconnect(this.changeStateSignal);
         this.popover.unparent();
         this.popoverBox.emit('destroy');
         this.popover.emit('destroy');
