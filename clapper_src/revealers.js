@@ -26,10 +26,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
     {
         if(isReveal) {
             this._clearTimeout();
-            if(!this.visible)
-                this.show();
-
-            this._setShowTimeout();
+            this.set_visible(isReveal);
         }
         else
             this._setHideTimeout();
@@ -37,37 +34,20 @@ class ClapperCustomRevealer extends Gtk.Revealer
         this._timedReveal(isReveal, REVEAL_TIME);
     }
 
-    show()
-    {
-        if(this.visible)
-            return;
-
-        // Decreased size = lower CPU usage
-        this._setTopAlign('START');
-
-        super.show();
-        debug(`showing ${this.revealerName} revealer in drawing area`);
-    }
-
-    hide()
-    {
-        if(!this.visible)
-            return;
-
-        super.hide();
-        debug(`removed ${this.revealerName} revealer from drawing area`);
-    }
-
     showChild(isReveal)
     {
         this._clearTimeout();
-
-        if(isReveal)
-            this.show();
-        else if(!isReveal)
-            this.hide();
-
+        this.set_visible(isReveal);
         this._timedReveal(isReveal, 0);
+    }
+
+    set_visible(isVisible)
+    {
+        if(this.visible === isVisible)
+            return;
+
+        super.set_visible(isVisible);
+        debug(`${this.revealerName} revealer visible: ${isVisible}`);
     }
 
     _timedReveal(isReveal, time)
@@ -76,29 +56,15 @@ class ClapperCustomRevealer extends Gtk.Revealer
         this.set_reveal_child(isReveal);
     }
 
-    // Drawing revealers on top of video frames
-    // increases CPU usage, so we hide them
+    /* Drawing revealers on top of video frames
+     * increases CPU usage, so we hide them */
     _setHideTimeout()
     {
         this._clearTimeout();
-        this._setTopAlign('FILL');
 
         this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
             this._revealerTimeout = null;
-            this.hide();
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _setShowTimeout()
-    {
-        this._clearTimeout();
-        this._setTopAlign('FILL');
-
-        this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
-            this._revealerTimeout = null;
-            this._setTopAlign('START');
+            this.set_visible(false);
 
             return GLib.SOURCE_REMOVE;
         });
@@ -111,17 +77,6 @@ class ClapperCustomRevealer extends Gtk.Revealer
 
         GLib.source_remove(this._revealerTimeout);
         this._revealerTimeout = null;
-    }
-
-    _setTopAlign(align)
-    {
-        if(
-            this.revealerName !== 'top'
-            || this.valign === Gtk.Align[align]
-        )
-            return;
-
-        this.valign = Gtk.Align[align];
     }
 });
 
@@ -186,7 +141,6 @@ class ClapperRevealerTop extends CustomRevealer
         this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
 
         this.set_child(this.revealerGrid);
-        //this.revealerGrid.show_all();
     }
 
     setMediaTitle(title)
@@ -202,8 +156,8 @@ class ClapperRevealerTop extends CustomRevealer
         this.currentTime.set_label(now);
         this.endTime.set_label(end);
 
-        // Make sure that next timeout is always run after clock changes,
-        // by delaying it for additional few milliseconds
+        /* Make sure that next timeout is always run after clock changes,
+         * by delaying it for additional few milliseconds */
         let nextUpdate = 60002 - parseInt(currTime.get_seconds() * 1000);
         debug(`updated current time: ${now}`);
 

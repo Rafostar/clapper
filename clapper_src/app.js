@@ -117,7 +117,7 @@ var App = GObject.registerClass({
         this.hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
             this.hideControlsTimeout = null;
 
-            if(this.window.isFullscreen && this.isCursorInPlayer) {
+            if(this.window.isFullscreen && this.player.motionController.is_pointer) {
                 this.clearTimeout('updateTime');
                 this.interface.revealControls(false);
             }
@@ -176,16 +176,14 @@ var App = GObject.registerClass({
         this.player.clickGesture.connect(
             'pressed', this._onPlayerPressed.bind(this)
         );
-/*
-        this.player.connectWidget(
-            'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
-        );
-        this.player.connectWidget(
-            'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
-        );
-*/
         this.player.keyController.connect(
             'key-pressed', this._onPlayerKeyPressed.bind(this)
+        );
+        this.player.motionController.connect(
+            'enter', this._onPlayerEnter.bind(this)
+        );
+        this.player.motionController.connect(
+            'leave', this._onPlayerLeave.bind(this)
         );
         this.player.motionController.connect(
             'motion', this._onPlayerMotion.bind(this)
@@ -327,19 +325,15 @@ var App = GObject.registerClass({
         }
     }
 
-    _onPlayerEnterNotifyEvent(self, event)
+    _onPlayerEnter(controller, x, y)
     {
-        this.isCursorInPlayer = true;
-
         this.setHideCursorTimeout();
         if(this.window.isFullscreen)
             this.setHideControlsTimeout();
     }
 
-    _onPlayerLeaveNotifyEvent(self, event)
+    _onPlayerLeave(controller)
     {
-        this.isCursorInPlayer = false;
-
         this.clearTimeout('hideCursor');
         this.clearTimeout('hideControls');
     }
