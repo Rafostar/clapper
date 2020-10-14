@@ -10,6 +10,13 @@ class ClapperCustomRevealer extends Gtk.Revealer
 {
     _init(opts)
     {
+        opts = opts || {};
+
+        let defaults = {
+            visible: false,
+        };
+        Object.assign(opts, defaults);
+
         super._init(opts);
 
         this.revealerName = '';
@@ -19,10 +26,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
     {
         if(isReveal) {
             this._clearTimeout();
-            if(!this.visible)
-                this.show();
-
-            this._setShowTimeout();
+            this.set_visible(isReveal);
         }
         else
             this._setHideTimeout();
@@ -30,37 +34,22 @@ class ClapperCustomRevealer extends Gtk.Revealer
         this._timedReveal(isReveal, REVEAL_TIME);
     }
 
-    show()
-    {
-        if(this.visible)
-            return;
-
-        // Decreased size = lower CPU usage
-        this._setTopAlign('START');
-
-        super.show();
-        debug(`showing ${this.revealerName} revealer in drawing area`);
-    }
-
-    hide()
-    {
-        if(!this.visible)
-            return;
-
-        super.hide();
-        debug(`removed ${this.revealerName} revealer from drawing area`);
-    }
-
     showChild(isReveal)
     {
         this._clearTimeout();
-
-        if(isReveal)
-            this.show();
-        else if(!isReveal)
-            this.hide();
-
+        this.set_visible(isReveal);
         this._timedReveal(isReveal, 0);
+    }
+
+    set_visible(isVisible)
+    {
+        if(this.visible === isVisible)
+            return false;
+
+        super.set_visible(isVisible);
+        debug(`${this.revealerName} revealer visible: ${isVisible}`);
+
+        return true;
     }
 
     _timedReveal(isReveal, time)
@@ -69,29 +58,15 @@ class ClapperCustomRevealer extends Gtk.Revealer
         this.set_reveal_child(isReveal);
     }
 
-    // Drawing revealers on top of video frames
-    // increases CPU usage, so we hide them
+    /* Drawing revealers on top of video frames
+     * increases CPU usage, so we hide them */
     _setHideTimeout()
     {
         this._clearTimeout();
-        this._setTopAlign('FILL');
 
         this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
             this._revealerTimeout = null;
-            this.hide();
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _setShowTimeout()
-    {
-        this._clearTimeout();
-        this._setTopAlign('FILL');
-
-        this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
-            this._revealerTimeout = null;
-            this._setTopAlign('START');
+            this.set_visible(false);
 
             return GLib.SOURCE_REMOVE;
         });
@@ -104,17 +79,6 @@ class ClapperCustomRevealer extends Gtk.Revealer
 
         GLib.source_remove(this._revealerTimeout);
         this._revealerTimeout = null;
-    }
-
-    _setTopAlign(align)
-    {
-        if(
-            this.revealerName !== 'top'
-            || this.valign === Gtk.Align[align]
-        )
-            return;
-
-        this.valign = Gtk.Align[align];
     }
 });
 
@@ -130,7 +94,7 @@ class ClapperRevealerTop extends CustomRevealer
         });
 
         this.revealerName = 'top';
-
+/*
         this.set_events(
             Gdk.EventMask.BUTTON_PRESS_MASK
             | Gdk.EventMask.BUTTON_RELEASE_MASK
@@ -141,7 +105,7 @@ class ClapperRevealerTop extends CustomRevealer
             | Gdk.EventMask.ENTER_NOTIFY_MASK
             | Gdk.EventMask.LEAVE_NOTIFY_MASK
         );
-
+*/
         let initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
             ? '%I:%M %p'
@@ -150,13 +114,13 @@ class ClapperRevealerTop extends CustomRevealer
         this.revealerGrid = new Gtk.Grid({
             column_spacing: 8
         });
-        let gridContext = this.revealerGrid.get_style_context();
-        gridContext.add_class('osd');
-        gridContext.add_class('reavealertop');
+        this.revealerGrid.add_css_class('osd');
+        this.revealerGrid.add_css_class('reavealertop');
 
         this.mediaTitle = new Gtk.Label({
             ellipsize: Pango.EllipsizeMode.END,
-            expand: true,
+            vexpand: true,
+            hexpand: true,
             margin_top: 14,
             margin_start: 12,
             xalign: 0,
@@ -169,17 +133,16 @@ class ClapperRevealerTop extends CustomRevealer
             yalign: 0,
         };
         this.currentTime = new Gtk.Label(timeLabelOpts);
-        this.currentTime.get_style_context().add_class('osdtime');
+        this.currentTime.add_css_class('osdtime');
 
         this.endTime = new Gtk.Label(timeLabelOpts);
-        this.endTime.get_style_context().add_class('osdendtime');
+        this.endTime.add_css_class('osdendtime');
 
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
         this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
         this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
 
-        this.add(this.revealerGrid);
-        this.revealerGrid.show_all();
+        this.set_child(this.revealerGrid);
     }
 
     setMediaTitle(title)
@@ -195,8 +158,8 @@ class ClapperRevealerTop extends CustomRevealer
         this.currentTime.set_label(now);
         this.endTime.set_label(end);
 
-        // Make sure that next timeout is always run after clock changes,
-        // by delaying it for additional few milliseconds
+        /* Make sure that next timeout is always run after clock changes,
+         * by delaying it for additional few milliseconds */
         let nextUpdate = 60002 - parseInt(currTime.get_seconds() * 1000);
         debug(`updated current time: ${now}`);
 
@@ -217,19 +180,48 @@ class ClapperRevealerBottom extends CustomRevealer
 
         this.revealerName = 'bottom';
         this.revealerBox = new Gtk.Box();
-        this.revealerBox.get_style_context().add_class('osd');
+        this.revealerBox.add_css_class('osd');
 
-        this.add(this.revealerBox);
-        this.revealerBox.show_all();
+        this.set_child(this.revealerBox);
     }
 
-    addWidget(widget)
+    append(widget)
     {
-        this.revealerBox.pack_start(widget, false, true, 0);
+        this.revealerBox.append(widget);
     }
 
-    removeWidget(widget)
+    remove(widget)
     {
         this.revealerBox.remove(widget);
+    }
+
+    set_visible(isVisible)
+    {
+        let isChange = super.set_visible(isVisible);
+        if(!isChange) return;
+
+        let parent = this.get_parent();
+        let playerWidget = parent.get_first_child();
+        if(!playerWidget) return;
+
+        if(isVisible) {
+            let box = this.get_first_child();
+            if(!box) return;
+
+            let controls = box.get_first_child();
+            if(!controls) return;
+
+            let togglePlayButton = controls.get_first_child();
+            if(togglePlayButton) {
+                togglePlayButton.grab_focus();
+                debug('focus moved to toggle play button');
+            }
+            playerWidget.set_can_focus(false);
+        }
+        else {
+            playerWidget.set_can_focus(true);
+            playerWidget.grab_focus();
+            debug('focus moved to player widget');
+        }
     }
 });

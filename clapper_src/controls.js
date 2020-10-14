@@ -31,8 +31,8 @@ var Controls = GObject.registerClass({
             valign: Gtk.Align.END,
         });
 
-        this.fullscreenMode = false;
         this.durationFormated = '00:00:00';
+        this.elapsedInitial = '00:00:00/00:00:00';
         this.buttonsArr = [];
 
         this._addTogglePlayButton();
@@ -52,140 +52,108 @@ var Controls = GObject.registerClass({
         this._addVolumeButton();
         this.unfullscreenButton = this.addButton(
             'view-restore-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR,
-            true
         );
+        this.unfullscreenButton.set_visible(false);
         this.fullscreenButton = Gtk.Button.new_from_icon_name(
             'view-fullscreen-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR
         );
-        this.setDefaultWidgetBehaviour(this.fullscreenButton);
         this.openMenuButton = Gtk.Button.new_from_icon_name(
             'open-menu-symbolic',
-            Gtk.IconSize.SMALL_TOOLBAR
         );
-        this.setDefaultWidgetBehaviour(this.openMenuButton);
-        this.forall(this.setDefaultWidgetBehaviour);
 
-        this.realizeSignal = this.connect(
-            'realize', this._onControlsRealize.bind(this)
-        );
-    }
+        this.add_css_class('playercontrols');
 
-    pack_start(widget, expand, fill, padding)
-    {
-        if(
-            widget.box
-            && widget.box.constructor
-            && widget.box.constructor === Gtk.Box
-        )
-            widget = widget.box;
-
-        super.pack_start(widget, expand, fill, padding);
+        this.realizeSignal = this.connect('realize', this._onRealize.bind(this));
+        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
 
     setFullscreenMode(isFullscreen)
     {
-        if(isFullscreen === this.fullscreenMode)
-            return;
-
         for(let button of this.buttonsArr)
             button.setFullscreenMode(isFullscreen);
 
-        this.fullscreenMode = isFullscreen;
+        this.unfullscreenButton.set_visible(isFullscreen);
     }
 
-    addButton(iconName, size, noPack)
+    addButton(buttonIcon)
     {
-        let button = new Buttons.BoxedIconButton(
-            iconName, size, this.fullscreenMode
-        );
+        let button = (buttonIcon instanceof Gtk.Button)
+            ? buttonIcon
+            : new Buttons.IconButton(buttonIcon);
 
-        if(!noPack)
-            this.pack_start(button, false, false, 0);
-
-        this.buttonsArr.push(button);
-        return button;
-    }
-
-    addPopoverButton(iconName, size)
-    {
-        let button = new Buttons.BoxedPopoverButton(
-            iconName, size, this.fullscreenMode
-        );
-        this.pack_start(button, false, false, 0);
+        this.append(button);
         this.buttonsArr.push(button);
 
         return button;
     }
 
-    addRadioButtons(box, array, activeId)
+    addLabelButton(text)
+    {
+        text = text || '';
+        let button = new Buttons.LabelButton(text);
+
+        return this.addButton(button);
+    }
+
+    addPopoverButton(iconName)
+    {
+        let button = new Buttons.PopoverButton(iconName);
+
+        return this.addButton(button);
+    }
+
+    addCheckButtons(box, array, activeId)
     {
         let group = null;
-        let children = box.get_children();
-        let lastEl = (children.length > array.length)
-            ? children.length
-            : array.length;
+        let child = box.get_first_child();
+        let i = 0;
 
-        for(let i = 0; i < lastEl; i++) {
+        while(child || i < array.length) {
             if(i >= array.length) {
-                children[i].hide();
-                debug(`hiding unused ${children[i].type} radioButton nr: ${i}`);
+                child.hide();
+                debug(`hiding unused ${child.type} checkButton nr: ${i}`);
+                i++;
+                child = child.get_next_sibling();
                 continue;
             }
 
             let el = array[i];
-            let radioButton;
+            let checkButton;
 
-            if(i < children.length) {
-                radioButton = children[i];
-                debug(`reusing ${el.type} radioButton nr: ${i}`);
+            if(child) {
+                checkButton = child;
+                debug(`reusing ${el.type} checkButton nr: ${i}`);
             }
             else {
-                debug(`creating new ${el.type} radioButton nr: ${i}`);
-                radioButton = new Gtk.RadioButton({
+                debug(`creating new ${el.type} checkButton nr: ${i}`);
+                checkButton = new Gtk.CheckButton({
                     group: group,
                 });
-                radioButton.connect(
+                checkButton.connect(
                     'toggled',
-                    this._onRadioButtonToggled.bind(this, radioButton)
+                    this._onCheckButtonToggled.bind(this, checkButton)
                 );
-                this.setDefaultWidgetBehaviour(radioButton);
-                box.add(radioButton);
+                box.append(checkButton);
             }
 
-            radioButton.label = el.label;
-            debug(`radioButton label: ${radioButton.label}`);
-            radioButton.type = el.type;
-            debug(`radioButton type: ${radioButton.type}`);
-            radioButton.activeId = el.activeId;
-            debug(`radioButton id: ${radioButton.activeId}`);
+            checkButton.label = el.label;
+            debug(`checkButton label: ${checkButton.label}`);
+            checkButton.type = el.type;
+            debug(`checkButton type: ${checkButton.type}`);
+            checkButton.activeId = el.activeId;
+            debug(`checkButton id: ${checkButton.activeId}`);
 
-            if(radioButton.activeId === activeId) {
-                radioButton.set_active(true);
-                debug(`activated ${el.type} radioButton nr: ${i}`);
+            if(checkButton.activeId === activeId) {
+                checkButton.set_active(true);
+                debug(`activated ${el.type} checkButton nr: ${i}`);
             }
             if(!group)
-                group = radioButton;
+                group = checkButton;
 
-            radioButton.show();
+            i++;
+            if(child)
+                child = child.get_next_sibling();
         }
-    }
-
-    setDefaultWidgetBehaviour(widget)
-    {
-        widget.can_focus = false;
-        widget.can_default = false;
-    }
-
-    setVolumeMarks(isAdded)
-    {
-        if(!isAdded)
-            return this.volumeScale.clear_marks();
-
-        this.volumeScale.add_mark(0, Gtk.PositionType.LEFT, '0%');
-        this.volumeScale.add_mark(1, Gtk.PositionType.LEFT, '100%');
-        this.volumeScale.add_mark(2, Gtk.PositionType.LEFT, '200%');
     }
 
     handleScaleIncrement(type, isUp)
@@ -206,49 +174,45 @@ var Controls = GObject.registerClass({
 
     _addTogglePlayButton()
     {
-        this.togglePlayButton = this.addButton(
+        this.togglePlayButton = new Buttons.IconToggleButton(
             'media-playback-start-symbolic',
-            Gtk.IconSize.LARGE_TOOLBAR
+            'media-playback-pause-symbolic'
         );
-        this.togglePlayButton.setPlayImage = () =>
-        {
-            this.togglePlayButton.image.set_from_icon_name(
-                'media-playback-start-symbolic',
-                this.togglePlayButton.image.icon_size
-            );
-        }
-        this.togglePlayButton.setPauseImage = () =>
-        {
-            this.togglePlayButton.image.set_from_icon_name(
-                'media-playback-pause-symbolic',
-                this.togglePlayButton.image.icon_size
-            );
-        }
+        this.togglePlayButton.add_css_class('playbackicon');
+        this.addButton(this.togglePlayButton);
     }
 
     _addPositionScale()
     {
+        this.elapsedButton = this.addLabelButton(this.elapsedInitial);
         this.positionScale = new Gtk.Scale({
             orientation: Gtk.Orientation.HORIZONTAL,
             value_pos: Gtk.PositionType.LEFT,
-            draw_value: true,
+            draw_value: false,
             hexpand: true,
+            valign: Gtk.Align.CENTER,
+            can_focus: false,
         });
-        let style = this.positionScale.get_style_context();
-        style.add_class('positionscale');
 
-        this.positionScale.connect(
-            'format-value', this._onPositionScaleFormatValue.bind(this)
+        this.togglePlayButton.bind_property('margin_top',
+            this.positionScale, 'margin_top', GObject.BindingFlags.SYNC_CREATE
         );
-        this.positionScale.connect(
-            'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
+        this.togglePlayButton.bind_property('margin_bottom',
+            this.positionScale, 'margin_bottom', GObject.BindingFlags.SYNC_CREATE
         );
+
+        this.positionScale.add_css_class('positionscale');
+        this.positionScale.connect('value-changed', this._onPositionScaleValueChanged.bind(this));
+
+        /* GTK4 is missing pressed/released signals for GtkRange/GtkScale.
+         * We cannot add controllers, cause it already has them, so we
+         * workaround this by observing css classes it currently has */
         this.positionScale.connect(
-            'button-release-event', this._onPositionScaleButtonReleaseEvent.bind(this)
+            'notify::css-classes', this._onPositionScaleDragging.bind(this)
         );
 
         this.positionAdjustment = this.positionScale.get_adjustment();
-        this.pack_start(this.positionScale, true, true, 0);
+        this.append(this.positionScale);
     }
 
     _addVolumeButton()
@@ -256,10 +220,14 @@ var Controls = GObject.registerClass({
         this.volumeButton = this.addPopoverButton(
             'audio-volume-muted-symbolic'
         );
-        this.volumeButton.add_events(Gdk.EventMask.SCROLL_MASK);
-        this.volumeButton.connect(
-            'scroll-event', (self, event) => this._onScrollEvent(event)
+        let scrollController = new Gtk.EventControllerScroll();
+        scrollController.set_flags(
+            Gtk.EventControllerScrollFlags.VERTICAL
+            | Gtk.EventControllerScrollFlags.DISCRETE
         );
+        scrollController.connect('scroll', this._onScroll.bind(this));
+        this.volumeButton.add_controller(scrollController);
+
         this.volumeScale = new Gtk.Scale({
             orientation: Gtk.Orientation.VERTICAL,
             inverted: true,
@@ -268,18 +236,18 @@ var Controls = GObject.registerClass({
             round_digits: 2,
             vexpand: true,
         });
-        this.volumeScale.get_style_context().add_class('volumescale');
+        this.volumeScale.add_css_class('volumescale');
         this.volumeAdjustment = this.volumeScale.get_adjustment();
 
         this.volumeAdjustment.set_upper(2);
         this.volumeAdjustment.set_step_increment(0.05);
         this.volumeAdjustment.set_page_increment(0.05);
-        this.setDefaultWidgetBehaviour(this.volumeScale);
 
-        this.volumeButton.popoverBox.add(this.volumeScale);
-        this.volumeButton.popoverBox.show_all();
-
-        this.setVolumeMarks(true);
+        for(let i = 0; i <= 2; i++) {
+            let text = (i) ? `${i}00%` : '0%';
+            this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
+        }
+        this.volumeButton.popoverBox.append(this.volumeScale);
     }
 
     _getFormatedTime(time)
@@ -293,25 +261,25 @@ var Controls = GObject.registerClass({
         return `${hours}:${minutes}:${seconds}`;
     }
 
-    _onRadioButtonToggled(self, radioButton)
+    _onCheckButtonToggled(self, checkButton)
     {
-        if(!radioButton.get_active())
+        if(!checkButton.get_active())
             return;
 
-        switch(radioButton.type) {
+        switch(checkButton.type) {
             case 'video':
             case 'audio':
             case 'subtitle':
                 this.emit(
                     'track-change-requested',
-                    radioButton.type,
-                    radioButton.activeId
+                    checkButton.type,
+                    checkButton.activeId
                 );
                 break;
             case 'visualization':
                 this.emit(
-                    `${radioButton.type}-change-requested`,
-                    radioButton.activeId
+                    `${checkButton.type}-change-requested`,
+                    checkButton.activeId
                 );
                 break;
             default:
@@ -319,25 +287,26 @@ var Controls = GObject.registerClass({
         }
     }
 
-    _onPositionScaleFormatValue(self, value)
+    _onPositionScaleValueChanged()
     {
-        return this._getFormatedTime(value)
+        let elapsed = this._getFormatedTime(this.positionScale.get_value())
             + '/' + this.durationFormated;
+
+        this.elapsedButton.set_label(elapsed);
     }
 
-    _onPositionScaleButtonPressEvent()
+    _onPositionScaleDragging(scale)
     {
-        this.isPositionSeeking = true;
+        let isPositionSeeking = scale.has_css_class('dragging');
+
+        if(this.isPositionSeeking === isPositionSeeking)
+            return;
+
+        this.isPositionSeeking = isPositionSeeking;
         this.emit('position-seeking-changed', this.isPositionSeeking);
     }
 
-    _onPositionScaleButtonReleaseEvent()
-    {
-        this.isPositionSeeking = false;
-        this.emit('position-seeking-changed', this.isPositionSeeking);
-    }
-
-    _onControlsRealize()
+    _onRealize()
     {
         this.disconnect(this.realizeSignal);
 
@@ -352,27 +321,25 @@ var Controls = GObject.registerClass({
             this[`${name}Button`].hide();
     }
 
-    _onScrollEvent(event)
+    _onScroll(controller, dx, dy)
     {
-        let [res, direction] = event.get_scroll_direction();
-        if(!res) return;
+        let isVertical = Math.abs(dy) >= Math.abs(dx);
+        let isIncrease = (isVertical) ? dy < 0 : dx < 0;
+        let type = (isVertical) ? 'volume' : 'position';
 
-        let type = 'volume';
+        this.handleScaleIncrement(type, isIncrease);
 
-        switch(direction) {
-            case Gdk.ScrollDirection.RIGHT:
-            case Gdk.ScrollDirection.LEFT:
-                type = 'position';
-            case Gdk.ScrollDirection.UP:
-            case Gdk.ScrollDirection.DOWN:
-                let isUp = (
-                    direction === Gdk.ScrollDirection.UP
-                    || direction === Gdk.ScrollDirection.RIGHT
-                );
-                this.handleScaleIncrement(type, isUp);
-                break;
-            default:
-                break;
-        }
+        return true;
+    }
+
+    _onDestroy()
+    {
+        this.disconnect(this.destroySignal);
+
+        this.visualizationsButton.emit('destroy');
+        this.videoTracksButton.emit('destroy');
+        this.audioTracksButton.emit('destroy');
+        this.subtitleTracksButton.emit('destroy');
+        this.volumeButton.emit('destroy');
     }
 });

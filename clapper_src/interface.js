@@ -19,7 +19,7 @@ class ClapperInterface extends Gtk.Grid
         };
         Object.assign(this, defaults, opts);
 
-        this.controlsInVideo = false;
+        this.fullscreenMode = false;
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
         this.lastRevealerEventTime = 0;
@@ -33,29 +33,32 @@ class ClapperInterface extends Gtk.Grid
         this.revealerBottom = new Revealers.RevealerBottom();
         this.controls = new Controls();
 
-        this.videoBox.get_style_context().add_class('videobox');
-        this.videoBox.pack_start(this.overlay, true, true, 0);
+        this.videoBox.add_css_class('videobox');
+        this.videoBox.append(this.overlay);
         this.attach(this.videoBox, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
+
+        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
 
     addPlayer(player)
     {
         this._player = player;
-        this._player.widget.expand = true;
+        this._player.widget.vexpand = true;
+        this._player.widget.hexpand = true;
 
         this._player.connect('state-changed', this._onPlayerStateChanged.bind(this));
         this._player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
         this._player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this._player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
 
-        this._player.connectWidget(
-            'scroll-event', (self, event) => this.controls._onScrollEvent(event)
+        this._player.scrollController.connect(
+            'scroll', (ctl, dx, dy) => this.controls._onScroll(ctl, dx, dy)
         );
         this.controls.togglePlayButton.connect(
             'clicked', this._onControlsTogglePlayClicked.bind(this)
         );
-        this.controls.positionScale.connect(
+        this.scaleSig = this.controls.positionScale.connect(
             'value-changed', this._onControlsPositionChanged.bind(this)
         );
         this.controls.volumeScale.connect(
@@ -70,9 +73,9 @@ class ClapperInterface extends Gtk.Grid
         this.controls.connect(
             'visualization-change-requested', this._onVisualizationChangeRequested.bind(this)
         );
-        this.revealerTop.connect('event-after', (self, event) => this._player.widget.event(event));
+        //this.revealerTop.connect('event-after', (self, event) => this._player.widget.event(event));
 
-        this.overlay.add(this._player.widget);
+        this.overlay.set_child(this._player.widget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
 
@@ -98,32 +101,33 @@ class ClapperInterface extends Gtk.Grid
             this[`revealer${pos}`].showChild(isShow);
     }
 
-    setControlsOnVideo(isOnVideo)
+    setFullscreenMode(isFullscreen)
     {
-        if(this.controlsInVideo === isOnVideo)
+        if(this.fullscreenMode === isFullscreen)
             return;
 
-        if(isOnVideo) {
+        if(isFullscreen) {
             this.remove(this.controls);
-            this.controls.pack_start(this.controls.unfullscreenButton.box, false, false, 0);
-            this.revealerBottom.addWidget(this.controls);
+            this.revealerBottom.append(this.controls);
         }
         else {
-            this.revealerBottom.removeWidget(this.controls);
-            this.controls.remove(this.controls.unfullscreenButton.box);
+            this.revealerBottom.remove(this.controls);
             this.attach(this.controls, 0, 1, 1, 1);
         }
 
-        this.controlsInVideo = isOnVideo;
-        debug(`placed controls in overlay: ${isOnVideo}`);
+        this.controls.setFullscreenMode(isFullscreen);
+        this.showControls(isFullscreen);
+
+        this.fullscreenMode = isFullscreen;
+        debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
     updateMediaTracks()
     {
         let mediaInfo = this._player.get_media_info();
 
-        // set titlebar media title and path
-        this.updateHeaderBar(mediaInfo);
+        /* Set titlebar media title and path */
+        this.updateTitles(mediaInfo);
 
         // we can also check if video is "live" or "seekable" (right now unused)
         // it might be a good idea to hide position seek bar and disable seeking
@@ -208,7 +212,7 @@ class ClapperInterface extends Gtk.Grid
                 }
                 continue;
             }
-            this.controls.addRadioButtons(
+            this.controls.addCheckButtons(
                 this.controls[`${type}TracksButton`].popoverBox,
                 parsedInfo[`${type}Tracks`],
                 activeId
@@ -220,32 +224,12 @@ class ClapperInterface extends Gtk.Grid
         }
     }
 
-    updateHeaderBar(mediaInfo)
+    updateTitles(mediaInfo)
     {
-        if(!this.headerBar)
-            return;
+        if(this.headerBar)
+            this.headerBar.updateHeaderBar(mediaInfo);
 
-        let title = mediaInfo.get_title();
-        let subtitle = mediaInfo.get_uri() || null;
-
-        if(subtitle.startsWith('file://')) {
-            subtitle = GLib.filename_from_uri(subtitle)[0];
-            subtitle = GLib.path_get_basename(subtitle);
-        }
-
-        if(!title) {
-            title = (!subtitle)
-                ? this.defaultTitle
-                : (subtitle.includes('.'))
-                ? subtitle.split('.').slice(0, -1).join('.')
-                : subtitle;
-
-            subtitle = null;
-        }
-
-        this.headerBar.set_title(title);
-        this.headerBar.set_subtitle(subtitle);
-        this.revealerTop.setMediaTitle(title);
+        this.revealerTop.setMediaTitle(this.headerBar.titleLabel.label);
     }
 
     updateTime()
@@ -281,7 +265,7 @@ class ClapperInterface extends Gtk.Grid
                 });
             });
 
-            this.controls.addRadioButtons(
+            this.controls.addCheckButtons(
                 this.controls.visualizationsButton.popoverBox,
                 parsedVisArr,
                 null
@@ -300,8 +284,8 @@ class ClapperInterface extends Gtk.Grid
 
     _onTrackChangeRequested(self, type, activeId)
     {
-        // reenabling audio is slow (as expected),
-        // so it is better to toggle mute instead
+        /* Reenabling audio is slow (as expected),
+         * so it is better to toggle mute instead */
         if(type === 'audio') {
             if(activeId < 0)
                 return this._player.set_mute(true);
@@ -313,8 +297,8 @@ class ClapperInterface extends Gtk.Grid
         }
 
         if(activeId < 0) {
-            // disabling video leaves last frame frozen,
-            // so we hide it by making it transparent
+            /* Disabling video leaves last frame frozen,
+             * so we hide it by making it transparent */
             if(type === 'video')
                 this._player.widget.set_opacity(0);
 
@@ -365,10 +349,10 @@ class ClapperInterface extends Gtk.Grid
             case GstPlayer.PlayerState.STOPPED:
                 this.needsTracksUpdate = true;
             case GstPlayer.PlayerState.PAUSED:
-                this.controls.togglePlayButton.setPlayImage();
+                this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstPlayer.PlayerState.PLAYING:
-                this.controls.togglePlayButton.setPauseImage();
+                this.controls.togglePlayButton.setSecondaryIcon();
                 if(this.needsTracksUpdate) {
                     this.needsTracksUpdate = false;
                     this.updateMediaTracks();
@@ -449,7 +433,7 @@ class ClapperInterface extends Gtk.Grid
         this.lastPositionValue = positionSeconds;
         this._player.seek_seconds(positionSeconds);
 
-        if(this.controls.fullscreenMode)
+        if(this.fullscreenMode)
             this.updateTime();
     }
 
@@ -468,14 +452,10 @@ class ClapperInterface extends Gtk.Grid
             : 'overamplified';
 
         let iconName = `audio-volume-${icon}-symbolic`;
-
-        if(this.controls.volumeButton.image.icon_name !== iconName)
+        if(this.controls.volumeButton.icon_name !== iconName)
         {
             debug(`set volume icon: ${icon}`);
-            this.controls.volumeButton.image.set_from_icon_name(
-                iconName,
-                this.controls.volumeButton.image.icon_size
-            );
+            this.controls.volumeButton.set_icon_name(iconName);
         }
 
         if(volume === this.lastVolumeValue)
@@ -483,5 +463,11 @@ class ClapperInterface extends Gtk.Grid
 
         this.lastVolumeValue = volume;
         this._player.set_volume(volume);
+    }
+
+    _onDestroy()
+    {
+        this.disconnect(this.destroySignal);
+        this.controls.emit('destroy');
     }
 });

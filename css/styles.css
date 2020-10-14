@@ -7,13 +7,15 @@ scale marks {
   font-size: 22px;
   font-weight: 500;
 }
+.osd .playercontrols {
+  -gtk-icon-size: 24px;
+}
 .osd button {
-  margin: 2px;
   min-width: 36px;
   min-height: 36px;
 }
 .osd scale trough highlight {
-  min-width: 6px;
+  min-width: 0px;
   min-height: 6px;
 }
 .osd radio {
@@ -22,12 +24,23 @@ scale marks {
   min-width: 18px;
   min-height: 18px;
 }
+.playbackicon {
+  -gtk-icon-size: 20px;
+}
+.osd .playbackicon {
+  -gtk-icon-size: 28px;
+}
+.labelbutton {
+  font-family: 'Cantarell', 'Noto Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
 .videobox {
   background: black;
 }
 .reavealertop {
-  min-height: 100px;
-  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.4);
+  min-height: 90px;
+  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.3);
   font-family: 'Cantarell', 'Noto Sans', sans-serif;
   font-size: 30px;
   font-weight: 500;
@@ -43,25 +56,13 @@ scale marks {
   font-size: 24px;
   font-weight: 600;
 }
-
-/* Position Scale */
-.positionscale value {
-  font-weight: 600;
-  color: currentColor;
-}
-.positionscale trough highlight {
-  min-height: 4px;
-}
-.osd .positionscale value {
+.osd .labelbutton {
   font-size: 24px;
 }
-.positionscale contents {
-  margin-left: 4px;
-  margin-right: 2px;
-}
-.osd .positionscale contents {
-  margin-left: 8px;
-  margin-right: 2px;
+
+/* Position Scale */
+.positionscale trough highlight {
+  min-height: 4px;
 }
 .osd .positionscale trough slider {
   color: transparent;
@@ -75,12 +76,10 @@ scale marks {
 
 /* Volume Scale */
 .volumescale {
-  margin-left: 4px;
   min-height: 180px;
 }
 .osd .volumescale {
   margin: 6px;
-  margin-left: 10px;
   min-height: 280px;
 }
 .volumescale marks label {
@@ -90,4 +89,7 @@ scale marks {
 }
 .osd .volumescale marks label {
   margin-bottom: -8px;
+}
+.osd .volumescale trough highlight {
+  min-width: 6px;
 }

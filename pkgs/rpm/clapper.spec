@@ -19,8 +19,8 @@
 
 
 %global appname com.github.rafostar.Clapper
-%global gst_version 1.16.0
-%global gtk3_version 3.19.4
+%global gst_version 1.18.0
+%global gtk4_version 3.99.2
 
 Name:           clapper
 Version:        0.0.0
@@ -39,7 +39,7 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  hicolor-icon-theme
 
 Requires:       gjs
-Requires:       gtk3 >= %{gtk3_version}
+Requires:       gtk4 >= %{gtk4_version}
 Requires:       hicolor-icon-theme
 
 %if 0%{?suse_version}
@@ -51,7 +51,7 @@ BuildRequires:  update-desktop-files
 Requires:       gstreamer
 Requires:       gstreamer-plugins-base
 Requires:       gstreamer-plugins-good
-Requires:       gstreamer-plugins-good-gtk
+Requires:       gstreamer-plugins-good-gtk4
 Requires:       gstreamer-plugins-bad
 Requires:       libgstplayer-1_0-0 >= %{gst_version}
 
@@ -62,14 +62,12 @@ Recommends:     gstreamer-plugins-libav
 Suggests:       gstreamer-plugins-ugly
 # Intel/AMD video acceleration
 Suggests:       gstreamer-plugins-vaapi
-%endif
-
-%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
+%else
 BuildRequires:  glibc-all-langpacks
 Requires:       gstreamer1
 Requires:       gstreamer1-plugins-base
 Requires:       gstreamer1-plugins-good
-Requires:       gstreamer1-plugins-good-gtk
+Requires:       gstreamer1-plugins-good-gtk4
 # Contains GstPlayer lib
 Requires:       gstreamer1-plugins-bad-free >= %{gst_version}
 
@@ -113,7 +111,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/mime/packages/%{appname}.xml
 
 %changelog
+* Wed Oct 14 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-3
+- Update to GTK4
+
 * Sat Sep 19 22:02:00 CEST 2020 sp1rit - 0.0.0-2
 - Added suse_update_desktop_file macro for SuSE packages
+
 * Fri Sep 18 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-1
 - Initial package

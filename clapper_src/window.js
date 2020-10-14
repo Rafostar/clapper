@@ -13,13 +13,11 @@ var Window = GObject.registerClass({
         super._init({
             application: application,
             title: title || 'Clapper',
-            border_width: 0,
             resizable: true,
-            window_position: Gtk.WindowPosition.CENTER,
-            width_request: 960,
-            height_request: 642
+            destroy_with_parent: true,
         });
         this.isFullscreen = false;
+        this.mapSignal = this.connect('map', this._onMap.bind(this));
     }
 
     toggleFullscreen()
@@ -28,13 +26,10 @@ var Window = GObject.registerClass({
         this[`${un}fullscreen`]();
     }
 
-    vfunc_window_state_event(event)
+    _onStateNotify(toplevel)
     {
-        super.vfunc_window_state_event(event);
-
         let isFullscreen = Boolean(
-            event.new_window_state
-            & Gdk.WindowState.FULLSCREEN
+            toplevel.state & Gdk.ToplevelState.FULLSCREEN
         );
 
         if(this.isFullscreen === isFullscreen)
@@ -42,5 +37,13 @@ var Window = GObject.registerClass({
 
         this.isFullscreen = isFullscreen;
         this.emit('fullscreen-changed', this.isFullscreen);
+    }
+
+    _onMap()
+    {
+        this.disconnect(this.mapSignal);
+
+        let surface = this.get_surface();
+        surface.connect('notify::state', this._onStateNotify.bind(this));
     }
 });

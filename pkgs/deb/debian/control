@@ -14,14 +14,14 @@ Build-Depends: debhelper (>= 10),
 Package: clapper
 Architecture: all
 Depends: gjs (>= 1.50),
-         gir1.2-gtk-3.0 (>= 3.19),
+         gir1.2-gtk-4.0 (>= 3.99.2),
          hicolor-icon-theme,
          libgstreamer1.0-0,
          gstreamer1.0-plugins-base,
          gstreamer1.0-plugins-good,
-         gstreamer1.0-plugins-bad (>= 1.16),
+         gstreamer1.0-plugins-bad (>= 1.18),
          gstreamer1.0-gl,
-         gstreamer1.0-gtk3
+         gstreamer1.0-gtk4
 Recommends: gstreamer1.0-libav,
             gstreamer1.0-pulseaudio
 Suggests: gstreamer-plugins-ugly,

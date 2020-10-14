@@ -1,5 +1,6 @@
 const { Gdk, GLib, GObject, Gtk, GstPlayer } = imports.gi;
 const Debug = imports.clapper_src.debug;
+const { HeaderBar } = imports.clapper_src.headerbar;
 const { Interface } = imports.clapper_src.interface;
 const { Player } = imports.clapper_src.player;
 const { Window } = imports.clapper_src.window;
@@ -20,8 +21,6 @@ var App = GObject.registerClass({
 {
     _init(opts)
     {
-        GLib.set_prgname(APP_NAME);
-
         super._init({
             application_id: pkg.name
         });
@@ -39,7 +38,10 @@ var App = GObject.registerClass({
         this.window = null;
         this.interface = null;
         this.player = null;
-        this.dragStartReady = false;
+        this.dragAllowed = false;
+
+        this.posX = 0;
+        this.posY = 0;
     }
 
     vfunc_startup()
@@ -51,35 +53,43 @@ var App = GObject.registerClass({
             'realize', this._onWindowRealize.bind(this)
         );
         this.window.connect(
-            'key-press-event', this._onWindowKeyPressEvent.bind(this)
+            'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
         );
         this.window.connect(
-            'fullscreen-changed', this._onWindowFullscreenChanged.bind(this)
+            'close-request', this._onWindowCloseRequest.bind(this)
         );
 
         this.interface = new Interface();
-        let headerBar = new Gtk.HeaderBar({
-            title: APP_NAME,
-            show_close_button: true,
-        });
-        headerBar.pack_end(this.interface.controls.openMenuButton);
-        headerBar.pack_end(this.interface.controls.fullscreenButton);
+
+        let headerStart = [];
+        let headerEnd = [
+            this.interface.controls.openMenuButton,
+            this.interface.controls.fullscreenButton
+        ];
+        let headerBar = new HeaderBar(this.window, headerStart, headerEnd);
         this.interface.addHeaderBar(headerBar, APP_NAME);
+
         this.interface.controls.fullscreenButton.connect(
-            'clicked', () => this._onInterfaceToggleFullscreenClicked(true)
+            'clicked', () => this.activeWindow.fullscreen()
         );
         this.interface.controls.unfullscreenButton.connect(
-            'clicked', () => this._onInterfaceToggleFullscreenClicked(false)
+            'clicked', () => this.activeWindow.unfullscreen()
         );
 
         this.window.set_titlebar(this.interface.headerBar);
-        this.window.add(this.interface);
+        this.window.set_child(this.interface);
     }
 
     vfunc_activate()
     {
         super.vfunc_activate();
-        this.window.show_all();
+
+        this.window.present();
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
+            this.cssProvider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
     }
 
     run(arr)
@@ -94,8 +104,8 @@ var App = GObject.registerClass({
         this.hideCursorTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
             this.hideCursorTimeout = null;
 
-            if(this.isCursorInPlayer)
-                this.playerWindow.set_cursor(this.blankCursor);
+            if(this.player.motionController.is_pointer)
+                this.player.widget.set_cursor(this.blankCursor);
 
             return GLib.SOURCE_REMOVE;
         });
@@ -107,7 +117,7 @@ var App = GObject.registerClass({
         this.hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
             this.hideControlsTimeout = null;
 
-            if(this.window.isFullscreen && this.isCursorInPlayer) {
+            if(this.window.isFullscreen && this.player.motionController.is_pointer) {
                 this.clearTimeout('updateTime');
                 this.interface.revealControls(false);
             }
@@ -146,80 +156,63 @@ var App = GObject.registerClass({
     {
         this.window.disconnect(this.windowRealizeSignal);
 
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            this.cssProvider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
-
         this.player = new Player();
-        this.player.widget.add_events(
-            Gdk.EventMask.SCROLL_MASK
-            | Gdk.EventMask.ENTER_NOTIFY_MASK
-            | Gdk.EventMask.LEAVE_NOTIFY_MASK
-        );
-        this.interface.addPlayer(this.player);
 
-        this.player.connect('warning', this._onPlayerWarning.bind(this));
-        this.player.connect('error', this._onPlayerError.bind(this));
+        if(!this.player.widget)
+            return this.quit();
+
+        this.player.widget.width_request = 960;
+        this.player.widget.height_request = 540;
+
+        this.interface.addPlayer(this.player);
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 
-        this.player.connectWidget(
-            'button-press-event', this._onPlayerButtonPressEvent.bind(this)
+        this.player.clickGesture.connect(
+            'pressed', this._onPlayerPressed.bind(this)
         );
-        this.player.connectWidget(
-            'enter-notify-event', this._onPlayerEnterNotifyEvent.bind(this)
+        this.player.keyController.connect(
+            'key-pressed', this._onPlayerKeyPressed.bind(this)
         );
-        this.player.connectWidget(
-            'leave-notify-event', this._onPlayerLeaveNotifyEvent.bind(this)
+        this.player.motionController.connect(
+            'enter', this._onPlayerEnter.bind(this)
         );
-        this.player.connectWidget(
-            'motion-notify-event', this._onPlayerMotionNotifyEvent.bind(this)
+        this.player.motionController.connect(
+            'leave', this._onPlayerLeave.bind(this)
+        );
+        this.player.motionController.connect(
+            'motion', this._onPlayerMotion.bind(this)
+        );
+        this.player.dragGesture.connect(
+            'drag-update', this._onPlayerDragUpdate.bind(this)
         );
 
         /* Widget signals that are disconnected after first run */
         this._playerRealizeSignal = this.player.widget.connect(
             'realize', this._onPlayerRealize.bind(this)
         );
-        this._playerDrawSignal = this.player.widget.connect(
-            'draw', this._onPlayerDraw.bind(this)
+        this._playerMapSignal = this.player.widget.connect(
+            'map', this._onPlayerMap.bind(this)
         );
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)
     {
-        // when changing fullscreen pango layout of popup is lost
-        // and we need to re-add marks to the new layout
-        this.interface.controls.setVolumeMarks(false);
-
         if(isFullscreen) {
             this.setUpdateTimeInterval();
             this.setHideControlsTimeout();
-            this.interface.controls.unfullscreenButton.set_sensitive(true);
-            this.interface.controls.unfullscreenButton.show();
-            this.interface.showControls(true);
         }
         else {
             this.clearTimeout('updateTime');
-            this.interface.controls.unfullscreenButton.set_sensitive(false);
-            this.interface.controls.unfullscreenButton.hide();
-            this.interface.showControls(false);
         }
 
-        this.interface.setControlsOnVideo(isFullscreen);
-        this.interface.controls.setVolumeMarks(true);
-        this.interface.controls.setFullscreenMode(isFullscreen);
+        this.interface.setFullscreenMode(isFullscreen);
     }
 
-    _onWindowKeyPressEvent(self, event)
+    _onPlayerKeyPressed(self, keyval, keycode, state)
     {
-        let [res, key] = event.get_keyval();
-        if(!res) return;
-
-        //let keyName = Gdk.keyval_name(key);
         let bool = false;
 
-        switch(key) {
+        switch(keyval) {
             case Gdk.KEY_space:
             case Gdk.KEY_Return:
                 this.player.toggle_play();
@@ -244,19 +237,11 @@ var App = GObject.registerClass({
                 break;
             case Gdk.KEY_q:
             case Gdk.KEY_Q:
-                this.window.destroy();
+                this._onWindowCloseRequest();
                 break;
             default:
                 break;
         }
-    }
-
-    _onInterfaceToggleFullscreenClicked(isFsRequested)
-    {
-        if(this.window.isFullscreen === isFsRequested)
-            return;
-
-        this.window.toggleFullscreen();
     }
 
     _onPlayerRealize()
@@ -264,22 +249,15 @@ var App = GObject.registerClass({
         this.player.widget.disconnect(this._playerRealizeSignal);
         this.player.renderer.expose();
 
-        let display = this.player.widget.get_display();
+        this.defaultCursor = Gdk.Cursor.new_from_name('default', null);
+        this.blankCursor = Gdk.Cursor.new_from_name('none', null);
 
-        this.defaultCursor = Gdk.Cursor.new_from_name(
-            display, 'default'
-        );
-        this.blankCursor = Gdk.Cursor.new_for_display(
-            display, Gdk.CursorType.BLANK_CURSOR
-        );
-
-        this.playerWindow = this.player.widget.get_window();
         this.setHideCursorTimeout();
     }
 
-    _onPlayerDraw(self, data)
+    _onPlayerMap(self, data)
     {
-         this.player.widget.disconnect(this._playerDrawSignal);
+         this.player.widget.disconnect(this._playerMapSignal);
          this.emit('ready', true);
 
          if(this.playlist.length)
@@ -291,6 +269,7 @@ var App = GObject.registerClass({
         if(state === GstPlayer.PlayerState.BUFFERING)
             return;
 
+        let isInhibited = false;
         let flags = Gtk.ApplicationInhibitFlags.SUSPEND
             | Gtk.ApplicationInhibitFlags.IDLE;
 
@@ -303,79 +282,66 @@ var App = GObject.registerClass({
                 flags,
                 'video is playing'
             );
+            if(!this.inhibitCookie)
+                debug(new Error('could not inhibit session!'));
+
+            isInhibited = (this.inhibitCookie > 0);
         }
         else {
-            if(!this.inhibitCookie)
+            //if(!this.inhibitCookie)
                 return;
 
+            /* Uninhibit seems to be broken as of GTK 3.99.2
             this.uninhibit(this.inhibitCookie);
             this.inhibitCookie = null;
+            */
         }
 
-        debug('set prevent suspend to: ' + this.is_inhibited(flags));
+        debug(`set prevent suspend to: ${isInhibited}`);
     }
 
-    _onPlayerButtonPressEvent(self, event)
+    _onPlayerPressed(gesture, nPress, x, y)
     {
-        let [res, button] = event.get_button();
-        if(!res) return;
-
-        this.dragStartReady = false;
+        let button = gesture.get_current_button();
+        let isDouble = (nPress % 2 == 0);
+        this.dragAllowed = !isDouble;
 
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
-                this._handlePrimaryButtonPress(event, button);
+                if(isDouble)
+                    this.window.toggleFullscreen();
                 break;
             case Gdk.BUTTON_SECONDARY:
-                if(event.get_event_type() === Gdk.EventType.BUTTON_PRESS)
-                    this.player.toggle_play();
+                this.player.toggle_play();
                 break;
             default:
                 break;
         }
     }
 
-    _handlePrimaryButtonPress(event, button)
+    _onPlayerEnter(controller, x, y)
     {
-        let eventType = event.get_event_type();
-
-        switch(eventType) {
-            case Gdk.EventType.BUTTON_PRESS:
-                let [res, x, y] = event.get_root_coords();
-                if(!res)
-                    break;
-                this.dragStartX = x;
-                this.dragStartY = y;
-                this.dragStartReady = true;
-                break;
-            case Gdk.EventType.DOUBLE_BUTTON_PRESS:
-                this.window.toggleFullscreen();
-                break;
-            default:
-                break;
-        }
-    }
-
-    _onPlayerEnterNotifyEvent(self, event)
-    {
-        this.isCursorInPlayer = true;
-
         this.setHideCursorTimeout();
         if(this.window.isFullscreen)
             this.setHideControlsTimeout();
     }
 
-    _onPlayerLeaveNotifyEvent(self, event)
+    _onPlayerLeave(controller)
     {
-        this.isCursorInPlayer = false;
-
         this.clearTimeout('hideCursor');
         this.clearTimeout('hideControls');
     }
 
-    _onPlayerMotionNotifyEvent(self, event)
+    _onPlayerMotion(self, posX, posY)
     {
-        this.playerWindow.set_cursor(this.defaultCursor);
+        /* GTK4 sometimes generates motions with same coords */
+        if(this.posX === posX && this.posY === posY)
+            return;
+
+        this.posX = posX;
+        this.posY = posY;
+
+        this.player.widget.set_cursor(this.defaultCursor);
         this.setHideCursorTimeout();
 
         if(this.window.isFullscreen) {
@@ -388,36 +354,40 @@ var App = GObject.registerClass({
         else if(this.hideControlsTimeout) {
             this.clearTimeout('hideControls');
         }
+    }
 
-        if(!this.dragStartReady || this.window.isFullscreen)
+    _onPlayerDragUpdate(gesture, offsetX, offsetY)
+    {
+        if(!this.dragAllowed || this.activeWindow.isFullscreen)
             return;
 
-        let [res, x, y] = event.get_root_coords();
-        if(!res) return;
+        let { gtk_double_click_distance } = this.player.widget.get_settings();
 
-        let startDrag = this.player.widget.drag_check_threshold(
-            this.dragStartX, this.dragStartY, x, y
-        );
-        if(!startDrag) return;
+        if (
+            Math.abs(offsetX) > gtk_double_click_distance
+            || Math.abs(offsetY) > gtk_double_click_distance
+        ) {
+            let [isActive, startX, startY] = gesture.get_start_point();
+            if(!isActive) return;
 
-        this.dragStartReady = false;
-        let timestamp = event.get_time();
+            this.activeWindow.get_surface().begin_move(
+                gesture.get_device(),
+                gesture.get_current_button(),
+                startX,
+                startY,
+                gesture.get_current_event_time()
+            );
 
-        this.window.begin_move_drag(
-            Gdk.BUTTON_PRIMARY,
-            this.dragStartX,
-            this.dragStartY,
-            timestamp
-        );
+            gesture.reset();
+        }
     }
 
-    _onPlayerWarning(self, error)
+    _onWindowCloseRequest()
     {
-        debug(error.message, 'LEVEL_WARNING');
-    }
+        this.window.destroy();
+        this.player.widget.emit('destroy');
+        this.interface.emit('destroy');
 
-    _onPlayerError(self, error)
-    {
-        debug(error);
+        this.quit();
     }
 });

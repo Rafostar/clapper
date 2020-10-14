@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gst, GstPlayer } = imports.gi;
+const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.clapper_src.debug;
 
@@ -21,7 +21,16 @@ class ClapperPlayer extends GstPlayer.Player
         if(!Gst.is_initialized())
             Gst.init(null);
 
-        let gtkglsink = Gst.ElementFactory.make('gtkglsink', null);
+        let plugin = 'gtk4glsink';
+        let gtkglsink = Gst.ElementFactory.make(plugin, null);
+
+        if(!gtkglsink) {
+            return debug(new Error(
+                `Could not load "${plugin}".`
+                    + ' Do you have gstreamer-plugins-good-gtk4 installed?'
+            ));
+        }
+
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtkglsink;
 
@@ -35,8 +44,7 @@ class ClapperPlayer extends GstPlayer.Player
             video_renderer: renderer
         });
 
-        // assign elements to player for later access
-        // and make sure that GJS will not free them early
+        /* Assign elements to player for later access */
         this.gtkglsink = gtkglsink;
         this.glsinkbin = glsinkbin;
         this.dispatcher = dispatcher;
@@ -60,6 +68,7 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.set_config(config);
         this.set_mute(false);
+        this.set_plugin_rank('vah264dec', 300);
 
         this.loop = GLib.MainLoop.new(null, false);
         this.run_loop = opts.run_loop || false;
@@ -71,9 +80,28 @@ class ClapperPlayer extends GstPlayer.Player
         this._trackId = 0;
         this.playlist_ext = opts.playlist_ext || 'claps';
 
+        this.keyController = new Gtk.EventControllerKey();
+        this.motionController = new Gtk.EventControllerMotion();
+        this.scrollController = new Gtk.EventControllerScroll();
+        this.clickGesture = new Gtk.GestureClick();
+        this.dragGesture = new Gtk.GestureDrag();
+
+        this.scrollController.set_flags(
+            Gtk.EventControllerScrollFlags.BOTH_AXES
+        );
+        this.clickGesture.set_button(0);
+
+        this.widget.add_controller(this.keyController);
+        this.widget.add_controller(this.motionController);
+        this.widget.add_controller(this.scrollController);
+        this.widget.add_controller(this.clickGesture);
+        this.widget.add_controller(this.dragGesture);
+
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
+        this.connect('warning', this._onPlayerWarning.bind(this));
+        this.connect('error', this._onPlayerError.bind(this));
         this.connectWidget('destroy', this._onWidgetDestroy.bind(this));
     }
 
@@ -239,6 +267,16 @@ class ClapperPlayer extends GstPlayer.Player
             && !this.loop.is_running()
         )
             this.loop.run();
+    }
+
+    _onPlayerWarning(self, error)
+    {
+        debug(error.message, 'LEVEL_WARNING');
+    }
+
+    _onPlayerError(self, error)
+    {
+        debug(error);
     }
 
     _onWidgetDestroy()
