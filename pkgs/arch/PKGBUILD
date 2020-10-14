@@ -27,13 +27,13 @@ arch=(any)
 url="https://github.com/Rafostar/clapper"
 license=("GPL-3.0")
 depends=(
-	"gtk3>=3.19.4"
+	"gtk4>=3.99.2"
 	"hicolor-icon-theme"
 	"gjs"
 	"gst-plugins-base-libs"
 	"gst-plugins-good"
-	"gst-plugins-bad-libs>=1.16.0"
-	"gst-plugin-gtk"
+	"gst-plugins-bad-libs>=1.18.0"
+	"gst-plugin-gtk4"
 )
 makedepends=(
 	"meson>=0.50"
@@ -44,7 +44,7 @@ optdepends=(
 	"gst-libav: Popular video decoders"
 	"gstreamer-vaapi: Intel/AMD video acceleration"
 )
-source=("${pkgname%-git}::git+https://github.com/Rafostar/${pkgname%-git}.git#branch=master")
+source=("${pkgname%-git}::git+https://github.com/Rafostar/${pkgname%-git}.git")
 provides=("${pkgname%-git}")
 replaces=("${pkgname%-git}")
 conflicts=("${pkgname%-git}")
