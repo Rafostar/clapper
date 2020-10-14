@@ -203,14 +203,14 @@ var Controls = GObject.registerClass({
 
         this.positionScale.add_css_class('positionscale');
         this.positionScale.connect('value-changed', this._onPositionScaleValueChanged.bind(this));
-/*
+
+        /* GTK4 is missing pressed/released signals for GtkRange/GtkScale.
+         * We cannot add controllers, cause it already has them, so we
+         * workaround this by observing css classes it currently has */
         this.positionScale.connect(
-            'button-press-event', this._onPositionScaleButtonPressEvent.bind(this)
+            'notify::css-classes', this._onPositionScaleDragging.bind(this)
         );
-        this.positionScale.connect(
-            'button-release-event', this._onPositionScaleButtonReleaseEvent.bind(this)
-        );
-*/
+
         this.positionAdjustment = this.positionScale.get_adjustment();
         this.append(this.positionScale);
     }
@@ -295,15 +295,14 @@ var Controls = GObject.registerClass({
         this.elapsedButton.set_label(elapsed);
     }
 
-    _onPositionScaleButtonPressEvent()
+    _onPositionScaleDragging(scale)
     {
-        this.isPositionSeeking = true;
-        this.emit('position-seeking-changed', this.isPositionSeeking);
-    }
+        let isPositionSeeking = scale.has_css_class('dragging');
 
-    _onPositionScaleButtonReleaseEvent()
-    {
-        this.isPositionSeeking = false;
+        if(this.isPositionSeeking === isPositionSeeking)
+            return;
+
+        this.isPositionSeeking = isPositionSeeking;
         this.emit('position-seeking-changed', this.isPositionSeeking);
     }
 

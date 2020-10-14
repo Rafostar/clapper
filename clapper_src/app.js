@@ -163,13 +163,7 @@ var App = GObject.registerClass({
 
         this.player.widget.width_request = 960;
         this.player.widget.height_request = 540;
-/*
-        this.player.widget.add_events(
-            Gdk.EventMask.SCROLL_MASK
-            | Gdk.EventMask.ENTER_NOTIFY_MASK
-            | Gdk.EventMask.LEAVE_NOTIFY_MASK
-        );
-*/
+
         this.interface.addPlayer(this.player);
         this.player.connect('state-changed', this._onPlayerStateChanged.bind(this));
 
