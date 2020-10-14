@@ -15,7 +15,7 @@ scale marks {
   min-height: 36px;
 }
 .osd scale trough highlight {
-  min-width: 6px;
+  min-width: 0px;
   min-height: 6px;
 }
 .osd radio {
@@ -89,4 +89,7 @@ scale marks {
 }
 .osd .volumescale marks label {
   margin-bottom: -8px;
+}
+.osd .volumescale trough highlight {
+  min-width: 6px;
 }
