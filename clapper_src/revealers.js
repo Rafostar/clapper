@@ -44,10 +44,12 @@ class ClapperCustomRevealer extends Gtk.Revealer
     set_visible(isVisible)
     {
         if(this.visible === isVisible)
-            return;
+            return false;
 
         super.set_visible(isVisible);
         debug(`${this.revealerName} revealer visible: ${isVisible}`);
+
+        return true;
     }
 
     _timedReveal(isReveal, time)
@@ -191,5 +193,34 @@ class ClapperRevealerBottom extends CustomRevealer
     remove(widget)
     {
         this.revealerBox.remove(widget);
+    }
+
+    set_visible(isVisible)
+    {
+        let isChange = super.set_visible(isVisible);
+        if(!isChange) return;
+
+        if(isVisible) {
+            let box = this.get_first_child();
+            if(!box) return;
+
+            let controls = box.get_first_child();
+            if(!controls) return;
+
+            let togglePlayButton = controls.get_first_child();
+            if(togglePlayButton) {
+                togglePlayButton.grab_focus();
+                debug('focus moved to toggle play button');
+            }
+        }
+        else {
+            let parent = this.get_parent();
+            let playerWidget = parent.get_first_child();
+
+            if(playerWidget) {
+                playerWidget.grab_focus();
+                debug('focus moved to player widget');
+            }
+        }
     }
 });
