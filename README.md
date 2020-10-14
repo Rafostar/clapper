@@ -1,6 +1,16 @@
 # Clapper
 A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) and powered by [GStreamer](https://gstreamer.freedesktop.org) with [OpenGL](https://www.opengl.org) rendering. Can also be used as a pre-made widget for [GTK](https://www.gtk.org) apps.
 
+<p align="center">
+<img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-windowed-mode.png"><br>
+  <b>Windowed Mode</b>
+</p>
+
+<p align="center">
+<img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-fullscreen-mode.png"><br>
+  <b>Fullscreen Mode</b>
+</p>
+
 ### WORK IN PROGRESS
 This is still early WIP. Many features are not implemented yet and quite a few are still unstable.
 
