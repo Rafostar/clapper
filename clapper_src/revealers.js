@@ -200,6 +200,10 @@ class ClapperRevealerBottom extends CustomRevealer
         let isChange = super.set_visible(isVisible);
         if(!isChange) return;
 
+        let parent = this.get_parent();
+        let playerWidget = parent.get_first_child();
+        if(!playerWidget) return;
+
         if(isVisible) {
             let box = this.get_first_child();
             if(!box) return;
@@ -212,15 +216,12 @@ class ClapperRevealerBottom extends CustomRevealer
                 togglePlayButton.grab_focus();
                 debug('focus moved to toggle play button');
             }
+            playerWidget.set_can_focus(false);
         }
         else {
-            let parent = this.get_parent();
-            let playerWidget = parent.get_first_child();
-
-            if(playerWidget) {
-                playerWidget.grab_focus();
-                debug('focus moved to player widget');
-            }
+            playerWidget.set_can_focus(true);
+            playerWidget.grab_focus();
+            debug('focus moved to player widget');
         }
     }
 });

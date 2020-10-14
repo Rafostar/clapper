@@ -294,7 +294,7 @@ var App = GObject.registerClass({
             isInhibited = (this.inhibitCookie > 0);
         }
         else {
-            if(!this.inhibitCookie)
+            //if(!this.inhibitCookie)
                 return;
 
             /* Uninhibit seems to be broken as of GTK 3.99.2
