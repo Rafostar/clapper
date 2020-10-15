@@ -372,7 +372,7 @@ class ClapperInterface extends Gtk.Grid
             ? 1
             : duration / 100;
 
-        this.controls.positionAdjustment.set_upper(duration);
+        this.controls.positionAdjustment.set_upper(Math.floor(duration));
         this.controls.positionAdjustment.set_step_increment(increment);
         this.controls.positionAdjustment.set_page_increment(increment);
 
