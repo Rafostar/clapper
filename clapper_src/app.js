@@ -1,8 +1,9 @@
-const { Gdk, GLib, GObject, Gtk, GstPlayer } = imports.gi;
+const { Gdk, Gio, GLib, GObject, Gtk, GstPlayer } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const { HeaderBar } = imports.clapper_src.headerbar;
 const { Interface } = imports.clapper_src.interface;
 const { Player } = imports.clapper_src.player;
+const Menu = imports.clapper_src.menu;
 const { Window } = imports.clapper_src.window;
 
 const APP_NAME = pkg.name.substring(
@@ -59,21 +60,26 @@ var App = GObject.registerClass({
             'close-request', this._onWindowCloseRequest.bind(this)
         );
 
-        this.interface = new Interface();
+        for(let action of Menu.actions) {
+            let simpleAction = new Gio.SimpleAction({
+                name: action.name
+            });
+            simpleAction.connect('activate', () => action(this.active_window, APP_NAME));
+            this.add_action(simpleAction);
+        }
+        let uiBuilder = Gtk.Builder.new_from_file(
+            `${pkg.datadir}/${pkg.name}/ui/clapper.ui`
+        );
+        let models = {
+            settingsMenu: uiBuilder.get_object('settingsMenu')
+        };
+        let headerBar = new HeaderBar(this.window, models);
 
-        let headerStart = [];
-        let headerEnd = [
-            this.interface.controls.openMenuButton,
-            this.interface.controls.fullscreenButton
-        ];
-        let headerBar = new HeaderBar(this.window, headerStart, headerEnd);
+        this.interface = new Interface();
         this.interface.addHeaderBar(headerBar, APP_NAME);
 
-        this.interface.controls.fullscreenButton.connect(
-            'clicked', () => this.activeWindow.fullscreen()
-        );
         this.interface.controls.unfullscreenButton.connect(
-            'clicked', () => this.activeWindow.unfullscreen()
+            'clicked', () => this.active_window.unfullscreen()
         );
 
         this.window.set_titlebar(this.interface.headerBar);
@@ -358,7 +364,7 @@ var App = GObject.registerClass({
 
     _onPlayerDragUpdate(gesture, offsetX, offsetY)
     {
-        if(!this.dragAllowed || this.activeWindow.isFullscreen)
+        if(!this.dragAllowed || this.active_window.isFullscreen)
             return;
 
         let { gtk_double_click_distance } = this.player.widget.get_settings();
@@ -370,7 +376,7 @@ var App = GObject.registerClass({
             let [isActive, startX, startY] = gesture.get_start_point();
             if(!isActive) return;
 
-            this.activeWindow.get_surface().begin_move(
+            this.active_window.get_surface().begin_move(
                 gesture.get_device(),
                 gesture.get_current_button(),
                 startX,

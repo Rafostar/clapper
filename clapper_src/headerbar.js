@@ -3,15 +3,25 @@ const { GLib, GObject, Gtk, Pango } = imports.gi;
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends Gtk.HeaderBar
 {
-    _init(window, startButtons, endButtons)
+    _init(window, models)
     {
         super._init({
             can_focus: false,
         });
 
         this.set_title_widget(this._createWidgetForWindow(window));
-        startButtons.forEach(btn => this.pack_start(btn));
-        endButtons.forEach(btn => this.pack_end(btn));
+
+        let openMenuButton = new Gtk.MenuButton({
+            icon_name: 'open-menu-symbolic'
+        });
+        openMenuButton.set_menu_model(models.settingsMenu);
+        this.pack_end(openMenuButton);
+
+        let fullscreenButton = new Gtk.Button({
+            icon_name: 'view-fullscreen-symbolic'
+        });
+        fullscreenButton.connect('clicked', () => this.get_parent().fullscreen());
+        this.pack_end(fullscreenButton);
     }
 
     updateHeaderBar(mediaInfo)

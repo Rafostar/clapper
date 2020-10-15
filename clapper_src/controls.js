@@ -54,12 +54,6 @@ var Controls = GObject.registerClass({
             'view-restore-symbolic',
         );
         this.unfullscreenButton.set_visible(false);
-        this.fullscreenButton = Gtk.Button.new_from_icon_name(
-            'view-fullscreen-symbolic',
-        );
-        this.openMenuButton = Gtk.Button.new_from_icon_name(
-            'open-menu-symbolic',
-        );
 
         this.add_css_class('playercontrols');
 

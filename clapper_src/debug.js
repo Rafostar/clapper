@@ -1,7 +1,5 @@
 const { GLib, Gst } = imports.gi;
-
-const GST_VERSION = Gst.version();
-const REQ_GST_VER_MINOR = 16;
+const REQ_GST_VERSION_MINOR = 16;
 
 function debug(msg, levelName)
 {
@@ -20,13 +18,13 @@ function debug(msg, levelName)
 
 function gstVersionCheck()
 {
-    if(GST_VERSION[1] >= REQ_GST_VER_MINOR)
+    if(Gst.VERSION_MINOR >= REQ_GST_VERSION_MINOR)
         return;
 
     debug(
         'clapper interface was designed to' +
-        ` work with GStreamer 1.${REQ_GST_VER_MINOR} or later.` +
-        ` Your version is ${GST_VERSION[0]}.${GST_VERSION[1]}.` +
+        ` work with GStreamer 1.${REQ_GST_VERSION_MINOR} or later.` +
+        ` Your version is ${Gst.VERSION_MAJOR}.${Gst.VERSION_MINOR}.` +
         ' Please update GStreamer or expect some things to be broken.',
         'LEVEL_WARNING'
     );
