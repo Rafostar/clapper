@@ -28,6 +28,7 @@ class ClapperInterface extends Gtk.Grid
         this.needsTracksUpdate = true;
         this.headerBar = null;
         this.defaultTitle = null;
+        this.mediaInfoSignal = null;
 
         this.videoBox = new Gtk.Box();
         this.overlay = new Gtk.Overlay();
@@ -124,9 +125,9 @@ class ClapperInterface extends Gtk.Grid
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
-    updateMediaTracks()
+    _onMediaInfoUpdated(player, mediaInfo)
     {
-        let mediaInfo = this._player.get_media_info();
+        this._player.disconnect(this.mediaInfoSignal);
 
         /* Set titlebar media title and path */
         this.updateTitles(mediaInfo);
@@ -223,6 +224,8 @@ class ClapperInterface extends Gtk.Grid
                 this.controls[`${type}TracksButton`].show();
             }
         }
+
+        this.mediaInfoSignal = null;
     }
 
     updateTitles(mediaInfo)
@@ -345,17 +348,26 @@ class ClapperInterface extends Gtk.Grid
     {
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
+                if(!this._player.isLocalFile)
+                    this.needsTracksUpdate = true;
                 break;
             case GstPlayer.PlayerState.STOPPED:
                 this.needsTracksUpdate = true;
+                if(this.mediaInfoSignal) {
+                    this._player.disconnect(this.mediaInfoSignal);
+                    this.mediaInfoSignal = null;
+                }
+                break;
             case GstPlayer.PlayerState.PAUSED:
                 this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstPlayer.PlayerState.PLAYING:
                 this.controls.togglePlayButton.setSecondaryIcon();
-                if(this.needsTracksUpdate) {
+                if(this.needsTracksUpdate && !this.mediaInfoSignal) {
                     this.needsTracksUpdate = false;
-                    this.updateMediaTracks();
+                    this.mediaInfoSignal = this._player.connect(
+                        'media_info_updated', this._onMediaInfoUpdated.bind(this)
+                    );
                 }
                 break;
             default:
@@ -365,7 +377,7 @@ class ClapperInterface extends Gtk.Grid
 
     _onPlayerDurationChanged(player)
     {
-        let duration = player.get_duration() / 1000000000;
+        let duration = this._player.get_duration() / 1000000000;
         let increment = (duration < 1)
             ? 0
             : (duration < 100)

@@ -51,6 +51,7 @@ class ClapperPlayer extends GstPlayer.Player
         this.renderer = renderer;
 
         this.gstRegistry = Gst.Registry.get();
+        this.isLocalFile = false;
 
         this._playerSignals = [];
         this._widgetSignals = [];
@@ -115,8 +116,10 @@ class ClapperPlayer extends GstPlayer.Player
 
         debug(`parsed source to URI: ${source}`);
 
-        if(Gst.Uri.get_protocol(source) !== 'file')
+        if(Gst.Uri.get_protocol(source) !== 'file') {
+            this.isLocalFile = false;
             return this.set_uri(source);
+        }
 
         let file = Gio.file_new_for_uri(source);
 
@@ -133,6 +136,7 @@ class ClapperPlayer extends GstPlayer.Player
         if(file.get_path().endsWith(`.${this.playlist_ext}`))
             return this.load_playlist_file(file);
 
+        this.isLocalFile = true;
         this.set_uri(source);
     }
 
@@ -230,12 +234,18 @@ class ClapperPlayer extends GstPlayer.Player
 
     connect(signal, fn)
     {
-        this._playerSignals.push(super.connect(signal, fn));
+        let connection = super.connect(signal, fn);
+        this._playerSignals.push(connection);
+
+        return connection;
     }
 
     connectWidget(signal, fn)
     {
-        this._widgetSignals.push(this.widget.connect(signal, fn));
+        let connection = this.widget.connect(signal, fn);
+        this._widgetSignals.push(connection);
+
+        return connection;
     }
 
     _onStateChanged(player, state)

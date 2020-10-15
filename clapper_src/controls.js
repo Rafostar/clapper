@@ -71,13 +71,9 @@ var Controls = GObject.registerClass({
 
     setLiveMode(isLive, isSeekable)
     {
-        /* This update must always happen
-         * after media duration is set */
-        let text = (isLive)
-            ? 'LIVE'
-            : '00:00:00' + '/' + this.durationFormated;
+        if(isLive)
+            this.elapsedButton.set_label('LIVE');
 
-        this.elapsedButton.set_label(text);
         this.positionScale.visible = isSeekable;
     }
 
