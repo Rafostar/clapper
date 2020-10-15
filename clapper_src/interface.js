@@ -468,6 +468,13 @@ class ClapperInterface extends Gtk.Grid
     _onDestroy()
     {
         this.disconnect(this.destroySignal);
+
+        if(
+            this._player
+            && this._player.state !== GstPlayer.PlayerState.STOPPED
+        )
+            this._player.stop();
+
         this.controls.emit('destroy');
     }
 });

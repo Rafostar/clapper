@@ -287,9 +287,6 @@ class ClapperPlayer extends GstPlayer.Player
         while(this._playerSignals.length)
             this.disconnect(this._playerSignals.pop());
 
-        if(this.state !== GstPlayer.PlayerState.STOPPED)
-            this.stop();
-
         if(this.run_loop && this.loop.is_running())
             this.loop.quit();
     }

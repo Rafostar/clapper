@@ -390,10 +390,7 @@ var App = GObject.registerClass({
 
     _onWindowCloseRequest()
     {
-        this.window.destroy();
-        this.player.widget.emit('destroy');
         this.interface.emit('destroy');
-
         this.quit();
     }
 });
