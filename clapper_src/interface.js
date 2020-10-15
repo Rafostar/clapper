@@ -20,6 +20,8 @@ class ClapperInterface extends Gtk.Grid
         Object.assign(this, defaults, opts);
 
         this.fullscreenMode = false;
+        this.isSeekable = false;
+
         this.lastVolumeValue = null;
         this.lastPositionValue = 0;
         this.lastRevealerEventTime = 0;
@@ -129,11 +131,10 @@ class ClapperInterface extends Gtk.Grid
         /* Set titlebar media title and path */
         this.updateTitles(mediaInfo);
 
-        // we can also check if video is "live" or "seekable" (right now unused)
-        // it might be a good idea to hide position seek bar and disable seeking
-        // when playing not seekable media (not implemented yet)
-        //let isLive = mediaInfo.is_live();
-        //let isSeekable = mediaInfo.is_seekable();
+        /* Show/hide position scale on LIVE */
+        let isLive = mediaInfo.is_live();
+        this.isSeekable = mediaInfo.is_seekable();
+        this.controls.setLiveMode(isLive, this.isSeekable);
 
         let streamList = mediaInfo.get_stream_list();
         let parsedInfo = {
@@ -323,7 +324,6 @@ class ClapperInterface extends Gtk.Grid
                 this._player.set_visualization_enabled(false);
                 debug('disabled visualizations');
             }
-
             return;
         }
 
@@ -383,7 +383,8 @@ class ClapperInterface extends Gtk.Grid
     _onPlayerPositionUpdated(player, position)
     {
         if(
-            this.controls.isPositionSeeking
+            !this.isSeekable
+            || this.controls.isPositionSeeking
             || this._player.state === GstPlayer.PlayerState.BUFFERING
         )
             return;

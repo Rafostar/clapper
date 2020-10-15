@@ -69,6 +69,18 @@ var Controls = GObject.registerClass({
         this.unfullscreenButton.set_visible(isFullscreen);
     }
 
+    setLiveMode(isLive, isSeekable)
+    {
+        /* This update must always happen
+         * after media duration is set */
+        let text = (isLive)
+            ? 'LIVE'
+            : '00:00:00' + '/' + this.durationFormated;
+
+        this.elapsedButton.set_label(text);
+        this.positionScale.visible = isSeekable;
+    }
+
     addButton(buttonIcon)
     {
         let button = (buttonIcon instanceof Gtk.Button)
@@ -186,6 +198,7 @@ var Controls = GObject.registerClass({
             hexpand: true,
             valign: Gtk.Align.CENTER,
             can_focus: false,
+            visible: false,
         });
 
         this.togglePlayButton.bind_property('margin_top',
@@ -206,7 +219,14 @@ var Controls = GObject.registerClass({
         );
 
         this.positionAdjustment = this.positionScale.get_adjustment();
-        this.append(this.positionScale);
+
+        let box = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+            can_focus: false,
+        });
+        box.append(this.positionScale);
+        this.append(box);
     }
 
     _addVolumeButton()

@@ -14,10 +14,6 @@ scale marks {
   min-width: 36px;
   min-height: 36px;
 }
-.osd scale trough highlight {
-  min-width: 0px;
-  min-height: 6px;
-}
 .osd radio {
   margin: 6px;
   border: 2px solid;
