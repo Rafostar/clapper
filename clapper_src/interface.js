@@ -377,6 +377,7 @@ class ClapperInterface extends Gtk.Grid
         this.controls.positionAdjustment.set_page_increment(increment);
 
         this.controls.durationFormated = this.controls._getFormatedTime(duration);
+        this.controls._onPositionScaleValueChanged();
     }
 
     _onPlayerPositionUpdated(player, position)
