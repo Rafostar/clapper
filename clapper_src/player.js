@@ -51,7 +51,8 @@ class ClapperPlayer extends GstPlayer.Player
         this.renderer = renderer;
 
         this.gstRegistry = Gst.Registry.get();
-        this.isLocalFile = false;
+        this.is_local_file = false;
+        this.seek_done = true;
 
         this._playerSignals = [];
         this._widgetSignals = [];
@@ -100,6 +101,7 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
+        this.connect('seek-done', this._onSeekDone.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
         this.connect('warning', this._onPlayerWarning.bind(this));
         this.connect('error', this._onPlayerError.bind(this));
@@ -117,7 +119,7 @@ class ClapperPlayer extends GstPlayer.Player
         debug(`parsed source to URI: ${source}`);
 
         if(Gst.Uri.get_protocol(source) !== 'file') {
-            this.isLocalFile = false;
+            this.is_local_file = false;
             return this.set_uri(source);
         }
 
@@ -136,7 +138,7 @@ class ClapperPlayer extends GstPlayer.Player
         if(file.get_path().endsWith(`.${this.playlist_ext}`))
             return this.load_playlist_file(file);
 
-        this.isLocalFile = true;
+        this.is_local_file = true;
         this.set_uri(source);
     }
 
@@ -198,6 +200,13 @@ class ClapperPlayer extends GstPlayer.Player
         return this.visualization_enabled;
     }
 
+    seek(position)
+    {
+        this.seek_done = false;
+
+        super.seek(position);
+    }
+
     seek_seconds(position)
     {
         this.seek(position * 1000000000);
@@ -252,12 +261,19 @@ class ClapperPlayer extends GstPlayer.Player
     {
         this.state = state;
 
-        if(
-            this.run_loop
-            && this.state === GstPlayer.PlayerState.STOPPED
-            && this.loop.is_running()
-        )
-            this.loop.quit();
+        if(this.state === GstPlayer.PlayerState.STOPPED) {
+            this.seek_done = true;
+            if(
+                this.run_loop
+                && this.loop.is_running()
+            )
+                this.loop.quit();
+        }
+    }
+
+    _onSeekDone()
+    {
+        this.seek_done = true;
     }
 
     _onStreamEnded(player)

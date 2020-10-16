@@ -345,7 +345,7 @@ class ClapperInterface extends Gtk.Grid
     {
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
-                if(!this._player.isLocalFile)
+                if(!this._player.is_local_file)
                     this.needsTracksUpdate = true;
                 break;
             case GstPlayer.PlayerState.STOPPED:
@@ -395,6 +395,7 @@ class ClapperInterface extends Gtk.Grid
     {
         if(
             !this.isSeekable
+            || !this._player.seek_done
             || this.controls.isPositionSeeking
             || this._player.state === GstPlayer.PlayerState.BUFFERING
         )
