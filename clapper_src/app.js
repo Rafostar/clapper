@@ -344,8 +344,17 @@ var App = GObject.registerClass({
         if(this.posX === posX && this.posY === posY)
             return;
 
+        /* Do not show cursor on small movements */
+        let ignoreMovement = (
+            Math.abs(this.posX - posX) <= 0.5
+            && Math.abs(this.posY - posY) <= 0.5
+        );
+
         this.posX = posX;
         this.posY = posY;
+
+        if(ignoreMovement)
+            return;
 
         this.player.widget.set_cursor(this.defaultCursor);
         this.setHideCursorTimeout();
