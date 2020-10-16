@@ -266,6 +266,8 @@ class ClapperPlayer extends GstPlayer.Player
 
         if(this._trackId < this._playlist.length)
             this.set_media(this._playlist[this._trackId]);
+        else
+            this.stop();
     }
 
     _onUriLoaded()

@@ -162,6 +162,9 @@ var Controls = GObject.registerClass({
 
     handleScaleIncrement(type, isUp)
     {
+        if(type === 'volume' && !this.volumeButton.visible)
+            return;
+
         let value = this[`${type}Scale`].get_value();
         let maxValue = this[`${type}Adjustment`].get_upper();
         let increment = this[`${type}Adjustment`].get_page_increment();

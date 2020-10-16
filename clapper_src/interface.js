@@ -349,12 +349,14 @@ class ClapperInterface extends Gtk.Grid
                     this.needsTracksUpdate = true;
                 break;
             case GstPlayer.PlayerState.STOPPED:
+                this.lastPositionValue = 0;
+                this.controls.positionAdjustment.set_value(0);
+                this.controls.togglePlayButton.setPrimaryIcon();
                 this.needsTracksUpdate = true;
                 if(this.mediaInfoSignal) {
                     this._player.disconnect(this.mediaInfoSignal);
                     this.mediaInfoSignal = null;
                 }
-                break;
             case GstPlayer.PlayerState.PAUSED:
                 this.controls.togglePlayButton.setPrimaryIcon();
                 break;
@@ -443,6 +445,11 @@ class ClapperInterface extends Gtk.Grid
 
         this.lastPositionValue = positionSeconds;
         this._player.seek_seconds(positionSeconds);
+        debug(`player is seeking to position: ${positionSeconds}`);
+
+        /* Needed to enable preview after playback is stopped */
+        if(this._player.state === GstPlayer.PlayerState.STOPPED)
+            this._player.pause();
 
         if(this.fullscreenMode)
             this.updateTime();
