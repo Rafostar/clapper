@@ -446,7 +446,6 @@ class ClapperInterface extends Gtk.Grid
 
         this.lastPositionValue = positionSeconds;
         this._player.seek_seconds(positionSeconds);
-        debug(`player is seeking to position: ${positionSeconds}`);
 
         /* Needed to enable preview after playback is stopped */
         if(this._player.state === GstPlayer.PlayerState.STOPPED)

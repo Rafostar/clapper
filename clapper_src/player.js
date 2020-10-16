@@ -52,7 +52,7 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.gstRegistry = Gst.Registry.get();
         this.is_local_file = false;
-        this.seek_done = true;
+        this.seek_done = false;
 
         this._playerSignals = [];
         this._widgetSignals = [];
@@ -77,6 +77,7 @@ class ClapperPlayer extends GstPlayer.Player
         this.widget = gtkglsink.widget;
         this.state = GstPlayer.PlayerState.STOPPED;
         this.visualization_enabled = false;
+        this.fast_seeking = opts.fast_seeking || false;
 
         this._playlist = [];
         this._trackId = 0;
@@ -101,7 +102,6 @@ class ClapperPlayer extends GstPlayer.Player
 
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
-        this.connect('seek-done', this._onSeekDone.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
         this.connect('warning', this._onPlayerWarning.bind(this));
         this.connect('error', this._onPlayerError.bind(this));
@@ -203,8 +203,17 @@ class ClapperPlayer extends GstPlayer.Player
     seek(position)
     {
         this.seek_done = false;
+        debug(`player is seeking to position: ${position}`);
 
-        super.seek(position);
+        if(!this.fast_seeking)
+            return super.seek(position);
+
+        let pipeline = this.get_pipeline();
+        let flags = Gst.SeekFlags.FLUSH
+            | Gst.SeekFlags.KEY_UNIT
+            | Gst.SeekFlags.SNAP_AFTER;
+
+        pipeline.seek_simple(Gst.Format.TIME, flags, position);
     }
 
     seek_seconds(position)
@@ -262,18 +271,16 @@ class ClapperPlayer extends GstPlayer.Player
         this.state = state;
 
         if(this.state === GstPlayer.PlayerState.STOPPED) {
-            this.seek_done = true;
             if(
                 this.run_loop
                 && this.loop.is_running()
             )
                 this.loop.quit();
         }
-    }
-
-    _onSeekDone()
-    {
-        this.seek_done = true;
+        if(!this.seek_done && this.state !== GstPlayer.PlayerState.BUFFERING) {
+            this.seek_done = true;
+            debug('seeking finished');
+        }
     }
 
     _onStreamEnded(player)
