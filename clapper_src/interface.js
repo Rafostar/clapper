@@ -81,9 +81,6 @@ class ClapperInterface extends Gtk.Grid
         this.overlay.set_child(this._player.widget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
-
-        this.overlay.show();
-        this._player.widget.show();
     }
 
     addHeaderBar(headerBar, defaultTitle)
@@ -210,7 +207,7 @@ class ClapperInterface extends Gtk.Grid
             if(!parsedInfo[`${type}Tracks`].length) {
                 if(this.controls[`${type}TracksButton`].visible) {
                     debug(`hiding popover button without contents: ${type}`);
-                    this.controls[`${type}TracksButton`].hide();
+                    this.controls[`${type}TracksButton`].set_visible(false);
                 }
                 continue;
             }
@@ -221,7 +218,7 @@ class ClapperInterface extends Gtk.Grid
             );
             if(!this.controls[`${type}TracksButton`].visible) {
                 debug(`showing popover button with contents: ${type}`);
-                this.controls[`${type}TracksButton`].show();
+                this.controls[`${type}TracksButton`].set_visible(true);
             }
         }
 

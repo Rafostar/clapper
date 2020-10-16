@@ -40,15 +40,19 @@ var Controls = GObject.registerClass({
         this.visualizationsButton = this.addPopoverButton(
             'display-projector-symbolic'
         );
+        this.visualizationsButton.set_visible(false);
         this.videoTracksButton = this.addPopoverButton(
             'emblem-videos-symbolic'
         );
+        this.videoTracksButton.set_visible(false);
         this.audioTracksButton = this.addPopoverButton(
             'emblem-music-symbolic'
         );
+        this.audioTracksButton.set_visible(false);
         this.subtitleTracksButton = this.addPopoverButton(
             'media-view-subtitles-symbolic'
         );
+        this.subtitleTracksButton.set_visible(false);
         this._addVolumeButton();
         this.unfullscreenButton = this.addButton(
             'view-restore-symbolic',
@@ -56,8 +60,6 @@ var Controls = GObject.registerClass({
         this.unfullscreenButton.set_visible(false);
 
         this.add_css_class('playercontrols');
-
-        this.realizeSignal = this.connect('realize', this._onRealize.bind(this));
         this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
     }
 
@@ -257,6 +259,11 @@ var Controls = GObject.registerClass({
             let text = (i) ? `${i}00%` : '0%';
             this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
         }
+
+        this.audioTracksButton.bind_property('visible', this.volumeButton, 'visible',
+            GObject.BindingFlags.SYNC_CREATE
+        );
+
         this.volumeButton.popoverBox.append(this.volumeScale);
     }
 
@@ -314,21 +321,6 @@ var Controls = GObject.registerClass({
 
         this.isPositionSeeking = isPositionSeeking;
         this.emit('position-seeking-changed', this.isPositionSeeking);
-    }
-
-    _onRealize()
-    {
-        this.disconnect(this.realizeSignal);
-
-        let hiddenButtons = [
-            'visualizations',
-            'videoTracks',
-            'audioTracks',
-            'subtitleTracks'
-        ];
-
-        for(let name of hiddenButtons)
-            this[`${name}Button`].hide();
     }
 
     _onScroll(controller, dx, dy)
