@@ -5,7 +5,7 @@ function debug(msg, levelName)
 {
     levelName = levelName || 'LEVEL_DEBUG';
 
-    if(msg instanceof Error) {
+    if(msg.message) {
         levelName = 'LEVEL_CRITICAL';
         msg = msg.message;
     }
