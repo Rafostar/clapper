@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
+const { Gio, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.clapper_src.debug;
 
@@ -72,8 +72,6 @@ class ClapperPlayer extends GstPlayer.Player
         this.set_mute(false);
         this.set_plugin_rank('vah264dec', 300);
 
-        this.loop = GLib.MainLoop.new(null, false);
-        this.run_loop = opts.run_loop || false;
         this.widget = gtkglsink.widget;
         this.state = GstPlayer.PlayerState.STOPPED;
         this.visualization_enabled = false;
@@ -270,13 +268,6 @@ class ClapperPlayer extends GstPlayer.Player
     {
         this.state = state;
 
-        if(this.state === GstPlayer.PlayerState.STOPPED) {
-            if(
-                this.run_loop
-                && this.loop.is_running()
-            )
-                this.loop.quit();
-        }
         if(!this.seek_done && this.state !== GstPlayer.PlayerState.BUFFERING) {
             this.seek_done = true;
             debug('seeking finished');
@@ -293,15 +284,10 @@ class ClapperPlayer extends GstPlayer.Player
             this.stop();
     }
 
-    _onUriLoaded()
+    _onUriLoaded(self, uri)
     {
         this.play();
-
-        if(
-            this.run_loop
-            && !this.loop.is_running()
-        )
-            this.loop.run();
+        debug(`URI loaded: ${uri}`);
     }
 
     _onPlayerWarning(self, error)
@@ -321,8 +307,5 @@ class ClapperPlayer extends GstPlayer.Player
 
         while(this._playerSignals.length)
             this.disconnect(this._playerSignals.pop());
-
-        if(this.run_loop && this.loop.is_running())
-            this.loop.quit();
     }
 });
