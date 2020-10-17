@@ -51,12 +51,15 @@ Other acceleration methods (supported by `GStreamer`) should also work, but I ha
 </details>
 
 ## Requirements
+* **GTK4** >= 3.99.2
+* **GStreamer** >= 1.18 (with GstPlayer lib)
+
 Clapper uses GTK4 along with `GStreamer` bindings from `GI` repository, so if your distro ships them as separate package, they must be installed first.
 Additionally Clapper requires these `GStreamer` elements:
 * [gtk4glsink](https://gstreamer.freedesktop.org/documentation/gtk/gtkglsink.html)
 * [glsinkbin](https://gstreamer.freedesktop.org/documentation/opengl/glsinkbin.html)
 
-**Attention:** `gtk4glsink` is my own port of current GStreamer `gtkglsink` to GTK4. The element is not part of GStreamer yet (pending review). Fedora package is available in my OBS repository. It will be installed along with Clapper if you add my repo to `dnf` package manager. Otherwise you might want to build it yourself from [source code](https://gitlab.freedesktop.org/Rafostar/gst-plugins-good/-/tree/GTK4) of my gstreamer GTK4 branch.
+**Attention:** `gtk4glsink` is my own port of current GStreamer `gtkglsink` to GTK4. The element is not part of GStreamer yet (pending review). Fedora package is available in my [OBS repository](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper). It will be installed along with Clapper if you add my repo to `dnf` package manager. Otherwise you might want to build it yourself from [source code](https://github.com/Rafostar/gst-plugins-good/tree/GTK4) of my gst-plugins-good GTK4 branch. Also please note that the GTK4 plugin is conflicting with the GTK3 version of the same plugin. You cannot install both.
 
 Other required plugins (codecs) depend on video format.
 
@@ -91,7 +94,9 @@ meson builddir --prefix=/usr/local
 sudo meson install -C builddir
 ```
 
-GStreamer elements installation:
+Remember that you also need `gtk4glsink`. You can build it from my github fork of [gst-plugins-good](https://github.com/Rafostar/gst-plugins-good/tree/GTK4) using GTK4 branch.
+
+Other required GStreamer elements installation:
 <details>
   <summary><b>Debian/Ubuntu</b></summary>
 
@@ -101,7 +106,6 @@ sudo apt install \
   gstreamer1.0-plugins-good \
   gstreamer1.0-plugins-bad \
   gstreamer1.0-gl \
-  gstreamer1.0-gtk4 \
   gstreamer1.0-libav \
   gstreamer-vaapi
 ```
@@ -115,7 +119,6 @@ Enable RPM Fusion and run:
 sudo dnf install \
   gstreamer1-plugins-base \
   gstreamer1-plugins-good \
-  gstreamer1-plugins-good-gtk4 \
   gstreamer1-plugins-bad-free \
   gstreamer1-plugins-bad-free-extras \
   gstreamer1-libav \
@@ -130,7 +133,6 @@ sudo dnf install \
 sudo zypper install \
   gstreamer-plugins-base \
   gstreamer-plugins-good \
-  gstreamer-plugins-good-gtk4 \
   gstreamer-plugins-bad \
   gstreamer-plugins-libav \
   gstreamer-plugins-vaapi
@@ -144,7 +146,6 @@ sudo zypper install \
 sudo pacman -S \
   gst-plugins-base \
   gst-plugins-good \
-  gst-plugin-gtk4 \
   gst-plugins-bad-libs \
   gst-libav \
   gstreamer-vaapi
