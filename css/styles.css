@@ -27,7 +27,7 @@ scale marks {
   -gtk-icon-size: 28px;
 }
 .labelbutton {
-  font-family: 'Cantarell', 'Noto Sans', sans-serif;
+  font-family: 'Cantarell', sans-serif;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
@@ -37,7 +37,7 @@ scale marks {
 .reavealertop {
   min-height: 90px;
   box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.3);
-  font-family: 'Cantarell', 'Noto Sans', sans-serif;
+  font-family: 'Cantarell', sans-serif;
   font-size: 30px;
   font-weight: 500;
   background: transparent;
