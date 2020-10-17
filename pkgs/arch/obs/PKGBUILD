@@ -27,12 +27,12 @@ arch=(any)
 url="https://github.com/Rafostar/clapper"
 license=("GPL-3.0")
 depends=(
-	"gtk3>=3.19.4"
+	"gtk4>=3.99.2"
 	"hicolor-icon-theme"
 	"gjs"
-	"gst-plugins-base-libs"
-	"gst-plugin-gtk"
-	"gst-plugins-bad-libs>=1.16.0"
+	"gst-plugins-base-libs>=1.18.0"
+	"gst-plugins-good>=1.18.0"
+	"gst-plugins-bad-libs>=1.18.0"
 )
 makedepends=(
 	"meson>=0.50"

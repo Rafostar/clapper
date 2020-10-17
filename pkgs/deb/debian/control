@@ -16,14 +16,13 @@ Architecture: all
 Depends: gjs (>= 1.50),
          gir1.2-gtk-4.0 (>= 3.99.2),
          hicolor-icon-theme,
-         libgstreamer1.0-0,
-         gstreamer1.0-plugins-base,
-         gstreamer1.0-plugins-good,
+         libgstreamer1.0-0 (>= 1.18),
+         gstreamer1.0-plugins-base (>= 1.18),
+         gstreamer1.0-plugins-good (>= 1.18),
          gstreamer1.0-plugins-bad (>= 1.18),
-         gstreamer1.0-gl,
-         gstreamer1.0-gtk4
-Recommends: gstreamer1.0-libav,
-            gstreamer1.0-pulseaudio
+         gstreamer1.0-gl (>= 1.18)
+Recommends: gstreamer1.0-libav (>= 1.18),
+            gstreamer1.0-pulseaudio (>= 1.18)
 Suggests: gstreamer-plugins-ugly,
           gstreamer-vaapi
 Description: Simple and modern GNOME media player

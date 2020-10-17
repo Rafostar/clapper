@@ -48,15 +48,14 @@ Group:          Productivity/Multimedia/Video/Players
 
 BuildRequires:  update-desktop-files
 
-Requires:       gstreamer
-Requires:       gstreamer-plugins-base
-Requires:       gstreamer-plugins-good
-Requires:       gstreamer-plugins-good-gtk4
-Requires:       gstreamer-plugins-bad
+Requires:       gstreamer >= %{gst_version}
+Requires:       gstreamer-plugins-base >= %{gst_version}
+Requires:       gstreamer-plugins-good >= %{gst_version}
+Requires:       gstreamer-plugins-bad >= %{gst_version}
 Requires:       libgstplayer-1_0-0 >= %{gst_version}
 
 # Popular video decoders
-Recommends:     gstreamer-plugins-libav
+Recommends:     gstreamer-plugins-libav >= %{gst_version}
 
 # CD Playback
 Suggests:       gstreamer-plugins-ugly
@@ -64,15 +63,15 @@ Suggests:       gstreamer-plugins-ugly
 Suggests:       gstreamer-plugins-vaapi
 %else
 BuildRequires:  glibc-all-langpacks
-Requires:       gstreamer1
-Requires:       gstreamer1-plugins-base
-Requires:       gstreamer1-plugins-good
+Requires:       gstreamer1 >= %{gst_version}
+Requires:       gstreamer1-plugins-base >= %{gst_version}
+Requires:       gstreamer1-plugins-good >= %{gst_version}
 Requires:       gstreamer1-plugins-good-gtk4
 # Contains GstPlayer lib
 Requires:       gstreamer1-plugins-bad-free >= %{gst_version}
 
 # ASS subtitles (assrender)
-Recommends:     gstreamer1-plugins-bad-free-extras
+Recommends:     gstreamer1-plugins-bad-free-extras >= %{gst_version}
 
 # CD Playback
 Suggests:       gstreamer1-plugins-ugly-free
