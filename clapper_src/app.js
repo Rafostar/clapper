@@ -12,13 +12,8 @@ const APP_NAME = pkg.name.substring(
 
 let { debug } = Debug;
 
-var App = GObject.registerClass({
-    Signals: {
-        'ready': {
-            param_types: [GObject.TYPE_BOOLEAN]
-        },
-    }
-}, class ClapperApp extends Gtk.Application
+var App = GObject.registerClass(
+class ClapperApp extends Gtk.Application
 {
     _init(opts)
     {
@@ -90,7 +85,11 @@ var App = GObject.registerClass({
     {
         super.vfunc_activate();
 
-        this.window.present();
+        this.windowShowSignal = this.active_window.connect(
+            'show', this._onWindowShow.bind(this)
+        );
+        this.active_window.present();
+
         Gtk.StyleContext.add_provider_for_display(
             Gdk.Display.get_default(),
             this.cssProvider,
@@ -196,9 +195,6 @@ var App = GObject.registerClass({
         this._playerRealizeSignal = this.player.widget.connect(
             'realize', this._onPlayerRealize.bind(this)
         );
-        this._playerMapSignal = this.player.widget.connect(
-            'map', this._onPlayerMap.bind(this)
-        );
     }
 
     _onWindowFullscreenChanged(window, isFullscreen)
@@ -261,10 +257,10 @@ var App = GObject.registerClass({
         this.setHideCursorTimeout();
     }
 
-    _onPlayerMap(self, data)
+    _onWindowShow(window)
     {
-         this.player.widget.disconnect(this._playerMapSignal);
-         this.emit('ready', true);
+         this.window.disconnect(this.windowShowSignal);
+         this.windowShowSignal = null;
 
          if(this.playlist.length)
             this.player.set_playlist(this.playlist);
@@ -338,37 +334,34 @@ var App = GObject.registerClass({
         this.clearTimeout('hideControls');
     }
 
-    _onPlayerMotion(self, posX, posY)
+    _onPlayerMotion(controller, posX, posY)
     {
         /* GTK4 sometimes generates motions with same coords */
         if(this.posX === posX && this.posY === posY)
             return;
 
         /* Do not show cursor on small movements */
-        let ignoreMovement = (
-            Math.abs(this.posX - posX) <= 0.5
-            && Math.abs(this.posY - posY) <= 0.5
-        );
+        if(
+            Math.abs(this.posX - posX) >= 0.5
+            || Math.abs(this.posY - posY) >= 0.5
+        ) {
+            this.player.widget.set_cursor(this.defaultCursor);
+            this.setHideCursorTimeout();
+
+            if(this.window.isFullscreen) {
+                if(!this.interface.revealerTop.get_reveal_child()) {
+                    this.setUpdateTimeInterval();
+                    this.interface.revealControls(true);
+                }
+                this.setHideControlsTimeout();
+            }
+            else if(this.hideControlsTimeout) {
+                this.clearTimeout('hideControls');
+            }
+        }
 
         this.posX = posX;
         this.posY = posY;
-
-        if(ignoreMovement)
-            return;
-
-        this.player.widget.set_cursor(this.defaultCursor);
-        this.setHideCursorTimeout();
-
-        if(this.window.isFullscreen) {
-            if(!this.interface.revealerTop.get_reveal_child()) {
-                this.setUpdateTimeInterval();
-                this.interface.revealControls(true);
-            }
-            this.setHideControlsTimeout();
-        }
-        else if(this.hideControlsTimeout) {
-            this.clearTimeout('hideControls');
-        }
     }
 
     _onPlayerDragUpdate(gesture, offsetX, offsetY)
