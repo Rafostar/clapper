@@ -202,13 +202,6 @@ var Controls = GObject.registerClass({
             visible: false,
         });
 
-        this.togglePlayButton.bind_property('margin_top',
-            this.positionScale, 'margin_top', GObject.BindingFlags.SYNC_CREATE
-        );
-        this.togglePlayButton.bind_property('margin_bottom',
-            this.positionScale, 'margin_bottom', GObject.BindingFlags.SYNC_CREATE
-        );
-
         this.positionScale.add_css_class('positionscale');
         this.positionScale.connect('value-changed', this._onPositionScaleValueChanged.bind(this));
 
@@ -224,6 +217,7 @@ var Controls = GObject.registerClass({
         let box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
             hexpand: true,
+            valign: Gtk.Align.CENTER,
             can_focus: false,
         });
         box.append(this.positionScale);
