@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, Gtk, Pango } = imports.gi;
+const { GLib, GObject, Gtk, Pango } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
 const REVEAL_TIME = 800;
@@ -14,6 +14,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
 
         let defaults = {
             visible: false,
+            can_focus: false,
         };
         Object.assign(opts, defaults);
 
@@ -30,6 +31,9 @@ class ClapperCustomRevealer extends Gtk.Revealer
         }
         else
             this._setHideTimeout();
+
+        /* Restore focusability after we are done */
+        if(!isReveal) this.set_can_focus(true);
 
         this._timedReveal(isReveal, REVEAL_TIME);
     }
@@ -94,18 +98,6 @@ class ClapperRevealerTop extends CustomRevealer
         });
 
         this.revealerName = 'top';
-/*
-        this.set_events(
-            Gdk.EventMask.BUTTON_PRESS_MASK
-            | Gdk.EventMask.BUTTON_RELEASE_MASK
-            | Gdk.EventMask.TOUCH_MASK
-            | Gdk.EventMask.SCROLL_MASK
-            | Gdk.EventMask.TOUCHPAD_GESTURE_MASK
-            | Gdk.EventMask.POINTER_MOTION_MASK
-            | Gdk.EventMask.ENTER_NOTIFY_MASK
-            | Gdk.EventMask.LEAVE_NOTIFY_MASK
-        );
-*/
         let initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
             ? '%I:%M %p'
@@ -198,7 +190,7 @@ class ClapperRevealerBottom extends CustomRevealer
     set_visible(isVisible)
     {
         let isChange = super.set_visible(isVisible);
-        if(!isChange) return;
+        if(!isChange || !this.can_focus) return;
 
         let parent = this.get_parent();
         let playerWidget = parent.get_first_child();

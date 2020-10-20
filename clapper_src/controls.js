@@ -1,25 +1,15 @@
-const { GObject, Gdk, Gtk } = imports.gi;
+const { GObject, Gtk } = imports.gi;
 const Buttons = imports.clapper_src.buttons;
 const Debug = imports.clapper_src.debug;
+const Misc = imports.clapper_src.misc;
 
 const CONTROLS_MARGIN = 4;
 const CONTROLS_SPACING = 4;
 
 let { debug } = Debug;
 
-var Controls = GObject.registerClass({
-    Signals: {
-        'position-seeking-changed': {
-            param_types: [GObject.TYPE_BOOLEAN]
-        },
-        'track-change-requested': {
-            param_types: [GObject.TYPE_STRING, GObject.TYPE_INT]
-        },
-        'visualization-change-requested': {
-            param_types: [GObject.TYPE_STRING]
-        },
-    }
-}, class ClapperControls extends Gtk.Box
+var Controls = GObject.registerClass(
+class ClapperControls extends Gtk.Box
 {
     _init()
     {
@@ -29,7 +19,13 @@ var Controls = GObject.registerClass({
             margin_end: CONTROLS_MARGIN,
             spacing: CONTROLS_SPACING,
             valign: Gtk.Align.END,
+            can_focus: false,
         });
+
+        this.currentVolume = 0;
+        this.currentPosition = 0;
+        this.currentDuration = 0;
+        this.isPositionSeeking = false;
 
         this.durationFormated = '00:00:00';
         this.elapsedInitial = '00:00:00/00:00:00';
@@ -57,10 +53,11 @@ var Controls = GObject.registerClass({
         this.unfullscreenButton = this.addButton(
             'view-restore-symbolic',
         );
+        this.unfullscreenButton.connect('clicked', this._onUnfullscreenClicked.bind(this));
         this.unfullscreenButton.set_visible(false);
 
         this.add_css_class('playercontrols');
-        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
+        this.realizeSignal = this.connect('realize', this._onRealize.bind(this));
     }
 
     setFullscreenMode(isFullscreen)
@@ -69,6 +66,7 @@ var Controls = GObject.registerClass({
             button.setFullscreenMode(isFullscreen);
 
         this.unfullscreenButton.set_visible(isFullscreen);
+        this.set_can_focus(isFullscreen);
     }
 
     setLiveMode(isLive, isSeekable)
@@ -77,6 +75,16 @@ var Controls = GObject.registerClass({
             this.elapsedButton.set_label('LIVE');
 
         this.positionScale.visible = isSeekable;
+    }
+
+    updateElapsedLabel(value)
+    {
+        value = value || 0;
+
+        let elapsed = Misc.getFormatedTime(value)
+            + '/' + this.durationFormated;
+
+        this.elapsedButton.set_label(elapsed);
     }
 
     addButton(buttonIcon)
@@ -135,7 +143,7 @@ var Controls = GObject.registerClass({
                 });
                 checkButton.connect(
                     'toggled',
-                    this._onCheckButtonToggled.bind(this, checkButton)
+                    this._onCheckButtonToggled.bind(this)
                 );
                 box.append(checkButton);
             }
@@ -160,23 +168,69 @@ var Controls = GObject.registerClass({
         }
     }
 
-    handleScaleIncrement(type, isUp)
+    _handleTrackChange(checkButton)
     {
-        if(type === 'volume' && !this.volumeButton.visible)
+        let clapperWidget = this.get_ancestor(Gtk.Grid);
+
+        /* Reenabling audio is slow (as expected),
+         * so it is better to toggle mute instead */
+        if(checkButton.type === 'audio') {
+            if(checkButton.activeId < 0)
+                return clapperWidget.player.set_mute(true);
+
+            if(clapperWidget.player.get_mute())
+                clapperWidget.player.set_mute(false);
+
+            return clapperWidget.player[
+                `set_${checkButton.type}_track`
+            ](checkButton.activeId);
+        }
+
+        if(checkButton.activeId < 0) {
+            /* Disabling video leaves last frame frozen,
+             * so we hide it by making it transparent */
+            if(checkButton.type === 'video')
+                clapperWidget.player.widget.set_opacity(0);
+
+            return clapperWidget.player[
+                `set_${checkButton.type}_track_enabled`
+            ](false);
+        }
+
+        let setTrack = `set_${checkButton.type}_track`;
+
+        clapperWidget.player[setTrack](checkButton.activeId);
+        clapperWidget.player[`${setTrack}_enabled`](true);
+
+        if(checkButton.type === 'video' && !clapperWidget.player.widget.opacity)
+            clapperWidget.player.widget.set_opacity(1);
+    }
+
+    _handleVisualizationChange(checkButton)
+    {
+        let clapperWidget = this.get_ancestor(Gtk.Grid);
+        let isEnabled = clapperWidget.player.get_visualization_enabled();
+
+        if(!checkButton.activeId) {
+            if(isEnabled) {
+                clapperWidget.player.set_visualization_enabled(false);
+                debug('disabled visualizations');
+            }
+            return;
+        }
+
+        let currVis = clapperWidget.player.get_current_visualization();
+
+        if(currVis === checkButton.activeId)
             return;
 
-        let value = this[`${type}Scale`].get_value();
-        let maxValue = this[`${type}Adjustment`].get_upper();
-        let increment = this[`${type}Adjustment`].get_page_increment();
+        debug(`set visualization: ${checkButton.activeId}`);
+        clapperWidget.player.set_visualization(checkButton.activeId);
 
-        value += (isUp) ? increment : -increment;
-        value = (value < 0)
-            ? 0
-            : (value > maxValue)
-            ? maxValue
-            : value;
-
-        this[`${type}Scale`].set_value(value);
+        if(!isEnabled) {
+            clapperWidget.player.set_visualization_enabled(true);
+            debug('enabled visualizations');
+        }
     }
 
     _addTogglePlayButton()
@@ -186,6 +240,9 @@ var Controls = GObject.registerClass({
             'media-playback-pause-symbolic'
         );
         this.togglePlayButton.add_css_class('playbackicon');
+        this.togglePlayButton.connect(
+            'clicked', this._onTogglePlayClicked.bind(this)
+        );
         this.addButton(this.togglePlayButton);
     }
 
@@ -201,9 +258,10 @@ var Controls = GObject.registerClass({
             can_focus: false,
             visible: false,
         });
-
         this.positionScale.add_css_class('positionscale');
-        this.positionScale.connect('value-changed', this._onPositionScaleValueChanged.bind(this));
+        this.positionScale.connect(
+            'value-changed', this._onPositionScaleValueChanged.bind(this)
+        );
 
         /* GTK4 is missing pressed/released signals for GtkRange/GtkScale.
          * We cannot add controllers, cause it already has them, so we
@@ -229,14 +287,6 @@ var Controls = GObject.registerClass({
         this.volumeButton = this.addPopoverButton(
             'audio-volume-muted-symbolic'
         );
-        let scrollController = new Gtk.EventControllerScroll();
-        scrollController.set_flags(
-            Gtk.EventControllerScrollFlags.VERTICAL
-            | Gtk.EventControllerScrollFlags.DISCRETE
-        );
-        scrollController.connect('scroll', this._onScroll.bind(this));
-        this.volumeButton.add_controller(scrollController);
-
         this.volumeScale = new Gtk.Scale({
             orientation: Gtk.Orientation.VERTICAL,
             inverted: true,
@@ -245,6 +295,9 @@ var Controls = GObject.registerClass({
             round_digits: 2,
             vexpand: true,
         });
+        this.volumeScale.connect(
+            'value-changed', this._onVolumeScaleValueChanged.bind(this)
+        );
         this.volumeScale.add_css_class('volumescale');
         this.volumeAdjustment = this.volumeScale.get_adjustment();
 
@@ -264,18 +317,28 @@ var Controls = GObject.registerClass({
         this.volumeButton.popoverBox.append(this.volumeScale);
     }
 
-    _getFormatedTime(time)
+    _onRealize()
     {
-        let hours = ('0' + Math.floor(time / 3600)).slice(-2);
-	time -= hours * 3600;
-	let minutes = ('0' + Math.floor(time / 60)).slice(-2);
-	time -= minutes * 60;
-	let seconds = ('0' + Math.floor(time)).slice(-2);
+        this.disconnect(this.realizeSignal);
+        this.realizeSignal = null;
 
-        return `${hours}:${minutes}:${seconds}`;
+        let { player } = this.get_ancestor(Gtk.Grid);
+        let scrollController = new Gtk.EventControllerScroll();
+        scrollController.set_flags(
+            Gtk.EventControllerScrollFlags.VERTICAL
+            | Gtk.EventControllerScrollFlags.DISCRETE
+        );
+        scrollController.connect('scroll', player._onScroll.bind(player));
+        this.volumeButton.add_controller(scrollController);
     }
 
-    _onCheckButtonToggled(self, checkButton)
+    _onUnfullscreenClicked(button)
+    {
+        let root = button.get_root();
+        root.unfullscreen();
+    }
+
+    _onCheckButtonToggled(checkButton)
     {
         if(!checkButton.get_active())
             return;
@@ -284,61 +347,73 @@ var Controls = GObject.registerClass({
             case 'video':
             case 'audio':
             case 'subtitle':
-                this.emit(
-                    'track-change-requested',
-                    checkButton.type,
-                    checkButton.activeId
-                );
+                this._handleTrackChange(checkButton);
                 break;
             case 'visualization':
-                this.emit(
-                    `${checkButton.type}-change-requested`,
-                    checkButton.activeId
-                );
+                this._handleVisualizationChange(checkButton);
                 break;
             default:
                 break;
         }
     }
 
-    _onPositionScaleValueChanged()
+    _onTogglePlayClicked()
     {
-        let elapsed = this._getFormatedTime(this.positionScale.get_value())
-            + '/' + this.durationFormated;
+        /* Parent of controls changes, so get ancestor instead */
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player.toggle_play();
+    }
 
-        this.elapsedButton.set_label(elapsed);
+    _onPositionScaleValueChanged(scale)
+    {
+        let value = Math.round(scale.get_value());
+        this.updateElapsedLabel(value);
+
+        if(this.currentPosition === value || this.isPositionSeeking)
+            return;
+
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player.seek_seconds(value);
+    }
+
+    _onVolumeScaleValueChanged(scale)
+    {
+        let volume = Number(scale.get_value().toFixed(2));
+        let icon = (volume <= 0)
+            ? 'muted'
+            : (volume <= 0.33)
+            ? 'low'
+            : (volume <= 0.66)
+            ? 'medium'
+            : (volume <= 1)
+            ? 'high'
+            : 'overamplified';
+
+        let iconName = `audio-volume-${icon}-symbolic`;
+        if(this.volumeButton.icon_name !== iconName)
+        {
+            debug(`set volume icon: ${icon}`);
+            this.volumeButton.set_icon_name(iconName);
+        }
+
+        if(this.currentVolume === volume)
+            return;
+
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player.set_volume(volume);
     }
 
     _onPositionScaleDragging(scale)
     {
         let isPositionSeeking = scale.has_css_class('dragging');
 
-        if(this.isPositionSeeking === isPositionSeeking)
+        if((this.isPositionSeeking = isPositionSeeking))
             return;
 
-        this.isPositionSeeking = isPositionSeeking;
-        this.emit('position-seeking-changed', this.isPositionSeeking);
-    }
+        let clapperWidget = this.get_ancestor(Gtk.Grid);
+        if(!clapperWidget) return;
 
-    _onScroll(controller, dx, dy)
-    {
-        let isVertical = Math.abs(dy) >= Math.abs(dx);
-        let isIncrease = (isVertical) ? dy < 0 : dx < 0;
-        let type = (isVertical) ? 'volume' : 'position';
-
-        this.handleScaleIncrement(type, isIncrease);
-
-        return true;
-    }
-
-    _onDestroy()
-    {
-        this.disconnect(this.destroySignal);
-
-        this.visualizationsButton.emit('destroy');
-        this.videoTracksButton.emit('destroy');
-        this.audioTracksButton.emit('destroy');
-        this.subtitleTracksButton.emit('destroy');
-        this.volumeButton.emit('destroy');
+        let positionSeconds = Math.round(scale.get_value());
+        clapperWidget.player.seek_seconds(positionSeconds);
     }
 });

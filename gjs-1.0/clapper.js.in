@@ -5,7 +5,6 @@ imports.searchPath.unshift('@importspath@');
 const ClapperSrc = imports.clapper_src;
 
 var { App } = ClapperSrc.app;
-var { Interface } = ClapperSrc.interface;
-var { Player } = ClapperSrc.player;
+var { Widget } = ClapperSrc.widget;
 
 imports.searchPath.shift();

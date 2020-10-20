@@ -103,17 +103,13 @@ class ClapperPopoverButton extends IconButton
             orientation: Gtk.Orientation.VERTICAL,
         });
 
-        this.popover.set_parent(this);
         this.popover.set_child(this.popoverBox);
         this.popover.set_offset(0, -this.margin_top);
 
         if(this.isFullscreen)
             this.popover.add_css_class('osd');
 
-        this.changeStateSignal = this.popover.connect('closed', () =>
-            this.unset_state_flags(Gtk.StateFlags.CHECKED)
-        );
-        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
+        this.popover.connect('closed', this._onClosed.bind(this));
     }
 
     setFullscreenMode(isFullscreen)
@@ -136,16 +132,19 @@ class ClapperPopoverButton extends IconButton
     vfunc_clicked()
     {
         this.set_state_flags(Gtk.StateFlags.CHECKED, false);
+
+        this.popover.set_parent(this);
         this.popover.popup();
     }
 
-    _onDestroy()
+    _onClosed()
     {
-        this.disconnect(this.destroySignal);
+        let root = this.get_root();
+        let clapperWidget = root.get_child();
 
-        this.popover.disconnect(this.changeStateSignal);
+        clapperWidget.player.widget.grab_focus();
+
         this.popover.unparent();
-        this.popoverBox.emit('destroy');
-        this.popover.emit('destroy');
+        this.unset_state_flags(Gtk.StateFlags.CHECKED);
     }
 });

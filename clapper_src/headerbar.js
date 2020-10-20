@@ -1,4 +1,4 @@
-const { GLib, GObject, Gtk, Pango } = imports.gi;
+const { GLib, GObject, Gst, Gtk, Pango } = imports.gi;
 
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends Gtk.HeaderBar
@@ -14,7 +14,8 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         let openMenuButton = new Gtk.MenuButton({
             icon_name: 'open-menu-symbolic'
         });
-        openMenuButton.set_menu_model(models.settingsMenu);
+        let settingsPopover = new HeaderBarPopover(models.settingsMenu);
+        openMenuButton.set_popover(settingsPopover);
         this.pack_end(openMenuButton);
 
         let fullscreenButton = new Gtk.Button({
@@ -27,9 +28,9 @@ class ClapperHeaderBar extends Gtk.HeaderBar
     updateHeaderBar(mediaInfo)
     {
         let title = mediaInfo.get_title();
-        let subtitle = mediaInfo.get_uri() || null;
+        let subtitle = mediaInfo.get_uri();
 
-        if(subtitle && subtitle.startsWith('file://')) {
+        if(Gst.Uri.get_protocol(subtitle) === 'file') {
             subtitle = GLib.path_get_basename(
                 GLib.filename_from_uri(subtitle)[0]
             );
@@ -82,5 +83,26 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         this.subtitleLabel.visible = false;
 
         return box;
+    }
+});
+
+var HeaderBarPopover = GObject.registerClass(
+class ClapperHeaderBarPopover extends Gtk.PopoverMenu
+{
+    _init(model)
+    {
+        super._init({
+            menu_model: model,
+        });
+
+        this.connect('closed', this._onClosed.bind(this));
+    }
+
+    _onClosed()
+    {
+        let root = this.get_root();
+        let clapperWidget = root.get_child();
+
+        clapperWidget.player.widget.grab_focus();
     }
 });

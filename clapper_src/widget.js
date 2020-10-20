@@ -1,12 +1,14 @@
-const { Gdk, GLib, GObject, Gtk, Gst, GstPlayer, Pango } = imports.gi;
+const { Gdk, GLib, GObject, Gtk, GstPlayer } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
+const Misc = imports.clapper_src.misc;
+const { Player } = imports.clapper_src.player;
 const Revealers = imports.clapper_src.revealers;
 
 let { debug } = Debug;
 
-var Interface = GObject.registerClass(
-class ClapperInterface extends Gtk.Grid
+var Widget = GObject.registerClass(
+class ClapperWidget extends Gtk.Grid
 {
     _init(opts)
     {
@@ -15,19 +17,23 @@ class ClapperInterface extends Gtk.Grid
         super._init();
 
         let defaults = {
-            seekOnDrop: true
+            cssPath: `${pkg.datadir}/${pkg.name}/css/styles.css`,
         };
         Object.assign(this, defaults, opts);
+
+        let cssProvider = new Gtk.CssProvider();
+        cssProvider.load_from_path(this.cssPath);
+        Gtk.StyleContext.add_provider_for_display(
+            Gdk.Display.get_default(),
+            cssProvider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        );
 
         this.fullscreenMode = false;
         this.isSeekable = false;
 
-        this.lastVolumeValue = null;
-        this.lastPositionValue = 0;
         this.lastRevealerEventTime = 0;
         this.needsTracksUpdate = true;
-        this.headerBar = null;
-        this.defaultTitle = null;
         this.mediaInfoSignal = null;
 
         this.videoBox = new Gtk.Box();
@@ -41,52 +47,19 @@ class ClapperInterface extends Gtk.Grid
         this.attach(this.videoBox, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
 
-        this.destroySignal = this.connect('destroy', this._onDestroy.bind(this));
-    }
+        this.mapSignal = this.connect('map', this._onMap.bind(this));
 
-    addPlayer(player)
-    {
-        this._player = player;
-        this._player.widget.vexpand = true;
-        this._player.widget.hexpand = true;
+        this.player = new Player();
+        this.player.widget.width_request = 960;
+        this.player.widget.height_request = 540;
 
-        this._player.connect('state-changed', this._onPlayerStateChanged.bind(this));
-        this._player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
-        this._player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
-        this._player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
+        this.player.selfConnect('position-updated', this._onPlayerPositionUpdated.bind(this));
+        this.player.selfConnect('duration-changed', this._onPlayerDurationChanged.bind(this));
+        this.player.selfConnect('volume-changed', this._onPlayerVolumeChanged.bind(this));
 
-        this._player.scrollController.connect(
-            'scroll', (ctl, dx, dy) => this.controls._onScroll(ctl, dx, dy)
-        );
-        this.controls.togglePlayButton.connect(
-            'clicked', this._onControlsTogglePlayClicked.bind(this)
-        );
-        this.scaleSig = this.controls.positionScale.connect(
-            'value-changed', this._onControlsPositionChanged.bind(this)
-        );
-        this.controls.volumeScale.connect(
-            'value-changed', this._onControlsVolumeChanged.bind(this)
-        );
-        this.controls.connect(
-            'position-seeking-changed', this._onPositionSeekingChanged.bind(this)
-        );
-        this.controls.connect(
-            'track-change-requested', this._onTrackChangeRequested.bind(this)
-        );
-        this.controls.connect(
-            'visualization-change-requested', this._onVisualizationChangeRequested.bind(this)
-        );
-        //this.revealerTop.connect('event-after', (self, event) => this._player.widget.event(event));
-
-        this.overlay.set_child(this._player.widget);
+        this.overlay.set_child(this.player.widget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
-    }
-
-    addHeaderBar(headerBar, defaultTitle)
-    {
-        this.headerBar = headerBar;
-        this.defaultTitle = defaultTitle || null;
     }
 
     revealControls(isReveal)
@@ -101,30 +74,18 @@ class ClapperInterface extends Gtk.Grid
             this[`revealer${pos}`].showChild(isShow);
     }
 
-    setFullscreenMode(isFullscreen)
+    toggleFullscreen()
     {
-        if(this.fullscreenMode === isFullscreen)
-            return;
+        let root = this.get_root();
+        if(!root) return;
 
-        if(isFullscreen) {
-            this.remove(this.controls);
-            this.revealerBottom.append(this.controls);
-        }
-        else {
-            this.revealerBottom.remove(this.controls);
-            this.attach(this.controls, 0, 1, 1, 1);
-        }
-
-        this.controls.setFullscreenMode(isFullscreen);
-        this.showControls(isFullscreen);
-
-        this.fullscreenMode = isFullscreen;
-        debug(`interface in fullscreen mode: ${isFullscreen}`);
+        let un = (this.fullscreenMode) ? 'un' : '';
+        root[`${un}fullscreen`]();
     }
 
     _onMediaInfoUpdated(player, mediaInfo)
     {
-        this._player.disconnect(this.mediaInfoSignal);
+        player.disconnect(this.mediaInfoSignal);
 
         /* Set titlebar media title and path */
         this.updateTitles(mediaInfo);
@@ -193,7 +154,7 @@ class ClapperInterface extends Gtk.Grid
         }
 
         for(let type of ['video', 'audio', 'subtitle']) {
-            let currStream = this._player[`get_current_${type}_track`]();
+            let currStream = player[`get_current_${type}_track`]();
             let activeId = (currStream) ? currStream.get_index() : -1;
 
             if(currStream && type !== 'subtitle') {
@@ -227,17 +188,27 @@ class ClapperInterface extends Gtk.Grid
 
     updateTitles(mediaInfo)
     {
-        if(this.headerBar)
-            this.headerBar.updateHeaderBar(mediaInfo);
+        let root = this.get_root();
+        if(!root) return;
 
-        this.revealerTop.setMediaTitle(this.headerBar.titleLabel.label);
+        let title;
+        let headerbar = root.get_titlebar();
+
+        if(headerbar && headerbar.updateHeaderBar) {
+            headerbar.updateHeaderBar(mediaInfo);
+            title = headerbar.titleLabel.label;
+        }
+        else
+            title = mediaInfo.get_title() || mediaInfo.get_uri();
+
+        this.revealerTop.setMediaTitle(title);
     }
 
     updateTime()
     {
         let currTime = GLib.DateTime.new_now_local();
         let endTime = currTime.add_seconds(
-            this.controls.positionAdjustment.get_upper() - this.lastPositionValue
+            this.controls.positionAdjustment.get_upper() - this.controls.currentPosition
         );
         let nextUpdate = this.revealerTop.setTimes(currTime, endTime);
 
@@ -283,78 +254,20 @@ class ClapperInterface extends Gtk.Grid
         debug(`show visualizations button: ${isShow}`);
     }
 
-    _onTrackChangeRequested(self, type, activeId)
-    {
-        /* Reenabling audio is slow (as expected),
-         * so it is better to toggle mute instead */
-        if(type === 'audio') {
-            if(activeId < 0)
-                return this._player.set_mute(true);
-
-            if(this._player.get_mute())
-                this._player.set_mute(false);
-
-            return this._player[`set_${type}_track`](activeId);
-        }
-
-        if(activeId < 0) {
-            /* Disabling video leaves last frame frozen,
-             * so we hide it by making it transparent */
-            if(type === 'video')
-                this._player.widget.set_opacity(0);
-
-            return this._player[`set_${type}_track_enabled`](false);
-        }
-
-        this._player[`set_${type}_track`](activeId);
-        this._player[`set_${type}_track_enabled`](true);
-
-        if(type === 'video' && !this._player.widget.opacity) {
-            this._player.widget.set_opacity(1);
-            this._player.renderer.expose();
-        }
-    }
-
-    _onVisualizationChangeRequested(self, visName)
-    {
-        let isEnabled = this._player.get_visualization_enabled();
-
-        if(!visName) {
-            if(isEnabled) {
-                this._player.set_visualization_enabled(false);
-                debug('disabled visualizations');
-            }
-            return;
-        }
-
-        let currVis = this._player.get_current_visualization();
-
-        if(currVis === visName)
-            return;
-
-        debug(`set visualization: ${visName}`);
-        this._player.set_visualization(visName);
-
-        if(!isEnabled) {
-            this._player.set_visualization_enabled(true);
-            debug('enabled visualizations');
-        }
-    }
-
     _onPlayerStateChanged(player, state)
     {
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
-                if(!this._player.is_local_file)
+                if(!player.is_local_file)
                     this.needsTracksUpdate = true;
                 break;
             case GstPlayer.PlayerState.STOPPED:
-                this.lastPositionValue = 0;
-                this.controls.positionAdjustment.set_value(0);
+                this.controls.currentPosition = 0;
+                this.controls.positionScale.set_value(0);
                 this.controls.togglePlayButton.setPrimaryIcon();
                 this.needsTracksUpdate = true;
                 if(this.mediaInfoSignal) {
-                    this._player.disconnect(this.mediaInfoSignal);
+                    player.disconnect(this.mediaInfoSignal);
                     this.mediaInfoSignal = null;
                 }
             case GstPlayer.PlayerState.PAUSED:
@@ -364,7 +277,7 @@ class ClapperInterface extends Gtk.Grid
                 this.controls.togglePlayButton.setSecondaryIcon();
                 if(this.needsTracksUpdate && !this.mediaInfoSignal) {
                     this.needsTracksUpdate = false;
-                    this.mediaInfoSignal = this._player.connect(
+                    this.mediaInfoSignal = player.connect(
                         'media_info_updated', this._onMediaInfoUpdated.bind(this)
                     );
                 }
@@ -372,127 +285,100 @@ class ClapperInterface extends Gtk.Grid
             default:
                 break;
         }
+
+        if(state === GstPlayer.PlayerState.BUFFERING)
+            return;
+
+        let window = this.get_root();
+        Misc.inhibitForState(state, window);
     }
 
     _onPlayerDurationChanged(player)
     {
-        let duration = this._player.get_duration() / 1000000000;
+        let duration = Math.floor(player.get_duration() / 1000000000);
+
+        /* Sometimes GstPlayer might re-emit
+         * duration changed during playback */
+        if(this.controls.currentDuration === duration)
+            return;
+
         let increment = (duration < 1)
             ? 0
             : (duration < 100)
             ? 1
             : duration / 100;
 
-        this.controls.positionAdjustment.set_upper(Math.floor(duration));
+        this.controls.positionAdjustment.set_upper(duration);
         this.controls.positionAdjustment.set_step_increment(increment);
         this.controls.positionAdjustment.set_page_increment(increment);
 
-        this.controls.durationFormated = this.controls._getFormatedTime(duration);
-        this.controls._onPositionScaleValueChanged();
+        this.controls.currentDuration = duration;
+        this.controls.durationFormated = Misc.getFormatedTime(duration);
+        this.controls.updateElapsedLabel();
     }
 
     _onPlayerPositionUpdated(player, position)
     {
         if(
             !this.isSeekable
-            || !this._player.seek_done
+            || !player.seek_done
             || this.controls.isPositionSeeking
-            || this._player.state === GstPlayer.PlayerState.BUFFERING
+            || player.state === GstPlayer.PlayerState.BUFFERING
         )
             return;
 
         let positionSeconds = Math.round(position / 1000000000);
-
-        if(positionSeconds === this.lastPositionValue)
+        if(positionSeconds === this.controls.currentPosition)
             return;
 
-        this.lastPositionValue = positionSeconds;
+        this.controls.currentPosition = positionSeconds;
         this.controls.positionScale.set_value(positionSeconds);
     }
 
-    _onPlayerVolumeChanged()
+    _onPlayerVolumeChanged(player)
     {
-        let volume = Number(this._player.get_volume().toFixed(2));
-
-        if(volume === this.lastVolumeValue)
+        let volume = Number(player.get_volume().toFixed(2));
+        if(volume === this.currentVolume)
             return;
 
-        this.lastVolumeValue = volume;
+        this.controls.currentVolume = volume;
         this.controls.volumeScale.set_value(volume);
     }
 
-    _onPositionSeekingChanged(self, isPositionSeeking)
+    _onStateNotify(toplevel)
     {
-        if(isPositionSeeking || !this.seekOnDrop)
+        let isFullscreen = Boolean(
+            toplevel.state & Gdk.ToplevelState.FULLSCREEN
+        );
+        if(this.fullscreenMode === isFullscreen)
             return;
 
-        this._onControlsPositionChanged(this.controls.positionScale);
-    }
+        this.fullscreenMode = isFullscreen;
 
-    _onControlsTogglePlayClicked()
-    {
-        this._player.toggle_play();
-    }
-
-    _onControlsPositionChanged(positionScale)
-    {
-        if(this.seekOnDrop && this.controls.isPositionSeeking)
-            return;
-
-        let positionSeconds = Math.round(positionScale.get_value());
-
-        if(positionSeconds === this.lastPositionValue)
-            return;
-
-        this.lastPositionValue = positionSeconds;
-        this._player.seek_seconds(positionSeconds);
-
-        /* Needed to enable preview after playback is stopped */
-        if(this._player.state === GstPlayer.PlayerState.STOPPED)
-            this._player.pause();
-
-        if(this.fullscreenMode)
-            this.updateTime();
-    }
-
-    _onControlsVolumeChanged(volumeScale)
-    {
-        let volume = Number(volumeScale.get_value().toFixed(2));
-
-        let icon = (volume <= 0)
-            ? 'muted'
-            : (volume <= 0.33)
-            ? 'low'
-            : (volume <= 0.66)
-            ? 'medium'
-            : (volume <= 1)
-            ? 'high'
-            : 'overamplified';
-
-        let iconName = `audio-volume-${icon}-symbolic`;
-        if(this.controls.volumeButton.icon_name !== iconName)
-        {
-            debug(`set volume icon: ${icon}`);
-            this.controls.volumeButton.set_icon_name(iconName);
+        if(isFullscreen) {
+            this.remove(this.controls);
+            this.revealerBottom.append(this.controls);
+        }
+        else {
+            this.revealerBottom.remove(this.controls);
+            this.attach(this.controls, 0, 1, 1, 1);
         }
 
-        if(volume === this.lastVolumeValue)
-            return;
+        this.controls.setFullscreenMode(isFullscreen);
+        this.showControls(isFullscreen);
+        this.player.widget.grab_focus();
 
-        this.lastVolumeValue = volume;
-        this._player.set_volume(volume);
+        debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
-    _onDestroy()
+    _onMap()
     {
-        this.disconnect(this.destroySignal);
+        this.disconnect(this.mapSignal);
 
-        if(
-            this._player
-            && this._player.state !== GstPlayer.PlayerState.STOPPED
-        )
-            this._player.stop();
+        let root = this.get_root();
+        if(!root) return;
 
-        this.controls.emit('destroy');
+        let surface = root.get_surface();
+        surface.connect('notify::state', this._onStateNotify.bind(this));
     }
 });
