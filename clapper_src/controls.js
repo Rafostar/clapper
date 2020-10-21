@@ -1,4 +1,4 @@
-const { GObject, Gtk } = imports.gi;
+const { GObject, Gdk, Gtk } = imports.gi;
 const Buttons = imports.clapper_src.buttons;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
@@ -55,6 +55,11 @@ class ClapperControls extends Gtk.Box
         );
         this.unfullscreenButton.connect('clicked', this._onUnfullscreenClicked.bind(this));
         this.unfullscreenButton.set_visible(false);
+
+        let keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-pressed', this._onControlsKeyPressed.bind(this));
+        keyController.connect('key-released', this._onControlsKeyReleased.bind(this));
+        this.add_controller(keyController);
 
         this.add_css_class('playercontrols');
         this.realizeSignal = this.connect('realize', this._onRealize.bind(this));
@@ -415,5 +420,28 @@ class ClapperControls extends Gtk.Box
 
         let positionSeconds = Math.round(scale.get_value());
         clapperWidget.player.seek_seconds(positionSeconds);
+    }
+
+    /* Only happens when navigating through controls panel */
+    _onControlsKeyPressed(controller, keyval, keycode, state)
+    {
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player._setHideControlsTimeout();
+    }
+
+    _onControlsKeyReleased(controller, keyval, keycode, state)
+    {
+        switch(keyval) {
+            case Gdk.KEY_space:
+            case Gdk.KEY_Return:
+            case Gdk.KEY_Escape:
+            case Gdk.KEY_Right:
+            case Gdk.KEY_Left:
+                break;
+            default:
+                let { player } = this.get_ancestor(Gtk.Grid);
+                player._onWidgetKeyReleased(controller, keyval, keycode, state);
+                break;
+        }
     }
 });

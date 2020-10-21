@@ -29,6 +29,15 @@ class ClapperCustomButton extends Gtk.Button
         this.margin_top = (isFullscreen) ? 6 : 4;
         this.isFullscreen = isFullscreen;
     }
+
+    vfunc_clicked()
+    {
+        if(!this.isFullscreen)
+            return;
+
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player._setHideControlsTimeout();
+    }
 });
 
 var IconButton = GObject.registerClass(
@@ -131,8 +140,9 @@ class ClapperPopoverButton extends IconButton
 
     vfunc_clicked()
     {
-        this.set_state_flags(Gtk.StateFlags.CHECKED, false);
+        super.vfunc_clicked();
 
+        this.set_state_flags(Gtk.StateFlags.CHECKED, false);
         this.popover.set_parent(this);
         this.popover.popup();
     }

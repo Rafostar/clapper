@@ -418,6 +418,7 @@ class ClapperPlayer extends GstPlayer.Player
         root.connect('close-request', this._onCloseRequest.bind(this));
     }
 
+    /* Widget only - does not happen when using controls navigation */
     _onWidgetKeyPressed(controller, keyval, keycode, state)
     {
         this.keyPressCount++;
@@ -447,6 +448,7 @@ class ClapperPlayer extends GstPlayer.Player
         }
     }
 
+    /* Also happens after using controls navigation for selected keys */
     _onWidgetKeyReleased(controller, keyval, keycode, state)
     {
         this.keyPressCount = 0;
