@@ -2,10 +2,10 @@ const { Gio, GObject, Gtk } = imports.gi;
 const { HeaderBar } = imports.clapper_src.headerbar;
 const { Widget } = imports.clapper_src.widget;
 const Menu = imports.clapper_src.menu;
+const Misc = imports.clapper_src.misc;
 
-const APP_NAME = 'Clapper' || pkg.name.substring(
-    pkg.name.lastIndexOf('.') + 1
-);
+const APP_NAME = 'Clapper';
+const APP_ID = 'com.github.rafostar.Clapper';
 
 var App = GObject.registerClass(
 class ClapperApp extends Gtk.Application
@@ -13,7 +13,7 @@ class ClapperApp extends Gtk.Application
     _init(opts)
     {
         super._init({
-            application_id: pkg.name
+            application_id: APP_ID
         });
 
         let defaults = {
@@ -40,8 +40,9 @@ class ClapperApp extends Gtk.Application
             );
             this.add_action(simpleAction);
         }
+        let clapperPath = Misc.getClapperPath();
         let uiBuilder = Gtk.Builder.new_from_file(
-            `${pkg.datadir}/${pkg.name}/ui/clapper.ui`
+            `${clapperPath}/ui/clapper.ui`
         );
         let models = {
             settingsMenu: uiBuilder.get_object('settingsMenu')

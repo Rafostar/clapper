@@ -139,10 +139,8 @@ class ClapperPopoverButton extends IconButton
 
     _onClosed()
     {
-        let root = this.get_root();
-        let clapperWidget = root.get_child();
-
-        clapperWidget.player.widget.grab_focus();
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player.widget.grab_focus();
 
         this.popover.unparent();
         this.unset_state_flags(Gtk.StateFlags.CHECKED);

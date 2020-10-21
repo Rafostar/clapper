@@ -1,8 +1,29 @@
 const { GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
+var clapperPath;
+var clapperVersion;
+
 let { debug } = Debug;
 let inhibitCookie;
+
+function getClapperPath()
+{
+    return (clapperPath)
+        ? clapperPath
+        : (pkg)
+        ? `${pkg.datadir}/${pkg.name}`
+        : '.';
+}
+
+function getClapperVersion()
+{
+    return (clapperVersion)
+        ? clapperVersion
+        : (pkg)
+        ? pkg.version
+        : '';
+}
 
 function inhibitForState(state, window)
 {

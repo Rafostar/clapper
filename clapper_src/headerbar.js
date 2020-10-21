@@ -1,4 +1,4 @@
-const { GLib, GObject, Gst, Gtk, Pango } = imports.gi;
+const { GObject, Gtk, Pango } = imports.gi;
 
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends Gtk.HeaderBar
@@ -25,27 +25,8 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         this.pack_end(fullscreenButton);
     }
 
-    updateHeaderBar(mediaInfo)
+    updateHeaderBar(title, subtitle)
     {
-        let title = mediaInfo.get_title();
-        let subtitle = mediaInfo.get_uri();
-
-        if(Gst.Uri.get_protocol(subtitle) === 'file') {
-            subtitle = GLib.path_get_basename(
-                GLib.filename_from_uri(subtitle)[0]
-            );
-        }
-
-        if(!title) {
-            title = (!subtitle)
-                ? this.defaultTitle
-                : (subtitle.includes('.'))
-                ? subtitle.split('.').slice(0, -1).join('.')
-                : subtitle;
-
-            subtitle = null;
-        }
-
         this.titleLabel.label = title;
         this.subtitleLabel.visible = (subtitle !== null);
 

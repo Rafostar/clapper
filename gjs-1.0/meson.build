@@ -3,6 +3,7 @@ gjsdir = join_paths(sharedir, 'gjs-1.0')
 importspath = join_paths(sharedir, meson.project_name())
 
 gjs_conf = configuration_data()
+gjs_conf.set('PACKAGE_VERSION', meson.project_version())
 gjs_conf.set('importspath', importspath)
 
 configure_file(

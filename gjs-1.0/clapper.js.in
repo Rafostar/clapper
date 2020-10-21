@@ -1,8 +1,12 @@
 imports.gi.versions.Gdk = '4.0';
 imports.gi.versions.Gtk = '4.0';
-imports.searchPath.unshift('@importspath@');
+
+const CLAPPER_PATH = '@importspath@';
+imports.searchPath.unshift(CLAPPER_PATH);
 
 const ClapperSrc = imports.clapper_src;
+ClapperSrc.misc.clapperPath = CLAPPER_PATH;
+ClapperSrc.misc.clapperVersion = '@PACKAGE_VERSION@';
 
 var { App } = ClapperSrc.app;
 var { Widget } = ClapperSrc.widget;

@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, Gtk, GstPlayer } = imports.gi;
+const { Gdk, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
@@ -7,8 +7,13 @@ const Revealers = imports.clapper_src.revealers;
 
 let { debug } = Debug;
 
-var Widget = GObject.registerClass(
-class ClapperWidget extends Gtk.Grid
+var Widget = GObject.registerClass({
+    Signals: {
+        'fullscreen-changed': {
+            param_types: [GObject.TYPE_BOOLEAN]
+        }
+    }
+}, class ClapperWidget extends Gtk.Grid
 {
     _init(opts)
     {
@@ -16,8 +21,9 @@ class ClapperWidget extends Gtk.Grid
 
         super._init();
 
+        let clapperPath = Misc.getClapperPath();
         let defaults = {
-            cssPath: `${pkg.datadir}/${pkg.name}/css/styles.css`,
+            cssPath: `${clapperPath}/css/styles.css`,
         };
         Object.assign(this, defaults, opts);
 
@@ -188,18 +194,29 @@ class ClapperWidget extends Gtk.Grid
 
     updateTitles(mediaInfo)
     {
-        let root = this.get_root();
-        if(!root) return;
+        let title = mediaInfo.get_title();
+        let subtitle = mediaInfo.get_uri();
 
-        let title;
+        if(Gst.Uri.get_protocol(subtitle) === 'file') {
+            subtitle = GLib.path_get_basename(
+                GLib.filename_from_uri(subtitle)[0]
+            );
+        }
+        if(!title) {
+            title = (!subtitle)
+                ? this.defaultTitle
+                : (subtitle.includes('.'))
+                ? subtitle.split('.').slice(0, -1).join('.')
+                : subtitle;
+
+            subtitle = null;
+        }
+
+        let root = this.get_root();
         let headerbar = root.get_titlebar();
 
-        if(headerbar && headerbar.updateHeaderBar) {
-            headerbar.updateHeaderBar(mediaInfo);
-            title = headerbar.titleLabel.label;
-        }
-        else
-            title = mediaInfo.get_title() || mediaInfo.get_uri();
+        if(headerbar && headerbar.updateHeaderBar)
+            headerbar.updateHeaderBar(title, subtitle);
 
         this.revealerTop.setMediaTitle(title);
     }
@@ -368,6 +385,7 @@ class ClapperWidget extends Gtk.Grid
         this.showControls(isFullscreen);
         this.player.widget.grab_focus();
 
+        this.emit('fullscreen-changed', isFullscreen);
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
