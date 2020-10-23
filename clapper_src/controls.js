@@ -371,14 +371,10 @@ class ClapperControls extends Gtk.Box
 
     _onPositionScaleValueChanged(scale)
     {
-        let value = Math.round(scale.get_value());
-        this.updateElapsedLabel(value);
+        let positionSeconds = Math.round(scale.get_value());
 
-        if(this.currentPosition === value || this.isPositionSeeking)
-            return;
-
-        let { player } = this.get_ancestor(Gtk.Grid);
-        player.seek_seconds(value);
+        this.currentPosition = positionSeconds;
+        this.updateElapsedLabel(positionSeconds);
     }
 
     _onVolumeScaleValueChanged(scale)

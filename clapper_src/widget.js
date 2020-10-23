@@ -223,6 +223,9 @@ var Widget = GObject.registerClass({
 
     updateTime()
     {
+        if(!this.revealerTop.visible)
+            return null;
+
         let currTime = GLib.DateTime.new_now_local();
         let endTime = currTime.add_seconds(
             this.controls.positionAdjustment.get_upper() - this.controls.currentPosition
@@ -338,9 +341,8 @@ var Widget = GObject.registerClass({
     {
         if(
             !this.isSeekable
-            || !player.seek_done
             || this.controls.isPositionSeeking
-            || player.state === GstPlayer.PlayerState.BUFFERING
+            || !player.seek_done
         )
             return;
 
@@ -348,7 +350,6 @@ var Widget = GObject.registerClass({
         if(positionSeconds === this.controls.currentPosition)
             return;
 
-        this.controls.currentPosition = positionSeconds;
         this.controls.positionScale.set_value(positionSeconds);
     }
 

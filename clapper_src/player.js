@@ -344,6 +344,9 @@ class ClapperPlayer extends GstPlayer.Player
         let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         let nextUpdate = clapperWidget.updateTime();
 
+        if(nextUpdate === null)
+            return;
+
         this._updateTimeTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, nextUpdate, () => {
             this._updateTimeTimeout = null;
 
@@ -370,13 +373,14 @@ class ClapperPlayer extends GstPlayer.Player
     {
         this.state = state;
 
+        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        if(!clapperWidget) return;
+
         if(!this.seek_done && this.state !== GstPlayer.PlayerState.BUFFERING) {
+            clapperWidget.updateTime();
             this.seek_done = true;
             debug('seeking finished');
         }
-
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(!clapperWidget) return;
 
         clapperWidget._onPlayerStateChanged(player, state);
     }
@@ -468,7 +472,9 @@ class ClapperPlayer extends GstPlayer.Player
                 break;
             case Gdk.KEY_Right:
             case Gdk.KEY_Left:
-                value = clapperWidget.controls.positionScale.get_value();
+                value = Math.round(
+                    clapperWidget.controls.positionScale.get_value()
+                );
                 this.seek_seconds(value);
                 this._setHideControlsTimeout();
                 clapperWidget.controls.isPositionSeeking = false;
