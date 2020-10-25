@@ -1,13 +1,30 @@
 const { GObject, Gst, Gtk } = imports.gi;
 const Misc = imports.clapper_src.misc;
+const { Prefs } = imports.clapper_src.prefs;
 
 var actions = [
+    prefs,
     about
 ];
 
 var accels = [
     ['app.quit', ['q']],
 ];
+
+function prefs(window, appName)
+{
+    let prefs = new Prefs();
+    let prefsDialog = new Gtk.Dialog({
+        title: 'Preferences',
+        modal: true,
+        transient_for: window,
+        child: prefs,
+        default_width: 400,
+        default_height: 320,
+    });
+    prefsDialog.connect('close-request', () => prefsDialog.run_dispose());
+    prefsDialog.present();
+}
 
 function about(window, appName)
 {
@@ -37,6 +54,6 @@ function about(window, appName)
         system_information: osInfo,
         transient_for: window
     });
-
+    aboutDialog.connect('close-request', () => aboutDialog.run_dispose());
     aboutDialog.present();
 }

@@ -25,7 +25,7 @@ class ClapperControls extends Gtk.Box
         this.currentVolume = 0;
         this.currentPosition = 0;
         this.currentDuration = 0;
-        this.isPositionSeeking = false;
+        this.isPositionDragging = false;
 
         this.durationFormated = '00:00:00';
         this.elapsedInitial = '00:00:00/00:00:00';
@@ -263,6 +263,11 @@ class ClapperControls extends Gtk.Box
             can_focus: false,
             visible: false,
         });
+        let scrollController = new Gtk.EventControllerScroll();
+        scrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
+        scrollController.connect('scroll', this._onPositionScaleScroll.bind(this));
+        this.positionScale.add_controller(scrollController);
+
         this.positionScale.add_css_class('positionscale');
         this.positionScale.connect(
             'value-changed', this._onPositionScaleValueChanged.bind(this)
@@ -276,6 +281,8 @@ class ClapperControls extends Gtk.Box
         );
 
         this.positionAdjustment = this.positionScale.get_adjustment();
+        this.positionAdjustment.set_page_increment(0);
+        this.positionAdjustment.set_step_increment(8);
 
         let box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -369,6 +376,12 @@ class ClapperControls extends Gtk.Box
         player.toggle_play();
     }
 
+    _onPositionScaleScroll(controller, dx, dy)
+    {
+        let { player } = this.get_ancestor(Gtk.Grid);
+        player._onScroll(controller, dx || dy, 0);
+    }
+
     _onPositionScaleValueChanged(scale)
     {
         let positionSeconds = Math.round(scale.get_value());
@@ -406,9 +419,9 @@ class ClapperControls extends Gtk.Box
 
     _onPositionScaleDragging(scale)
     {
-        let isPositionSeeking = scale.has_css_class('dragging');
+        let isPositionDragging = scale.has_css_class('dragging');
 
-        if((this.isPositionSeeking = isPositionSeeking))
+        if((this.isPositionDragging = isPositionDragging))
             return;
 
         let clapperWidget = this.get_ancestor(Gtk.Grid);

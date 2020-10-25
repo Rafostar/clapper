@@ -1,49 +1,19 @@
 const { Gdk, Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
+const { PlayerBase } = imports.clapper_src.playerBase;
 const Debug = imports.clapper_src.debug;
-
-const GSTPLAYER_DEFAULTS = {
-    position_update_interval: 1000,
-    seek_accurate: false,
-    user_agent: 'clapper',
-};
 
 let { debug } = Debug;
 
 var Player = GObject.registerClass(
-class ClapperPlayer extends GstPlayer.Player
+class ClapperPlayer extends PlayerBase
 {
-    _init(opts)
+    _init()
     {
-        opts = opts || {};
-        opts = Object.assign({}, GSTPLAYER_DEFAULTS, opts);
+        super._init();
 
-        if(!Gst.is_initialized())
-            Gst.init(null);
-
-        let plugin = 'gtk4glsink';
-        let gtkglsink = Gst.ElementFactory.make(plugin, null);
-
-        if(!gtkglsink) {
-            return debug(new Error(
-                `Could not load "${plugin}".`
-                    + ' Do you have gstreamer-plugins-good-gtk4 installed?'
-            ));
-        }
-
-        let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
-        glsinkbin.sink = gtkglsink;
-
-        let dispatcher = new GstPlayer.PlayerGMainContextSignalDispatcher();
-        let renderer = new GstPlayer.PlayerVideoOverlayVideoRenderer({
-            video_sink: glsinkbin
-        });
-
-        super._init({
-            signal_dispatcher: dispatcher,
-            video_renderer: renderer
-        });
-
+        this.state = GstPlayer.PlayerState.STOPPED;
+        this.cursorInPlayer = false;
         this.is_local_file = false;
         this.seek_done = true;
         this.dragAllowed = false;
@@ -55,37 +25,12 @@ class ClapperPlayer extends GstPlayer.Player
         this._playerSignals = [];
         this._widgetSignals = [];
 
-        let config = this.get_config();
-
-        for(let setting of Object.keys(GSTPLAYER_DEFAULTS)) {
-            let setOption = GstPlayer.Player[`config_set_${setting}`];
-            if(!setOption) {
-                debug(`unsupported option: ${setting}`, 'LEVEL_WARNING');
-                continue;
-            }
-            setOption(config, opts[setting]);
-        }
-
-        this.set_config(config);
-        this.set_mute(false);
-        this.set_plugin_rank('vah264dec', 300);
-
-        this.widget = gtkglsink.widget;
-        this.widget.vexpand = true;
-        this.widget.hexpand = true;
-
-        this.state = GstPlayer.PlayerState.STOPPED;
-        this.visualization_enabled = false;
-        this.fast_seeking = opts.fast_seeking || false;
-
         this._playlist = [];
         this._trackId = 0;
 
         this._hideCursorTimeout = null;
         this._hideControlsTimeout = null;
         this._updateTimeTimeout = null;
-
-        this.cursorInPlayer = false;
 
         let clickGesture = new Gtk.GestureClick();
         clickGesture.set_button(0);
@@ -215,16 +160,17 @@ class ClapperPlayer extends GstPlayer.Player
 
     seek(position)
     {
+        this.seek_done = false;
+
         if(this.state === GstPlayer.PlayerState.STOPPED)
             this.pause();
 
         if(position < 0)
             position = 0;
 
-        this.seek_done = false;
-        debug(`player is seeking to position: ${position}`);
+        debug(`${this.seekingMode} seeking to position: ${position}`);
 
-        if(!this.fast_seeking)
+        if(this.seekingMode !== 'fast')
             return super.seek(position);
 
         let pipeline = this.get_pipeline();
@@ -252,10 +198,32 @@ class ClapperPlayer extends GstPlayer.Player
 
     adjust_position(isIncrease)
     {
-        let { controls } = this.widget.get_ancestor(Gtk.Grid);
+        this.seek_done = false;
 
-        let value = (isIncrease) ? 10 : -10;
-        let positionSeconds = controls.positionScale.get_value() + value;
+        let { controls } = this.widget.get_ancestor(Gtk.Grid);
+        let max = controls.positionAdjustment.get_upper();
+        let seekingValue = this.settings.get_int('seeking-value');
+        let seekingUnit = this.settings.get_string('seeking-unit');
+
+        switch(seekingUnit) {
+            case 'minute':
+                seekingValue *= 60;
+                break;
+            case 'percentage':
+                seekingValue = max * seekingValue / 100;
+                break;
+            default:
+                break;
+        }
+
+        if(!isIncrease)
+            seekingValue *= -1;
+
+        let positionSeconds = controls.positionScale.get_value() + seekingValue;
+
+        if(positionSeconds > max)
+            positionSeconds = max;
+
         controls.positionScale.set_value(positionSeconds);
     }
 
@@ -275,27 +243,6 @@ class ClapperPlayer extends GstPlayer.Player
             : 'play';
 
         this[action]();
-    }
-
-    set_subtitle_font_desc(desc)
-    {
-        let pipeline = this.get_pipeline();
-        pipeline.subtitle_font_desc = desc;
-    }
-
-    set_plugin_rank(name, rank)
-    {
-        debug(`changing rank of plugin: ${name}`);
-
-        let gstRegistry = Gst.Registry.get();
-        let feature = gstRegistry.lookup_feature(name);
-        if(!feature)
-            return debug(`plugin unavailable: ${name}`);
-
-        let oldRank = feature.get_rank();
-        feature.set_rank(rank);
-
-        debug(`changed rank: ${oldRank} -> ${rank} for ${name}`);
     }
 
     selfConnect(signal, fn)
@@ -439,13 +386,12 @@ class ClapperPlayer extends GstPlayer.Player
             case Gdk.KEY_Right:
                 bool = true;
             case Gdk.KEY_Left:
-                clapperWidget.controls.isPositionSeeking = true;
+                this.adjust_position(bool);
                 this._clearTimeout('hideControls');
                 if(this.keyPressCount > 1) {
                     clapperWidget.revealerBottom.set_can_focus(false);
                     clapperWidget.revealerBottom.revealChild(true);
                 }
-                this.adjust_position(bool);
                 break;
             default:
                 break;
@@ -477,7 +423,6 @@ class ClapperPlayer extends GstPlayer.Player
                 );
                 this.seek_seconds(value);
                 this._setHideControlsTimeout();
-                clapperWidget.controls.isPositionSeeking = false;
                 break;
             case Gdk.KEY_F11:
                 clapperWidget.toggleFullscreen();
@@ -619,8 +564,12 @@ class ClapperPlayer extends GstPlayer.Player
         let isHorizontal = Math.abs(dx) >= Math.abs(dy);
         let isIncrease = (isHorizontal) ? dx < 0 : dy < 0;
 
-        if(isHorizontal)
+        if(isHorizontal) {
             this.adjust_position(isIncrease);
+            let { controls } = this.widget.get_ancestor(Gtk.Grid);
+            let value = Math.round(controls.positionScale.get_value());
+            this.seek_seconds(value);
+        }
         else
             this.adjust_volume(isIncrease);
 

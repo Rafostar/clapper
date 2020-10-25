@@ -105,11 +105,15 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/%{appname}/
 %dir %{_datadir}/gjs-1.0
 %{_datadir}/gjs-1.0/*.js
-%{_datadir}/applications/*.desktop
 %{_datadir}/icons/hicolor/*/apps/*.svg
+%{_datadir}/glib-2.0/schemas/%{appname}.gschema.xml
 %{_datadir}/mime/packages/%{appname}.xml
+%{_datadir}/applications/*.desktop
 
 %changelog
+* Sun Oct 25 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-4
+- Added gschema
+
 * Wed Oct 14 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-3
 - Update to GTK4
 

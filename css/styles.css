@@ -97,3 +97,12 @@ scale marks {
 .osd .volumescale trough highlight {
   min-width: 6px;
 }
+
+/* Preferences */
+.prefsbox {
+  margin: 5px;
+}
+
+.prefsnotebook grid {
+  margin: 10px;
+}

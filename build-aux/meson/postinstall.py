@@ -18,6 +18,5 @@ if not destdir:
     print('Updating desktop database...')
     call(['update-desktop-database', '-q', path.join(sharedir, 'applications')])
 
-    # NO CLAPPER SCHEMAS YET
-    #print('Compiling GSettings schemas...')
-    #call(['glib-compile-schemas', path.join(sharedir, 'glib-2.0', 'schemas')])
+    print('Compiling GSettings schemas...')
+    call(['glib-compile-schemas', path.join(sharedir, 'glib-2.0', 'schemas')])

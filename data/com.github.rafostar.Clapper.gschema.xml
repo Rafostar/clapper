@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="com.github.rafostar.Clapper">
+  <schema id="com.github.rafostar.Clapper" path="/com/github/rafostar/Clapper/">
+    <key name="seeking-mode" type="s">
+      <default>"normal"</default>
+      <summary>Mode used for seeking</summary>
+    </key>
+    <key name="seeking-value" type="i">
+      <default>10</default>
+      <summary>Time amount to seek with single press of arrow keys</summary>
+    </key>
+    <key name="seeking-unit" type="s">
+      <default>"second"</default>
+      <summary>Unit to use with seeking value</summary>
+    </key>
+    <key name="plugin-ranking" type="s">
+      <default>"{}"</default>
+      <summary>Custom values for GStreamer plugin ranking</summary>
+    </key>
+  </schema>
+</schemalist>

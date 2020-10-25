@@ -322,17 +322,8 @@ var Widget = GObject.registerClass({
         if(this.controls.currentDuration === duration)
             return;
 
-        let increment = (duration < 1)
-            ? 0
-            : (duration < 100)
-            ? 1
-            : duration / 100;
-
-        this.controls.positionAdjustment.set_upper(duration);
-        this.controls.positionAdjustment.set_step_increment(increment);
-        this.controls.positionAdjustment.set_page_increment(increment);
-
         this.controls.currentDuration = duration;
+        this.controls.positionAdjustment.set_upper(duration);
         this.controls.durationFormated = Misc.getFormatedTime(duration);
         this.controls.updateElapsedLabel();
     }
@@ -341,7 +332,7 @@ var Widget = GObject.registerClass({
     {
         if(
             !this.isSeekable
-            || this.controls.isPositionSeeking
+            || this.controls.isPositionDragging
             || !player.seek_done
         )
             return;

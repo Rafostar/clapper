@@ -2,6 +2,12 @@
 <interface>
   <menu id="settingsMenu">
     <section>
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">app.prefs</attribute>
+      </item>
+    </section>
+    <section>
 <!--
       <item>
         <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
