@@ -1,5 +1,10 @@
 {
     "name": "ffmpeg",
+    "cleanup": [
+      "/lib/codecs/share/ffmpeg/examples",
+      "/lib/codecs/lib/pkgconfig",
+      "/lib/codecs/include"
+    ],
     "config-opts": [
         "--prefix=/app/lib/codecs/",
         "--libdir=/app/lib/codecs/lib",
@@ -42,8 +47,8 @@
         {
             "type": "git",
             "url": "https://git.ffmpeg.org/ffmpeg.git",
-            "tag": "n4.2.4",
-            "commit": "f9f95ceebfbd7b7f43c1b7ad34e25d366e6e2d2b"
+            "tag": "n4.3.1",
+            "commit": "6b6b9e593dd4d3aaf75f48d40a13ef03bdef9fdb"
         }
     ]
 }

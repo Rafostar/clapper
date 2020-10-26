@@ -8,8 +8,8 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-libav.git",
-            "tag": "1.16.2",
-            "commit": "090cfd40aad49ad645a9bf4bdd62e65b739c95f3"
+            "tag": "1.18.0",
+            "commit": "215b3ed959f2b307065319f94855cc9e1ce7be95"
         },
         {
             "type": "patch",
@@ -18,6 +18,6 @@
     ],
     "post-install": [
         "mkdir -p /app/lib/codecs/lib/gstreamer-1.0",
-        "mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0"
+        "mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0/"
     ]
 }

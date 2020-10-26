@@ -8,12 +8,12 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-ugly.git",
-            "tag": "1.16.2",
-            "commit": "4b2943ee2788331e4000f0f7e226cd5ce2c135a4"
+            "tag": "1.18.0",
+            "commit": "ae91a81d9aa913cee1e8310af93a8fff5445628d"
         }
     ],
     "post-install": [
         "mkdir -p /app/lib/codecs/lib/gstreamer-1.0",
-        "mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0"
+        "mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0/"
     ]
 }
