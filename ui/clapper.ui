@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <menu id="addMediaMenu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Open Local File...</attribute>
+        <attribute name="action">app.openLocal</attribute>
+      </item>
+    </section>
+  </menu>
   <menu id="settingsMenu">
     <section>
       <item>

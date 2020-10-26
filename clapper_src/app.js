@@ -45,7 +45,8 @@ class ClapperApp extends Gtk.Application
             `${clapperPath}/ui/clapper.ui`
         );
         let models = {
-            settingsMenu: uiBuilder.get_object('settingsMenu')
+            addMediaMenu: uiBuilder.get_object('addMediaMenu'),
+            settingsMenu: uiBuilder.get_object('settingsMenu'),
         };
         let headerBar = new HeaderBar(window, models);
         window.set_titlebar(headerBar);

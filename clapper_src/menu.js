@@ -1,8 +1,10 @@
 const { GObject, Gst, Gtk } = imports.gi;
 const Misc = imports.clapper_src.misc;
 const Prefs = imports.clapper_src.prefs;
+const { FileChooser } = imports.clapper_src.filechooser;
 
 var actions = [
+    openLocal,
     prefs,
     about,
 ];
@@ -10,6 +12,12 @@ var actions = [
 var accels = [
     ['app.quit', ['q']],
 ];
+
+function openLocal(window, appName)
+{
+    let fileChooser = new FileChooser(window);
+    fileChooser.present();
+}
 
 function prefs(window, appName)
 {

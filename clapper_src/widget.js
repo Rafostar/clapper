@@ -278,8 +278,10 @@ var Widget = GObject.registerClass({
     {
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
-                if(!player.is_local_file)
+                if(!player.is_local_file) {
                     this.needsTracksUpdate = true;
+                }
+                debug('player state changed to: BUFFERING');
                 break;
             case GstPlayer.PlayerState.STOPPED:
                 this.controls.currentPosition = 0;
@@ -290,8 +292,12 @@ var Widget = GObject.registerClass({
                     player.disconnect(this.mediaInfoSignal);
                     this.mediaInfoSignal = null;
                 }
+                this.controls.togglePlayButton.setPrimaryIcon();
+                debug('player state changed to: STOPPED');
+                break;
             case GstPlayer.PlayerState.PAUSED:
                 this.controls.togglePlayButton.setPrimaryIcon();
+                debug('player state changed to: PAUSED');
                 break;
             case GstPlayer.PlayerState.PLAYING:
                 this.controls.togglePlayButton.setSecondaryIcon();
@@ -301,6 +307,7 @@ var Widget = GObject.registerClass({
                         'media_info_updated', this._onMediaInfoUpdated.bind(this)
                     );
                 }
+                debug('player state changed to: PLAYING');
                 break;
             default:
                 break;

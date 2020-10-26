@@ -11,15 +11,22 @@ class ClapperHeaderBar extends Gtk.HeaderBar
 
         this.set_title_widget(this._createWidgetForWindow(window));
 
+        let addMediaButton = new Gtk.MenuButton({
+            icon_name: 'list-add-symbolic',
+        });
+        let addMediaPopover = new HeaderBarPopover(models.addMediaMenu);
+        addMediaButton.set_popover(addMediaPopover);
+        this.pack_start(addMediaButton);
+
         let openMenuButton = new Gtk.MenuButton({
-            icon_name: 'open-menu-symbolic'
+            icon_name: 'open-menu-symbolic',
         });
         let settingsPopover = new HeaderBarPopover(models.settingsMenu);
         openMenuButton.set_popover(settingsPopover);
         this.pack_end(openMenuButton);
 
         let fullscreenButton = new Gtk.Button({
-            icon_name: 'view-fullscreen-symbolic'
+            icon_name: 'view-fullscreen-symbolic',
         });
         fullscreenButton.connect('clicked', () => this.get_parent().fullscreen());
         this.pack_end(fullscreenButton);
