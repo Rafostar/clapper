@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="com.github.rafostar.Clapper">
   <schema id="com.github.rafostar.Clapper" path="/com/github/rafostar/Clapper/">
+    <!-- General -->
+    <key name="fullscreen-auto" type="b">
+      <default>false</default>
+      <summary>Automatically enter fullscreen when first file is loaded</summary>
+    </key>
+    <key name="volume-initial" type="s">
+      <default>"restore"</default>
+      <summary>Mode used for startup volume value</summary>
+    </key>
+    <key name="volume-value" type="i">
+      <default>100</default>
+      <summary>Custom initial volume value after startup</summary>
+    </key>
+
+    <!-- Behaviour -->
     <key name="seeking-mode" type="s">
       <default>"normal"</default>
       <summary>Mode used for seeking</summary>
@@ -13,6 +28,8 @@
       <default>"second"</default>
       <summary>Unit to use with seeking value</summary>
     </key>
+
+    <!-- GStreamer -->
     <key name="plugin-ranking" type="s">
       <default>"{}"</default>
       <summary>Custom values for GStreamer plugin ranking</summary>

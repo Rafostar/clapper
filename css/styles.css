@@ -99,10 +99,9 @@ scale marks {
 }
 
 /* Preferences */
-.prefsbox {
-  margin: 5px;
-}
-
 .prefsnotebook grid {
   margin: 10px;
+}
+.prefssubpage header {
+  background: transparent;
 }

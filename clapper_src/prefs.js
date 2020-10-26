@@ -8,32 +8,46 @@ class ClapperGeneralPage extends PrefsBase.Grid
     {
         super._init();
 
-        let label;
-        let widget;
+        this.addTitle('Startup');
+        this.addCheckButton('Auto enter fullscreen', 'fullscreen-auto');
 
-        label = this.getLabel('Seeking', true);
-        this.addToGrid(label);
+        this.addTitle('Volume');
+        let comboBox = this.addComboBoxText('Initial value', [
+            ['restore', "Restore"],
+            ['custom', "Custom"],
+        ], 'volume-initial');
+        let spinButton = this.addSpinButton('Value (percentage)', 0, 200, 'volume-value');
+        this._onVolumeInitialChanged(spinButton, comboBox);
+        comboBox.connect('changed', this._onVolumeInitialChanged.bind(this, spinButton));
+    }
 
-        label = this.getLabel('Mode:');
-        widget = this.getComboBoxText([
+    _onVolumeInitialChanged(spinButton, comboBox)
+    {
+        let value = comboBox.get_active_id();
+        spinButton.set_visible(value === 'custom');
+    }
+});
+
+let BehaviourPage = GObject.registerClass(
+class ClapperBehaviourPage extends PrefsBase.Grid
+{
+    _init()
+    {
+        super._init();
+
+        this.addTitle('Seeking');
+        this.addComboBoxText('Mode', [
             ['normal', "Normal"],
             ['accurate', "Accurate"],
             /* Needs gstplayer pipeline ref count fix */
             //['fast', "Fast"],
         ], 'seeking-mode');
-        this.addToGrid(label, widget);
-
-        label = this.getLabel('Value:');
-        widget = this.getSpinButton(1, 99, 'seeking-value');
-        this.addToGrid(label, widget);
-
-        label = this.getLabel('Unit:');
-        widget = this.getComboBoxText([
+        this.addComboBoxText('Unit', [
             ['second', "Second"],
             ['minute', "Minute"],
             ['percentage', "Percentage"],
         ], 'seeking-unit');
-        this.addToGrid(label, widget);
+        this.addSpinButton('Value', 1, 99, 'seeking-value');
     }
 });
 
@@ -52,38 +66,37 @@ class ClapperGStreamerPage extends PrefsBase.Grid
     }
 });
 
-var Prefs = GObject.registerClass(
-class ClapperPrefs extends Gtk.Box
+function buildPrefsWidget()
 {
-    _init()
-    {
-        super._init({
-            orientation: Gtk.Orientation.VERTICAL,
-        });
-
-        this.add_css_class('prefsbox');
-
-        let pages = [
-            {
-                title: 'General',
-                widget: GeneralPage,
-            },
+    let pages = [
+        {
+            title: 'Player',
+            pages: [
+                {
+                    title: 'General',
+                    widget: GeneralPage,
+                },
+                {
+                    title: 'Behaviour',
+                    widget: BehaviourPage,
+                }
+            ]
+        },
 /*
-            {
-                title: 'Advanced',
-                pages: [
-                    {
-                        title: 'GStreamer',
-                        widget: GStreamerPage,
-                    }
-                ]
-            }
+        {
+            title: 'Advanced',
+            pages: [
+                {
+                    title: 'GStreamer',
+                    widget: GStreamerPage,
+                }
+            ]
+        }
 */
-        ];
+    ];
 
-        let prefsNotebook = new PrefsBase.Notebook(pages);
-        prefsNotebook.add_css_class('prefsnotebook');
+    let prefsNotebook = new PrefsBase.Notebook(pages);
+    prefsNotebook.add_css_class('prefsnotebook');
 
-        this.append(prefsNotebook);
-    }
-});
+    return prefsNotebook;
+}

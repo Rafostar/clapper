@@ -1,10 +1,10 @@
 const { GObject, Gst, Gtk } = imports.gi;
 const Misc = imports.clapper_src.misc;
-const { Prefs } = imports.clapper_src.prefs;
+const Prefs = imports.clapper_src.prefs;
 
 var actions = [
     prefs,
-    about
+    about,
 ];
 
 var accels = [
@@ -13,14 +13,14 @@ var accels = [
 
 function prefs(window, appName)
 {
-    let prefs = new Prefs();
+    let prefsWidget = Prefs.buildPrefsWidget();
     let prefsDialog = new Gtk.Dialog({
         title: 'Preferences',
         modal: true,
         transient_for: window,
-        child: prefs,
-        default_width: 400,
-        default_height: 320,
+        child: prefsWidget,
+        default_width: 460,
+        default_height: 400,
     });
     prefsDialog.connect('close-request', () => prefsDialog.run_dispose());
     prefsDialog.present();

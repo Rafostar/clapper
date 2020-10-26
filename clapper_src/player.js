@@ -17,6 +17,7 @@ class ClapperPlayer extends PlayerBase
         this.is_local_file = false;
         this.seek_done = true;
         this.dragAllowed = false;
+        this.doneStartup = false;
 
         this.posX = 0;
         this.posY = 0;
@@ -342,18 +343,32 @@ class ClapperPlayer extends PlayerBase
             this.stop();
     }
 
-    _onUriLoaded(self, uri)
+    _onUriLoaded(player, uri)
     {
+        if(!this.doneStartup) {
+            if(this.settings.get_boolean('fullscreen-auto')) {
+                let root = player.widget.get_root();
+                if(root) {
+                    let clapperWidget = root.get_child();
+                    if(!clapperWidget.fullscreenMode)
+                        root.fullscreen();
+                }
+            }
+            if(this.settings.get_string('volume-initial') === 'custom')
+                this.set_volume(this.settings.get_int('volume-value') / 100);
+        }
+        this.doneStartup = true;
+
         this.play();
         debug(`URI loaded: ${uri}`);
     }
 
-    _onPlayerWarning(self, error)
+    _onPlayerWarning(player, error)
     {
         debug(error.message, 'LEVEL_WARNING');
     }
 
-    _onPlayerError(self, error)
+    _onPlayerError(player, error)
     {
         debug(error);
     }

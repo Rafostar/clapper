@@ -3,12 +3,18 @@ const { Gio, GObject, Gtk } = imports.gi;
 var Notebook = GObject.registerClass(
 class ClapperPrefsNotebook extends Gtk.Notebook
 {
-    _init(pages)
+    _init(pages, isSubpage)
     {
         super._init({
+            show_border: false,
             vexpand: true,
             hexpand: true,
         });
+
+        if(isSubpage) {
+            this.set_tab_pos(Gtk.PositionType.LEFT);
+            this.add_css_class('prefssubpage');
+        }
 
         this.addArrayPages(pages);
     }
@@ -22,7 +28,7 @@ class ClapperPrefsNotebook extends Gtk.Notebook
     addObjectPages(item)
     {
         let widget = (item.pages)
-            ? new Notebook(item.pages)
+            ? new Notebook(item.pages, true)
             : new item.widget();
 
         this.addToNotebook(widget, item.title);
@@ -66,16 +72,52 @@ class ClapperPrefsGrid extends Gtk.Grid
 
         if(rightWidget) {
             spanWidth = 1;
+            rightWidget.bind_property('visible', leftWidget, 'visible',
+                GObject.BindingFlags.SYNC_CREATE
+            );
             this.attach(rightWidget, 1, this.gridIndex, 1, 1);
         }
 
         this.attach(leftWidget, 0, this.gridIndex, spanWidth, 1);
         this.gridIndex++;
+
+        return rightWidget || leftWidget;
+    }
+
+    addTitle(text)
+    {
+        let label = this.getLabel(text, true);
+
+        return this.addToGrid(label);
+    }
+
+    addComboBoxText(text, entries, setting)
+    {
+        let label = this.getLabel(text + ':');
+        let widget = this.getComboBoxText(entries, setting);
+
+        return this.addToGrid(label, widget);
+    }
+
+    addSpinButton(text, min, max, setting)
+    {
+        let label = this.getLabel(text + ':');
+        let widget = this.getSpinButton(min, max, setting);
+
+        return this.addToGrid(label, widget);
+    }
+
+    addCheckButton(text, setting)
+    {
+        let widget = this.getCheckButton(text, setting);
+
+        return this.addToGrid(widget);
     }
 
     getLabel(text, isTitle)
     {
         let marginLR = 0;
+        let marginTop = (isTitle && this.gridIndex > 0) ? 16 : 0;
         let marginBottom = (isTitle) ? 2 : 0;
 
         if(isTitle)
@@ -88,6 +130,7 @@ class ClapperPrefsGrid extends Gtk.Grid
             use_markup: true,
             hexpand: true,
             halign: Gtk.Align.START,
+            margin_top: marginTop,
             margin_bottom: marginBottom,
             margin_start: marginLR,
             margin_end: marginLR,
@@ -114,5 +157,15 @@ class ClapperPrefsGrid extends Gtk.Grid
         this.settings.bind(setting, spinButton, 'value', this.flag);
 
         return spinButton;
+    }
+
+    getCheckButton(text, setting)
+    {
+        let checkButton = new Gtk.CheckButton({
+            label: text || null,
+        });
+        this.settings.bind(setting, checkButton, 'active', this.flag);
+
+        return checkButton;
     }
 });
