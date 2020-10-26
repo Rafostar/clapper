@@ -1,4 +1,7 @@
 const { Gio, GObject, Gtk } = imports.gi;
+const Debug = imports.clapper_src.debug;
+
+let { debug } = Debug;
 
 var Notebook = GObject.registerClass(
 class ClapperPrefsNotebook extends Gtk.Notebook
@@ -40,6 +43,18 @@ class ClapperPrefsNotebook extends Gtk.Notebook
             label: title,
         });
         this.append_page(widget, label);
+    }
+
+    _onClose()
+    {
+        let totalPages = this.get_n_pages();
+        let index = 0;
+
+        while(index < totalPages) {
+            let page = this.get_nth_page(index);
+            page._onClose();
+            index++;
+        }
     }
 });
 
@@ -167,5 +182,11 @@ class ClapperPrefsGrid extends Gtk.Grid
         this.settings.bind(setting, checkButton, 'active', this.flag);
 
         return checkButton;
+    }
+
+    _onClose(name)
+    {
+        if(name)
+            debug(`cleanup of prefs ${name} page`);
     }
 });

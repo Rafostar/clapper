@@ -43,8 +43,8 @@ class ClapperPlayerBase extends GstPlayer.Player
         });
 
         this.visualization_enabled = false;
-        this.set_plugin_rank('vah264dec', 300);
 
+        this.set_all_plugins_ranks();
         this.set_initial_config();
         this.set_and_bind_settings();
 
@@ -94,18 +94,41 @@ class ClapperPlayerBase extends GstPlayer.Player
         pipeline.subtitle_font_desc = desc;
     }
 
+    set_all_plugins_ranks()
+    {
+        let data = [];
+
+        /* Set empty plugin list if someone messed it externally */
+        try {
+            data = JSON.parse(this.settings.get_string('plugin-ranking'));
+            if(!Array.isArray(data))
+                throw new Error('plugin ranking data is not an array!');
+        }
+        catch(err) {
+            debug(err);
+            this.settings.set_string('plugin-ranking', "[]");
+        }
+
+        for(let plugin of data) {
+            if(!plugin.apply || !plugin.name)
+                continue;
+
+            this.set_plugin_rank(plugin.name, plugin.rank);
+        }
+    }
+
     set_plugin_rank(name, rank)
     {
-        debug(`changing rank of plugin: ${name}`);
-
         let gstRegistry = Gst.Registry.get();
         let feature = gstRegistry.lookup_feature(name);
         if(!feature)
             return debug(`plugin unavailable: ${name}`);
 
         let oldRank = feature.get_rank();
-        feature.set_rank(rank);
+        if(rank === oldRank)
+            return;
 
+        feature.set_rank(rank);
         debug(`changed rank: ${oldRank} -> ${rank} for ${name}`);
     }
 

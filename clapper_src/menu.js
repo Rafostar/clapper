@@ -22,7 +22,11 @@ function prefs(window, appName)
         default_width: 460,
         default_height: 400,
     });
-    prefsDialog.connect('close-request', () => prefsDialog.run_dispose());
+    prefsDialog.connect('close-request', () => {
+        prefsWidget._onClose();
+        prefsWidget.run_dispose();
+        prefsDialog.run_dispose();
+    });
     prefsDialog.present();
 }
 
@@ -52,7 +56,7 @@ function about(window, appName)
         website: 'https://github.com/Rafostar/clapper',
         modal: true,
         system_information: osInfo,
-        transient_for: window
+        transient_for: window,
     });
     aboutDialog.connect('close-request', () => aboutDialog.run_dispose());
     aboutDialog.present();

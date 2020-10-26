@@ -601,5 +601,8 @@ class ClapperPlayer extends PlayerBase
 
         if(this.state !== GstPlayer.PlayerState.STOPPED)
             this.stop();
+
+        let app = window.get_application();
+        if(app) app.quit();
     }
 });

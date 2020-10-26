@@ -31,7 +31,7 @@
 
     <!-- GStreamer -->
     <key name="plugin-ranking" type="s">
-      <default>"{}"</default>
+      <default>'[{"apply":true,"name":"vah264dec","rank":300}]'</default>
       <summary>Custom values for GStreamer plugin ranking</summary>
     </key>
   </schema>
