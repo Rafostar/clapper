@@ -1,0 +1,22 @@
+{
+    "name": "gtk",
+    "buildsystem": "meson",
+    "config-opts": [
+        "--wrap-mode=nofallback",
+        "-Dwin32-backend=false",
+        "-Dmacos-backend=false",
+        "-Dprint=none",
+        "-Dintrospection=true",
+        "-Ddemos=false",
+        "-Dbuild-examples=false",
+        "-Dbuild-tests=false"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.gnome.org/GNOME/gtk.git",
+            "tag": "3.99.2",
+            "commit": "218b905a88c044cc43349c7c1d44127c606d964d"
+        }
+    ]
+}

@@ -2,22 +2,19 @@
     "name": "gst-libav",
     "buildsystem": "meson",
     "config-opts": [
-        "-Ddoc=disabled"
+        "-Ddoc=disabled",
+        "-Dtests=disabled"
     ],
     "sources": [
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-libav.git",
-            "tag": "1.18.0",
-            "commit": "215b3ed959f2b307065319f94855cc9e1ce7be95"
+            "tag": "1.18.1",
+            "commit": "097313530cae4a49437a779a9ded0ade8113c26b"
         },
         {
             "type": "patch",
             "path": "gst-libav-stop-caching-codecs.patch"
         }
-    ],
-    "post-install": [
-        "mkdir -p /app/lib/codecs/lib/gstreamer-1.0",
-        "mv /app/lib/gstreamer-1.0/*.so /app/lib/codecs/lib/gstreamer-1.0/"
     ]
 }

@@ -1,2 +1,4 @@
 build/
+repo/
 .flatpak-builder/
+com.github.rafostar.Clapper.flatpak

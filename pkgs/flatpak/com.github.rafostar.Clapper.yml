@@ -1,6 +1,6 @@
 app-id: com.github.rafostar.Clapper
 runtime: org.gnome.Platform
-runtime-version: 3.38
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: com.github.rafostar.Clapper
 finish-args:
@@ -8,32 +8,44 @@ finish-args:
   - --socket=fallback-x11
   - --socket=wayland
   - --device=dri
-  - --filesystem=xdg-config/clapper
   - --socket=pulseaudio
   - --share=network
-  - --env=GST_PLUGIN_PATH=/app/lib/codecs/lib/gstreamer-1.0
+  - --env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0
   - --env=GST_VAAPI_ALL_DRIVERS=1
 
+add-extensions:
+  org.freedesktop.Platform.VAAPI.Intel:
+    directory: lib/intel-vaapi-driver
+    version: '20.08'
+    add-ld-path: '.'
+    no-autodownload: true
+    autodelete: false
+    download-if: have-intel-gpu
+    enable-if: active-gl-driver
+
 modules:
-  - codecs/liba52.json
-  - codecs/libmpeg2.json
-  - codecs/libdvdcss.json
-  - codecs/libdvdread.json
-  - codecs/libdvdnav.json
-  - codecs/libass.json
-  - codecs/ffmpeg.json
-  - codecs/gst-plugins-bad.json
-  - codecs/gst-plugins-ugly.json
-  - codecs/gst-libav.json
-  - codecs/gst-vaapi.json
+  - shared-modules/gudev/gudev.json
+  - lib/pango.json
+  - lib/libsass.json
+  - lib/sassc.json
+  - lib/gtk4.json
+  - lib/liba52.json
+  - lib/libmpeg2.json
+  - lib/libdvdcss.json
+  - lib/libdvdread.json
+  - lib/libdvdnav.json
+  - lib/libass.json
+  - lib/ffmpeg.json
+  - gstreamer-1.0/gstreamer.json
+  - gstreamer-1.0/gst-plugins-base.json
+  - gstreamer-1.0/gst-plugins-good.json
+  - gstreamer-1.0/gst-plugins-bad.json
+  - gstreamer-1.0/gst-plugins-ugly.json
+  - gstreamer-1.0/gst-libav.json
+  - gstreamer-1.0/gstreamer-vaapi.json
   - name: clapper
     buildsystem: meson
     sources:
       - type: git
         url: https://github.com/Rafostar/clapper.git
         commit: ac06e84851a592a2536e799c7d381796ef81d758
-
-cleanup-commands:
-  - mv /app/lib/libdvd*.* /app/lib/liba52*.* /app/lib/codecs/lib/
-  - mv /app/lib/libass.* /app/lib/codecs/lib/
-  - mkdir -p /app/lib/ffmpeg
