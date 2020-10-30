@@ -14,6 +14,7 @@ class ClapperPlayer extends PlayerBase
 
         this.state = GstPlayer.PlayerState.STOPPED;
         this.cursorInPlayer = false;
+        this.playOnFullscreen = false;
         this.is_local_file = false;
         this.seek_done = true;
         this.dragAllowed = false;
@@ -345,22 +346,24 @@ class ClapperPlayer extends PlayerBase
 
     _onUriLoaded(player, uri)
     {
+        debug(`URI loaded: ${uri}`);
+
         if(!this.doneStartup) {
-            if(this.settings.get_boolean('fullscreen-auto')) {
-                let root = player.widget.get_root();
-                if(root) {
-                    let clapperWidget = root.get_child();
-                    if(!clapperWidget.fullscreenMode)
-                        root.fullscreen();
-                }
-            }
+            this.doneStartup = true;
             if(this.settings.get_string('volume-initial') === 'custom')
                 this.set_volume(this.settings.get_int('volume-value') / 100);
-        }
-        this.doneStartup = true;
+            if(this.settings.get_boolean('fullscreen-auto')) {
+                let root = player.widget.get_root();
+                let clapperWidget = root.get_child();
+                if(!clapperWidget.fullscreenMode) {
+                    this.playOnFullscreen = true;
+                    root.fullscreen();
 
+                    return;
+                }
+            }
+        }
         this.play();
-        debug(`URI loaded: ${uri}`);
     }
 
     _onPlayerWarning(player, error)

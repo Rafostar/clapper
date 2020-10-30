@@ -384,6 +384,10 @@ var Widget = GObject.registerClass({
         this.showControls(isFullscreen);
         this.player.widget.grab_focus();
 
+        if(this.player.playOnFullscreen && isFullscreen) {
+            this.player.playOnFullscreen = false;
+            this.player.play();
+        }
         this.emit('fullscreen-changed', isFullscreen);
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
