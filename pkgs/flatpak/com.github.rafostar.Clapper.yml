@@ -13,16 +13,6 @@ finish-args:
   - --env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0
   - --env=GST_VAAPI_ALL_DRIVERS=1
 
-add-extensions:
-  org.freedesktop.Platform.VAAPI.Intel:
-    directory: lib/intel-vaapi-driver
-    version: '20.08'
-    add-ld-path: '.'
-    no-autodownload: true
-    autodelete: false
-    download-if: have-intel-gpu
-    enable-if: active-gl-driver
-
 modules:
   - shared-modules/gudev/gudev.json
   - lib/pango.json
