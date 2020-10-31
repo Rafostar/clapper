@@ -37,6 +37,7 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.widget = gtkglsink.widget;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
+        this.widget.set_opacity(0);
 
         this.settings = new Gio.Settings({
             schema_id: 'com.github.rafostar.Clapper'
