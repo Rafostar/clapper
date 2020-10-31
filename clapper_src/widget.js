@@ -56,9 +56,6 @@ var Widget = GObject.registerClass({
         this.mapSignal = this.connect('map', this._onMap.bind(this));
 
         this.player = new Player();
-        this.player.widget.width_request = 960;
-        this.player.widget.height_request = 540;
-
         this.player.selfConnect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.selfConnect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this.player.selfConnect('volume-changed', this._onPlayerVolumeChanged.bind(this));

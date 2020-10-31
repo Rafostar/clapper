@@ -605,6 +605,15 @@ class ClapperPlayer extends PlayerBase
         if(this.state !== GstPlayer.PlayerState.STOPPED)
             this.stop();
 
+        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        if(!clapperWidget.fullscreenMode) {
+            let size = window.get_size();
+            if(size[0] > 0 && size[1] > 0) {
+                this.settings.set_string('window-size', JSON.stringify(size));
+                debug(`saved window dimensions: ${size[0]}x${size[1]}`);
+            }
+        }
+
         let app = window.get_application();
         if(app) app.quit();
     }

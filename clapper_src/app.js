@@ -1,8 +1,11 @@
 const { Gio, GObject, Gtk } = imports.gi;
 const { HeaderBar } = imports.clapper_src.headerbar;
 const { Widget } = imports.clapper_src.widget;
+const Debug = imports.clapper_src.debug;
 const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
+
+let { debug } = Debug;
 
 const APP_NAME = 'Clapper';
 const APP_ID = 'com.github.rafostar.Clapper';
@@ -52,6 +55,20 @@ class ClapperApp extends Gtk.Application
         window.set_titlebar(headerBar);
 
         let clapperWidget = new Widget();
+        let size = clapperWidget.player.settings.get_string('window-size');
+        try {
+            size = JSON.parse(size);
+        }
+        catch(err) {
+            debug(err);
+            size = null;
+        }
+
+        if(size) {
+            window.set_default_size(size[0], size[1]);
+            debug(`restored window dimensions: ${size[0]}x${size[1]}`);
+        }
+
         window.set_child(clapperWidget);
     }
 
