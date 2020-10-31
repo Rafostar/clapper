@@ -109,8 +109,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/glib-2.0/schemas/%{appname}.gschema.xml
 %{_datadir}/mime/packages/%{appname}.xml
 %{_datadir}/applications/*.desktop
+%{_datadir}/metainfo/*.appdata.xml
 
 %changelog
+* Sat Oct 31 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-5
+- Added metainfo
+
 * Sun Oct 25 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-4
 - Added gschema
 

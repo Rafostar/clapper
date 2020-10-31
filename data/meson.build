@@ -13,3 +13,6 @@ install_data('com.github.rafostar.Clapper.xml',
 install_data('com.github.rafostar.Clapper.desktop',
   install_dir: join_paths(sharedir, 'applications')
 )
+install_data('com.github.rafostar.Clapper.appdata.xml',
+  install_dir: join_paths(sharedir, 'metainfo')
+)
