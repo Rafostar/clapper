@@ -310,6 +310,9 @@ var Widget = GObject.registerClass({
                 break;
         }
 
+        let isNotStopped = (state !== GstPlayer.PlayerState.STOPPED)
+        this.revealerTop.endTime.set_visible(isNotStopped);
+
         if(state === GstPlayer.PlayerState.BUFFERING)
             return;
 

@@ -127,7 +127,9 @@ class ClapperRevealerTop extends CustomRevealer
         this.currentTime = new Gtk.Label(timeLabelOpts);
         this.currentTime.add_css_class('osdtime');
 
-        this.endTime = new Gtk.Label(timeLabelOpts);
+        this.endTime = new Gtk.Label(
+            Object.assign(timeLabelOpts, { visible: false })
+        );
         this.endTime.add_css_class('osdendtime');
 
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
