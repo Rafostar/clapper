@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>Clapper</name>
-  <summary>A GNOME media player</summary>
+  <summary>Play videos and music</summary>
   <translation type="gettext">com.github.rafostar.Clapper</translation>
   <launchable type="desktop-id">com.github.rafostar.Clapper.desktop</launchable>
   <description>
@@ -26,6 +26,10 @@
   <url type="bugtracker">https://github.com/Rafostar/clapper/issues</url>
   <url type="donation">https://liberapay.com/Clapper</url>
   <url type="help">https://github.com/Rafostar/clapper/wiki</url>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Video</category>
+  </categories>
   <screenshots>
     <screenshot type="default">
       <image type="source">https://raw.githubusercontent.com/Rafostar/clapper/master/media/screenshot-windowed-mode.png</image>
