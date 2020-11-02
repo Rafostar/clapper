@@ -38,4 +38,3 @@ modules:
     sources:
       - type: git
         url: https://github.com/Rafostar/clapper.git
-        commit: ac06e84851a592a2536e799c7d381796ef81d758
