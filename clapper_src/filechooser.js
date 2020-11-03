@@ -1,4 +1,4 @@
-const { Gio, GObject, Gtk } = imports.gi;
+const { GObject, Gtk } = imports.gi;
 
 var FileChooser = GObject.registerClass(
 class ClapperFileChooser extends Gtk.FileChooserNative

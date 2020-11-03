@@ -2,9 +2,11 @@ const { GObject, Gst, Gtk } = imports.gi;
 const Misc = imports.clapper_src.misc;
 const Prefs = imports.clapper_src.prefs;
 const { FileChooser } = imports.clapper_src.filechooser;
+const { UriDialog } = imports.clapper_src.uridialog;
 
 var actions = [
     openLocal,
+    openUri,
     prefs,
     about,
 ];
@@ -17,6 +19,12 @@ function openLocal(window, appName)
 {
     let fileChooser = new FileChooser(window);
     fileChooser.present();
+}
+
+function openUri(window, appName)
+{
+    let uriDialog = new UriDialog(window);
+    uriDialog.present();
 }
 
 function prefs(window, appName)

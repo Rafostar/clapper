@@ -130,3 +130,8 @@ scale marks {
 .prefssubpage header {
   background: transparent;
 }
+
+/* Open URI Dialog */
+.uridialogbox {
+  margin: 12px;
+}

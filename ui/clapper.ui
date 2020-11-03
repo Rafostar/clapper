@@ -6,6 +6,10 @@
         <attribute name="label" translatable="yes">Open Local File...</attribute>
         <attribute name="action">app.openLocal</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Open URI...</attribute>
+        <attribute name="action">app.openUri</attribute>
+      </item>
     </section>
   </menu>
   <menu id="settingsMenu">
