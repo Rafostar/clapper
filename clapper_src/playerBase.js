@@ -1,4 +1,4 @@
-const { Gio, GObject, Gst, GstPlayer, Gtk } = imports.gi;
+const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
 let { debug } = Debug;
@@ -24,7 +24,13 @@ class ClapperPlayerBase extends GstPlayer.Player
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtkglsink;
 
-        let dispatcher = new GstPlayer.PlayerGMainContextSignalDispatcher();
+        let context = GLib.MainContext.ref_thread_default();
+        let acquired = context.acquire();
+        debug(`default context acquired: ${acquired}`);
+
+        let dispatcher = new GstPlayer.PlayerGMainContextSignalDispatcher({
+            application_context: context,
+        });
         let renderer = new GstPlayer.PlayerVideoOverlayVideoRenderer({
             video_sink: glsinkbin
         });
