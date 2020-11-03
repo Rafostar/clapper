@@ -17,7 +17,11 @@ class ClapperCustomButton extends Gtk.Button
 
         super._init(opts);
 
+        this.floatUnaffected = false;
+        this.wantedVisible = true;
         this.isFullscreen = false;
+        this.isFloating = false;
+
         this.add_css_class('flat');
     }
 
@@ -28,6 +32,32 @@ class ClapperCustomButton extends Gtk.Button
 
         this.margin_top = (isFullscreen) ? 6 : 4;
         this.isFullscreen = isFullscreen;
+    }
+
+    setFloatingMode(isFloating)
+    {
+        if(this.isFloating === isFloating)
+            return;
+
+        this.isFloating = isFloating;
+
+        if(this.floatUnaffected)
+            return;
+
+        if(isFloating)
+            super.set_visible(false);
+        else
+            super.set_visible(this.wantedVisible);
+    }
+
+    set_visible(isVisible)
+    {
+        this.wantedVisible = isVisible;
+
+        if(this.isFloating && !this.floatUnaffected)
+            super.set_visible(false);
+        else
+            super.set_visible(isVisible);
     }
 
     vfunc_clicked()
@@ -48,6 +78,14 @@ class ClapperIconButton extends CustomButton
         super._init({
             icon_name: icon,
         });
+        this.floatUnaffected = true;
+    }
+
+    setFullscreenMode(isFullscreen)
+    {
+        /* Redraw icon after style class change */
+        this.set_icon_name(this.icon_name);
+        super.setFullscreenMode(isFullscreen);
     }
 });
 
@@ -87,7 +125,6 @@ class ClapperLabelButton extends CustomButton
             label: text,
             single_line_mode: true,
         });
-
         this.customLabel.add_css_class('labelbutton');
         this.set_child(this.customLabel);
     }
@@ -105,6 +142,7 @@ class ClapperPopoverButton extends IconButton
     {
         super._init(icon);
 
+        this.floatUnaffected = false;
         this.popover = new Gtk.Popover({
             position: Gtk.PositionType.TOP,
         });
@@ -131,7 +169,7 @@ class ClapperPopoverButton extends IconButton
         this.popover.set_offset(0, -this.margin_top);
 
         let cssClass = 'osd';
-        if(isFullscreen == this.popover.has_css_class(cssClass))
+        if(isFullscreen === this.popover.has_css_class(cssClass))
             return;
 
         let action = (isFullscreen) ? 'add' : 'remove';

@@ -36,6 +36,7 @@ var Widget = GObject.registerClass({
         );
 
         this.fullscreenMode = false;
+        this.floatingMode = false;
         this.isSeekable = false;
 
         this.lastRevealerEventTime = 0;
@@ -63,6 +64,10 @@ var Widget = GObject.registerClass({
         this.overlay.set_child(this.player.widget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
+
+        let motionController = new Gtk.EventControllerMotion();
+        motionController.connect('leave', this._onLeave.bind(this));
+        this.add_controller(motionController);
     }
 
     revealControls(isReveal)
@@ -84,6 +89,73 @@ var Widget = GObject.registerClass({
 
         let un = (this.fullscreenMode) ? 'un' : '';
         root[`${un}fullscreen`]();
+    }
+
+    setFullscreenMode(isFullscreen)
+    {
+        if(this.fullscreenMode === isFullscreen)
+            return;
+
+        this.fullscreenMode = isFullscreen;
+
+        if(!this.floatingMode)
+            this._changeControlsPlacement(isFullscreen);
+        else {
+            this._setWindowFloating(!isFullscreen);
+            this.revealerBottom.setFloatingClass(!isFullscreen);
+            this.controls.setFloatingMode(!isFullscreen);
+            this.controls.unfloatButton.set_visible(!isFullscreen);
+        }
+
+        this.controls.setFullscreenMode(isFullscreen);
+        this.showControls(isFullscreen);
+        this.player.widget.grab_focus();
+
+        if(this.player.playOnFullscreen && isFullscreen) {
+            this.player.playOnFullscreen = false;
+            this.player.play();
+        }
+    }
+
+    setFloatingMode(isFloating)
+    {
+        if(this.floatingMode === isFloating)
+            return;
+
+        this.floatingMode = isFloating;
+
+        this.revealerBottom.setFloatingClass(isFloating);
+        this._changeControlsPlacement(isFloating);
+        this.controls.setFloatingMode(isFloating);
+        this.controls.unfloatButton.set_visible(isFloating);
+        this.revealerBottom.showChild(isFloating);
+        this._setWindowFloating(isFloating);
+
+        this.player.widget.grab_focus();
+    }
+
+    _setWindowFloating(isFloating)
+    {
+        let root = this.get_root();
+
+        let cssClass = 'floatingwindow';
+        if(isFloating === root.has_css_class(cssClass))
+            return;
+
+        let action = (isFloating) ? 'add' : 'remove';
+        root[action + '_css_class'](cssClass);
+    }
+
+    _changeControlsPlacement(isOnTop)
+    {
+        if(isOnTop) {
+            this.remove(this.controls);
+            this.revealerBottom.append(this.controls);
+        }
+        else {
+            this.revealerBottom.remove(this.controls);
+            this.attach(this.controls, 0, 1, 1, 1);
+        }
     }
 
     _onMediaInfoUpdated(player, mediaInfo)
@@ -169,10 +241,9 @@ var Widget = GObject.registerClass({
                 this.showVisualizationsButton(isShowVis);
             }
             if(!parsedInfo[`${type}Tracks`].length) {
-                if(this.controls[`${type}TracksButton`].visible) {
-                    debug(`hiding popover button without contents: ${type}`);
-                    this.controls[`${type}TracksButton`].set_visible(false);
-                }
+                debug(`hiding popover button without contents: ${type}`);
+                this.controls[`${type}TracksButton`].set_visible(false);
+
                 continue;
             }
             this.controls.addCheckButtons(
@@ -180,10 +251,8 @@ var Widget = GObject.registerClass({
                 parsedInfo[`${type}Tracks`],
                 activeId
             );
-            if(!this.controls[`${type}TracksButton`].visible) {
-                debug(`showing popover button with contents: ${type}`);
-                this.controls[`${type}TracksButton`].set_visible(true);
-            }
+            debug(`showing popover button with contents: ${type}`);
+            this.controls[`${type}TracksButton`].set_visible(true);
         }
 
         this.mediaInfoSignal = null;
@@ -366,30 +435,25 @@ var Widget = GObject.registerClass({
         let isFullscreen = Boolean(
             toplevel.state & Gdk.ToplevelState.FULLSCREEN
         );
+
         if(this.fullscreenMode === isFullscreen)
             return;
 
-        this.fullscreenMode = isFullscreen;
-
-        if(isFullscreen) {
-            this.remove(this.controls);
-            this.revealerBottom.append(this.controls);
-        }
-        else {
-            this.revealerBottom.remove(this.controls);
-            this.attach(this.controls, 0, 1, 1, 1);
-        }
-
-        this.controls.setFullscreenMode(isFullscreen);
-        this.showControls(isFullscreen);
-        this.player.widget.grab_focus();
-
-        if(this.player.playOnFullscreen && isFullscreen) {
-            this.player.playOnFullscreen = false;
-            this.player.play();
-        }
+        this.setFullscreenMode(isFullscreen);
         this.emit('fullscreen-changed', isFullscreen);
         debug(`interface in fullscreen mode: ${isFullscreen}`);
+    }
+
+    _onLeave(controller)
+    {
+        if(
+            this.fullscreenMode
+            || !this.floatingMode
+            || this.player.isWidgetDragging
+        )
+            return;
+
+        this.revealerBottom.revealChild(false);
     }
 
     _onMap()

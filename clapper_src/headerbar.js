@@ -10,6 +10,7 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         });
 
         this.set_title_widget(this._createWidgetForWindow(window));
+        let clapperWidget = window.get_child();
 
         let addMediaButton = new Gtk.MenuButton({
             icon_name: 'list-add-symbolic',
@@ -25,11 +26,27 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         openMenuButton.set_popover(settingsPopover);
         this.pack_end(openMenuButton);
 
+        let buttonsBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+        });
+        buttonsBox.add_css_class('linked');
+
+        let floatButton = new Gtk.Button({
+            icon_name: 'preferences-desktop-remote-desktop-symbolic',
+        });
+        floatButton.connect('clicked', this._onFloatButtonClicked.bind(this));
+        clapperWidget.controls.unfloatButton.bind_property('visible', this, 'visible',
+            GObject.BindingFlags.INVERT_BOOLEAN
+        );
+        buttonsBox.append(floatButton);
+
         let fullscreenButton = new Gtk.Button({
             icon_name: 'view-fullscreen-symbolic',
         });
-        fullscreenButton.connect('clicked', () => this.get_parent().fullscreen());
-        this.pack_end(fullscreenButton);
+        fullscreenButton.connect('clicked', this._onFullscreenButtonClicked.bind(this));
+
+        buttonsBox.append(fullscreenButton);
+        this.pack_end(buttonsBox);
     }
 
     updateHeaderBar(title, subtitle)
@@ -71,6 +88,18 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         this.subtitleLabel.visible = false;
 
         return box;
+    }
+
+    _onFloatButtonClicked()
+    {
+        let clapperWidget = this.get_prev_sibling();
+        clapperWidget.setFloatingMode(true);
+    }
+
+    _onFullscreenButtonClicked()
+    {
+        let window = this.get_parent();
+        window.fullscreen();
     }
 });
 

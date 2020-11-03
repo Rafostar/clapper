@@ -98,6 +98,31 @@ scale marks {
   min-width: 6px;
 }
 
+/* Floating Mode */
+.floatingwindow {
+  background: none;
+  border-radius: 12px;
+}
+.osd.floatingcontrols .playercontrols {
+  -gtk-icon-size: 16px;
+}
+.osd.floatingcontrols .playbackicon {
+  -gtk-icon-size: 20px;
+}
+.osd.floatingcontrols button {
+  border-radius: 10px;
+  min-width: 24px;
+  min-height: 24px;
+}
+.osd.floatingcontrols .positionscale trough highlight {
+  border-radius: 3px;
+  min-height: 12px;
+}
+.osd.floatingcontrols .positionscale.dragging trough highlight {
+  border-radius: 3px;
+  min-height: 12px;
+}
+
 /* Preferences */
 .prefsnotebook grid {
   margin: 10px;

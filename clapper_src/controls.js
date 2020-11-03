@@ -56,6 +56,12 @@ class ClapperControls extends Gtk.Box
         this.unfullscreenButton.connect('clicked', this._onUnfullscreenClicked.bind(this));
         this.unfullscreenButton.set_visible(false);
 
+        this.unfloatButton = this.addButton(
+            'preferences-desktop-remote-desktop-symbolic',
+        );
+        this.unfloatButton.connect('clicked', this._onUnfloatClicked.bind(this));
+        this.unfloatButton.set_visible(false);
+
         let keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onControlsKeyPressed.bind(this));
         keyController.connect('key-released', this._onControlsKeyReleased.bind(this));
@@ -72,6 +78,12 @@ class ClapperControls extends Gtk.Box
 
         this.unfullscreenButton.set_visible(isFullscreen);
         this.set_can_focus(isFullscreen);
+    }
+
+    setFloatingMode(isFloating)
+    {
+        for(let button of this.buttonsArr)
+            button.setFloatingMode(isFloating);
     }
 
     setLiveMode(isLive, isSeekable)
@@ -348,6 +360,12 @@ class ClapperControls extends Gtk.Box
     {
         let root = button.get_root();
         root.unfullscreen();
+    }
+
+    _onUnfloatClicked(button)
+    {
+        let clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget.setFloatingMode(false);
     }
 
     _onCheckButtonToggled(checkButton)

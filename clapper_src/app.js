@@ -43,6 +43,23 @@ class ClapperApp extends Gtk.Application
             );
             this.add_action(simpleAction);
         }
+
+        let clapperWidget = new Widget();
+        window.set_child(clapperWidget);
+
+        let size = clapperWidget.player.settings.get_string('window-size');
+        try {
+            size = JSON.parse(size);
+        }
+        catch(err) {
+            debug(err);
+            size = null;
+        }
+        if(size) {
+            window.set_default_size(size[0], size[1]);
+            debug(`restored window dimensions: ${size[0]}x${size[1]}`);
+        }
+
         let clapperPath = Misc.getClapperPath();
         let uiBuilder = Gtk.Builder.new_from_file(
             `${clapperPath}/ui/clapper.ui`
@@ -53,23 +70,6 @@ class ClapperApp extends Gtk.Application
         };
         let headerBar = new HeaderBar(window, models);
         window.set_titlebar(headerBar);
-
-        let clapperWidget = new Widget();
-        let size = clapperWidget.player.settings.get_string('window-size');
-        try {
-            size = JSON.parse(size);
-        }
-        catch(err) {
-            debug(err);
-            size = null;
-        }
-
-        if(size) {
-            window.set_default_size(size[0], size[1]);
-            debug(`restored window dimensions: ${size[0]}x${size[1]}`);
-        }
-
-        window.set_child(clapperWidget);
     }
 
     vfunc_activate()

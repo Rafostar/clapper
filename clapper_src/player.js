@@ -18,6 +18,7 @@ class ClapperPlayer extends PlayerBase
         this.is_local_file = false;
         this.seek_done = true;
         this.dragAllowed = false;
+        this.isWidgetDragging = false;
         this.doneStartup = false;
 
         this.posX = 0;
@@ -277,7 +278,7 @@ class ClapperPlayer extends PlayerBase
 
             if(this.cursorInPlayer) {
                 let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-                if(clapperWidget.fullscreenMode) {
+                if(clapperWidget.fullscreenMode || clapperWidget.floatingMode) {
                     this._clearTimeout('updateTime');
                     clapperWidget.revealControls(false);
                 }
@@ -486,11 +487,12 @@ class ClapperPlayer extends PlayerBase
     _onWidgetEnter(controller, x, y)
     {
         this.cursorInPlayer = true;
+        this.isWidgetDragging = false;
 
         this._setHideCursorTimeout();
 
         let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(clapperWidget.fullscreenMode)
+        if(clapperWidget.fullscreenMode || clapperWidget.floatingMode)
             this._setHideControlsTimeout();
     }
 
@@ -521,7 +523,12 @@ class ClapperPlayer extends PlayerBase
 
             let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
 
-            if(clapperWidget.fullscreenMode) {
+            if(clapperWidget.floatingMode && !clapperWidget.fullscreenMode) {
+                clapperWidget.revealerBottom.set_can_focus(false);
+                clapperWidget.revealerBottom.revealChild(true);
+                this._setHideControlsTimeout();
+            }
+            else if(clapperWidget.fullscreenMode) {
                 if(!this._updateTimeTimeout)
                     this._setUpdateTimeInterval();
 
@@ -565,6 +572,7 @@ class ClapperPlayer extends PlayerBase
             let root = this.widget.get_root();
             if(!root) return;
 
+            this.isWidgetDragging = true;
             root.get_surface().begin_move(
                 gesture.get_device(),
                 gesture.get_current_button(),
@@ -606,7 +614,7 @@ class ClapperPlayer extends PlayerBase
             this.stop();
 
         let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(!clapperWidget.fullscreenMode) {
+        if(!clapperWidget.fullscreenMode && !clapperWidget.floatingMode) {
             let size = window.get_size();
             if(size[0] > 0 && size[1] > 0) {
                 this.settings.set_string('window-size', JSON.stringify(size));

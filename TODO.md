@@ -8,7 +8,7 @@
 - [X] Audio visualizations (VLC)
 - [X] Clock with current hour and "Ends at" time on top overlay (Kodi)
 - [ ] Auto select subtitles matching OS language (Totem)
-- [ ] Picture-in-Picture mode window
+- [X] Picture-in-Picture mode window (floating window)
 - [ ] Touch gestures/swipes support
 - [ ] Media playlists (with exporting to file e.g: .vplist)
 - [ ] Customizable seek time

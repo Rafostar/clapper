@@ -190,6 +190,15 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.remove(widget);
     }
 
+    setFloatingClass(isFloating)
+    {
+        if(isFloating === this.revealerBox.has_css_class('floatingcontrols'))
+            return;
+
+        let action = (isFloating) ? 'add' : 'remove';
+        this.revealerBox[`${action}_css_class`]('floatingcontrols');
+    }
+
     set_visible(isVisible)
     {
         let isChange = super.set_visible(isVisible);
