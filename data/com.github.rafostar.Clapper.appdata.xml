@@ -18,7 +18,7 @@
       The media player has an adaptive GUI. When viewing videos in "Windowed Mode",
       Clapper will use mostly unmodified GTK widgets to match your OS look nicely.
       When player enters "Fullscreen Mode" all GUI elements will become darker, bigger
-      and semi-transparent for your viewing comfort.
+      and semi-transparent for your viewing comfort. It also has a "Floating Mode".
     </p>
   </description>
   <developer_name>Rafał Dzięgiel</developer_name>
@@ -36,6 +36,9 @@
     </screenshot>
     <screenshot>
       <image type="source">https://raw.githubusercontent.com/Rafostar/clapper/master/media/screenshot-fullscreen-mode.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/Rafostar/clapper/master/media/screenshot-floating-mode.png</image>
     </screenshot>
   </screenshots>
   <releases>

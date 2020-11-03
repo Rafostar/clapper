@@ -11,6 +11,11 @@ A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) and p
   <b>Fullscreen Mode</b>
 </p>
 
+<p align="center">
+<img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-floating-mode.png"><br>
+  <b>Floating Mode</b>
+</p>
+
 ### WORK IN PROGRESS
 This is still early WIP. Many features are not implemented yet and quite a few are still unstable.
 
