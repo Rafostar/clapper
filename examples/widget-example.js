@@ -11,6 +11,8 @@ app.connect('activate', () => {
     let window = new Gtk.ApplicationWindow({
         application: app,
         title: 'Clapper Widget Example',
+        width_request: 460,
+        height_request: 390,
     });
     let box = new Gtk.Box({
         orientation: Gtk.Orientation.VERTICAL,
