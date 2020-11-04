@@ -1,7 +1,9 @@
 const { Gio, GObject, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
+const Shared = imports.clapper_src.shared;
 
 let { debug } = Debug;
+let { settings } = Shared;
 
 var Notebook = GObject.registerClass(
 class ClapperPrefsNotebook extends Gtk.Notebook
@@ -68,11 +70,7 @@ class ClapperPrefsGrid extends Gtk.Grid
             column_spacing: 20,
         });
 
-        this.settings = new Gio.Settings({
-            schema_id: 'com.github.rafostar.Clapper'
-        });
         this.flag = Gio.SettingsBindFlags.DEFAULT;
-
         this.gridIndex = 0;
         this.widgetDefaults = {
             width_request: 160,
@@ -159,7 +157,7 @@ class ClapperPrefsGrid extends Gtk.Grid
         for(let entry of entries)
             comboBox.append(entry[0], entry[1]);
 
-        this.settings.bind(setting, comboBox, 'active-id', this.flag);
+        settings.bind(setting, comboBox, 'active-id', this.flag);
 
         return comboBox;
     }
@@ -169,7 +167,7 @@ class ClapperPrefsGrid extends Gtk.Grid
         let spinButton = new Gtk.SpinButton(this.widgetDefaults);
         spinButton.set_range(min, max);
         spinButton.set_increments(1, 2);
-        this.settings.bind(setting, spinButton, 'value', this.flag);
+        settings.bind(setting, spinButton, 'value', this.flag);
 
         return spinButton;
     }
@@ -179,7 +177,7 @@ class ClapperPrefsGrid extends Gtk.Grid
         let checkButton = new Gtk.CheckButton({
             label: text || null,
         });
-        this.settings.bind(setting, checkButton, 'active', this.flag);
+        settings.bind(setting, checkButton, 'active', this.flag);
 
         return checkButton;
     }

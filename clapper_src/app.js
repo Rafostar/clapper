@@ -4,8 +4,10 @@ const { Widget } = imports.clapper_src.widget;
 const Debug = imports.clapper_src.debug;
 const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
+const Shared = imports.clapper_src.shared;
 
 let { debug } = Debug;
+let { settings } = Shared;
 
 const APP_NAME = 'Clapper';
 const APP_ID = 'com.github.rafostar.Clapper';
@@ -47,7 +49,7 @@ class ClapperApp extends Gtk.Application
         let clapperWidget = new Widget();
         window.set_child(clapperWidget);
 
-        let size = clapperWidget.player.settings.get_string('window-size');
+        let size = settings.get_string('window-size');
         try {
             size = JSON.parse(size);
         }

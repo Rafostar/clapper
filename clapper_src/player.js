@@ -2,8 +2,10 @@ const { Gdk, Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const { PlayerBase } = imports.clapper_src.playerBase;
 const Debug = imports.clapper_src.debug;
+const Shared = imports.clapper_src.shared;
 
 let { debug } = Debug;
+let { settings } = Shared;
 
 var Player = GObject.registerClass(
 class ClapperPlayer extends PlayerBase
@@ -205,8 +207,8 @@ class ClapperPlayer extends PlayerBase
 
         let { controls } = this.widget.get_ancestor(Gtk.Grid);
         let max = controls.positionAdjustment.get_upper();
-        let seekingValue = this.settings.get_int('seeking-value');
-        let seekingUnit = this.settings.get_string('seeking-unit');
+        let seekingValue = settings.get_int('seeking-value');
+        let seekingUnit = settings.get_string('seeking-unit');
 
         switch(seekingUnit) {
             case 'minute':
@@ -351,9 +353,9 @@ class ClapperPlayer extends PlayerBase
 
         if(!this.doneStartup) {
             this.doneStartup = true;
-            if(this.settings.get_string('volume-initial') === 'custom')
-                this.set_volume(this.settings.get_int('volume-value') / 100);
-            if(this.settings.get_boolean('fullscreen-auto')) {
+            if(settings.get_string('volume-initial') === 'custom')
+                this.set_volume(settings.get_int('volume-value') / 100);
+            if(settings.get_boolean('fullscreen-auto')) {
                 let root = player.widget.get_root();
                 let clapperWidget = root.get_child();
                 if(!clapperWidget.fullscreenMode) {
@@ -617,7 +619,7 @@ class ClapperPlayer extends PlayerBase
         if(!clapperWidget.fullscreenMode && !clapperWidget.floatingMode) {
             let size = window.get_size();
             if(size[0] > 0 && size[1] > 0) {
-                this.settings.set_string('window-size', JSON.stringify(size));
+                settings.set_string('window-size', JSON.stringify(size));
                 debug(`saved window dimensions: ${size[0]}x${size[1]}`);
             }
         }

@@ -1,5 +1,8 @@
 const { GObject, Gtk, Pango } = imports.gi;
 const PrefsBase = imports.clapper_src.prefsBase;
+const Shared = imports.clapper_src.shared;
+
+let { settings } = Shared;
 
 let GeneralPage = GObject.registerClass(
 class ClapperGeneralPage extends PrefsBase.Grid
@@ -145,7 +148,7 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         removeButton.connect('clicked', this._onRemoveButtonClicked.bind(this, listStore));
         treeSelection.connect('changed', this._onTreeSelectionChanged.bind(this, removeButton));
 
-        this.settingsChangedSignal = this.settings.connect(
+        this.settingsChangedSignal = settings.connect(
             'changed::plugin-ranking', this.refreshListStore.bind(this, listStore)
         );
 
@@ -154,7 +157,7 @@ class ClapperGStreamerPage extends PrefsBase.Grid
 
     refreshListStore(listStore)
     {
-        let data = JSON.parse(this.settings.get_string('plugin-ranking'));
+        let data = JSON.parse(settings.get_string('plugin-ranking'));
         listStore.clear();
 
         for(let plugin of data) {
@@ -171,9 +174,9 @@ class ClapperGStreamerPage extends PrefsBase.Grid
 
     updatePlugin(index, prop, value)
     {
-        let data = JSON.parse(this.settings.get_string('plugin-ranking'));
+        let data = JSON.parse(settings.get_string('plugin-ranking'));
         data[index][prop] = value;
-        this.settings.set_string('plugin-ranking', JSON.stringify(data));
+        settings.set_string('plugin-ranking', JSON.stringify(data));
     }
 
     _onTreeSelectionChanged(removeButton, treeSelection)
@@ -190,13 +193,13 @@ class ClapperGStreamerPage extends PrefsBase.Grid
 
     _onAddButtonClicked(listStore, button)
     {
-        let data = JSON.parse(this.settings.get_string('plugin-ranking'));
+        let data = JSON.parse(settings.get_string('plugin-ranking'));
         data.push({
             apply: false,
             name: '',
             rank: 0,
         });
-        this.settings.set_string('plugin-ranking', JSON.stringify(data));
+        settings.set_string('plugin-ranking', JSON.stringify(data));
     }
 
     _onRemoveButtonClicked(listStore, button)
@@ -204,9 +207,9 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         if(this.activeIndex < 0)
             return;
 
-        let data = JSON.parse(this.settings.get_string('plugin-ranking'));
+        let data = JSON.parse(settings.get_string('plugin-ranking'));
         data.splice(this.activeIndex, 1);
-        this.settings.set_string('plugin-ranking', JSON.stringify(data));
+        settings.set_string('plugin-ranking', JSON.stringify(data));
     }
 
     _onApplyCellEdited(cell, path)
@@ -235,7 +238,7 @@ class ClapperGStreamerPage extends PrefsBase.Grid
     {
         super._onClose('gstreamer');
 
-        this.settings.disconnect(this.settingsChangedSignal);
+        settings.disconnect(this.settingsChangedSignal);
         this.settingsChangedSignal = null;
     }
 });

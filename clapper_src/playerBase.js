@@ -1,5 +1,6 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
+const Shared = imports.clapper_src.shared;
 
 /* PlayFlags are not exported through GI */
 Gst.PlayFlags = {
@@ -19,6 +20,7 @@ Gst.PlayFlags = {
 };
 
 let { debug } = Debug;
+let { settings } = Shared;
 
 var PlayerBase = GObject.registerClass(
 class ClapperPlayerBase extends GstPlayer.Player
@@ -62,17 +64,13 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.widget.hexpand = true;
         this.widget.set_opacity(0);
 
-        this.settings = new Gio.Settings({
-            schema_id: 'com.github.rafostar.Clapper'
-        });
-
         this.visualization_enabled = false;
 
         this.set_all_plugins_ranks();
         this.set_initial_config();
         this.set_and_bind_settings();
 
-        this.settings.connect('changed', this._onSettingsKeyChanged.bind(this));
+        settings.connect('changed', this._onSettingsKeyChanged.bind(this));
     }
 
     set_and_bind_settings()
@@ -82,7 +80,7 @@ class ClapperPlayerBase extends GstPlayer.Player
         ];
 
         for(let key of settingsToSet)
-            this._onSettingsKeyChanged(this.settings, key);
+            this._onSettingsKeyChanged(settings, key);
 
         //let flag = Gio.SettingsBindFlags.GET;
     }
@@ -124,13 +122,13 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         /* Set empty plugin list if someone messed it externally */
         try {
-            data = JSON.parse(this.settings.get_string('plugin-ranking'));
+            data = JSON.parse(settings.get_string('plugin-ranking'));
             if(!Array.isArray(data))
                 throw new Error('plugin ranking data is not an array!');
         }
         catch(err) {
             debug(err);
-            this.settings.set_string('plugin-ranking', "[]");
+            settings.set_string('plugin-ranking', "[]");
         }
 
         for(let plugin of data) {
