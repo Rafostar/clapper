@@ -24,6 +24,10 @@
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad.git",
             "tag": "1.18.1",
             "commit": "e5c3c106a2da607953fea36e3a253b382c939684"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-bad-gstplayer-ref-sink.patch"
         }
     ]
 }
