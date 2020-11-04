@@ -42,8 +42,7 @@ class ClapperBehaviourPage extends PrefsBase.Grid
         this.addComboBoxText('Mode', [
             ['normal', "Normal"],
             ['accurate', "Accurate"],
-            /* Needs gstplayer pipeline ref count fix */
-            //['fast', "Fast"],
+            ['fast', "Fast"],
         ], 'seeking-mode');
         this.addComboBoxText('Unit', [
             ['second', "Second"],
