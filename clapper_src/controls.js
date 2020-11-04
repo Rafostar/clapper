@@ -334,10 +334,6 @@ class ClapperControls extends Gtk.Box
             this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
         }
 
-        this.audioTracksButton.bind_property('visible', this.volumeButton, 'visible',
-            GObject.BindingFlags.SYNC_CREATE
-        );
-
         this.volumeButton.popoverBox.append(this.volumeScale);
     }
 
