@@ -1,6 +1,23 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
+/* PlayFlags are not exported through GI */
+Gst.PlayFlags = {
+  VIDEO: 1,
+  AUDIO: 2,
+  TEXT: 4,
+  VIS: 8,
+  SOFT_VOLUME: 16,
+  NATIVE_AUDIO: 32,
+  NATIVE_VIDEO: 64,
+  DOWNLOAD: 128,
+  BUFFERING: 256,
+  DEINTERLACE: 512,
+  SOFT_COLORBALANCE: 1024,
+  FORCE_FILTERS: 2048,
+  FORCE_SW_DECODERS: 4096,
+};
+
 let { debug } = Debug;
 
 var PlayerBase = GObject.registerClass(
