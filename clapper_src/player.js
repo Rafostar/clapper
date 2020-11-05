@@ -175,15 +175,7 @@ class ClapperPlayer extends PlayerBase
 
         debug(`${this.seekingMode} seeking to position: ${position}`);
 
-        if(this.seekingMode !== 'fast')
-            return super.seek(position);
-
-        let pipeline = this.get_pipeline();
-        let flags = Gst.SeekFlags.FLUSH
-            | Gst.SeekFlags.KEY_UNIT
-            | Gst.SeekFlags.SNAP_AFTER;
-
-        pipeline.seek_simple(Gst.Format.TIME, flags, position);
+        super.seek(position);
     }
 
     seek_seconds(position)

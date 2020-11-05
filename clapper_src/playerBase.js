@@ -106,7 +106,10 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         let config = this.get_config();
         setOption(config, value);
-        this.set_config(config);
+        let success = this.set_config(config);
+
+        if(!success)
+            debug(`could not change option: ${option}`);
     }
 
     /* FIXME: add in prefs and move to bind_settings() */
@@ -160,10 +163,15 @@ class ClapperPlayerBase extends GstPlayer.Player
             case 'seeking-mode':
                 this.seekingMode = settings.get_string('seeking-mode');
                 switch(this.seekingMode) {
+                    case 'fast':
+                        this.set_config_option('seek_fast', true);
+                        break;
                     case 'accurate':
+                        this.set_config_option('seek_fast', false);
                         this.set_config_option('seek_accurate', true);
                         break;
                     default:
+                        this.set_config_option('seek_fast', false);
                         this.set_config_option('seek_accurate', false);
                         break;
                 }

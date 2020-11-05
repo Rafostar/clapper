@@ -28,6 +28,10 @@
         {
             "type": "patch",
             "path": "gst-plugins-bad-gstplayer-ref-sink.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-bad-add-seek-fast-option.patch"
         }
     ]
 }
