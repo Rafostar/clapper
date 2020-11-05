@@ -7,6 +7,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
     {
         super._init({
             transient_for: window,
+            modal: true,
         });
 
         let filter = new Gtk.FileFilter({

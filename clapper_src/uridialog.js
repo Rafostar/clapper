@@ -9,6 +9,7 @@ class ClapperUriDialog extends Gtk.Dialog
             transient_for: window,
             title: 'Open URI',
             default_width: 460,
+            modal: true,
         });
 
         let box = new Gtk.Box({
