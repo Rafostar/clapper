@@ -1,9 +1,9 @@
 const { Gio, GObject, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
-const Shared = imports.clapper_src.shared;
+const Misc = imports.clapper_src.misc;
 
 let { debug } = Debug;
-let { settings } = Shared;
+let { settings } = Misc;
 
 var Notebook = GObject.registerClass(
 class ClapperPrefsNotebook extends Gtk.Notebook

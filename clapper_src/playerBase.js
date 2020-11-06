@@ -1,6 +1,6 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
-const Shared = imports.clapper_src.shared;
+const Misc = imports.clapper_src.misc;
 
 /* PlayFlags are not exported through GI */
 Gst.PlayFlags = {
@@ -20,7 +20,7 @@ Gst.PlayFlags = {
 };
 
 let { debug } = Debug;
-let { settings } = Shared;
+let { settings } = Misc;
 
 var PlayerBase = GObject.registerClass(
 class ClapperPlayerBase extends GstPlayer.Player

@@ -4,13 +4,9 @@ const { Widget } = imports.clapper_src.widget;
 const Debug = imports.clapper_src.debug;
 const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
-const Shared = imports.clapper_src.shared;
 
 let { debug } = Debug;
-let { settings } = Shared;
-
-const APP_NAME = 'Clapper';
-const APP_ID = 'com.github.rafostar.Clapper';
+let { settings } = Misc;
 
 var App = GObject.registerClass(
 class ClapperApp extends Gtk.Application
@@ -18,7 +14,7 @@ class ClapperApp extends Gtk.Application
     _init(opts)
     {
         super._init({
-            application_id: APP_ID
+            application_id: Misc.appId
         });
 
         let defaults = {
@@ -33,15 +29,15 @@ class ClapperApp extends Gtk.Application
 
         let window = new Gtk.ApplicationWindow({
             application: this,
-            title: APP_NAME,
+            title: Misc.appName,
         });
 
-        for(let action of Menu.actions) {
+        for(let action in Menu.actions) {
             let simpleAction = new Gio.SimpleAction({
-                name: action.name
+                name: action
             });
-            simpleAction.connect('activate', () =>
-                action(this.active_window, APP_NAME)
+            simpleAction.connect(
+                'activate', () => Menu.actions[action](this.active_window)
             );
             this.add_action(simpleAction);
         }

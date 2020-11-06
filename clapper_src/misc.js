@@ -1,8 +1,15 @@
-const { GstPlayer, Gtk } = imports.gi;
+const { Gio, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
-var clapperPath;
-var clapperVersion;
+var appName = 'Clapper';
+var appId = 'com.github.rafostar.Clapper';
+
+var clapperPath = null;
+var clapperVersion = null;
+
+var settings = new Gio.Settings({
+    schema_id: appId,
+});
 
 let { debug } = Debug;
 let inhibitCookie;

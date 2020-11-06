@@ -1,11 +1,11 @@
 const { Gdk, Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
-const { PlayerBase } = imports.clapper_src.playerBase;
 const Debug = imports.clapper_src.debug;
-const Shared = imports.clapper_src.shared;
+const Misc = imports.clapper_src.misc;
+const { PlayerBase } = imports.clapper_src.playerBase;
 
 let { debug } = Debug;
-let { settings } = Shared;
+let { settings } = Misc;
 
 var Player = GObject.registerClass(
 class ClapperPlayer extends PlayerBase
@@ -16,19 +16,18 @@ class ClapperPlayer extends PlayerBase
 
         this.state = GstPlayer.PlayerState.STOPPED;
         this.cursorInPlayer = false;
-        this.playOnFullscreen = false;
         this.is_local_file = false;
         this.seek_done = true;
         this.dragAllowed = false;
         this.isWidgetDragging = false;
         this.doneStartup = false;
 
+        this.playOnFullscreen = false;
+        this.quitOnStop = false;
+
         this.posX = 0;
         this.posY = 0;
         this.keyPressCount = 0;
-
-        this._playerSignals = [];
-        this._widgetSignals = [];
 
         this._playlist = [];
         this._trackId = 0;
@@ -62,11 +61,11 @@ class ClapperPlayer extends PlayerBase
         motionController.connect('motion', this._onWidgetMotion.bind(this));
         this.widget.add_controller(motionController);
 
-        this.selfConnect('state-changed', this._onStateChanged.bind(this));
-        this.selfConnect('uri-loaded', this._onUriLoaded.bind(this));
-        this.selfConnect('end-of-stream', this._onStreamEnded.bind(this));
-        this.selfConnect('warning', this._onPlayerWarning.bind(this));
-        this.selfConnect('error', this._onPlayerError.bind(this));
+        this.connect('state-changed', this._onStateChanged.bind(this));
+        this.connect('uri-loaded', this._onUriLoaded.bind(this));
+        this.connect('end-of-stream', this._onStreamEnded.bind(this));
+        this.connect('warning', this._onPlayerWarning.bind(this));
+        this.connect('error', this._onPlayerError.bind(this));
 
         this._realizeSignal = this.widget.connect('realize', this._onWidgetRealize.bind(this));
     }
@@ -242,13 +241,6 @@ class ClapperPlayer extends PlayerBase
         this[action]();
     }
 
-    selfConnect(signal, fn)
-    {
-        this._playerSignals.push(
-            super.connect(signal, fn)
-        );
-    }
-
     _setHideCursorTimeout()
     {
         this._clearTimeout('hideCursor');
@@ -317,10 +309,16 @@ class ClapperPlayer extends PlayerBase
     {
         this.state = state;
 
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        if(this.quitOnStop && state === GstPlayer.PlayerState.STOPPED) {
+            let root = player.widget.get_root();
+
+            return root.run_dispose();
+        }
+
+        let clapperWidget = player.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        if(!this.seek_done && this.state !== GstPlayer.PlayerState.BUFFERING) {
+        if(!this.seek_done && state !== GstPlayer.PlayerState.BUFFERING) {
             clapperWidget.updateTime();
             this.seek_done = true;
             debug('seeking finished');
@@ -450,7 +448,6 @@ class ClapperPlayer extends PlayerBase
             case Gdk.KEY_Q:
                 let root = this.widget.get_root();
                 root.emit('close-request');
-                root.destroy();
                 break;
             default:
                 break;
@@ -598,15 +595,6 @@ class ClapperPlayer extends PlayerBase
 
     _onCloseRequest(window)
     {
-        while(this._widgetSignals.length)
-            this.widget.disconnect(this._widgetSignals.pop());
-
-        while(this._playerSignals.length)
-            this.disconnect(this._playerSignals.pop());
-
-        if(this.state !== GstPlayer.PlayerState.STOPPED)
-            this.stop();
-
         let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget.fullscreenMode && !clapperWidget.floatingMode) {
             let size = window.get_size();
@@ -616,7 +604,10 @@ class ClapperPlayer extends PlayerBase
             }
         }
 
-        let app = window.get_application();
-        if(app) app.quit();
+        if(this.state === GstPlayer.PlayerState.STOPPED)
+            return window.run_dispose();
+
+        this.quitOnStop = true;
+        this.stop();
     }
 });

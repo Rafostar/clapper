@@ -57,9 +57,9 @@ var Widget = GObject.registerClass({
         this.mapSignal = this.connect('map', this._onMap.bind(this));
 
         this.player = new Player();
-        this.player.selfConnect('position-updated', this._onPlayerPositionUpdated.bind(this));
-        this.player.selfConnect('duration-changed', this._onPlayerDurationChanged.bind(this));
-        this.player.selfConnect('volume-changed', this._onPlayerVolumeChanged.bind(this));
+        this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
+        this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
+        this.player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
 
         this.overlay.set_child(this.player.widget);
         this.overlay.add_overlay(this.revealerTop);

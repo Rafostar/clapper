@@ -1,10 +1,10 @@
 const { GObject, Gtk, Pango } = imports.gi;
+const Misc = imports.clapper_src.misc;
 const PrefsBase = imports.clapper_src.prefsBase;
-const Shared = imports.clapper_src.shared;
 
-let { settings } = Shared;
+let { settings } = Misc;
 
-let GeneralPage = GObject.registerClass(
+var GeneralPage = GObject.registerClass(
 class ClapperGeneralPage extends PrefsBase.Grid
 {
     _init()
@@ -31,7 +31,7 @@ class ClapperGeneralPage extends PrefsBase.Grid
     }
 });
 
-let BehaviourPage = GObject.registerClass(
+var BehaviourPage = GObject.registerClass(
 class ClapperBehaviourPage extends PrefsBase.Grid
 {
     _init()
@@ -53,7 +53,7 @@ class ClapperBehaviourPage extends PrefsBase.Grid
     }
 });
 
-let GStreamerPage = GObject.registerClass(
+var GStreamerPage = GObject.registerClass(
 class ClapperGStreamerPage extends PrefsBase.Grid
 {
     _init()
@@ -241,36 +241,3 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         this.settingsChangedSignal = null;
     }
 });
-
-function buildPrefsWidget()
-{
-    let pages = [
-        {
-            title: 'Player',
-            pages: [
-                {
-                    title: 'General',
-                    widget: GeneralPage,
-                },
-                {
-                    title: 'Behaviour',
-                    widget: BehaviourPage,
-                }
-            ]
-        },
-        {
-            title: 'Advanced',
-            pages: [
-                {
-                    title: 'GStreamer',
-                    widget: GStreamerPage,
-                }
-            ]
-        }
-    ];
-
-    let prefsNotebook = new PrefsBase.Notebook(pages);
-    prefsNotebook.add_css_class('prefsnotebook');
-
-    return prefsNotebook;
-}
