@@ -560,15 +560,24 @@ class ClapperPlayer extends PlayerBase
             let [isActive, startX, startY] = gesture.get_start_point();
             if(!isActive) return;
 
-            let root = this.widget.get_root();
-            if(!root) return;
+            let native = this.widget.get_native();
+            if(!native) return;
+
+            let [isShared, winX, winY] = this.widget.translate_coordinates(
+                native, startX, startY
+            );
+            if(!isShared) return;
+
+            let [nativeX, nativeY] = native.get_surface_transform();
+            winX += nativeX;
+            winY += nativeY;
 
             this.isWidgetDragging = true;
-            root.get_surface().begin_move(
+            native.get_surface().begin_move(
                 gesture.get_device(),
                 gesture.get_current_button(),
-                startX,
-                startY,
+                winX,
+                winY,
                 gesture.get_current_event_time()
             );
 
