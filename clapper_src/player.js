@@ -596,11 +596,10 @@ class ClapperPlayer extends PlayerBase
     _onCloseRequest(window)
     {
         let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(!clapperWidget.fullscreenMode && !clapperWidget.floatingMode) {
+        if(!clapperWidget.fullscreenMode) {
             let size = window.get_size();
             if(size[0] > 0 && size[1] > 0) {
-                settings.set_string('window-size', JSON.stringify(size));
-                debug(`saved window dimensions: ${size[0]}x${size[1]}`);
+                clapperWidget._saveWindowSize(size);
             }
         }
 

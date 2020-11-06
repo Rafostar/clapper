@@ -6,6 +6,7 @@ const { Player } = imports.clapper_src.player;
 const Revealers = imports.clapper_src.revealers;
 
 let { debug } = Debug;
+let { settings } = Misc;
 
 var Widget = GObject.registerClass({
     Signals: {
@@ -34,6 +35,9 @@ var Widget = GObject.registerClass({
             cssProvider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         );
+
+        this.windowSize = JSON.parse(settings.get_string('window-size'));
+        this.floatSize = JSON.parse(settings.get_string('float-size'));
 
         this.fullscreenMode = false;
         this.floatingMode = false;
@@ -122,15 +126,32 @@ var Widget = GObject.registerClass({
         if(this.floatingMode === isFloating)
             return;
 
+        let root = this.get_root();
+        let size = root.get_size();
+
+        this._saveWindowSize(size);
+
+        if(isFloating)
+            this.windowSize = size;
+        else
+            this.floatSize = size;
+
         this.floatingMode = isFloating;
 
         this.revealerBottom.setFloatingClass(isFloating);
         this._changeControlsPlacement(isFloating);
         this.controls.setFloatingMode(isFloating);
         this.controls.unfloatButton.set_visible(isFloating);
-        this.revealerBottom.showChild(isFloating);
         this._setWindowFloating(isFloating);
 
+        let resize = (isFloating)
+            ? this.floatSize
+            : this.windowSize;
+
+        root.resize(resize[0], resize[1]);
+        debug(`resized window: ${resize[0]}x${resize[1]}`);
+
+        this.revealerBottom.showChild(false);
         this.player.widget.grab_focus();
     }
 
@@ -144,6 +165,16 @@ var Widget = GObject.registerClass({
 
         let action = (isFloating) ? 'add' : 'remove';
         root[action + '_css_class'](cssClass);
+    }
+
+    _saveWindowSize(size)
+    {
+        let rootName = (this.floatingMode)
+            ? 'float'
+            : 'window';
+
+        settings.set_string(`${rootName}-size`, JSON.stringify(size));
+        debug(`saved ${rootName} size: ${size[0]}x${size[1]}`);
     }
 
     _changeControlsPlacement(isOnTop)

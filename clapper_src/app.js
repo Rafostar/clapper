@@ -55,7 +55,7 @@ class ClapperApp extends Gtk.Application
         }
         if(size) {
             window.set_default_size(size[0], size[1]);
-            debug(`restored window dimensions: ${size[0]}x${size[1]}`);
+            debug(`restored window size: ${size[0]}x${size[1]}`);
         }
 
         let clapperPath = Misc.getClapperPath();
