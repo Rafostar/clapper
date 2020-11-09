@@ -377,7 +377,7 @@ class ClapperPlayer extends PlayerBase
         let root = this.widget.get_root();
         if(!root) return;
 
-        root.connect('close-request', this._onCloseRequest.bind(this));
+        this.closeRequestSignal = root.connect('close-request', this._onCloseRequest.bind(this));
     }
 
     /* Widget only - does not happen when using controls navigation */
@@ -604,6 +604,9 @@ class ClapperPlayer extends PlayerBase
 
     _onCloseRequest(window)
     {
+        window.disconnect(this.closeRequestSignal);
+        this.closeRequestSignal = null;
+
         let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget.fullscreenMode) {
             let size = window.get_size();
