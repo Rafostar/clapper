@@ -161,18 +161,30 @@ class ClapperPlayerBase extends GstPlayer.Player
     {
         switch(key) {
             case 'seeking-mode':
+                let isSeekMode = (typeof this.set_seek_mode !== 'undefined');
                 this.seekingMode = settings.get_string('seeking-mode');
                 switch(this.seekingMode) {
                     case 'fast':
-                        this.set_config_option('seek_fast', true);
+                        if(isSeekMode)
+                            this.set_seek_mode(GstPlayer.PlayerSeekMode.FAST);
+                        else
+                            this.set_config_option('seek_fast', true);
                         break;
                     case 'accurate':
-                        this.set_config_option('seek_fast', false);
-                        this.set_config_option('seek_accurate', true);
+                        if(isSeekMode)
+                            this.set_seek_mode(GstPlayer.PlayerSeekMode.ACCURATE);
+                        else {
+                            this.set_config_option('seek_fast', false);
+                            this.set_config_option('seek_accurate', true);
+                        }
                         break;
                     default:
-                        this.set_config_option('seek_fast', false);
-                        this.set_config_option('seek_accurate', false);
+                        if(isSeekMode)
+                            this.set_seek_mode(GstPlayer.PlayerSeekMode.DEFAULT);
+                        else {
+                            this.set_config_option('seek_fast', false);
+                            this.set_config_option('seek_accurate', false);
+                        }
                         break;
                 }
                 break;
