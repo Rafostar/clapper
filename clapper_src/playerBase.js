@@ -96,6 +96,10 @@ class ClapperPlayerBase extends GstPlayer.Player
             this.set_config_option(option, gstPlayerConfig[option]);
 
         this.set_mute(false);
+
+        /* FIXME: change into option in preferences */
+        let pipeline = this.get_pipeline();
+        pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
     }
 
     set_config_option(option, value)
