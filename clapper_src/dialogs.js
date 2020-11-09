@@ -44,8 +44,6 @@ class ClapperFileChooser extends Gtk.FileChooserNative
 
             player.set_media(file.get_uri());
         }
-
-        this.run_dispose();
     }
 });
 
@@ -92,6 +90,8 @@ class ClapperUriDialog extends Gtk.Dialog
         area.append(box);
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
+
+        this.ref();
         this.show();
     }
 
@@ -125,8 +125,6 @@ class ClapperUriDialog extends Gtk.Dialog
 
         dialog.disconnect(this.closeSignal);
         this.closeSignal = null;
-
-        dialog.run_dispose();
     }
 });
 
@@ -176,6 +174,8 @@ class ClapperPrefsDialog extends Gtk.Dialog
         area.append(prefsNotebook);
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
+
+        this.ref();
         this.show();
     }
 
@@ -189,8 +189,6 @@ class ClapperPrefsDialog extends Gtk.Dialog
         let area = dialog.get_content_area();
         let notebook = area.get_first_child();
         notebook._onClose();
-
-        dialog.run_dispose();
     }
 });
 
@@ -228,6 +226,8 @@ class ClapperAboutDialog extends Gtk.AboutDialog
         });
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
+
+        this.ref();
         this.show();
     }
 
@@ -237,7 +237,5 @@ class ClapperAboutDialog extends Gtk.AboutDialog
 
         dialog.disconnect(this.closeSignal);
         this.closeSignal = null;
-
-        dialog.run_dispose();
     }
 });
