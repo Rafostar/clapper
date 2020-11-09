@@ -6,7 +6,6 @@ const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
 
 let { debug } = Debug;
-let { settings } = Misc;
 
 var App = GObject.registerClass(
 class ClapperApp extends Gtk.Application
@@ -45,18 +44,9 @@ class ClapperApp extends Gtk.Application
         let clapperWidget = new Widget();
         window.set_child(clapperWidget);
 
-        let size = settings.get_string('window-size');
-        try {
-            size = JSON.parse(size);
-        }
-        catch(err) {
-            debug(err);
-            size = null;
-        }
-        if(size) {
-            window.set_default_size(size[0], size[1]);
-            debug(`restored window size: ${size[0]}x${size[1]}`);
-        }
+        let size = clapperWidget.windowSize;
+        window.set_default_size(size[0], size[1]);
+        debug(`restored window size: ${size[0]}x${size[1]}`);
 
         let clapperPath = Misc.getClapperPath();
         let uiBuilder = Gtk.Builder.new_from_file(
