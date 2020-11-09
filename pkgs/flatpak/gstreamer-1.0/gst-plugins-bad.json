@@ -31,7 +31,7 @@
         },
         {
             "type": "patch",
-            "path": "gst-plugins-bad-add-seek-fast-option.patch"
+            "path": "gst-plugins-bad-set-seeking-method-without-stopping-playback.patch"
         }
     ]
 }

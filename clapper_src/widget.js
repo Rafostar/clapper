@@ -131,10 +131,14 @@ var Widget = GObject.registerClass({
 
         this._saveWindowSize(size);
 
-        if(isFloating)
+        if(isFloating) {
             this.windowSize = size;
-        else
+            this.player.widget.set_size_request(192, 108);
+        }
+        else {
             this.floatSize = size;
+            this.player.widget.set_size_request(-1, -1);
+        }
 
         this.floatingMode = isFloating;
 

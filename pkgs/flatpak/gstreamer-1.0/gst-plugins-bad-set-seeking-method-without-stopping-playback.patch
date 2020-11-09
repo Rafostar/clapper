@@ -1,0 +1,310 @@
+From bb4191a149108cda6d8a34814c1a3acdcfc74f56 Mon Sep 17 00:00:00 2001
+From: Rafostar <40623528+Rafostar@users.noreply.github.com>
+Date: Mon, 9 Nov 2020 11:22:32 +0100
+Subject: [PATCH] player: set seek mode without stopping playback
+
+Move seek mode setting outside of "config" object, so it can be changed without stopping playback.
+---
+ gst-libs/gst/player/gstplayer.c | 117 ++++++++++++++++++++------------
+ gst-libs/gst/player/gstplayer.h |  30 ++++++--
+ 2 files changed, 98 insertions(+), 49 deletions(-)
+
+diff --git a/gst-libs/gst/player/gstplayer.c b/gst-libs/gst/player/gstplayer.c
+index 45705c671..d13c0cc63 100644
+--- a/gst-libs/gst/player/gstplayer.c
++++ b/gst-libs/gst/player/gstplayer.c
+@@ -70,6 +70,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_player_debug);
+ #define DEFAULT_POSITION_UPDATE_INTERVAL_MS 100
+ #define DEFAULT_AUDIO_VIDEO_OFFSET 0
+ #define DEFAULT_SUBTITLE_VIDEO_OFFSET 0
++#define DEFAULT_SEEK_MODE GST_PLAYER_SEEK_MODE_DEFAULT
+ 
+ /**
+  * gst_player_error_quark:
+@@ -87,7 +88,6 @@ typedef enum
+ {
+   CONFIG_QUARK_USER_AGENT = 0,
+   CONFIG_QUARK_POSITION_INTERVAL_UPDATE,
+-  CONFIG_QUARK_ACCURATE_SEEK,
+ 
+   CONFIG_QUARK_MAX
+ } ConfigQuarkId;
+@@ -95,7 +95,6 @@ typedef enum
+ static const gchar *_config_quark_strings[] = {
+   "user-agent",
+   "position-interval-update",
+-  "accurate-seek",
+ };
+ 
+ GQuark _config_quark_table[CONFIG_QUARK_MAX];
+@@ -123,6 +122,7 @@ enum
+   PROP_VIDEO_MULTIVIEW_FLAGS,
+   PROP_AUDIO_VIDEO_OFFSET,
+   PROP_SUBTITLE_VIDEO_OFFSET,
++  PROP_SEEK_MODE,
+   PROP_LAST
+ };
+ 
+@@ -188,6 +188,8 @@ struct _GstPlayer
+ 
+   GstStructure *config;
+ 
++  GstPlayerSeekMode seek_mode;
++
+   /* Protected by lock */
+   gboolean seek_pending;        /* Only set from main context */
+   GstClockTime last_seek_time;  /* Only set from main context */
+@@ -294,7 +296,6 @@ gst_player_init (GstPlayer * self)
+   /* *INDENT-OFF* */
+   self->config = gst_structure_new_id (QUARK_CONFIG,
+       CONFIG_QUARK (POSITION_INTERVAL_UPDATE), G_TYPE_UINT, DEFAULT_POSITION_UPDATE_INTERVAL_MS,
+-      CONFIG_QUARK (ACCURATE_SEEK), G_TYPE_BOOLEAN, FALSE,
+       NULL);
+   /* *INDENT-ON* */
+ 
+@@ -424,6 +425,12 @@ gst_player_class_init (GstPlayerClass * klass)
+       "The synchronisation offset between text and video in nanoseconds",
+       G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+ 
++  param_specs[PROP_SEEK_MODE] =
++      g_param_spec_enum ("seek-mode", "Player Seek Mode",
++      "Selected player seek mode to use when performing seeks",
++      GST_TYPE_PLAYER_SEEK_MODE, DEFAULT_SEEK_MODE,
++      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
++
+   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
+ 
+   signals[SIGNAL_URI_LOADED] =
+@@ -747,6 +754,11 @@ gst_player_set_property (GObject * object, guint prop_id,
+     case PROP_SUBTITLE_VIDEO_OFFSET:
+       g_object_set_property (G_OBJECT (self->playbin), "text-offset", value);
+       break;
++    case PROP_SEEK_MODE:
++      g_mutex_lock (&self->lock);
++      self->seek_mode = g_value_get_enum (value);
++      g_mutex_unlock (&self->lock);
++      break;
+     default:
+       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+       break;
+@@ -847,6 +859,11 @@ gst_player_get_property (GObject * object, guint prop_id,
+     case PROP_SUBTITLE_VIDEO_OFFSET:
+       g_object_get_property (G_OBJECT (self->playbin), "text-offset", value);
+       break;
++    case PROP_SEEK_MODE:
++      g_mutex_lock (&self->lock);
++      g_value_set_enum (value, self->seek_mode);
++      g_mutex_unlock (&self->lock);
++      break;
+     default:
+       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+       break;
+@@ -2988,6 +3005,7 @@ gst_player_main (gpointer data)
+   self->is_eos = FALSE;
+   self->is_live = FALSE;
+   self->rate = 1.0;
++  self->seek_mode = DEFAULT_SEEK_MODE;
+ 
+   GST_TRACE_OBJECT (self, "Starting main loop");
+   g_main_loop_run (self->loop);
+@@ -3316,8 +3334,8 @@ gst_player_seek_internal_locked (GstPlayer * self)
+   gdouble rate;
+   GstStateChangeReturn state_ret;
+   GstEvent *s_event;
++  GstPlayerSeekMode seek_mode;
+   GstSeekFlags flags = 0;
+-  gboolean accurate = FALSE;
+ 
+   remove_seek_source (self);
+ 
+@@ -3330,8 +3348,6 @@ gst_player_seek_internal_locked (GstPlayer * self)
+     if (state_ret == GST_STATE_CHANGE_FAILURE) {
+       emit_error (self, g_error_new (GST_PLAYER_ERROR, GST_PLAYER_ERROR_FAILED,
+               "Failed to seek"));
+-      g_mutex_lock (&self->lock);
+-      return;
+     }
+     g_mutex_lock (&self->lock);
+     return;
+@@ -3342,6 +3358,7 @@ gst_player_seek_internal_locked (GstPlayer * self)
+   self->seek_position = GST_CLOCK_TIME_NONE;
+   self->seek_pending = TRUE;
+   rate = self->rate;
++  seek_mode = self->seek_mode;
+   g_mutex_unlock (&self->lock);
+ 
+   remove_tick_source (self);
+@@ -3349,12 +3366,15 @@ gst_player_seek_internal_locked (GstPlayer * self)
+ 
+   flags |= GST_SEEK_FLAG_FLUSH;
+ 
+-  accurate = gst_player_config_get_seek_accurate (self->config);
+-
+-  if (accurate) {
+-    flags |= GST_SEEK_FLAG_ACCURATE;
+-  } else {
+-    flags &= ~GST_SEEK_FLAG_ACCURATE;
++  switch (seek_mode) {
++    case GST_PLAYER_SEEK_MODE_ACCURATE:
++      flags |= GST_SEEK_FLAG_ACCURATE;
++      break;
++    case GST_PLAYER_SEEK_MODE_FAST:
++      flags |= GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_SNAP_AFTER;
++      break;
++    default:
++      break;
+   }
+ 
+   if (rate != 1.0) {
+@@ -4692,51 +4712,62 @@ gst_player_config_get_position_update_interval (const GstStructure * config)
+   return interval;
+ }
+ 
++GType
++gst_player_seek_mode_get_type (void)
++{
++  static gsize id = 0;
++  static const GEnumValue values[] = {
++    {C_ENUM (GST_PLAYER_SEEK_MODE_DEFAULT), "GST_PLAYER_SEEK_MODE_DEFAULT",
++        "default"},
++    {C_ENUM (GST_PLAYER_SEEK_MODE_ACCURATE), "GST_PLAYER_SEEK_MODE_ACCURATE",
++        "accurate"},
++    {C_ENUM (GST_PLAYER_SEEK_MODE_FAST), "GST_PLAYER_SEEK_MODE_FAST", "fast"},
++    {0, NULL, NULL}
++  };
++
++  if (g_once_init_enter (&id)) {
++    GType tmp = g_enum_register_static ("GstPlayerSeekMode", values);
++    g_once_init_leave (&id, tmp);
++  }
++
++  return (GType) id;
++}
++
+ /**
+- * gst_player_config_set_seek_accurate:
+- * @config: a #GstPlayer configuration
+- * @accurate: accurate seek or not
+- *
+- * Enable or disable accurate seeking. When enabled, elements will try harder
+- * to seek as accurately as possible to the requested seek position. Generally
+- * it will be slower especially for formats that don't have any indexes or
+- * timestamp markers in the stream.
+- *
+- * If accurate seeking is disabled, elements will seek as close as the request
+- * position without slowing down seeking too much.
++ * gst_player_get_seek_mode:
++ * @player: #GstPlayer instance
+  *
+- * Accurate seeking is disabled by default.
++ * Returns: The currently used seek mode, Default: 0 "default"
+  *
+- * Since: 1.12
++ * Since: 1.20
+  */
+-void
+-gst_player_config_set_seek_accurate (GstStructure * config, gboolean accurate)
++GstPlayerSeekMode
++gst_player_get_seek_mode (GstPlayer * self)
+ {
+-  g_return_if_fail (config != NULL);
++  GstPlayerSeekMode mode;
+ 
+-  gst_structure_id_set (config,
+-      CONFIG_QUARK (ACCURATE_SEEK), G_TYPE_BOOLEAN, accurate, NULL);
++  g_return_val_if_fail (GST_IS_PLAYER (self), DEFAULT_SEEK_MODE);
++
++  g_object_get (self, "seek-mode", &mode, NULL);
++
++  return mode;
+ }
+ 
+ /**
+- * gst_player_config_get_seek_accurate:
+- * @config: a #GstPlayer configuration
++ * gst_player_set_seek_mode:
++ * @player: #GstPlayer instance
++ * @mode: #GstPlayerSeekMode
+  *
+- * Returns: %TRUE if accurate seeking is enabled
++ * Changes currently used player seek mode to the one of @mode
+  *
+- * Since: 1.12
++ * Since: 1.20
+  */
+-gboolean
+-gst_player_config_get_seek_accurate (const GstStructure * config)
++void
++gst_player_set_seek_mode (GstPlayer * self, GstPlayerSeekMode mode)
+ {
+-  gboolean accurate = FALSE;
+-
+-  g_return_val_if_fail (config != NULL, FALSE);
+-
+-  gst_structure_id_get (config,
+-      CONFIG_QUARK (ACCURATE_SEEK), G_TYPE_BOOLEAN, &accurate, NULL);
++  g_return_if_fail (GST_IS_PLAYER (self));
+ 
+-  return accurate;
++  g_object_set (self, "seek-mode", mode, NULL);
+ }
+ 
+ /**
+diff --git a/gst-libs/gst/player/gstplayer.h b/gst-libs/gst/player/gstplayer.h
+index e853ed875..9c0ab5a60 100644
+--- a/gst-libs/gst/player/gstplayer.h
++++ b/gst-libs/gst/player/gstplayer.h
+@@ -96,6 +96,23 @@ typedef enum
+ GST_PLAYER_API
+ const gchar *gst_player_color_balance_type_get_name   (GstPlayerColorBalanceType type);
+ 
++GST_PLAYER_API
++GType gst_player_seek_mode_get_type                   (void);
++#define GST_TYPE_PLAYER_SEEK_MODE                     (gst_player_seek_mode_get_type ())
++
++/**
++ * GstPlayerSeekMode:
++ * @GST_PLAYER_SEEK_MODE_DEFAULT: default seek method (flush only).
++ * @GST_PLAYER_SEEK_MODE_ACCURATE: accurate seek method.
++ * @GST_PLAYER_SEEK_MODE_FAST: fast seek method (next keyframe).
++ */
++typedef enum
++{
++  GST_PLAYER_SEEK_MODE_DEFAULT,
++  GST_PLAYER_SEEK_MODE_ACCURATE,
++  GST_PLAYER_SEEK_MODE_FAST,
++} GstPlayerSeekMode;
++
+ #define GST_TYPE_PLAYER             (gst_player_get_type ())
+ #define GST_IS_PLAYER(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_PLAYER))
+ #define GST_IS_PLAYER_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_PLAYER))
+@@ -127,6 +144,13 @@ GST_PLAYER_API
+ void         gst_player_seek                          (GstPlayer    * player,
+                                                        GstClockTime   position);
+ 
++GST_PLAYER_API
++GstPlayerSeekMode   gst_player_get_seek_mode          (GstPlayer    * player);
++
++GST_PLAYER_API
++void                gst_player_set_seek_mode          (GstPlayer    * player,
++                                                       GstPlayerSeekMode mode);
++
+ GST_PLAYER_API
+ void         gst_player_set_rate                      (GstPlayer    * player,
+                                                        gdouble        rate);
+@@ -282,12 +306,6 @@ void           gst_player_config_set_position_update_interval  (GstStructure * c
+ GST_PLAYER_API
+ guint          gst_player_config_get_position_update_interval  (const GstStructure * config);
+ 
+-GST_PLAYER_API
+-void           gst_player_config_set_seek_accurate (GstStructure * config, gboolean accurate);
+-
+-GST_PLAYER_API
+-gboolean       gst_player_config_get_seek_accurate (const GstStructure * config);
+-
+ typedef enum
+ {
+   GST_PLAYER_THUMBNAIL_RAW_NATIVE = 0,
+-- 
+2.26.2
+
