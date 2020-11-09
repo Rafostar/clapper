@@ -130,6 +130,17 @@ scale marks {
 .prefssubpage header {
   background: transparent;
 }
+.prefssubpage header tabs tab {
+  margin: 0px;
+}
+.prefssubpage header tabs tab:hover {
+  box-shadow: none;
+  background: rgba(0,0,0,0.08);
+}
+.prefssubpage header tabs tab:checked {
+  box-shadow: inset 200px 0 @theme_selected_bg_color;
+  color: initial;
+}
 
 /* Open URI Dialog */
 .uridialogbox {
