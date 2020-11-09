@@ -8,8 +8,8 @@
         {
             "type": "git",
             "url": "https://gitlab.gnome.org/GNOME/pango.git",
-            "tag": "1.47.0",
-            "commit": "43808377088ea3eecc1607b910dee1477508587b"
+            "tag": "1.48.0",
+            "commit": "a39fea44c7c9f982fcca6d639929545dd3e09eb7"
         }
     ]
 }

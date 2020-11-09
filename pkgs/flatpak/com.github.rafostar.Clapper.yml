@@ -14,6 +14,7 @@ finish-args:
   - --env=GST_VAAPI_ALL_DRIVERS=1
 
 modules:
+  - lib/glib.json
   - shared-modules/gudev/gudev.json
   - lib/pango.json
   - lib/libsass.json
