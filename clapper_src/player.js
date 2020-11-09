@@ -309,10 +309,14 @@ class ClapperPlayer extends PlayerBase
     {
         this.state = state;
 
-        if(this.quitOnStop && state === GstPlayer.PlayerState.STOPPED) {
-            let root = player.widget.get_root();
+        if(this.quitOnStop) {
+            if(state === GstPlayer.PlayerState.STOPPED) {
+                let root = player.widget.get_root();
+                if(root)
+                    root.run_dispose();
+            }
 
-            return root.run_dispose();
+            return;
         }
 
         let clapperWidget = player.widget.get_ancestor(Gtk.Grid);
