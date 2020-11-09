@@ -13,8 +13,12 @@ finish-args:
   - --env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0
   - --env=GST_VAAPI_ALL_DRIVERS=1
 
+  # DVD/DVB devices access
+  - --device=all
+
 modules:
   - lib/glib.json
+  - lib/glib-networking.json
   - shared-modules/gudev/gudev.json
   - lib/pango.json
   - lib/libsass.json
