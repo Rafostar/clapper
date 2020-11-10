@@ -44,6 +44,8 @@ class ClapperFileChooser extends Gtk.FileChooserNative
 
             player.set_media(file.get_uri());
         }
+
+        this.unref();
     }
 });
 
