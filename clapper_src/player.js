@@ -618,6 +618,7 @@ class ClapperPlayer extends PlayerBase
                 clapperWidget._saveWindowSize(size);
             }
         }
+        clapperWidget.controls._onCloseRequest();
 
         if(this.state === GstPlayer.PlayerState.STOPPED)
             return window.run_dispose();

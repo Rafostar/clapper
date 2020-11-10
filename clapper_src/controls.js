@@ -467,4 +467,14 @@ class ClapperControls extends Gtk.Box
                 break;
         }
     }
+
+    _onCloseRequest()
+    {
+        for(let button of this.buttonsArr) {
+            if(!button._onCloseRequest)
+                continue;
+
+            button._onCloseRequest();
+        }
+    }
 });

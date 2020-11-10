@@ -157,6 +157,7 @@ class ClapperPopoverButton extends IconButton
             this.popover.add_css_class('osd');
 
         this.popover.connect('closed', this._onClosed.bind(this));
+        this.popover.set_parent(this);
     }
 
     setFullscreenMode(isFullscreen)
@@ -181,7 +182,6 @@ class ClapperPopoverButton extends IconButton
         super.vfunc_clicked();
 
         this.set_state_flags(Gtk.StateFlags.CHECKED, false);
-        this.popover.set_parent(this);
         this.popover.popup();
     }
 
@@ -190,7 +190,11 @@ class ClapperPopoverButton extends IconButton
         let { player } = this.get_ancestor(Gtk.Grid);
         player.widget.grab_focus();
 
-        this.popover.unparent();
         this.unset_state_flags(Gtk.StateFlags.CHECKED);
+    }
+
+    _onCloseRequest()
+    {
+        this.popover.unparent();
     }
 });
