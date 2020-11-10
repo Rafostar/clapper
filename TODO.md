@@ -1,7 +1,9 @@
 - [X] Implement GstPlayer API
 - [X] Inhibit screen locking
 - [X] Hide cursor on video window
-- [X] Adaptive UI (dark and bigger when viewing in fullscreen)
+- Adaptive GUI:
+  - [X] Darker and bigger in fullscreen
+  - [ ] Mobile friendly (libhandy)
 - [X] Dragging player by video (MPV)
 - [X] Switching video/audio/subtitles tracks from bottom bar (MPV)
 - [X] Over-amplification supported by default (VLC)
@@ -10,11 +12,16 @@
 - [ ] Auto select subtitles matching OS language (Totem)
 - [X] Picture-in-Picture mode window (floating window)
 - [ ] Touch gestures/swipes support
-- [ ] Media playlists (with exporting to file e.g: .vplist)
-- [ ] Customizable seek time
+- Media playlists:
+  - [ ] Add more items to playlist via GUI
+  - [ ] Select video from playlist
+  - [ ] Reorder playlist items via D&D
+  - [X] Exporting to file (.claps)
+- Seeking:
+  - [X] Customizable seek time
+  - [X] Set seek mode (default, accurate, fast)
 - [ ] Statistics and codec info page (VLC)
 - [ ] Resume playback from last position
-- [ ] Mobile friendly UI (libhandy)
 - [ ] Chapters support
 - [ ] Set tracks time offset
   - [ ] Subtitles offset
@@ -24,7 +31,7 @@
 - [ ] Search for subtitles, download and activate (SMplayer)
 - [ ] Auto add subtitles from same folder
   - [ ] Set global subtitles folders
-- [ ] RSTP streaming
+- [X] RSTP streaming
 - [ ] Playback speed
 - [ ] Remote playback controls via HTTP (VLC) + WebSockets
 - [ ] Integration with the top bar
