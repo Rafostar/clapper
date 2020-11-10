@@ -414,14 +414,8 @@ var Widget = GObject.registerClass({
                 break;
         }
 
-        let isNotStopped = (state !== GstPlayer.PlayerState.STOPPED)
+        let isNotStopped = (state !== GstPlayer.PlayerState.STOPPED);
         this.revealerTop.endTime.set_visible(isNotStopped);
-
-        if(state === GstPlayer.PlayerState.BUFFERING)
-            return;
-
-        let window = this.get_root();
-        Misc.inhibitForState(state, window);
     }
 
     _onPlayerDurationChanged(player)

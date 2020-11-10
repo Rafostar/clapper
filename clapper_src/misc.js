@@ -35,14 +35,14 @@ function getClapperVersion()
 function inhibitForState(state, window)
 {
     let isInhibited = false;
-    let flags = Gtk.ApplicationInhibitFlags.SUSPEND
-        | Gtk.ApplicationInhibitFlags.IDLE;
 
     if(state === GstPlayer.PlayerState.PLAYING) {
         if(inhibitCookie)
             return;
 
         let app = window.get_application();
+        let flags = Gtk.ApplicationInhibitFlags.SUSPEND
+            | Gtk.ApplicationInhibitFlags.IDLE;
 
         inhibitCookie = app.inhibit(
             window,
@@ -58,8 +58,9 @@ function inhibitForState(state, window)
         //if(!inhibitCookie)
             return;
 
-        /* Uninhibit seems to be broken as of GTK 3.99.2
-        this.uninhibit(inhibitCookie);
+        /* Uninhibit seems to be broken as of GTK 3.99.4
+        let app = window.get_application();
+        app.uninhibit(inhibitCookie);
         inhibitCookie = null;
         */
     }
