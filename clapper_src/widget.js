@@ -99,6 +99,10 @@ var Widget = GObject.registerClass({
 
         this.fullscreenMode = isFullscreen;
 
+        let root = this.get_root();
+        let action = (isFullscreen) ? 'add' : 'remove';
+        root[action + '_css_class']('gpufriendly');
+
         if(!this.floatingMode)
             this._changeControlsPlacement(isFullscreen);
         else {

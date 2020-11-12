@@ -143,3 +143,9 @@ scale marks {
 .uridialogbox {
   margin: 12px;
 }
+
+/* Other */
+.gpufriendly {
+  box-shadow: none;
+  background: none;
+}
