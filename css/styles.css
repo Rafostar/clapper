@@ -31,9 +31,6 @@ scale marks {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
-.videobox {
-  background: black;
-}
 .reavealertop {
   min-height: 90px;
   box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.3);

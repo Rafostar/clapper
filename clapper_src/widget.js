@@ -47,15 +47,12 @@ var Widget = GObject.registerClass({
         this.needsTracksUpdate = true;
         this.mediaInfoSignal = null;
 
-        this.videoBox = new Gtk.Box();
         this.overlay = new Gtk.Overlay();
         this.revealerTop = new Revealers.RevealerTop();
         this.revealerBottom = new Revealers.RevealerBottom();
         this.controls = new Controls();
 
-        this.videoBox.add_css_class('videobox');
-        this.videoBox.append(this.overlay);
-        this.attach(this.videoBox, 0, 0, 1, 1);
+        this.attach(this.overlay, 0, 0, 1, 1);
         this.attach(this.controls, 0, 1, 1, 1);
 
         this.mapSignal = this.connect('map', this._onMap.bind(this));

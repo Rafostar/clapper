@@ -1,0 +1,22 @@
+diff --git a/ext/gtk/gtkgstglwidget.c b/ext/gtk/gtkgstglwidget.c
+index 186144a1c..54563c36f 100644
+--- a/ext/gtk/gtkgstglwidget.c
++++ b/ext/gtk/gtkgstglwidget.c
+@@ -173,7 +173,7 @@ _redraw_texture (GtkGstGLWidget * gst_widget, guint tex)
+     GstVideoRectangle src, dst, result;
+     gint widget_width, widget_height, widget_scale;
+ 
+-    gl->ClearColor (0.0, 0.0, 0.0, 0.0);
++    gl->ClearColor (0.0, 0.0, 0.0, 1.0);
+     gl->Clear (GL_COLOR_BUFFER_BIT);
+ 
+     widget_scale = gtk_widget_get_scale_factor ((GtkWidget *) gst_widget);
+@@ -221,7 +221,7 @@ _draw_black (GstGLContext * context)
+   const GstGLFuncs *gl = context->gl_vtable;
+ 
+   gst_gl_insert_debug_marker (context, "no buffer.  rendering black");
+-  gl->ClearColor (0.0, 0.0, 0.0, 0.0);
++  gl->ClearColor (0.0, 0.0, 0.0, 1.0);
+   gl->Clear (GL_COLOR_BUFFER_BIT);
+ }
+ 
