@@ -198,6 +198,8 @@ var Widget = GObject.registerClass({
             this.revealerBottom.remove(this.controls);
             this.controlsBox.append(this.controls);
         }
+
+        this.controlsBox.set_visible(!isOnTop);
     }
 
     _onMediaInfoUpdated(player, mediaInfo)
