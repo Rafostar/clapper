@@ -98,7 +98,6 @@ scale marks {
 /* Floating Mode */
 .floatingwindow {
   border-radius: 12px;
-  box-shadow: -8px -8px transparent, 8px 8px transparent;
 }
 .osd.floatingcontrols .playercontrols {
   -gtk-icon-size: 16px;
