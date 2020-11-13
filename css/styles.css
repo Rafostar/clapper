@@ -97,8 +97,8 @@ scale marks {
 
 /* Floating Mode */
 .floatingwindow {
-  background: none;
   border-radius: 12px;
+  box-shadow: -8px -8px transparent, 8px 8px transparent;
 }
 .osd.floatingcontrols .playercontrols {
   -gtk-icon-size: 16px;
@@ -144,8 +144,16 @@ scale marks {
   margin: 12px;
 }
 
-/* Other */
-.gpufriendly {
-  box-shadow: none;
+/* Tweaks */
+.nobackground {
   background: none;
+}
+.controlsbox {
+  background: @theme_bg_color;
+}
+.gpufriendly {
+  box-shadow: -8px -8px transparent, 8px 8px transparent;
+}
+.gpufriendlyfs {
+  box-shadow: none;
 }

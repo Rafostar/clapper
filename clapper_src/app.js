@@ -6,6 +6,7 @@ const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
 
 let { debug } = Debug;
+let { settings } = Misc;
 
 var App = GObject.registerClass(
 class ClapperApp extends Gtk.Application
@@ -30,6 +31,11 @@ class ClapperApp extends Gtk.Application
             application: this,
             title: Misc.appName,
         });
+        window.isClapperApp = true;
+        window.add_css_class('nobackground');
+
+        if(!settings.get_boolean('render-shadows'))
+            window.add_css_class('gpufriendly');
 
         for(let action in Menu.actions) {
             let simpleAction = new Gio.SimpleAction({

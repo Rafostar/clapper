@@ -52,8 +52,14 @@ var Widget = GObject.registerClass({
         this.revealerBottom = new Revealers.RevealerBottom();
         this.controls = new Controls();
 
+        this.controlsBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+        });
+        this.controlsBox.add_css_class('controlsbox');
+        this.controlsBox.append(this.controls);
+
         this.attach(this.overlay, 0, 0, 1, 1);
-        this.attach(this.controls, 0, 1, 1, 1);
+        this.attach(this.controlsBox, 0, 1, 1, 1);
 
         this.mapSignal = this.connect('map', this._onMap.bind(this));
 
@@ -101,7 +107,7 @@ var Widget = GObject.registerClass({
 
         let root = this.get_root();
         let action = (isFullscreen) ? 'add' : 'remove';
-        root[action + '_css_class']('gpufriendly');
+        root[action + '_css_class']('gpufriendlyfs');
 
         if(!this.floatingMode)
             this._changeControlsPlacement(isFullscreen);
@@ -185,12 +191,12 @@ var Widget = GObject.registerClass({
     _changeControlsPlacement(isOnTop)
     {
         if(isOnTop) {
-            this.remove(this.controls);
+            this.controlsBox.remove(this.controls);
             this.revealerBottom.append(this.controls);
         }
         else {
             this.revealerBottom.remove(this.controls);
-            this.attach(this.controls, 0, 1, 1, 1);
+            this.controlsBox.append(this.controls);
         }
     }
 

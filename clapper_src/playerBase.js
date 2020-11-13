@@ -62,7 +62,6 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.widget = gtkglsink.widget;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
-        this.widget.set_opacity(0);
 
         this.visualization_enabled = false;
 
@@ -190,6 +189,20 @@ class ClapperPlayerBase extends GstPlayer.Player
                             this.set_config_option('seek_accurate', false);
                         }
                         break;
+                }
+                break;
+            case 'render-shadows':
+                let root = this.widget.get_root();
+                if(root && root.isClapperApp) {
+                    let cssClass = 'gpufriendly';
+                    let renderShadows = settings.get_boolean('render-shadows');
+                    let hasShadows = !root.has_css_class(cssClass);
+
+                    if(renderShadows === hasShadows)
+                        break;
+
+                    let action = (renderShadows) ? 'remove' : 'add';
+                    root[action + '_css_class'](cssClass);
                 }
                 break;
             default:

@@ -241,3 +241,15 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         this.settingsChangedSignal = null;
     }
 });
+
+var TweaksPage = GObject.registerClass(
+class ClapperTweaksPage extends PrefsBase.Grid
+{
+    _init()
+    {
+        super._init();
+
+        this.addTitle('Performance');
+        this.addCheckButton('Render window shadows', 'render-shadows');
+    }
+});

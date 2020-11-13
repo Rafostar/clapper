@@ -164,6 +164,10 @@ class ClapperPrefsDialog extends Gtk.Dialog
                     {
                         title: 'GStreamer',
                         widget: Prefs.GStreamerPage,
+                    },
+                    {
+                        title: 'Tweaks',
+                        widget: Prefs.TweaksPage,
                     }
                 ]
             }

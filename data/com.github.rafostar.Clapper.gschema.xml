@@ -29,6 +29,12 @@
       <summary>Unit to use with seeking value</summary>
     </key>
 
+    <!-- Tweaks -->
+    <key name="render-shadows" type="b">
+      <default>true</default>
+      <summary>Enable rendering window shadows (only if theme has them)</summary>
+    </key>
+
     <!-- GStreamer -->
     <key name="plugin-ranking" type="s">
       <default>'[{"apply":false,"name":"vah264dec","rank":300}]'</default>
