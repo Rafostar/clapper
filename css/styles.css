@@ -32,8 +32,8 @@ scale marks {
   font-weight: 600;
 }
 .reavealertop {
-  min-height: 90px;
-  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.3);
+  min-height: 96px;
+  box-shadow: inset 0px 200px 10px -124px rgba(0,0,0,0.35);
   font-family: 'Cantarell', sans-serif;
   font-size: 30px;
   font-weight: 500;
