@@ -227,7 +227,7 @@ class ClapperAboutDialog extends Gtk.AboutDialog
             artists: ['Rafał Dzięgiel'],
             license_type: Gtk.License.GPL_3_0,
             logo_icon_name: 'com.github.rafostar.Clapper',
-            website: 'https://github.com/Rafostar/clapper',
+            website: 'https://rafostar.github.io/clapper',
             system_information: osInfo,
         });
 
