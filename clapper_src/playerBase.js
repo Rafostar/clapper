@@ -39,7 +39,6 @@ class ClapperPlayerBase extends GstPlayer.Player
                     + ' Do you have gstreamer-plugins-good-gtk4 installed?'
             ));
         }
-        gtkglsink.show_preroll_frame = false;
 
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtkglsink;
