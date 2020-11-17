@@ -39,6 +39,7 @@ class ClapperPlayerBase extends GstPlayer.Player
                     + ' Do you have gstreamer-plugins-good-gtk4 installed?'
             ));
         }
+        gtkglsink.show_preroll_frame = false;
 
         let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtkglsink;
@@ -59,10 +60,11 @@ class ClapperPlayerBase extends GstPlayer.Player
             video_renderer: renderer
         });
 
-        this.widget = gtkglsink.widget;
+        this.gtkglsink = gtkglsink;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
 
+        this.state = GstPlayer.PlayerState.STOPPED;
         this.visualization_enabled = false;
 
         this.set_all_plugins_ranks();
@@ -70,6 +72,11 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.set_and_bind_settings();
 
         settings.connect('changed', this._onSettingsKeyChanged.bind(this));
+    }
+
+    get widget()
+    {
+        return this.gtkglsink.widget;
     }
 
     set_and_bind_settings()
@@ -158,6 +165,14 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         feature.set_rank(rank);
         debug(`changed rank: ${oldRank} -> ${rank} for ${name}`);
+    }
+
+    draw_black(isEnabled)
+    {
+        this.gtkglsink.ignore_textures = isEnabled;
+
+        if(this.state !== GstPlayer.PlayerState.PLAYING)
+            this.widget.queue_render();
     }
 
     _onSettingsKeyChanged(settings, key)

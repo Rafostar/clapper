@@ -27,11 +27,11 @@
         },
         {
             "type": "patch",
-            "path": "gst-plugins-good-gtk4glsink-render-black.patch"
+            "path": "gst-plugins-good-gtk4-do-not-depend-on-destroy-signal-for-cleanup.patch"
         },
         {
             "type": "patch",
-            "path": "gst-plugins-good-gtk4-do-not-depend-on-destroy-signal-for-cleanup.patch"
+            "path": "gst-plugins-good-gtk4glsink-render-black.patch"
         }
     ]
 }

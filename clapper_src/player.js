@@ -14,7 +14,6 @@ class ClapperPlayer extends PlayerBase
     {
         super._init();
 
-        this.state = GstPlayer.PlayerState.STOPPED;
         this.cursorInPlayer = false;
         this.is_local_file = false;
         this.seek_done = true;

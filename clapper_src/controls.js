@@ -204,10 +204,8 @@ class ClapperControls extends Gtk.Box
         }
 
         if(checkButton.activeId < 0) {
-            /* Disabling video leaves last frame frozen,
-             * so we hide it by making it transparent */
-            //if(checkButton.type === 'video')
-            //    clapperWidget.player.widget.set_opacity(0);
+            if(checkButton.type === 'video')
+                clapperWidget.player.draw_black(true);
 
             return clapperWidget.player[
                 `set_${checkButton.type}_track_enabled`
@@ -219,8 +217,8 @@ class ClapperControls extends Gtk.Box
         clapperWidget.player[setTrack](checkButton.activeId);
         clapperWidget.player[`${setTrack}_enabled`](true);
 
-        //if(checkButton.type === 'video' && !clapperWidget.player.widget.opacity)
-        //    clapperWidget.player.widget.set_opacity(1);
+        if(checkButton.type === 'video')
+            clapperWidget.player.draw_black(false);
     }
 
     _handleVisualizationChange(checkButton)
