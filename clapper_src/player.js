@@ -441,6 +441,8 @@ class ClapperPlayer extends PlayerBase
                 this._setHideControlsTimeout();
                 break;
             case Gdk.KEY_F11:
+            case Gdk.KEY_f:
+            case Gdk.KEY_F:
                 clapperWidget.toggleFullscreen();
                 break;
             case Gdk.KEY_Escape:
