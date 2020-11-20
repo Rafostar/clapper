@@ -56,6 +56,30 @@ class ClapperBehaviourPage extends PrefsBase.Grid
     }
 });
 
+var AudioPage = GObject.registerClass(
+class ClapperAudioPage extends PrefsBase.Grid
+{
+    _init()
+    {
+        super._init();
+
+        this.addTitle('Synchronization');
+        this.addSpinButton('Offset (milliseconds)', -1000, 1000, 'audio-offset', 25);
+    }
+});
+
+var SubtitlesPage = GObject.registerClass(
+class ClapperSubtitlesPage extends PrefsBase.Grid
+{
+    _init()
+    {
+        super._init();
+
+        this.addTitle('Synchronization');
+        this.addSpinButton('Offset (milliseconds)', -5000, 5000, 'subtitle-offset', 25);
+    }
+});
+
 var GStreamerPage = GObject.registerClass(
 class ClapperGStreamerPage extends PrefsBase.Grid
 {

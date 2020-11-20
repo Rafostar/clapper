@@ -82,6 +82,8 @@ class ClapperPlayerBase extends GstPlayer.Player
     {
         let settingsToSet = [
             'seeking-mode',
+            'audio-offset',
+            'subtitle-offset',
         ];
 
         for(let key of settingsToSet)
@@ -176,6 +178,8 @@ class ClapperPlayerBase extends GstPlayer.Player
 
     _onSettingsKeyChanged(settings, key)
     {
+        let value;
+
         switch(key) {
             case 'seeking-mode':
                 let isSeekMode = (typeof this.set_seek_mode !== 'undefined');
@@ -218,6 +222,16 @@ class ClapperPlayerBase extends GstPlayer.Player
                     let action = (renderShadows) ? 'remove' : 'add';
                     root[action + '_css_class'](cssClass);
                 }
+                break;
+            case 'audio-offset':
+                value = Math.round(settings.get_double(key) * -1000000);
+                this.set_audio_video_offset(value);
+                debug(`set audio-video offset: ${value}`);
+                break;
+            case 'subtitle-offset':
+                value = Math.round(settings.get_double(key) * -1000000);
+                this.set_subtitle_video_offset(value);
+                debug(`set subtitle-video offset: ${value}`);
                 break;
             default:
                 break;

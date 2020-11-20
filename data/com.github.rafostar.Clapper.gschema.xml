@@ -33,6 +33,18 @@
       <summary>Unit to use with seeking value</summary>
     </key>
 
+    <!-- Audio -->
+    <key name="audio-offset" type="d">
+      <default>0</default>
+      <summary>Offset time for audio tracks relative to video (milliseconds)</summary>
+    </key>
+
+    <!-- Subtitles -->
+    <key name="subtitle-offset" type="d">
+      <default>0</default>
+      <summary>Offset time for subtitle tracks relative to video (milliseconds)</summary>
+    </key>
+
     <!-- Tweaks -->
     <key name="render-shadows" type="b">
       <default>true</default>

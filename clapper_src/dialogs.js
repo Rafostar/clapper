@@ -159,6 +159,19 @@ class ClapperPrefsDialog extends Gtk.Dialog
                 ]
             },
             {
+                title: 'Playback',
+                pages: [
+                    {
+                        title: 'Audio',
+                        widget: Prefs.AudioPage,
+                    },
+                    {
+                        title: 'Subtitles',
+                        widget: Prefs.SubtitlesPage,
+                    }
+                ]
+            },
+            {
                 title: 'Advanced',
                 pages: [
                     {

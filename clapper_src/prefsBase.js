@@ -112,10 +112,10 @@ class ClapperPrefsGrid extends Gtk.Grid
         return this.addToGrid(label, widget);
     }
 
-    addSpinButton(text, min, max, setting)
+    addSpinButton(text, min, max, setting, precision)
     {
         let label = this.getLabel(text + ':');
-        let widget = this.getSpinButton(min, max, setting);
+        let widget = this.getSpinButton(min, max, setting, precision);
 
         return this.addToGrid(label, widget);
     }
@@ -162,11 +162,14 @@ class ClapperPrefsGrid extends Gtk.Grid
         return comboBox;
     }
 
-    getSpinButton(min, max, setting)
+    getSpinButton(min, max, setting, precision)
     {
+        precision = precision || 1;
+
         let spinButton = new Gtk.SpinButton(this.widgetDefaults);
         spinButton.set_range(min, max);
-        spinButton.set_increments(1, 2);
+        spinButton.set_digits(precision % 1 === 0 ? 0 : 3);
+        spinButton.set_increments(precision, 1);
         settings.bind(setting, spinButton, 'value', this.flag);
 
         return spinButton;
