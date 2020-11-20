@@ -27,8 +27,9 @@ class ClapperControls extends Gtk.Box
         this.currentDuration = 0;
         this.isPositionDragging = false;
 
-        this.durationFormated = '00:00:00';
-        this.elapsedInitial = '00:00:00/00:00:00';
+        this.showHours = false;
+        this.durationFormatted = '00:00';
+        this.elapsedInitial = '00:00/00:00';
         this.buttonsArr = [];
 
         this._addTogglePlayButton();
@@ -98,8 +99,8 @@ class ClapperControls extends Gtk.Box
     {
         value = value || 0;
 
-        let elapsed = Misc.getFormatedTime(value)
-            + '/' + this.durationFormated;
+        let elapsed = Misc.getFormattedTime(value, this.showHours)
+            + '/' + this.durationFormatted;
 
         this.elapsedButton.set_label(elapsed);
     }

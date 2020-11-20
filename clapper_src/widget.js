@@ -437,8 +437,10 @@ var Widget = GObject.registerClass({
             return;
 
         this.controls.currentDuration = duration;
+        this.controls.showHours = (duration >= 3600);
+
         this.controls.positionAdjustment.set_upper(duration);
-        this.controls.durationFormated = Misc.getFormatedTime(duration);
+        this.controls.durationFormatted = Misc.getFormattedTime(duration);
         this.controls.updateElapsedLabel();
     }
 

@@ -68,13 +68,18 @@ function inhibitForState(state, window)
     debug(`set prevent suspend to: ${isInhibited}`);
 }
 
-function getFormatedTime(time)
+function getFormattedTime(time, showHours)
 {
-    let hours = ('0' + Math.floor(time / 3600)).slice(-2);
-    time -= hours * 3600;
+    let hours;
+
+    if(showHours || time >= 3600) {
+        hours = ('0' + Math.floor(time / 3600)).slice(-2);
+        time -= hours * 3600;
+    }
     let minutes = ('0' + Math.floor(time / 60)).slice(-2);
     time -= minutes * 60;
     let seconds = ('0' + Math.floor(time)).slice(-2);
 
-    return `${hours}:${minutes}:${seconds}`;
+    let parsed = (hours) ? `${hours}:` : '';
+    return parsed + `${minutes}:${seconds}`;
 }
