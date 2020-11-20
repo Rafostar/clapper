@@ -14,6 +14,10 @@
       <default>100</default>
       <summary>Custom initial volume value after startup</summary>
     </key>
+    <key name="dark-theme" type="b">
+      <default>false</default>
+      <summary>Enable to force the app to use dark theme variant</summary>
+    </key>
 
     <!-- Behaviour -->
     <key name="seeking-mode" type="s">

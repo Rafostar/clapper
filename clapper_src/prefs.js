@@ -22,6 +22,9 @@ class ClapperGeneralPage extends PrefsBase.Grid
         let spinButton = this.addSpinButton('Value (percentage)', 0, 200, 'volume-value');
         this._onVolumeInitialChanged(spinButton, comboBox);
         comboBox.connect('changed', this._onVolumeInitialChanged.bind(this, spinButton));
+
+        this.addTitle('Appearance');
+        this.addCheckButton('Enable dark theme', 'dark-theme');
     }
 
     _onVolumeInitialChanged(spinButton, comboBox)

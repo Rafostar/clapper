@@ -21,6 +21,8 @@ class ClapperApp extends Gtk.Application
             playlist: [],
         };
         Object.assign(this, defaults, opts);
+
+        this.doneFirstActivate = false;
     }
 
     vfunc_startup()
@@ -70,15 +72,31 @@ class ClapperApp extends Gtk.Application
     {
         super.vfunc_activate();
 
-        this.windowShowSignal = this.active_window.connect(
-            'show', this._onWindowShow.bind(this)
-        );
+        if(!this.doneFirstActivate)
+            this._onFirstActivate();
+
         this.active_window.present();
     }
 
     run(arr)
     {
         super.run(arr || []);
+    }
+
+    _onFirstActivate()
+    {
+        let gtkSettings = Gtk.Settings.get_default();
+        settings.bind(
+            'dark-theme', gtkSettings,
+            'gtk_application_prefer_dark_theme',
+            Gio.SettingsBindFlags.GET
+        );
+
+        this.windowShowSignal = this.active_window.connect(
+            'show', this._onWindowShow.bind(this)
+        );
+
+        this.doneFirstActivate = true;
     }
 
     _onWindowShow(window)
