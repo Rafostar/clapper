@@ -27,6 +27,7 @@ scale marks {
   -gtk-icon-size: 28px;
 }
 .labelbutton {
+  margin-top: 1px;
   font-family: 'Cantarell', sans-serif;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
@@ -50,6 +51,7 @@ scale marks {
   font-weight: 600;
 }
 .osd .labelbutton {
+  margin-top: 0px;
   font-size: 24px;
 }
 

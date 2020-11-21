@@ -15,7 +15,7 @@
       <summary>Custom initial volume value after startup</summary>
     </key>
     <key name="dark-theme" type="b">
-      <default>false</default>
+      <default>true</default>
       <summary>Enable to force the app to use dark theme variant</summary>
     </key>
     <key name="brighter-sliders" type="b">
