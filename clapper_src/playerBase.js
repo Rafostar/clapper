@@ -178,7 +178,7 @@ class ClapperPlayerBase extends GstPlayer.Player
 
     _onSettingsKeyChanged(settings, key)
     {
-        let value;
+        let root, value, action;
 
         switch(key) {
             case 'seeking-mode':
@@ -210,18 +210,20 @@ class ClapperPlayerBase extends GstPlayer.Player
                 }
                 break;
             case 'render-shadows':
-                let root = this.widget.get_root();
-                if(root && root.isClapperApp) {
-                    let cssClass = 'gpufriendly';
-                    let renderShadows = settings.get_boolean('render-shadows');
-                    let hasShadows = !root.has_css_class(cssClass);
+                root = this.widget.get_root();
+                /* Editing theme of someone else app is taboo */
+                if(!root || !root.isClapperApp)
+                    break;
 
-                    if(renderShadows === hasShadows)
-                        break;
+                let gpuClass = 'gpufriendly';
+                let renderShadows = settings.get_boolean(key);
+                let hasShadows = !root.has_css_class(gpuClass);
 
-                    let action = (renderShadows) ? 'remove' : 'add';
-                    root[action + '_css_class'](cssClass);
-                }
+                if(renderShadows === hasShadows)
+                    break;
+
+                action = (renderShadows) ? 'remove' : 'add';
+                root[action + '_css_class'](gpuClass);
                 break;
             case 'audio-offset':
                 value = Math.round(settings.get_double(key) * -1000000);
@@ -232,6 +234,29 @@ class ClapperPlayerBase extends GstPlayer.Player
                 value = Math.round(settings.get_double(key) * -1000000);
                 this.set_subtitle_video_offset(value);
                 debug(`set subtitle-video offset: ${value}`);
+                break;
+            case 'dark-theme':
+            case 'brighter-sliders':
+                root = this.widget.get_root();
+                if(!root || !root.isClapperApp)
+                    break;
+
+                let brightClass = 'brightscale';
+                let isBrighter = root.has_css_class(brightClass);
+
+                if(key === 'dark-theme' && isBrighter && !settings.get_boolean(key)) {
+                    root.remove_css_class(brightClass);
+                    debug('remove brighter sliders');
+                    break;
+                }
+
+                let setBrighter = settings.get_boolean('brighter-sliders');
+                if(setBrighter === isBrighter)
+                    break;
+
+                action = (setBrighter) ? 'add' : 'remove';
+                root[action + '_css_class'](brightClass);
+                debug(`${action} brighter sliders`);
                 break;
             default:
                 break;

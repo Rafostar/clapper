@@ -156,3 +156,6 @@ scale marks {
 .gpufriendlyfs {
   box-shadow: none;
 }
+.brightscale trough highlight {
+  filter: brightness(120%);
+}

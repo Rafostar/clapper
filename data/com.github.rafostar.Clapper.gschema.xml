@@ -18,6 +18,10 @@
       <default>false</default>
       <summary>Enable to force the app to use dark theme variant</summary>
     </key>
+    <key name="brighter-sliders" type="b">
+      <default>true</default>
+      <summary>Enable to make all sliders/bars brighter</summary>
+    </key>
 
     <!-- Behaviour -->
     <key name="seeking-mode" type="s">

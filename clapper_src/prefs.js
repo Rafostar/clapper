@@ -24,13 +24,22 @@ class ClapperGeneralPage extends PrefsBase.Grid
         comboBox.connect('changed', this._onVolumeInitialChanged.bind(this, spinButton));
 
         this.addTitle('Appearance');
-        this.addCheckButton('Enable dark theme', 'dark-theme');
+        let darkCheck = this.addCheckButton('Enable dark theme', 'dark-theme');
+        let brighterCheck = this.addCheckButton('Make sliders brighter', 'brighter-sliders');
+        this._onDarkThemeToggled(brighterCheck, darkCheck);
+        darkCheck.connect('toggled', this._onDarkThemeToggled.bind(this, brighterCheck));
     }
 
     _onVolumeInitialChanged(spinButton, comboBox)
     {
         let value = comboBox.get_active_id();
         spinButton.set_visible(value === 'custom');
+    }
+
+    _onDarkThemeToggled(brighterCheck, darkCheck)
+    {
+        let isActive = darkCheck.get_active();
+        brighterCheck.set_visible(isActive);
     }
 });
 

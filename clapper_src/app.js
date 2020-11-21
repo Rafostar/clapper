@@ -39,6 +39,12 @@ class ClapperApp extends Gtk.Application
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
 
+        if(
+            settings.get_boolean('dark-theme')
+            && settings.get_boolean('brighter-sliders')
+        )
+            window.add_css_class('brightscale');
+
         for(let action in Menu.actions) {
             let simpleAction = new Gio.SimpleAction({
                 name: action
