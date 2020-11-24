@@ -89,7 +89,8 @@ class ClapperPlayerBase extends GstPlayer.Player
         for(let key of settingsToSet)
             this._onSettingsKeyChanged(settings, key);
 
-        //let flag = Gio.SettingsBindFlags.GET;
+        let flag = Gio.SettingsBindFlags.GET;
+        settings.bind('subtitle-font', this.pipeline, 'subtitle_font_desc', flag);
     }
 
     set_initial_config()
@@ -121,13 +122,6 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         if(!success)
             debug(`could not change option: ${option}`);
-    }
-
-    /* FIXME: add in prefs and move to bind_settings() */
-    set_subtitle_font_desc(desc)
-    {
-        let pipeline = this.get_pipeline();
-        pipeline.subtitle_font_desc = desc;
     }
 
     set_all_plugins_ranks()

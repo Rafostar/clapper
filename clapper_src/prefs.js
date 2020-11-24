@@ -84,8 +84,13 @@ class ClapperSubtitlesPage extends PrefsBase.Grid
     {
         super._init();
 
-        this.addTitle('Synchronization');
-        this.addSpinButton('Offset (milliseconds)', -5000, 5000, 'subtitle-offset', 25);
+        /* FIXME: This should be moved to subtitles popup and displayed only when
+           external subtitles were added for easier customization per video. */
+        //this.addTitle('Synchronization');
+        //this.addSpinButton('Offset (milliseconds)', -5000, 5000, 'subtitle-offset', 25);
+
+        this.addTitle('External Subtitles');
+        this.addFontButton('Default font', 'subtitle-font');
     }
 });
 

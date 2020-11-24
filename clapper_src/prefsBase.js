@@ -127,6 +127,14 @@ class ClapperPrefsGrid extends Gtk.Grid
         return this.addToGrid(widget);
     }
 
+    addFontButton(text, setting)
+    {
+        let label = this.getLabel(text + ':');
+        let widget = this.getFontButton(setting);
+
+        return this.addToGrid(label, widget);
+    }
+
     getLabel(text, isTitle)
     {
         let marginLR = 0;
@@ -183,6 +191,17 @@ class ClapperPrefsGrid extends Gtk.Grid
         settings.bind(setting, checkButton, 'active', this.flag);
 
         return checkButton;
+    }
+
+    getFontButton(setting)
+    {
+        let fontButton = new Gtk.FontButton({
+            use_font: true,
+            use_size: true,
+        });
+        settings.bind(setting, fontButton, 'font', this.flag);
+
+        return fontButton;
     }
 
     _onClose(name)

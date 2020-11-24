@@ -48,6 +48,10 @@
       <default>0</default>
       <summary>Offset time for subtitle tracks relative to video (milliseconds)</summary>
     </key>
+    <key name="subtitle-font" type="s">
+      <default>"Sans 12"</default>
+      <summary>The subtitles font description</summary>
+    </key>
 
     <!-- Tweaks -->
     <key name="render-shadows" type="b">
