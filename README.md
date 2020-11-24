@@ -1,5 +1,5 @@
 # Clapper
-A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) and powered by [GStreamer](https://gstreamer.freedesktop.org) with [OpenGL](https://www.opengl.org) rendering. Can also be used as a pre-made widget for [GTK](https://www.gtk.org) apps.
+A GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit. The media player is using GStreamer [GstPlayer API](https://gstreamer.freedesktop.org/documentation/player/gstplayer) as a media backend and renders everything via [OpenGL](https://www.opengl.org). Can also be used as a pre-made widget for [GTK](https://www.gtk.org) apps.
 
 <p align="center">
 <img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-windowed-mode.png"><br>
@@ -18,8 +18,6 @@ A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) and p
 
 ### WORK IN PROGRESS
 This is still early WIP. Many features are not implemented yet and quite a few are still unstable.
-
-Clapper is a GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit. The media player is using GStreamer [GstPlayer API](https://gstreamer.freedesktop.org/documentation/player/gstplayer) as a media backend and renders everything via [OpenGL](https://www.opengl.org). Both [GTK4](https://www.gtk.org) and [GStreamer](https://gstreamer.freedesktop.org) plugins share a single global GL context which improves performance greatly.
 
 ### Features:
 * [Playlists](https://github.com/Rafostar/clapper/wiki/Playlists)
@@ -44,6 +42,12 @@ You can get Clapper from the AUR: [clapper-git](https://aur.archlinux.org/packag
 
 ## Installation from source code
 The requirements and how to build from git source code are described in the [wiki](https://github.com/Rafostar/clapper/wiki#installation-from-source-code).
+
+## Q&A
+**Q:** Does using `GJS` negatively impact video performance?<br>
+**A:** Absolutely not. `GJS` here is used to put together the GUI during startup.
+It has nothing to do with video rendering. All used `GTK4` and `GStreamer` libraries are in C.
+Even the custom video widget that I prepared for this player (based on original `GTK3` implementation) is in C.
 
 ## Special Thanks
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
