@@ -147,6 +147,14 @@ class ClapperPlayer extends PlayerBase
         return this._playlist;
     }
 
+    set_subtitles(uri)
+    {
+        this.set_subtitle_uri(uri);
+        this.set_subtitle_track_enabled(true);
+
+        debug(`applied subtitle track: ${uri}`);
+    }
+
     set_visualization_enabled(value)
     {
         if(value === this.visualization_enabled)

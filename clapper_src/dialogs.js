@@ -1,4 +1,4 @@
-const { GObject, Gtk, Gst } = imports.gi;
+const { Gio, GObject, Gtk, Gst } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const Prefs = imports.clapper_src.prefs;
@@ -14,6 +14,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         super._init({
             transient_for: window,
             modal: true,
+            select_multiple: true,
         });
 
         let filter = new Gtk.FileFilter({
@@ -22,6 +23,10 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         filter.add_mime_type('video/*');
         filter.add_mime_type('audio/*');
         filter.add_mime_type('application/claps');
+        this.subsMimes = [
+            'application/x-subrip',
+        ];
+        this.subsMimes.forEach(mime => filter.add_mime_type(mime));
         this.add_filter(filter);
 
         this.responseSignal = this.connect('response', this._onResponse.bind(this));
@@ -39,10 +44,38 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         this.responseSignal = null;
 
         if(response === Gtk.ResponseType.ACCEPT) {
-            let file = this.get_file();
+            let index = 0;
+            let files = this.get_files();
+
+            let file;
+            let subs;
+            let playlist = [];
+
+            while((file = files.get_item(index))) {
+                let uri = file.get_uri();
+                let filename = file.get_basename();
+                let [type, isUncertain] = Gio.content_type_guess(filename, null);
+
+                if(this.subsMimes.includes(type)) {
+                    subs = uri;
+                    files.remove(index);
+
+                    continue;
+                }
+
+                playlist.push(uri);
+                index++;
+            }
+
             let { player } = this.get_transient_for().get_child();
 
-            player.set_media(file.get_uri());
+            if(playlist.length)
+                player.set_playlist(playlist);
+
+            /* add subs to single selected video
+               or to already playing file  */
+            if(subs && !files.get_item(1))
+                player.set_subtitles(subs);
         }
 
         this.unref();
