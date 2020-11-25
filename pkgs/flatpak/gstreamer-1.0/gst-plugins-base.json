@@ -21,6 +21,10 @@
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-base.git",
             "tag": "1.18.1",
             "commit": "4013b8003e78971dd01b055066c12f8aaadb8897"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-base-autodetect-subtitle-text-encoding.patch"
         }
     ]
 }

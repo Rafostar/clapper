@@ -30,6 +30,7 @@
         "lib/libdvdnav.json",
         "lib/libass.json",
         "lib/ffmpeg.json",
+        "lib/uchardet.json",
         "gstreamer-1.0/gstreamer.json",
         "gstreamer-1.0/gst-plugins-base.json",
         "gstreamer-1.0/gst-plugins-good.json",
