@@ -462,8 +462,11 @@ var Widget = GObject.registerClass({
 
     _onPlayerVolumeChanged(player)
     {
+        /* FIXME: This check should not be needed, GstPlayer should not
+         * emit 'volume-changed' with the same values. It needs to be
+         * fixed inside GStreamer GstPlayer API */
         let volume = Number(player.get_volume().toFixed(2));
-        if(volume === this.currentVolume)
+        if(volume === this.controls.currentVolume)
             return;
 
         this.controls.currentVolume = volume;
