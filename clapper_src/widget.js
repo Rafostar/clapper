@@ -66,7 +66,9 @@ var Widget = GObject.registerClass({
         this.player = new Player();
         this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
-        this.player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
+
+        /* FIXME: re-enable once ported to new GstPlayer API with messages bus */
+        //this.player.pipeline.connect('notify::volume', this._onPlayerVolumeChanged.bind(this));
 
         this.overlay.set_child(this.player.widget);
         this.overlay.add_overlay(this.revealerTop);
@@ -462,15 +464,18 @@ var Widget = GObject.registerClass({
 
     _onPlayerVolumeChanged(player)
     {
+        let volume = player.get_volume();
+
         /* FIXME: This check should not be needed, GstPlayer should not
-         * emit 'volume-changed' with the same values. It needs to be
-         * fixed inside GStreamer GstPlayer API */
-        let volume = Number(player.get_volume().toFixed(2));
+         * emit 'volume-changed' with the same values, but it does. */
         if(volume === this.controls.currentVolume)
             return;
 
+        /* Once above is fixed in GstPlayer, remove this var too */
         this.controls.currentVolume = volume;
-        this.controls.volumeScale.set_value(volume);
+
+        let cubicVolume = Misc.getCubicValue(volume);
+        this.controls._updateVolumeButtonIcon(cubicVolume);
     }
 
     _onStateNotify(toplevel)

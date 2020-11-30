@@ -1,4 +1,4 @@
-const { Gio, GstPlayer, Gtk } = imports.gi;
+const { Gio, GstAudio, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
 var appName = 'Clapper';
@@ -10,6 +10,8 @@ var clapperVersion = null;
 var settings = new Gio.Settings({
     schema_id: appId,
 });
+
+var maxVolume = 1.5;
 
 let { debug } = Debug;
 let inhibitCookie;
@@ -82,4 +84,22 @@ function getFormattedTime(time, showHours)
 
     let parsed = (hours) ? `${hours}:` : '';
     return parsed + `${minutes}:${seconds}`;
+}
+
+function getCubicValue(linearVal)
+{
+    return GstAudio.StreamVolume.convert_volume(
+        GstAudio.StreamVolumeFormat.LINEAR,
+        GstAudio.StreamVolumeFormat.CUBIC,
+        linearVal
+    );
+}
+
+function getLinearValue(cubicVal)
+{
+    return GstAudio.StreamVolume.convert_volume(
+        GstAudio.StreamVolumeFormat.CUBIC,
+        GstAudio.StreamVolumeFormat.LINEAR,
+        cubicVal
+    );
 }

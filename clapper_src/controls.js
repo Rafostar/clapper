@@ -315,7 +315,6 @@ class ClapperControls extends Gtk.Box
             inverted: true,
             value_pos: Gtk.PositionType.TOP,
             draw_value: false,
-            round_digits: 2,
             vexpand: true,
         });
         this.volumeScale.connect(
@@ -324,16 +323,36 @@ class ClapperControls extends Gtk.Box
         this.volumeScale.add_css_class('volumescale');
         this.volumeAdjustment = this.volumeScale.get_adjustment();
 
-        this.volumeAdjustment.set_upper(2);
+        this.volumeAdjustment.set_upper(Misc.maxVolume);
         this.volumeAdjustment.set_step_increment(0.05);
         this.volumeAdjustment.set_page_increment(0.05);
 
-        for(let i = 0; i <= 2; i++) {
-            let text = (i) ? `${i}00%` : '0%';
+        for(let i of [0, 1, Misc.maxVolume]) {
+            let text = (!i) ? '0%' : (i % 1 === 0) ? `${i}00%` : `${i * 10}0%`;
             this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
         }
 
         this.volumeButton.popoverBox.append(this.volumeScale);
+    }
+
+    _updateVolumeButtonIcon(volume)
+    {
+        let icon = (volume <= 0)
+            ? 'muted'
+            : (volume <= 0.3)
+            ? 'low'
+            : (volume <= 0.7)
+            ? 'medium'
+            : (volume <= 1)
+            ? 'high'
+            : 'overamplified';
+
+        let iconName = `audio-volume-${icon}-symbolic`;
+        if(this.volumeButton.icon_name === iconName)
+            return;
+
+        this.volumeButton.set_icon_name(iconName);
+        debug(`set volume icon: ${icon}`);
     }
 
     _onRealize()
@@ -405,29 +424,15 @@ class ClapperControls extends Gtk.Box
 
     _onVolumeScaleValueChanged(scale)
     {
-        let volume = Number(scale.get_value().toFixed(2));
-        let icon = (volume <= 0)
-            ? 'muted'
-            : (volume <= 0.33)
-            ? 'low'
-            : (volume <= 0.66)
-            ? 'medium'
-            : (volume <= 1)
-            ? 'high'
-            : 'overamplified';
-
-        let iconName = `audio-volume-${icon}-symbolic`;
-        if(this.volumeButton.icon_name !== iconName)
-        {
-            debug(`set volume icon: ${icon}`);
-            this.volumeButton.set_icon_name(iconName);
-        }
-
-        if(this.currentVolume === volume)
-            return;
-
+        let volume = scale.get_value();
+        let linearVolume = Misc.getLinearValue(volume);
         let { player } = this.get_ancestor(Gtk.Grid);
-        player.set_volume(volume);
+
+        player.set_volume(linearVolume);
+
+        /* FIXME: Should be placed in 'volume-changed'
+         *  event once we move to message bus API */
+        this._updateVolumeButtonIcon(volume);
     }
 
     _onPositionScaleDragging(scale)

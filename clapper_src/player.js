@@ -28,6 +28,8 @@ class ClapperPlayer extends PlayerBase
         this.posY = 0;
         this.keyPressCount = 0;
 
+        this._maxVolume = Misc.getLinearValue(Misc.maxVolume);
+
         this._playlist = [];
         this._trackId = 0;
 
@@ -193,10 +195,11 @@ class ClapperPlayer extends PlayerBase
     {
         if(volume < 0)
             volume = 0;
-        else if(volume > 2)
-            volume = 2;
+        else if(volume > this._maxVolume)
+            volume = this._maxVolume;
 
         super.set_volume(volume);
+        debug(`set player volume: ${volume}`);
     }
 
     adjust_position(isIncrease)
