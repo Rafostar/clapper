@@ -12,7 +12,7 @@
     </key>
     <key name="volume-value" type="i">
       <default>100</default>
-      <summary>Custom initial volume value after startup</summary>
+      <summary>Custom initial volume value in percentage after startup</summary>
     </key>
     <key name="dark-theme" type="b">
       <default>true</default>
@@ -73,6 +73,10 @@
     <key name="float-size" type="s">
       <default>'[480, 270]'</default>
       <summary>Stores floating window size to restore on next launch</summary>
+    </key>
+    <key name="volume-last" type="d">
+      <default>1</default>
+      <summary>Stores last linear volume value to apply on startup</summary>
     </key>
   </schema>
 </schemalist>

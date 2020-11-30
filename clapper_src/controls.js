@@ -7,6 +7,7 @@ const CONTROLS_MARGIN = 4;
 const CONTROLS_SPACING = 4;
 
 let { debug } = Debug;
+let { settings } = Misc;
 
 var Controls = GObject.registerClass(
 class ClapperControls extends Gtk.Box
@@ -317,9 +318,6 @@ class ClapperControls extends Gtk.Box
             draw_value: false,
             vexpand: true,
         });
-        this.volumeScale.connect(
-            'value-changed', this._onVolumeScaleValueChanged.bind(this)
-        );
         this.volumeScale.add_css_class('volumescale');
         this.volumeAdjustment = this.volumeScale.get_adjustment();
 
@@ -332,6 +330,9 @@ class ClapperControls extends Gtk.Box
             this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
         }
 
+        this.volumeScale.connect(
+            'value-changed', this._onVolumeScaleValueChanged.bind(this)
+        );
         this.volumeButton.popoverBox.append(this.volumeScale);
     }
 
@@ -368,6 +369,10 @@ class ClapperControls extends Gtk.Box
         );
         scrollController.connect('scroll', player._onScroll.bind(player));
         this.volumeButton.add_controller(scrollController);
+
+        let lastVolume = settings.get_double('volume-last');
+        let cubicVolume = Misc.getCubicValue(lastVolume);
+        this.volumeScale.set_value(cubicVolume);
     }
 
     _onUnfullscreenClicked(button)
