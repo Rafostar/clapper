@@ -71,6 +71,10 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.set_and_bind_settings();
 
         settings.connect('changed', this._onSettingsKeyChanged.bind(this));
+
+        /* FIXME: additional reference for working around GstPlayer
+         * buggy signal dispatcher on self. Remove when ported to BUS API */
+        this.ref();
     }
 
     get widget()
