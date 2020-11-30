@@ -43,7 +43,6 @@ var Widget = GObject.registerClass({
         this.floatingMode = false;
         this.isSeekable = false;
 
-        this.lastRevealerEventTime = 0;
         this.needsTracksUpdate = true;
         this.mediaInfoSignal = null;
 
@@ -68,7 +67,7 @@ var Widget = GObject.registerClass({
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
 
         /* FIXME: re-enable once ported to new GstPlayer API with messages bus */
-        //this.player.pipeline.connect('notify::volume', this._onPlayerVolumeChanged.bind(this));
+        //this.player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
 
         this.overlay.set_child(this.player.widget);
         this.overlay.add_overlay(this.revealerTop);
@@ -206,7 +205,8 @@ var Widget = GObject.registerClass({
 
     _onMediaInfoUpdated(player, mediaInfo)
     {
-        player.disconnect(this.mediaInfoSignal);
+        if(this.mediaInfoSignal)
+            player.disconnect(this.mediaInfoSignal);
 
         /* Set titlebar media title and path */
         this.updateTitles(mediaInfo);
@@ -390,12 +390,13 @@ var Widget = GObject.registerClass({
     {
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
+                debug('player state changed to: BUFFERING');
                 if(!player.is_local_file) {
                     this.needsTracksUpdate = true;
                 }
-                debug('player state changed to: BUFFERING');
                 break;
             case GstPlayer.PlayerState.STOPPED:
+                debug('player state changed to: STOPPED');
                 this.controls.currentPosition = 0;
                 this.controls.positionScale.set_value(0);
                 this.controls.togglePlayButton.setPrimaryIcon();
@@ -405,21 +406,20 @@ var Widget = GObject.registerClass({
                     this.mediaInfoSignal = null;
                 }
                 this.controls.togglePlayButton.setPrimaryIcon();
-                debug('player state changed to: STOPPED');
                 break;
             case GstPlayer.PlayerState.PAUSED:
-                this.controls.togglePlayButton.setPrimaryIcon();
                 debug('player state changed to: PAUSED');
+                this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstPlayer.PlayerState.PLAYING:
+                debug('player state changed to: PLAYING');
                 this.controls.togglePlayButton.setSecondaryIcon();
                 if(this.needsTracksUpdate && !this.mediaInfoSignal) {
                     this.needsTracksUpdate = false;
                     this.mediaInfoSignal = player.connect(
-                        'media_info_updated', this._onMediaInfoUpdated.bind(this)
+                        'media-info-updated', this._onMediaInfoUpdated.bind(this)
                     );
                 }
-                debug('player state changed to: PLAYING');
                 break;
             default:
                 break;
