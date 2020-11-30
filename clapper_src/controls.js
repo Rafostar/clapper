@@ -370,9 +370,11 @@ class ClapperControls extends Gtk.Box
         scrollController.connect('scroll', player._onScroll.bind(player));
         this.volumeButton.add_controller(scrollController);
 
-        let lastVolume = settings.get_double('volume-last');
-        let cubicVolume = Misc.getCubicValue(lastVolume);
-        this.volumeScale.set_value(cubicVolume);
+        let initialVolume = (settings.get_string('volume-initial') === 'custom')
+            ? settings.get_int('volume-value') / 100
+            : Misc.getCubicValue(settings.get_double('volume-last'));
+
+        this.volumeScale.set_value(initialVolume);
     }
 
     _onUnfullscreenClicked(button)

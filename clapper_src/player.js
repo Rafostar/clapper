@@ -359,8 +359,7 @@ class ClapperPlayer extends PlayerBase
 
         if(!this.doneStartup) {
             this.doneStartup = true;
-            if(settings.get_string('volume-initial') === 'custom')
-                this.set_volume(settings.get_int('volume-value') / 100);
+
             if(settings.get_boolean('fullscreen-auto')) {
                 let root = player.widget.get_root();
                 let clapperWidget = root.get_child();
