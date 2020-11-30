@@ -30,10 +30,10 @@ class ClapperControls extends Gtk.Box
 
         this.showHours = false;
         this.durationFormatted = '00:00';
-        this.elapsedInitial = '00:00/00:00';
         this.buttonsArr = [];
 
         this._addTogglePlayButton();
+        this.elapsedButton = this.addLabelButton('00:00/00:00');
         this._addPositionScale();
         this.visualizationsButton = this.addPopoverButton(
             'display-projector-symbolic'
@@ -265,7 +265,6 @@ class ClapperControls extends Gtk.Box
 
     _addPositionScale()
     {
-        this.elapsedButton = this.addLabelButton(this.elapsedInitial);
         this.positionScale = new Gtk.Scale({
             orientation: Gtk.Orientation.HORIZONTAL,
             value_pos: Gtk.PositionType.LEFT,
