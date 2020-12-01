@@ -2,7 +2,12 @@
     "name": "uchardet",
     "buildsystem": "cmake",
     "builddir": true,
-    "config-opts": [ "-DCMAKE_INSTALL_LIBDIR=lib" ],
+    "config-opts": [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_INSTALL_LIBDIR=lib",
+        "-DBUILD_STATIC=OFF",
+        "-DBUILD_BINARY=OFF"
+    ],
     "sources": [
         {
             "type": "git",
