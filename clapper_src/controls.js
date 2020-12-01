@@ -436,8 +436,20 @@ class ClapperControls extends Gtk.Box
 
         player.set_volume(linearVolume);
 
-        /* FIXME: Should be placed in 'volume-changed'
+        /* FIXME: All of below should be placed in 'volume-changed'
          *  event once we move to message bus API */
+        let cssClass = 'overamp';
+        let hasOveramp = (scale.has_css_class(cssClass));
+
+        if(volume > 1) {
+            if(!hasOveramp)
+                scale.add_css_class(cssClass);
+        }
+        else {
+            if(hasOveramp)
+                scale.remove_css_class(cssClass);
+        }
+
         this._updateVolumeButtonIcon(volume);
     }
 

@@ -96,6 +96,9 @@ scale marks {
 .osd .volumescale trough highlight {
   min-width: 6px;
 }
+.overamp trough highlight {
+  background: @error_color;
+}
 
 /* Floating Mode */
 .floatingwindow {
