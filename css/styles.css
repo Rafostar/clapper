@@ -152,6 +152,9 @@ scale marks {
 .nobackground {
   background: none;
 }
+.noborder {
+  border: none;
+}
 .controlsbox {
   background: @theme_bg_color;
 }

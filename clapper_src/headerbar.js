@@ -8,6 +8,7 @@ class ClapperHeaderBar extends Gtk.HeaderBar
         super._init({
             can_focus: false,
         });
+        this.add_css_class('noborder');
 
         this.set_title_widget(this._createWidgetForWindow(window));
         let clapperWidget = window.get_child();
