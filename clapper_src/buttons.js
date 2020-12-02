@@ -10,8 +10,8 @@ class ClapperCustomButton extends Gtk.Button
         let defaults = {
             margin_top: 4,
             margin_bottom: 4,
-            margin_start: 1,
-            margin_end: 1,
+            margin_start: 2,
+            margin_end: 2,
         };
         Object.assign(opts, defaults);
 
@@ -31,6 +31,9 @@ class ClapperCustomButton extends Gtk.Button
             return;
 
         this.margin_top = (isFullscreen) ? 6 : 4;
+        this.margin_start = (isFullscreen) ? 3 : 2;
+        this.margin_end = (isFullscreen) ? 3 : 2;
+
         this.isFullscreen = isFullscreen;
     }
 

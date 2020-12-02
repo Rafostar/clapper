@@ -124,6 +124,20 @@ scale marks {
   min-height: 12px;
 }
 
+.narrowbutton {
+  min-width: 8px;
+}
+@keyframes halfrotate {
+  to { transform: rotate(0.5turn); }
+}
+.buttonrotate {
+  animation-name: halfrotate;
+  animation-duration: 200ms;
+  animation-delay: 302ms;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
+
 /* Preferences */
 .prefsnotebook grid {
   margin: 10px;

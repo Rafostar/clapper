@@ -2,9 +2,10 @@ const { GObject, Gdk, Gtk } = imports.gi;
 const Buttons = imports.clapper_src.buttons;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
+const Revealers = imports.clapper_src.revealers;
 
-const CONTROLS_MARGIN = 4;
-const CONTROLS_SPACING = 4;
+const CONTROLS_MARGIN = 3;
+const CONTROLS_SPACING = 0;
 
 let { debug } = Debug;
 let { settings } = Misc;
@@ -27,39 +28,69 @@ class ClapperControls extends Gtk.Box
         this.currentPosition = 0;
         this.currentDuration = 0;
         this.isPositionDragging = false;
+        this.isMobile = false;
 
         this.showHours = false;
         this.durationFormatted = '00:00';
         this.buttonsArr = [];
+        this.revealersArr = [];
 
         this._addTogglePlayButton();
-        this.elapsedButton = this.addLabelButton('00:00/00:00');
+
+        let elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
+        this.elapsedButton = this.addLabelButton('00:00/00:00', elapsedRevealer);
+        elapsedRevealer.set_reveal_child(true);
+        this.revealersArr.push(elapsedRevealer);
+        this.append(elapsedRevealer);
+
         this._addPositionScale();
+
+        let revealTracksButton = new Buttons.IconToggleButton(
+            'go-previous-symbolic',
+            'go-next-symbolic'
+        );
+        revealTracksButton.floatUnaffected = false;
+        revealTracksButton.add_css_class('narrowbutton');
+        this.buttonsArr.push(revealTracksButton);
+        let tracksRevealer = new Revealers.ButtonsRevealer('SLIDE_LEFT', revealTracksButton);
         this.visualizationsButton = this.addPopoverButton(
-            'display-projector-symbolic'
+            'display-projector-symbolic',
+            tracksRevealer
         );
         this.visualizationsButton.set_visible(false);
         this.videoTracksButton = this.addPopoverButton(
-            'emblem-videos-symbolic'
+            'emblem-videos-symbolic',
+            tracksRevealer
         );
         this.videoTracksButton.set_visible(false);
         this.audioTracksButton = this.addPopoverButton(
-            'emblem-music-symbolic'
+            'emblem-music-symbolic',
+            tracksRevealer
         );
         this.audioTracksButton.set_visible(false);
         this.subtitleTracksButton = this.addPopoverButton(
-            'media-view-subtitles-symbolic'
+            'media-view-subtitles-symbolic',
+            tracksRevealer
         );
         this.subtitleTracksButton.set_visible(false);
+
+        this.revealTracksRevealer = new Revealers.ButtonsRevealer('SLIDE_LEFT');
+        this.revealTracksRevealer.append(revealTracksButton);
+        this.append(this.revealTracksRevealer);
+
+        tracksRevealer.set_reveal_child(true);
+        this.revealersArr.push(tracksRevealer);
+        this.append(tracksRevealer);
+
         this._addVolumeButton();
         this.unfullscreenButton = this.addButton(
-            'view-restore-symbolic',
+            'view-restore-symbolic'
         );
         this.unfullscreenButton.connect('clicked', this._onUnfullscreenClicked.bind(this));
         this.unfullscreenButton.set_visible(false);
 
         this.unfloatButton = this.addButton(
-            'preferences-desktop-remote-desktop-symbolic',
+            'preferences-desktop-remote-desktop-symbolic'
         );
         this.unfloatButton.connect('clicked', this._onUnfloatClicked.bind(this));
         this.unfloatButton.set_visible(false);
@@ -75,6 +106,9 @@ class ClapperControls extends Gtk.Box
 
     setFullscreenMode(isFullscreen)
     {
+        /* Allow recheck on next resize */
+        this.isMobile = null;
+
         for(let button of this.buttonsArr)
             button.setFullscreenMode(isFullscreen);
 
@@ -84,6 +118,8 @@ class ClapperControls extends Gtk.Box
 
     setFloatingMode(isFloating)
     {
+        this.isMobile = null;
+
         for(let button of this.buttonsArr)
             button.setFloatingMode(isFloating);
     }
@@ -106,31 +142,35 @@ class ClapperControls extends Gtk.Box
         this.elapsedButton.set_label(elapsed);
     }
 
-    addButton(buttonIcon)
+    addButton(buttonIcon, revealer)
     {
         let button = (buttonIcon instanceof Gtk.Button)
             ? buttonIcon
             : new Buttons.IconButton(buttonIcon);
 
-        this.append(button);
+        if(!revealer)
+            this.append(button);
+        else
+            revealer.append(button);
+
         this.buttonsArr.push(button);
 
         return button;
     }
 
-    addLabelButton(text)
+    addLabelButton(text, revealer)
     {
         text = text || '';
         let button = new Buttons.LabelButton(text);
 
-        return this.addButton(button);
+        return this.addButton(button, revealer);
     }
 
-    addPopoverButton(iconName)
+    addPopoverButton(iconName, revealer)
     {
         let button = new Buttons.PopoverButton(iconName);
 
-        return this.addButton(button);
+        return this.addButton(button, revealer);
     }
 
     addCheckButtons(box, array, activeId)
@@ -374,6 +414,20 @@ class ClapperControls extends Gtk.Box
             : Misc.getCubicValue(settings.get_double('volume-last'));
 
         this.volumeScale.set_value(initialVolume);
+        player.widget.connect('resize', this._onPlayerResize.bind(this));
+    }
+
+    _onPlayerResize(widget, width, height)
+    {
+        let isMobile = (width < 560);
+        if(this.isMobile === isMobile)
+            return;
+
+        for(let revealer of this.revealersArr)
+            revealer.set_reveal_child(!isMobile);
+
+        this.revealTracksRevealer.set_reveal_child(isMobile);
+        this.isMobile = isMobile;
     }
 
     _onUnfullscreenClicked(button)

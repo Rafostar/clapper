@@ -229,3 +229,74 @@ class ClapperRevealerBottom extends CustomRevealer
         }
     }
 });
+
+var ButtonsRevealer = GObject.registerClass(
+class ClapperButtonsRevealer extends Gtk.Revealer
+{
+    _init(trType, toggleButton)
+    {
+        super._init({
+            transition_duration: 500,
+            transition_type: Gtk.RevealerTransitionType[trType],
+        });
+
+        let revealerBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+        });
+        this.set_child(revealerBox);
+
+        if(toggleButton) {
+            toggleButton.connect('clicked', this._onToggleButtonClicked.bind(this));
+            this.connect('notify::reveal-child', this._onRevealChild.bind(this, toggleButton));
+            this.connect('notify::child-revealed', this._onChildRevealed.bind(this, toggleButton));
+        }
+    }
+
+    set_reveal_child(isReveal)
+    {
+        if(this.reveal_child === isReveal)
+            return;
+
+        let grandson = this.child.get_first_child();
+        if(grandson && grandson.isFloating && !grandson.isFullscreen)
+            return;
+
+        super.set_reveal_child(isReveal);
+    }
+
+    append(widget)
+    {
+        this.get_child().append(widget);
+    }
+
+    _setRotateClass(button, isAdd)
+    {
+        const cssClass = 'buttonrotate';
+        const hasClass = button.has_css_class(cssClass);
+
+        if(!hasClass && isAdd)
+            button.add_css_class(cssClass);
+        else if(hasClass && !isAdd)
+            button.remove_css_class(cssClass);
+    }
+
+    _onToggleButtonClicked(button)
+    {
+        this.set_reveal_child(!this.reveal_child);
+    }
+
+    _onRevealChild(button)
+    {
+        this._setRotateClass(button, true);
+    }
+
+    _onChildRevealed(button)
+    {
+        if(!this.child_revealed)
+            button.setPrimaryIcon();
+        else
+            button.setSecondaryIcon();
+
+        this._setRotateClass(button, false);
+    }
+});
