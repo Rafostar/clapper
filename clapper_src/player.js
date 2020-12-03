@@ -345,12 +345,13 @@ class ClapperPlayer extends PlayerBase
 
     _onStreamEnded(player)
     {
+        debug('stream ended');
         this._trackId++;
 
         if(this._trackId < this._playlist.length)
             this.set_media(this._playlist[this._trackId]);
-        else
-            this.stop();
+        else if(settings.get_boolean('close-auto'))
+            this._onCloseRequest(this.widget.get_root());
     }
 
     _onUriLoaded(player, uri)

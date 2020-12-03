@@ -13,6 +13,7 @@ class ClapperGeneralPage extends PrefsBase.Grid
 
         this.addTitle('Startup');
         this.addCheckButton('Auto enter fullscreen', 'fullscreen-auto');
+        this.addCheckButton('Close after playback', 'close-auto');
 
         this.addTitle('Volume');
         let comboBox = this.addComboBoxText('Initial value', [

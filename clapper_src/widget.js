@@ -405,7 +405,6 @@ var Widget = GObject.registerClass({
                     player.disconnect(this.mediaInfoSignal);
                     this.mediaInfoSignal = null;
                 }
-                this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstPlayer.PlayerState.PAUSED:
                 debug('player state changed to: PAUSED');
