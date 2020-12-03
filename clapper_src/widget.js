@@ -274,6 +274,8 @@ var Widget = GObject.registerClass({
             });
         }
 
+        let anyButtonShown = false;
+
         for(let type of ['video', 'audio', 'subtitle']) {
             let currStream = player[`get_current_${type}_track`]();
             let activeId = (currStream) ? currStream.get_index() : -1;
@@ -299,8 +301,11 @@ var Widget = GObject.registerClass({
             );
             debug(`showing popover button with contents: ${type}`);
             this.controls[`${type}TracksButton`].set_visible(true);
+
+            anyButtonShown = true;
         }
 
+        this.controls.revealTracksRevealer.set_visible(anyButtonShown);
         this.mediaInfoSignal = null;
     }
 

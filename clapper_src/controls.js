@@ -76,6 +76,7 @@ class ClapperControls extends Gtk.Box
 
         this.revealTracksRevealer = new Revealers.ButtonsRevealer('SLIDE_LEFT');
         this.revealTracksRevealer.append(revealTracksButton);
+        this.revealTracksRevealer.set_visible(false);
         this.append(this.revealTracksRevealer);
 
         tracksRevealer.set_reveal_child(true);
