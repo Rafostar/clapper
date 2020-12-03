@@ -133,8 +133,9 @@ scale marks {
 .buttonrotate {
   animation-name: halfrotate;
   animation-duration: 200ms;
-  animation-delay: 302ms;
+  animation-delay: 280ms;
   animation-timing-function: linear;
+  animation-fill-mode: forwards;
   animation-iteration-count: 1;
 }
 
