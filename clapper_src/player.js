@@ -315,6 +315,22 @@ class ClapperPlayer extends PlayerBase
             debug('cleared update time interval');
     }
 
+    _performCloseCleanup(window)
+    {
+        window.disconnect(this.closeRequestSignal);
+        this.closeRequestSignal = null;
+
+        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        if(!clapperWidget.fullscreenMode) {
+            let size = window.get_size();
+            if(size[0] > 0 && size[1] > 0)
+                clapperWidget._saveWindowSize(size);
+        }
+        settings.set_double('volume-last', this.volume);
+
+        clapperWidget.controls._onCloseRequest();
+    }
+
     _onStateChanged(player, state)
     {
         this.state = state;
@@ -350,8 +366,11 @@ class ClapperPlayer extends PlayerBase
 
         if(this._trackId < this._playlist.length)
             this.set_media(this._playlist[this._trackId]);
-        else if(settings.get_boolean('close-auto'))
-            this._onCloseRequest(this.widget.get_root());
+        else if(settings.get_boolean('close-auto')) {
+            /* Stop will be automatically called soon afterwards */
+            this._performCloseCleanup(this.widget.get_root());
+            this.quitOnStop = true;
+        }
     }
 
     _onUriLoaded(player, uri)
@@ -622,18 +641,7 @@ class ClapperPlayer extends PlayerBase
 
     _onCloseRequest(window)
     {
-        window.disconnect(this.closeRequestSignal);
-        this.closeRequestSignal = null;
-
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(!clapperWidget.fullscreenMode) {
-            let size = window.get_size();
-            if(size[0] > 0 && size[1] > 0)
-                clapperWidget._saveWindowSize(size);
-        }
-        settings.set_double('volume-last', this.volume);
-
-        clapperWidget.controls._onCloseRequest();
+        this._performCloseCleanup(window);
 
         if(this.state === GstPlayer.PlayerState.STOPPED)
             return window.run_dispose();
