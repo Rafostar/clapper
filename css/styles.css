@@ -127,11 +127,11 @@ scale marks {
 .narrowbutton {
   min-width: 8px;
 }
-@keyframes halfrotate {
+@keyframes halfrotation {
   to { transform: rotate(0.5turn); }
 }
-.buttonrotate {
-  animation-name: halfrotate;
+.halfrotate {
+  animation-name: halfrotation;
   animation-duration: 200ms;
   animation-delay: 280ms;
   animation-timing-function: linear;
