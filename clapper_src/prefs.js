@@ -13,7 +13,6 @@ class ClapperGeneralPage extends PrefsBase.Grid
 
         this.addTitle('Startup');
         this.addCheckButton('Auto enter fullscreen', 'fullscreen-auto');
-        this.addCheckButton('Close after playback', 'close-auto');
 
         this.addTitle('Volume');
         let comboBox = this.addComboBoxText('Initial value', [
@@ -24,23 +23,14 @@ class ClapperGeneralPage extends PrefsBase.Grid
         this._onVolumeInitialChanged(spinButton, comboBox);
         comboBox.connect('changed', this._onVolumeInitialChanged.bind(this, spinButton));
 
-        this.addTitle('Appearance');
-        let darkCheck = this.addCheckButton('Enable dark theme', 'dark-theme');
-        let brighterCheck = this.addCheckButton('Make sliders brighter', 'brighter-sliders');
-        this._onDarkThemeToggled(brighterCheck, darkCheck);
-        darkCheck.connect('toggled', this._onDarkThemeToggled.bind(this, brighterCheck));
+        this.addTitle('Finish');
+        this.addCheckButton('Close after playback', 'close-auto');
     }
 
     _onVolumeInitialChanged(spinButton, comboBox)
     {
         let value = comboBox.get_active_id();
         spinButton.set_visible(value === 'custom');
-    }
-
-    _onDarkThemeToggled(brighterCheck, darkCheck)
-    {
-        let isActive = darkCheck.get_active();
-        brighterCheck.set_visible(isActive);
     }
 });
 
@@ -291,7 +281,19 @@ class ClapperTweaksPage extends PrefsBase.Grid
     {
         super._init();
 
+        this.addTitle('Appearance');
+        let darkCheck = this.addCheckButton('Enable dark theme', 'dark-theme');
+        let brighterCheck = this.addCheckButton('Make sliders brighter', 'brighter-sliders');
+        this._onDarkThemeToggled(brighterCheck, darkCheck);
+        darkCheck.connect('toggled', this._onDarkThemeToggled.bind(this, brighterCheck));
+
         this.addTitle('Performance');
         this.addCheckButton('Render window shadows', 'render-shadows');
+    }
+
+    _onDarkThemeToggled(brighterCheck, darkCheck)
+    {
+        let isActive = darkCheck.get_active();
+        brighterCheck.set_visible(isActive);
     }
 });
