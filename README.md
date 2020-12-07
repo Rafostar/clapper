@@ -22,6 +22,7 @@ This is still early WIP. Many features are not implemented yet and quite a few a
 ### Features:
 * [Hardware acceleration](https://github.com/Rafostar/clapper/wiki/Hardware-acceleration)
 * [Floating mode](https://github.com/Rafostar/clapper/wiki/Floating-mode)
+* [Adaptive UI](https://raw.githubusercontent.com/Rafostar/clapper/master/media/screencast-mobile-ui.webm)
 
 ## Installation from Flatpak (recommended)
 The `Flatpak` package includes all required dependencies and codecs. Additionally it also has a few patches, thus some functionalities work better (or are only available) in `Flatpak` version (until my changes are accepted upstream). It is provided as an easy "just install and use" solution.
