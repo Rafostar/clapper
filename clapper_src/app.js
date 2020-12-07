@@ -94,9 +94,11 @@ class ClapperApp extends Gtk.Application
         let gtkSettings = Gtk.Settings.get_default();
         settings.bind(
             'dark-theme', gtkSettings,
-            'gtk_application_prefer_dark_theme',
+            'gtk-application-prefer-dark-theme',
             Gio.SettingsBindFlags.GET
         );
+        this._onThemeChanged(gtkSettings);
+        gtkSettings.connect('notify::gtk-theme-name', this._onThemeChanged.bind(this));
 
         this.windowShowSignal = this.active_window.connect(
             'show', this._onWindowShow.bind(this)
@@ -107,12 +109,28 @@ class ClapperApp extends Gtk.Application
 
     _onWindowShow(window)
     {
-         window.disconnect(this.windowShowSignal);
-         this.windowShowSignal = null;
+        window.disconnect(this.windowShowSignal);
+        this.windowShowSignal = null;
 
-         if(this.playlist.length) {
+        if(this.playlist.length) {
             let { player } = window.get_child();
             player.set_playlist(this.playlist);
-         }
+        }
+    }
+
+    _onThemeChanged(gtkSettings)
+    {
+        const theme = gtkSettings.gtk_theme_name;
+        debug(`user selected theme: ${theme}`);
+
+        if(!theme.endsWith('-dark'))
+            return;
+
+        /* We need to request a default theme with optional dark variant
+           to make the "gtk_application_prefer_dark_theme" setting work */
+        const parsedTheme = theme.substring(0, theme.lastIndexOf('-'));
+
+        gtkSettings.gtk_theme_name = parsedTheme;
+        debug(`set theme: ${parsedTheme}`);
     }
 });
