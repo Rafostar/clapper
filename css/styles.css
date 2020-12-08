@@ -144,18 +144,16 @@ scale marks {
   margin: 10px;
 }
 .prefssubpage header {
-  background: transparent;
+  background: none;
 }
 .prefssubpage header tabs tab {
-  margin: 0px;
-}
-.prefssubpage header tabs tab:hover {
   box-shadow: none;
-  background: rgba(0,0,0,0.08);
+  margin: 0px;
+  margin-right: 1px;
 }
 .prefssubpage header tabs tab:checked {
-  box-shadow: inset 200px 0 @theme_selected_bg_color;
   color: initial;
+  background: @theme_selected_bg_color;
 }
 
 /* Open URI Dialog */
