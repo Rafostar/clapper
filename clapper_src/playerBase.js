@@ -88,6 +88,7 @@ class ClapperPlayerBase extends GstPlayer.Player
             'seeking-mode',
             'audio-offset',
             'subtitle-offset',
+            'play-flags',
         ];
 
         for(let key of settingsToSet)
@@ -255,6 +256,16 @@ class ClapperPlayerBase extends GstPlayer.Player
                 action = (setBrighter) ? 'add' : 'remove';
                 root[action + '_css_class'](brightClass);
                 debug(`${action} brighter sliders`);
+                break;
+            case 'play-flags':
+                const initialFlags = this.pipeline.flags;
+                const settingsFlags = settings.get_int(key);
+
+                if(initialFlags === settingsFlags)
+                    break;
+
+                this.pipeline.flags = settingsFlags;
+                debug(`changed play flags: ${initialFlags} -> ${settingsFlags}`);
                 break;
             default:
                 break;

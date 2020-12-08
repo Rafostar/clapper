@@ -127,6 +127,17 @@ class ClapperPrefsGrid extends Gtk.Grid
         return this.addToGrid(widget);
     }
 
+    addPlayFlagCheckButton(text, flag)
+    {
+        let checkButton = this.addCheckButton(text);
+        let playFlags = settings.get_int('play-flags');
+
+        checkButton.active = ((playFlags & flag) === flag);
+        checkButton.connect('toggled', this._onPlayFlagToggled.bind(this, flag));
+
+        return checkButton;
+    }
+
     addFontButton(text, setting)
     {
         let label = this.getLabel(text + ':');
@@ -188,7 +199,9 @@ class ClapperPrefsGrid extends Gtk.Grid
         let checkButton = new Gtk.CheckButton({
             label: text || null,
         });
-        settings.bind(setting, checkButton, 'active', this.flag);
+
+        if(setting)
+            settings.bind(setting, checkButton, 'active', this.flag);
 
         return checkButton;
     }
@@ -202,6 +215,18 @@ class ClapperPrefsGrid extends Gtk.Grid
         settings.bind(setting, fontButton, 'font', this.flag);
 
         return fontButton;
+    }
+
+    _onPlayFlagToggled(flag, button)
+    {
+        let playFlags = settings.get_int('play-flags');
+
+        if(button.active)
+            playFlags |= flag;
+        else
+            playFlags &= ~flag;
+
+        settings.set_int('play-flags', playFlags);
     }
 
     _onClose(name)

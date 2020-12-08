@@ -6,10 +6,6 @@
       <default>false</default>
       <summary>Automatically enter fullscreen when first file is loaded</summary>
     </key>
-    <key name="close-auto" type="b">
-      <default>false</default>
-      <summary>Automatically close the app after playback finishes</summary>
-    </key>
     <key name="volume-initial" type="s">
       <default>"restore"</default>
       <summary>Mode used for startup volume value</summary>
@@ -18,13 +14,9 @@
       <default>100</default>
       <summary>Custom initial volume value in percentage after startup</summary>
     </key>
-    <key name="dark-theme" type="b">
-      <default>true</default>
-      <summary>Enable to force the app to use dark theme variant</summary>
-    </key>
-    <key name="brighter-sliders" type="b">
-      <default>true</default>
-      <summary>Enable to make all sliders/bars brighter</summary>
+    <key name="close-auto" type="b">
+      <default>false</default>
+      <summary>Automatically close the app after playback finishes</summary>
     </key>
 
     <!-- Behaviour -->
@@ -58,6 +50,14 @@
     </key>
 
     <!-- Tweaks -->
+    <key name="dark-theme" type="b">
+      <default>true</default>
+      <summary>Enable to force the app to use dark theme variant</summary>
+    </key>
+    <key name="brighter-sliders" type="b">
+      <default>true</default>
+      <summary>Enable to make all sliders/bars brighter</summary>
+    </key>
     <key name="render-shadows" type="b">
       <default>true</default>
       <summary>Enable rendering window shadows (only if theme has them)</summary>
@@ -67,6 +67,10 @@
     <key name="plugin-ranking" type="s">
       <default>'[{"apply":false,"name":"vah264dec","rank":300}]'</default>
       <summary>Custom values for GStreamer plugin ranking</summary>
+    </key>
+    <key name="play-flags" type="i">
+      <default>1687</default>
+      <summary>Set PlayFlags for playbin</summary>
     </key>
 
     <!-- Other -->

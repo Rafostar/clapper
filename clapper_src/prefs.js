@@ -1,4 +1,4 @@
-const { GObject, Gtk, Pango } = imports.gi;
+const { GObject, Gst, Gtk, Pango } = imports.gi;
 const Misc = imports.clapper_src.misc;
 const PrefsBase = imports.clapper_src.prefsBase;
 
@@ -82,6 +82,18 @@ class ClapperSubtitlesPage extends PrefsBase.Grid
 
         this.addTitle('External Subtitles');
         this.addFontButton('Default font', 'subtitle-font');
+    }
+});
+
+var NetworkPage = GObject.registerClass(
+class ClapperNetworkPage extends PrefsBase.Grid
+{
+    _init()
+    {
+        super._init();
+
+        this.addTitle('Client');
+        this.addPlayFlagCheckButton('Progressive download buffering', Gst.PlayFlags.DOWNLOAD);
     }
 });
 
