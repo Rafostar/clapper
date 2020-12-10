@@ -135,7 +135,7 @@ var Widget = GObject.registerClass({
             return;
 
         let root = this.get_root();
-        let size = root.get_size();
+        let size = root.get_default_size();
 
         this._saveWindowSize(size);
 
@@ -160,7 +160,7 @@ var Widget = GObject.registerClass({
             ? this.floatSize
             : this.windowSize;
 
-        root.resize(resize[0], resize[1]);
+        root.set_default_size(resize[0], resize[1]);
         debug(`resized window: ${resize[0]}x${resize[1]}`);
 
         this.revealerBottom.showChild(false);
