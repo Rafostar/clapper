@@ -65,6 +65,9 @@ class ClapperAudioPage extends PrefsBase.Grid
 
         this.addTitle('Synchronization');
         this.addSpinButton('Offset (milliseconds)', -1000, 1000, 'audio-offset', 25);
+
+        this.addTitle('Processing');
+        this.addPlayFlagCheckButton('Only use native audio formats', Gst.PlayFlags.NATIVE_AUDIO);
     }
 });
 
