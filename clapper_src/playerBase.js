@@ -292,12 +292,16 @@ class ClapperPlayerBase extends GstPlayer.Player
                         this.webserver = new WebServer(settings.get_int('webserver-port'));
 
                     this.webserver.startListening();
-                    this.websocketSignal = this.webserver.connect(
-                        'websocket-data', this._onWsData.bind(this)
-                    );
+
+                    if(!this.websocketSignal) {
+                        this.websocketSignal = this.webserver.connect(
+                            'websocket-data', this._onWsData.bind(this)
+                        );
+                    }
                 }
                 else if(this.webserver) {
                     this.webserver.disconnect(this.websocketSignal);
+                    this.websocketSignal = null;
                     this.webserver.stopListening();
                 }
                 break;
