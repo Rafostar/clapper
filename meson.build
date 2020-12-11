@@ -23,6 +23,5 @@ installdir = join_paths(get_option('prefix'), 'share', meson.project_name())
 install_subdir('clapper_src', install_dir : installdir)
 install_subdir('css', install_dir : installdir)
 install_subdir('ui', install_dir : installdir)
-install_data('main.js', install_dir : installdir)
 
 meson.add_install_script('build-aux/meson/postinstall.py')
