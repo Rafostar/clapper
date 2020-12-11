@@ -1,0 +1,12 @@
+#!@GJS@
+
+const Package = imports.package;
+
+Package.init({
+  name: '@PACKAGE_NAME@',
+  version: '@PACKAGE_VERSION@',
+  prefix: '@prefix@',
+  libdir: '@libdir@',
+  datadir: '@datadir@',
+});
+Package.run(imports.clapper_src.mainRemote);
