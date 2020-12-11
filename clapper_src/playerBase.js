@@ -2,6 +2,8 @@ const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 
+let WebServer;
+
 /* PlayFlags are not exported through GI */
 Gst.PlayFlags = {
   VIDEO: 1,
@@ -66,6 +68,9 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.state = GstPlayer.PlayerState.STOPPED;
         this.visualization_enabled = false;
 
+        this.webserver = null;
+        this.websocketSignal = null;
+
         this.set_all_plugins_ranks();
         this.set_initial_config();
         this.set_and_bind_settings();
@@ -89,6 +94,7 @@ class ClapperPlayerBase extends GstPlayer.Player
             'audio-offset',
             'subtitle-offset',
             'play-flags',
+            'webserver-enabled',
         ];
 
         for(let key of settingsToSet)
@@ -173,6 +179,11 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         if(this.state !== GstPlayer.PlayerState.PLAYING)
             this.widget.queue_render();
+    }
+
+    _onWsData(server, action, value)
+    {
+        debug(`unhandled WebSocket action: ${action}`);
     }
 
     _onSettingsKeyChanged(settings, key)
@@ -266,6 +277,29 @@ class ClapperPlayerBase extends GstPlayer.Player
 
                 this.pipeline.flags = settingsFlags;
                 debug(`changed play flags: ${initialFlags} -> ${settingsFlags}`);
+                break;
+            case 'webserver-enabled':
+                const webserverEnabled = settings.get_boolean(key);
+
+                if(webserverEnabled) {
+                    if(!WebServer) {
+                        /* Probably most users will not use this,
+                         * so conditional import for faster startup */
+                        WebServer = imports.clapper_src.webserver.WebServer;
+                    }
+
+                    if(!this.webserver)
+                        this.webserver = new WebServer(settings.get_int('webserver-port'));
+
+                    this.webserver.startListening();
+                    this.websocketSignal = this.webserver.connect(
+                        'websocket-data', this._onWsData.bind(this)
+                    );
+                }
+                else if(this.webserver) {
+                    this.webserver.disconnect(this.websocketSignal);
+                    this.webserver.stopListening();
+                }
                 break;
             default:
                 break;

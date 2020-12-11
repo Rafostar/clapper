@@ -639,6 +639,22 @@ class ClapperPlayer extends PlayerBase
         return true;
     }
 
+    _onWsData(server, action, value)
+    {
+        switch(action) {
+            case 'toggle-play':
+                this.toggle_play();
+                break;
+            case 'play':
+            case 'pause':
+                this[action]();
+                break;
+            default:
+                super._onWsData(server, action, value);
+                break;
+        }
+    }
+
     _onCloseRequest(window)
     {
         this._performCloseCleanup(window);
