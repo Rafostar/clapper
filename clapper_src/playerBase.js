@@ -305,6 +305,12 @@ class ClapperPlayerBase extends GstPlayer.Player
                     this.webserver.stopListening();
                 }
                 break;
+            case 'webserver-port':
+                if(!this.webserver)
+                    break;
+
+                this.webserver.setListeningPort(settings.get_int(key));
+                break;
             default:
                 break;
         }
