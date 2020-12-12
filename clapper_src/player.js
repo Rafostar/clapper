@@ -334,7 +334,7 @@ class ClapperPlayer extends PlayerBase
     _onStateChanged(player, state)
     {
         this.state = state;
-        this.emitWs('state-changed', state);
+        this.emitWs('state_changed', state);
 
         if(state !== GstPlayer.PlayerState.BUFFERING) {
             let root = player.widget.get_root();
@@ -362,8 +362,8 @@ class ClapperPlayer extends PlayerBase
 
     _onStreamEnded(player)
     {
-        debug('stream ended');
-        this.emitWs('stream-ended', this._trackId);
+        debug(`end of stream: ${this._trackId}`);
+        this.emitWs('end_of_stream', this._trackId);
 
         this._trackId++;
 
@@ -645,12 +645,11 @@ class ClapperPlayer extends PlayerBase
     _onWsData(server, action, value)
     {
         switch(action) {
-            case 'toggle-play':
-                this.toggle_play();
-                break;
+            case 'toggle_play':
             case 'play':
             case 'pause':
-                this[action]();
+            case 'set_media':
+                this[action](value);
                 break;
             default:
                 super._onWsData(server, action, value);
