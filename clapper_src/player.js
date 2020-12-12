@@ -334,6 +334,7 @@ class ClapperPlayer extends PlayerBase
     _onStateChanged(player, state)
     {
         this.state = state;
+        this.emitWs('state-changed', state);
 
         if(state !== GstPlayer.PlayerState.BUFFERING) {
             let root = player.widget.get_root();
@@ -362,6 +363,8 @@ class ClapperPlayer extends PlayerBase
     _onStreamEnded(player)
     {
         debug('stream ended');
+        this.emitWs('stream-ended', this._trackId);
+
         this._trackId++;
 
         if(this._trackId < this._playlist.length)

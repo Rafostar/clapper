@@ -181,6 +181,14 @@ class ClapperPlayerBase extends GstPlayer.Player
             this.widget.queue_render();
     }
 
+    emitWs(action, value)
+    {
+        if(!this.webserver)
+            return;
+
+        this.webserver.sendMessage({ action, value });
+    }
+
     _onWsData(server, action, value)
     {
         debug(`unhandled WebSocket action: ${action}`);
