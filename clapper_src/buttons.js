@@ -31,7 +31,7 @@ class ClapperCustomButton extends Gtk.Button
         if(this.isFullscreen === isFullscreen)
             return;
 
-        this.margin_top = (isFullscreen) ? 6 : 4;
+        this.margin_top = (isFullscreen) ? 5 : 4;
         this.margin_start = (isFullscreen) ? 3 : 2;
         this.margin_end = (isFullscreen) ? 3 : 2;
         this.can_focus = isFullscreen;

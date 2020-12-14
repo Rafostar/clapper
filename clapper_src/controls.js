@@ -4,7 +4,7 @@ const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const Revealers = imports.clapper_src.revealers;
 
-const CONTROLS_MARGIN = 3;
+const CONTROLS_MARGIN = 2;
 const CONTROLS_SPACING = 0;
 
 let { debug } = Debug;
@@ -297,7 +297,7 @@ class ClapperControls extends Gtk.Box
             'media-playback-start-symbolic',
             'media-playback-pause-symbolic'
         );
-        this.togglePlayButton.add_css_class('playbackicon');
+        this.togglePlayButton.child.add_css_class('playbackicon');
         this.togglePlayButton.connect(
             'clicked', this._onTogglePlayClicked.bind(this)
         );
