@@ -5,14 +5,10 @@ scale marks {
 radio {
   margin-left: -2px;
 }
-/* FIXME: FOR POPUPS ONLY */
-.osd {
+.osd popover box {
   text-shadow: none;
   font-size: 21px;
   font-weight: 500;
-}
-.osd .playercontrols {
-  -gtk-icon-size: 24px;
 }
 .osd button {
   min-width: 32px;
@@ -26,6 +22,9 @@ radio {
   min-width: 17px;
   min-height: 17px;
 }
+.osd .playercontrols {
+  -gtk-icon-size: 24px;
+}
 .playbackicon {
   -gtk-icon-size: 20px;
 }
@@ -36,9 +35,15 @@ radio {
   margin-left: -4px;
   margin-right: -4px;
   margin-top: 1px;
+  min-width: 8px;
   font-family: 'Cantarell', sans-serif;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+}
+.osd .labelbutton {
+  margin-top: 0px;
+  font-size: 23px;
+  text-shadow: none;
 }
 .reavealertop {
   min-height: 88px;
@@ -46,11 +51,13 @@ radio {
   font-family: 'Cantarell', sans-serif;
   font-size: 28px;
   font-weight: 500;
+  text-shadow: none;
   background: transparent;
 }
 .osdtime {
   margin-top: -2px;
   margin-right: -4px;
+  min-width: 4px;
   font-size: 38px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -58,14 +65,10 @@ radio {
 .osdendtime {
   margin-top: 36px;
   margin-right: -4px;
+  min-width: 4px;
   font-size: 24px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-.osd .labelbutton {
-  margin-top: 0px;
-  font-size: 23px;
-  text-shadow: none;
 }
 
 /* Position Scale */
