@@ -4,7 +4,7 @@ const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const Revealers = imports.clapper_src.revealers;
 
-const CONTROLS_MARGIN = 3;
+const CONTROLS_MARGIN = 2;
 const CONTROLS_SPACING = 0;
 
 let { debug } = Debug;
