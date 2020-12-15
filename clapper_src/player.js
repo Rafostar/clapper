@@ -251,6 +251,21 @@ class ClapperPlayer extends PlayerBase
         this[action]();
     }
 
+    receiveWs(action, value)
+    {
+        switch(action) {
+            case 'toggle_play':
+            case 'play':
+            case 'pause':
+            case 'set_media':
+                this[action](value);
+                break;
+            default:
+                super.receiveWs(action, value);
+                break;
+        }
+    }
+
     _setHideCursorTimeout()
     {
         this._clearTimeout('hideCursor');
@@ -640,21 +655,6 @@ class ClapperPlayer extends PlayerBase
             this.adjust_volume(isIncrease);
 
         return true;
-    }
-
-    _onWsData(server, action, value)
-    {
-        switch(action) {
-            case 'toggle_play':
-            case 'play':
-            case 'pause':
-            case 'set_media':
-                this[action](value);
-                break;
-            default:
-                super._onWsData(server, action, value);
-                break;
-        }
     }
 
     _onCloseRequest(window)

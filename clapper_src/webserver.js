@@ -4,17 +4,8 @@ const Debug = imports.clapper_src.debug;
 
 let { debug } = Debug;
 
-var WebServer = GObject.registerClass({
-    Signals: {
-        'websocket-data': {
-            flags: GObject.SignalFlags.RUN_FIRST,
-            param_types: [
-                GObject.TYPE_STRING,
-                GObject.TYPE_INT || GObject.TYPE_STRING
-            ]
-        }
-    }
-}, class ClapperWebServer extends Soup.Server
+var WebServer = GObject.registerClass(
+class ClapperWebServer extends Soup.Server
 {
     _init(port)
     {
@@ -96,6 +87,10 @@ var WebServer = GObject.registerClass({
         }
     }
 
+    passMsgData(action, value)
+    {
+    }
+
     _closeCleanup()
     {
         while(this.wsConns.length) {
@@ -140,7 +135,7 @@ var WebServer = GObject.registerClass({
         if(!parsedMsg || !parsedMsg.action)
             return debug('no "action" in parsed WebSocket message');
 
-        this.emit('websocket-data', parsedMsg.action, parsedMsg.value || 0);
+        this.passMsgData(parsedMsg.action, parsedMsg.value || 0);
     }
 
     _onWsClosed(connection)

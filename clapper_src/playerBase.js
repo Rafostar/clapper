@@ -69,7 +69,6 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.visualization_enabled = false;
 
         this.webserver = null;
-        this.websocketSignal = null;
 
         this.set_all_plugins_ranks();
         this.set_initial_config();
@@ -189,7 +188,7 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.webserver.sendMessage({ action, value });
     }
 
-    _onWsData(server, action, value)
+    receiveWs(action, value)
     {
         debug(`unhandled WebSocket action: ${action}`);
     }
@@ -300,16 +299,9 @@ class ClapperPlayerBase extends GstPlayer.Player
                         this.webserver = new WebServer(settings.get_int('webserver-port'));
 
                     this.webserver.startListening();
-
-                    if(!this.websocketSignal) {
-                        this.websocketSignal = this.webserver.connect(
-                            'websocket-data', this._onWsData.bind(this)
-                        );
-                    }
+                    this.webserver.passMsgData = this.receiveWs.bind(this);
                 }
                 else if(this.webserver) {
-                    this.webserver.disconnect(this.websocketSignal);
-                    this.websocketSignal = null;
                     this.webserver.stopListening();
                 }
                 break;
