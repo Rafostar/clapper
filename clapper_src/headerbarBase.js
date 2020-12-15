@@ -123,7 +123,13 @@ class ClapperHeaderBarPopover extends Gtk.PopoverMenu
         let root = this.get_root();
         let clapperWidget = root.get_child();
 
-        if(clapperWidget && clapperWidget.player)
-            clapperWidget.player.widget.grab_focus();
+        if(
+            !clapperWidget
+            || !clapperWidget.player
+            || !clapperWidget.player.widget
+        )
+            return;
+
+        clapperWidget.player.widget.grab_focus();
     }
 });
