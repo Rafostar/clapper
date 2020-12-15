@@ -292,7 +292,7 @@ class ClapperPlayerBase extends GstPlayer.Player
                     if(!WebServer) {
                         /* Probably most users will not use this,
                          * so conditional import for faster startup */
-                        WebServer = imports.clapper_src.webserver.WebServer;
+                        WebServer = imports.clapper_src.webServer.WebServer;
                     }
 
                     if(!this.webserver)
