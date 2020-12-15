@@ -12,25 +12,52 @@ class ClapperWebApp extends Gio.SubprocessLauncher
         const flags = Gio.SubprocessFlags.STDOUT_SILENCE
             | Gio.SubprocessFlags.STDERR_SILENCE;
 
-        super._init(flags);
+        super._init({ flags });
+
+        this.remoteApp = null;
+        this.isRemoteClosing = false;
+
+        this.setenv('GDK_BACKEND', 'broadway', true);
     }
 
     startRemoteApp()
     {
-        this.setenv('GDK_BACKEND', 'broadway', true);
-        this.setenv('BROADWAY_DISPLAY', '6', true);
+        if(this.remoteApp)
+            return;
 
-        this.remoteApp = this.spawnv(Misc.appId);
+        this.remoteApp = this.spawnv([Misc.appId + 'Remote']);
         this.remoteApp.wait_async(null, this._onRemoteClosed.bind(this));
 
         debug('remote app started');
     }
 
-    _onRemoteClosed(remoteApp, res)
+    stopRemoteApp()
     {
-        debug('remote app closed');
+        if(!this.remoteApp || this.isRemoteClosing)
+            return;
 
-        this.setenv('GDK_BACKEND', '', true);
-        this.setenv('BROADWAY_DISPLAY', '', true);
+        this.isRemoteClosing = true;
+        this.remoteApp.force_exit();
+
+        debug('send stop signal to remote app');
+    }
+
+    _onRemoteClosed(proc, result)
+    {
+        let hadError;
+
+        try {
+            hadError = proc.wait_finish(result);
+        }
+        catch(err) {
+            debug(err);
+        }
+
+        this.remoteApp = null;
+
+        if(hadError)
+            debug('remote app exited with error');
+
+        debug('remote app closed');
     }
 });
