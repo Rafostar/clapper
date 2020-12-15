@@ -74,7 +74,6 @@ class ClapperWebServer extends Soup.Server
         this.disconnect();
 
         this.isListening = false;
-        this.listeningPort = null;
     }
 
     sendMessage(data)
