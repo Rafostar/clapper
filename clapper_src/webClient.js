@@ -1,8 +1,10 @@
-const { Soup, GObject } = imports.gi;
+const { Gio, GObject, Soup } = imports.gi;
 const Debug = imports.clapper_src.debug;
+const Misc = imports.clapper_src.misc;
 const WebHelpers = imports.clapper_src.webHelpers;
 
 let { debug } = Debug;
+let { settings } = Misc;
 
 var WebClient = GObject.registerClass(
 class ClapperWebClient extends Soup.Session
@@ -16,15 +18,16 @@ class ClapperWebClient extends Soup.Session
 
         this.wsConn = null;
 
-        this.connectWebsocket(port);
+        this.connectWebsocket();
     }
 
-    connectWebsocket(port)
+    connectWebsocket()
     {
         if(this.wsConn)
             return;
 
-        let message = Soup.Message.new('GET', `ws://127.0.0.1:${port}/websocket`);
+        const port = settings.get_int('webserver-port');
+        const message = Soup.Message.new('GET', `ws://127.0.0.1:${port}/websocket`);
         this.websocket_connect_async(message, null, null, null, this._onWsConnect.bind(this));
 
         debug('connecting WebSocket to Clapper app');
@@ -78,6 +81,7 @@ class ClapperWebClient extends Soup.Session
     _onWsClosed(connection)
     {
         debug('closed WebSocket connection');
+        this.wsConn = null;
 
         this.passMsgData('close');
     }

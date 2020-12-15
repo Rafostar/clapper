@@ -1,6 +1,7 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
+const { WebApp } = imports.clapper_src.webApp;
 
 let WebServer;
 
@@ -69,6 +70,7 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.visualization_enabled = false;
 
         this.webserver = null;
+        this.webapp = null;
 
         this.set_all_plugins_ranks();
         this.set_initial_config();
@@ -93,7 +95,7 @@ class ClapperPlayerBase extends GstPlayer.Player
             'audio-offset',
             'subtitle-offset',
             'play-flags',
-            'webserver-enabled',
+            'webserver-enabled'
         ];
 
         for(let key of settingsToSet)
@@ -286,7 +288,8 @@ class ClapperPlayerBase extends GstPlayer.Player
                 debug(`changed play flags: ${initialFlags} -> ${settingsFlags}`);
                 break;
             case 'webserver-enabled':
-                const webserverEnabled = settings.get_boolean(key);
+            case 'webapp-enabled':
+                const webserverEnabled = settings.get_boolean('webserver-enabled');
 
                 if(webserverEnabled) {
                     if(!WebServer) {
@@ -295,13 +298,28 @@ class ClapperPlayerBase extends GstPlayer.Player
                         WebServer = imports.clapper_src.webServer.WebServer;
                     }
 
-                    if(!this.webserver)
+                    if(!this.webserver) {
                         this.webserver = new WebServer(settings.get_int('webserver-port'));
-
+                        this.webserver.passMsgData = this.receiveWs.bind(this);
+                    }
                     this.webserver.startListening();
-                    this.webserver.passMsgData = this.receiveWs.bind(this);
+
+                    const webappEnabled = settings.get_boolean('webapp-enabled');
+
+                    if(!this.webapp && !webappEnabled)
+                        break;
+
+                    if(webappEnabled) {
+                        if(!this.webapp)
+                            this.webapp = new WebApp();
+
+                        this.webapp.startRemoteApp();
+                    }
+                    else
+                        this.webapp.stopRemoteApp();
                 }
                 else if(this.webserver) {
+                    /* remote app will close too when connection is lost */
                     this.webserver.stopListening();
                 }
                 break;

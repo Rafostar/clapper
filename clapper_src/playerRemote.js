@@ -1,8 +1,5 @@
 const { GObject } = imports.gi;
-const Misc = imports.clapper_src.misc;
 const { WebClient } = imports.clapper_src.webClient;
-
-let { settings } = Misc;
 
 var PlayerRemote = GObject.registerClass(
 class ClapperPlayerRemote extends GObject.Object
@@ -11,7 +8,7 @@ class ClapperPlayerRemote extends GObject.Object
     {
         super._init();
 
-        this.webclient = new WebClient(settings.get_int('webserver-port'));
+        this.webclient = new WebClient();
     }
 
     set_playlist(playlist)

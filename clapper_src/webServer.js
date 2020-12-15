@@ -55,7 +55,7 @@ class ClapperWebServer extends Soup.Server
         if(isListening) {
             const uris = this.get_uris();
             const usedPort = uris[0].get_port();
-            debug(`WebSocket server listening on port: ${usedPort}`);
+            debug(`WebSocket server started listening on port: ${usedPort}`);
         }
         else {
             debug(new Error('WebSocket server could not start listening'));

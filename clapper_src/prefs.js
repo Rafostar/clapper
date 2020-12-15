@@ -95,16 +95,15 @@ class ClapperNetworkPage extends PrefsBase.Grid
     {
         super._init();
 
-        let checkButton;
-        let spinButton;
-
         this.addTitle('Client');
         this.addPlayFlagCheckButton('Progressive download buffering', Gst.PlayFlags.DOWNLOAD);
 
         this.addTitle('Server');
-        checkButton = this.addCheckButton('Allow remote control of the player', 'webserver-enabled');
-        spinButton = this.addSpinButton('Listening port', 1024, 65535, 'webserver-port');
-        checkButton.bind_property('active', spinButton, 'visible', GObject.BindingFlags.SYNC_CREATE);
+        let webServer = this.addCheckButton('Control player remotely', 'webserver-enabled');
+        let serverPort = this.addSpinButton('Listening port', 1024, 65535, 'webserver-port');
+        webServer.bind_property('active', serverPort, 'visible', GObject.BindingFlags.SYNC_CREATE);
+        //let webApp = this.addCheckButton('Run built-in web application', 'webapp-enabled');
+        //webServer.bind_property('active', webApp, 'visible', GObject.BindingFlags.SYNC_CREATE);
     }
 });
 
