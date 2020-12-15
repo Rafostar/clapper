@@ -3,6 +3,7 @@
     "buildsystem": "meson",
     "config-opts": [
         "--wrap-mode=nofallback",
+        "-Dbroadway-backend=true",
         "-Dwin32-backend=false",
         "-Dmacos-backend=false",
         "-Dmedia-ffmpeg=disabled",
@@ -10,7 +11,8 @@
         "-Dprint-cloudprint=disabled",
         "-Dintrospection=enabled",
         "-Ddemos=false",
-        "-Dbuild-examples=false"
+        "-Dbuild-examples=false",
+        "-Dbuild-tests=false"
     ],
     "sources": [
         {
