@@ -1,6 +1,6 @@
 const { Soup, GObject } = imports.gi;
-const ByteArray = imports.byteArray;
 const Debug = imports.clapper_src.debug;
+const WebHelpers = imports.clapper_src.webHelpers;
 
 let { debug } = Debug;
 
@@ -118,23 +118,10 @@ class ClapperWebServer extends Soup.Server
 
     _onWsMessage(connection, dataType, bytes)
     {
-        if(dataType !== Soup.WebsocketDataType.TEXT)
-            return debug('ignoring non-text WebSocket message');
+        const [success, parsedMsg] = WebHelpers.parseData(dataType, bytes);
 
-        const msg = bytes.get_data();
-        let parsedMsg = null;
-
-        try {
-            parsedMsg = JSON.parse(ByteArray.toString(msg));
-        }
-        catch(err) {
-            debug(err);
-        }
-
-        if(!parsedMsg || !parsedMsg.action)
-            return debug('no "action" in parsed WebSocket message');
-
-        this.passMsgData(parsedMsg.action, parsedMsg.value || 0);
+        if(success)
+            this.passMsgData(parsedMsg.action, parsedMsg.value);
     }
 
     _onWsClosed(connection)
