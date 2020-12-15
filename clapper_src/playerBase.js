@@ -3,27 +3,10 @@ const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const { WebApp } = imports.clapper_src.webApp;
 
-let WebServer;
-
-/* PlayFlags are not exported through GI */
-Gst.PlayFlags = {
-  VIDEO: 1,
-  AUDIO: 2,
-  TEXT: 4,
-  VIS: 8,
-  SOFT_VOLUME: 16,
-  NATIVE_AUDIO: 32,
-  NATIVE_VIDEO: 64,
-  DOWNLOAD: 128,
-  BUFFERING: 256,
-  DEINTERLACE: 512,
-  SOFT_COLORBALANCE: 1024,
-  FORCE_FILTERS: 2048,
-  FORCE_SW_DECODERS: 4096,
-};
-
 let { debug } = Debug;
 let { settings } = Misc;
+
+let WebServer;
 
 var PlayerBase = GObject.registerClass(
 class ClapperPlayerBase extends GstPlayer.Player

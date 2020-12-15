@@ -4,6 +4,23 @@ const PrefsBase = imports.clapper_src.prefsBase;
 
 let { settings } = Misc;
 
+/* PlayFlags are not exported through GI */
+Gst.PlayFlags = {
+  VIDEO: 1,
+  AUDIO: 2,
+  TEXT: 4,
+  VIS: 8,
+  SOFT_VOLUME: 16,
+  NATIVE_AUDIO: 32,
+  NATIVE_VIDEO: 64,
+  DOWNLOAD: 128,
+  BUFFERING: 256,
+  DEINTERLACE: 512,
+  SOFT_COLORBALANCE: 1024,
+  FORCE_FILTERS: 2048,
+  FORCE_SW_DECODERS: 4096,
+};
+
 var GeneralPage = GObject.registerClass(
 class ClapperGeneralPage extends PrefsBase.Grid
 {
