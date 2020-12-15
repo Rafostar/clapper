@@ -57,7 +57,7 @@ class ClapperWebClient extends Soup.Session
         }
 
         if(!connection)
-            return;
+            return this.passMsgData('close');
 
         connection.connect('message', this._onWsMessage.bind(this));
         connection.connect('closed', this._onWsClosed.bind(this));
@@ -78,5 +78,7 @@ class ClapperWebClient extends Soup.Session
     _onWsClosed(connection)
     {
         debug('closed WebSocket connection');
+
+        this.passMsgData('close');
     }
 });
