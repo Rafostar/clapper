@@ -257,7 +257,7 @@ class ClapperPlayer extends PlayerBase
             case 'toggle_play':
             case 'play':
             case 'pause':
-            case 'set_media':
+            case 'set_playlist':
                 this[action](value);
                 break;
             default:
