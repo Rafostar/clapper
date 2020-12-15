@@ -54,6 +54,7 @@ class ClapperWebApp extends Gio.SubprocessLauncher
         }
 
         this.remoteApp = null;
+        this.isRemoteClosing = false;
 
         if(hadError)
             debug('remote app exited with error');
