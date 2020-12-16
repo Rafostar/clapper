@@ -25,7 +25,7 @@ class ClapperWebApp extends Gio.SubprocessLauncher
         if(this.remoteApp)
             return;
 
-        this.remoteApp = this.spawnv([Misc.appId + 'Remote']);
+        this.remoteApp = this.spawnv([Misc.appId + '.Remote']);
         this.remoteApp.wait_async(null, this._onRemoteClosed.bind(this));
 
         debug('remote app started');

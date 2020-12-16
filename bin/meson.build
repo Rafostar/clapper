@@ -1,4 +1,4 @@
-clapper_apps = [ '', 'Remote' ]
+clapper_apps = [ '', '.Remote' ]
 
 foreach id_postfix : clapper_apps
   bin_conf = configuration_data()
