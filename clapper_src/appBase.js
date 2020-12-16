@@ -14,13 +14,12 @@ class ClapperAppBase extends Gtk.Application
         opts = opts || {};
 
         let defaults = {
-            idPostfix: '',
             playlist: [],
         };
         Object.assign(this, defaults, opts);
 
         super._init({
-            application_id: Misc.appId + this.idPostfix
+            application_id: Misc.appId,
         });
 
         this.doneFirstActivate = false;

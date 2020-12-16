@@ -1,5 +1,10 @@
 #!@GJS@
 
+/* pkg init enforces the imports path to the folder
+ * named after the pkg name, but I would prefer to have
+ * the bundled subprocess stored in the same directory */
+imports.searchPath.unshift('@datadir@/@PROJECT_NAME@');
+
 const Package = imports.package;
 
 Package.init({
