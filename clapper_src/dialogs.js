@@ -133,7 +133,7 @@ class ClapperUriDialog extends Gtk.Dialog
     openUri(uri)
     {
         let { player } = this.get_transient_for().get_child();
-        player.set_media(uri);
+        player.set_playlist([uri]);
 
         this.close();
     }

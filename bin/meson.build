@@ -6,11 +6,15 @@ bin_conf.set('prefix', get_option('prefix'))
 bin_conf.set('libdir', join_paths(get_option('prefix'), get_option('libdir')))
 bin_conf.set('datadir', join_paths(get_option('prefix'), get_option('datadir')))
 
-configure_file(
-  input: 'com.github.rafostar.Clapper.in',
-  output: 'com.github.rafostar.Clapper',
-  configuration: bin_conf,
-  install: true,
-  install_dir: get_option('bindir'),
-  install_mode: 'rwxr-xr-x'
-)
+clapper_apps = [ '', 'Remote' ]
+
+foreach id_postfix : clapper_apps
+  configure_file(
+    input: 'com.github.rafostar.Clapper' + id_postfix + '.in',
+    output: 'com.github.rafostar.Clapper' + id_postfix,
+    configuration: bin_conf,
+    install: true,
+    install_dir: get_option('bindir'),
+    install_mode: 'rwxr-xr-x'
+  )
+endforeach

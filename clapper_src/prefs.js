@@ -4,6 +4,23 @@ const PrefsBase = imports.clapper_src.prefsBase;
 
 let { settings } = Misc;
 
+/* PlayFlags are not exported through GI */
+Gst.PlayFlags = {
+  VIDEO: 1,
+  AUDIO: 2,
+  TEXT: 4,
+  VIS: 8,
+  SOFT_VOLUME: 16,
+  NATIVE_AUDIO: 32,
+  NATIVE_VIDEO: 64,
+  DOWNLOAD: 128,
+  BUFFERING: 256,
+  DEINTERLACE: 512,
+  SOFT_COLORBALANCE: 1024,
+  FORCE_FILTERS: 2048,
+  FORCE_SW_DECODERS: 4096,
+};
+
 var GeneralPage = GObject.registerClass(
 class ClapperGeneralPage extends PrefsBase.Grid
 {
@@ -97,6 +114,13 @@ class ClapperNetworkPage extends PrefsBase.Grid
 
         this.addTitle('Client');
         this.addPlayFlagCheckButton('Progressive download buffering', Gst.PlayFlags.DOWNLOAD);
+
+        this.addTitle('Server');
+        let webServer = this.addCheckButton('Control player remotely', 'webserver-enabled');
+        let serverPort = this.addSpinButton('Listening port', 1024, 65535, 'webserver-port');
+        webServer.bind_property('active', serverPort, 'visible', GObject.BindingFlags.SYNC_CREATE);
+        //let webApp = this.addCheckButton('Run built-in web application', 'webapp-enabled');
+        //webServer.bind_property('active', webApp, 'visible', GObject.BindingFlags.SYNC_CREATE);
     }
 });
 

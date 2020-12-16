@@ -16,25 +16,15 @@ var Widget = GObject.registerClass({
     }
 }, class ClapperWidget extends Gtk.Grid
 {
-    _init(opts)
+    _init()
     {
         Debug.gstVersionCheck();
 
         super._init();
 
-        let clapperPath = Misc.getClapperPath();
-        let defaults = {
-            cssPath: `${clapperPath}/css/styles.css`,
-        };
-        Object.assign(this, defaults, opts);
-
-        let cssProvider = new Gtk.CssProvider();
-        cssProvider.load_from_path(this.cssPath);
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            cssProvider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        );
+        /* load CSS here to allow using this class
+         * separately as a pre-made GTK widget */
+        Misc.loadCustomCss();
 
         this.windowSize = JSON.parse(settings.get_string('window-size'));
         this.floatSize = JSON.parse(settings.get_string('float-size'));

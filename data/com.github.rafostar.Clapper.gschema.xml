@@ -49,6 +49,20 @@
       <summary>The subtitles font description</summary>
     </key>
 
+    <!-- Network -->
+    <key name="webserver-enabled" type="b">
+      <default>false</default>
+      <summary>Enable WebSocket server for remote playback control</summary>
+    </key>
+    <key name="webserver-port" type="i">
+      <default>6446</default>
+      <summary>Listening port to use for incoming WebSocket connections</summary>
+    </key>
+    <key name="webapp-enabled" type="b">
+      <default>false</default>
+      <summary>Run built-in broadway based web application</summary>
+    </key>
+
     <!-- Tweaks -->
     <key name="dark-theme" type="b">
       <default>true</default>

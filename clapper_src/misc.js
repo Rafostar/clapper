@@ -1,4 +1,4 @@
-const { Gio, GstAudio, GstPlayer, Gtk } = imports.gi;
+const { Gio, GstAudio, GstPlayer, Gdk, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
 var appName = 'Clapper';
@@ -33,6 +33,19 @@ function getClapperVersion()
         : (pkg)
         ? pkg.version
         : '';
+}
+
+function loadCustomCss()
+{
+    const clapperPath = getClapperPath();
+    const cssProvider = new Gtk.CssProvider();
+
+    cssProvider.load_from_path(`${clapperPath}/css/styles.css`);
+    Gtk.StyleContext.add_provider_for_display(
+        Gdk.Display.get_default(),
+        cssProvider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
 }
 
 function inhibitForState(state, window)

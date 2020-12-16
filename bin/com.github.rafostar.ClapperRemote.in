@@ -9,4 +9,4 @@ Package.init({
   libdir: '@libdir@',
   datadir: '@datadir@',
 });
-Package.run(imports.clapper_src.main);
+Package.run(imports.clapper_src.mainRemote);

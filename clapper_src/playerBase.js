@@ -1,26 +1,12 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
-
-/* PlayFlags are not exported through GI */
-Gst.PlayFlags = {
-  VIDEO: 1,
-  AUDIO: 2,
-  TEXT: 4,
-  VIS: 8,
-  SOFT_VOLUME: 16,
-  NATIVE_AUDIO: 32,
-  NATIVE_VIDEO: 64,
-  DOWNLOAD: 128,
-  BUFFERING: 256,
-  DEINTERLACE: 512,
-  SOFT_COLORBALANCE: 1024,
-  FORCE_FILTERS: 2048,
-  FORCE_SW_DECODERS: 4096,
-};
+const { WebApp } = imports.clapper_src.webApp;
 
 let { debug } = Debug;
 let { settings } = Misc;
+
+let WebServer;
 
 var PlayerBase = GObject.registerClass(
 class ClapperPlayerBase extends GstPlayer.Player
@@ -66,6 +52,9 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.state = GstPlayer.PlayerState.STOPPED;
         this.visualization_enabled = false;
 
+        this.webserver = null;
+        this.webapp = null;
+
         this.set_all_plugins_ranks();
         this.set_initial_config();
         this.set_and_bind_settings();
@@ -89,6 +78,7 @@ class ClapperPlayerBase extends GstPlayer.Player
             'audio-offset',
             'subtitle-offset',
             'play-flags',
+            'webserver-enabled'
         ];
 
         for(let key of settingsToSet)
@@ -173,6 +163,19 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         if(this.state !== GstPlayer.PlayerState.PLAYING)
             this.widget.queue_render();
+    }
+
+    emitWs(action, value)
+    {
+        if(!this.webserver)
+            return;
+
+        this.webserver.sendMessage({ action, value });
+    }
+
+    receiveWs(action, value)
+    {
+        debug(`unhandled WebSocket action: ${action}`);
     }
 
     _onSettingsKeyChanged(settings, key)
@@ -266,6 +269,48 @@ class ClapperPlayerBase extends GstPlayer.Player
 
                 this.pipeline.flags = settingsFlags;
                 debug(`changed play flags: ${initialFlags} -> ${settingsFlags}`);
+                break;
+            case 'webserver-enabled':
+            case 'webapp-enabled':
+                const webserverEnabled = settings.get_boolean('webserver-enabled');
+
+                if(webserverEnabled) {
+                    if(!WebServer) {
+                        /* Probably most users will not use this,
+                         * so conditional import for faster startup */
+                        WebServer = imports.clapper_src.webServer.WebServer;
+                    }
+
+                    if(!this.webserver) {
+                        this.webserver = new WebServer(settings.get_int('webserver-port'));
+                        this.webserver.passMsgData = this.receiveWs.bind(this);
+                    }
+                    this.webserver.startListening();
+
+                    const webappEnabled = settings.get_boolean('webapp-enabled');
+
+                    if(!this.webapp && !webappEnabled)
+                        break;
+
+                    if(webappEnabled) {
+                        if(!this.webapp)
+                            this.webapp = new WebApp();
+
+                        this.webapp.startRemoteApp();
+                    }
+                    else
+                        this.webapp.stopRemoteApp();
+                }
+                else if(this.webserver) {
+                    /* remote app will close too when connection is lost */
+                    this.webserver.stopListening();
+                }
+                break;
+            case 'webserver-port':
+                if(!this.webserver)
+                    break;
+
+                this.webserver.setListeningPort(settings.get_int(key));
                 break;
             default:
                 break;
