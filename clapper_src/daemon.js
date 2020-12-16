@@ -6,8 +6,10 @@ let { debug } = Debug;
 var Daemon = GObject.registerClass(
 class ClapperDaemon extends Gio.SubprocessLauncher
 {
-    _init()
+    _init(port)
     {
+        port = port || 8080;
+
         /* FIXME: show output when debugging is on */
         const flags = Gio.SubprocessFlags.STDOUT_SILENCE
             | Gio.SubprocessFlags.STDERR_SILENCE;
@@ -17,7 +19,7 @@ class ClapperDaemon extends Gio.SubprocessLauncher
         this.errMsg = 'exited with error or was forced to close';
         this.loop = GLib.MainLoop.new(null, false);
 
-        this.broadwayd = this.spawnv(['gtk4-broadwayd', '--port=8086']);
+        this.broadwayd = this.spawnv(['gtk4-broadwayd', '--port=' + port]);
         this.broadwayd.wait_async(null, this._onBroadwaydClosed.bind(this));
 
         this.setenv('GDK_BACKEND', 'broadway', true);

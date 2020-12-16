@@ -15,29 +15,17 @@ class ClapperWebApp extends Gio.SubprocessLauncher
         super._init({ flags });
 
         this.daemonApp = null;
-        this.isDaemonClosing = false;
     }
 
-    startDaemonApp()
+    startDaemonApp(port)
     {
         if(this.daemonApp)
             return;
 
-        this.daemonApp = this.spawnv([Misc.appId + '.Daemon']);
+        this.daemonApp = this.spawnv([Misc.appId + '.Daemon', String(port)]);
         this.daemonApp.wait_async(null, this._onDaemonClosed.bind(this));
 
         debug('daemon app started');
-    }
-
-    stopDaemonApp()
-    {
-        if(!this.daemonApp || this.isDaemonClosing)
-            return;
-
-        this.isDaemonClosing = true;
-        this.daemonApp.force_exit();
-
-        debug('send stop signal to daemon app');
     }
 
     _onDaemonClosed(proc, result)
@@ -52,7 +40,6 @@ class ClapperWebApp extends Gio.SubprocessLauncher
         }
 
         this.daemonApp = null;
-        this.isDaemonClosing = false;
 
         if(hadError)
             debug('daemon app exited with error or was forced to close');
