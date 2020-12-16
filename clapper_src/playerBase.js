@@ -296,13 +296,14 @@ class ClapperPlayerBase extends GstPlayer.Player
                         if(!this.webapp)
                             this.webapp = new WebApp();
 
-                        this.webapp.startRemoteApp();
+                        this.webapp.startDaemonApp();
                     }
                     else
-                        this.webapp.stopRemoteApp();
+                        this.webapp.stopDaemonApp();
                 }
                 else if(this.webserver) {
-                    /* remote app will close too when connection is lost */
+                    /* remote app will close when connection is lost
+                     * which will cause the daemon to close too */
                     this.webserver.stopListening();
                 }
                 break;

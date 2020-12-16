@@ -14,35 +14,33 @@ class ClapperWebApp extends Gio.SubprocessLauncher
 
         super._init({ flags });
 
-        this.remoteApp = null;
-        this.isRemoteClosing = false;
-
-        this.setenv('GDK_BACKEND', 'broadway', true);
+        this.daemonApp = null;
+        this.isDaemonClosing = false;
     }
 
-    startRemoteApp()
+    startDaemonApp()
     {
-        if(this.remoteApp)
+        if(this.daemonApp)
             return;
 
-        this.remoteApp = this.spawnv([Misc.appId + '.Remote']);
-        this.remoteApp.wait_async(null, this._onRemoteClosed.bind(this));
+        this.daemonApp = this.spawnv([Misc.appId + '.Daemon']);
+        this.daemonApp.wait_async(null, this._onDaemonClosed.bind(this));
 
-        debug('remote app started');
+        debug('daemon app started');
     }
 
-    stopRemoteApp()
+    stopDaemonApp()
     {
-        if(!this.remoteApp || this.isRemoteClosing)
+        if(!this.daemonApp || this.isDaemonClosing)
             return;
 
-        this.isRemoteClosing = true;
-        this.remoteApp.force_exit();
+        this.isDaemonClosing = true;
+        this.daemonApp.force_exit();
 
-        debug('send stop signal to remote app');
+        debug('send stop signal to daemon app');
     }
 
-    _onRemoteClosed(proc, result)
+    _onDaemonClosed(proc, result)
     {
         let hadError;
 
@@ -53,12 +51,12 @@ class ClapperWebApp extends Gio.SubprocessLauncher
             debug(err);
         }
 
-        this.remoteApp = null;
-        this.isRemoteClosing = false;
+        this.daemonApp = null;
+        this.isDaemonClosing = false;
 
         if(hadError)
-            debug('remote app exited with error');
+            debug('daemon app exited with error or was forced to close');
 
-        debug('remote app closed');
+        debug('daemon app closed');
     }
 });
