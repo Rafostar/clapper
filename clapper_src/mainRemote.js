@@ -7,7 +7,6 @@ const Misc = imports.clapper_src.misc;
 const ID_POSTFIX = 'Remote';
 
 Misc.clapperPath = `${pkg.datadir}/${Misc.appId}`;
-Misc.appName += ID_POSTFIX;
 Misc.appId += '.' + ID_POSTFIX;
 
 function main()
