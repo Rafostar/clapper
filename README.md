@@ -54,3 +54,5 @@ All these libs are acting "on their own" and no function calls from `GJS` relate
 
 ## Special Thanks
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
+
+Thanks a lot to all the people who are supporting the development with their anonymous donations through [Liberapay](https://liberapay.com/Clapper/). I :heart: U.
