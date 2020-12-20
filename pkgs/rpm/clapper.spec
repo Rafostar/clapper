@@ -101,7 +101,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %files
 %license COPYING
 %doc README.md
-%{_bindir}/%{appname}
+%{_bindir}/%{appname}*
 %{_datadir}/%{appname}/
 %dir %{_datadir}/gjs-1.0
 %{_datadir}/gjs-1.0/*.js
@@ -112,6 +112,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/*.appdata.xml
 
 %changelog
+* Sun Dec 20 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-6
+- Include additional app binaries
+
 * Sat Oct 31 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-5
 - Added metainfo
 
