@@ -34,7 +34,6 @@ var Widget = GObject.registerClass({
         this.isSeekable = false;
 
         this.needsTracksUpdate = true;
-        this.mediaInfoSignal = null;
 
         this.overlay = new Gtk.Overlay();
         this.revealerTop = new Revealers.RevealerTop();
@@ -199,10 +198,11 @@ var Widget = GObject.registerClass({
         this.controlsBox.set_visible(!isOnTop);
     }
 
-    _onMediaInfoUpdated(player, mediaInfo)
+    _updateMediaInfo()
     {
-        if(this.mediaInfoSignal)
-            player.disconnect(this.mediaInfoSignal);
+        let mediaInfo = this.player.get_media_info();
+        if(!mediaInfo)
+            return GLib.SOURCE_REMOVE;
 
         /* Set titlebar media title and path */
         this.updateTitles(mediaInfo);
@@ -242,13 +242,13 @@ var Widget = GObject.registerClass({
                             codec.indexOf(')')
                         );
                     }
-                    text = info.get_language() || 'Unknown';
+                    text = info.get_language() || 'Undetermined';
                     text += ', ' + codec + ', '
                         + info.get_channels() + ' Channels';
                     break;
                 case GstPlayer.PlayerSubtitleInfo:
                     type = 'subtitle';
-                    text = info.get_language() || 'Unknown';
+                    text = info.get_language() || 'Undetermined';
                     break;
                 default:
                     debug(`unrecognized media info type: ${info.constructor}`);
@@ -273,7 +273,7 @@ var Widget = GObject.registerClass({
         let anyButtonShown = false;
 
         for(let type of ['video', 'audio', 'subtitle']) {
-            let currStream = player[`get_current_${type}_track`]();
+            let currStream = this.player[`get_current_${type}_track`]();
             let activeId = (currStream) ? currStream.get_index() : -1;
 
             if(currStream && type !== 'subtitle') {
@@ -300,9 +300,9 @@ var Widget = GObject.registerClass({
 
             anyButtonShown = true;
         }
-
         this.controls.revealTracksRevealer.set_visible(anyButtonShown);
-        this.mediaInfoSignal = null;
+
+        return GLib.SOURCE_REMOVE;
     }
 
     updateTitles(mediaInfo)
@@ -402,10 +402,6 @@ var Widget = GObject.registerClass({
                 this.controls.positionScale.set_value(0);
                 this.controls.togglePlayButton.setPrimaryIcon();
                 this.needsTracksUpdate = true;
-                if(this.mediaInfoSignal) {
-                    player.disconnect(this.mediaInfoSignal);
-                    this.mediaInfoSignal = null;
-                }
                 break;
             case GstPlayer.PlayerState.PAUSED:
                 debug('player state changed to: PAUSED');
@@ -414,10 +410,11 @@ var Widget = GObject.registerClass({
             case GstPlayer.PlayerState.PLAYING:
                 debug('player state changed to: PLAYING');
                 this.controls.togglePlayButton.setSecondaryIcon();
-                if(this.needsTracksUpdate && !this.mediaInfoSignal) {
+                if(this.needsTracksUpdate) {
                     this.needsTracksUpdate = false;
-                    this.mediaInfoSignal = player.connect(
-                        'media-info-updated', this._onMediaInfoUpdated.bind(this)
+                    GLib.idle_add(
+                        GLib.PRIORITY_DEFAULT_IDLE,
+                        this._updateMediaInfo.bind(this)
                     );
                 }
                 break;
