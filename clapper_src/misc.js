@@ -57,12 +57,10 @@ function inhibitForState(state, window)
             return;
 
         let app = window.get_application();
-        let flags = Gtk.ApplicationInhibitFlags.SUSPEND
-            | Gtk.ApplicationInhibitFlags.IDLE;
 
         inhibitCookie = app.inhibit(
             window,
-            flags,
+            Gtk.ApplicationInhibitFlags.IDLE,
             'video is playing'
         );
         if(!inhibitCookie)
@@ -71,14 +69,12 @@ function inhibitForState(state, window)
         isInhibited = (inhibitCookie > 0);
     }
     else {
-        //if(!inhibitCookie)
+        if(!inhibitCookie)
             return;
 
-        /* Uninhibit seems to be broken as of GTK 3.99.4
         let app = window.get_application();
         app.uninhibit(inhibitCookie);
         inhibitCookie = null;
-        */
     }
 
     debug(`set prevent suspend to: ${isInhibited}`);

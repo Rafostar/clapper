@@ -14,7 +14,7 @@ Build-Depends: debhelper (>= 10),
 Package: clapper
 Architecture: all
 Depends: gjs (>= 1.50),
-         gir1.2-gtk-4.0 (>= 3.99.2),
+         gir1.2-gtk-4.0 (>= 4.0.0),
          hicolor-icon-theme,
          libgstreamer1.0-0 (>= 1.18),
          gstreamer1.0-plugins-base (>= 1.18),

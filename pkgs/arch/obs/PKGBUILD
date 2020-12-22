@@ -27,7 +27,7 @@ arch=(any)
 url="https://github.com/Rafostar/clapper"
 license=("GPL-3.0")
 depends=(
-	"gtk4>=3.99.2"
+	"gtk4>=4.0.0"
 	"hicolor-icon-theme"
 	"gjs"
 	"gst-plugins-base-libs>=1.18.0"

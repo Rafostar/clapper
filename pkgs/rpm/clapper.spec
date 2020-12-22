@@ -20,7 +20,7 @@
 
 %global appname com.github.rafostar.Clapper
 %global gst_version 1.18.0
-%global gtk4_version 3.99.2
+%global gtk4_version 4.0.0
 
 Name:           clapper
 Version:        0.0.0
