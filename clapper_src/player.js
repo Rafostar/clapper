@@ -73,20 +73,26 @@ class ClapperPlayer extends PlayerBase
 
     set_media(source)
     {
-        if(!Gst.uri_is_valid(source))
-            source = Gst.filename_to_uri(source);
+        let file;
 
-        if(!source)
-            return debug('parsing source to URI failed');
+        if(source.get_path)
+            file = source;
+        else {
+            if(!Gst.uri_is_valid(source))
+                source = Gst.filename_to_uri(source);
 
-        debug(`parsed source to URI: ${source}`);
+            if(!source)
+                return debug('parsing source to URI failed');
 
-        if(Gst.Uri.get_protocol(source) !== 'file') {
-            this.is_local_file = false;
-            return this.set_uri(source);
+            debug(`parsed source to URI: ${source}`);
+
+            if(Gst.Uri.get_protocol(source) !== 'file') {
+                this.is_local_file = false;
+                return this.set_uri(source);
+            }
+
+            file = Gio.file_new_for_uri(source);
         }
-
-        let file = Gio.file_new_for_uri(source);
 
         if(!file.query_exists(null)) {
             debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
@@ -98,11 +104,12 @@ class ClapperPlayer extends PlayerBase
             return this.set_media(this._playlist[this._trackId]);
         }
 
-        if(file.get_path().endsWith('.claps'))
+        let fileUri = file.get_uri();
+        if(fileUri.endsWith('.claps'))
             return this.load_playlist_file(file);
 
         this.is_local_file = true;
-        this.set_uri(source);
+        this.set_uri(fileUri);
     }
 
     load_playlist_file(file)

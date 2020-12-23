@@ -9,15 +9,8 @@ let { settings } = Misc;
 var AppBase = GObject.registerClass(
 class ClapperAppBase extends Gtk.Application
 {
-    _init(opts)
+    _init()
     {
-        opts = opts || {};
-
-        let defaults = {
-            playlist: [],
-        };
-        Object.assign(this, defaults, opts);
-
         super._init({
             application_id: Misc.appId,
         });
@@ -58,15 +51,21 @@ class ClapperAppBase extends Gtk.Application
     {
         super.vfunc_activate();
 
-        if(!this.doneFirstActivate)
-            this._onFirstActivate();
-
-        this.active_window.present();
+        this._handleAppStart();
     }
 
     run(arr)
     {
         super.run(arr || []);
+    }
+
+    _handleAppStart()
+    {
+        if(this.doneFirstActivate)
+            return this._onWindowShow(this.active_window);
+
+        this._onFirstActivate();
+        this.active_window.present();
     }
 
     _onFirstActivate()
@@ -89,6 +88,9 @@ class ClapperAppBase extends Gtk.Application
 
     _onWindowShow(window)
     {
+        if(!this.windowShowSignal)
+            return;
+
         window.disconnect(this.windowShowSignal);
         this.windowShowSignal = null;
     }

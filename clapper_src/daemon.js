@@ -6,9 +6,9 @@ let { debug } = Debug;
 var Daemon = GObject.registerClass(
 class ClapperDaemon extends Gio.SubprocessLauncher
 {
-    _init(port)
+    _init()
     {
-        port = port || 8080;
+        let port = ARGV[0] || 8080;
 
         /* FIXME: show output when debugging is on */
         const flags = Gio.SubprocessFlags.STDOUT_SILENCE
