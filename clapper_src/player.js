@@ -156,8 +156,12 @@ class ClapperPlayer extends PlayerBase
         return this._playlist;
     }
 
-    set_subtitles(uri)
+    set_subtitles(source)
     {
+        let uri = (source.get_uri)
+            ? source.get_uri()
+            : source;
+
         this.set_subtitle_uri(uri);
         this.set_subtitle_track_enabled(true);
 

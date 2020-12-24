@@ -52,18 +52,17 @@ class ClapperFileChooser extends Gtk.FileChooserNative
             let playlist = [];
 
             while((file = files.get_item(index))) {
-                let uri = file.get_uri();
                 let filename = file.get_basename();
                 let [type, isUncertain] = Gio.content_type_guess(filename, null);
 
                 if(this.subsMimes.includes(type)) {
-                    subs = uri;
+                    subs = file;
                     files.remove(index);
 
                     continue;
                 }
 
-                playlist.push(uri);
+                playlist.push(file);
                 index++;
             }
 
