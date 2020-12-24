@@ -62,7 +62,7 @@ class ClapperAppBase extends Gtk.Application
     _handleAppStart()
     {
         if(this.doneFirstActivate)
-            return this._onWindowShow(this.active_window);
+            return;
 
         this._onFirstActivate();
         this.active_window.present();
@@ -82,15 +82,11 @@ class ClapperAppBase extends Gtk.Application
         this.windowShowSignal = this.active_window.connect(
             'show', this._onWindowShow.bind(this)
         );
-
         this.doneFirstActivate = true;
     }
 
     _onWindowShow(window)
     {
-        if(!this.windowShowSignal)
-            return;
-
         window.disconnect(this.windowShowSignal);
         this.windowShowSignal = null;
     }

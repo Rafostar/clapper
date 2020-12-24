@@ -95,7 +95,7 @@ class ClapperPlayer extends PlayerBase
         }
 
         if(!file.query_exists(null)) {
-            debug(`file does not exist: ${source}`, 'LEVEL_WARNING');
+            debug(`file does not exist: ${file.get_path()}`, 'LEVEL_WARNING');
             this._trackId++;
 
             if(this._playlist.length <= this._trackId)

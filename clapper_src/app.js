@@ -43,13 +43,22 @@ class ClapperApp extends AppBase
         super.vfunc_open(files, hint);
 
         this.playlist = files;
-        this._handleAppStart();
+
+        if(!this.doneFirstActivate)
+            this._handleAppStart();
+        else
+            this.setWindowPlaylist(this.active_window);
     }
 
     _onWindowShow(window)
     {
         super._onWindowShow(window);
 
+        this.setWindowPlaylist(window);
+    }
+
+    setWindowPlaylist(window)
+    {
         if(!this.playlist.length)
             return;
 

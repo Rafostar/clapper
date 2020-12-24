@@ -10,8 +10,3 @@ Terminal=false
 Type=Application
 # Translators: Search terms to find this application. Do NOT translate the semicolons!
 Keywords=Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;
-Actions=new-window;
-
-[Desktop Action new-window]
-Name=New Window
-Exec=com.github.rafostar.Clapper --new-window
