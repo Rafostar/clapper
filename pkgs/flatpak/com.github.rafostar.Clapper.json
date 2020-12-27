@@ -17,7 +17,6 @@
         "--env=GST_VAAPI_ALL_DRIVERS=1"
     ],
     "modules": [
-        "lib/glib.json",
         "lib/glib-networking.json",
         "shared-modules/gudev/gudev.json",
         "lib/pango.json",
