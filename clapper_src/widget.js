@@ -18,8 +18,6 @@ var Widget = GObject.registerClass({
 {
     _init()
     {
-        Debug.gstVersionCheck();
-
         super._init();
 
         /* load CSS here to allow using this class
