@@ -44,10 +44,10 @@ class ClapperApp extends AppBase
 
         this.playlist = files;
 
-        if(!this.doneFirstActivate)
-            this._handleAppStart();
-        else
+        if(this.doneFirstActivate)
             this.setWindowPlaylist(this.active_window);
+
+        this.activate();
     }
 
     _onWindowShow(window)

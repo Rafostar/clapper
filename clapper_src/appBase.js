@@ -1,4 +1,4 @@
-const { Gio, GObject, Gtk } = imports.gi;
+const { Gio, GLib, GObject, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
@@ -51,21 +51,17 @@ class ClapperAppBase extends Gtk.Application
     {
         super.vfunc_activate();
 
-        this._handleAppStart();
+        if(!this.doneFirstActivate)
+            this._onFirstActivate();
+
+        this.active_window.present_with_time(
+            Math.floor(GLib.get_monotonic_time() / 1000)
+        );
     }
 
     run(arr)
     {
         super.run(arr || []);
-    }
-
-    _handleAppStart()
-    {
-        if(this.doneFirstActivate)
-            return;
-
-        this._onFirstActivate();
-        this.active_window.present();
     }
 
     _onFirstActivate()
