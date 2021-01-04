@@ -218,12 +218,13 @@ var Widget = GObject.registerClass({
         };
 
         for(let info of streamList) {
-            let type, text;
+            let type, text, codec;
 
             switch(info.constructor) {
                 case GstPlayer.PlayerVideoInfo:
                     type = 'video';
-                    text = info.get_codec() + ', ' +
+                    codec = info.get_codec() || 'Undetermined';
+                    text = codec + ', ' +
                         + info.get_width() + 'x'
                         + info.get_height();
                     let fps = info.get_framerate();
@@ -233,7 +234,7 @@ var Widget = GObject.registerClass({
                     break;
                 case GstPlayer.PlayerAudioInfo:
                     type = 'audio';
-                    let codec = info.get_codec();
+                    codec = info.get_codec() || 'Undetermined';
                     if(codec.includes('(')) {
                         codec = codec.substring(
                             codec.indexOf('(') + 1,
