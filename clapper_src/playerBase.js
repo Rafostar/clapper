@@ -45,7 +45,7 @@ class ClapperPlayerBase extends GstPlayer.Player
             video_renderer: renderer
         });
 
-        this.gtkglsink = gtkglsink;
+        this.widget = gtkglsink.widget;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
 
@@ -64,11 +64,6 @@ class ClapperPlayerBase extends GstPlayer.Player
         /* FIXME: additional reference for working around GstPlayer
          * buggy signal dispatcher on self. Remove when ported to BUS API */
         this.ref();
-    }
-
-    get widget()
-    {
-        return this.gtkglsink.widget;
     }
 
     set_and_bind_settings()
@@ -159,7 +154,7 @@ class ClapperPlayerBase extends GstPlayer.Player
 
     draw_black(isEnabled)
     {
-        this.gtkglsink.ignore_textures = isEnabled;
+        this.widget.ignore_textures = isEnabled;
 
         if(this.state !== GstPlayer.PlayerState.PLAYING)
             this.widget.queue_render();
