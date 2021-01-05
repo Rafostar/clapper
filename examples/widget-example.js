@@ -25,9 +25,7 @@ app.connect('activate', () => {
     });
     let widget = new Clapper.Widget();
 
-    widget.connect('fullscreen-changed', (widget, isFullscreen) => {
-        label.set_visible(!isFullscreen);
-    });
+    window.bind('fullscreened', label, 'visible', GObject.BindingFlags.INVERT_BOOLEAN);
     window.connect('show', () => {
         let media = 'http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_30fps_normal.mp4';
         widget.player.set_media(media);

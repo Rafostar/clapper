@@ -8,13 +8,8 @@ const Revealers = imports.clapper_src.revealers;
 const { debug } = Debug;
 const { settings } = Misc;
 
-var Widget = GObject.registerClass({
-    Signals: {
-        'fullscreen-changed': {
-            param_types: [GObject.TYPE_BOOLEAN]
-        }
-    }
-}, class ClapperWidget extends Gtk.Grid
+var Widget = GObject.registerClass(
+class ClapperWidget extends Gtk.Grid
 {
     _init()
     {
@@ -484,7 +479,6 @@ var Widget = GObject.registerClass({
             return;
 
         this.setFullscreenMode(isFullscreen);
-        this.emit('fullscreen-changed', isFullscreen);
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
