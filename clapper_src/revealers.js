@@ -3,7 +3,7 @@ const Debug = imports.clapper_src.debug;
 
 const REVEAL_TIME = 800;
 
-let { debug } = Debug;
+const { debug } = Debug;
 
 var CustomRevealer = GObject.registerClass(
 class ClapperCustomRevealer extends Gtk.Revealer
@@ -12,7 +12,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
     {
         opts = opts || {};
 
-        let defaults = {
+        const defaults = {
             visible: false,
             can_focus: false,
         };
@@ -96,9 +96,9 @@ class ClapperRevealerTop extends CustomRevealer
             transition_type: Gtk.RevealerTransitionType.CROSSFADE,
             valign: Gtk.Align.START,
         });
-
         this.revealerName = 'top';
-        let initTime = GLib.DateTime.new_now_local().format('%X');
+
+        const initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
             ? '%I:%M %p'
             : '%H:%M';
@@ -119,7 +119,7 @@ class ClapperRevealerTop extends CustomRevealer
             yalign: 0,
         });
 
-        let timeLabelOpts = {
+        const timeLabelOpts = {
             margin_end: 10,
             xalign: 1,
             yalign: 0,
@@ -127,9 +127,8 @@ class ClapperRevealerTop extends CustomRevealer
         this.currentTime = new Gtk.Label(timeLabelOpts);
         this.currentTime.add_css_class('osdtime');
 
-        this.endTime = new Gtk.Label(
-            Object.assign(timeLabelOpts, { visible: false })
-        );
+        timeLabelOpts.visible = false;
+        this.endTime = new Gtk.Label(timeLabelOpts);
         this.endTime.add_css_class('osdendtime');
 
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
@@ -146,16 +145,16 @@ class ClapperRevealerTop extends CustomRevealer
 
     setTimes(currTime, endTime)
     {
-        let now = currTime.format(this.timeFormat);
-        let end = endTime.format(this.timeFormat);
-        let endText = `Ends at: ${end}`;
+        const now = currTime.format(this.timeFormat);
+        const end = endTime.format(this.timeFormat);
+        const endText = `Ends at: ${end}`;
 
         this.currentTime.set_label(now);
         this.endTime.set_label(endText);
 
         /* Make sure that next timeout is always run after clock changes,
          * by delaying it for additional few milliseconds */
-        let nextUpdate = 60002 - parseInt(currTime.get_seconds() * 1000);
+        const nextUpdate = 60002 - parseInt(currTime.get_seconds() * 1000);
         debug(`updated current time: ${now}, ends at: ${end}`);
 
         return nextUpdate;
@@ -195,27 +194,27 @@ class ClapperRevealerBottom extends CustomRevealer
         if(isFloating === this.revealerBox.has_css_class('floatingcontrols'))
             return;
 
-        let action = (isFloating) ? 'add' : 'remove';
+        const action = (isFloating) ? 'add' : 'remove';
         this.revealerBox[`${action}_css_class`]('floatingcontrols');
     }
 
     set_visible(isVisible)
     {
-        let isChange = super.set_visible(isVisible);
+        const isChange = super.set_visible(isVisible);
         if(!isChange || !this.can_focus) return;
 
-        let parent = this.get_parent();
-        let playerWidget = parent.get_first_child();
+        const parent = this.get_parent();
+        const playerWidget = parent.get_first_child();
         if(!playerWidget) return;
 
         if(isVisible) {
-            let box = this.get_first_child();
+            const box = this.get_first_child();
             if(!box) return;
 
-            let controls = box.get_first_child();
+            const controls = box.get_first_child();
             if(!controls) return;
 
-            let togglePlayButton = controls.get_first_child();
+            const togglePlayButton = controls.get_first_child();
             if(togglePlayButton) {
                 togglePlayButton.grab_focus();
                 debug('focus moved to toggle play button');
@@ -240,7 +239,7 @@ class ClapperButtonsRevealer extends Gtk.Revealer
             transition_type: Gtk.RevealerTransitionType[trType],
         });
 
-        let revealerBox = new Gtk.Box({
+        const revealerBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
         });
         this.set_child(revealerBox);
@@ -257,7 +256,7 @@ class ClapperButtonsRevealer extends Gtk.Revealer
         if(this.reveal_child === isReveal)
             return;
 
-        let grandson = this.child.get_first_child();
+        const grandson = this.child.get_first_child();
         if(grandson && grandson.isFloating && !grandson.isFullscreen)
             return;
 

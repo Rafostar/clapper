@@ -3,8 +3,8 @@ const Debug = imports.clapper_src.debug;
 const Menu = imports.clapper_src.menu;
 const Misc = imports.clapper_src.misc;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 var AppBase = GObject.registerClass(
 class ClapperAppBase extends Gtk.Application
@@ -22,7 +22,7 @@ class ClapperAppBase extends Gtk.Application
     {
         super.vfunc_startup();
 
-        let window = new Gtk.ApplicationWindow({
+        const window = new Gtk.ApplicationWindow({
             application: this,
             title: Misc.appName,
         });
@@ -37,7 +37,7 @@ class ClapperAppBase extends Gtk.Application
             window.add_css_class('brightscale');
 
         for(let action in Menu.actions) {
-            let simpleAction = new Gio.SimpleAction({
+            const simpleAction = new Gio.SimpleAction({
                 name: action
             });
             simpleAction.connect(
@@ -66,7 +66,7 @@ class ClapperAppBase extends Gtk.Application
 
     _onFirstActivate()
     {
-        let gtkSettings = Gtk.Settings.get_default();
+        const gtkSettings = Gtk.Settings.get_default();
         settings.bind(
             'dark-theme', gtkSettings,
             'gtk-application-prefer-dark-theme',

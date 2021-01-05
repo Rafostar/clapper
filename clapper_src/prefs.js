@@ -2,7 +2,7 @@ const { GObject, Gst, Gtk, Pango } = imports.gi;
 const Misc = imports.clapper_src.misc;
 const PrefsBase = imports.clapper_src.prefsBase;
 
-let { settings } = Misc;
+const { settings } = Misc;
 
 /* PlayFlags are not exported through GI */
 Gst.PlayFlags = {
@@ -32,11 +32,11 @@ class ClapperGeneralPage extends PrefsBase.Grid
         this.addCheckButton('Auto enter fullscreen', 'fullscreen-auto');
 
         this.addTitle('Volume');
-        let comboBox = this.addComboBoxText('Initial value', [
+        const comboBox = this.addComboBoxText('Initial value', [
             ['restore', "Restore"],
             ['custom', "Custom"],
         ], 'volume-initial');
-        let spinButton = this.addSpinButton('Value (percentage)', 0, 200, 'volume-value');
+        const spinButton = this.addSpinButton('Value (percentage)', 0, 200, 'volume-value');
         this._onVolumeInitialChanged(spinButton, comboBox);
         comboBox.connect('changed', this._onVolumeInitialChanged.bind(this, spinButton));
 
@@ -46,7 +46,7 @@ class ClapperGeneralPage extends PrefsBase.Grid
 
     _onVolumeInitialChanged(spinButton, comboBox)
     {
-        let value = comboBox.get_active_id();
+        const value = comboBox.get_active_id();
         spinButton.set_visible(value === 'custom');
     }
 });
@@ -116,12 +116,12 @@ class ClapperNetworkPage extends PrefsBase.Grid
         this.addPlayFlagCheckButton('Progressive download buffering', Gst.PlayFlags.DOWNLOAD);
 
         this.addTitle('Server');
-        let webServer = this.addCheckButton('Control player remotely', 'webserver-enabled');
-        let serverPort = this.addSpinButton('Listening port', 1024, 65535, 'webserver-port');
+        const webServer = this.addCheckButton('Control player remotely', 'webserver-enabled');
+        const serverPort = this.addSpinButton('Listening port', 1024, 65535, 'webserver-port');
         webServer.bind_property('active', serverPort, 'visible', GObject.BindingFlags.SYNC_CREATE);
-        let webApp = this.addCheckButton('Start built-in web application', 'webapp-enabled');
+        const webApp = this.addCheckButton('Start built-in web application', 'webapp-enabled');
         webServer.bind_property('active', webApp, 'visible', GObject.BindingFlags.SYNC_CREATE);
-        let webAppPort = this.addSpinButton('Web application port', 1024, 65535, 'webapp-port');
+        const webAppPort = this.addSpinButton('Web application port', 1024, 65535, 'webapp-port');
         webServer.bind_property('active', webAppPort, 'visible', GObject.BindingFlags.SYNC_CREATE);
     }
 });
@@ -134,38 +134,38 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         super._init();
 
         this.addTitle('Plugin Ranking');
-        let listStore = new Gtk.ListStore();
+        const listStore = new Gtk.ListStore();
         listStore.set_column_types([
             GObject.TYPE_BOOLEAN,
             GObject.TYPE_STRING,
             GObject.TYPE_STRING,
         ]);
-        let treeView = new Gtk.TreeView({
+        const treeView = new Gtk.TreeView({
             hexpand: true,
             vexpand: true,
             enable_search: false,
             model: listStore,
         });
-        let treeSelection = treeView.get_selection();
+        const treeSelection = treeView.get_selection();
 
-        let apply = new Gtk.TreeViewColumn({
+        const apply = new Gtk.TreeViewColumn({
             title: "Apply",
         });
-        let name = new Gtk.TreeViewColumn({
+        const name = new Gtk.TreeViewColumn({
             title: "Plugin",
             expand: true,
         });
-        let rank = new Gtk.TreeViewColumn({
+        const rank = new Gtk.TreeViewColumn({
             title: "Rank",
             min_width: 90,
         });
 
-        let applyCell = new Gtk.CellRendererToggle();
-        let nameCell = new Gtk.CellRendererText({
+        const applyCell = new Gtk.CellRendererToggle();
+        const nameCell = new Gtk.CellRendererText({
             editable: true,
             placeholder_text: "Insert plugin name",
         });
-        let rankCell = new Gtk.CellRendererText({
+        const rankCell = new Gtk.CellRendererText({
             editable: true,
             weight: Pango.Weight.BOLD,
             placeholder_text: "Insert plugin rank",
@@ -183,27 +183,27 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         treeView.insert_column(name, 1);
         treeView.insert_column(rank, 2);
 
-        let frame = new Gtk.Frame({
+        const frame = new Gtk.Frame({
             child: treeView
         });
         this.addToGrid(frame);
 
-        let addButton = new Gtk.Button({
+        const addButton = new Gtk.Button({
             icon_name: 'list-add-symbolic',
             halign: Gtk.Align.END,
         });
-        let removeButton = new Gtk.Button({
+        const removeButton = new Gtk.Button({
             icon_name: 'list-remove-symbolic',
             sensitive: false,
             halign: Gtk.Align.END,
         });
-        let label = new Gtk.Label({
+        const label = new Gtk.Label({
             label: 'Changes require player restart',
             halign: Gtk.Align.START,
             hexpand: true,
             ellipsize: Pango.EllipsizeMode.END,
         });
-        let box = new Gtk.Box({
+        const box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
             spacing: 6,
             hexpand: true,
@@ -229,7 +229,7 @@ class ClapperGStreamerPage extends PrefsBase.Grid
 
     refreshListStore(listStore)
     {
-        let data = JSON.parse(settings.get_string('plugin-ranking'));
+        const data = JSON.parse(settings.get_string('plugin-ranking'));
         listStore.clear();
 
         for(let plugin of data) {
@@ -246,14 +246,14 @@ class ClapperGStreamerPage extends PrefsBase.Grid
 
     updatePlugin(index, prop, value)
     {
-        let data = JSON.parse(settings.get_string('plugin-ranking'));
+        const data = JSON.parse(settings.get_string('plugin-ranking'));
         data[index][prop] = value;
         settings.set_string('plugin-ranking', JSON.stringify(data));
     }
 
     _onTreeSelectionChanged(removeButton, treeSelection)
     {
-        let [isSelected, model, iter] = treeSelection.get_selected();
+        const [isSelected, model, iter] = treeSelection.get_selected();
         this.activeIndex = -1;
 
         if(isSelected) {
@@ -265,7 +265,7 @@ class ClapperGStreamerPage extends PrefsBase.Grid
 
     _onAddButtonClicked(listStore, button)
     {
-        let data = JSON.parse(settings.get_string('plugin-ranking'));
+        const data = JSON.parse(settings.get_string('plugin-ranking'));
         data.push({
             apply: false,
             name: '',
@@ -279,14 +279,14 @@ class ClapperGStreamerPage extends PrefsBase.Grid
         if(this.activeIndex < 0)
             return;
 
-        let data = JSON.parse(settings.get_string('plugin-ranking'));
+        const data = JSON.parse(settings.get_string('plugin-ranking'));
         data.splice(this.activeIndex, 1);
         settings.set_string('plugin-ranking', JSON.stringify(data));
     }
 
     _onApplyCellEdited(cell, path)
     {
-        let newState = !cell.active;
+        const newState = !cell.active;
         this.updatePlugin(path, 'apply', newState);
     }
 
@@ -323,18 +323,11 @@ class ClapperTweaksPage extends PrefsBase.Grid
         super._init();
 
         this.addTitle('Appearance');
-        let darkCheck = this.addCheckButton('Enable dark theme', 'dark-theme');
-        let brighterCheck = this.addCheckButton('Make sliders brighter', 'brighter-sliders');
-        this._onDarkThemeToggled(brighterCheck, darkCheck);
-        darkCheck.connect('toggled', this._onDarkThemeToggled.bind(this, brighterCheck));
+        const darkCheck = this.addCheckButton('Enable dark theme', 'dark-theme');
+        const brighterCheck = this.addCheckButton('Make sliders brighter', 'brighter-sliders');
+        darkCheck.bind_property('active', brighterCheck, 'visible', GObject.BindingFlags.SYNC_CREATE);
 
         this.addTitle('Performance');
         this.addCheckButton('Render window shadows', 'render-shadows');
-    }
-
-    _onDarkThemeToggled(brighterCheck, darkCheck)
-    {
-        let isActive = darkCheck.get_active();
-        brighterCheck.set_visible(isActive);
     }
 });

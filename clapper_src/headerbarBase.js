@@ -10,11 +10,11 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
             can_focus: false,
         });
 
-        let clapperPath = Misc.getClapperPath();
-        let uiBuilder = Gtk.Builder.new_from_file(
+        const clapperPath = Misc.getClapperPath();
+        const uiBuilder = Gtk.Builder.new_from_file(
             `${clapperPath}/ui/clapper.ui`
         );
-        let models = {
+        const models = {
             addMediaMenu: uiBuilder.get_object('addMediaMenu'),
             settingsMenu: uiBuilder.get_object('settingsMenu'),
         };
@@ -22,32 +22,32 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
         this.add_css_class('noborder');
         this.set_title_widget(this._createWidgetForWindow(window));
 
-        let addMediaButton = new Gtk.MenuButton({
+        const addMediaButton = new Gtk.MenuButton({
             icon_name: 'list-add-symbolic',
         });
-        let addMediaPopover = new HeaderBarPopover(models.addMediaMenu);
+        const addMediaPopover = new HeaderBarPopover(models.addMediaMenu);
         addMediaButton.set_popover(addMediaPopover);
         this.pack_start(addMediaButton);
 
-        let openMenuButton = new Gtk.MenuButton({
+        const openMenuButton = new Gtk.MenuButton({
             icon_name: 'open-menu-symbolic',
         });
-        let settingsPopover = new HeaderBarPopover(models.settingsMenu);
+        const settingsPopover = new HeaderBarPopover(models.settingsMenu);
         openMenuButton.set_popover(settingsPopover);
         this.pack_end(openMenuButton);
 
-        let buttonsBox = new Gtk.Box({
+        const buttonsBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
         });
         buttonsBox.add_css_class('linked');
 
-        let floatButton = new Gtk.Button({
+        const floatButton = new Gtk.Button({
             icon_name: 'preferences-desktop-remote-desktop-symbolic',
         });
         floatButton.connect('clicked', this._onFloatButtonClicked.bind(this));
         buttonsBox.append(floatButton);
 
-        let fullscreenButton = new Gtk.Button({
+        const fullscreenButton = new Gtk.Button({
             icon_name: 'view-fullscreen-symbolic',
         });
         fullscreenButton.connect('clicked', this._onFullscreenButtonClicked.bind(this));
@@ -67,7 +67,7 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
 
     _createWidgetForWindow(window)
     {
-        let box = new Gtk.Box({
+        const box = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
             valign: Gtk.Align.CENTER,
         });
@@ -120,16 +120,15 @@ class ClapperHeaderBarPopover extends Gtk.PopoverMenu
 
     _onClosed()
     {
-        let root = this.get_root();
-        let clapperWidget = root.get_child();
+        const { child } = this.get_root();
 
         if(
-            !clapperWidget
-            || !clapperWidget.player
-            || !clapperWidget.player.widget
+            !child
+            || !child.player
+            || !child.player.widget
         )
             return;
 
-        clapperWidget.player.widget.grab_focus();
+        child.player.widget.grab_focus();
     }
 });

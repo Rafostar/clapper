@@ -3,8 +3,8 @@ const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const { WebApp } = imports.clapper_src.webApp;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 let WebServer;
 
@@ -16,27 +16,27 @@ class ClapperPlayerBase extends GstPlayer.Player
         if(!Gst.is_initialized())
             Gst.init(null);
 
-        let plugin = 'gtk4glsink';
-        let gtkglsink = Gst.ElementFactory.make(plugin, null);
+        const plugin = 'gtk4glsink';
+        const gtk4glsink = Gst.ElementFactory.make(plugin, null);
 
-        if(!gtkglsink) {
+        if(!gtk4glsink) {
             return debug(new Error(
                 `Could not load "${plugin}".`
                     + ' Do you have gstreamer-plugins-good-gtk4 installed?'
             ));
         }
 
-        let glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
-        glsinkbin.sink = gtkglsink;
+        const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
+        glsinkbin.sink = gtk4glsink;
 
-        let context = GLib.MainContext.ref_thread_default();
-        let acquired = context.acquire();
+        const context = GLib.MainContext.ref_thread_default();
+        const acquired = context.acquire();
         debug(`default context acquired: ${acquired}`);
 
-        let dispatcher = new GstPlayer.PlayerGMainContextSignalDispatcher({
+        const dispatcher = new GstPlayer.PlayerGMainContextSignalDispatcher({
             application_context: context,
         });
-        let renderer = new GstPlayer.PlayerVideoOverlayVideoRenderer({
+        const renderer = new GstPlayer.PlayerVideoOverlayVideoRenderer({
             video_sink: glsinkbin
         });
 
@@ -68,7 +68,7 @@ class ClapperPlayerBase extends GstPlayer.Player
 
     set_and_bind_settings()
     {
-        let settingsToSet = [
+        const settingsToSet = [
             'seeking-mode',
             'audio-offset',
             'subtitle-offset',
@@ -79,13 +79,13 @@ class ClapperPlayerBase extends GstPlayer.Player
         for(let key of settingsToSet)
             this._onSettingsKeyChanged(settings, key);
 
-        let flag = Gio.SettingsBindFlags.GET;
+        const flag = Gio.SettingsBindFlags.GET;
         settings.bind('subtitle-font', this.pipeline, 'subtitle_font_desc', flag);
     }
 
     set_initial_config()
     {
-        let gstPlayerConfig = {
+        const gstPlayerConfig = {
             position_update_interval: 1000,
             user_agent: 'clapper',
         };
@@ -96,19 +96,19 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.set_mute(false);
 
         /* FIXME: change into option in preferences */
-        let pipeline = this.get_pipeline();
+        const pipeline = this.get_pipeline();
         pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
     }
 
     set_config_option(option, value)
     {
-        let setOption = GstPlayer.Player[`config_set_${option}`];
+        const setOption = GstPlayer.Player[`config_set_${option}`];
         if(!setOption)
             return debug(`unsupported option: ${option}`, 'LEVEL_WARNING');
 
-        let config = this.get_config();
+        const config = this.get_config();
         setOption(config, value);
-        let success = this.set_config(config);
+        const success = this.set_config(config);
 
         if(!success)
             debug(`could not change option: ${option}`);
@@ -139,12 +139,12 @@ class ClapperPlayerBase extends GstPlayer.Player
 
     set_plugin_rank(name, rank)
     {
-        let gstRegistry = Gst.Registry.get();
-        let feature = gstRegistry.lookup_feature(name);
+        const gstRegistry = Gst.Registry.get();
+        const feature = gstRegistry.lookup_feature(name);
         if(!feature)
             return debug(`plugin unavailable: ${name}`);
 
-        let oldRank = feature.get_rank();
+        const oldRank = feature.get_rank();
         if(rank === oldRank)
             return;
 
@@ -179,7 +179,7 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         switch(key) {
             case 'seeking-mode':
-                let isSeekMode = (typeof this.set_seek_mode !== 'undefined');
+                const isSeekMode = (typeof this.set_seek_mode !== 'undefined');
                 this.seekingMode = settings.get_string('seeking-mode');
                 switch(this.seekingMode) {
                     case 'fast':
@@ -212,9 +212,9 @@ class ClapperPlayerBase extends GstPlayer.Player
                 if(!root || !root.isClapperApp)
                     break;
 
-                let gpuClass = 'gpufriendly';
-                let renderShadows = settings.get_boolean(key);
-                let hasShadows = !root.has_css_class(gpuClass);
+                const gpuClass = 'gpufriendly';
+                const renderShadows = settings.get_boolean(key);
+                const hasShadows = !root.has_css_class(gpuClass);
 
                 if(renderShadows === hasShadows)
                     break;
@@ -238,8 +238,8 @@ class ClapperPlayerBase extends GstPlayer.Player
                 if(!root || !root.isClapperApp)
                     break;
 
-                let brightClass = 'brightscale';
-                let isBrighter = root.has_css_class(brightClass);
+                const brightClass = 'brightscale';
+                const isBrighter = root.has_css_class(brightClass);
 
                 if(key === 'dark-theme' && isBrighter && !settings.get_boolean(key)) {
                     root.remove_css_class(brightClass);
@@ -247,7 +247,7 @@ class ClapperPlayerBase extends GstPlayer.Player
                     break;
                 }
 
-                let setBrighter = settings.get_boolean('brighter-sliders');
+                const setBrighter = settings.get_boolean('brighter-sliders');
                 if(setBrighter === isBrighter)
                     break;
 

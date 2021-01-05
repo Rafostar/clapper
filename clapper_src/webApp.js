@@ -2,7 +2,7 @@ const { Gio, GObject } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 
-let { debug } = Debug;
+const { debug } = Debug;
 
 var WebApp = GObject.registerClass(
 class ClapperWebApp extends Gio.SubprocessLauncher

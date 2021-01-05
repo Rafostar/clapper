@@ -1,6 +1,8 @@
 const { Gio, GstAudio, GstPlayer, Gdk, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
+const { debug } = Debug;
+
 var appName = 'Clapper';
 var appId = 'com.github.rafostar.Clapper';
 
@@ -14,7 +16,6 @@ var settings = new Gio.Settings({
 var maxVolume = 1.5;
 var isOldGtk = (Gtk.MINOR_VERSION === 99 && Gtk.MICRO_VERSION <= 4);
 
-let { debug } = Debug;
 let inhibitCookie;
 
 function getClapperPath()
@@ -56,7 +57,7 @@ function inhibitForState(state, window)
         if(inhibitCookie)
             return;
 
-        let app = window.get_application();
+        const app = window.get_application();
 
         inhibitCookie = app.inhibit(
             window,
@@ -72,7 +73,7 @@ function inhibitForState(state, window)
         if(!inhibitCookie)
             return;
 
-        let app = window.get_application();
+        const app = window.get_application();
         app.uninhibit(inhibitCookie);
         inhibitCookie = null;
     }
@@ -88,11 +89,11 @@ function getFormattedTime(time, showHours)
         hours = ('0' + Math.floor(time / 3600)).slice(-2);
         time -= hours * 3600;
     }
-    let minutes = ('0' + Math.floor(time / 60)).slice(-2);
+    const minutes = ('0' + Math.floor(time / 60)).slice(-2);
     time -= minutes * 60;
-    let seconds = ('0' + Math.floor(time)).slice(-2);
+    const seconds = ('0' + Math.floor(time)).slice(-2);
 
-    let parsed = (hours) ? `${hours}:` : '';
+    const parsed = (hours) ? `${hours}:` : '';
     return parsed + `${minutes}:${seconds}`;
 }
 

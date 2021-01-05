@@ -2,8 +2,8 @@ const { Gio, GObject, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 var Notebook = GObject.registerClass(
 class ClapperPrefsNotebook extends Gtk.Notebook
@@ -32,7 +32,7 @@ class ClapperPrefsNotebook extends Gtk.Notebook
 
     addObjectPages(item)
     {
-        let widget = (item.pages)
+        const widget = (item.pages)
             ? new Notebook(item.pages, true)
             : new item.widget();
 
@@ -41,7 +41,7 @@ class ClapperPrefsNotebook extends Gtk.Notebook
 
     addToNotebook(widget, title)
     {
-        let label = new Gtk.Label({
+        const label = new Gtk.Label({
             label: title,
         });
         this.append_page(widget, label);
@@ -49,11 +49,11 @@ class ClapperPrefsNotebook extends Gtk.Notebook
 
     _onClose()
     {
-        let totalPages = this.get_n_pages();
+        const totalPages = this.get_n_pages();
         let index = 0;
 
         while(index < totalPages) {
-            let page = this.get_nth_page(index);
+            const page = this.get_nth_page(index);
             page._onClose();
             index++;
         }
@@ -99,38 +99,38 @@ class ClapperPrefsGrid extends Gtk.Grid
 
     addTitle(text)
     {
-        let label = this.getLabel(text, true);
+        const label = this.getLabel(text, true);
 
         return this.addToGrid(label);
     }
 
     addComboBoxText(text, entries, setting)
     {
-        let label = this.getLabel(text + ':');
-        let widget = this.getComboBoxText(entries, setting);
+        const label = this.getLabel(text + ':');
+        const widget = this.getComboBoxText(entries, setting);
 
         return this.addToGrid(label, widget);
     }
 
     addSpinButton(text, min, max, setting, precision)
     {
-        let label = this.getLabel(text + ':');
-        let widget = this.getSpinButton(min, max, setting, precision);
+        const label = this.getLabel(text + ':');
+        const widget = this.getSpinButton(min, max, setting, precision);
 
         return this.addToGrid(label, widget);
     }
 
     addCheckButton(text, setting)
     {
-        let widget = this.getCheckButton(text, setting);
+        const widget = this.getCheckButton(text, setting);
 
         return this.addToGrid(widget);
     }
 
     addPlayFlagCheckButton(text, flag)
     {
-        let checkButton = this.addCheckButton(text);
-        let playFlags = settings.get_int('play-flags');
+        const checkButton = this.addCheckButton(text);
+        const playFlags = settings.get_int('play-flags');
 
         checkButton.active = ((playFlags & flag) === flag);
         checkButton.connect('toggled', this._onPlayFlagToggled.bind(this, flag));
@@ -140,17 +140,18 @@ class ClapperPrefsGrid extends Gtk.Grid
 
     addFontButton(text, setting)
     {
-        let label = this.getLabel(text + ':');
-        let widget = this.getFontButton(setting);
+        const label = this.getLabel(text + ':');
+        const widget = this.getFontButton(setting);
 
         return this.addToGrid(label, widget);
     }
 
     getLabel(text, isTitle)
     {
+        const marginTop = (isTitle && this.gridIndex > 0) ? 16 : 0;
+        const marginBottom = (isTitle) ? 2 : 0;
+
         let marginLR = 0;
-        let marginTop = (isTitle && this.gridIndex > 0) ? 16 : 0;
-        let marginBottom = (isTitle) ? 2 : 0;
 
         if(isTitle)
             text = '<span font="12"><b>' + text + '</b></span>';
@@ -171,7 +172,7 @@ class ClapperPrefsGrid extends Gtk.Grid
 
     getComboBoxText(entries, setting)
     {
-        let comboBox = new Gtk.ComboBoxText(this.widgetDefaults);
+        const comboBox = new Gtk.ComboBoxText(this.widgetDefaults);
 
         for(let entry of entries)
             comboBox.append(entry[0], entry[1]);
@@ -185,7 +186,7 @@ class ClapperPrefsGrid extends Gtk.Grid
     {
         precision = precision || 1;
 
-        let spinButton = new Gtk.SpinButton(this.widgetDefaults);
+        const spinButton = new Gtk.SpinButton(this.widgetDefaults);
         spinButton.set_range(min, max);
         spinButton.set_digits(precision % 1 === 0 ? 0 : 3);
         spinButton.set_increments(precision, 1);
@@ -196,7 +197,7 @@ class ClapperPrefsGrid extends Gtk.Grid
 
     getCheckButton(text, setting)
     {
-        let checkButton = new Gtk.CheckButton({
+        const checkButton = new Gtk.CheckButton({
             label: text || null,
         });
 
@@ -208,7 +209,7 @@ class ClapperPrefsGrid extends Gtk.Grid
 
     getFontButton(setting)
     {
-        let fontButton = new Gtk.FontButton({
+        const fontButton = new Gtk.FontButton({
             use_font: true,
             use_size: true,
         });

@@ -5,8 +5,8 @@ const Misc = imports.clapper_src.misc;
 const { Player } = imports.clapper_src.player;
 const Revealers = imports.clapper_src.revealers;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 var Widget = GObject.registerClass({
     Signals: {
@@ -60,7 +60,7 @@ var Widget = GObject.registerClass({
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
 
-        let motionController = new Gtk.EventControllerMotion();
+        const motionController = new Gtk.EventControllerMotion();
         motionController.connect('leave', this._onLeave.bind(this));
         this.add_controller(motionController);
     }
@@ -79,10 +79,10 @@ var Widget = GObject.registerClass({
 
     toggleFullscreen()
     {
-        let root = this.get_root();
+        const root = this.get_root();
         if(!root) return;
 
-        let un = (this.fullscreenMode) ? 'un' : '';
+        const un = (this.fullscreenMode) ? 'un' : '';
         root[`${un}fullscreen`]();
     }
 
@@ -93,8 +93,8 @@ var Widget = GObject.registerClass({
 
         this.fullscreenMode = isFullscreen;
 
-        let root = this.get_root();
-        let action = (isFullscreen) ? 'add' : 'remove';
+        const root = this.get_root();
+        const action = (isFullscreen) ? 'add' : 'remove';
         root[action + '_css_class']('gpufriendlyfs');
 
         if(!this.floatingMode)
@@ -121,8 +121,8 @@ var Widget = GObject.registerClass({
         if(this.floatingMode === isFloating)
             return;
 
-        let root = this.get_root();
-        let size = (Misc.isOldGtk)
+        const root = this.get_root();
+        const size = (Misc.isOldGtk)
             ? root.get_size()
             : root.get_default_size();
 
@@ -145,7 +145,7 @@ var Widget = GObject.registerClass({
         this.controls.unfloatButton.set_visible(isFloating);
         this._setWindowFloating(isFloating);
 
-        let resize = (isFloating)
+        const resize = (isFloating)
             ? this.floatSize
             : this.windowSize;
 
@@ -162,19 +162,19 @@ var Widget = GObject.registerClass({
 
     _setWindowFloating(isFloating)
     {
-        let root = this.get_root();
+        const root = this.get_root();
+        const cssClass = 'floatingwindow';
 
-        let cssClass = 'floatingwindow';
         if(isFloating === root.has_css_class(cssClass))
             return;
 
-        let action = (isFloating) ? 'add' : 'remove';
+        const action = (isFloating) ? 'add' : 'remove';
         root[action + '_css_class'](cssClass);
     }
 
     _saveWindowSize(size)
     {
-        let rootName = (this.floatingMode)
+        const rootName = (this.floatingMode)
             ? 'float'
             : 'window';
 
@@ -198,7 +198,7 @@ var Widget = GObject.registerClass({
 
     _updateMediaInfo()
     {
-        let mediaInfo = this.player.get_media_info();
+        const mediaInfo = this.player.get_media_info();
         if(!mediaInfo)
             return GLib.SOURCE_REMOVE;
 
@@ -206,12 +206,12 @@ var Widget = GObject.registerClass({
         this.updateTitles(mediaInfo);
 
         /* Show/hide position scale on LIVE */
-        let isLive = mediaInfo.is_live();
+        const isLive = mediaInfo.is_live();
         this.isSeekable = mediaInfo.is_seekable();
         this.controls.setLiveMode(isLive, this.isSeekable);
 
-        let streamList = mediaInfo.get_stream_list();
-        let parsedInfo = {
+        const streamList = mediaInfo.get_stream_list();
+        const parsedInfo = {
             videoTracks: [],
             audioTracks: [],
             subtitleTracks: []
@@ -253,7 +253,7 @@ var Widget = GObject.registerClass({
                     debug(`unrecognized media info type: ${info.constructor}`);
                     break;
             }
-            let tracksArr = parsedInfo[`${type}Tracks`];
+            const tracksArr = parsedInfo[`${type}Tracks`];
             if(!tracksArr.length)
             {
                 tracksArr[0] = {
@@ -272,15 +272,15 @@ var Widget = GObject.registerClass({
         let anyButtonShown = false;
 
         for(let type of ['video', 'audio', 'subtitle']) {
-            let currStream = this.player[`get_current_${type}_track`]();
-            let activeId = (currStream) ? currStream.get_index() : -1;
+            const currStream = this.player[`get_current_${type}_track`]();
+            const activeId = (currStream) ? currStream.get_index() : -1;
 
             if(currStream && type !== 'subtitle') {
-                let caps = currStream.get_caps();
+                const caps = currStream.get_caps();
                 debug(`${type} caps: ${caps.to_string()}`, 'LEVEL_INFO');
             }
             if(type === 'video') {
-                let isShowVis = (parsedInfo[`${type}Tracks`].length === 0);
+                const isShowVis = (parsedInfo[`${type}Tracks`].length === 0);
                 this.showVisualizationsButton(isShowVis);
             }
             if(!parsedInfo[`${type}Tracks`].length) {
@@ -324,8 +324,8 @@ var Widget = GObject.registerClass({
             subtitle = null;
         }
 
-        let root = this.get_root();
-        let headerbar = root.get_titlebar();
+        const root = this.get_root();
+        const headerbar = root.get_titlebar();
 
         if(headerbar && headerbar.updateHeaderBar)
             headerbar.updateHeaderBar(title, subtitle);
@@ -338,11 +338,11 @@ var Widget = GObject.registerClass({
         if(!this.revealerTop.visible)
             return null;
 
-        let currTime = GLib.DateTime.new_now_local();
-        let endTime = currTime.add_seconds(
+        const currTime = GLib.DateTime.new_now_local();
+        const endTime = currTime.add_seconds(
             this.controls.positionAdjustment.get_upper() - this.controls.currentPosition
         );
-        let nextUpdate = this.revealerTop.setTimes(currTime, endTime);
+        const nextUpdate = this.revealerTop.setTimes(currTime, endTime);
 
         return nextUpdate;
     }
@@ -351,11 +351,11 @@ var Widget = GObject.registerClass({
     {
         if(isShow && !this.controls.visualizationsButton.isVisList) {
             debug('creating visualizations list');
-            let visArr = GstPlayer.Player.visualizations_get();
+            const visArr = GstPlayer.Player.visualizations_get();
             if(!visArr.length)
                 return;
 
-            let parsedVisArr = [{
+            const parsedVisArr = [{
                 label: 'Disabled',
                 type: 'visualization',
                 activeId: null
@@ -381,7 +381,7 @@ var Widget = GObject.registerClass({
         if(this.controls.visualizationsButton.visible === isShow)
             return;
 
-        let action = (isShow) ? 'show' : 'hide';
+        const action = (isShow) ? 'show' : 'hide';
         this.controls.visualizationsButton[action]();
         debug(`show visualizations button: ${isShow}`);
     }
@@ -421,13 +421,13 @@ var Widget = GObject.registerClass({
                 break;
         }
 
-        let isNotStopped = (state !== GstPlayer.PlayerState.STOPPED);
+        const isNotStopped = (state !== GstPlayer.PlayerState.STOPPED);
         this.revealerTop.endTime.set_visible(isNotStopped);
     }
 
     _onPlayerDurationChanged(player)
     {
-        let duration = Math.floor(player.get_duration() / 1000000000);
+        const duration = Math.floor(player.get_duration() / 1000000000);
 
         /* Sometimes GstPlayer might re-emit
          * duration changed during playback */
@@ -451,7 +451,7 @@ var Widget = GObject.registerClass({
         )
             return;
 
-        let positionSeconds = Math.round(position / 1000000000);
+        const positionSeconds = Math.round(position / 1000000000);
         if(positionSeconds === this.controls.currentPosition)
             return;
 
@@ -460,7 +460,7 @@ var Widget = GObject.registerClass({
 
     _onPlayerVolumeChanged(player)
     {
-        let volume = player.get_volume();
+        const volume = player.get_volume();
 
         /* FIXME: This check should not be needed, GstPlayer should not
          * emit 'volume-changed' with the same values, but it does. */
@@ -470,13 +470,13 @@ var Widget = GObject.registerClass({
         /* Once above is fixed in GstPlayer, remove this var too */
         this.controls.currentVolume = volume;
 
-        let cubicVolume = Misc.getCubicValue(volume);
+        const cubicVolume = Misc.getCubicValue(volume);
         this.controls._updateVolumeButtonIcon(cubicVolume);
     }
 
     _onStateNotify(toplevel)
     {
-        let isFullscreen = Boolean(
+        const isFullscreen = Boolean(
             toplevel.state & Gdk.ToplevelState.FULLSCREEN
         );
 
@@ -504,10 +504,10 @@ var Widget = GObject.registerClass({
     {
         this.disconnect(this.mapSignal);
 
-        let root = this.get_root();
+        const root = this.get_root();
         if(!root) return;
 
-        let surface = root.get_surface();
+        const surface = root.get_surface();
         surface.connect('notify::state', this._onStateNotify.bind(this));
     }
 });

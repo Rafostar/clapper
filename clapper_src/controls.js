@@ -7,8 +7,8 @@ const Revealers = imports.clapper_src.revealers;
 const CONTROLS_MARGIN = 2;
 const CONTROLS_SPACING = 0;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 var Controls = GObject.registerClass(
 class ClapperControls extends Gtk.Box
@@ -37,7 +37,7 @@ class ClapperControls extends Gtk.Box
 
         this._addTogglePlayButton();
 
-        let elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
+        const elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
         this.elapsedButton = this.addLabelButton('00:00/00:00', elapsedRevealer);
         elapsedRevealer.set_reveal_child(true);
         this.revealersArr.push(elapsedRevealer);
@@ -45,14 +45,16 @@ class ClapperControls extends Gtk.Box
 
         this._addPositionScale();
 
-        let revealTracksButton = new Buttons.IconToggleButton(
+        const revealTracksButton = new Buttons.IconToggleButton(
             'go-previous-symbolic',
             'go-next-symbolic'
         );
         revealTracksButton.floatUnaffected = false;
         revealTracksButton.add_css_class('narrowbutton');
         this.buttonsArr.push(revealTracksButton);
-        let tracksRevealer = new Revealers.ButtonsRevealer('SLIDE_LEFT', revealTracksButton);
+        const tracksRevealer = new Revealers.ButtonsRevealer(
+            'SLIDE_LEFT', revealTracksButton
+        );
         this.visualizationsButton = this.addPopoverButton(
             'display-projector-symbolic',
             tracksRevealer
@@ -96,7 +98,7 @@ class ClapperControls extends Gtk.Box
         this.unfloatButton.connect('clicked', this._onUnfloatClicked.bind(this));
         this.unfloatButton.set_visible(false);
 
-        let keyController = new Gtk.EventControllerKey();
+        const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onControlsKeyPressed.bind(this));
         keyController.connect('key-released', this._onControlsKeyReleased.bind(this));
         this.add_controller(keyController);
@@ -137,7 +139,7 @@ class ClapperControls extends Gtk.Box
     {
         value = value || 0;
 
-        let elapsed = Misc.getFormattedTime(value, this.showHours)
+        const elapsed = Misc.getFormattedTime(value, this.showHours)
             + '/' + this.durationFormatted;
 
         this.elapsedButton.set_label(elapsed);
@@ -145,7 +147,7 @@ class ClapperControls extends Gtk.Box
 
     addButton(buttonIcon, revealer)
     {
-        let button = (buttonIcon instanceof Gtk.Button)
+        const button = (buttonIcon instanceof Gtk.Button)
             ? buttonIcon
             : new Buttons.IconButton(buttonIcon);
 
@@ -162,14 +164,14 @@ class ClapperControls extends Gtk.Box
     addLabelButton(text, revealer)
     {
         text = text || '';
-        let button = new Buttons.LabelButton(text);
+        const button = new Buttons.LabelButton(text);
 
         return this.addButton(button, revealer);
     }
 
     addPopoverButton(iconName, revealer)
     {
-        let button = new Buttons.PopoverButton(iconName);
+        const button = new Buttons.PopoverButton(iconName);
 
         return this.addButton(button, revealer);
     }
@@ -189,7 +191,7 @@ class ClapperControls extends Gtk.Box
                 continue;
             }
 
-            let el = array[i];
+            const el = array[i];
             let checkButton;
 
             if(child) {
@@ -230,7 +232,7 @@ class ClapperControls extends Gtk.Box
 
     _handleTrackChange(checkButton)
     {
-        let clapperWidget = this.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
 
         /* Reenabling audio is slow (as expected),
          * so it is better to toggle mute instead */
@@ -255,7 +257,7 @@ class ClapperControls extends Gtk.Box
             ](false);
         }
 
-        let setTrack = `set_${checkButton.type}_track`;
+        const setTrack = `set_${checkButton.type}_track`;
 
         clapperWidget.player[setTrack](checkButton.activeId);
         clapperWidget.player[`${setTrack}_enabled`](true);
@@ -266,8 +268,8 @@ class ClapperControls extends Gtk.Box
 
     _handleVisualizationChange(checkButton)
     {
-        let clapperWidget = this.get_ancestor(Gtk.Grid);
-        let isEnabled = clapperWidget.player.get_visualization_enabled();
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        const isEnabled = clapperWidget.player.get_visualization_enabled();
 
         if(!checkButton.activeId) {
             if(isEnabled) {
@@ -277,7 +279,7 @@ class ClapperControls extends Gtk.Box
             return;
         }
 
-        let currVis = clapperWidget.player.get_current_visualization();
+        const currVis = clapperWidget.player.get_current_visualization();
 
         if(currVis === checkButton.activeId)
             return;
@@ -315,7 +317,7 @@ class ClapperControls extends Gtk.Box
             can_focus: false,
             visible: false,
         });
-        let scrollController = new Gtk.EventControllerScroll();
+        const scrollController = new Gtk.EventControllerScroll();
         scrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
         scrollController.connect('scroll', this._onPositionScaleScroll.bind(this));
         this.positionScale.add_controller(scrollController);
@@ -336,7 +338,7 @@ class ClapperControls extends Gtk.Box
         this.positionAdjustment.set_page_increment(0);
         this.positionAdjustment.set_step_increment(8);
 
-        let box = new Gtk.Box({
+        const box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
             hexpand: true,
             valign: Gtk.Align.CENTER,
@@ -366,7 +368,7 @@ class ClapperControls extends Gtk.Box
         this.volumeAdjustment.set_page_increment(0.05);
 
         for(let i of [0, 1, Misc.maxVolume]) {
-            let text = (!i) ? '0%' : (i % 1 === 0) ? `${i}00%` : `${i * 10}0%`;
+            const text = (!i) ? '0%' : (i % 1 === 0) ? `${i}00%` : `${i * 10}0%`;
             this.volumeScale.add_mark(i, Gtk.PositionType.LEFT, text);
         }
 
@@ -378,7 +380,7 @@ class ClapperControls extends Gtk.Box
 
     _updateVolumeButtonIcon(volume)
     {
-        let icon = (volume <= 0)
+        const icon = (volume <= 0)
             ? 'muted'
             : (volume <= 0.3)
             ? 'low'
@@ -388,7 +390,7 @@ class ClapperControls extends Gtk.Box
             ? 'high'
             : 'overamplified';
 
-        let iconName = `audio-volume-${icon}-symbolic`;
+        const iconName = `audio-volume-${icon}-symbolic`;
         if(this.volumeButton.icon_name === iconName)
             return;
 
@@ -401,8 +403,8 @@ class ClapperControls extends Gtk.Box
         this.disconnect(this.realizeSignal);
         this.realizeSignal = null;
 
-        let { player } = this.get_ancestor(Gtk.Grid);
-        let scrollController = new Gtk.EventControllerScroll();
+        const { player } = this.get_ancestor(Gtk.Grid);
+        const scrollController = new Gtk.EventControllerScroll();
         scrollController.set_flags(
             Gtk.EventControllerScrollFlags.VERTICAL
             | Gtk.EventControllerScrollFlags.DISCRETE
@@ -410,7 +412,7 @@ class ClapperControls extends Gtk.Box
         scrollController.connect('scroll', player._onScroll.bind(player));
         this.volumeButton.add_controller(scrollController);
 
-        let initialVolume = (settings.get_string('volume-initial') === 'custom')
+        const initialVolume = (settings.get_string('volume-initial') === 'custom')
             ? settings.get_int('volume-value') / 100
             : Misc.getCubicValue(settings.get_double('volume-last'));
 
@@ -420,7 +422,7 @@ class ClapperControls extends Gtk.Box
 
     _onPlayerResize(widget, width, height)
     {
-        let isMobile = (width < 560);
+        const isMobile = (width < 560);
         if(this.isMobile === isMobile)
             return;
 
@@ -433,13 +435,13 @@ class ClapperControls extends Gtk.Box
 
     _onUnfullscreenClicked(button)
     {
-        let root = button.get_root();
+        const root = button.get_root();
         root.unfullscreen();
     }
 
     _onUnfloatClicked(button)
     {
-        let clapperWidget = this.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
         clapperWidget.setFloatingMode(false);
     }
 
@@ -465,19 +467,19 @@ class ClapperControls extends Gtk.Box
     _onTogglePlayClicked()
     {
         /* Parent of controls changes, so get ancestor instead */
-        let { player } = this.get_ancestor(Gtk.Grid);
+        const { player } = this.get_ancestor(Gtk.Grid);
         player.toggle_play();
     }
 
     _onPositionScaleScroll(controller, dx, dy)
     {
-        let { player } = this.get_ancestor(Gtk.Grid);
+        const { player } = this.get_ancestor(Gtk.Grid);
         player._onScroll(controller, dx || dy, 0);
     }
 
     _onPositionScaleValueChanged(scale)
     {
-        let positionSeconds = Math.round(scale.get_value());
+        const positionSeconds = Math.round(scale.get_value());
 
         this.currentPosition = positionSeconds;
         this.updateElapsedLabel(positionSeconds);
@@ -485,16 +487,16 @@ class ClapperControls extends Gtk.Box
 
     _onVolumeScaleValueChanged(scale)
     {
-        let volume = scale.get_value();
-        let linearVolume = Misc.getLinearValue(volume);
-        let { player } = this.get_ancestor(Gtk.Grid);
+        const volume = scale.get_value();
+        const linearVolume = Misc.getLinearValue(volume);
+        const { player } = this.get_ancestor(Gtk.Grid);
 
         player.set_volume(linearVolume);
 
         /* FIXME: All of below should be placed in 'volume-changed'
          *  event once we move to message bus API */
-        let cssClass = 'overamp';
-        let hasOveramp = (scale.has_css_class(cssClass));
+        const cssClass = 'overamp';
+        const hasOveramp = (scale.has_css_class(cssClass));
 
         if(volume > 1) {
             if(!hasOveramp)
@@ -510,22 +512,22 @@ class ClapperControls extends Gtk.Box
 
     _onPositionScaleDragging(scale)
     {
-        let isPositionDragging = scale.has_css_class('dragging');
+        const isPositionDragging = scale.has_css_class('dragging');
 
         if((this.isPositionDragging = isPositionDragging))
             return;
 
-        let clapperWidget = this.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        let positionSeconds = Math.round(scale.get_value());
+        const positionSeconds = Math.round(scale.get_value());
         clapperWidget.player.seek_seconds(positionSeconds);
     }
 
     /* Only happens when navigating through controls panel */
     _onControlsKeyPressed(controller, keyval, keycode, state)
     {
-        let { player } = this.get_ancestor(Gtk.Grid);
+        const { player } = this.get_ancestor(Gtk.Grid);
         player._setHideControlsTimeout();
     }
 
@@ -539,7 +541,7 @@ class ClapperControls extends Gtk.Box
             case Gdk.KEY_Left:
                 break;
             default:
-                let { player } = this.get_ancestor(Gtk.Grid);
+                const { player } = this.get_ancestor(Gtk.Grid);
                 player._onWidgetKeyReleased(controller, keyval, keycode, state);
                 break;
         }

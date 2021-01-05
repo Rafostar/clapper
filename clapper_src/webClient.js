@@ -3,8 +3,8 @@ const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const WebHelpers = imports.clapper_src.webHelpers;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 var WebClient = GObject.registerClass(
 class ClapperWebClient extends Soup.Session

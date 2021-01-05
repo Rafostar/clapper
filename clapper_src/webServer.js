@@ -2,7 +2,7 @@ const { Soup, GObject } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const WebHelpers = imports.clapper_src.webHelpers;
 
-let { debug } = Debug;
+const { debug } = Debug;
 
 var WebServer = GObject.registerClass(
 class ClapperWebServer extends Soup.Server

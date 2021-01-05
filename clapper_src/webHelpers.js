@@ -2,7 +2,7 @@ const { Soup } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.clapper_src.debug;
 
-let { debug } = Debug;
+const { debug } = Debug;
 
 function parseData(dataType, bytes)
 {

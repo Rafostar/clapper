@@ -8,7 +8,7 @@ class ClapperHeaderBar extends HeaderBarBase
     {
         super._init(window);
 
-        let clapperWidget = window.get_child();
+        const clapperWidget = window.get_child();
         clapperWidget.controls.unfloatButton.bind_property('visible', this, 'visible',
             GObject.BindingFlags.INVERT_BOOLEAN
         );
@@ -16,13 +16,13 @@ class ClapperHeaderBar extends HeaderBarBase
 
     _onFloatButtonClicked()
     {
-        let clapperWidget = this.get_prev_sibling();
+        const clapperWidget = this.get_prev_sibling();
         clapperWidget.setFloatingMode(true);
     }
 
     _onFullscreenButtonClicked()
     {
-        let window = this.get_parent();
+        const window = this.get_parent();
         window.fullscreen();
     }
 });

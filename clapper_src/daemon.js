@@ -1,14 +1,14 @@
 const { Gio, GLib, GObject } = imports.gi;
 const Debug = imports.clapper_src.debug;
 
-let { debug } = Debug;
+const { debug } = Debug;
 
 var Daemon = GObject.registerClass(
 class ClapperDaemon extends Gio.SubprocessLauncher
 {
     _init()
     {
-        let port = ARGV[0] || 8080;
+        const port = ARGV[0] || 8080;
 
         /* FIXME: show output when debugging is on */
         const flags = Gio.SubprocessFlags.STDOUT_SILENCE

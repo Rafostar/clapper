@@ -7,7 +7,7 @@ class ClapperCustomButton extends Gtk.Button
     {
         opts = opts || {};
 
-        let defaults = {
+        const defaults = {
             margin_top: 4,
             margin_bottom: 4,
             margin_start: 2,
@@ -70,7 +70,7 @@ class ClapperCustomButton extends Gtk.Button
         if(!this.isFullscreen)
             return;
 
-        let { player } = this.get_ancestor(Gtk.Grid);
+        const { player } = this.get_ancestor(Gtk.Grid);
         player._setHideControlsTimeout();
     }
 });
@@ -174,11 +174,11 @@ class ClapperPopoverButton extends IconButton
 
         this.popover.set_offset(0, -this.margin_top);
 
-        let cssClass = 'osd';
+        const cssClass = 'osd';
         if(isFullscreen === this.popover.has_css_class(cssClass))
             return;
 
-        let action = (isFullscreen) ? 'add' : 'remove';
+        const action = (isFullscreen) ? 'add' : 'remove';
         this.popover[action + '_css_class'](cssClass);
     }
 
@@ -192,7 +192,7 @@ class ClapperPopoverButton extends IconButton
 
     _onClosed()
     {
-        let { player } = this.get_ancestor(Gtk.Grid);
+        const { player } = this.get_ancestor(Gtk.Grid);
         player.widget.grab_focus();
 
         this.unset_state_flags(Gtk.StateFlags.CHECKED);

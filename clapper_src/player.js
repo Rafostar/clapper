@@ -4,8 +4,8 @@ const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
 const { PlayerBase } = imports.clapper_src.playerBase;
 
-let { debug } = Debug;
-let { settings } = Misc;
+const { debug } = Debug;
+const { settings } = Misc;
 
 var Player = GObject.registerClass(
 class ClapperPlayer extends PlayerBase
@@ -37,26 +37,26 @@ class ClapperPlayer extends PlayerBase
         this._hideControlsTimeout = null;
         this._updateTimeTimeout = null;
 
-        let clickGesture = new Gtk.GestureClick();
+        const clickGesture = new Gtk.GestureClick();
         clickGesture.set_button(0);
         clickGesture.connect('pressed', this._onWidgetPressed.bind(this));
         this.widget.add_controller(clickGesture);
 
-        let dragGesture = new Gtk.GestureDrag();
+        const dragGesture = new Gtk.GestureDrag();
         dragGesture.connect('drag-update', this._onWidgetDragUpdate.bind(this));
         this.widget.add_controller(dragGesture);
 
-        let keyController = new Gtk.EventControllerKey();
+        const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onWidgetKeyPressed.bind(this));
         keyController.connect('key-released', this._onWidgetKeyReleased.bind(this));
         this.widget.add_controller(keyController);
 
-        let scrollController = new Gtk.EventControllerScroll();
+        const scrollController = new Gtk.EventControllerScroll();
         scrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
         scrollController.connect('scroll', this._onScroll.bind(this));
         this.widget.add_controller(scrollController);
 
-        let motionController = new Gtk.EventControllerMotion();
+        const motionController = new Gtk.EventControllerMotion();
         motionController.connect('enter', this._onWidgetEnter.bind(this));
         motionController.connect('leave', this._onWidgetLeave.bind(this));
         motionController.connect('motion', this._onWidgetMotion.bind(this));
@@ -104,30 +104,30 @@ class ClapperPlayer extends PlayerBase
             return this.set_media(this._playlist[this._trackId]);
         }
 
-        let fileUri = file.get_uri();
-        if(fileUri.endsWith('.claps'))
+        const uri = file.get_uri();
+        if(uri.endsWith('.claps'))
             return this.load_playlist_file(file);
 
         this.is_local_file = true;
-        this.set_uri(fileUri);
+        this.set_uri(uri);
     }
 
     load_playlist_file(file)
     {
-        let stream = new Gio.DataInputStream({
+        const stream = new Gio.DataInputStream({
             base_stream: file.read(null)
         });
-        let listdir = file.get_parent();
-        let playlist = [];
-        let line;
+        const listdir = file.get_parent();
+        const playlist = [];
 
+        let line;
         while((line = stream.read_line(null)[0])) {
             line = (line instanceof Uint8Array)
                 ? ByteArray.toString(line).trim()
                 : String(line).trim();
 
             if(!Gst.uri_is_valid(line)) {
-                let lineFile = listdir.resolve_relative_path(line);
+                const lineFile = listdir.resolve_relative_path(line);
                 if(!lineFile)
                     continue;
 
@@ -158,7 +158,7 @@ class ClapperPlayer extends PlayerBase
 
     set_subtitles(source)
     {
-        let uri = (source.get_uri)
+        const uri = (source.get_uri)
             ? source.get_uri()
             : source;
 
@@ -217,10 +217,11 @@ class ClapperPlayer extends PlayerBase
     {
         this.seek_done = false;
 
-        let { controls } = this.widget.get_ancestor(Gtk.Grid);
-        let max = controls.positionAdjustment.get_upper();
+        const { controls } = this.widget.get_ancestor(Gtk.Grid);
+        const max = controls.positionAdjustment.get_upper();
+        const seekingUnit = settings.get_string('seeking-unit');
+
         let seekingValue = settings.get_int('seeking-value');
-        let seekingUnit = settings.get_string('seeking-unit');
 
         switch(seekingUnit) {
             case 'minute':
@@ -246,16 +247,16 @@ class ClapperPlayer extends PlayerBase
 
     adjust_volume(isIncrease)
     {
-        let { controls } = this.widget.get_ancestor(Gtk.Grid);
+        const { controls } = this.widget.get_ancestor(Gtk.Grid);
+        const value = (isIncrease) ? 0.05 : -0.05;
+        const volume = controls.volumeScale.get_value() + value;
 
-        let value = (isIncrease) ? 0.05 : -0.05;
-        let volume = controls.volumeScale.get_value() + value;
         controls.volumeScale.set_value(volume);
     }
 
     toggle_play()
     {
-        let action = (this.state === GstPlayer.PlayerState.PLAYING)
+        const action = (this.state === GstPlayer.PlayerState.PLAYING)
             ? 'pause'
             : 'play';
 
@@ -284,7 +285,7 @@ class ClapperPlayer extends PlayerBase
             this._hideCursorTimeout = null;
 
             if(this.cursorInPlayer) {
-                let blankCursor = Gdk.Cursor.new_from_name('none', null);
+                const blankCursor = Gdk.Cursor.new_from_name('none', null);
                 this.widget.set_cursor(blankCursor);
             }
 
@@ -299,7 +300,7 @@ class ClapperPlayer extends PlayerBase
             this._hideControlsTimeout = null;
 
             if(this.cursorInPlayer) {
-                let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
                 if(clapperWidget.fullscreenMode || clapperWidget.floatingMode) {
                     this._clearTimeout('updateTime');
                     clapperWidget.revealControls(false);
@@ -313,8 +314,9 @@ class ClapperPlayer extends PlayerBase
     _setUpdateTimeInterval()
     {
         this._clearTimeout('updateTime');
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        let nextUpdate = clapperWidget.updateTime();
+
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        const nextUpdate = clapperWidget.updateTime();
 
         if(nextUpdate === null)
             return;
@@ -346,9 +348,9 @@ class ClapperPlayer extends PlayerBase
         window.disconnect(this.closeRequestSignal);
         this.closeRequestSignal = null;
 
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget.fullscreenMode) {
-            let size = (Misc.isOldGtk)
+            const size = (Misc.isOldGtk)
                 ? window.get_size()
                 : window.get_default_size();
 
@@ -366,7 +368,7 @@ class ClapperPlayer extends PlayerBase
         this.emitWs('state_changed', state);
 
         if(state !== GstPlayer.PlayerState.BUFFERING) {
-            let root = player.widget.get_root();
+            const root = player.widget.get_root();
             Misc.inhibitForState(state, root);
 
             if(this.quitOnStop) {
@@ -377,7 +379,7 @@ class ClapperPlayer extends PlayerBase
             }
         }
 
-        let clapperWidget = player.widget.get_ancestor(Gtk.Grid);
+        const clapperWidget = player.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
         if(!this.seek_done && state !== GstPlayer.PlayerState.BUFFERING) {
@@ -413,8 +415,8 @@ class ClapperPlayer extends PlayerBase
             this.doneStartup = true;
 
             if(settings.get_boolean('fullscreen-auto')) {
-                let root = player.widget.get_root();
-                let clapperWidget = root.get_child();
+                const root = player.widget.get_root();
+                const clapperWidget = root.get_child();
                 if(!clapperWidget.fullscreenMode) {
                     this.playOnFullscreen = true;
                     root.fullscreen();
@@ -441,19 +443,21 @@ class ClapperPlayer extends PlayerBase
         this.widget.disconnect(this._realizeSignal);
         this._realizeSignal = null;
 
-        let root = this.widget.get_root();
+        const root = this.widget.get_root();
         if(!root) return;
 
-        this.closeRequestSignal = root.connect('close-request', this._onCloseRequest.bind(this));
+        this.closeRequestSignal = root.connect(
+            'close-request', this._onCloseRequest.bind(this)
+        );
     }
 
     /* Widget only - does not happen when using controls navigation */
     _onWidgetKeyPressed(controller, keyval, keycode, state)
     {
-        this.keyPressCount++;
-
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         let bool = false;
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+
+        this.keyPressCount++;
 
         switch(keyval) {
             case Gdk.KEY_Up:
@@ -479,10 +483,10 @@ class ClapperPlayer extends PlayerBase
     /* Also happens after using controls navigation for selected keys */
     _onWidgetKeyReleased(controller, keyval, keycode, state)
     {
-        this.keyPressCount = 0;
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        let value, root;
 
-        let value;
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        this.keyPressCount = 0;
 
         switch(keyval) {
             case Gdk.KEY_space:
@@ -509,13 +513,13 @@ class ClapperPlayer extends PlayerBase
                 break;
             case Gdk.KEY_Escape:
                 if(clapperWidget.fullscreenMode) {
-                    let root = this.widget.get_root();
+                    root = this.widget.get_root();
                     root.unfullscreen();
                 }
                 break;
             case Gdk.KEY_q:
             case Gdk.KEY_Q:
-                let root = this.widget.get_root();
+                root = this.widget.get_root();
                 root.emit('close-request');
                 break;
             default:
@@ -525,14 +529,14 @@ class ClapperPlayer extends PlayerBase
 
     _onWidgetPressed(gesture, nPress, x, y)
     {
-        let button = gesture.get_current_button();
-        let isDouble = (nPress % 2 == 0);
+        const button = gesture.get_current_button();
+        const isDouble = (nPress % 2 == 0);
         this.dragAllowed = !isDouble;
 
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
                 if(isDouble) {
-                    let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+                    const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
                     clapperWidget.toggleFullscreen();
                 }
                 break;
@@ -551,7 +555,7 @@ class ClapperPlayer extends PlayerBase
 
         this._setHideCursorTimeout();
 
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         if(clapperWidget.fullscreenMode || clapperWidget.floatingMode)
             this._setHideControlsTimeout();
     }
@@ -577,11 +581,11 @@ class ClapperPlayer extends PlayerBase
             Math.abs(this.posX - posX) >= 0.5
             || Math.abs(this.posY - posY) >= 0.5
         ) {
-            let defaultCursor = Gdk.Cursor.new_from_name('default', null);
+            const defaultCursor = Gdk.Cursor.new_from_name('default', null);
             this.widget.set_cursor(defaultCursor);
             this._setHideCursorTimeout();
 
-            let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+            const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
 
             if(clapperWidget.floatingMode && !clapperWidget.fullscreenMode) {
                 clapperWidget.revealerBottom.set_can_focus(false);
@@ -616,20 +620,20 @@ class ClapperPlayer extends PlayerBase
         if(!this.dragAllowed)
             return;
 
-        let clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         if(clapperWidget.fullscreenMode)
             return;
 
-        let { gtk_double_click_distance } = this.widget.get_settings();
+        const { gtk_double_click_distance } = this.widget.get_settings();
 
         if (
             Math.abs(offsetX) > gtk_double_click_distance
             || Math.abs(offsetY) > gtk_double_click_distance
         ) {
-            let [isActive, startX, startY] = gesture.get_start_point();
+            const [isActive, startX, startY] = gesture.get_start_point();
             if(!isActive) return;
 
-            let native = this.widget.get_native();
+            const native = this.widget.get_native();
             if(!native) return;
 
             let [isShared, winX, winY] = this.widget.translate_coordinates(
@@ -637,7 +641,7 @@ class ClapperPlayer extends PlayerBase
             );
             if(!isShared) return;
 
-            let [nativeX, nativeY] = native.get_surface_transform();
+            const [nativeX, nativeY] = native.get_surface_transform();
             winX += nativeX;
             winY += nativeY;
 
@@ -656,13 +660,13 @@ class ClapperPlayer extends PlayerBase
 
     _onScroll(controller, dx, dy)
     {
-        let isHorizontal = Math.abs(dx) >= Math.abs(dy);
-        let isIncrease = (isHorizontal) ? dx < 0 : dy < 0;
+        const isHorizontal = (Math.abs(dx) >= Math.abs(dy));
+        const isIncrease = (isHorizontal) ? dx < 0 : dy < 0;
 
         if(isHorizontal) {
             this.adjust_position(isIncrease);
-            let { controls } = this.widget.get_ancestor(Gtk.Grid);
-            let value = Math.round(controls.positionScale.get_value());
+            const { controls } = this.widget.get_ancestor(Gtk.Grid);
+            const value = Math.round(controls.positionScale.get_value());
             this.seek_seconds(value);
         }
         else

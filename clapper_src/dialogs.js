@@ -4,7 +4,7 @@ const Misc = imports.clapper_src.misc;
 const Prefs = imports.clapper_src.prefs;
 const PrefsBase = imports.clapper_src.prefsBase;
 
-let { debug } = Debug;
+const { debug } = Debug;
 
 var FileChooser = GObject.registerClass(
 class ClapperFileChooser extends Gtk.FileChooserNative
@@ -17,7 +17,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
             select_multiple: true,
         });
 
-        let filter = new Gtk.FileFilter({
+        const filter = new Gtk.FileFilter({
             name: 'Media Files',
         });
         filter.add_mime_type('video/*');
@@ -44,16 +44,16 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         this.responseSignal = null;
 
         if(response === Gtk.ResponseType.ACCEPT) {
-            let index = 0;
-            let files = this.get_files();
+            const files = this.get_files();
+            const playlist = [];
 
+            let index = 0;
             let file;
             let subs;
-            let playlist = [];
 
             while((file = files.get_item(index))) {
-                let filename = file.get_basename();
-                let [type, isUncertain] = Gio.content_type_guess(filename, null);
+                const filename = file.get_basename();
+                const [type, isUncertain] = Gio.content_type_guess(filename, null);
 
                 if(this.subsMimes.includes(type)) {
                     subs = file;
@@ -66,7 +66,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
                 index++;
             }
 
-            let { player } = this.get_transient_for().get_child();
+            const { player } = this.get_transient_for().get_child();
 
             if(playlist.length)
                 player.set_playlist(playlist);
@@ -94,14 +94,14 @@ class ClapperUriDialog extends Gtk.Dialog
             default_width: 460,
         });
 
-        let box = new Gtk.Box({
+        const box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
             valign: Gtk.Align.CENTER,
             spacing: 6,
         });
         box.add_css_class('uridialogbox');
 
-        let linkEntry = new Gtk.Entry({
+        const linkEntry = new Gtk.Entry({
             activates_default: true,
             truncate_multiline: true,
             width_request: 220,
@@ -112,7 +112,7 @@ class ClapperUriDialog extends Gtk.Dialog
         linkEntry.connect('notify::text', this._onTextNotify.bind(this));
         box.append(linkEntry);
 
-        let openButton = new Gtk.Button({
+        const openButton = new Gtk.Button({
             label: "Open",
             halign: Gtk.Align.END,
             sensitive: false,
@@ -120,7 +120,7 @@ class ClapperUriDialog extends Gtk.Dialog
         openButton.connect('clicked', this._onOpenButtonClicked.bind(this));
         box.append(openButton);
 
-        let area = this.get_content_area();
+        const area = this.get_content_area();
         area.append(box);
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
@@ -131,7 +131,7 @@ class ClapperUriDialog extends Gtk.Dialog
 
     openUri(uri)
     {
-        let { player } = this.get_transient_for().get_child();
+        const { player } = this.get_transient_for().get_child();
         player.set_playlist([uri]);
 
         this.close();
@@ -139,17 +139,17 @@ class ClapperUriDialog extends Gtk.Dialog
 
     _onTextNotify(entry)
     {
-        let isUriValid = (entry.text.length)
+        const isUriValid = (entry.text.length)
             ? Gst.uri_is_valid(entry.text)
             : false;
 
-        let button = entry.get_next_sibling();
+        const button = entry.get_next_sibling();
         button.set_sensitive(isUriValid);
     }
 
     _onOpenButtonClicked(button)
     {
-        let entry = button.get_prev_sibling();
+        const entry = button.get_prev_sibling();
         this.openUri(entry.text);
     }
 
@@ -176,7 +176,7 @@ class ClapperPrefsDialog extends Gtk.Dialog
             default_height: 400,
         });
 
-        let pages = [
+        const pages = [
             {
                 title: 'Player',
                 pages: [
@@ -217,10 +217,10 @@ class ClapperPrefsDialog extends Gtk.Dialog
             }
         ];
 
-        let prefsNotebook = new PrefsBase.Notebook(pages);
+        const prefsNotebook = new PrefsBase.Notebook(pages);
         prefsNotebook.add_css_class('prefsnotebook');
 
-        let area = this.get_content_area();
+        const area = this.get_content_area();
         area.append(prefsNotebook);
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
@@ -236,8 +236,8 @@ class ClapperPrefsDialog extends Gtk.Dialog
         dialog.disconnect(this.closeSignal);
         this.closeSignal = null;
 
-        let area = dialog.get_content_area();
-        let notebook = area.get_first_child();
+        const area = dialog.get_content_area();
+        const notebook = area.get_first_child();
         notebook._onClose();
     }
 });
@@ -247,15 +247,15 @@ class ClapperAboutDialog extends Gtk.AboutDialog
 {
     _init(window)
     {
-        let gstVer = [
+        const gstVer = [
             Gst.VERSION_MAJOR, Gst.VERSION_MINOR, Gst.VERSION_MICRO
         ].join('.');
 
-        let gtkVer = [
+        const gtkVer = [
             Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
         ].join('.');
 
-        let osInfo = [
+        const osInfo = [
             'GTK version' + ': ' + gtkVer,
             'GStreamer version' + ': ' + gstVer
         ].join('\n');
