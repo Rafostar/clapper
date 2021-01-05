@@ -45,7 +45,7 @@ class ClapperPlayerBase extends GstPlayer.Player
             video_renderer: renderer
         });
 
-        this.widget = gtkglsink.widget;
+        this.widget = gtk4glsink.widget;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
 
