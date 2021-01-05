@@ -369,7 +369,6 @@ class ClapperPlayer extends PlayerBase
 
         if(state !== GstPlayer.PlayerState.BUFFERING) {
             const root = player.widget.get_root();
-            Misc.inhibitForState(state, root);
 
             if(this.quitOnStop) {
                 if(state === GstPlayer.PlayerState.STOPPED)
@@ -377,6 +376,7 @@ class ClapperPlayer extends PlayerBase
 
                 return;
             }
+            Misc.inhibitForState(state, root);
         }
 
         const clapperWidget = player.widget.get_ancestor(Gtk.Grid);
