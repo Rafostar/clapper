@@ -20,7 +20,7 @@ class ClapperPlayerBase extends GstPlayer.Player
         const gtk4glsink = Gst.ElementFactory.make(plugin, null);
 
         if(!gtk4glsink) {
-            return debug(new Error(
+            debug(new Error(
                 `Could not load "${plugin}".`
                     + ' Do you have gstreamer-plugins-good-gtk4 installed?'
             ));
