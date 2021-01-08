@@ -81,6 +81,9 @@ radio {
   border-color: transparent;
   box-shadow: none;
 }
+.osd .positionscale {
+  margin-top: 1px;
+}
 .osd .positionscale trough highlight {
   border-radius: 3px;
   min-height: 20px;
