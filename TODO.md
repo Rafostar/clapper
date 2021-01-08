@@ -25,15 +25,18 @@
 - [ ] Chapters support
 - [ ] Set tracks time offset
   - [ ] Subtitles offset
-  - [ ] Audio offset
+  - [X] Audio offset
 - [ ] MDNS and UPNP (discovering media in local network)
-- [ ] DND files/folders from Nautilus to play (ignore incompatible ones)
+- [X] DND files from Nautilus to play (ignore incompatible ones)
+  - [ ] Support dropping whole folders
 - [ ] Search for subtitles, download and activate (SMplayer)
 - [ ] Auto add subtitles from same folder
   - [ ] Set global subtitles folders
 - [X] RSTP streaming
 - [ ] Playback speed
-- [ ] Remote playback controls via HTTP (VLC) + WebSockets
+- [X] Remote playback controls via HTTP (VLC) + WebSockets
+  - [ ] Expand available API
+  - [ ] API documentation
 - [ ] Integration with the top bar
   - [ ] MPRIS support
   - [ ] Controls in the notifications panel
