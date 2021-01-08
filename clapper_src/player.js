@@ -693,6 +693,9 @@ class ClapperPlayer extends PlayerBase
 
         this.set_playlist(playlist);
 
+        const { application } = this.widget.get_root();
+        application.activate();
+
         return true;
     }
 
