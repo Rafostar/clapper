@@ -62,6 +62,13 @@ class ClapperPlayer extends PlayerBase
         motionController.connect('motion', this._onWidgetMotion.bind(this));
         this.widget.add_controller(motionController);
 
+        const dropTarget = new Gtk.DropTarget({
+            actions: Gdk.DragAction.COPY,
+        });
+        dropTarget.set_gtypes([GObject.TYPE_STRING]);
+        dropTarget.connect('drop', this._onDataDrop.bind(this));
+        this.widget.add_controller(dropTarget);
+
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
@@ -671,6 +678,20 @@ class ClapperPlayer extends PlayerBase
         }
         else
             this.adjust_volume(isIncrease);
+
+        return true;
+    }
+
+    _onDataDrop(dropTarget, value, x, y)
+    {
+        const playlist = value.split(/\r?\n/).filter(uri => {
+            return Gst.uri_is_valid(uri);
+        });
+
+        if(!playlist.length)
+            return false;
+
+        this.set_playlist(playlist);
 
         return true;
     }
