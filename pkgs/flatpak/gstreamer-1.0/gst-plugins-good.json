@@ -36,6 +36,10 @@
         {
             "type": "patch",
             "path": "gst-plugins-good-matroska-fix-attachments-detection.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-good-matroska-set-attachment-mimetype.patch"
         }
     ]
 }

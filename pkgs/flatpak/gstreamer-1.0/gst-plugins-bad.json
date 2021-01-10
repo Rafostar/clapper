@@ -40,6 +40,10 @@
         {
             "type": "patch",
             "path": "gst-plugins-bad-assrender-smooth-scaling.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-bad-assrender-fix-mimetype-detection.patch"
         }
     ]
 }
