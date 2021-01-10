@@ -32,6 +32,10 @@
         {
             "type": "patch",
             "path": "gst-plugins-good-gtk4glsink-render-black.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-good-matroska-fix-attachments-detection.patch"
         }
     ]
 }
