@@ -297,8 +297,11 @@ class ClapperPlayer extends PlayerBase
             this._hideCursorTimeout = null;
 
             if(this.cursorInPlayer) {
+                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
                 const blankCursor = Gdk.Cursor.new_from_name('none', null);
+
                 this.widget.set_cursor(blankCursor);
+                clapperWidget.revealerTop.set_cursor(blankCursor);
             }
 
             return GLib.SOURCE_REMOVE;
@@ -594,11 +597,12 @@ class ClapperPlayer extends PlayerBase
             Math.abs(this.posX - posX) >= 0.5
             || Math.abs(this.posY - posY) >= 0.5
         ) {
-            const defaultCursor = Gdk.Cursor.new_from_name('default', null);
-            this.widget.set_cursor(defaultCursor);
-            this._setHideCursorTimeout();
-
             const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+            const defaultCursor = Gdk.Cursor.new_from_name('default', null);
+
+            this.widget.set_cursor(defaultCursor);
+            clapperWidget.revealerTop.set_cursor(defaultCursor);
+            this._setHideCursorTimeout();
 
             if(clapperWidget.floatingMode && !clapperWidget.fullscreenMode) {
                 clapperWidget.revealerBottom.set_can_focus(false);

@@ -58,6 +58,20 @@ class ClapperWidget extends Gtk.Grid
         const motionController = new Gtk.EventControllerMotion();
         motionController.connect('leave', this._onLeave.bind(this));
         this.add_controller(motionController);
+
+        const topClickGesture = new Gtk.GestureClick();
+        topClickGesture.set_button(0);
+        topClickGesture.connect('pressed', this.player._onWidgetPressed.bind(this.player));
+        this.revealerTop.add_controller(topClickGesture);
+
+        const topMotionController = new Gtk.EventControllerMotion();
+        topMotionController.connect('motion', this.player._onWidgetMotion.bind(this.player));
+        this.revealerTop.add_controller(topMotionController);
+
+        const topScrollController = new Gtk.EventControllerScroll();
+        topScrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
+        topScrollController.connect('scroll', this.player._onScroll.bind(this.player));
+        this.revealerTop.add_controller(topScrollController);
     }
 
     revealControls(isReveal)
