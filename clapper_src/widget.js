@@ -205,6 +205,14 @@ class ClapperWidget extends Gtk.Grid
         this.isSeekable = mediaInfo.is_seekable();
         this.controls.setLiveMode(isLive, this.isSeekable);
 
+        if(this.player.needsTocUpdate) {
+            /* FIXME: Remove `get_toc` check after required GstPlay(er) ver bump */
+            if(!isLive && mediaInfo.get_toc)
+                this.updateChapters(mediaInfo.get_toc());
+
+            this.player.needsTocUpdate = false;
+        }
+
         const streamList = mediaInfo.get_stream_list();
         const parsedInfo = {
             videoTracks: [],
@@ -342,6 +350,50 @@ class ClapperWidget extends Gtk.Grid
         return nextUpdate;
     }
 
+    updateChapters(toc)
+    {
+        if(!toc) return;
+
+        const entries = toc.get_entries();
+        if(!entries) return;
+
+        for(let entry of entries) {
+            const subentries = entry.get_sub_entries();
+            if(!subentries) continue;
+
+            for(let subentry of subentries)
+                this._parseTocSubentry(subentry);
+        }
+    }
+
+    _parseTocSubentry(subentry)
+    {
+        const [success, start, stop] = subentry.get_start_stop_times();
+        if(!success) {
+            debug('could not obtain toc subentry start/stop times');
+            return;
+        }
+
+        /* FIXME: Use higher precision for position scale */
+        const pos = Math.floor(start / 1000000) / 1000;
+        this.controls.positionScale.add_mark(pos, Gtk.PositionType.TOP, null);
+        this.controls.positionScale.add_mark(pos, Gtk.PositionType.BOTTOM, null);
+
+        const tags = subentry.get_tags();
+        if(!tags) {
+            debug('could not obtain toc subentry tags');
+            return;
+        }
+
+        const [isString, title] = tags.get_string('title');
+        if(!isString) {
+            debug('toc subentry tag does not have a title');
+            return;
+        }
+
+        debug(`chapter at ${pos}: ${title}`);
+    }
+
     showVisualizationsButton(isShow)
     {
         if(isShow && !this.controls.visualizationsButton.isVisList) {
@@ -386,6 +438,8 @@ class ClapperWidget extends Gtk.Grid
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
                 debug('player state changed to: BUFFERING');
+                if(player.needsTocUpdate)
+                    this.controls.positionScale.clear_marks();
                 if(!player.is_local_file) {
                     this.needsTracksUpdate = true;
                 }

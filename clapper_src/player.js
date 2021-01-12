@@ -23,6 +23,7 @@ class ClapperPlayer extends PlayerBase
 
         this.playOnFullscreen = false;
         this.quitOnStop = false;
+        this.needsTocUpdate = true;
 
         this.posX = 0;
         this.posY = 0;
@@ -191,6 +192,10 @@ class ClapperPlayer extends PlayerBase
 
     seek(position)
     {
+        /* avoid seek emits when position bar is altered */
+        if(this.needsTocUpdate)
+            return;
+
         this.seek_done = false;
 
         if(this.state === GstPlayer.PlayerState.STOPPED)
@@ -417,6 +422,7 @@ class ClapperPlayer extends PlayerBase
     _onUriLoaded(player, uri)
     {
         debug(`URI loaded: ${uri}`);
+        this.needsTocUpdate = true;
 
         if(!this.doneStartup) {
             this.doneStartup = true;

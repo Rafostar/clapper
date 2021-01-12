@@ -72,6 +72,13 @@ radio {
 }
 
 /* Position Scale */
+.positionscale {
+  margin-top: -2px;
+  margin-bottom: -2px;
+}
+.osd .positionscale {
+  margin-top: -1px;
+}
 .positionscale trough highlight {
   min-height: 4px;
 }
@@ -81,14 +88,39 @@ radio {
   border-color: transparent;
   box-shadow: none;
 }
-.osd .positionscale {
-  margin-top: 1px;
+.positionscale mark indicator {
+  min-height: 6px;
+}
+.positionscale.fine-tune mark indicator {
+  min-height: 6px;
+}
+.osd .positionscale mark indicator {
+  min-height: 7px;
+  min-width: 2px;
+}
+.osd .positionscale.fine-tune mark indicator {
+  min-height: 7px;
+  min-width: 2px;
+}
+.positionscale marks.top {
+  margin-top: -6px;
+  margin-bottom: 4px;
+}
+.positionscale marks.bottom {
+  margin-top: 4px;
+  margin-bottom: -6px;
+}
+.osd .positionscale marks.top {
+  margin-bottom: 2px;
+}
+.osd .positionscale marks.bottom {
+  margin-top: 2px;
 }
 .osd .positionscale trough highlight {
   border-radius: 3px;
   min-height: 20px;
 }
-.osd .positionscale.dragging trough highlight {
+.osd .positionscale.fine-tune trough highlight {
   border-radius: 3px;
   min-height: 20px;
 }
@@ -134,15 +166,23 @@ radio {
   min-height: 24px;
 }
 .osd.floatingcontrols .positionscale {
-  margin-top: 0px;
+  margin-top: -2px;
 }
 .osd.floatingcontrols .positionscale trough highlight {
   border-radius: 3px;
   min-height: 12px;
 }
-.osd.floatingcontrols .positionscale.dragging trough highlight {
+.osd.floatingcontrols .positionscale.fine-tune trough highlight {
   border-radius: 3px;
   min-height: 12px;
+}
+.osd.floatingcontrols .positionscale mark indicator {
+  min-height: 5px;
+  min-width: 1px;
+}
+.osd.floatingcontrols .positionscale.fine-tune mark indicator {
+  min-height: 5px;
+  min-width: 1px;
 }
 
 .narrowbutton {
