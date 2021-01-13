@@ -200,6 +200,22 @@ radio {
   animation-iteration-count: 1;
 }
 
+/* Chapters */
+.chapterlabel {
+  min-width: 32px;
+}
+.osd .chapterlabel {
+  min-width: 40px;
+  text-shadow: none;
+  font-size: 21px;
+  font-weight: 500;
+}
+.osd.floatingcontrols .chapterlabel {
+  font: inherit;
+  font-size: 100%;
+  min-width: 32px;
+}
+
 /* Preferences */
 .prefsnotebook grid {
   margin: 10px;

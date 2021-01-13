@@ -1,4 +1,4 @@
-const { GObject, Gdk, Gtk } = imports.gi;
+const { GLib, GObject, Gdk, Gtk } = imports.gi;
 const Buttons = imports.clapper_src.buttons;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
@@ -34,6 +34,10 @@ class ClapperControls extends Gtk.Box
         this.durationFormatted = '00:00';
         this.buttonsArr = [];
         this.revealersArr = [];
+        this.chapters = null;
+
+        this.chapterShowId = null;
+        this.chapterHideId = null;
 
         this._addTogglePlayButton();
 
@@ -344,6 +348,15 @@ class ClapperControls extends Gtk.Box
             valign: Gtk.Align.CENTER,
             can_focus: false,
         });
+        this.chapterPopover = new Gtk.Popover({
+            position: Gtk.PositionType.TOP,
+            autohide: false,
+        });
+        const chapterLabel = new Gtk.Label();
+        chapterLabel.add_css_class('chapterlabel');
+        this.chapterPopover.set_child(chapterLabel);
+        this.chapterPopover.set_parent(box);
+
         box.append(this.positionScale);
         this.append(box);
     }
@@ -396,6 +409,50 @@ class ClapperControls extends Gtk.Box
 
         this.volumeButton.set_icon_name(iconName);
         debug(`set volume icon: ${icon}`);
+    }
+
+    _setChapterVisible(isVisible)
+    {
+        const type = (isVisible) ? 'Show' : 'Hide';
+        const anti = (isVisible) ? 'Hide' : 'Show';
+
+        if(this[`chapter${anti}Id`]) {
+            GLib.source_remove(this[`chapter${anti}Id`]);
+            this[`chapter${anti}Id`] = null;
+        }
+
+        if(
+            this[`chapter${type}Id`]
+            || this.chapterPopover.visible === isVisible
+        )
+            return;
+
+        debug(`changing chapter visibility to: ${isVisible}`);
+
+        this[`chapter${type}Id`] = GLib.idle_add(
+            GLib.PRIORITY_DEFAULT_IDLE,
+            () => {
+                if(isVisible) {
+                    const [start, end] = this.positionScale.get_slider_range();
+                    const controlsHeight = this.parent.get_height();
+                    const scaleHeight = this.positionScale.parent.get_height();
+
+                    this.chapterPopover.set_pointing_to(new Gdk.Rectangle({
+                        x: 2,
+                        y: -(controlsHeight - scaleHeight) / 2,
+                        width: 2 * end,
+                        height: 0,
+                    }));
+                }
+
+                this.chapterPopover.visible = isVisible;
+                this[`chapter${type}Id`] = null;
+
+                debug(`chapter visible: ${isVisible}`);
+
+                return GLib.SOURCE_REMOVE;
+            }
+        );
     }
 
     _onRealize()
@@ -479,10 +536,21 @@ class ClapperControls extends Gtk.Box
 
     _onPositionScaleValueChanged(scale)
     {
-        const positionSeconds = Math.round(scale.get_value());
+        const scaleValue = scale.get_value();
+        const positionSeconds = Math.round(scaleValue);
 
         this.currentPosition = positionSeconds;
         this.updateElapsedLabel(positionSeconds);
+
+        if(this.chapters && this.isPositionDragging) {
+            const chapter = this.chapters[scaleValue];
+            const isChapter = (chapter != null);
+
+            if(isChapter)
+                this.chapterPopover.child.label = chapter;
+
+            this._setChapterVisible(isChapter);
+        }
     }
 
     _onVolumeScaleValueChanged(scale)
@@ -516,6 +584,9 @@ class ClapperControls extends Gtk.Box
 
         if((this.isPositionDragging = isPositionDragging))
             return;
+
+        if(!isPositionDragging)
+            this._setChapterVisible(false);
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;

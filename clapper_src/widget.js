@@ -405,6 +405,10 @@ class ClapperWidget extends Gtk.Grid
             return;
         }
 
+        if(!this.controls.chapters)
+            this.controls.chapters = {};
+
+        this.controls.chapters[pos] = title;
         debug(`chapter at ${pos}: ${title}`);
     }
 
@@ -452,8 +456,11 @@ class ClapperWidget extends Gtk.Grid
         switch(state) {
             case GstPlayer.PlayerState.BUFFERING:
                 debug('player state changed to: BUFFERING');
-                if(player.needsTocUpdate)
+                if(player.needsTocUpdate) {
+                    this.controls._setChapterVisible(false);
                     this.controls.positionScale.clear_marks();
+                    this.controls.chapters = null;
+                }
                 if(!player.is_local_file) {
                     this.needsTracksUpdate = true;
                 }
