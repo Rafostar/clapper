@@ -22,7 +22,7 @@
   - [X] Set seek mode (default, accurate, fast)
 - [ ] Statistics and codec info page (VLC)
 - [ ] Resume playback from last position
-- [ ] Chapters support
+- [X] Chapters support
 - [ ] Set tracks time offset
   - [ ] Subtitles offset
   - [X] Audio offset
