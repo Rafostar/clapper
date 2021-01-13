@@ -327,14 +327,14 @@ class ClapperControls extends Gtk.Box
         this.positionScale.add_controller(scrollController);
 
         this.positionScale.add_css_class('positionscale');
-        this.positionScale.connect(
+        this.positionScaleValueSignal = this.positionScale.connect(
             'value-changed', this._onPositionScaleValueChanged.bind(this)
         );
 
         /* GTK4 is missing pressed/released signals for GtkRange/GtkScale.
          * We cannot add controllers, cause it already has them, so we
          * workaround this by observing css classes it currently has */
-        this.positionScale.connect(
+        this.positionScaleDragSignal = this.positionScale.connect(
             'notify::css-classes', this._onPositionScaleDragging.bind(this)
         );
 
@@ -628,11 +628,18 @@ class ClapperControls extends Gtk.Box
 
     _onCloseRequest()
     {
+        debug('controls close request');
+
+        this.positionScale.disconnect(this.positionScaleValueSignal);
+        this.positionScale.disconnect(this.positionScaleDragSignal);
+
         for(let button of this.buttonsArr) {
             if(!button._onCloseRequest)
                 continue;
 
             button._onCloseRequest();
         }
+
+        this.chapterPopover.unparent();
     }
 });
