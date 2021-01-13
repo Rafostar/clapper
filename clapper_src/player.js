@@ -20,6 +20,7 @@ class ClapperPlayer extends PlayerBase
         this.dragAllowed = false;
         this.isWidgetDragging = false;
         this.doneStartup = false;
+        this.needsFastSeekRestore = false;
 
         this.playOnFullscreen = false;
         this.quitOnStop = false;
@@ -209,9 +210,26 @@ class ClapperPlayer extends PlayerBase
         super.seek(position);
     }
 
-    seek_seconds(position)
+    seek_seconds(seconds)
     {
-        this.seek(position * 1000000000);
+        this.seek(seconds * 1000000000);
+    }
+
+    seek_chapter(seconds)
+    {
+        if(this.seekingMode !== 'fast') {
+            this.seek_seconds(seconds);
+            return;
+        }
+
+        /* FIXME: Remove this check when GstPlay(er) have set_seek_mode function */
+        if(this.set_seek_mode) {
+            this.set_seek_mode(GstPlayer.PlayerSeekMode.DEFAULT);
+            this.seekingMode = 'normal';
+            this.needsFastSeekRestore = true;
+        }
+
+        this.seek_seconds(seconds);
     }
 
     set_volume(volume)
@@ -399,6 +417,13 @@ class ClapperPlayer extends PlayerBase
 
         if(!this.seek_done && state !== GstPlayer.PlayerState.BUFFERING) {
             clapperWidget.updateTime();
+
+            if(this.needsFastSeekRestore) {
+                this.set_seek_mode(GstPlayer.PlayerSeekMode.FAST);
+                this.seekingMode = 'fast';
+                this.needsFastSeekRestore = false;
+            }
+
             this.seek_done = true;
             debug('seeking finished');
         }

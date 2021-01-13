@@ -388,12 +388,12 @@ class ClapperWidget extends Gtk.Grid
             return;
         }
 
-        /* FIXME: Use higher precision for position scale */
         const pos = Math.floor(start / 1000000) / 1000;
+        const tags = subentry.get_tags();
+
         this.controls.positionScale.add_mark(pos, Gtk.PositionType.TOP, null);
         this.controls.positionScale.add_mark(pos, Gtk.PositionType.BOTTOM, null);
 
-        const tags = subentry.get_tags();
         if(!tags) {
             debug('could not obtain toc subentry tags');
             return;

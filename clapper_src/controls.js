@@ -585,14 +585,22 @@ class ClapperControls extends Gtk.Box
         if((this.isPositionDragging = isPositionDragging))
             return;
 
+        const isChapterSeek = this.chapterPopover.visible;
+
         if(!isPositionDragging)
             this._setChapterVisible(false);
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        const positionSeconds = Math.round(scale.get_value());
-        clapperWidget.player.seek_seconds(positionSeconds);
+        const scaleValue = scale.get_value();
+
+        if(!isChapterSeek) {
+            const positionSeconds = Math.round(scaleValue);
+            clapperWidget.player.seek_seconds(positionSeconds);
+        }
+        else
+            clapperWidget.player.seek_chapter(scaleValue);
     }
 
     /* Only happens when navigating through controls panel */
