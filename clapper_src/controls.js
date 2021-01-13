@@ -423,7 +423,7 @@ class ClapperControls extends Gtk.Box
 
         if(
             this[`chapter${type}Id`]
-            || this.chapterPopover.visible === isVisible
+            || (!isVisible && this.chapterPopover.visible === isVisible)
         )
             return;
 
