@@ -80,7 +80,7 @@ Suggests:       gstreamer1-vaapi
 %endif
 
 %description
-A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps.
+A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering.
 
 %prep
 %setup -q -n %{_sourcedir}/%{name}-%{version} -T -D
@@ -103,8 +103,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %doc README.md
 %{_bindir}/%{appname}*
 %{_datadir}/%{appname}/
-%dir %{_datadir}/gjs-1.0
-%{_datadir}/gjs-1.0/*.js
 %{_datadir}/icons/hicolor/*/apps/*.svg
 %{_datadir}/glib-2.0/schemas/%{appname}.gschema.xml
 %{_datadir}/mime/packages/%{appname}.xml
@@ -112,6 +110,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/*.appdata.xml
 
 %changelog
+* Mon Jan 18 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-7
+- Remove gjs-1.0 files
+
 * Sun Dec 20 2020 Rafostar <rafostar.github@gmail.com> - 0.0.0-6
 - Include additional app binaries
 

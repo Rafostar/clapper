@@ -15,4 +15,4 @@ Build-Depends: debhelper (>= 10),
 Package-List:
  clapper deb gnome optional arch=all
 Description: Simple and modern GNOME media player
- A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps.
+ A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering.

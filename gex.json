@@ -1,9 +1,0 @@
-{
-  "name": "clapper",
-  "files": [
-    "clapper_src/app.js",
-    "clapper_src/controls.js",
-    "clapper_src/interface.js",
-    "clapper_src/player.js"
-  ]
-}
