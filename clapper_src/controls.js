@@ -40,13 +40,7 @@ class ClapperControls extends Gtk.Box
         this.chapterHideId = null;
 
         this._addTogglePlayButton();
-
-        const elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
-        this.elapsedButton = this.addElapsedPopoverButton('00:00/00:00', elapsedRevealer);
-        elapsedRevealer.set_reveal_child(true);
-        this.revealersArr.push(elapsedRevealer);
-        this.append(elapsedRevealer);
-
+        this._addElapsedButton();
         this._addPositionScale();
 
         const revealTracksButton = new Buttons.IconToggleButton(
@@ -316,6 +310,35 @@ class ClapperControls extends Gtk.Box
             'clicked', this._onTogglePlayClicked.bind(this)
         );
         this.addButton(this.togglePlayButton);
+    }
+
+    _addElapsedButton()
+    {
+        const elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
+        this.elapsedButton = this.addElapsedPopoverButton('00:00/00:00', elapsedRevealer);
+        elapsedRevealer.set_reveal_child(true);
+        this.revealersArr.push(elapsedRevealer);
+
+        const speedScale = new Gtk.Scale({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            value_pos: Gtk.PositionType.BOTTOM,
+            draw_value: false,
+            round_digits: 2,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+        });
+
+        this.speedAdjustment = speedScale.get_adjustment();
+        this.speedAdjustment.set_lower(0.01);
+        this.speedAdjustment.set_upper(2);
+        this.speedAdjustment.set_value(1);
+
+        speedScale.add_mark(0.25, Gtk.PositionType.BOTTOM, '0.25x');
+        speedScale.add_mark(1, Gtk.PositionType.BOTTOM, 'normal');
+        speedScale.add_mark(2, Gtk.PositionType.BOTTOM, '2x');
+
+        this.elapsedButton.popoverBox.append(speedScale);
+        this.append(elapsedRevealer);
     }
 
     _addPositionScale()

@@ -78,6 +78,11 @@ class ClapperPlayer extends PlayerBase
 
     set_uri(uri)
     {
+        /* FIXME: Player does not notify about
+         * rate change after file load */
+        if(this.rate !== 1)
+            this.set_rate(1);
+
         if(Gst.Uri.get_protocol(uri) !== 'file')
             return super.set_uri(uri);
 

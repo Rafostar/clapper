@@ -46,6 +46,9 @@ class ClapperWidget extends Gtk.Grid
 
         this.player = new Player();
         this.controls.elapsedButton.scrolledWindow.set_child(this.player.playlistWidget);
+        this.controls.speedAdjustment.bind_property(
+            'value', this.player, 'rate', GObject.BindingFlags.BIDIRECTIONAL
+        );
 
         this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
