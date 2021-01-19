@@ -1,6 +1,7 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
+const { PlaylistWidget } = imports.clapper_src.playlist;
 const { WebApp } = imports.clapper_src.webApp;
 
 const { debug } = Debug;
@@ -54,6 +55,7 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         this.webserver = null;
         this.webapp = null;
+        this.playlistWidget = new PlaylistWidget();
 
         this.set_all_plugins_ranks();
         this.set_initial_config();

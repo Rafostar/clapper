@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
+const { Gdk, GLib, GObject, GstPlayer, Gtk } = imports.gi;
 const { Controls } = imports.clapper_src.controls;
 const Debug = imports.clapper_src.debug;
 const Misc = imports.clapper_src.misc;
@@ -45,6 +45,8 @@ class ClapperWidget extends Gtk.Grid
         this.mapSignal = this.connect('map', this._onMap.bind(this));
 
         this.player = new Player();
+        this.controls.elapsedButton.scrolledWindow.set_child(this.player.playlistWidget);
+
         this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
 
@@ -324,17 +326,10 @@ class ClapperWidget extends Gtk.Grid
     updateTitles(mediaInfo)
     {
         let title = mediaInfo.get_title();
-        let subtitle = mediaInfo.get_uri();
+        let subtitle = this.player.playlistWidget.getActiveFilename();
 
-        if(Gst.Uri.get_protocol(subtitle) === 'file') {
-            subtitle = GLib.path_get_basename(
-                GLib.filename_from_uri(subtitle)[0]
-            );
-        }
         if(!title) {
-            title = (!subtitle)
-                ? this.defaultTitle
-                : (subtitle.includes('.'))
+            title = (subtitle.includes('.'))
                 ? subtitle.split('.').slice(0, -1).join('.')
                 : subtitle;
 
@@ -461,7 +456,7 @@ class ClapperWidget extends Gtk.Grid
                     this.controls.positionScale.clear_marks();
                     this.controls.chapters = null;
                 }
-                if(!player.is_local_file) {
+                if(!player.playlistWidget.getActiveIsLocalFile()) {
                     this.needsTracksUpdate = true;
                 }
                 break;

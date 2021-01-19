@@ -85,13 +85,6 @@ class ClapperIconButton extends CustomButton
         });
         this.floatUnaffected = true;
     }
-
-    setFullscreenMode(isFullscreen)
-    {
-        /* Redraw icon after style class change */
-        this.set_icon_name(this.icon_name);
-        super.setFullscreenMode(isFullscreen);
-    }
 });
 
 var IconToggleButton = GObject.registerClass(
@@ -116,38 +109,13 @@ class ClapperIconToggleButton extends IconButton
     }
 });
 
-var LabelButton = GObject.registerClass(
-class ClapperLabelButton extends CustomButton
+var PopoverButtonBase = GObject.registerClass(
+class ClapperPopoverButtonBase extends CustomButton
 {
-    _init(text)
+    _init()
     {
-        super._init({
-            margin_start: 0,
-            margin_end: 0,
-        });
+        super._init();
 
-        this.customLabel = new Gtk.Label({
-            label: text,
-            single_line_mode: true,
-        });
-        this.customLabel.add_css_class('labelbutton');
-        this.set_child(this.customLabel);
-    }
-
-    set_label(text)
-    {
-        this.customLabel.set_text(text);
-    }
-});
-
-var PopoverButton = GObject.registerClass(
-class ClapperPopoverButton extends IconButton
-{
-    _init(icon)
-    {
-        super._init(icon);
-
-        this.floatUnaffected = false;
         this.popover = new Gtk.Popover({
             position: Gtk.PositionType.TOP,
         });
@@ -201,5 +169,61 @@ class ClapperPopoverButton extends IconButton
     _onCloseRequest()
     {
         this.popover.unparent();
+    }
+});
+
+var IconPopoverButton = GObject.registerClass(
+class ClapperIconPopoverButton extends PopoverButtonBase
+{
+    _init(icon)
+    {
+        super._init();
+
+        this.icon_name = icon;
+    }
+});
+
+var LabelPopoverButton = GObject.registerClass(
+class ClapperLabelPopoverButton extends PopoverButtonBase
+{
+    _init(text)
+    {
+        super._init();
+
+        this.customLabel = new Gtk.Label({
+            label: text,
+            single_line_mode: true,
+        });
+        this.customLabel.add_css_class('labelbutton');
+        this.set_child(this.customLabel);
+    }
+
+    set_label(text)
+    {
+        this.customLabel.set_text(text);
+    }
+});
+
+var ElapsedPopoverButton = GObject.registerClass(
+class ClapperElapsedPopoverButton extends LabelPopoverButton
+{
+    _init(text)
+    {
+        super._init(text);
+
+        this.scrolledWindow = new Gtk.ScrolledWindow({
+            max_content_height: 150,
+            min_content_width: 250,
+            propagate_natural_height: true,
+        });
+        this.popoverBox.append(this.scrolledWindow);
+    }
+
+    setFullscreenMode(isFullscreen)
+    {
+        super.setFullscreenMode(isFullscreen);
+
+        this.scrolledWindow.max_content_height = (isFullscreen)
+            ? 190 : 150;
     }
 });

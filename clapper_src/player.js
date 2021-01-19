@@ -15,7 +15,6 @@ class ClapperPlayer extends PlayerBase
         super._init();
 
         this.cursorInPlayer = false;
-        this.is_local_file = false;
         this.seek_done = true;
         this.dragAllowed = false;
         this.isWidgetDragging = false;
@@ -31,9 +30,6 @@ class ClapperPlayer extends PlayerBase
         this.keyPressCount = 0;
 
         this._maxVolume = Misc.getLinearValue(Misc.maxVolume);
-
-        this._playlist = [];
-        this._trackId = 0;
 
         this._hideCursorTimeout = null;
         this._hideControlsTimeout = null;
@@ -80,45 +76,24 @@ class ClapperPlayer extends PlayerBase
         this._realizeSignal = this.widget.connect('realize', this._onWidgetRealize.bind(this));
     }
 
-    set_media(source)
+    set_uri(uri)
     {
-        let file;
+        if(Gst.Uri.get_protocol(uri) !== 'file')
+            return super.set_uri(uri);
 
-        if(source.get_path)
-            file = source;
-        else {
-            if(!Gst.uri_is_valid(source))
-                source = Gst.filename_to_uri(source);
-
-            if(!source)
-                return debug('parsing source to URI failed');
-
-            debug(`parsed source to URI: ${source}`);
-
-            if(Gst.Uri.get_protocol(source) !== 'file') {
-                this.is_local_file = false;
-                return this.set_uri(source);
-            }
-
-            file = Gio.file_new_for_uri(source);
-        }
-
+        let file = Gio.file_new_for_uri(uri);
         if(!file.query_exists(null)) {
             debug(`file does not exist: ${file.get_path()}`, 'LEVEL_WARNING');
-            this._trackId++;
 
-            if(this._playlist.length <= this._trackId)
-                return debug('set media reached end of playlist');
+            if(!this.playlistWidget.nextTrack())
+                debug('set media reached end of playlist');
 
-            return this.set_media(this._playlist[this._trackId]);
+            return;
         }
-
-        const uri = file.get_uri();
         if(uri.endsWith('.claps'))
             return this.load_playlist_file(file);
 
-        this.is_local_file = true;
-        this.set_uri(uri);
+        super.set_uri(uri);
     }
 
     load_playlist_file(file)
@@ -140,7 +115,7 @@ class ClapperPlayer extends PlayerBase
                 if(!lineFile)
                     continue;
 
-                line = lineFile.get_path();
+                line = lineFile.get_uri();
             }
             debug(`new playlist item: ${line}`);
             playlist.push(line);
@@ -149,20 +124,29 @@ class ClapperPlayer extends PlayerBase
         this.set_playlist(playlist);
     }
 
-    set_playlist(playlist)
+    _preparePlaylist(playlist)
     {
-        if(!Array.isArray(playlist) || !playlist.length)
-            return;
+        this.playlistWidget.removeAll();
 
-        this._trackId = 0;
-        this._playlist = playlist;
+        for(let source of playlist) {
+            const uri = (source.get_uri != null)
+                ? source.get_uri()
+                : Gst.uri_is_valid(source)
+                ? source
+                : Gst.filename_to_uri(source);
 
-        this.set_media(this._playlist[0]);
+            this.playlistWidget.addItem(uri);
+        }
     }
 
-    get_playlist()
+    set_playlist(playlist)
     {
-        return this._playlist;
+        this._preparePlaylist(playlist);
+
+        const firstTrack = this.playlistWidget.get_row_at_index(0);
+        if(!firstTrack) return;
+
+        firstTrack.activate();
     }
 
     set_subtitles(source)
@@ -433,14 +417,15 @@ class ClapperPlayer extends PlayerBase
 
     _onStreamEnded(player)
     {
-        debug(`end of stream: ${this._trackId}`);
-        this.emitWs('end_of_stream', this._trackId);
+        const lastTrackId = this.playlistWidget.activeRowId;
 
-        this._trackId++;
+        debug(`end of stream: ${lastTrackId}`);
+        this.emitWs('end_of_stream', lastTrackId);
 
-        if(this._trackId < this._playlist.length)
-            this.set_media(this._playlist[this._trackId]);
-        else if(settings.get_boolean('close-auto')) {
+        if(this.playlistWidget.nextTrack())
+            return;
+
+        if(settings.get_boolean('close-auto')) {
             /* Stop will be automatically called soon afterwards */
             this._performCloseCleanup(this.widget.get_root());
             this.quitOnStop = true;

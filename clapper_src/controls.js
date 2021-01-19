@@ -42,7 +42,7 @@ class ClapperControls extends Gtk.Box
         this._addTogglePlayButton();
 
         const elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
-        this.elapsedButton = this.addLabelButton('00:00/00:00', elapsedRevealer);
+        this.elapsedButton = this.addElapsedPopoverButton('00:00/00:00', elapsedRevealer);
         elapsedRevealer.set_reveal_child(true);
         this.revealersArr.push(elapsedRevealer);
         this.append(elapsedRevealer);
@@ -59,22 +59,22 @@ class ClapperControls extends Gtk.Box
         const tracksRevealer = new Revealers.ButtonsRevealer(
             'SLIDE_LEFT', revealTracksButton
         );
-        this.visualizationsButton = this.addPopoverButton(
+        this.visualizationsButton = this.addIconPopoverButton(
             'display-projector-symbolic',
             tracksRevealer
         );
         this.visualizationsButton.set_visible(false);
-        this.videoTracksButton = this.addPopoverButton(
+        this.videoTracksButton = this.addIconPopoverButton(
             'emblem-videos-symbolic',
             tracksRevealer
         );
         this.videoTracksButton.set_visible(false);
-        this.audioTracksButton = this.addPopoverButton(
+        this.audioTracksButton = this.addIconPopoverButton(
             'emblem-music-symbolic',
             tracksRevealer
         );
         this.audioTracksButton.set_visible(false);
-        this.subtitleTracksButton = this.addPopoverButton(
+        this.subtitleTracksButton = this.addIconPopoverButton(
             'media-view-subtitles-symbolic',
             tracksRevealer
         );
@@ -165,17 +165,25 @@ class ClapperControls extends Gtk.Box
         return button;
     }
 
-    addLabelButton(text, revealer)
+    addIconPopoverButton(iconName, revealer)
     {
-        text = text || '';
-        const button = new Buttons.LabelButton(text);
+        const button = new Buttons.IconPopoverButton(iconName);
 
         return this.addButton(button, revealer);
     }
 
-    addPopoverButton(iconName, revealer)
+    addLabelPopoverButton(text, revealer)
     {
-        const button = new Buttons.PopoverButton(iconName);
+        text = text || '';
+        const button = new Buttons.LabelPopoverButton(text);
+
+        return this.addButton(button, revealer);
+    }
+
+    addElapsedPopoverButton(text, revealer)
+    {
+        text = text || '';
+        const button = new Buttons.ElapsedPopoverButton(text);
 
         return this.addButton(button, revealer);
     }
@@ -363,7 +371,7 @@ class ClapperControls extends Gtk.Box
 
     _addVolumeButton()
     {
-        this.volumeButton = this.addPopoverButton(
+        this.volumeButton = this.addIconPopoverButton(
             'audio-volume-muted-symbolic'
         );
         this.volumeScale = new Gtk.Scale({
