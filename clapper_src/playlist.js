@@ -188,7 +188,7 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
     _onDrop(target, value, x, y)
     {
         const destIndex = this.get_index();
-        const targetIndex = target.value.get_index();
+        const targetIndex = value.get_index();
 
         if(destIndex === targetIndex)
             return true;
@@ -196,8 +196,8 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         const listBox = this.get_ancestor(Gtk.ListBox);
 
         if(listBox && destIndex >= 0) {
-            listBox.remove(target.value);
-            listBox.insert(target.value, destIndex);
+            listBox.remove(value);
+            listBox.insert(value, destIndex);
 
             return true;
         }
