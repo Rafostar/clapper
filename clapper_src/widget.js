@@ -136,9 +136,7 @@ class ClapperWidget extends Gtk.Grid
             return;
 
         const root = this.get_root();
-        const size = (Misc.isOldGtk)
-            ? root.get_size()
-            : root.get_default_size();
+        const size = root.get_default_size();
 
         this._saveWindowSize(size);
 
@@ -163,11 +161,7 @@ class ClapperWidget extends Gtk.Grid
             ? this.floatSize
             : this.windowSize;
 
-        if(Misc.isOldGtk)
-            root.resize(resize[0], resize[1]);
-        else
-            root.set_default_size(resize[0], resize[1]);
-
+        root.set_default_size(resize[0], resize[1]);
         debug(`resized window: ${resize[0]}x${resize[1]}`);
 
         this.revealerBottom.showChild(false);

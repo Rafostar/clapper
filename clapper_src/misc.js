@@ -14,7 +14,6 @@ var settings = new Gio.Settings({
 });
 
 var maxVolume = 1.5;
-var isOldGtk = (Gtk.MINOR_VERSION === 99 && Gtk.MICRO_VERSION <= 4);
 
 let inhibitCookie;
 
