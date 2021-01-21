@@ -1,6 +1,6 @@
 const { GObject, Gst, Gtk, Pango } = imports.gi;
-const Misc = imports.clapper_src.misc;
-const PrefsBase = imports.clapper_src.prefsBase;
+const Misc = imports.src.misc;
+const PrefsBase = imports.src.prefsBase;
 
 const { settings } = Misc;
 

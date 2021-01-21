@@ -1,8 +1,8 @@
 const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
-const { PlaylistWidget } = imports.clapper_src.playlist;
-const { WebApp } = imports.clapper_src.webApp;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
+const { PlaylistWidget } = imports.src.playlist;
+const { WebApp } = imports.src.webApp;
 
 const { debug } = Debug;
 const { settings } = Misc;
@@ -275,7 +275,7 @@ class ClapperPlayerBase extends GstPlayer.Player
                     if(!WebServer) {
                         /* Probably most users will not use this,
                          * so conditional import for faster startup */
-                        WebServer = imports.clapper_src.webServer.WebServer;
+                        WebServer = imports.src.webServer.WebServer;
                     }
 
                     if(!this.webserver) {

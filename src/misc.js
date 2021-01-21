@@ -1,5 +1,5 @@
 const { Gio, GstAudio, GstPlayer, Gdk, Gtk } = imports.gi;
-const Debug = imports.clapper_src.debug;
+const Debug = imports.src.debug;
 
 const { debug } = Debug;
 

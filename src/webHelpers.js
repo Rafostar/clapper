@@ -1,6 +1,6 @@
 const { Soup } = imports.gi;
 const ByteArray = imports.byteArray;
-const Debug = imports.clapper_src.debug;
+const Debug = imports.src.debug;
 
 const { debug } = Debug;
 

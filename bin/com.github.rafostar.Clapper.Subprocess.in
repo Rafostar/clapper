@@ -14,4 +14,4 @@ Package.init({
   libdir: '@libdir@',
   datadir: '@datadir@',
 });
-Package.run(imports.clapper_src.main@ID_POSTFIX@);
+Package.run(imports.src.main@ID_POSTFIX@);

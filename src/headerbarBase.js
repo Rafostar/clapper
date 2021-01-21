@@ -1,5 +1,5 @@
 const { GObject, Gtk, Pango } = imports.gi;
-const Misc = imports.clapper_src.misc;
+const Misc = imports.src.misc;
 
 var HeaderBarBase = GObject.registerClass(
 class ClapperHeaderBarBase extends Gtk.HeaderBar

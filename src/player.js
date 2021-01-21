@@ -1,8 +1,8 @@
 const { Gdk, Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
-const { PlayerBase } = imports.clapper_src.playerBase;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
+const { PlayerBase } = imports.src.playerBase;
 
 const { debug } = Debug;
 const { settings } = Misc;

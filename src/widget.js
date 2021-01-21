@@ -1,9 +1,9 @@
 const { Gdk, GLib, GObject, GstPlayer, Gtk } = imports.gi;
-const { Controls } = imports.clapper_src.controls;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
-const { Player } = imports.clapper_src.player;
-const Revealers = imports.clapper_src.revealers;
+const { Controls } = imports.src.controls;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
+const { Player } = imports.src.player;
+const Revealers = imports.src.revealers;
 
 const { debug } = Debug;
 const { settings } = Misc;

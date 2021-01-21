@@ -1,5 +1,5 @@
 const { GLib, GObject, Gtk, Pango } = imports.gi;
-const Debug = imports.clapper_src.debug;
+const Debug = imports.src.debug;
 
 const REVEAL_TIME = 800;
 

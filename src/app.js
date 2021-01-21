@@ -1,8 +1,8 @@
 const { Gio, GObject } = imports.gi;
-const { AppBase } = imports.clapper_src.appBase;
-const { HeaderBar } = imports.clapper_src.headerbar;
-const { Widget } = imports.clapper_src.widget;
-const Debug = imports.clapper_src.debug;
+const { AppBase } = imports.src.appBase;
+const { HeaderBar } = imports.src.headerbar;
+const { Widget } = imports.src.widget;
+const Debug = imports.src.debug;
 
 const { debug } = Debug;
 

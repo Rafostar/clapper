@@ -2,7 +2,7 @@ imports.gi.versions.Gdk = '4.0';
 imports.gi.versions.Gtk = '4.0';
 
 const { Gst } = imports.gi;
-const { App } = imports.clapper_src.app;
+const { App } = imports.src.app;
 
 Gst.init(null);
 

@@ -1,7 +1,7 @@
 const { GObject } = imports.gi;
-const { AppBase } = imports.clapper_src.appBase;
-const { HeaderBarBase } = imports.clapper_src.headerbarBase;
-const { WidgetRemote } = imports.clapper_src.widgetRemote;
+const { AppBase } = imports.src.appBase;
+const { HeaderBarBase } = imports.src.headerbarBase;
+const { WidgetRemote } = imports.src.widgetRemote;
 
 var AppRemote = GObject.registerClass(
 class ClapperAppRemote extends AppBase

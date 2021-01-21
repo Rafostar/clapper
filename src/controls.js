@@ -1,8 +1,8 @@
 const { GLib, GObject, Gdk, Gtk } = imports.gi;
-const Buttons = imports.clapper_src.buttons;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
-const Revealers = imports.clapper_src.revealers;
+const Buttons = imports.src.buttons;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
+const Revealers = imports.src.revealers;
 
 const CONTROLS_MARGIN = 2;
 const CONTROLS_SPACING = 0;

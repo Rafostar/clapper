@@ -1,8 +1,8 @@
 const { Gio, GObject, Gtk, Gst } = imports.gi;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
-const Prefs = imports.clapper_src.prefs;
-const PrefsBase = imports.clapper_src.prefsBase;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
+const Prefs = imports.src.prefs;
+const PrefsBase = imports.src.prefsBase;
 
 const { debug } = Debug;
 

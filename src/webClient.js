@@ -1,7 +1,7 @@
 const { Gio, GObject, Soup } = imports.gi;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
-const WebHelpers = imports.clapper_src.webHelpers;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
+const WebHelpers = imports.src.webHelpers;
 
 const { debug } = Debug;
 const { settings } = Misc;

@@ -1,6 +1,6 @@
 const { Gio, GObject } = imports.gi;
-const Debug = imports.clapper_src.debug;
-const Misc = imports.clapper_src.misc;
+const Debug = imports.src.debug;
+const Misc = imports.src.misc;
 
 const { debug } = Debug;
 

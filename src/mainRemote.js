@@ -1,8 +1,8 @@
 imports.gi.versions.Gdk = '4.0';
 imports.gi.versions.Gtk = '4.0';
 
-const { AppRemote } = imports.clapper_src.appRemote;
-const Misc = imports.clapper_src.misc;
+const { AppRemote } = imports.src.appRemote;
+const Misc = imports.src.misc;
 
 const ID_POSTFIX = 'Remote';
 

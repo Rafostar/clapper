@@ -1,5 +1,5 @@
 const { GObject } = imports.gi;
-const { WebClient } = imports.clapper_src.webClient;
+const { WebClient } = imports.src.webClient;
 
 var PlayerRemote = GObject.registerClass(
 class ClapperPlayerRemote extends GObject.Object

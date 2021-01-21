@@ -19,7 +19,7 @@ subdir('bin')
 subdir('data')
 
 installdir = join_paths(get_option('prefix'), 'share', meson.project_name())
-install_subdir('clapper_src', install_dir : installdir)
+install_subdir('src', install_dir : installdir)
 install_subdir('extras', install_dir : installdir)
 install_subdir('css', install_dir : installdir)
 install_subdir('ui', install_dir : installdir)

@@ -1,7 +1,7 @@
 const { GObject, Gtk, GstPlayer } = imports.gi;
-const Buttons = imports.clapper_src.buttons;
-const Misc = imports.clapper_src.misc;
-const { PlayerRemote } = imports.clapper_src.playerRemote;
+const Buttons = imports.src.buttons;
+const Misc = imports.src.misc;
+const { PlayerRemote } = imports.src.playerRemote;
 
 var WidgetRemote = GObject.registerClass(
 class ClapperWidgetRemote extends Gtk.Grid

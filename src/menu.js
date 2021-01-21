@@ -1,5 +1,5 @@
 const { GObject, Gst, Gtk } = imports.gi;
-const Dialogs = imports.clapper_src.dialogs;
+const Dialogs = imports.src.dialogs;
 
 var actions = {
     openLocal: (window) => new Dialogs.FileChooser(window),

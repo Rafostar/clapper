@@ -1,5 +1,5 @@
 const { GObject } = imports.gi;
-const { HeaderBarBase } = imports.clapper_src.headerbarBase;
+const { HeaderBarBase } = imports.src.headerbarBase;
 
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends HeaderBarBase
