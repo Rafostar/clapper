@@ -107,9 +107,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/glib-2.0/schemas/%{appname}.gschema.xml
 %{_datadir}/mime/packages/%{appname}.xml
 %{_datadir}/applications/*.desktop
-%{_datadir}/metainfo/*.appdata.xml
+%{_datadir}/metainfo/*.metainfo.xml
 
 %changelog
+* Thu Jan 21 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-8
+- Use metainfo instead of deprecated appdata
+
 * Mon Jan 18 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-7
 - Remove gjs-1.0 files
 
