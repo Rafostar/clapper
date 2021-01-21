@@ -59,6 +59,10 @@ All these libs are acting "on their own" and no function calls from `GJS` relate
 It can be enabled from inside player preferences dialog inside `Advanced -> GStreamer` tab using customizable `Plugin Ranking` feature.
 Since the whole app is rendered using your GPU, users of VERY weak GPUs might try to disable the "render window shadows" option to have more GPU power available for non-fullscreen video rendering.
 
+## Other Questions?
+Feel free to ask me any questions.<br>
+Use either GitHub [discussions](https://github.com/Rafostar/clapper/discussions) or come and talk on Matrix: **#clapper-player:matrix.org**
+
 ## Special Thanks
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
 
