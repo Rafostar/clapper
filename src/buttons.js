@@ -231,4 +231,30 @@ class ClapperElapsedPopoverButton extends LabelPopoverButton
         this.scrolledWindow.max_content_height = (isFullscreen)
             ? 190 : 150;
     }
+
+    addSeparator(text)
+    {
+        const box = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+        });
+        const label = new Gtk.Label({
+            label: text,
+            halign: Gtk.Align.CENTER,
+        });
+        const leftSeparator = new Gtk.Separator({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+        });
+        const rightSeparator = new Gtk.Separator({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+        });
+        box.append(leftSeparator);
+        box.append(label);
+        box.append(rightSeparator);
+        this.popoverBox.append(box);
+    }
 });
