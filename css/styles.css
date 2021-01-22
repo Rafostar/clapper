@@ -165,6 +165,9 @@ radio {
 .osd list row {
   -gtk-icon-shadow: none;
 }
+.osd .speedscale {
+  min-width: 330px;
+}
 .osd .speedscale trough highlight {
   min-height: 6px;
 }
