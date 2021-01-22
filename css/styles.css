@@ -26,6 +26,10 @@ radio {
 .osd list {
   background: none;
 }
+.osd list row {
+  -gtk-icon-shadow: none;
+}
+
 .osd .playercontrols {
   -gtk-icon-size: 24px;
 }
@@ -74,6 +78,8 @@ radio {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
+
+/* Button Inside Popover */
 .popoverbutton {
   min-width: 24px;
   min-height: 24px;
