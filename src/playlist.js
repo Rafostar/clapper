@@ -85,7 +85,10 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
 {
     _init(uri)
     {
-        super._init();
+        super._init({
+            /* TODO: Fix playlist navigation in fullscreen */
+            can_focus: false,
+        });
 
         this.uri = uri;
         this.isLocalFile = false;
