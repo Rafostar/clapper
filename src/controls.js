@@ -319,6 +319,29 @@ class ClapperControls extends Gtk.Box
         elapsedRevealer.set_reveal_child(true);
         this.revealersArr.push(elapsedRevealer);
 
+        const speedSeparatorBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+        });
+        const speedLabel = new Gtk.Label({
+            label: 'speed',
+            halign: Gtk.Align.CENTER,
+        });
+        const leftSeparator = new Gtk.Separator({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+        });
+        const rightSeparator = new Gtk.Separator({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+            valign: Gtk.Align.CENTER,
+        });
+        speedSeparatorBox.append(leftSeparator);
+        speedSeparatorBox.append(speedLabel);
+        speedSeparatorBox.append(rightSeparator);
+        this.elapsedButton.popoverBox.append(speedSeparatorBox);
+
         const speedScale = new Gtk.Scale({
             orientation: Gtk.Orientation.HORIZONTAL,
             value_pos: Gtk.PositionType.BOTTOM,

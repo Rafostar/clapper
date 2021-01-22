@@ -5,6 +5,9 @@ scale marks {
 radio {
   margin-left: -2px;
 }
+separator {
+  background: @insensitive_fg_color;
+}
 .osd popover box {
   text-shadow: none;
   font-size: 21px;
