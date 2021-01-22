@@ -71,9 +71,25 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         return row.isLocalFile;
     }
 
+    deactivateActiveItem()
+    {
+        if(this.activeRowId < 0)
+            return;
+
+        const row = this.get_row_at_index(this.activeRowId);
+        if(!row) return null;
+
+        const icon = row.child.get_first_child();
+        icon.icon_name = 'open-menu-symbolic';
+    }
+
     _onRowActivated(listBox, row)
     {
         const { player } = this.get_ancestor(Gtk.Grid);
+        const icon = row.child.get_first_child();
+
+        this.deactivateActiveItem();
+        icon.icon_name = 'media-playback-start-symbolic';
 
         this.activeRowId = row.get_index();
         player.set_uri(row.uri);
