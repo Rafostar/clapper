@@ -324,7 +324,7 @@ class ClapperControls extends Gtk.Box
             hexpand: true,
         });
         const speedLabel = new Gtk.Label({
-            label: 'speed',
+            label: 'Speed',
             halign: Gtk.Align.CENTER,
         });
         const leftSeparator = new Gtk.Separator({
@@ -358,7 +358,7 @@ class ClapperControls extends Gtk.Box
         this.speedAdjustment.set_value(1);
 
         speedScale.add_mark(0.25, Gtk.PositionType.BOTTOM, '0.25x');
-        speedScale.add_mark(1, Gtk.PositionType.BOTTOM, 'normal');
+        speedScale.add_mark(1, Gtk.PositionType.BOTTOM, 'Normal');
         speedScale.add_mark(2, Gtk.PositionType.BOTTOM, '2x');
 
         this.elapsedButton.popoverBox.append(speedScale);
