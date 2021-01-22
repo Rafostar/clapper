@@ -168,8 +168,11 @@ separator {
 .osd list row {
   -gtk-icon-shadow: none;
 }
-.osd .speedscale {
-  min-width: 330px;
+.elapsedpopoverbox {
+  min-width: 260px;
+}
+.osd .elapsedpopoverbox {
+  min-width: 360px;
 }
 .osd .speedscale trough highlight {
   min-height: 6px;

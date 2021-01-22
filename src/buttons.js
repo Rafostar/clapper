@@ -215,9 +215,10 @@ class ClapperElapsedPopoverButton extends LabelPopoverButton
     {
         super._init(text);
 
+        this.popoverBox.add_css_class('elapsedpopoverbox');
+
         this.scrolledWindow = new Gtk.ScrolledWindow({
             max_content_height: 150,
-            min_content_width: 250,
             propagate_natural_height: true,
         });
         this.popoverBox.append(this.scrolledWindow);
