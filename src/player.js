@@ -391,7 +391,7 @@ class ClapperPlayer extends PlayerBase
             const root = player.widget.get_root();
 
             if(this.quitOnStop) {
-                if(state === GstPlayer.PlayerState.STOPPED)
+                if(root && state === GstPlayer.PlayerState.STOPPED)
                     root.run_dispose();
 
                 return;
