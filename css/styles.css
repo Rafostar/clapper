@@ -26,9 +26,6 @@ radio {
 .osd list {
   background: none;
 }
-.osd list row {
-  -gtk-icon-shadow: none;
-}
 
 .osd .playercontrols {
   -gtk-icon-size: 24px;
@@ -162,6 +159,14 @@ radio {
 }
 .overamp trough highlight {
   background: @error_color;
+}
+
+/* Elapsed Popover */
+.osd list row {
+  -gtk-icon-shadow: none;
+}
+.osd .speedscale trough highlight {
+  min-height: 6px;
 }
 
 /* Floating Mode */

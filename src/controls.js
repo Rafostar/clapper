@@ -327,6 +327,7 @@ class ClapperControls extends Gtk.Box
             hexpand: true,
             valign: Gtk.Align.CENTER,
         });
+        speedScale.add_css_class('speedscale');
 
         this.speedAdjustment = speedScale.get_adjustment();
         this.speedAdjustment.set_lower(0.01);
