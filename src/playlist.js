@@ -22,10 +22,12 @@ class ClapperPlaylistWidget extends Gtk.ListBox
     {
         const itemIndex = item.get_index();
 
-        /* TODO: Handle this case somehow (should app quit?)
-         * or disable remove button */
-        if(itemIndex === this.activeRowId)
+        if(itemIndex === this.activeRowId) {
+            const root = this.get_root();
+            root.emit('close-request');
+
             return;
+        }
 
         if(itemIndex < this.activeRowId)
             this.activeRowId--;
