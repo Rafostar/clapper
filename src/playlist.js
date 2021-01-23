@@ -82,16 +82,21 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         if(!row) return null;
 
         const icon = row.child.get_first_child();
+        const button = row.child.get_last_child();
+
         icon.icon_name = 'open-menu-symbolic';
+        button.icon_name = 'list-remove-symbolic';
     }
 
     _onRowActivated(listBox, row)
     {
         const { player } = this.get_ancestor(Gtk.Grid);
         const icon = row.child.get_first_child();
+        const button = row.child.get_last_child();
 
         this.deactivateActiveItem();
         icon.icon_name = 'media-playback-start-symbolic';
+        button.icon_name = 'edit-delete-symbolic';
 
         this.activeRowId = row.get_index();
         player.set_uri(row.uri);
@@ -139,7 +144,7 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
             halign: Gtk.Align.START,
         });
         const button = new Gtk.Button({
-            icon_name: 'edit-delete-symbolic',
+            icon_name: 'list-remove-symbolic',
         });
         button.add_css_class('flat');
         button.add_css_class('circular');
