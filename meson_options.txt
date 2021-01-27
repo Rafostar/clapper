@@ -1,0 +1,20 @@
+option('clapper-player',
+  type : 'boolean',
+  value : true,
+  description: 'Build Clapper player'
+)
+option('clapper-lib',
+  type : 'boolean',
+  value : true,
+  description: 'Build Clapper libs (including API)'
+)
+option('devel-checks',
+  type : 'boolean',
+  value : false,
+  description: 'GStreamer GLib checks and asserts such as API guards (disable for stable releases)'
+)
+option('deprecated-glib-api',
+  type : 'boolean',
+  value : true,
+  description: 'Allow using of deprecated GLib API'
+)
