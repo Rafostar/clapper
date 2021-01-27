@@ -56,6 +56,24 @@ typedef enum
 GST_CLAPPER_API
 const gchar * gst_clapper_state_get_name                (GstClapperState state);
 
+/* ClapperSeekMode */
+GST_CLAPPER_API
+GType gst_clapper_seek_mode_get_type                    (void);
+#define GST_TYPE_CLAPPER_SEEK_MODE                      (gst_clapper_seek_mode_get_type ())
+
+/**
+ * GstClapperSeekMode:
+ * @GST_CLAPPER_SEEK_MODE_DEFAULT: default seek method (flush only).
+ * @GST_CLAPPER_SEEK_MODE_ACCURATE: accurate seek method.
+ * @GST_CLAPPER_SEEK_MODE_FAST: fast seek method (next keyframe).
+ */
+typedef enum
+{
+  GST_CLAPPER_SEEK_MODE_DEFAULT,
+  GST_CLAPPER_SEEK_MODE_ACCURATE,
+  GST_CLAPPER_SEEK_MODE_FAST,
+} GstClapperSeekMode;
+
 /* ClapperError */
 GST_CLAPPER_API
 GQuark        gst_clapper_error_quark                   (void);
@@ -148,6 +166,13 @@ void         gst_clapper_stop                               (GstClapper *clapper
 
 GST_CLAPPER_API
 void         gst_clapper_seek                               (GstClapper *clapper, GstClockTime position);
+
+GST_CLAPPER_API
+GstClapperSeekMode
+             gst_clapper_get_seek_mode                      (GstClapper *clapper);
+
+GST_CLAPPER_API
+void         gst_clapper_set_seek_mode                      (GstClapper *clapper, GstClapperSeekMode mode);
 
 GST_CLAPPER_API
 void         gst_clapper_set_rate                           (GstClapper *clapper, gdouble rate);
@@ -284,12 +309,6 @@ void         gst_clapper_config_set_position_update_interval  (GstStructure *con
 
 GST_CLAPPER_API
 guint        gst_clapper_config_get_position_update_interval  (const GstStructure *config);
-
-GST_CLAPPER_API
-void         gst_clapper_config_set_seek_accurate             (GstStructure *config, gboolean accurate);
-
-GST_CLAPPER_API
-gboolean     gst_clapper_config_get_seek_accurate             (const GstStructure *config);
 
 GST_CLAPPER_API
 GstSample *  gst_clapper_get_video_snapshot                 (GstClapper *clapper, GstClapperSnapshotFormat format, const GstStructure *config);

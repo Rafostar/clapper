@@ -58,6 +58,7 @@ GST_DEBUG_CATEGORY_STATIC (gst_clapper_debug);
 #define DEFAULT_POSITION_UPDATE_INTERVAL_MS 100
 #define DEFAULT_AUDIO_VIDEO_OFFSET 0
 #define DEFAULT_SUBTITLE_VIDEO_OFFSET 0
+#define DEFAULT_SEEK_MODE GST_CLAPPER_SEEK_MODE_DEFAULT
 
 /**
  * gst_clapper_error_quark:
@@ -75,7 +76,6 @@ typedef enum
 {
   CONFIG_QUARK_USER_AGENT = 0,
   CONFIG_QUARK_POSITION_INTERVAL_UPDATE,
-  CONFIG_QUARK_ACCURATE_SEEK,
 
   CONFIG_QUARK_MAX
 } ConfigQuarkId;
@@ -83,7 +83,6 @@ typedef enum
 static const gchar *_config_quark_strings[] = {
   "user-agent",
   "position-interval-update",
-  "accurate-seek",
 };
 
 GQuark _config_quark_table[CONFIG_QUARK_MAX];
@@ -111,6 +110,7 @@ enum
   PROP_VIDEO_MULTIVIEW_FLAGS,
   PROP_AUDIO_VIDEO_OFFSET,
   PROP_SUBTITLE_VIDEO_OFFSET,
+  PROP_SEEK_MODE,
   PROP_LAST
 };
 
@@ -175,6 +175,8 @@ struct _GstClapper
   GstElement *current_vis_element;
 
   GstStructure *config;
+
+  GstClapperSeekMode seek_mode;
 
   /* Protected by lock */
   gboolean seek_pending;        /* Only set from main context */
@@ -282,7 +284,6 @@ gst_clapper_init (GstClapper * self)
   /* *INDENT-OFF* */
   self->config = gst_structure_new_id (QUARK_CONFIG,
       CONFIG_QUARK (POSITION_INTERVAL_UPDATE), G_TYPE_UINT, DEFAULT_POSITION_UPDATE_INTERVAL_MS,
-      CONFIG_QUARK (ACCURATE_SEEK), G_TYPE_BOOLEAN, FALSE,
       NULL);
   /* *INDENT-ON* */
 
@@ -411,6 +412,12 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_param_spec_int64 ("subtitle-video-offset", "Text Video Offset",
       "The synchronisation offset between text and video in nanoseconds",
       G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  param_specs[PROP_SEEK_MODE] =
+      g_param_spec_enum ("seek-mode", "Clapper Seek Mode",
+      "Selected seek mode to use when performing seeks",
+      GST_TYPE_CLAPPER_SEEK_MODE, DEFAULT_SEEK_MODE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 
@@ -735,6 +742,11 @@ gst_clapper_set_property (GObject * object, guint prop_id,
     case PROP_SUBTITLE_VIDEO_OFFSET:
       g_object_set_property (G_OBJECT (self->playbin), "text-offset", value);
       break;
+    case PROP_SEEK_MODE:
+      g_mutex_lock (&self->lock);
+      self->seek_mode = g_value_get_enum (value);
+      g_mutex_unlock (&self->lock);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -834,6 +846,11 @@ gst_clapper_get_property (GObject * object, guint prop_id,
       break;
     case PROP_SUBTITLE_VIDEO_OFFSET:
       g_object_get_property (G_OBJECT (self->playbin), "text-offset", value);
+      break;
+    case PROP_SEEK_MODE:
+      g_mutex_lock (&self->lock);
+      g_value_set_enum (value, self->seek_mode);
+      g_mutex_unlock (&self->lock);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2972,6 +2989,7 @@ gst_clapper_main (gpointer data)
   self->is_eos = FALSE;
   self->is_live = FALSE;
   self->rate = 1.0;
+  self->seek_mode = DEFAULT_SEEK_MODE;
 
   GST_TRACE_OBJECT (self, "Starting main loop");
   g_main_loop_run (self->loop);
@@ -3299,8 +3317,8 @@ gst_clapper_seek_internal_locked (GstClapper * self)
   gdouble rate;
   GstStateChangeReturn state_ret;
   GstEvent *s_event;
+  GstClapperSeekMode seek_mode;
   GstSeekFlags flags = 0;
-  gboolean accurate = FALSE;
 
   remove_seek_source (self);
 
@@ -3313,8 +3331,6 @@ gst_clapper_seek_internal_locked (GstClapper * self)
     if (state_ret == GST_STATE_CHANGE_FAILURE) {
       emit_error (self, g_error_new (GST_CLAPPER_ERROR, GST_CLAPPER_ERROR_FAILED,
               "Failed to seek"));
-      g_mutex_lock (&self->lock);
-      return;
     }
     g_mutex_lock (&self->lock);
     return;
@@ -3325,6 +3341,7 @@ gst_clapper_seek_internal_locked (GstClapper * self)
   self->seek_position = GST_CLOCK_TIME_NONE;
   self->seek_pending = TRUE;
   rate = self->rate;
+  seek_mode = self->seek_mode;
   g_mutex_unlock (&self->lock);
 
   remove_tick_source (self);
@@ -3332,17 +3349,19 @@ gst_clapper_seek_internal_locked (GstClapper * self)
 
   flags |= GST_SEEK_FLAG_FLUSH;
 
-  accurate = gst_clapper_config_get_seek_accurate (self->config);
-
-  if (accurate) {
-    flags |= GST_SEEK_FLAG_ACCURATE;
-  } else {
-    flags &= ~GST_SEEK_FLAG_ACCURATE;
+  switch (seek_mode) {
+    case GST_CLAPPER_SEEK_MODE_ACCURATE:
+      flags |= GST_SEEK_FLAG_ACCURATE;
+      break;
+    case GST_CLAPPER_SEEK_MODE_FAST:
+      flags |= GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_SNAP_AFTER;
+      break;
+    default:
+      break;
   }
 
-  if (rate != 1.0) {
+  if (rate != 1.0)
     flags |= GST_SEEK_FLAG_TRICKMODE;
-  }
 
   if (rate >= 0.0) {
     s_event = gst_event_new_seek (rate, GST_FORMAT_TIME, flags,
@@ -4650,47 +4669,58 @@ gst_clapper_config_get_position_update_interval (const GstStructure * config)
   return interval;
 }
 
-/**
- * gst_clapper_config_set_seek_accurate:
- * @config: a #GstClapper configuration
- * @accurate: accurate seek or not
- *
- * Enable or disable accurate seeking. When enabled, elements will try harder
- * to seek as accurately as possible to the requested seek position. Generally
- * it will be slower especially for formats that don't have any indexes or
- * timestamp markers in the stream.
- *
- * If accurate seeking is disabled, elements will seek as close as the request
- * position without slowing down seeking too much.
- *
- * Accurate seeking is disabled by default.
- */
-void
-gst_clapper_config_set_seek_accurate (GstStructure * config, gboolean accurate)
+GType
+gst_clapper_seek_mode_get_type (void)
 {
-  g_return_if_fail (config != NULL);
+  static gsize id = 0;
+  static const GEnumValue values[] = {
+    {C_ENUM (GST_CLAPPER_SEEK_MODE_DEFAULT), "GST_CLAPPER_SEEK_MODE_DEFAULT",
+        "default"},
+    {C_ENUM (GST_CLAPPER_SEEK_MODE_ACCURATE), "GST_CLAPPER_SEEK_MODE_ACCURATE",
+        "accurate"},
+    {C_ENUM (GST_CLAPPER_SEEK_MODE_FAST), "GST_CLAPPER_SEEK_MODE_FAST", "fast"},
+    {0, NULL, NULL}
+  };
 
-  gst_structure_id_set (config,
-      CONFIG_QUARK (ACCURATE_SEEK), G_TYPE_BOOLEAN, accurate, NULL);
+  if (g_once_init_enter (&id)) {
+    GType tmp = g_enum_register_static ("GstClapperSeekMode", values);
+    g_once_init_leave (&id, tmp);
+  }
+
+  return (GType) id;
 }
 
 /**
- * gst_clapper_config_get_seek_accurate:
- * @config: a #GstClapper configuration
+ * gst_clapper_get_seek_mode:
+ * @clapper: #GstClapper instance
  *
- * Returns: %TRUE if accurate seeking is enabled
+ * Returns: The currently used seek mode, Default: 0 "default"
  */
-gboolean
-gst_clapper_config_get_seek_accurate (const GstStructure * config)
+GstClapperSeekMode
+gst_clapper_get_seek_mode (GstClapper * self)
 {
-  gboolean accurate = FALSE;
+  GstClapperSeekMode mode;
 
-  g_return_val_if_fail (config != NULL, FALSE);
+  g_return_val_if_fail (GST_IS_CLAPPER (self), DEFAULT_SEEK_MODE);
 
-  gst_structure_id_get (config,
-      CONFIG_QUARK (ACCURATE_SEEK), G_TYPE_BOOLEAN, &accurate, NULL);
+  g_object_get (self, "seek-mode", &mode, NULL);
 
-  return accurate;
+  return mode;
+}
+
+/**
+ * gst_clapper_set_seek_mode:
+ * @clapper: #GstClapper instance
+ * @mode: #GstClapperSeekMode
+ *
+ * Changes currently used clapper seek mode to the one of @mode
+ */
+void
+gst_clapper_set_seek_mode (GstClapper * self, GstClapperSeekMode mode)
+{
+  g_return_if_fail (GST_IS_CLAPPER (self));
+
+  g_object_set (self, "seek-mode", mode, NULL);
 }
 
 /**
