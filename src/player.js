@@ -1,4 +1,4 @@
-const { Gdk, Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
+const { Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
@@ -188,7 +188,7 @@ class ClapperPlayer extends PlayerBase
 
         this.seek_done = false;
 
-        if(this.state === GstPlayer.PlayerState.STOPPED)
+        if(this.state === GstClapper.ClapperState.STOPPED)
             this.pause();
 
         if(position < 0)
@@ -213,7 +213,7 @@ class ClapperPlayer extends PlayerBase
 
         /* FIXME: Remove this check when GstPlay(er) have set_seek_mode function */
         if(this.set_seek_mode) {
-            this.set_seek_mode(GstPlayer.PlayerSeekMode.DEFAULT);
+            this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
             this.seekingMode = 'normal';
             this.needsFastSeekRestore = true;
         }
@@ -275,7 +275,7 @@ class ClapperPlayer extends PlayerBase
 
     toggle_play()
     {
-        const action = (this.state === GstPlayer.PlayerState.PLAYING)
+        const action = (this.state === GstClapper.ClapperState.PLAYING)
             ? 'pause'
             : 'play';
 
@@ -387,11 +387,11 @@ class ClapperPlayer extends PlayerBase
         this.state = state;
         this.emitWs('state_changed', state);
 
-        if(state !== GstPlayer.PlayerState.BUFFERING) {
+        if(state !== GstClapper.ClapperState.BUFFERING) {
             const root = player.widget.get_root();
 
             if(this.quitOnStop) {
-                if(root && state === GstPlayer.PlayerState.STOPPED)
+                if(root && state === GstClapper.ClapperState.STOPPED)
                     root.run_dispose();
 
                 return;
@@ -402,11 +402,11 @@ class ClapperPlayer extends PlayerBase
         const clapperWidget = player.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        if(!this.seek_done && state !== GstPlayer.PlayerState.BUFFERING) {
+        if(!this.seek_done && state !== GstClapper.ClapperState.BUFFERING) {
             clapperWidget.updateTime();
 
             if(this.needsFastSeekRestore) {
-                this.set_seek_mode(GstPlayer.PlayerSeekMode.FAST);
+                this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
                 this.seekingMode = 'fast';
                 this.needsFastSeekRestore = false;
             }
@@ -726,7 +726,7 @@ class ClapperPlayer extends PlayerBase
     {
         this._performCloseCleanup(window);
 
-        if(this.state === GstPlayer.PlayerState.STOPPED)
+        if(this.state === GstClapper.ClapperState.STOPPED)
             return window.run_dispose();
 
         this.quitOnStop = true;
