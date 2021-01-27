@@ -100,6 +100,7 @@ struct _GstClapperMediaInfo
   gchar *container;
   gboolean seekable, is_live;
   GstTagList *tags;
+  GstToc *toc;
   GstSample *image_sample;
 
   GList *stream_list;

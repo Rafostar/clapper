@@ -170,6 +170,7 @@ struct _GstClapper
   gint buffering;
 
   GstTagList *global_tags;
+  GstToc *global_toc;
   GstClapperMediaInfo *media_info;
 
   GstElement *current_vis_element;
@@ -530,6 +531,8 @@ gst_clapper_finalize (GObject * object)
   g_free (self->subtitle_sid);
   if (self->global_tags)
     gst_tag_list_unref (self->global_tags);
+  if (self->global_toc)
+    gst_toc_unref (self->global_toc);
   if (self->video_renderer)
     g_object_unref (self->video_renderer);
   if (self->signal_dispatcher)
@@ -1102,12 +1105,14 @@ emit_error (GstClapper * self, GError * err)
     g_object_unref (self->media_info);
     self->media_info = NULL;
   }
-
   if (self->global_tags) {
     gst_tag_list_unref (self->global_tags);
     self->global_tags = NULL;
   }
-
+  if (self->global_toc) {
+    gst_toc_unref (self->global_toc);
+    self->global_toc = NULL;
+  }
   self->seek_pending = FALSE;
   remove_seek_source (self);
   self->seek_position = GST_CLOCK_TIME_NONE;
@@ -1805,6 +1810,37 @@ tags_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
   }
 
   gst_tag_list_unref (tags);
+}
+
+static void
+toc_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
+{
+  GstClapper *self = GST_CLAPPER (user_data);
+  GstToc *toc = NULL;
+
+  gst_message_parse_toc (msg, &toc, NULL);
+
+  GST_DEBUG_OBJECT (self, "received %s toc",
+      gst_toc_get_scope (toc) == GST_TOC_SCOPE_GLOBAL ? "global" : "stream");
+
+  if (gst_toc_get_scope (toc) == GST_TOC_SCOPE_GLOBAL) {
+    g_mutex_lock (&self->lock);
+    if (self->media_info) {
+      if (self->media_info->toc)
+        gst_toc_unref (self->media_info->toc);
+      self->media_info->toc = gst_toc_ref (toc);
+      media_info_update (self, self->media_info);
+      g_mutex_unlock (&self->lock);
+      emit_media_info_updated_signal (self);
+    } else {
+      if (self->global_toc)
+        gst_toc_unref (self->global_toc);
+      self->global_toc = gst_toc_ref (toc);
+      g_mutex_unlock (&self->lock);
+    }
+  }
+
+  gst_toc_unref (toc);
 }
 
 static void
@@ -2731,8 +2767,10 @@ gst_clapper_media_info_create (GstClapper * self)
   media_info = gst_clapper_media_info_new (self->uri);
   media_info->duration = gst_clapper_get_duration (self);
   media_info->tags = self->global_tags;
+  media_info->toc = self->global_toc;
   media_info->is_live = self->is_live;
   self->global_tags = NULL;
+  self->global_toc = NULL;
 
   query = gst_query_new_seeking (GST_FORMAT_TIME);
   if (gst_element_query (self->playbin, query))
@@ -2953,6 +2991,7 @@ gst_clapper_main (gpointer data)
   g_signal_connect (G_OBJECT (bus), "message::element",
       G_CALLBACK (element_cb), self);
   g_signal_connect (G_OBJECT (bus), "message::tag", G_CALLBACK (tags_cb), self);
+  g_signal_connect (G_OBJECT (bus), "message::toc", G_CALLBACK (toc_cb), self);
 
   if (self->use_playbin3) {
     g_signal_connect (G_OBJECT (bus), "message::stream-collection",
@@ -3255,6 +3294,10 @@ gst_clapper_stop_internal (GstClapper * self, gboolean transient)
   if (self->global_tags) {
     gst_tag_list_unref (self->global_tags);
     self->global_tags = NULL;
+  }
+  if (self->global_toc) {
+    gst_toc_unref (self->global_toc);
+    self->global_toc = NULL;
   }
   self->seek_pending = FALSE;
   remove_seek_source (self);

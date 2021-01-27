@@ -423,26 +423,21 @@ gst_clapper_media_info_finalize (GObject * object)
   GstClapperMediaInfo *info = GST_CLAPPER_MEDIA_INFO (object);
 
   g_free (info->uri);
+  g_free (info->title);
+  g_free (info->container);
 
   if (info->tags)
     gst_tag_list_unref (info->tags);
-
-  g_free (info->title);
-
-  g_free (info->container);
-
+  if (info->toc)
+    gst_toc_unref (info->toc);
   if (info->image_sample)
     gst_sample_unref (info->image_sample);
-
   if (info->audio_stream_list)
     g_list_free (info->audio_stream_list);
-
   if (info->video_stream_list)
     g_list_free (info->video_stream_list);
-
   if (info->subtitle_stream_list)
     g_list_free (info->subtitle_stream_list);
-
   if (info->stream_list)
     g_list_free_full (info->stream_list, g_object_unref);
 
@@ -567,6 +562,8 @@ gst_clapper_media_info_copy (GstClapperMediaInfo * ref)
   info->is_live = ref->is_live;
   if (ref->tags)
     info->tags = gst_tag_list_ref (ref->tags);
+  if (ref->toc)
+    info->toc = gst_toc_ref (ref->toc);
   if (ref->title)
     info->title = g_strdup (ref->title);
   if (ref->container)
@@ -750,6 +747,20 @@ gst_clapper_media_info_get_tags (const GstClapperMediaInfo * info)
   g_return_val_if_fail (GST_IS_CLAPPER_MEDIA_INFO (info), NULL);
 
   return info->tags;
+}
+
+/**
+ * gst_clapper_media_info_get_toc:
+ * @info: a #GstClapperMediaInfo
+ *
+ * Returns: (transfer none): the toc contained in media info.
+ */
+GstToc *
+gst_clapper_media_info_get_toc (const GstClapperMediaInfo * info)
+{
+  g_return_val_if_fail (GST_IS_CLAPPER_MEDIA_INFO (info), NULL);
+
+  return info->toc;
 }
 
 /**

@@ -234,6 +234,9 @@ GST_CLAPPER_API
 GstTagList *  gst_clapper_media_info_get_tags                       (const GstClapperMediaInfo *info);
 
 GST_CLAPPER_API
+GstToc *      gst_clapper_media_info_get_toc                        (const GstClapperMediaInfo *info);
+
+GST_CLAPPER_API
 const gchar * gst_clapper_media_info_get_title                      (const GstClapperMediaInfo *info);
 
 GST_CLAPPER_API
