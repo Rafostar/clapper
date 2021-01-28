@@ -272,6 +272,7 @@ static void remove_seek_source (GstClapper * self);
 static void
 gst_clapper_init (GstClapper * self)
 {
+  GST_DEBUG_CATEGORY_INIT (gst_clapper_debug, "Clapper", 0, "GstClapper");
   GST_TRACE_OBJECT (self, "Initializing");
 
   self = gst_clapper_get_instance_private (self);
@@ -297,7 +298,7 @@ gst_clapper_init (GstClapper * self)
 }
 
 static void
-config_quark_initialize (void)
+quarks_initialize (void)
 {
   gint i;
 
@@ -311,6 +312,8 @@ config_quark_initialize (void)
     _config_quark_table[i] =
         g_quark_from_static_string (_config_quark_strings[i]);
   }
+
+  gst_clapper_error_quark ();
 }
 
 static void
@@ -495,7 +498,7 @@ gst_clapper_class_init (GstClapperClass * klass)
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_CLOCK_TIME);
 
-  config_quark_initialize ();
+  quarks_initialize ();
 }
 
 static void
@@ -3055,17 +3058,6 @@ gst_clapper_main (gpointer data)
   return NULL;
 }
 
-static gpointer
-gst_clapper_init_once (G_GNUC_UNUSED gpointer user_data)
-{
-  gst_init (NULL, NULL);
-
-  GST_DEBUG_CATEGORY_INIT (gst_clapper_debug, "gst-clapper", 0, "GstClapper");
-  gst_clapper_error_quark ();
-
-  return NULL;
-}
-
 /**
  * gst_clapper_new:
  * @video_renderer: (transfer full) (allow-none): GstClapperVideoRenderer to use
@@ -3085,15 +3077,11 @@ GstClapper *
 gst_clapper_new (GstClapperVideoRenderer * video_renderer,
     GstClapperSignalDispatcher * signal_dispatcher)
 {
-  static GOnce once = G_ONCE_INIT;
   GstClapper *self;
-
-  g_once (&once, gst_clapper_init_once, NULL);
 
   self =
       g_object_new (GST_TYPE_CLAPPER, "video-renderer", video_renderer,
       "signal-dispatcher", signal_dispatcher, NULL);
-  gst_object_ref_sink (self);
 
   if (video_renderer)
     g_object_unref (video_renderer);
