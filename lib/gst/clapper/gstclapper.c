@@ -851,6 +851,25 @@ state_changed_signal_data_free (StateChangedSignalData * data)
 }
 
 static void
+rate_notify_dispatch (gpointer user_data)
+{
+  GstClapper *clapper = user_data;
+
+  if (clapper->inhibit_sigs)
+    return;
+
+  g_object_notify_by_pspec (G_OBJECT (clapper), param_specs[PROP_RATE]);
+}
+
+static void
+emit_rate_notify (GstClapper * self)
+{
+  gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
+      rate_notify_dispatch, g_object_ref (self),
+      (GDestroyNotify) g_object_unref);
+}
+
+static void
 change_state (GstClapper * self, GstClapperState state)
 {
   if (state == self->app_state)
@@ -860,6 +879,11 @@ change_state (GstClapper * self, GstClapperState state)
       gst_clapper_state_get_name (self->app_state),
       gst_clapper_state_get_name (state));
   self->app_state = state;
+
+  if (state == GST_CLAPPER_STATE_STOPPED && self->rate != 1.0) {
+    self->rate = 1.0;
+    emit_rate_notify (self);
+  }
 
   if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
           signals[SIGNAL_STATE_CHANGED], 0, NULL, NULL, NULL) != 0) {
@@ -3127,7 +3151,6 @@ gst_clapper_stop_internal (GstClapper * self, gboolean transient)
   remove_seek_source (self);
   self->seek_position = GST_CLOCK_TIME_NONE;
   self->last_seek_time = GST_CLOCK_TIME_NONE;
-  self->rate = 1.0;
   if (self->collection) {
     if (self->stream_notify_id)
       g_signal_handler_disconnect (self->collection, self->stream_notify_id);
