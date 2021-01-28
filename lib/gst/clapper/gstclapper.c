@@ -126,7 +126,6 @@ enum
   SIGNAL_WARNING,
   SIGNAL_VIDEO_DIMENSIONS_CHANGED,
   SIGNAL_MEDIA_INFO_UPDATED,
-  SIGNAL_VOLUME_CHANGED,
   SIGNAL_MUTE_CHANGED,
   SIGNAL_SEEK_DONE,
   SIGNAL_LAST
@@ -165,6 +164,9 @@ struct _GstClapper
   GstClockTime cached_duration;
 
   gdouble rate;
+
+  /* Prevent unnecessary signals emissions */
+  gdouble last_volume;
 
   GstClapperState app_state;
   gint buffering;
@@ -381,7 +383,8 @@ gst_clapper_class_init (GstClapperClass * klass)
 
   param_specs[PROP_VOLUME] =
       g_param_spec_double ("volume", "Volume", "Volume",
-      0, 10.0, DEFAULT_VOLUME, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      0, 10.0, DEFAULT_VOLUME, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_MUTE] =
       g_param_spec_boolean ("mute", "Mute", "Mute",
@@ -396,7 +399,8 @@ gst_clapper_class_init (GstClapperClass * klass)
 
   param_specs[PROP_RATE] =
       g_param_spec_double ("rate", "rate", "Playback rate",
-      -64.0, 64.0, DEFAULT_RATE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      -64.0, 64.0, DEFAULT_RATE, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_VIDEO_MULTIVIEW_MODE] =
       g_param_spec_enum ("video-multiview-mode",
@@ -477,11 +481,6 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("media-info-updated", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_CLAPPER_MEDIA_INFO);
-
-  signals[SIGNAL_VOLUME_CHANGED] =
-      g_signal_new ("volume-changed", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
-      NULL, NULL, G_TYPE_NONE, 0, G_TYPE_INVALID);
 
   signals[SIGNAL_MUTE_CHANGED] =
       g_signal_new ("mute-changed", G_TYPE_FROM_CLASS (klass),
@@ -2838,24 +2837,26 @@ subtitle_tags_changed_cb (G_GNUC_UNUSED GstElement * playbin, gint stream_index,
 }
 
 static void
-volume_changed_dispatch (gpointer user_data)
+volume_notify_dispatch (gpointer user_data)
 {
   GstClapper *clapper = user_data;
 
   if (clapper->inhibit_sigs)
     return;
 
-  g_signal_emit (clapper, signals[SIGNAL_VOLUME_CHANGED], 0);
+  g_object_notify_by_pspec (G_OBJECT (clapper), param_specs[PROP_VOLUME]);
 }
 
 static void
 volume_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
     GstClapper * self)
 {
-  if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
-          signals[SIGNAL_VOLUME_CHANGED], 0, NULL, NULL, NULL) != 0) {
+  gdouble volume = gst_clapper_get_volume (self);
+
+  if (self->last_volume != volume) {
+    self->last_volume = volume;
     gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
-        volume_changed_dispatch, g_object_ref (self),
+        volume_notify_dispatch, g_object_ref (self),
         (GDestroyNotify) g_object_unref);
   }
 }
