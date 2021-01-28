@@ -105,7 +105,6 @@ enum
   SIGNAL_ERROR,
   SIGNAL_WARNING,
   SIGNAL_VIDEO_DIMENSIONS_CHANGED,
-  SIGNAL_MEDIA_INFO_UPDATED,
   SIGNAL_MUTE_CHANGED,
   SIGNAL_SEEK_DONE,
   SIGNAL_LAST
@@ -238,8 +237,6 @@ static GstClapperStreamInfo *gst_clapper_stream_info_get_current_from_stream_id
     (GstClapper * self, const gchar * stream_id, GType type);
 static void stream_notify_cb (GstStreamCollection * collection,
     GstStream * stream, GParamSpec * pspec, GstClapper * self);
-
-static void emit_media_info_updated_signal (GstClapper * self);
 
 static void *get_title (GstTagList * tags);
 static void *get_container_format (GstTagList * tags);
@@ -428,11 +425,6 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("video-dimensions-changed", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
-
-  signals[SIGNAL_MEDIA_INFO_UPDATED] =
-      g_signal_new ("media-info-updated", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
-      NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_CLAPPER_MEDIA_INFO);
 
   signals[SIGNAL_MUTE_CHANGED] =
       g_signal_new ("mute-changed", G_TYPE_FROM_CLASS (klass),
@@ -1472,8 +1464,6 @@ duration_changed_signal_data_free (DurationChangedSignalData * data)
 static void
 emit_duration_changed (GstClapper * self, GstClockTime duration)
 {
-  gboolean updated = FALSE;
-
   if (self->cached_duration == duration)
     return;
 
@@ -1482,14 +1472,9 @@ emit_duration_changed (GstClapper * self, GstClockTime duration)
 
   self->cached_duration = duration;
   g_mutex_lock (&self->lock);
-  if (self->media_info) {
+  if (self->media_info)
     self->media_info->duration = duration;
-    updated = TRUE;
-  }
   g_mutex_unlock (&self->lock);
-  if (updated) {
-    emit_media_info_updated_signal (self);
-  }
 
   if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
           signals[SIGNAL_DURATION_CHANGED], 0, NULL, NULL, NULL) != 0) {
@@ -1577,7 +1562,6 @@ state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
         g_object_unref (self->media_info);
       self->media_info = gst_clapper_media_info_create (self);
       g_mutex_unlock (&self->lock);
-      emit_media_info_updated_signal (self);
       check_video_dimensions_changed (self);
       if (gst_element_query_duration (self->playbin, GST_FORMAT_TIME,
               &duration)) {
@@ -1731,7 +1715,6 @@ tags_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
       self->media_info->tags = gst_tag_list_ref (tags);
       media_info_update (self, self->media_info);
       g_mutex_unlock (&self->lock);
-      emit_media_info_updated_signal (self);
     } else {
       if (self->global_tags)
         gst_tag_list_unref (self->global_tags);
@@ -1762,7 +1745,6 @@ toc_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
       self->media_info->toc = gst_toc_ref (toc);
       media_info_update (self, self->media_info);
       g_mutex_unlock (&self->lock);
-      emit_media_info_updated_signal (self);
     } else {
       if (self->global_toc)
         gst_toc_unref (self->global_toc);
@@ -1862,7 +1844,6 @@ stream_collection_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 {
   GstClapper *self = GST_CLAPPER (user_data);
   GstStreamCollection *collection = NULL;
-  gboolean updated = FALSE;
 
   gst_message_parse_stream_collection (msg, &collection);
 
@@ -1870,12 +1851,9 @@ stream_collection_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
     return;
 
   g_mutex_lock (&self->lock);
-  updated = update_stream_collection (self, collection);
+  update_stream_collection (self, collection);
   gst_object_unref (collection);
   g_mutex_unlock (&self->lock);
-
-  if (self->media_info && updated)
-    emit_media_info_updated_signal (self);
 }
 
 static void
@@ -1884,7 +1862,6 @@ streams_selected_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 {
   GstClapper *self = GST_CLAPPER (user_data);
   GstStreamCollection *collection = NULL;
-  gboolean updated = FALSE;
   guint i, len;
 
   gst_message_parse_streams_selected (msg, &collection);
@@ -1893,7 +1870,7 @@ streams_selected_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
     return;
 
   g_mutex_lock (&self->lock);
-  updated = update_stream_collection (self, collection);
+  update_stream_collection (self, collection);
   gst_object_unref (collection);
 
   g_free (self->video_sid);
@@ -1934,9 +1911,6 @@ streams_selected_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
     *current_sid = g_strdup (stream_id);
   }
   g_mutex_unlock (&self->lock);
-
-  if (self->media_info && updated)
-    emit_media_info_updated_signal (self);
 }
 
 static void
@@ -1961,55 +1935,6 @@ clapper_clear_flag (GstClapper * self, gint pos)
   g_object_set (self->playbin, "flags", flags, NULL);
 
   GST_DEBUG_OBJECT (self, "setting flags=%#x", flags);
-}
-
-typedef struct
-{
-  GstClapper *clapper;
-  GstClapperMediaInfo *info;
-} MediaInfoUpdatedSignalData;
-
-static void
-media_info_updated_dispatch (gpointer user_data)
-{
-  MediaInfoUpdatedSignalData *data = user_data;
-
-  if (data->clapper->inhibit_sigs)
-    return;
-
-  if (data->clapper->target_state >= GST_STATE_PAUSED) {
-    g_signal_emit (data->clapper, signals[SIGNAL_MEDIA_INFO_UPDATED], 0,
-        data->info);
-  }
-}
-
-static void
-free_media_info_updated_signal_data (MediaInfoUpdatedSignalData * data)
-{
-  g_object_unref (data->clapper);
-  g_object_unref (data->info);
-  g_free (data);
-}
-
-/*
- * emit_media_info_updated_signal:
- *
- * create a new copy of self->media_info object and emits the newly created
- * copy to user application. The newly created media_info will be unref'ed
- * as part of signal finalize method.
- */
-static void
-emit_media_info_updated_signal (GstClapper * self)
-{
-  MediaInfoUpdatedSignalData *data = g_new (MediaInfoUpdatedSignalData, 1);
-  data->clapper = g_object_ref (self);
-  g_mutex_lock (&self->lock);
-  data->info = gst_clapper_media_info_copy (self->media_info);
-  g_mutex_unlock (&self->lock);
-
-  gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
-      media_info_updated_dispatch, data,
-      (GDestroyNotify) free_media_info_updated_signal_data);
 }
 
 static GstCaps *
@@ -2346,7 +2271,6 @@ stream_notify_cb (GstStreamCollection * collection, GstStream * stream,
 {
   GstClapperStreamInfo *info;
   const gchar *stream_id;
-  gboolean emit_signal = FALSE;
 
   if (!self->media_info)
     return;
@@ -2359,14 +2283,9 @@ stream_notify_cb (GstStreamCollection * collection, GstStream * stream,
   g_mutex_lock (&self->lock);
   info =
       gst_clapper_stream_info_find_from_stream_id (self->media_info, stream_id);
-  if (info) {
+  if (info)
     gst_clapper_stream_info_update_from_stream (self, info, stream);
-    emit_signal = TRUE;
-  }
   g_mutex_unlock (&self->lock);
-
-  if (emit_signal)
-    emit_media_info_updated_signal (self);
 }
 
 static void
@@ -2749,8 +2668,6 @@ tags_changed_cb (GstClapper * self, gint stream_index, GType type)
   s = gst_clapper_stream_info_find (self->media_info, type, stream_index);
   gst_clapper_stream_info_update_tags_and_caps (self, s);
   g_mutex_unlock (&self->lock);
-
-  emit_media_info_updated_signal (self);
 }
 
 static void
