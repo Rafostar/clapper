@@ -69,26 +69,6 @@ gst_clapper_error_quark (void)
   return g_quark_from_static_string ("gst-clapper-error-quark");
 }
 
-static GQuark QUARK_CONFIG;
-
-/* Keep ConfigQuarkId and _config_quark_strings ordered and synced */
-typedef enum
-{
-  CONFIG_QUARK_USER_AGENT = 0,
-  CONFIG_QUARK_POSITION_INTERVAL_UPDATE,
-
-  CONFIG_QUARK_MAX
-} ConfigQuarkId;
-
-static const gchar *_config_quark_strings[] = {
-  "user-agent",
-  "position-interval-update",
-};
-
-GQuark _config_quark_table[CONFIG_QUARK_MAX];
-
-#define CONFIG_QUARK(q) _config_quark_table[CONFIG_QUARK_##q]
-
 enum
 {
   PROP_0,
@@ -176,8 +156,6 @@ struct _GstClapper
   GstClapperMediaInfo *media_info;
 
   GstElement *current_vis_element;
-
-  GstStructure *config;
 
   GstClapperSeekMode seek_mode;
 
@@ -284,38 +262,12 @@ gst_clapper_init (GstClapper * self)
 
   self->context = g_main_context_new ();
   self->loop = g_main_loop_new (self->context, FALSE);
-
-  /* *INDENT-OFF* */
-  self->config = gst_structure_new_id (QUARK_CONFIG,
-      CONFIG_QUARK (POSITION_INTERVAL_UPDATE), G_TYPE_UINT, DEFAULT_POSITION_UPDATE_INTERVAL_MS,
-      NULL);
-  /* *INDENT-ON* */
-
   self->seek_pending = FALSE;
   self->seek_position = GST_CLOCK_TIME_NONE;
   self->last_seek_time = GST_CLOCK_TIME_NONE;
   self->inhibit_sigs = FALSE;
 
   GST_TRACE_OBJECT (self, "Initialized");
-}
-
-static void
-quarks_initialize (void)
-{
-  gint i;
-
-  QUARK_CONFIG = g_quark_from_static_string ("clapper-config");
-
-  if (G_N_ELEMENTS (_config_quark_strings) != CONFIG_QUARK_MAX)
-    g_warning ("the quark table is not consistent! %d != %d",
-        (int) G_N_ELEMENTS (_config_quark_strings), CONFIG_QUARK_MAX);
-
-  for (i = 0; i < CONFIG_QUARK_MAX; i++) {
-    _config_quark_table[i] =
-        g_quark_from_static_string (_config_quark_strings[i]);
-  }
-
-  gst_clapper_error_quark ();
 }
 
 static void
@@ -496,8 +448,6 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("seek-done", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_CLOCK_TIME);
-
-  quarks_initialize ();
 }
 
 static void
@@ -549,8 +499,6 @@ gst_clapper_finalize (GObject * object)
     g_object_unref (self->signal_dispatcher);
   if (self->current_vis_element)
     gst_object_unref (self->current_vis_element);
-  if (self->config)
-    gst_structure_free (self->config);
   if (self->collection)
     gst_object_unref (self->collection);
   g_mutex_clear (&self->lock);
@@ -990,17 +938,10 @@ tick_cb (gpointer user_data)
 static void
 add_tick_source (GstClapper * self)
 {
-  guint position_update_interval_ms;
-
   if (self->tick_source)
     return;
 
-  position_update_interval_ms =
-      gst_clapper_config_get_position_update_interval (self->config);
-  if (!position_update_interval_ms)
-    return;
-
-  self->tick_source = g_timeout_source_new (position_update_interval_ms);
+  self->tick_source = g_timeout_source_new (DEFAULT_POSITION_UPDATE_INTERVAL_MS);
   g_source_set_callback (self->tick_source, (GSourceFunc) tick_cb, self, NULL);
   g_source_attach (self->tick_source, self->context);
 }
@@ -2887,21 +2828,7 @@ mute_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
 static void
 source_setup_cb (GstElement * playbin, GstElement * source, GstClapper * self)
 {
-  gchar *user_agent;
 
-  user_agent = gst_clapper_config_get_user_agent (self->config);
-  if (user_agent) {
-    GParamSpec *prop;
-
-    prop = g_object_class_find_property (G_OBJECT_GET_CLASS (source),
-        "user-agent");
-    if (prop && prop->value_type == G_TYPE_STRING) {
-      GST_INFO_OBJECT (self, "Setting source user-agent: %s", user_agent);
-      g_object_set (source, "user-agent", user_agent, NULL);
-    }
-
-    g_free (user_agent);
-  }
 }
 
 static gpointer
@@ -4546,150 +4473,6 @@ gst_clapper_error_get_name (GstClapperError error)
 
   g_assert_not_reached ();
   return NULL;
-}
-
-/**
- * gst_clapper_set_config:
- * @clapper: #GstClapper instance
- * @config: (transfer full): a #GstStructure
- *
- * Set the configuration of the clapper. If the clapper is already configured, and
- * the configuration haven't change, this function will return %TRUE. If the
- * clapper is not in the GST_CLAPPER_STATE_STOPPED, this method will return %FALSE
- * and active configuration will remain.
- *
- * @config is a #GstStructure that contains the configuration parameters for
- * the clapper.
- *
- * This function takes ownership of @config.
- *
- * Returns: %TRUE when the configuration could be set.
- */
-gboolean
-gst_clapper_set_config (GstClapper * self, GstStructure * config)
-{
-  g_return_val_if_fail (GST_IS_CLAPPER (self), FALSE);
-  g_return_val_if_fail (config != NULL, FALSE);
-
-  g_mutex_lock (&self->lock);
-
-  if (self->app_state != GST_CLAPPER_STATE_STOPPED) {
-    GST_INFO_OBJECT (self, "can't change config while clapper is %s",
-        gst_clapper_state_get_name (self->app_state));
-    g_mutex_unlock (&self->lock);
-    return FALSE;
-  }
-
-  if (self->config)
-    gst_structure_free (self->config);
-  self->config = config;
-  g_mutex_unlock (&self->lock);
-
-  return TRUE;
-}
-
-/**
- * gst_clapper_get_config:
- * @clapper: #GstClapper instance
- *
- * Get a copy of the current configuration of the clapper. This configuration
- * can either be modified and used for the gst_clapper_set_config() call
- * or it must be freed after usage.
- *
- * Returns: (transfer full): a copy of the current configuration of @clapper. Use
- * gst_structure_free() after usage or gst_clapper_set_config().
- */
-GstStructure *
-gst_clapper_get_config (GstClapper * self)
-{
-  GstStructure *ret;
-
-  g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
-
-  g_mutex_lock (&self->lock);
-  ret = gst_structure_copy (self->config);
-  g_mutex_unlock (&self->lock);
-
-  return ret;
-}
-
-/**
- * gst_clapper_config_set_user_agent:
- * @config: a #GstClapper configuration
- * @agent: the string to use as user agent
- *
- * Set the user agent to pass to the server if @clapper needs to connect
- * to a server during playback. This is typically used when playing HTTP
- * or RTSP streams.
- */
-void
-gst_clapper_config_set_user_agent (GstStructure * config, const gchar * agent)
-{
-  g_return_if_fail (config != NULL);
-  g_return_if_fail (agent != NULL);
-
-  gst_structure_id_set (config,
-      CONFIG_QUARK (USER_AGENT), G_TYPE_STRING, agent, NULL);
-}
-
-/**
- * gst_clapper_config_get_user_agent:
- * @config: a #GstClapper configuration
- *
- * Return the user agent which has been configured using
- * gst_clapper_config_set_user_agent() if any.
- *
- * Returns: (transfer full): the configured agent, or %NULL
- */
-gchar *
-gst_clapper_config_get_user_agent (const GstStructure * config)
-{
-  gchar *agent = NULL;
-
-  g_return_val_if_fail (config != NULL, NULL);
-
-  gst_structure_id_get (config,
-      CONFIG_QUARK (USER_AGENT), G_TYPE_STRING, &agent, NULL);
-
-  return agent;
-}
-
-/**
- * gst_clapper_config_set_position_update_interval:
- * @config: a #GstClapper configuration
- * @interval: interval in ms
- *
- * set interval in milliseconds between two position-updated signals.
- * pass 0 to stop updating the position.
- */
-void
-gst_clapper_config_set_position_update_interval (GstStructure * config,
-    guint interval)
-{
-  g_return_if_fail (config != NULL);
-  g_return_if_fail (interval <= 10000);
-
-  gst_structure_id_set (config,
-      CONFIG_QUARK (POSITION_INTERVAL_UPDATE), G_TYPE_UINT, interval, NULL);
-}
-
-/**
- * gst_clapper_config_get_position_update_interval:
- * @config: a #GstClapper configuration
- *
- * Returns: current position update interval in milliseconds
- */
-guint
-gst_clapper_config_get_position_update_interval (const GstStructure * config)
-{
-  guint interval = DEFAULT_POSITION_UPDATE_INTERVAL_MS;
-
-  g_return_val_if_fail (config != NULL, DEFAULT_POSITION_UPDATE_INTERVAL_MS);
-
-  gst_structure_id_get (config,
-      CONFIG_QUARK (POSITION_INTERVAL_UPDATE), G_TYPE_UINT, &interval, NULL);
-
-  return interval;
 }
 
 GType

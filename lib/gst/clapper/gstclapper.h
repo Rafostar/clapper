@@ -292,25 +292,6 @@ GST_CLAPPER_API
 void         gst_clapper_set_subtitle_video_offset          (GstClapper *clapper, gint64 offset);
 
 GST_CLAPPER_API
-gboolean     gst_clapper_set_config                         (GstClapper *clapper, GstStructure *config);
-
-GST_CLAPPER_API
-GstStructure *
-             gst_clapper_get_config                         (GstClapper *clapper);
-
-GST_CLAPPER_API
-void         gst_clapper_config_set_user_agent              (GstStructure *config, const gchar *agent);
-
-GST_CLAPPER_API
-gchar *      gst_clapper_config_get_user_agent              (const GstStructure *config);
-
-GST_CLAPPER_API
-void         gst_clapper_config_set_position_update_interval  (GstStructure *config, guint interval);
-
-GST_CLAPPER_API
-guint        gst_clapper_config_get_position_update_interval  (const GstStructure *config);
-
-GST_CLAPPER_API
 GstSample *  gst_clapper_get_video_snapshot                 (GstClapper *clapper, GstClapperSnapshotFormat format, const GstStructure *config);
 
 G_END_DECLS
