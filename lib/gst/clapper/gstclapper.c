@@ -328,49 +328,53 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_param_spec_object ("video-renderer",
       "Video Renderer", "Video renderer to use for rendering videos",
       GST_TYPE_CLAPPER_VIDEO_RENDERER,
-      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_SIGNAL_DISPATCHER] =
       g_param_spec_object ("signal-dispatcher",
       "Signal Dispatcher", "Dispatcher for the signals to e.g. event loops",
       GST_TYPE_CLAPPER_SIGNAL_DISPATCHER,
-      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_URI] = g_param_spec_string ("uri", "URI", "Current URI",
-      DEFAULT_URI, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      DEFAULT_URI, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_SUBURI] = g_param_spec_string ("suburi", "Subtitle URI",
-      "Current Subtitle URI", NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      "Current Subtitle URI", NULL, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_POSITION] =
       g_param_spec_uint64 ("position", "Position", "Current Position",
       0, G_MAXUINT64, DEFAULT_POSITION,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_MEDIA_INFO] =
       g_param_spec_object ("media-info", "Media Info",
       "Current media information", GST_TYPE_CLAPPER_MEDIA_INFO,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_CURRENT_AUDIO_TRACK] =
       g_param_spec_object ("current-audio-track", "Current Audio Track",
       "Current audio track information", GST_TYPE_CLAPPER_AUDIO_INFO,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_CURRENT_VIDEO_TRACK] =
       g_param_spec_object ("current-video-track", "Current Video Track",
       "Current video track information", GST_TYPE_CLAPPER_VIDEO_INFO,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_CURRENT_SUBTITLE_TRACK] =
       g_param_spec_object ("current-subtitle-track", "Current Subtitle Track",
       "Current audio subtitle information", GST_TYPE_CLAPPER_SUBTITLE_INFO,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_DURATION] =
       g_param_spec_uint64 ("duration", "Duration", "Duration",
       0, G_MAXUINT64, DEFAULT_DURATION,
-      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_VOLUME] =
       g_param_spec_double ("volume", "Volume", "Volume",
@@ -378,12 +382,14 @@ gst_clapper_class_init (GstClapperClass * klass)
 
   param_specs[PROP_MUTE] =
       g_param_spec_boolean ("mute", "Mute", "Mute",
-      DEFAULT_MUTE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      DEFAULT_MUTE, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_PIPELINE] =
       g_param_spec_object ("pipeline", "Pipeline",
       "GStreamer pipeline that is used",
-      GST_TYPE_ELEMENT, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+      GST_TYPE_ELEMENT, G_PARAM_READABLE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_RATE] =
       g_param_spec_double ("rate", "rate", "Playback rate",
@@ -395,30 +401,32 @@ gst_clapper_class_init (GstClapperClass * klass)
       "Re-interpret a video stream as one of several frame-packed stereoscopic modes.",
       GST_TYPE_VIDEO_MULTIVIEW_FRAME_PACKING,
       GST_VIDEO_MULTIVIEW_FRAME_PACKING_NONE,
-      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_VIDEO_MULTIVIEW_FLAGS] =
       g_param_spec_flags ("video-multiview-flags",
       "Multiview Flags Override",
       "Override details of the multiview frame layout",
       GST_TYPE_VIDEO_MULTIVIEW_FLAGS, GST_VIDEO_MULTIVIEW_FLAGS_NONE,
-      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_AUDIO_VIDEO_OFFSET] =
       g_param_spec_int64 ("audio-video-offset", "Audio Video Offset",
       "The synchronisation offset between audio and video in nanoseconds",
-      G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_SUBTITLE_VIDEO_OFFSET] =
       g_param_spec_int64 ("subtitle-video-offset", "Text Video Offset",
       "The synchronisation offset between text and video in nanoseconds",
-      G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      G_MININT64, G_MAXINT64, 0, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_SEEK_MODE] =
       g_param_spec_enum ("seek-mode", "Clapper Seek Mode",
       "Selected seek mode to use when performing seeks",
-      GST_TYPE_CLAPPER_SEEK_MODE, DEFAULT_SEEK_MODE,
-      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+      GST_TYPE_CLAPPER_SEEK_MODE, DEFAULT_SEEK_MODE, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 
@@ -940,8 +948,6 @@ position_updated_dispatch (gpointer user_data)
   if (data->clapper->target_state >= GST_STATE_PAUSED) {
     g_signal_emit (data->clapper, signals[SIGNAL_POSITION_UPDATED], 0,
         data->position);
-    g_object_notify_by_pspec (G_OBJECT (data->clapper),
-        param_specs[PROP_POSITION]);
   }
 }
 
@@ -1510,8 +1516,6 @@ duration_changed_dispatch (gpointer user_data)
   if (data->clapper->target_state >= GST_STATE_PAUSED) {
     g_signal_emit (data->clapper, signals[SIGNAL_DURATION_CHANGED], 0,
         data->duration);
-    g_object_notify_by_pspec (G_OBJECT (data->clapper),
-        param_specs[PROP_DURATION]);
   }
 }
 
@@ -2839,7 +2843,6 @@ volume_changed_dispatch (gpointer user_data)
     return;
 
   g_signal_emit (clapper, signals[SIGNAL_VOLUME_CHANGED], 0);
-  g_object_notify_by_pspec (G_OBJECT (clapper), param_specs[PROP_VOLUME]);
 }
 
 static void
@@ -2863,7 +2866,6 @@ mute_changed_dispatch (gpointer user_data)
     return;
 
   g_signal_emit (clapper, signals[SIGNAL_MUTE_CHANGED], 0);
-  g_object_notify_by_pspec (G_OBJECT (clapper), param_specs[PROP_MUTE]);
 }
 
 static void
