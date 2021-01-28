@@ -1621,8 +1621,6 @@ state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 
     if (old_state == GST_STATE_READY && new_state == GST_STATE_PAUSED
         && pending_state == GST_STATE_VOID_PENDING) {
-      GstElement *video_sink;
-      GstPad *video_sink_pad;
       gint64 duration = -1;
 
       GST_DEBUG_OBJECT (self, "Initial PAUSED - pre-rolled");
@@ -1633,20 +1631,6 @@ state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
       self->media_info = gst_clapper_media_info_create (self);
       g_mutex_unlock (&self->lock);
       emit_media_info_updated_signal (self);
-
-      g_object_get (self->playbin, "video-sink", &video_sink, NULL);
-
-      if (video_sink) {
-        video_sink_pad = gst_element_get_static_pad (video_sink, "sink");
-
-        if (video_sink_pad) {
-          g_signal_connect (video_sink_pad, "notify::caps",
-              (GCallback) notify_caps_cb, self);
-          gst_object_unref (video_sink_pad);
-        }
-        gst_object_unref (video_sink);
-      }
-
       check_video_dimensions_changed (self);
       if (gst_element_query_duration (self->playbin, GST_FORMAT_TIME,
               &duration)) {
@@ -2953,11 +2937,16 @@ gst_clapper_main (gpointer data)
 
   if (self->video_renderer) {
     GstElement *video_sink =
-        gst_clapper_video_renderer_create_video_sink (self->video_renderer,
-        self);
-
-    if (video_sink)
+        gst_clapper_video_renderer_create_video_sink (self->video_renderer, self);
+    if (video_sink) {
+      GstPad *video_sink_pad = gst_element_get_static_pad (video_sink, "sink");
+      if (video_sink_pad) {
+        g_signal_connect (video_sink_pad, "notify::caps",
+            (GCallback) notify_caps_cb, self);
+        gst_object_unref (video_sink_pad);
+      }
       g_object_set (self->playbin, "video-sink", video_sink, NULL);
+    }
   }
 
   scaletempo = gst_element_factory_make ("scaletempo", NULL);
