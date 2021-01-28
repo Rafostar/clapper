@@ -106,7 +106,6 @@ enum
   SIGNAL_WARNING,
   SIGNAL_VIDEO_DIMENSIONS_CHANGED,
   SIGNAL_MUTE_CHANGED,
-  SIGNAL_SEEK_DONE,
   SIGNAL_LAST
 };
 
@@ -435,11 +434,6 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("warning", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 1, G_TYPE_ERROR);
-
-  signals[SIGNAL_SEEK_DONE] =
-      g_signal_new ("seek-done", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
-      NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_CLOCK_TIME);
 }
 
 static void
@@ -1512,44 +1506,6 @@ emit_duration_changed (GstClapper * self, GstClockTime duration)
   }
 }
 
-typedef struct
-{
-  GstClapper *clapper;
-  GstClockTime position;
-} SeekDoneSignalData;
-
-static void
-seek_done_dispatch (gpointer user_data)
-{
-  SeekDoneSignalData *data = user_data;
-
-  if (data->clapper->inhibit_sigs)
-    return;
-
-  g_signal_emit (data->clapper, signals[SIGNAL_SEEK_DONE], 0, data->position);
-}
-
-static void
-seek_done_signal_data_free (SeekDoneSignalData * data)
-{
-  g_object_unref (data->clapper);
-  g_free (data);
-}
-
-static void
-emit_seek_done (GstClapper * self)
-{
-  if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
-          signals[SIGNAL_SEEK_DONE], 0, NULL, NULL, NULL) != 0) {
-    SeekDoneSignalData *data = g_new (SeekDoneSignalData, 1);
-
-    data->clapper = g_object_ref (self);
-    data->position = gst_clapper_get_position (self);
-    gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
-        seek_done_dispatch, data, (GDestroyNotify) seek_done_signal_data_free);
-  }
-}
-
 static void
 state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
     gpointer user_data)
@@ -1613,7 +1569,6 @@ state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
           gst_clapper_seek_internal_locked (self);
         } else {
           GST_DEBUG_OBJECT (self, "Seek finished");
-          emit_seek_done (self);
         }
       }
 
