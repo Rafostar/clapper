@@ -30,13 +30,7 @@ class ClapperPlayerBase extends GstClapper.Clapper
         const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtk4glsink;
 
-        const context = GLib.MainContext.ref_thread_default();
-        const acquired = context.acquire();
-        debug(`default context acquired: ${acquired}`);
-
-        const dispatcher = new GstClapper.ClapperGMainContextSignalDispatcher({
-            application_context: context,
-        });
+        const dispatcher = new GstClapper.ClapperGMainContextSignalDispatcher();
         const renderer = new GstClapper.ClapperVideoOverlayVideoRenderer({
             video_sink: glsinkbin
         });
@@ -62,10 +56,6 @@ class ClapperPlayerBase extends GstClapper.Clapper
         this.set_and_bind_settings();
 
         settings.connect('changed', this._onSettingsKeyChanged.bind(this));
-
-        /* FIXME: additional reference for working around GstPlayer
-         * buggy signal dispatcher on self. Remove when ported to BUS API */
-        this.ref();
     }
 
     set_and_bind_settings()
@@ -87,33 +77,11 @@ class ClapperPlayerBase extends GstClapper.Clapper
 
     set_initial_config()
     {
-        const gstClapperConfig = {
-            position_update_interval: 1000,
-            user_agent: 'clapper',
-        };
-
-        for(let option of Object.keys(gstClapperConfig))
-            this.set_config_option(option, gstClapperConfig[option]);
-
         this.set_mute(false);
 
         /* FIXME: change into option in preferences */
         const pipeline = this.get_pipeline();
         pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
-    }
-
-    set_config_option(option, value)
-    {
-        const setOption = GstClapper.Clapper[`config_set_${option}`];
-        if(!setOption)
-            return debug(`unsupported option: ${option}`, 'LEVEL_WARNING');
-
-        const config = this.get_config();
-        setOption(config, value);
-        const success = this.set_config(config);
-
-        if(!success)
-            debug(`could not change option: ${option}`);
     }
 
     set_all_plugins_ranks()
@@ -181,30 +149,16 @@ class ClapperPlayerBase extends GstClapper.Clapper
 
         switch(key) {
             case 'seeking-mode':
-                const isSeekMode = (typeof this.set_seek_mode !== 'undefined');
                 this.seekingMode = settings.get_string('seeking-mode');
                 switch(this.seekingMode) {
                     case 'fast':
-                        if(isSeekMode)
-                            this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
-                        else
-                            this.set_config_option('seek_fast', true);
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
                         break;
                     case 'accurate':
-                        if(isSeekMode)
-                            this.set_seek_mode(GstClapper.ClapperSeekMode.ACCURATE);
-                        else {
-                            this.set_config_option('seek_fast', false);
-                            this.set_config_option('seek_accurate', true);
-                        }
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.ACCURATE);
                         break;
                     default:
-                        if(isSeekMode)
-                            this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
-                        else {
-                            this.set_config_option('seek_fast', false);
-                            this.set_config_option('seek_accurate', false);
-                        }
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
                         break;
                 }
                 break;
