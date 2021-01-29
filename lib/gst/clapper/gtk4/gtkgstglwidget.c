@@ -62,7 +62,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 struct _GtkGstGLWidgetPrivate
 {
-  gboolean initted;
+  gboolean initiated;
   GstGLDisplay *display;
   GdkGLContext *gdk_context;
   GstGLContext *other_context;
@@ -159,7 +159,7 @@ gtk_gst_gl_widget_init_redisplay (GtkGstGLWidget * gst_widget)
   priv->overlay_compositor =
       gst_gl_overlay_compositor_new (priv->other_context);
 
-  priv->initted = TRUE;
+  priv->initiated = TRUE;
 }
 
 static void
@@ -173,7 +173,7 @@ _redraw_texture (GtkGstGLWidget * gst_widget, guint tex)
     GstVideoRectangle src, dst, result;
     gint widget_width, widget_height, widget_scale;
 
-    gl->ClearColor (0.0, 0.0, 0.0, 0.0);
+    gl->ClearColor (0.0, 0.0, 0.0, 1.0);
     gl->Clear (GL_COLOR_BUFFER_BIT);
 
     widget_scale = gtk_widget_get_scale_factor ((GtkWidget *) gst_widget);
@@ -220,9 +220,17 @@ _draw_black (GstGLContext * context)
 {
   const GstGLFuncs *gl = context->gl_vtable;
 
-  gst_gl_insert_debug_marker (context, "no buffer.  rendering black");
-  gl->ClearColor (0.0, 0.0, 0.0, 0.0);
+  gst_gl_insert_debug_marker (context, "rendering black");
+  gl->ClearColor (0.0, 0.0, 0.0, 1.0);
   gl->Clear (GL_COLOR_BUFFER_BIT);
+}
+
+static inline void
+_draw_black_with_gdk (GdkGLContext * gdk_context)
+{
+  GST_DEBUG ("rendering empty frame with gdk context %p", gdk_context);
+  glClearColor (0.0, 0.0, 0.0, 1.0);
+  glClear (GL_COLOR_BUFFER_BIT);
 }
 
 static gboolean
@@ -233,15 +241,19 @@ gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
   GTK_GST_BASE_WIDGET_LOCK (widget);
 
-  if (!priv->context || !priv->other_context)
+  /* Draw black with GDK context when priv is not available yet.
+     GTK calls render with GDK context already active. */
+  if (!priv->context || !priv->other_context || base_widget->ignore_textures) {
+    _draw_black_with_gdk (context);
     goto done;
+  }
 
   gst_gl_context_activate (priv->other_context, TRUE);
 
-  if (!priv->initted)
-    gtk_gst_gl_widget_init_redisplay (GTK_GST_GL_WIDGET (widget));
+  if (!priv->initiated || !base_widget->negotiated) {
+    if (!priv->initiated)
+      gtk_gst_gl_widget_init_redisplay (GTK_GST_GL_WIDGET (widget));
 
-  if (!priv->initted || !base_widget->negotiated) {
     _draw_black (priv->other_context);
     goto done;
   }

@@ -34,6 +34,7 @@ GST_DEBUG_CATEGORY (gst_debug_gtk_base_widget);
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
 #define DEFAULT_IGNORE_ALPHA        TRUE
+#define DEFAULT_IGNORE_TEXTURES     FALSE
 
 enum
 {
@@ -41,6 +42,7 @@ enum
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
   PROP_IGNORE_ALPHA,
+  PROP_IGNORE_TEXTURES,
 };
 
 static void
@@ -108,6 +110,9 @@ gtk_gst_base_widget_set_property (GObject * object, guint prop_id,
     case PROP_IGNORE_ALPHA:
       gtk_widget->ignore_alpha = g_value_get_boolean (value);
       break;
+    case PROP_IGNORE_TEXTURES:
+      gtk_widget->ignore_textures = g_value_get_boolean (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -129,6 +134,9 @@ gtk_gst_base_widget_get_property (GObject * object, guint prop_id,
       break;
     case PROP_IGNORE_ALPHA:
       g_value_set_boolean (value, gtk_widget->ignore_alpha);
+      break;
+    case PROP_IGNORE_TEXTURES:
+      g_value_set_boolean (value, gtk_widget->ignore_textures);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -460,6 +468,11 @@ gtk_gst_base_widget_class_init (GtkGstBaseWidgetClass * klass)
           "When enabled, alpha will be ignored and converted to black",
           DEFAULT_IGNORE_ALPHA, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (gobject_klass, PROP_IGNORE_TEXTURES,
+      g_param_spec_boolean ("ignore-textures", "Ignore Textures",
+          "When enabled, textures will be ignored and not drawn",
+          DEFAULT_IGNORE_TEXTURES, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
 #if defined(BUILD_FOR_GTK4)
   widget_klass->measure = gtk_gst_base_widget_measure;
 #else
@@ -478,6 +491,7 @@ gtk_gst_base_widget_init (GtkGstBaseWidget * widget)
   widget->par_n = DEFAULT_PAR_N;
   widget->par_d = DEFAULT_PAR_D;
   widget->ignore_alpha = DEFAULT_IGNORE_ALPHA;
+  widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
 
   gst_video_info_init (&widget->v_info);
   gst_video_info_init (&widget->pending_v_info);

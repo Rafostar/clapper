@@ -50,6 +50,7 @@ struct _GtkGstBaseWidget
   gboolean force_aspect_ratio;
   gint par_n, par_d;
   gboolean ignore_alpha;
+  gboolean ignore_textures;
 
   gint display_width;
   gint display_height;

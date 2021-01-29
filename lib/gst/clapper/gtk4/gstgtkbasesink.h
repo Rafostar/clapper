@@ -68,6 +68,9 @@ struct _GstGtkBaseSink
   gboolean              ignore_alpha;
   GBinding             *bind_ignore_alpha;
 
+  gboolean              ignore_textures;
+  GBinding             *bind_ignore_textures;
+
   GtkWidget            *window;
   gulong                widget_destroy_id;
   gulong                window_destroy_id;

@@ -39,6 +39,7 @@ GST_DEBUG_CATEGORY (gst_debug_gtk_base_sink);
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
 #define DEFAULT_IGNORE_ALPHA        TRUE
+#define DEFAULT_IGNORE_TEXTURES     FALSE
 
 static void gst_gtk_base_sink_finalize (GObject * object);
 static void gst_gtk_base_sink_set_property (GObject * object, guint prop_id,
@@ -70,6 +71,7 @@ enum
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
   PROP_IGNORE_ALPHA,
+  PROP_IGNORE_TEXTURES,
 };
 
 #define gst_gtk_base_sink_parent_class parent_class
@@ -123,6 +125,11 @@ gst_gtk_base_sink_class_init (GstGtkBaseSinkClass * klass)
           DEFAULT_IGNORE_ALPHA, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 #endif
 
+  g_object_class_install_property (gobject_class, PROP_IGNORE_TEXTURES,
+      g_param_spec_boolean ("ignore-textures", "Ignore Textures",
+          "When enabled, textures will be ignored and not drawn",
+          DEFAULT_IGNORE_TEXTURES, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   gobject_class->finalize = gst_gtk_base_sink_finalize;
 
   gstelement_class->change_state = gst_gtk_base_sink_change_state;
@@ -143,6 +150,7 @@ gst_gtk_base_sink_init (GstGtkBaseSink * gtk_sink)
   gtk_sink->par_n = DEFAULT_PAR_N;
   gtk_sink->par_d = DEFAULT_PAR_D;
   gtk_sink->ignore_alpha = DEFAULT_IGNORE_ALPHA;
+  gtk_sink->ignore_textures = DEFAULT_IGNORE_TEXTURES;
 }
 
 static void
@@ -221,6 +229,10 @@ gst_gtk_base_sink_get_widget (GstGtkBaseSink * gtk_sink)
       "ignore-alpha", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 #endif
 
+  gtk_sink->bind_ignore_textures =
+      g_object_bind_property (gtk_sink, "ignore-textures", gtk_sink->widget,
+      "ignore-textures", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+
   /* Take the floating ref, other wise the destruction of the container will
    * make this widget disappear possibly before we are done. */
   gst_object_ref_sink (gtk_sink->widget);
@@ -268,6 +280,9 @@ gst_gtk_base_sink_get_property (GObject * object, guint prop_id,
     case PROP_IGNORE_ALPHA:
       g_value_set_boolean (value, gtk_sink->ignore_alpha);
       break;
+    case PROP_IGNORE_TEXTURES:
+      g_value_set_boolean (value, gtk_sink->ignore_textures);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -290,6 +305,9 @@ gst_gtk_base_sink_set_property (GObject * object, guint prop_id,
       break;
     case PROP_IGNORE_ALPHA:
       gtk_sink->ignore_alpha = g_value_get_boolean (value);
+      break;
+    case PROP_IGNORE_TEXTURES:
+      gtk_sink->ignore_textures = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
