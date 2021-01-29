@@ -56,7 +56,6 @@ struct _GstGtkGLSink
   gint                  display_width;
   gint                  display_height;
 
-  gulong                widget_resize_sig_handler;
   gulong                widget_destroy_sig_handler;
 };
 

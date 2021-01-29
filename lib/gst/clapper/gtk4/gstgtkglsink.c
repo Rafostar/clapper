@@ -129,40 +129,8 @@ gst_gtk_gl_sink_query (GstBaseSink * bsink, GstQuery * query)
 }
 
 static void
-_size_changed_cb (GtkWidget * widget, gint width,
-    gint height, GstGtkGLSink * gtk_sink)
-{
-  gboolean reconfigure;
-
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
-
-  /* Ignore size changes before widget is negotiated
-   * we are going to queue a resize after negotiation */
-  if (!base_widget->negotiated)
-    return;
-
-  GST_OBJECT_LOCK (gtk_sink);
-  reconfigure =
-      (width != gtk_sink->display_width || height != gtk_sink->display_height);
-  gtk_sink->display_width = width;
-  gtk_sink->display_height = height;
-  GST_OBJECT_UNLOCK (gtk_sink);
-
-  if (reconfigure) {
-    GST_DEBUG_OBJECT (gtk_sink, "Sending reconfigure event on sinkpad");
-    gst_pad_push_event (GST_BASE_SINK (gtk_sink)->sinkpad,
-        gst_event_new_reconfigure ());
-  }
-}
-
-static void
 destroy_cb (GtkWidget * widget, GstGtkGLSink * gtk_sink)
 {
-  if (gtk_sink->widget_resize_sig_handler) {
-    g_signal_handler_disconnect (widget, gtk_sink->widget_resize_sig_handler);
-    gtk_sink->widget_resize_sig_handler = 0;
-  }
-
   if (gtk_sink->widget_destroy_sig_handler) {
     g_signal_handler_disconnect (widget, gtk_sink->widget_destroy_sig_handler);
     gtk_sink->widget_destroy_sig_handler = 0;
@@ -181,13 +149,6 @@ gst_gtk_gl_sink_start (GstBaseSink * bsink)
 
   /* After this point, gtk_sink->widget will always be set */
   gst_widget = GTK_GST_GL_WIDGET (base_sink->widget);
-
-  /* Track the allocation size */
-  if (!gtk_sink->widget_resize_sig_handler) {
-    gtk_sink->widget_resize_sig_handler =
-        g_signal_connect (gst_widget, "resize",
-        G_CALLBACK (_size_changed_cb), gtk_sink);
-  }
 
   if (!gtk_sink->widget_destroy_sig_handler) {
     gtk_sink->widget_destroy_sig_handler =
@@ -225,12 +186,6 @@ gst_gtk_gl_sink_stop (GstBaseSink * bsink)
 {
   GstGtkGLSink *gtk_sink = GST_GTK_GL_SINK (bsink);
   GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (bsink);
-
-  if (gtk_sink->widget_resize_sig_handler) {
-    g_signal_handler_disconnect (base_sink->widget,
-        gtk_sink->widget_resize_sig_handler);
-    gtk_sink->widget_resize_sig_handler = 0;
-  }
 
   if (gtk_sink->display) {
     gst_object_unref (gtk_sink->display);
@@ -370,12 +325,6 @@ gst_gtk_gl_sink_finalize (GObject * object)
 {
   GstGtkGLSink *gtk_sink = GST_GTK_GL_SINK (object);
   GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (object);
-
-  if (gtk_sink->widget_resize_sig_handler) {
-    g_signal_handler_disconnect (base_sink->widget,
-        gtk_sink->widget_resize_sig_handler);
-    gtk_sink->widget_resize_sig_handler = 0;
-  }
 
   if (gtk_sink->widget_destroy_sig_handler) {
     g_signal_handler_disconnect (base_sink->widget,
