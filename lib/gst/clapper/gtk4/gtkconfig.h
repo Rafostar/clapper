@@ -1,7 +1,6 @@
-/* GStreamer
- *
- * Copyright (C) 2014 Sebastian Dröge <sebastian@centricular.com>
- * Copyright (C) 2021 Rafał Dzięgiel <rafostar.github@gmail.com>
+/*
+ * GStreamer
+ * Copyright (C) 2020 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,15 +18,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CLAPPER_H__
-#define __CLAPPER_H__
-
-#include <gst/clapper/clapper-prelude.h>
-#include <gst/clapper/gstclapper.h>
-#include <gst/clapper/gstclapper-media-info.h>
-#include <gst/clapper/gstclapper-g-main-context-signal-dispatcher.h>
-#include <gst/clapper/gstclapper-video-overlay-video-renderer.h>
-#include <gst/clapper/gstclapper-visualization.h>
-#include <gst/clapper/gstclapper-gtk4-plugin.h>
-
-#endif /* __CLAPPER_H__ */
+#if defined(BUILD_FOR_GTK4)
+#define GTKCONFIG_PLUGIN gtk4
+#define GTKCONFIG_NAME "GTK4"
+#define GTKCONFIG_SINK "gtk4sink"
+#define GTKCONFIG_GLSINK "gtk4glsink"
+#else
+#define GTKCONFIG_PLUGIN gtk
+#define GTKCONFIG_NAME "GTK"
+#define GTKCONFIG_SINK "gtksink"
+#define GTKCONFIG_GLSINK "gtkglsink"
+#endif

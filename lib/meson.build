@@ -28,10 +28,12 @@ if cc.get_id() == 'msvc'
     '/w14189', # 'identifier' : local variable is initialized but not referenced
   ]
   add_project_arguments(msvc_args, language: ['c', 'cpp'])
+  noseh_link_args = ['/SAFESEH:NO']
 else
   if cxx.has_argument('-Wno-non-virtual-dtor')
     add_project_arguments('-Wno-non-virtual-dtor', language: 'cpp')
   endif
+  noseh_link_args = []
 endif
 
 if cc.has_link_argument('-Wl,-Bsymbolic-functions')
@@ -153,13 +155,11 @@ warning_flags = [
   '-Wvla',
   '-Wpointer-arith',
 ]
-
 warning_c_flags = [
   '-Wmissing-prototypes',
   '-Wdeclaration-after-statement',
   '-Wold-style-definition',
 ]
-
 warning_cxx_flags = [
   '-Wformat-nonliteral',
 ]
@@ -194,13 +194,71 @@ gst_dep = dependency('gstreamer-1.0', version : gst_req,
 gstbase_dep = dependency('gstreamer-base-1.0', version : gst_req,
   fallback : ['gstreamer', 'gst_base_dep'])
 gstpbutils_dep = dependency('gstreamer-pbutils-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'pbutils_dep'])
+  fallback : ['gst-plugins-base', 'pbutils_dep'])
 gstaudio_dep = dependency('gstreamer-audio-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'audio_dep'])
+  fallback : ['gst-plugins-base', 'audio_dep'])
 gsttag_dep = dependency('gstreamer-tag-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'tag_dep'])
+  fallback : ['gst-plugins-base', 'tag_dep'])
 gstvideo_dep = dependency('gstreamer-video-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'video_dep'])
+  fallback : ['gst-plugins-base', 'video_dep'])
+
+# GStreamer OpenGL
+gstgl_dep = dependency('gstreamer-gl-1.0', version : gst_req,
+  fallback : ['gst-plugins-base', 'gstgl_dep'], required: false)
+gstglproto_dep = dependency('', required : false)
+gstglx11_dep = dependency('', required : false)
+gstglwayland_dep = dependency('', required : false)
+gstglegl_dep = dependency('', required : false)
+
+have_gstgl = gstgl_dep.found()
+
+if have_gstgl
+  if gstgl_dep.type_name() == 'pkgconfig'
+    gst_gl_apis = gstgl_dep.get_pkgconfig_variable('gl_apis').split()
+    gst_gl_winsys = gstgl_dep.get_pkgconfig_variable('gl_winsys').split()
+    gst_gl_platforms = gstgl_dep.get_pkgconfig_variable('gl_platforms').split()
+  else
+    gstbase = subproject('gst-plugins-base')
+    gst_gl_apis = gstbase.get_variable('enabled_gl_apis')
+    gst_gl_winsys = gstbase.get_variable('enabled_gl_winsys')
+    gst_gl_platforms = gstbase.get_variable('enabled_gl_platforms')
+  endif
+
+  message('GStreamer OpenGL window systems: @0@'.format(' '.join(gst_gl_winsys)))
+  message('GStreamer OpenGL platforms: @0@'.format(' '.join(gst_gl_platforms)))
+  message('GStreamer OpenGL apis: @0@'.format(' '.join(gst_gl_apis)))
+
+  foreach ws : ['x11', 'wayland', 'android', 'cocoa', 'eagl', 'win32', 'dispmanx', 'viv_fb']
+    set_variable('gst_gl_have_window_@0@'.format(ws), gst_gl_winsys.contains(ws))
+  endforeach
+
+  foreach p : ['glx', 'egl', 'cgl', 'eagl', 'wgl']
+    set_variable('gst_gl_have_platform_@0@'.format(p), gst_gl_platforms.contains(p))
+  endforeach
+
+  foreach api : ['gl', 'gles2']
+    set_variable('gst_gl_have_api_@0@'.format(api), gst_gl_apis.contains(api))
+  endforeach
+
+  gstglproto_dep = dependency('gstreamer-gl-prototypes-1.0', version : gst_req,
+      fallback : ['gst-plugins-base', 'gstglproto_dep'], required: true)
+  # Behind specific checks because meson fails at optional dependencies with a
+  # fallback to the same subproject.  On the first failure, meson will never
+  # check the system again even if the fallback never existed.
+  # Last checked with meson 0.54.3
+  if gst_gl_have_window_x11
+    gstglx11_dep = dependency('gstreamer-gl-x11-1.0', version : gst_req,
+       fallback : ['gst-plugins-base', 'gstglx11_dep'], required: true)
+  endif
+  if gst_gl_have_window_wayland
+    gstglwayland_dep = dependency('gstreamer-gl-wayland-1.0', version : gst_req,
+        fallback : ['gst-plugins-base', 'gstglwayland_dep'], required: true)
+  endif
+  if gst_gl_have_platform_egl
+    gstglegl_dep = dependency('gstreamer-gl-egl-1.0', version : gst_req,
+        fallback : ['gst-plugins-base', 'gstglegl_dep'], required: true)
+  endif
+endif
 
 libm = cc.find_library('m', required : false)
 glib_dep = dependency('glib-2.0', version : glib_req, fallback: ['glib', 'libglib_dep'])
@@ -219,15 +277,18 @@ if cxx.has_argument ('-Wno-unused')
   add_project_arguments('-Wno-unused', language: 'cpp')
 endif
 
-gst_clapper_args = ['-DHAVE_CONFIG_H']
 configinc = include_directories('.')
 libsinc = include_directories('gst')
 
 python3 = import('python').find_installation()
 gnome = import('gnome')
 gir = find_program('g-ir-scanner', required : true)
-build_gir = gir.found()
-gir_init_section = [ '--add-init-section=extern void gst_init(gint*,gchar**);' + \
+
+if not gir.found()
+  error('Clapper requires GI bindings to be compiled')
+endif
+
+gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + \
     'g_setenv("GST_REGISTRY_1.0", "@0@", TRUE);'.format(meson.current_build_dir() + '/gir_empty_registry.reg') + \
     'g_setenv("GST_PLUGIN_PATH_1_0", "", TRUE);' + \
     'g_setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", TRUE);' + \

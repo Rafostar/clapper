@@ -14,21 +14,9 @@ class ClapperPlayerBase extends GstClapper.Clapper
 {
     _init()
     {
-        if(!Gst.is_initialized())
-            Gst.init(null);
-
-        const plugin = 'gtk4glsink';
-        const gtk4glsink = Gst.ElementFactory.make(plugin, null);
-
-        if(!gtk4glsink) {
-            debug(new Error(
-                `Could not load "${plugin}".`
-                    + ' Do you have gstreamer-plugins-good-gtk4 installed?'
-            ));
-        }
-
+        const gtk4plugin = new GstClapper.ClapperGtk4Plugin();
         const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
-        glsinkbin.sink = gtk4glsink;
+        glsinkbin.sink = gtk4plugin.video_sink;
 
         const dispatcher = new GstClapper.ClapperGMainContextSignalDispatcher();
         const renderer = new GstClapper.ClapperVideoOverlayVideoRenderer({
@@ -40,7 +28,7 @@ class ClapperPlayerBase extends GstClapper.Clapper
             video_renderer: renderer
         });
 
-        this.widget = gtk4glsink.widget;
+        this.widget = gtk4plugin.video_sink.widget;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
 

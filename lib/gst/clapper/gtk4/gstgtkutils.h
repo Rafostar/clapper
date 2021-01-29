@@ -1,7 +1,7 @@
-/* GStreamer
- *
- * Copyright (C) 2014 Sebastian Dröge <sebastian@centricular.com>
- * Copyright (C) 2021 Rafał Dzięgiel <rafostar.github@gmail.com>
+/*
+ * GStreamer
+ * Copyright (C) 2015 Matthew Waters <matthew@centricular.com>
+ * Copyright (C) 2015 Thibault Saunier <tsaunier@gnome.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -19,15 +19,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CLAPPER_H__
-#define __CLAPPER_H__
+#ifndef __GST_GTK_UTILS_H__
+#define __GST_GTK_UTILS_H__
 
-#include <gst/clapper/clapper-prelude.h>
-#include <gst/clapper/gstclapper.h>
-#include <gst/clapper/gstclapper-media-info.h>
-#include <gst/clapper/gstclapper-g-main-context-signal-dispatcher.h>
-#include <gst/clapper/gstclapper-video-overlay-video-renderer.h>
-#include <gst/clapper/gstclapper-visualization.h>
-#include <gst/clapper/gstclapper-gtk4-plugin.h>
+#include <glib.h>
 
-#endif /* __CLAPPER_H__ */
+gpointer gst_gtk_invoke_on_main (GThreadFunc func, gpointer data);
+
+#endif /* __GST_GTK_UTILS_H__ */

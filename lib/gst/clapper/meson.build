@@ -6,8 +6,14 @@ gstclapper_sources = [
   'gstclapper-g-main-context-signal-dispatcher.c',
   'gstclapper-video-overlay-video-renderer.c',
   'gstclapper-visualization.c',
-]
+  'gstclapper-gtk4-plugin.c',
 
+  'gtk4/gstgtkbasesink.c',
+  'gtk4/gstgtkutils.c',
+  'gtk4/gtkgstbasewidget.c',
+  'gtk4/gstgtkglsink.c',
+  'gtk4/gtkgstglwidget.c',
+]
 gstclapper_headers = [
   'clapper.h',
   'clapper-prelude.h',
@@ -19,20 +25,57 @@ gstclapper_headers = [
   'gstclapper-g-main-context-signal-dispatcher.h',
   'gstclapper-video-overlay-video-renderer.h',
   'gstclapper-visualization.h',
+  'gstclapper-gtk4-plugin.h',
 ]
+gstclapper_defines = [
+  '-DHAVE_CONFIG_H',
+  '-DBUILDING_GST_CLAPPER',
+  '-DGST_USE_UNSTABLE_API',
+  '-DHAVE_GTK_GL',
+  '-DBUILD_FOR_GTK4',
+]
+gtk_deps = [gstgl_dep, gstglproto_dep]
+have_gtk_gl_windowing = false
 
-if not build_gir
-  error('Clapper requires GI bindings to be compiled')
+gtk4_dep = dependency('gtk4', required : true)
+
+if not gtk4_dep.found() or not gtk4_dep.version().version_compare('>=4.0.0')
+  error('GTK4 is missing or is too old')
+endif
+
+if not have_gstgl
+  error('GstGL is missing')
+endif
+
+if gst_gl_have_window_x11 and gst_gl_have_platform_glx
+  gtk_x11_dep = dependency('gtk4-x11', required : false)
+  if gtk_x11_dep.found()
+    gtk_deps += [gtk_x11_dep, gstglx11_dep]
+    have_gtk_gl_windowing = true
+  endif
+endif
+
+if gst_gl_have_window_wayland and gst_gl_have_platform_egl
+  gtk_wayland_dep = dependency('gtk4-wayland', required : false)
+  if gtk_wayland_dep.found()
+    gtk_deps += [gtk_wayland_dep, gstglegl_dep, gstglwayland_dep]
+    have_gtk_gl_windowing = true
+  endif
+endif
+
+if not have_gtk_gl_windowing
+  error('GTK4 widget requires GL windowing')
 endif
 
 gstclapper = library('gstclapper-' + api_version,
   gstclapper_sources,
-  c_args : gst_clapper_args + ['-DBUILDING_GST_CLAPPER'],
+  c_args : gstclapper_defines,
+  link_args : noseh_link_args,
   include_directories : [configinc, libsinc],
   version : libversion,
   install : true,
-  dependencies : [gstbase_dep, gstvideo_dep, gstaudio_dep,
-    gsttag_dep, gstpbutils_dep],
+  dependencies : [gtk4_dep, gstbase_dep, gstvideo_dep, gstaudio_dep,
+    gsttag_dep, gstpbutils_dep, libm] + gtk_deps,
 )
 
 clapper_gir = gnome.generate_gir(gstclapper,
