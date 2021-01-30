@@ -96,7 +96,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
 
         this.deactivateActiveItem();
         icon.icon_name = 'media-playback-start-symbolic';
-        button.icon_name = 'edit-delete-symbolic';
+        button.icon_name = 'window-close-symbolic';
 
         this.activeRowId = row.get_index();
         player.set_uri(row.uri);
