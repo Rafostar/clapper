@@ -136,7 +136,7 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
             icon_name: 'open-menu-symbolic',
         });
         const label = new Gtk.Label({
-            label: filename,
+            label: this.filename,
             single_line_mode: true,
             ellipsize: Pango.EllipsizeMode.END,
             width_chars: 5,
