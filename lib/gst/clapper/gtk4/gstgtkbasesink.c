@@ -557,7 +557,7 @@ gst_gtk_base_sink_show_frame (GstVideoSink * vsink, GstBuffer * buf)
 
   gtk_sink = GST_GTK_BASE_SINK (vsink);
 
-  GST_OBJECT_LOCK (vsink);
+  GST_OBJECT_LOCK (gtk_sink);
 
   if (gtk_sink->widget == NULL) {
     GST_OBJECT_UNLOCK (gtk_sink);
