@@ -1,5 +1,5 @@
 # Clapper
-A GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit. The media player is using GStreamer [GstPlayer API](https://gstreamer.freedesktop.org/documentation/player/gstplayer) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
+A GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit. The media player is using [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
 
 <p align="center">
 <img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-windowed-mode.png"><br>
