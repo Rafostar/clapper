@@ -1,26 +1,28 @@
 pkgbase = clapper-git
-	pkgdesc = A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps.
-	pkgver = r117.e7e9b9c
+	pkgdesc = A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering.
+	pkgver = r393.bf04af2
 	pkgrel = 1
 	url = https://github.com/Rafostar/clapper
 	arch = any
 	license = GPL-3.0
 	makedepends = meson>=0.50
-	makedepends = gjs
 	makedepends = git
-	depends = gtk3>=3.19.4
-	depends = hicolor-icon-theme
+	depends = gtk4
 	depends = gjs
-	depends = gst-plugins-base-libs
-	depends = gst-plugins-good
-	depends = gst-plugins-bad-libs>=1.16.0
-	depends = gst-plugin-gtk
-	optdepends = gst-libav: Popular video decoders
-	optdepends = gstreamer-vaapi: Intel/AMD video acceleration
+	depends = glib2>=2.56.0
+	depends = gobject-introspection
+	depends = wayland-protocols
+	depends = hicolor-icon-theme
+	depends = gstreamer>=1.18.0
+	depends = gst-plugins-base-libs>=1.18.0
+	depends = gst-plugins-good>=1.18.0
+	depends = gst-plugins-bad-libs>=1.18.0
+	optdepends = gst-libav>=1.18.0: Popular video decoders
+	optdepends = gstreamer-vaapi>=1.18.0: Intel/AMD video acceleration
 	provides = clapper
 	conflicts = clapper
 	replaces = clapper
-	source = clapper::git+https://github.com/Rafostar/clapper.git#commit=e7e9b9c07d884c1d412b15f0069117ddc7d0e635
+	source = clapper::git+https://github.com/Rafostar/clapper.git#branch=gstplayer
 	md5sums = SKIP
 
 pkgname = clapper-git
