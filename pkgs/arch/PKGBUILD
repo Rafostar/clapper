@@ -1,7 +1,7 @@
 #
 # PKGBUILD file for package clapper
 #
-# Copyright (C) 2020  sp1rit
+# Copyright (C) 2020/21 sp1rit
 # Copyright (C) 2020  Rafostar
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,48 +19,56 @@
 
 # Maintainer: sp1rit <sp1ritCS@protonmail.com>
 
-pkgname=clapper-git
-pkgver=r117.e7e9b9c
+_basename=clapper
+pkgname="${_basename}-git"
+pkgver=r393.bf04af2
 pkgrel=1
-pkgdesc="A GNOME media player built using GJS and powered by GStreamer with OpenGL rendering. Can also be used as a pre-made widget for GTK apps."
+pkgdesc="A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering."
 arch=(any)
 url="https://github.com/Rafostar/clapper"
 license=("GPL-3.0")
 depends=(
-	"gtk3>=3.19.4"
-	"hicolor-icon-theme"
+	"gtk4"
 	"gjs"
-	"gst-plugins-base-libs"
-	"gst-plugins-good"
-	"gst-plugins-bad-libs>=1.16.0"
-	"gst-plugin-gtk"
+	"glib2>=2.56.0" # glib-2.0, gmodule-2.0, gio-2.0
+	"gobject-introspection" # /usr/sbin/g-ir-scanner
+	"wayland-protocols" # gtk4 non-default runtime dep
+	"hicolor-icon-theme"
+	"gstreamer>=1.18.0" # gstreamer-1.0, gstreamer-base-1.0
+	"gst-plugins-base-libs>=1.18.0" # gstreamer-pbutils-1.0, gstreamer-audio-1.0, gstreamer-tag-1.0, gstreamer-video-1.0, gstreamer-gl-1.0, gstreamer-gl-prototypes-1.0, gstreamer-gl-x11-1.0, gstreamer-gl-wayland-1.0, gstreamer-gl-egl-1.0, 
+	"gst-plugins-good>=1.18.0"
+	"gst-plugins-bad-libs>=1.18.0"
 )
 makedepends=(
 	"meson>=0.50"
-	"gjs"
 	"git"
 )
 optdepends=(
-	"gst-libav: Popular video decoders"
-	"gstreamer-vaapi: Intel/AMD video acceleration"
+	"gst-libav>=1.18.0: Popular video decoders"
+	"gstreamer-vaapi>=1.18.0: Intel/AMD video acceleration"
 )
-source=("${pkgname%-git}::git+https://github.com/Rafostar/${pkgname%-git}.git#commit=e7e9b9c07d884c1d412b15f0069117ddc7d0e635")
-provides=("${pkgname%-git}")
-replaces=("${pkgname%-git}")
-conflicts=("${pkgname%-git}")
+source=("${_basename}::git+https://github.com/Rafostar/${_basename}.git#branch=gstplayer")
+provides=("${_basename}")
+replaces=("${_basename}")
+conflicts=("${_basename}")
 md5sums=("SKIP")
 
 pkgver() {
-	cd "$srcdir"/"${pkgname%-git}"
+	cd "${srcdir}/${_basename}"
 	printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"	
 }
 
+prepare() {
+	cd "${srcdir}/${_basename}"
+	arch-meson . _build
+}
+
 build() {
-	cd "$srcdir"/"${pkgname%-git}"
-	meson build/ --prefix=/usr
+	cd "${srcdir}/${_basename}"
+	ninja -C _build
 }
 
 package() {
-	cd "$srcdir"/"${pkgname%-git}"
-	DESTDIR="$pkgdir" meson install -C build/
+	cd "${srcdir}/${_basename}"
+	DESTDIR="$pkgdir" meson install -C _build/
 }

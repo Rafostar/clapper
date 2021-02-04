@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, GstPlayer, Gtk } = imports.gi;
+const { Gdk, GLib, GObject, GstClapper, Gtk } = imports.gi;
 const { Controls } = imports.src.controls;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
@@ -237,7 +237,7 @@ class ClapperWidget extends Gtk.Grid
             let type, text, codec;
 
             switch(info.constructor) {
-                case GstPlayer.PlayerVideoInfo:
+                case GstClapper.ClapperVideoInfo:
                     type = 'video';
                     codec = info.get_codec() || 'Undetermined';
                     text = codec + ', ' +
@@ -248,7 +248,7 @@ class ClapperWidget extends Gtk.Grid
                     if(fps)
                         text += `@${fps}`;
                     break;
-                case GstPlayer.PlayerAudioInfo:
+                case GstClapper.ClapperAudioInfo:
                     type = 'audio';
                     codec = info.get_codec() || 'Undetermined';
                     if(codec.includes('(')) {
@@ -261,7 +261,7 @@ class ClapperWidget extends Gtk.Grid
                     text += ', ' + codec + ', '
                         + info.get_channels() + ' Channels';
                     break;
-                case GstPlayer.PlayerSubtitleInfo:
+                case GstClapper.ClapperSubtitleInfo:
                     type = 'subtitle';
                     text = info.get_language() || 'Undetermined';
                     break;
@@ -408,7 +408,7 @@ class ClapperWidget extends Gtk.Grid
     {
         if(isShow && !this.controls.visualizationsButton.isVisList) {
             debug('creating visualizations list');
-            const visArr = GstPlayer.Player.visualizations_get();
+            const visArr = GstClapper.Clapper.visualizations_get();
             if(!visArr.length)
                 return;
 
@@ -446,7 +446,7 @@ class ClapperWidget extends Gtk.Grid
     _onPlayerStateChanged(player, state)
     {
         switch(state) {
-            case GstPlayer.PlayerState.BUFFERING:
+            case GstClapper.ClapperState.BUFFERING:
                 debug('player state changed to: BUFFERING');
                 if(player.needsTocUpdate) {
                     this.controls._setChapterVisible(false);
@@ -457,18 +457,18 @@ class ClapperWidget extends Gtk.Grid
                     this.needsTracksUpdate = true;
                 }
                 break;
-            case GstPlayer.PlayerState.STOPPED:
+            case GstClapper.ClapperState.STOPPED:
                 debug('player state changed to: STOPPED');
                 this.controls.currentPosition = 0;
                 this.controls.positionScale.set_value(0);
                 this.controls.togglePlayButton.setPrimaryIcon();
                 this.needsTracksUpdate = true;
                 break;
-            case GstPlayer.PlayerState.PAUSED:
+            case GstClapper.ClapperState.PAUSED:
                 debug('player state changed to: PAUSED');
                 this.controls.togglePlayButton.setPrimaryIcon();
                 break;
-            case GstPlayer.PlayerState.PLAYING:
+            case GstClapper.ClapperState.PLAYING:
                 debug('player state changed to: PLAYING');
                 this.controls.togglePlayButton.setSecondaryIcon();
                 if(this.needsTracksUpdate) {
@@ -483,7 +483,7 @@ class ClapperWidget extends Gtk.Grid
                 break;
         }
 
-        const isNotStopped = (state !== GstPlayer.PlayerState.STOPPED);
+        const isNotStopped = (state !== GstClapper.ClapperState.STOPPED);
         this.revealerTop.endTime.set_visible(isNotStopped);
     }
 

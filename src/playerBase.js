@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gst, GstPlayer, Gtk } = imports.gi;
+const { Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
 const { PlaylistWidget } = imports.src.playlist;
@@ -10,34 +10,16 @@ const { settings } = Misc;
 let WebServer;
 
 var PlayerBase = GObject.registerClass(
-class ClapperPlayerBase extends GstPlayer.Player
+class ClapperPlayerBase extends GstClapper.Clapper
 {
     _init()
     {
-        if(!Gst.is_initialized())
-            Gst.init(null);
-
-        const plugin = 'gtk4glsink';
-        const gtk4glsink = Gst.ElementFactory.make(plugin, null);
-
-        if(!gtk4glsink) {
-            debug(new Error(
-                `Could not load "${plugin}".`
-                    + ' Do you have gstreamer-plugins-good-gtk4 installed?'
-            ));
-        }
-
+        const gtk4plugin = new GstClapper.ClapperGtk4Plugin();
         const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
-        glsinkbin.sink = gtk4glsink;
+        glsinkbin.sink = gtk4plugin.video_sink;
 
-        const context = GLib.MainContext.ref_thread_default();
-        const acquired = context.acquire();
-        debug(`default context acquired: ${acquired}`);
-
-        const dispatcher = new GstPlayer.PlayerGMainContextSignalDispatcher({
-            application_context: context,
-        });
-        const renderer = new GstPlayer.PlayerVideoOverlayVideoRenderer({
+        const dispatcher = new GstClapper.ClapperGMainContextSignalDispatcher();
+        const renderer = new GstClapper.ClapperVideoOverlayVideoRenderer({
             video_sink: glsinkbin
         });
 
@@ -46,11 +28,11 @@ class ClapperPlayerBase extends GstPlayer.Player
             video_renderer: renderer
         });
 
-        this.widget = gtk4glsink.widget;
+        this.widget = gtk4plugin.video_sink.widget;
         this.widget.vexpand = true;
         this.widget.hexpand = true;
 
-        this.state = GstPlayer.PlayerState.STOPPED;
+        this.state = GstClapper.ClapperState.STOPPED;
         this.visualization_enabled = false;
 
         this.webserver = null;
@@ -62,10 +44,6 @@ class ClapperPlayerBase extends GstPlayer.Player
         this.set_and_bind_settings();
 
         settings.connect('changed', this._onSettingsKeyChanged.bind(this));
-
-        /* FIXME: additional reference for working around GstPlayer
-         * buggy signal dispatcher on self. Remove when ported to BUS API */
-        this.ref();
     }
 
     set_and_bind_settings()
@@ -87,33 +65,11 @@ class ClapperPlayerBase extends GstPlayer.Player
 
     set_initial_config()
     {
-        const gstPlayerConfig = {
-            position_update_interval: 1000,
-            user_agent: 'clapper',
-        };
-
-        for(let option of Object.keys(gstPlayerConfig))
-            this.set_config_option(option, gstPlayerConfig[option]);
-
         this.set_mute(false);
 
         /* FIXME: change into option in preferences */
         const pipeline = this.get_pipeline();
         pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
-    }
-
-    set_config_option(option, value)
-    {
-        const setOption = GstPlayer.Player[`config_set_${option}`];
-        if(!setOption)
-            return debug(`unsupported option: ${option}`, 'LEVEL_WARNING');
-
-        const config = this.get_config();
-        setOption(config, value);
-        const success = this.set_config(config);
-
-        if(!success)
-            debug(`could not change option: ${option}`);
     }
 
     set_all_plugins_ranks()
@@ -158,7 +114,7 @@ class ClapperPlayerBase extends GstPlayer.Player
     {
         this.widget.ignore_textures = isEnabled;
 
-        if(this.state !== GstPlayer.PlayerState.PLAYING)
+        if(this.state !== GstClapper.ClapperState.PLAYING)
             this.widget.queue_render();
     }
 
@@ -181,30 +137,16 @@ class ClapperPlayerBase extends GstPlayer.Player
 
         switch(key) {
             case 'seeking-mode':
-                const isSeekMode = (typeof this.set_seek_mode !== 'undefined');
                 this.seekingMode = settings.get_string('seeking-mode');
                 switch(this.seekingMode) {
                     case 'fast':
-                        if(isSeekMode)
-                            this.set_seek_mode(GstPlayer.PlayerSeekMode.FAST);
-                        else
-                            this.set_config_option('seek_fast', true);
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
                         break;
                     case 'accurate':
-                        if(isSeekMode)
-                            this.set_seek_mode(GstPlayer.PlayerSeekMode.ACCURATE);
-                        else {
-                            this.set_config_option('seek_fast', false);
-                            this.set_config_option('seek_accurate', true);
-                        }
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.ACCURATE);
                         break;
                     default:
-                        if(isSeekMode)
-                            this.set_seek_mode(GstPlayer.PlayerSeekMode.DEFAULT);
-                        else {
-                            this.set_config_option('seek_fast', false);
-                            this.set_config_option('seek_accurate', false);
-                        }
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
                         break;
                 }
                 break;

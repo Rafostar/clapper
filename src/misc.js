@@ -1,4 +1,4 @@
-const { Gio, GstAudio, GstPlayer, Gdk, Gtk } = imports.gi;
+const { Gio, GstAudio, GstClapper, Gdk, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 
 const { debug } = Debug;
@@ -52,7 +52,7 @@ function inhibitForState(state, window)
 {
     let isInhibited = false;
 
-    if(state === GstPlayer.PlayerState.PLAYING) {
+    if(state === GstClapper.ClapperState.PLAYING) {
         if(inhibitCookie)
             return;
 
