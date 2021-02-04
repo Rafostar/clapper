@@ -14,27 +14,17 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
         const uiBuilder = Gtk.Builder.new_from_file(
             `${clapperPath}/ui/clapper.ui`
         );
-        const models = {
-            addMediaMenu: uiBuilder.get_object('addMediaMenu'),
-            settingsMenu: uiBuilder.get_object('settingsMenu'),
-        };
 
         this.add_css_class('noborder');
         this.set_title_widget(this._createWidgetForWindow(window));
 
-        const addMediaButton = new Gtk.MenuButton({
-            icon_name: 'list-add-symbolic',
-        });
-        const addMediaPopover = new HeaderBarPopover(models.addMediaMenu);
-        addMediaButton.set_popover(addMediaPopover);
-        this.pack_start(addMediaButton);
-
-        const openMenuButton = new Gtk.MenuButton({
+        const mainMenuButton = new Gtk.MenuButton({
             icon_name: 'open-menu-symbolic',
         });
-        const settingsPopover = new HeaderBarPopover(models.settingsMenu);
-        openMenuButton.set_popover(settingsPopover);
-        this.pack_end(openMenuButton);
+        const mainMenuModel = uiBuilder.get_object('mainMenu');
+        const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
+        mainMenuButton.set_popover(mainMenuPopover);
+        this.pack_start(mainMenuButton);
 
         const buttonsBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -53,7 +43,7 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
         fullscreenButton.connect('clicked', this._onFullscreenButtonClicked.bind(this));
 
         buttonsBox.append(fullscreenButton);
-        this.pack_end(buttonsBox);
+        this.pack_start(buttonsBox);
     }
 
     updateHeaderBar(title, subtitle)

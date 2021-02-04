@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <menu id="addMediaMenu">
+  <menu id="mainMenu">
     <section>
       <item>
         <attribute name="label" translatable="yes">Open Local...</attribute>
@@ -11,8 +11,6 @@
         <attribute name="action">app.openUri</attribute>
       </item>
     </section>
-  </menu>
-  <menu id="settingsMenu">
     <section>
       <item>
         <attribute name="label" translatable="yes">Preferences</attribute>
