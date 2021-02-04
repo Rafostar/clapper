@@ -4,7 +4,6 @@
     <param name="url">https://github.com/Rafostar/clapper.git</param>
     <param name="extract">pkgs/rpm/clapper.spec</param>
     <param name="extract">pkgs/rpm/clapper.rpmlintrc</param>
-    <param name="extract">pkgs/arch/obs/PKGBUILD</param>
     <param name="extract">pkgs/deb/clapper.dsc</param>
   </service>
   <service name="tar" mode="buildtime"/>
