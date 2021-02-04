@@ -47,7 +47,7 @@ optdepends=(
 	"gst-libav>=1.18.0: Popular video decoders"
 	"gstreamer-vaapi>=1.18.0: Intel/AMD video acceleration"
 )
-source=("${_basename}::git+https://github.com/Rafostar/${_basename}.git#branch=gstplayer")
+source=("${_basename}::git+https://github.com/Rafostar/${_basename}.git")
 provides=("${_basename}")
 replaces=("${_basename}")
 conflicts=("${_basename}")

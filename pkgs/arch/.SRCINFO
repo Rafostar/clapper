@@ -22,7 +22,7 @@ pkgbase = clapper-git
 	provides = clapper
 	conflicts = clapper
 	replaces = clapper
-	source = clapper::git+https://github.com/Rafostar/clapper.git#branch=gstplayer
+	source = clapper::git+https://github.com/Rafostar/clapper.git
 	md5sums = SKIP
 
 pkgname = clapper-git
