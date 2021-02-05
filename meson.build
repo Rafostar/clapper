@@ -2,7 +2,10 @@ project('com.github.rafostar.Clapper', 'c', 'cpp',
   version: '0.0.0',
   meson_version: '>= 0.50.0',
   license: 'GPL3',
-  default_options: [ 'warning_level=2' ]
+  default_options: [
+    'warning_level=1',
+    'buildtype=debugoptimized'
+  ]
 )
 
 python = import('python')
