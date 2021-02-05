@@ -27,18 +27,6 @@
         },
         {
             "type": "patch",
-            "path": "gst-plugins-bad-gstplayer-ref-sink.patch"
-        },
-        {
-            "type": "patch",
-            "path": "gst-plugins-bad-set-seeking-method-without-stopping-playback.patch"
-        },
-        {
-            "type": "patch",
-            "path": "gst-plugins-bad-player-add-toc-support.patch"
-        },
-        {
-            "type": "patch",
             "path": "gst-plugins-bad-vah264dec-fix-seeking-errors.patch"
         },
         {
