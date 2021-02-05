@@ -285,3 +285,8 @@ radio {
 .brightscale trough highlight {
   filter: brightness(120%);
 }
+
+/* Error BG */
+.blackbackground {
+  background: black;
+}

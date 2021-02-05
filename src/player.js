@@ -467,6 +467,16 @@ class ClapperPlayer extends PlayerBase
         this.widget.disconnect(this._realizeSignal);
         this._realizeSignal = null;
 
+        if(this.widget.get_error) {
+            const error = this.widget.get_error();
+            if(error) {
+                debug('player widget error detected');
+                debug(error);
+
+                this.widget.add_css_class('blackbackground');
+            }
+        }
+
         const root = this.widget.get_root();
         if(!root) return;
 
