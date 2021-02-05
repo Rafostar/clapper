@@ -17,10 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+%define debug_package %{nil}
 
 %global appname com.github.rafostar.Clapper
 %global gst_version 1.18.0
 %global gtk4_version 4.0.0
+%global meson_version 0.50
+%global glib2_version 2.56.0
 
 Name:           clapper
 Version:        0.0.0
@@ -29,12 +32,15 @@ Summary:        Simple and modern GNOME media player
 
 License:        GPL-3.0
 URL:            https://github.com/Rafostar/clapper
-BuildArch:      noarch
 BuildRoot:      %{_builddir}/%{name}-%{version}-build
 Source0:        _service
 
-BuildRequires:  meson
+BuildRequires:  meson >= %{meson_version}
+BuildRequires:  gtk4-devel >= %{gtk4_version}
+BuildRequires:  glib2-devel >= %{glib2_version}
+BuildRequires:  gobject-introspection-devel
 BuildRequires:  gjs
+BuildRequires:  gcc-c++
 BuildRequires:  desktop-file-utils
 BuildRequires:  hicolor-icon-theme
 
@@ -47,12 +53,15 @@ Requires:       hicolor-icon-theme
 Group:          Productivity/Multimedia/Video/Players
 
 BuildRequires:  update-desktop-files
+BuildRequires:  gstreamer-devel >= %{gst_version}
+BuildRequires:  gstreamer-plugins-base-devel >= %{gst_version}
+BuildRequires:  Mesa-libGLESv2-devel
+BuildRequires:  Mesa-libGLESv3-devel
 
 Requires:       gstreamer >= %{gst_version}
 Requires:       gstreamer-plugins-base >= %{gst_version}
 Requires:       gstreamer-plugins-good >= %{gst_version}
 Requires:       gstreamer-plugins-bad >= %{gst_version}
-Requires:       libgstplayer-1_0-0 >= %{gst_version}
 
 # Popular video decoders
 Recommends:     gstreamer-plugins-libav >= %{gst_version}
@@ -63,11 +72,16 @@ Suggests:       gstreamer-plugins-ugly
 Suggests:       gstreamer-plugins-vaapi
 %else
 BuildRequires:  glibc-all-langpacks
+BuildRequires:  gstreamer1-devel >= %{gst_version}
+BuildRequires:  gstreamer1-plugins-base-devel >= %{gst_version}
+BuildRequires:  mesa-libGL-devel
+BuildRequires:  mesa-libGLES-devel
+BuildRequires:  mesa-libGLU-devel
+BuildRequires:  mesa-libEGL-devel
+
 Requires:       gstreamer1 >= %{gst_version}
 Requires:       gstreamer1-plugins-base >= %{gst_version}
 Requires:       gstreamer1-plugins-good >= %{gst_version}
-Requires:       gstreamer1-plugins-good-gtk4
-# Contains GstPlayer lib
 Requires:       gstreamer1-plugins-bad-free >= %{gst_version}
 
 # ASS subtitles (assrender)
@@ -108,8 +122,14 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/mime/packages/%{appname}.xml
 %{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/*.metainfo.xml
+%{_datadir}/gir-1.0/GstClapper-1.0.gir
+%{_libdir}/libgstclapper-1.0.so*
+%{_libdir}/girepository-1.0/GstClapper-1.0.typelib
 
 %changelog
+* Fri Feb 5 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-9
+- Update build with gstclapper libs support
+
 * Thu Jan 21 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-8
 - Use metainfo instead of deprecated appdata
 
