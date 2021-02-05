@@ -26,7 +26,7 @@ This is still early WIP. Many features are not implemented yet and quite a few a
 * [Playlist from file](https://github.com/Rafostar/clapper/wiki/Playlists)
 * Chapters on progress bar
 
-## Installation from Flatpak (recommended)
+## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
 Additionally it also has a few patches, thus some functionalities work better (or are only available) in `Flatpak` version (until my changes are accepted upstream). List of patches used in this version can be found [here](https://github.com/Rafostar/clapper/issues/35).
 
@@ -34,14 +34,20 @@ Additionally it also has a few patches, thus some functionalities work better (o
 flatpak install https://rafostar.github.io/flatpak/com.github.rafostar.Clapper.flatpakref
 ```
 
-## Packages / Installation from source code
+## Packages
 The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
 
 #### Debian, Fedora, openSUSE & Ubuntu
-Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).
+Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper))
 
 #### Arch Linux
 You can get Clapper from the AUR: [clapper-git](https://aur.archlinux.org/packages/clapper-git)
+
+## Installation from source code
+```sh
+meson builddir --prefix=/usr/local
+sudo meson install -C builddir
+```
 
 ## Q&A
 **Q:** Does using `GJS` negatively impact video performance?<br>
