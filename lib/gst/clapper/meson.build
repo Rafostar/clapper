@@ -39,12 +39,8 @@ have_gtk_gl_windowing = false
 
 gtk4_dep = dependency('gtk4', required : true)
 
-if not gtk4_dep.found() or not gtk4_dep.version().version_compare('>=4.0.0')
-  error('GTK4 is missing or is too old')
-endif
-
-if not have_gstgl
-  error('GstGL is missing')
+if not gtk4_dep.version().version_compare('>=4.0.0')
+  error('GTK4 version on this system is too old')
 endif
 
 if gst_gl_have_window_x11 and gst_gl_have_platform_glx
