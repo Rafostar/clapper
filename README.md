@@ -37,7 +37,7 @@ flatpak install https://rafostar.github.io/flatpak/com.github.rafostar.Clapper.f
 ## Packages
 The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
 
-#### Debian, Fedora, openSUSE & Ubuntu
+#### Debian, Fedora & openSUSE
 Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper))
 
 #### Arch Linux
