@@ -566,9 +566,18 @@ class ClapperWidget extends Gtk.Grid
         this.disconnect(this.mapSignal);
 
         const root = this.get_root();
-        if(!root) return;
-
         const surface = root.get_surface();
+        const monitor = root.display.get_monitor_at_surface(surface);
+        const geometry = monitor.geometry;
+        const size = this.windowSize;
+
+        debug(`detected monitor resolution: ${geometry.width}x${geometry.height}`);
+
+        if(geometry.width >= size[0] && geometry.height >= size[1]) {
+            root.set_default_size(size[0], size[1]);
+            debug(`restored window size: ${size[0]}x${size[1]}`);
+        }
+
         surface.connect('notify::state', this._onStateNotify.bind(this));
     }
 });

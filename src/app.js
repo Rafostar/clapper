@@ -31,10 +31,6 @@ class ClapperApp extends AppBase
 
         const headerBar = new HeaderBar(this.active_window);
         this.active_window.set_titlebar(headerBar);
-
-        const size = clapperWidget.windowSize;
-        this.active_window.set_default_size(size[0], size[1]);
-        debug(`restored window size: ${size[0]}x${size[1]}`);
     }
 
     vfunc_open(files, hint)
