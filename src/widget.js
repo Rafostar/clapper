@@ -571,11 +571,18 @@ class ClapperWidget extends Gtk.Grid
         const geometry = monitor.geometry;
         const size = this.windowSize;
 
-        debug(`detected monitor resolution: ${geometry.width}x${geometry.height}`);
+        debug(`monitor application-pixels: ${geometry.width}x${geometry.height}`);
 
         if(geometry.width >= size[0] && geometry.height >= size[1]) {
             root.set_default_size(size[0], size[1]);
             debug(`restored window size: ${size[0]}x${size[1]}`);
+        }
+
+        const monitorWidth = Math.max(geometry.width, geometry.height);
+
+        if(monitorWidth < 1280) {
+            this.controls.isMobileMonitor = true;
+            debug('mobile monitor detected');
         }
 
         surface.connect('notify::state', this._onStateNotify.bind(this));

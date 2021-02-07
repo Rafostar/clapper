@@ -28,6 +28,8 @@ class ClapperControls extends Gtk.Box
         this.currentPosition = 0;
         this.currentDuration = 0;
         this.isPositionDragging = false;
+
+        this.isMobileMonitor = false;
         this.isMobile = false;
 
         this.showHours = false;
