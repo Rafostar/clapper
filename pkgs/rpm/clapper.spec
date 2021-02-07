@@ -123,10 +123,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/*.metainfo.xml
 %{_datadir}/gir-1.0/GstClapper-1.0.gir
-%{_libdir}/libgstclapper-1.0.so*
-%{_libdir}/girepository-1.0/GstClapper-1.0.typelib
+%{_libdir}/%{appname}/
 
 %changelog
+* Sun Feb 7 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-10
+- Install gstclapper libs to app named subdirectory
+
 * Fri Feb 5 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-9
 - Update build with gstclapper libs support
 

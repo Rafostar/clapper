@@ -7,7 +7,10 @@ libversion = meson.project_version()
 cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
 
-plugins_install_dir = join_paths(get_option('libdir'), 'gstreamer-1.0')
+clapper_libdir = join_paths(
+  get_option('prefix'), get_option('libdir'), meson.project_name()
+)
+
 cdata = configuration_data()
 
 if cc.get_id() == 'msvc'
@@ -139,7 +142,7 @@ cdata.set_quoted('PACKAGE_BUGREPORT', 'https://github.com/Rafostar/clapper/issue
 cdata.set_quoted('PACKAGE_NAME', 'GStreamer Clapper Libs')
 cdata.set_quoted('GST_API_VERSION', api_version)
 cdata.set_quoted('GST_LICENSE', 'LGPL')
-cdata.set_quoted('LIBDIR', join_paths(get_option('prefix'), get_option('libdir')))
+cdata.set_quoted('LIBDIR', clapper_libdir)
 cdata.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 
 warning_flags = [

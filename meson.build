@@ -15,9 +15,6 @@ if not python_bin.found()
   error('No valid python3 binary found')
 endif
 
-conf = configuration_data()
-conf.set('bindir', join_paths(get_option('prefix'), 'bin'))
-
 if get_option('clapper-lib')
   subdir('lib')
 endif
