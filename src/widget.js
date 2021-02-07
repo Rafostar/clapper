@@ -21,6 +21,7 @@ class ClapperWidget extends Gtk.Grid
 
         this.windowSize = JSON.parse(settings.get_string('window-size'));
         this.floatSize = JSON.parse(settings.get_string('float-size'));
+        this.layoutWidth = 0;
 
         this.fullscreenMode = false;
         this.floatingMode = false;
@@ -549,6 +550,15 @@ class ClapperWidget extends Gtk.Grid
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
+    _onLayoutUpdate(surface, width, height)
+    {
+        if(width === this.layoutWidth)
+            return;
+
+        this.layoutWidth = width;
+        this.controls._onPlayerResize(width, height);
+    }
+
     _onLeave(controller)
     {
         if(
@@ -586,5 +596,6 @@ class ClapperWidget extends Gtk.Grid
         }
 
         surface.connect('notify::state', this._onStateNotify.bind(this));
+        surface.connect('layout', this._onLayoutUpdate.bind(this));
     }
 });
