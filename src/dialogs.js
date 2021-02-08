@@ -162,6 +162,45 @@ class ClapperUriDialog extends Gtk.Dialog
     }
 });
 
+var ResumeDialog = GObject.registerClass(
+class ClapperResumeDialog extends Gtk.MessageDialog
+{
+    _init(window, resumeInfo)
+    {
+        const percentage = Math.round((resumeInfo.time / resumeInfo.duration) * 100);
+
+        const msg = [
+            `<b>Title:</b> ${resumeInfo.title}`,
+            `<b>Completed:</b> ${percentage}%`
+        ].join('\n');
+
+        super._init({
+            transient_for: window,
+            modal: true,
+            message_type: Gtk.MessageType.QUESTION,
+            buttons: Gtk.ButtonsType.YES_NO,
+            text: 'Resume playback?',
+            secondary_use_markup: true,
+            secondary_text: msg,
+        });
+
+        this.resumeInfo = resumeInfo;
+        this.connect('response', this._onResponse.bind(this));
+
+        this.show();
+    }
+
+    _onResponse(dialog, respId)
+    {
+        const { player } = this.transient_for.child;
+
+        if(respId === Gtk.ResponseType.YES)
+            player.seek_seconds(this.resumeInfo.time);
+
+        this.destroy();
+    }
+});
+
 var PrefsDialog = GObject.registerClass(
 class ClapperPrefsDialog extends Gtk.Dialog
 {
