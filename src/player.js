@@ -376,12 +376,20 @@ class ClapperPlayer extends PlayerBase
         if(this.state !== GstClapper.ClapperState.STOPPED && !this.quitOnStop) {
             let resumeInfo = {};
             if(settings.get_boolean('resume-enabled')) {
-                resumeInfo.title = this.playlistWidget.getActiveFilename();
-                resumeInfo.time = Math.floor(this.position / 1000000000);
-                resumeInfo.duration = this.duration / 1000000000;
+                const resumeTime = Math.floor(this.position / 1000000000);
+                const resumeDuration = this.duration / 1000000000;
 
-                debug(`saving resume info for: ${resumeInfo.title}`);
-                debug(`resume time: ${resumeInfo.time}, duration: ${resumeInfo.duration}`);
+                /* Do not save resume info when video is short, just started or almost finished */
+                if(resumeDuration > 60 && resumeTime > 15 && resumeDuration - resumeTime > 20) {
+                    resumeInfo.title = this.playlistWidget.getActiveFilename();
+                    resumeInfo.time = resumeTime;
+                    resumeInfo.duration = resumeDuration;
+
+                    debug(`saving resume info for: ${resumeInfo.title}`);
+                    debug(`resume time: ${resumeInfo.time}, duration: ${resumeInfo.duration}`);
+                }
+                else
+                    debug('resume info is not worth saving');
             }
             settings.set_string('resume-database', JSON.stringify([resumeInfo]));
         }
