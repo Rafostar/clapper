@@ -159,6 +159,7 @@ radio {
 }
 .overamp trough highlight {
   background: @error_color;
+  border-color: @error_color;
 }
 
 /* Elapsed Popover */
