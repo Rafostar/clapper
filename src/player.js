@@ -408,6 +408,8 @@ class ClapperPlayer extends PlayerBase
 
             this.seek_done = true;
             debug('seeking finished');
+
+            clapperWidget._onPlayerPositionUpdated(this, this.position);
         }
 
         clapperWidget._onPlayerStateChanged(player, state);
