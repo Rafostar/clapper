@@ -463,7 +463,7 @@ class ClapperControls extends Gtk.Box
         debug(`changing chapter visibility to: ${isVisible}`);
 
         this[`chapter${type}Id`] = GLib.idle_add(
-            GLib.PRIORITY_DEFAULT_IDLE,
+            GLib.PRIORITY_DEFAULT_IDLE + 20,
             () => {
                 if(isVisible) {
                     const [start, end] = this.positionScale.get_slider_range();
