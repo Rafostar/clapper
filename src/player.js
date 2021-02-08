@@ -372,7 +372,8 @@ class ClapperPlayer extends PlayerBase
             if(size[0] > 0 && size[1] > 0)
                 clapperWidget._saveWindowSize(size);
         }
-        if(this.state !== GstClapper.ClapperState.STOPPED) {
+        /* If "quitOnStop" is set here it means that we are in middle of autoclosing */
+        if(this.state !== GstClapper.ClapperState.STOPPED && !this.quitOnStop) {
             let resumeInfo = {};
             if(settings.get_boolean('resume-enabled')) {
                 resumeInfo.title = this.playlistWidget.getActiveFilename();
@@ -439,8 +440,8 @@ class ClapperPlayer extends PlayerBase
 
         if(settings.get_boolean('close-auto')) {
             /* Stop will be automatically called soon afterwards */
-            this._performCloseCleanup(this.widget.get_root());
             this.quitOnStop = true;
+            this._performCloseCleanup(this.widget.get_root());
         }
     }
 
