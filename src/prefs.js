@@ -70,6 +70,9 @@ class ClapperBehaviourPage extends PrefsBase.Grid
             ['percentage', "Percentage"],
         ], 'seeking-unit');
         this.addSpinButton('Value', 1, 99, 'seeking-value');
+
+        this.addTitle('Resume');
+        this.addCheckButton('Ask to resume last unfinished video', 'resume-enabled');
     }
 });
 
