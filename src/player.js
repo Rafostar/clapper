@@ -372,6 +372,18 @@ class ClapperPlayer extends PlayerBase
             if(size[0] > 0 && size[1] > 0)
                 clapperWidget._saveWindowSize(size);
         }
+        if(this.state !== GstClapper.ClapperState.STOPPED) {
+            let resumeInfo = {};
+            if(settings.get_boolean('resume-enabled')) {
+                resumeInfo.title = this.playlistWidget.getActiveFilename();
+                resumeInfo.time = Math.floor(this.position / 1000000000);
+                resumeInfo.duration = this.duration / 1000000000;
+
+                debug(`saving resume info for: ${resumeInfo.title}`);
+                debug(`resume time: ${resumeInfo.time}, duration: ${resumeInfo.duration}`);
+            }
+            settings.set_string('resume-database', JSON.stringify([resumeInfo]));
+        }
         settings.set_double('volume-last', this.volume);
 
         clapperWidget.controls._onCloseRequest();
