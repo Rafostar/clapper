@@ -1,11 +1,11 @@
 - [X] Implement GstPlayer API
-  - [ ] Update to GstPlay API
+  - [X] Update to custom GstClapper API
 - [X] Inhibit screen locking
 - [X] Hide cursor on video window
 - Adaptive GUI:
   - [X] Darker and bigger in fullscreen
   - [X] Mobile/narrow widths transitions
-  - [ ] Mobile friendly other windows e.g. prefs window (libhandy)
+  - [ ] Mobile friendly other windows e.g. prefs window (libadwaita)
 - [X] Dragging player by video (MPV)
 - [X] Switching video/audio/subtitles tracks from bottom bar (MPV)
 - [X] Over-amplification supported by default (VLC)
@@ -24,7 +24,7 @@
   - [X] Customizable seek time
   - [X] Set seek mode (default, accurate, fast)
 - [ ] Statistics and codec info page (VLC)
-- [ ] Resume playback from last position
+- [X] Resume playback from last position
 - [X] Chapters support
 - [ ] Set tracks time offset
   - [ ] Subtitles offset
