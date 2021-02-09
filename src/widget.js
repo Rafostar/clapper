@@ -22,6 +22,7 @@ class ClapperWidget extends Gtk.Grid
 
         this.windowSize = JSON.parse(settings.get_string('window-size'));
         this.floatSize = JSON.parse(settings.get_string('float-size'));
+        this.layoutWidth = 0;
 
         this.fullscreenMode = false;
         this.floatingMode = false;
@@ -574,6 +575,15 @@ class ClapperWidget extends Gtk.Grid
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
+    _onLayoutUpdate(surface, width, height)
+    {
+        if(width === this.layoutWidth)
+            return;
+
+        this.layoutWidth = width;
+        this.controls._onPlayerResize(width, height);
+    }
+
     _onLeave(controller)
     {
         if(
@@ -596,13 +606,21 @@ class ClapperWidget extends Gtk.Grid
         const geometry = monitor.geometry;
         const size = this.windowSize;
 
-        debug(`detected monitor resolution: ${geometry.width}x${geometry.height}`);
+        debug(`monitor application-pixels: ${geometry.width}x${geometry.height}`);
 
         if(geometry.width >= size[0] && geometry.height >= size[1]) {
             root.set_default_size(size[0], size[1]);
             debug(`restored window size: ${size[0]}x${size[1]}`);
         }
 
+        const monitorWidth = Math.max(geometry.width, geometry.height);
+
+        if(monitorWidth < 1280) {
+            this.controls.isMobileMonitor = true;
+            debug('mobile monitor detected');
+        }
+
         surface.connect('notify::state', this._onStateNotify.bind(this));
+        surface.connect('layout', this._onLayoutUpdate.bind(this));
     }
 });

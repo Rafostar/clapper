@@ -28,6 +28,8 @@ class ClapperControls extends Gtk.Box
         this.currentPosition = 0;
         this.currentDuration = 0;
         this.isPositionDragging = false;
+
+        this.isMobileMonitor = false;
         this.isMobile = false;
 
         this.showHours = false;
@@ -507,10 +509,9 @@ class ClapperControls extends Gtk.Box
             : Misc.getCubicValue(settings.get_double('volume-last'));
 
         this.volumeScale.set_value(initialVolume);
-        player.widget.connect('resize', this._onPlayerResize.bind(this));
     }
 
-    _onPlayerResize(widget, width, height)
+    _onPlayerResize(width, height)
     {
         const isMobile = (width < 560);
         if(this.isMobile === isMobile)
