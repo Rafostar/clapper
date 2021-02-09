@@ -376,12 +376,19 @@ class ClapperPlayer extends PlayerBase
         if(this.state !== GstClapper.ClapperState.STOPPED && !this.quitOnStop) {
             let resumeInfo = {};
             if(settings.get_boolean('resume-enabled')) {
+                const resumeTitle = this.playlistWidget.getActiveFilename();
                 const resumeTime = Math.floor(this.position / 1000000000);
                 const resumeDuration = this.duration / 1000000000;
 
-                /* Do not save resume info when video is short, just started or almost finished */
-                if(resumeDuration > 60 && resumeTime > 15 && resumeDuration - resumeTime > 20) {
-                    resumeInfo.title = this.playlistWidget.getActiveFilename();
+                /* Do not save resume info when title is too long (random URI),
+                 * video is very short, just started or almost finished */
+                if(
+                    resumeTitle.length < 300
+                    && resumeDuration > 60
+                    && resumeTime > 15
+                    && resumeDuration - resumeTime > 20
+                ) {
+                    resumeInfo.title = resumeTitle;
                     resumeInfo.time = resumeTime;
                     resumeInfo.duration = resumeDuration;
 
