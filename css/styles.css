@@ -186,7 +186,7 @@ radio {
 
 /* Floating Mode */
 .floatingwindow {
-  border-radius: 12px;
+  border-radius: 8px;
 }
 .osd.floatingcontrols .playercontrols {
   -gtk-icon-size: 16px;
