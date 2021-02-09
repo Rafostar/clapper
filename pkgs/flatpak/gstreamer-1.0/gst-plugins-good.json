@@ -10,7 +10,7 @@
         "-Dglib-asserts=disabled",
         "-Dglib-checks=disabled",
 
-        "-Dgtk3=disabled",
+        "-Dgtk3=disabled"
     ],
     "sources": [
         {
