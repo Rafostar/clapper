@@ -26,6 +26,12 @@ radio {
 .osd list {
   background: none;
 }
+.gtk41 trough highlight {
+  border-color: transparent;
+}
+.gtk41 .osd trough highlight {
+  border-color: inherit;
+}
 
 .osd .playercontrols {
   -gtk-icon-size: 24px;
@@ -159,7 +165,6 @@ radio {
 }
 .overamp trough highlight {
   background: @error_color;
-  border-color: @error_color;
 }
 
 /* Elapsed Popover */
