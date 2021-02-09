@@ -26,10 +26,10 @@ radio {
 .osd list {
   background: none;
 }
-.gtk41 trough highlight {
+.gtk402 trough highlight {
   border-color: transparent;
 }
-.gtk41 .osd trough highlight {
+.gtk402 .osd trough highlight {
   border-color: inherit;
 }
 
