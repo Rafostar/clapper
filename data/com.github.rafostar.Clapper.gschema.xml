@@ -32,6 +32,14 @@
       <default>"second"</default>
       <summary>Unit to use with seeking value</summary>
     </key>
+    <key name="resume-enabled" type="b">
+      <default>true</default>
+      <summary>Ask to resume unfinished video</summary>
+    </key>
+    <key name="resume-database" type="s">
+      <default>'[]'</default>
+      <summary>Data storing unfinished videos resume info</summary>
+    </key>
 
     <!-- Audio -->
     <key name="audio-offset" type="d">

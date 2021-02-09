@@ -1,6 +1,7 @@
 const { Gdk, GLib, GObject, GstClapper, Gtk } = imports.gi;
 const { Controls } = imports.src.controls;
 const Debug = imports.src.debug;
+const Dialogs = imports.src.dialogs;
 const Misc = imports.src.misc;
 const { Player } = imports.src.player;
 const Revealers = imports.src.revealers;
@@ -487,21 +488,45 @@ class ClapperWidget extends Gtk.Grid
         this.revealerTop.endTime.set_visible(isNotStopped);
     }
 
-    _onPlayerDurationChanged(player)
+    _onPlayerDurationChanged(player, duration)
     {
-        const duration = Math.floor(player.get_duration() / 1000000000);
+        const durationSeconds = duration / 1000000000;
+        const durationFloor = Math.floor(durationSeconds);
 
         /* Sometimes GstPlayer might re-emit
          * duration changed during playback */
-        if(this.controls.currentDuration === duration)
+        if(this.controls.currentDuration === durationFloor)
             return;
 
-        this.controls.currentDuration = duration;
-        this.controls.showHours = (duration >= 3600);
+        this.controls.currentDuration = durationFloor;
+        this.controls.showHours = (durationFloor >= 3600);
 
-        this.controls.positionAdjustment.set_upper(duration);
-        this.controls.durationFormatted = Misc.getFormattedTime(duration);
+        this.controls.positionAdjustment.set_upper(durationFloor);
+        this.controls.durationFormatted = Misc.getFormattedTime(durationFloor);
         this.controls.updateElapsedLabel();
+
+        if(settings.get_boolean('resume-enabled')) {
+            const resumeDatabase = JSON.parse(settings.get_string('resume-database'));
+            const title = player.playlistWidget.getActiveFilename();
+
+            debug(`searching database for resume info: ${title}`);
+
+            const resumeInfo = resumeDatabase.find(info => {
+                return (info.title === title && info.duration === durationSeconds);
+            });
+
+            if(resumeInfo) {
+                debug('found resume info: ' + JSON.stringify(resumeInfo));
+                new Dialogs.ResumeDialog(this.root, resumeInfo);
+
+                const shrunkDatabase = resumeDatabase.filter(info => {
+                    return !(info.title === title && info.duration === durationSeconds);
+                });
+                settings.set_string('resume-database', JSON.stringify(shrunkDatabase));
+            }
+            else
+                debug('resume info not found');
+        }
     }
 
     _onPlayerPositionUpdated(player, position)
