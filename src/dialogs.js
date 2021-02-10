@@ -186,6 +186,8 @@ class ClapperResumeDialog extends Gtk.MessageDialog
         });
 
         this.resumeInfo = resumeInfo;
+
+        this.set_default_response(Gtk.ResponseType.YES);
         this.connect('response', this._onResponse.bind(this));
 
         this.show();
