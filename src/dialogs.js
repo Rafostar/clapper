@@ -1,4 +1,5 @@
 const { Gio, GObject, Gtk, Gst } = imports.gi;
+const System = imports.system;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
 const Prefs = imports.src.prefs;
@@ -294,9 +295,19 @@ class ClapperAboutDialog extends Gtk.AboutDialog
             Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
         ].join('.');
 
+        const gjsVerStr = String(System.version);
+        let gjsVer = '';
+
+        gjsVer += gjsVerStr.charAt(0) + '.';
+        gjsVer += gjsVerStr.charAt(1) + gjsVerStr.charAt(2) + '.';
+        if(gjsVerStr.charAt(3) !== '0')
+            gjsVer += gjsVerStr.charAt(3);
+        gjsVer += gjsVerStr.charAt(4);
+
         const osInfo = [
-            'GTK version' + ': ' + gtkVer,
-            'GStreamer version' + ': ' + gstVer
+            'GTK ' + 'version' + ': ' + gtkVer,
+            'GStreamer ' + 'version' + ': ' + gstVer,
+            'GJS ' + 'version' + ': ' + gjsVer
         ].join('\n');
 
         super._init({
