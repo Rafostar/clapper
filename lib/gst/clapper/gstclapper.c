@@ -2847,6 +2847,7 @@ gst_clapper_main (gpointer data)
   self->is_live = FALSE;
   self->rate = 1.0;
   self->seek_mode = DEFAULT_SEEK_MODE;
+  self->cached_duration = GST_CLOCK_TIME_NONE;
 
   GST_TRACE_OBJECT (self, "Starting main loop");
   g_main_loop_run (self->loop);
@@ -3053,12 +3054,15 @@ gst_clapper_pause (GstClapper * self)
 {
   g_return_if_fail (GST_IS_CLAPPER (self));
 
-  g_mutex_lock (&self->lock);
-  self->inhibit_sigs = FALSE;
-  g_mutex_unlock (&self->lock);
+  /* Do not try to pause on DVD navigation */
+  if (G_LIKELY (self->cached_duration > 1000000000)) {
+    g_mutex_lock (&self->lock);
+    self->inhibit_sigs = FALSE;
+    g_mutex_unlock (&self->lock);
 
-  g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,
-      gst_clapper_pause_internal, self, NULL);
+    g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,
+        gst_clapper_pause_internal, self, NULL);
+  }
 }
 
 static void
