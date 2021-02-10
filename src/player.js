@@ -44,6 +44,13 @@ class ClapperPlayer extends PlayerBase
         dragGesture.connect('drag-update', this._onWidgetDragUpdate.bind(this));
         this.widget.add_controller(dragGesture);
 
+        const swipeGesture = new Gtk.GestureSwipe({
+            touch_only: true,
+        });
+        swipeGesture.connect('swipe', this._onWidgetSwipe.bind(this));
+        swipeGesture.connect('update', this._onWidgetSwipeUpdate.bind(this));
+        this.widget.add_controller(swipeGesture);
+
         const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onWidgetKeyPressed.bind(this));
         keyController.connect('key-released', this._onWidgetKeyReleased.bind(this));
@@ -259,10 +266,12 @@ class ClapperPlayer extends PlayerBase
         controls.positionScale.set_value(positionSeconds);
     }
 
-    adjust_volume(isIncrease)
+    adjust_volume(isIncrease, offset)
     {
+        offset = offset || 0.05;
+
         const { controls } = this.widget.get_ancestor(Gtk.Grid);
-        const value = (isIncrease) ? 0.05 : -0.05;
+        const value = (isIncrease) ? offset : -offset;
         const volume = controls.volumeScale.get_value() + value;
 
         controls.volumeScale.set_value(volume);
@@ -290,6 +299,21 @@ class ClapperPlayer extends PlayerBase
                 super.receiveWs(action, value);
                 break;
         }
+    }
+
+    getIsSwipeOk(velocity, otherVelocity)
+    {
+        if(!velocity)
+            return false;
+
+        const absVel = Math.abs(velocity);
+
+        if(absVel < 20 || Math.abs(otherVelocity) * 1.5 >= absVel)
+            return false;
+
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+
+        return clapperWidget.fullscreenMode;
     }
 
     _setHideCursorTimeout()
@@ -721,6 +745,27 @@ class ClapperPlayer extends PlayerBase
 
             gesture.reset();
         }
+    }
+
+    _onWidgetSwipe(gesture, velocityX, velocityY)
+    {
+        if(!this.getIsSwipeOk(velocityX, velocityY))
+            return;
+
+        this._onScroll(gesture, -velocityX, 0);
+    }
+
+    _onWidgetSwipeUpdate(gesture, sequence)
+    {
+        const [isCalc, velocityX, velocityY] = gesture.get_velocity();
+        if(!isCalc) return;
+
+        if(!this.getIsSwipeOk(velocityY, velocityX))
+            return;
+
+        const isIncrease = velocityY < 0;
+
+        this.adjust_volume(isIncrease, 0.01);
     }
 
     _onScroll(controller, dx, dy)
