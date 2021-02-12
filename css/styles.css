@@ -18,6 +18,18 @@ radio {
 .gtk402 .osd trough highlight {
   border-color: inherit;
 }
+.adwrounded.csd {
+  border-radius: 8px;
+}
+.adwrounded.fullscreen,
+.adwrounded.maximized,
+.adwrounded.tiled,
+.adwrounded.tiled-top,
+.adwrounded.tiled-left,
+.adwrounded.tiled-right,
+.adwrounded.tiled-bottom {
+  border-radius: 0px;
+}
 
 .tvmode popover box {
   text-shadow: none;
