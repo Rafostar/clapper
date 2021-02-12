@@ -112,6 +112,7 @@ class ClapperWidget extends Gtk.Grid
         const root = this.get_root();
         const action = (isFullscreen) ? 'add' : 'remove';
         root[action + '_css_class']('gpufriendlyfs');
+        root[action + '_css_class']('tvmode');
 
         if(!this.floatingMode)
             this._changeControlsPlacement(isFullscreen);

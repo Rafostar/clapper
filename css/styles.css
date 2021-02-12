@@ -5,26 +5,12 @@ scale marks {
 radio {
   margin-left: -2px;
 }
-.osd popover box {
-  text-shadow: none;
-  font-size: 21px;
-  font-weight: 500;
-}
-.osd button {
-  min-width: 32px;
-  min-height: 32px;
-  -gtk-icon-shadow: none;
-}
-.osd radio {
-  margin-left: 0px;
-  margin-right: 4px;
-  border: 2px solid;
-  min-width: 17px;
-  min-height: 17px;
-}
 /* Adwaita is missing osd ListBox */
 .osd list {
   background: none;
+}
+.osd list row {
+  -gtk-icon-shadow: none;
 }
 .gtk402 trough highlight {
   border-color: transparent;
@@ -33,13 +19,31 @@ radio {
   border-color: inherit;
 }
 
-.osd .playercontrols {
+.tvmode popover box {
+  text-shadow: none;
+  font-size: 21px;
+  font-weight: 500;
+}
+.tvmode button {
+  min-width: 32px;
+  min-height: 32px;
+  -gtk-icon-shadow: none;
+}
+.tvmode radio {
+  margin-left: 0px;
+  margin-right: 4px;
+  border: 2px solid;
+  min-width: 17px;
+  min-height: 17px;
+}
+
+.tvmode .playercontrols {
   -gtk-icon-size: 24px;
 }
 .playbackicon {
   -gtk-icon-size: 20px;
 }
-.osd .playbackicon {
+.tvmode .playbackicon {
   -gtk-icon-size: 28px;
 }
 .labelbutton {
@@ -51,12 +55,12 @@ radio {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
-.osd .labelbutton {
+.tvmode .labelbutton {
   margin-top: 0px;
   font-size: 23px;
   text-shadow: none;
 }
-.reavealertop {
+.tvmode .reavealertop {
   min-height: 88px;
   box-shadow: inset 0px 200px 10px -132px rgba(0,0,0,0.4);
   font-family: 'Cantarell', sans-serif;
@@ -65,7 +69,7 @@ radio {
   text-shadow: none;
   background: transparent;
 }
-.osdtime {
+.tvtime {
   margin-top: -2px;
   margin-right: -4px;
   min-width: 4px;
@@ -73,7 +77,7 @@ radio {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.osdendtime {
+.tvendtime {
   margin-top: 36px;
   margin-right: -4px;
   min-width: 4px;
@@ -93,13 +97,13 @@ radio {
   margin-top: -2px;
   margin-bottom: -2px;
 }
-.osd .positionscale {
+.tvmode .positionscale {
   margin-top: -1px;
 }
 .positionscale trough highlight {
   min-height: 4px;
 }
-.osd .positionscale trough slider {
+.tvmode .positionscale trough slider {
   color: transparent;
   background: transparent;
   border-color: transparent;
@@ -111,11 +115,11 @@ radio {
 .positionscale.fine-tune mark indicator {
   min-height: 6px;
 }
-.osd .positionscale mark indicator {
+.tvmode .positionscale mark indicator {
   min-height: 7px;
   min-width: 2px;
 }
-.osd .positionscale.fine-tune mark indicator {
+.tvmode .positionscale.fine-tune mark indicator {
   min-height: 7px;
   min-width: 2px;
 }
@@ -127,17 +131,17 @@ radio {
   margin-top: 4px;
   margin-bottom: -6px;
 }
-.osd .positionscale marks.top {
+.tvmode .positionscale marks.top {
   margin-bottom: 2px;
 }
-.osd .positionscale marks.bottom {
+.tvmode .positionscale marks.bottom {
   margin-top: 2px;
 }
-.osd .positionscale trough highlight {
+.tvmode .positionscale trough highlight {
   border-radius: 3px;
   min-height: 20px;
 }
-.osd .positionscale.fine-tune trough highlight {
+.tvmode .positionscale.fine-tune trough highlight {
   border-radius: 3px;
   min-height: 20px;
 }
@@ -149,7 +153,7 @@ radio {
   margin-right: -6px;
   min-height: 180px;
 }
-.osd .volumescale {
+.tvmode .volumescale {
   margin: 2px;
   margin-left: -6px;
   margin-right: -4px;
@@ -160,7 +164,7 @@ radio {
   margin-top: -4px;
   margin-bottom: -6px;
 }
-.osd .volumescale trough highlight {
+.tvmode .volumescale trough highlight {
   min-width: 6px;
 }
 .overamp trough highlight {
@@ -168,19 +172,16 @@ radio {
 }
 
 /* Elapsed Popover */
-.osd list row {
-  -gtk-icon-shadow: none;
-}
 .elapsedpopoverbox {
   min-width: 260px;
 }
 .elapsedpopoverbox box separator {
   background: @insensitive_fg_color;
 }
-.osd .elapsedpopoverbox {
+.tvmode .elapsedpopoverbox {
   min-width: 360px;
 }
-.osd .speedscale trough highlight {
+.tvmode .speedscale trough highlight {
   min-height: 6px;
 }
 
@@ -238,7 +239,7 @@ radio {
 .chapterlabel {
   min-width: 32px;
 }
-.osd .chapterlabel {
+.tvmode .chapterlabel {
   min-width: 40px;
   text-shadow: none;
   font-size: 21px;

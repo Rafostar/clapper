@@ -125,11 +125,11 @@ class ClapperRevealerTop extends CustomRevealer
             yalign: 0,
         };
         this.currentTime = new Gtk.Label(timeLabelOpts);
-        this.currentTime.add_css_class('osdtime');
+        this.currentTime.add_css_class('tvtime');
 
         timeLabelOpts.visible = false;
         this.endTime = new Gtk.Label(timeLabelOpts);
-        this.endTime.add_css_class('osdendtime');
+        this.endTime.add_css_class('tvendtime');
 
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
         this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
