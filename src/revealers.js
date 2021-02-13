@@ -260,10 +260,16 @@ class ClapperControlsRevealer extends Gtk.Revealer
 
         const { widget } = this.root.child.player;
 
-        if(!this.child_revealed)
-            this.visible = true;
+        if(this.child_revealed) {
+            const [width] = this.root.get_default_size();
+            const height = widget.get_height();
+
+            this.add_tick_callback(
+                this._onUnrevealTick.bind(this, widget, width, height)
+            );
+        }
         else
-            this.add_tick_callback(this._onUnrevealTick.bind(this, widget));
+            this.visible = true;
 
         widget.height_request = widget.get_height();
         this.reveal_child ^= true;
@@ -280,18 +286,17 @@ class ClapperControlsRevealer extends Gtk.Revealer
         }
     }
 
-    _onUnrevealTick(playerWidget)
+    _onUnrevealTick(playerWidget, width, height)
     {
-        const [width, height] = this.root.get_default_size();
+        const isRevealed = this.child_revealed;
 
-        if(!this.child_revealed) {
+        if(!isRevealed) {
             playerWidget.height_request = -1;
             this.visible = false;
         }
+        this.root.set_default_size(width, height);
 
-        this.root.set_default_size(width, playerWidget.get_height());
-
-        return this.child_revealed;
+        return isRevealed;
     }
 });
 
