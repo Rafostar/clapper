@@ -18,11 +18,7 @@ class ClapperCustomButton extends Gtk.Button
 
         super._init(opts);
 
-        this.floatUnaffected = false;
-        this.wantedVisible = true;
         this.isFullscreen = false;
-        this.isFloating = false;
-
         this.add_css_class('flat');
     }
 
@@ -43,32 +39,6 @@ class ClapperCustomButton extends Gtk.Button
         this.isFullscreen = isFullscreen;
     }
 
-    setFloatingMode(isFloating)
-    {
-        if(this.isFloating === isFloating)
-            return;
-
-        this.isFloating = isFloating;
-
-        if(this.floatUnaffected)
-            return;
-
-        if(isFloating)
-            super.set_visible(false);
-        else
-            super.set_visible(this.wantedVisible);
-    }
-
-    set_visible(isVisible)
-    {
-        this.wantedVisible = isVisible;
-
-        if(this.isFloating && !this.floatUnaffected)
-            super.set_visible(false);
-        else
-            super.set_visible(isVisible);
-    }
-
     vfunc_clicked()
     {
         if(!this.isFullscreen)
@@ -79,24 +49,14 @@ class ClapperCustomButton extends Gtk.Button
     }
 });
 
-var IconButton = GObject.registerClass(
-class ClapperIconButton extends CustomButton
-{
-    _init(icon)
-    {
-        super._init({
-            icon_name: icon,
-        });
-        this.floatUnaffected = true;
-    }
-});
-
 var IconToggleButton = GObject.registerClass(
-class ClapperIconToggleButton extends IconButton
+class ClapperIconToggleButton extends CustomButton
 {
     _init(primaryIcon, secondaryIcon)
     {
-        super._init(primaryIcon);
+        super._init({
+            icon_name: primaryIcon,
+        });
 
         this.primaryIcon = primaryIcon;
         this.secondaryIcon = secondaryIcon;

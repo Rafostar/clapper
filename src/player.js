@@ -342,7 +342,7 @@ class ClapperPlayer extends PlayerBase
 
             if(this.cursorInPlayer) {
                 const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-                if(clapperWidget.fullscreenMode || clapperWidget.floatingMode) {
+                if(clapperWidget.fullscreenMode) {
                     this._clearTimeout('updateTime');
                     clapperWidget.revealControls(false);
                 }
@@ -644,7 +644,7 @@ class ClapperPlayer extends PlayerBase
         this._setHideCursorTimeout();
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(clapperWidget.fullscreenMode || clapperWidget.floatingMode)
+        if(clapperWidget.fullscreenMode)
             this._setHideControlsTimeout();
     }
 
@@ -676,12 +676,7 @@ class ClapperPlayer extends PlayerBase
             clapperWidget.revealerTop.set_cursor(defaultCursor);
             this._setHideCursorTimeout();
 
-            if(clapperWidget.floatingMode && !clapperWidget.fullscreenMode) {
-                clapperWidget.revealerBottom.set_can_focus(false);
-                clapperWidget.revealerBottom.revealChild(true);
-                this._setHideControlsTimeout();
-            }
-            else if(clapperWidget.fullscreenMode) {
+            if(clapperWidget.fullscreenMode) {
                 if(!this._updateTimeTimeout)
                     this._setUpdateTimeInterval();
 

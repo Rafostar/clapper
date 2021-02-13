@@ -205,41 +205,6 @@ radio {
   min-height: 6px;
 }
 
-/* Floating Mode */
-.floatingwindow {
-  border-radius: 8px;
-}
-.osd.floatingcontrols .playercontrols {
-  -gtk-icon-size: 16px;
-}
-.osd.floatingcontrols .playbackicon {
-  -gtk-icon-size: 20px;
-}
-.osd.floatingcontrols button {
-  border-radius: 10px;
-  min-width: 24px;
-  min-height: 24px;
-}
-.osd.floatingcontrols .positionscale {
-  margin-top: -2px;
-}
-.osd.floatingcontrols .positionscale trough highlight {
-  border-radius: 3px;
-  min-height: 12px;
-}
-.osd.floatingcontrols .positionscale.fine-tune trough highlight {
-  border-radius: 3px;
-  min-height: 12px;
-}
-.osd.floatingcontrols .positionscale mark indicator {
-  min-height: 5px;
-  min-width: 1px;
-}
-.osd.floatingcontrols .positionscale.fine-tune mark indicator {
-  min-height: 5px;
-  min-width: 1px;
-}
-
 .narrowbutton {
   min-width: 8px;
 }
@@ -264,11 +229,6 @@ radio {
   text-shadow: none;
   font-size: 21px;
   font-weight: 500;
-}
-.osd.floatingcontrols .chapterlabel {
-  font: inherit;
-  font-size: 100%;
-  min-width: 32px;
 }
 
 /* Preferences */

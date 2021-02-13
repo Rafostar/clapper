@@ -198,15 +198,6 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.remove(widget);
     }
 
-    setFloatingClass(isFloating)
-    {
-        if(isFloating === this.revealerBox.has_css_class('floatingcontrols'))
-            return;
-
-        const action = (isFloating) ? 'add' : 'remove';
-        this.revealerBox[`${action}_css_class`]('floatingcontrols');
-    }
-
     set_visible(isVisible)
     {
         const isChange = super.set_visible(isVisible);
@@ -320,18 +311,6 @@ class ClapperButtonsRevealer extends Gtk.Revealer
             this.connect('notify::reveal-child', this._onRevealChild.bind(this, toggleButton));
             this.connect('notify::child-revealed', this._onChildRevealed.bind(this, toggleButton));
         }
-    }
-
-    set_reveal_child(isReveal)
-    {
-        if(this.reveal_child === isReveal)
-            return;
-
-        const grandson = this.child.get_first_child();
-        if(grandson && grandson.isFloating && !grandson.isFullscreen)
-            return;
-
-        super.set_reveal_child(isReveal);
     }
 
     append(widget)

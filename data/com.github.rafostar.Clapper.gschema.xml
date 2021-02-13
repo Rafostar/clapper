@@ -104,10 +104,6 @@
       <default>'[960, 583]'</default>
       <summary>Stores window size to restore on next launch</summary>
     </key>
-    <key name="float-size" type="s">
-      <default>'[480, 270]'</default>
-      <summary>Stores floating window size to restore on next launch</summary>
-    </key>
     <key name="volume-last" type="d">
       <default>1</default>
       <summary>Stores last linear volume value to apply on startup</summary>

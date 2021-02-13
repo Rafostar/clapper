@@ -21,11 +21,9 @@ class ClapperWidget extends Gtk.Grid
         Misc.loadCustomCss();
 
         this.windowSize = JSON.parse(settings.get_string('window-size'));
-        this.floatSize = JSON.parse(settings.get_string('float-size'));
         this.layoutWidth = 0;
 
         this.fullscreenMode = false;
-        this.floatingMode = false;
         this.isSeekable = false;
         this.isMobileMonitor = false;
 
@@ -120,14 +118,7 @@ class ClapperWidget extends Gtk.Grid
         if(!this.isMobileMonitor)
             root[action + '_css_class']('tvmode');
 
-        if(!this.floatingMode)
-            this._changeControlsPlacement(isFullscreen);
-        else {
-            this._setWindowFloating(!isFullscreen);
-            this.revealerBottom.setFloatingClass(!isFullscreen);
-            this.controls.setFloatingMode(!isFullscreen);
-            this.controls.unfloatButton.set_visible(!isFullscreen);
-        }
+        this._changeControlsPlacement(isFullscreen);
 
         this.controls.setFullscreenMode(isFullscreen);
         this.showControls(isFullscreen);
@@ -143,64 +134,10 @@ class ClapperWidget extends Gtk.Grid
         }
     }
 
-    setFloatingMode(isFloating)
-    {
-        if(this.floatingMode === isFloating)
-            return;
-
-        const root = this.get_root();
-        const size = root.get_default_size();
-
-        this._saveWindowSize(size);
-
-        if(isFloating) {
-            this.windowSize = size;
-            this.player.widget.set_size_request(192, 108);
-        }
-        else {
-            this.floatSize = size;
-            this.player.widget.set_size_request(-1, -1);
-        }
-
-        this.floatingMode = isFloating;
-
-        this.revealerBottom.setFloatingClass(isFloating);
-        this._changeControlsPlacement(isFloating);
-        this.controls.setFloatingMode(isFloating);
-        this.controls.unfloatButton.set_visible(isFloating);
-        this._setWindowFloating(isFloating);
-
-        const resize = (isFloating)
-            ? this.floatSize
-            : this.windowSize;
-
-        root.set_default_size(resize[0], resize[1]);
-        debug(`resized window: ${resize[0]}x${resize[1]}`);
-
-        this.revealerBottom.showChild(false);
-        this.player.widget.grab_focus();
-    }
-
-    _setWindowFloating(isFloating)
-    {
-        const root = this.get_root();
-        const cssClass = 'floatingwindow';
-
-        if(isFloating === root.has_css_class(cssClass))
-            return;
-
-        const action = (isFloating) ? 'add' : 'remove';
-        root[action + '_css_class'](cssClass);
-    }
-
     _saveWindowSize(size)
     {
-        const rootName = (this.floatingMode)
-            ? 'float'
-            : 'window';
-
-        settings.set_string(`${rootName}-size`, JSON.stringify(size));
-        debug(`saved ${rootName} size: ${size[0]}x${size[1]}`);
+        settings.set_string('window-size', JSON.stringify(size));
+        debug(`saved window size: ${size[0]}x${size[1]}`);
     }
 
     _changeControlsPlacement(isOnTop)
@@ -599,7 +536,6 @@ class ClapperWidget extends Gtk.Grid
     {
         if(
             this.fullscreenMode
-            || !this.floatingMode
             || this.player.isWidgetDragging
         )
             return;
