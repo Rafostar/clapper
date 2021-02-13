@@ -35,7 +35,7 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
         buttonsBox.add_css_class('linked');
 
         const floatButton = new Gtk.Button({
-            icon_name: 'preferences-desktop-remote-desktop-symbolic',
+            icon_name: 'go-bottom-symbolic',
         });
         floatButton.add_css_class('circular');
         floatButton.connect('clicked', this._onFloatButtonClicked.bind(this));
