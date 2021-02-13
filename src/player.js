@@ -685,11 +685,6 @@ class ClapperPlayer extends PlayerBase
                 if(!this._updateTimeTimeout)
                     this._setUpdateTimeInterval();
 
-                if(!clapperWidget.revealerTop.get_reveal_child()) {
-                    /* Do not grab controls key focus on mouse movement */
-                    clapperWidget.revealerBottom.set_can_focus(false);
-                    clapperWidget.revealControls(true);
-                }
                 this._setHideControlsTimeout();
             }
             else {
@@ -697,6 +692,12 @@ class ClapperPlayer extends PlayerBase
                     this._clearTimeout('hideControls');
                 if(this._updateTimeTimeout)
                     this._clearTimeout('updateTime');
+            }
+
+            if(!clapperWidget.revealerTop.get_reveal_child()) {
+                /* Do not grab controls key focus on mouse movement */
+                clapperWidget.revealerBottom.set_can_focus(false);
+                clapperWidget.revealControls(true);
             }
         }
 

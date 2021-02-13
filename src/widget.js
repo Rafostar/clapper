@@ -12,7 +12,7 @@ const { settings } = Misc;
 var Widget = GObject.registerClass(
 class ClapperWidget extends Gtk.Grid
 {
-    _init()
+    _init(window)
     {
         super._init();
 
@@ -27,11 +27,12 @@ class ClapperWidget extends Gtk.Grid
         this.fullscreenMode = false;
         this.floatingMode = false;
         this.isSeekable = false;
+        this.isMobileMonitor = false;
 
         this.needsTracksUpdate = true;
 
         this.overlay = new Gtk.Overlay();
-        this.revealerTop = new Revealers.RevealerTop();
+        this.revealerTop = new Revealers.RevealerTop(window);
         this.revealerBottom = new Revealers.RevealerBottom();
         this.controls = new Controls();
 
@@ -41,8 +42,11 @@ class ClapperWidget extends Gtk.Grid
         this.controlsBox.add_css_class('controlsbox');
         this.controlsBox.append(this.controls);
 
+        this.controlsRevealer = new Revealers.ControlsRevealer();
+        this.controlsRevealer.set_child(this.controlsBox);
+
         this.attach(this.overlay, 0, 0, 1, 1);
-        this.attach(this.controlsBox, 0, 1, 1, 1);
+        this.attach(this.controlsRevealer, 0, 1, 1, 1);
 
         this.mapSignal = this.connect('map', this._onMap.bind(this));
 
@@ -112,7 +116,9 @@ class ClapperWidget extends Gtk.Grid
         const root = this.get_root();
         const action = (isFullscreen) ? 'add' : 'remove';
         root[action + '_css_class']('gpufriendlyfs');
-        root[action + '_css_class']('tvmode');
+
+        if(!this.isMobileMonitor)
+            root[action + '_css_class']('tvmode');
 
         if(!this.floatingMode)
             this._changeControlsPlacement(isFullscreen);
@@ -125,6 +131,10 @@ class ClapperWidget extends Gtk.Grid
 
         this.controls.setFullscreenMode(isFullscreen);
         this.showControls(isFullscreen);
+
+        this.revealerTop.headerBar.visible = !isFullscreen;
+        this.revealerTop.revealerGrid.visible = (isFullscreen && !this.isMobileMonitor);
+
         this.player.widget.grab_focus();
 
         if(this.player.playOnFullscreen && isFullscreen) {
@@ -617,7 +627,7 @@ class ClapperWidget extends Gtk.Grid
         const monitorWidth = Math.max(geometry.width, geometry.height);
 
         if(monitorWidth < 1280) {
-            this.controls.isMobileMonitor = true;
+            this.isMobileMonitor = true;
             debug('mobile monitor detected');
         }
 

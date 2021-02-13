@@ -1,6 +1,5 @@
-const { Gio, GObject } = imports.gi;
+const { Gio, GObject, Gtk } = imports.gi;
 const { AppBase } = imports.src.appBase;
-const { HeaderBar } = imports.src.headerbar;
 const { Widget } = imports.src.widget;
 const Debug = imports.src.debug;
 
@@ -23,14 +22,20 @@ class ClapperApp extends AppBase
     {
         super.vfunc_startup();
 
-        this.active_window.isClapperApp = true;
-        this.active_window.add_css_class('nobackground');
+        const window = this.active_window;
 
-        const clapperWidget = new Widget();
-        this.active_window.set_child(clapperWidget);
+        window.isClapperApp = true;
+        window.add_css_class('nobackground');
 
-        const headerBar = new HeaderBar(this.active_window);
-        this.active_window.set_titlebar(headerBar);
+        const clapperWidget = new Widget(window);
+        window.set_child(clapperWidget);
+
+        const dummyHeaderbar = new Gtk.HeaderBar({
+            can_focus: false,
+            focusable: false,
+            visible: false,
+        });
+        window.set_titlebar(dummyHeaderbar);
     }
 
     vfunc_open(files, hint)

@@ -20,26 +20,31 @@ class ClapperHeaderBarBase extends Gtk.HeaderBar
 
         const mainMenuButton = new Gtk.MenuButton({
             icon_name: 'open-menu-symbolic',
+            valign: Gtk.Align.CENTER,
         });
         const mainMenuModel = uiBuilder.get_object('mainMenu');
         const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
         mainMenuButton.set_popover(mainMenuPopover);
+        mainMenuButton.add_css_class('circular');
         this.pack_start(mainMenuButton);
 
         const buttonsBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
+            valign: Gtk.Align.CENTER,
         });
         buttonsBox.add_css_class('linked');
 
         const floatButton = new Gtk.Button({
             icon_name: 'preferences-desktop-remote-desktop-symbolic',
         });
+        floatButton.add_css_class('circular');
         floatButton.connect('clicked', this._onFloatButtonClicked.bind(this));
         buttonsBox.append(floatButton);
 
         const fullscreenButton = new Gtk.Button({
             icon_name: 'view-fullscreen-symbolic',
         });
+        fullscreenButton.add_css_class('circular');
         fullscreenButton.connect('clicked', this._onFullscreenButtonClicked.bind(this));
 
         buttonsBox.append(fullscreenButton);

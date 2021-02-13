@@ -1,4 +1,5 @@
 const { GLib, GObject, Gtk, Pango } = imports.gi;
+const { HeaderBar } = imports.src.headerbar;
 const Debug = imports.src.debug;
 
 const REVEAL_TIME = 800;
@@ -89,7 +90,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
 var RevealerTop = GObject.registerClass(
 class ClapperRevealerTop extends CustomRevealer
 {
-    _init()
+    _init(window)
     {
         super._init({
             transition_duration: REVEAL_TIME,
@@ -102,12 +103,6 @@ class ClapperRevealerTop extends CustomRevealer
         this.timeFormat = (initTime.length > 8)
             ? '%I:%M %p'
             : '%H:%M';
-
-        this.revealerGrid = new Gtk.Grid({
-            column_spacing: 8
-        });
-        this.revealerGrid.add_css_class('osd');
-        this.revealerGrid.add_css_class('reavealertop');
 
         this.mediaTitle = new Gtk.Label({
             ellipsize: Pango.EllipsizeMode.END,
@@ -131,11 +126,25 @@ class ClapperRevealerTop extends CustomRevealer
         this.endTime = new Gtk.Label(timeLabelOpts);
         this.endTime.add_css_class('tvendtime');
 
+        const revealerBox = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+        });
+        revealerBox.add_css_class('osd');
+        revealerBox.add_css_class('reavealertop');
+
+        this.headerBar = new HeaderBar(window);
+        revealerBox.append(this.headerBar);
+
+        this.revealerGrid = new Gtk.Grid({
+            column_spacing: 8,
+            visible: false,
+        });
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
         this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
         this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
+        revealerBox.append(this.revealerGrid);
 
-        this.set_child(this.revealerGrid);
+        this.set_child(revealerBox);
     }
 
     setMediaTitle(title)
@@ -226,6 +235,63 @@ class ClapperRevealerBottom extends CustomRevealer
             playerWidget.grab_focus();
             debug('focus moved to player widget');
         }
+    }
+});
+
+var ControlsRevealer = GObject.registerClass(
+class ClapperControlsRevealer extends Gtk.Revealer
+{
+    _init()
+    {
+        super._init({
+            transition_duration: 600,
+            transition_type: Gtk.RevealerTransitionType.SLIDE_DOWN,
+            reveal_child: true,
+        });
+
+        this.connect('notify::child-revealed', this._onControlsRevealed.bind(this));
+    }
+
+    toggleReveal()
+    {
+        /* Prevent interrupting transition */
+        if(this.reveal_child !== this.child_revealed)
+            return;
+
+        const { widget } = this.root.child.player;
+
+        if(!this.child_revealed)
+            this.visible = true;
+        else
+            this.add_tick_callback(this._onUnrevealTick.bind(this, widget));
+
+        widget.height_request = widget.get_height();
+        this.reveal_child ^= true;
+    }
+
+    _onControlsRevealed()
+    {
+        if(this.child_revealed) {
+            const clapperWidget = this.root.child;
+            const [width, height] = this.root.get_default_size();
+
+            clapperWidget.player.widget.height_request = -1;
+            this.root.set_default_size(width, height);
+        }
+    }
+
+    _onUnrevealTick(playerWidget)
+    {
+        const [width, height] = this.root.get_default_size();
+
+        if(!this.child_revealed) {
+            playerWidget.height_request = -1;
+            this.visible = false;
+        }
+
+        this.root.set_default_size(width, playerWidget.get_height());
+
+        return this.child_revealed;
     }
 });
 

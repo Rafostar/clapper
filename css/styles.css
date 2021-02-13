@@ -18,6 +18,12 @@ radio {
 .gtk402 .osd trough highlight {
   border-color: inherit;
 }
+.osd headerbar {
+  background: transparent;
+}
+.osd headerbar button {
+  border: transparent;
+}
 .adwrounded.csd {
   border-radius: 8px;
 }
@@ -72,6 +78,9 @@ radio {
   font-size: 23px;
   text-shadow: none;
 }
+.reavealertop {
+  background: transparent;
+}
 .tvmode .reavealertop {
   min-height: 88px;
   box-shadow: inset 0px 200px 10px -132px rgba(0,0,0,0.4);
@@ -79,7 +88,6 @@ radio {
   font-size: 28px;
   font-weight: 500;
   text-shadow: none;
-  background: transparent;
 }
 .tvtime {
   margin-top: -2px;
