@@ -13,6 +13,7 @@
         "--share=network",
         "--device=all",
         "--filesystem=xdg-videos",
+        "--talk-name=org.gnome.Shell",
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
         "--env=GST_VAAPI_ALL_DRIVERS=1"
     ],

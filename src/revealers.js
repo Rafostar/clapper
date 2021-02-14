@@ -1,6 +1,7 @@
 const { GLib, GObject, Gtk, Pango } = imports.gi;
 const { HeaderBar } = imports.src.headerbar;
 const Debug = imports.src.debug;
+const DBus = imports.src.dbus;
 
 const REVEAL_TIME = 800;
 
@@ -264,6 +265,8 @@ class ClapperControlsRevealer extends Gtk.Revealer
 
         widget.height_request = widget.get_height();
         this.reveal_child ^= true;
+
+        DBus.callMakeAbove(!this.reveal_child);
     }
 
     _onControlsRevealed()
