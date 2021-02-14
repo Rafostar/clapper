@@ -31,7 +31,6 @@ class ClapperPlayer extends PlayerBase
 
         this._maxVolume = Misc.getLinearValue(Misc.maxVolume);
 
-        this._hideCursorTimeout = null;
         this._hideControlsTimeout = null;
         this._updateTimeTimeout = null;
 
@@ -316,11 +315,11 @@ class ClapperPlayer extends PlayerBase
         return clapperWidget.fullscreenMode;
     }
 
-    _setHideCursorTimeout()
+    _setHideControlsTimeout()
     {
-        this._clearTimeout('hideCursor');
-        this._hideCursorTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
-            this._hideCursorTimeout = null;
+        this._clearTimeout('hideControls');
+        this._hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 2, () => {
+            this._hideControlsTimeout = null;
 
             if(this.cursorInPlayer) {
                 const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
@@ -328,24 +327,11 @@ class ClapperPlayer extends PlayerBase
 
                 this.widget.set_cursor(blankCursor);
                 clapperWidget.revealerTop.set_cursor(blankCursor);
-            }
 
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _setHideControlsTimeout()
-    {
-        this._clearTimeout('hideControls');
-        this._hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
-            this._hideControlsTimeout = null;
-
-            if(this.cursorInPlayer) {
-                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-                if(clapperWidget.fullscreenMode) {
+                if(clapperWidget.fullscreenMode)
                     this._clearTimeout('updateTime');
-                    clapperWidget.revealControls(false);
-                }
+
+                clapperWidget.revealControls(false);
             }
 
             return GLib.SOURCE_REMOVE;
@@ -641,18 +627,13 @@ class ClapperPlayer extends PlayerBase
         this.cursorInPlayer = true;
         this.isWidgetDragging = false;
 
-        this._setHideCursorTimeout();
-
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(clapperWidget.fullscreenMode)
-            this._setHideControlsTimeout();
+        this._setHideControlsTimeout();
     }
 
     _onWidgetLeave(controller)
     {
         this.cursorInPlayer = false;
 
-        this._clearTimeout('hideCursor');
         this._clearTimeout('hideControls');
     }
 
@@ -674,20 +655,15 @@ class ClapperPlayer extends PlayerBase
 
             this.widget.set_cursor(defaultCursor);
             clapperWidget.revealerTop.set_cursor(defaultCursor);
-            this._setHideCursorTimeout();
+
+            this._setHideControlsTimeout();
 
             if(clapperWidget.fullscreenMode) {
                 if(!this._updateTimeTimeout)
                     this._setUpdateTimeInterval();
-
-                this._setHideControlsTimeout();
             }
-            else {
-                if(this._hideControlsTimeout)
-                    this._clearTimeout('hideControls');
-                if(this._updateTimeTimeout)
-                    this._clearTimeout('updateTime');
-            }
+            else if(this._updateTimeTimeout)
+                this._clearTimeout('updateTime');
 
             if(!clapperWidget.revealerTop.get_reveal_child()) {
                 /* Do not grab controls key focus on mouse movement */
