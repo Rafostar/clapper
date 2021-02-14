@@ -16,6 +16,9 @@ class ClapperHeaderBar extends HeaderBarBase
         const clapperWidget = this.root.child;
 
         clapperWidget.controlsRevealer.toggleReveal();
+
+        /* Reset timer to not disappear during click */
+        clapperWidget.player._setHideControlsTimeout();
     }
 
     _onFullscreenButtonClicked()
