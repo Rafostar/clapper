@@ -2,10 +2,12 @@ const { GLib, GObject, Gtk, Pango } = imports.gi;
 const { HeaderBar } = imports.src.headerbar;
 const Debug = imports.src.debug;
 const DBus = imports.src.dbus;
+const Misc = imports.src.misc;
 
 const REVEAL_TIME = 800;
 
 const { debug } = Debug;
+const { settings } = Misc;
 
 var CustomRevealer = GObject.registerClass(
 class ClapperCustomRevealer extends Gtk.Revealer
@@ -266,7 +268,11 @@ class ClapperControlsRevealer extends Gtk.Revealer
         widget.height_request = widget.get_height();
         this.reveal_child ^= true;
 
-        DBus.callMakeAbove(!this.reveal_child);
+        const isFloating = !this.reveal_child;
+        DBus.shellWindowEval('make_above', isFloating);
+
+        const isStick = (isFloating && settings.get_boolean('floating-stick'));
+        DBus.shellWindowEval('stick', isStick);
     }
 
     _onControlsRevealed()

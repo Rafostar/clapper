@@ -19,16 +19,16 @@ let shellProxy = new ShellProxyWrapper(
     Gio.DBus.session, 'org.gnome.Shell', '/org/gnome/Shell'
 );
 
-function callMakeAbove(isAbove)
+function shellWindowEval(fn, isEnabled)
 {
-    const un = (isAbove) ? '' : 'un';
+    const un = (isEnabled) ? '' : 'un';
 
-    debug('changing window keep above');
+    debug(`changing ${fn}`);
     shellProxy.EvalRemote(
-        `global.display.focus_window.${un}make_above()`,
+        `global.display.focus_window.${un}${fn}()`,
         (out) => {
             const debugMsg = (out[0])
-                ? `window keep above: ${isAbove}`
+                ? `window ${fn}: ${isEnabled}`
                 : new Error(out[1]);
 
             debug(debugMsg);

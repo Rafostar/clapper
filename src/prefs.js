@@ -73,6 +73,9 @@ class ClapperBehaviourPage extends PrefsBase.Grid
 
         this.addTitle('Resume');
         this.addCheckButton('Ask to resume last unfinished video', 'resume-enabled');
+
+        this.addTitle('Floating Mode');
+        this.addCheckButton('Show on all workspaces', 'floating-stick');
     }
 });
 

@@ -40,6 +40,10 @@
       <default>'[]'</default>
       <summary>Data storing unfinished videos resume info</summary>
     </key>
+    <key name="floating-stick" type="b">
+      <default>false</default>
+      <summary>Auto stick floating window to all workspaces</summary>
+    </key>
 
     <!-- Audio -->
     <key name="audio-offset" type="d">
