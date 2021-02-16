@@ -25,16 +25,15 @@ class ClapperCustomRevealer extends Gtk.Revealer
         super._init(opts);
 
         this.revealerName = '';
+        this.bind_property('child_revealed', this, 'visible',
+            GObject.BindingFlags.DEFAULT
+        );
     }
 
     revealChild(isReveal)
     {
-        if(isReveal) {
-            this._clearTimeout();
+        if(isReveal)
             this.set_visible(isReveal);
-        }
-        else
-            this._setHideTimeout();
 
         /* Restore focus ability after we are done */
         if(!isReveal) this.set_can_focus(true);
@@ -44,7 +43,6 @@ class ClapperCustomRevealer extends Gtk.Revealer
 
     showChild(isReveal)
     {
-        this._clearTimeout();
         this.set_visible(isReveal);
         this._timedReveal(isReveal, 0);
     }
@@ -64,29 +62,6 @@ class ClapperCustomRevealer extends Gtk.Revealer
     {
         this.set_transition_duration(time);
         this.set_reveal_child(isReveal);
-    }
-
-    /* Drawing revealers on top of video frames
-     * increases CPU usage, so we hide them */
-    _setHideTimeout()
-    {
-        this._clearTimeout();
-
-        this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
-            this._revealerTimeout = null;
-            this.set_visible(false);
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _clearTimeout()
-    {
-        if(!this._revealerTimeout)
-            return;
-
-        GLib.source_remove(this._revealerTimeout);
-        this._revealerTimeout = null;
     }
 });
 
