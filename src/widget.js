@@ -285,6 +285,7 @@ class ClapperWidget extends Gtk.Grid
                 : subtitle;
         }
 
+        this.root.title = title;
         this.revealerTop.setMediaTitle(title);
     }
 
