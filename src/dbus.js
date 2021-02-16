@@ -15,12 +15,31 @@ const ShellProxyWrapper = Gio.DBusProxy.makeProxyWrapper(`
 </node>`
 );
 
-let shellProxy = new ShellProxyWrapper(
-    Gio.DBus.session, 'org.gnome.Shell', '/org/gnome/Shell'
+let shellProxy = null;
+
+new ShellProxyWrapper(
+    Gio.DBus.session,
+    'org.gnome.Shell',
+    '/org/gnome/Shell',
+    (proxy, err) => {
+        if(err) {
+            debug(err);
+
+            return;
+        }
+        shellProxy = proxy;
+        debug('GNOME Shell DBus proxy is ready');
+    },
+    null,
+    Gio.DBusProxyFlags.DO_NOT_AUTO_START_AT_CONSTRUCTION
+    | Gio.DBusProxyFlags.DO_NOT_CONNECT_SIGNALS
 );
 
 function shellWindowEval(fn, isEnabled)
 {
+    if(!shellProxy)
+        return;
+
     const un = (isEnabled) ? '' : 'un';
 
     debug(`changing ${fn}`);
