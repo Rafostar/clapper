@@ -312,7 +312,7 @@ class ClapperPlayer extends PlayerBase
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
 
-        return clapperWidget.fullscreenMode;
+        return clapperWidget.isFullscreenMode;
     }
 
     _setHideControlsTimeout()
@@ -328,7 +328,7 @@ class ClapperPlayer extends PlayerBase
                 this.widget.set_cursor(blankCursor);
                 clapperWidget.revealerTop.set_cursor(blankCursor);
 
-                if(clapperWidget.fullscreenMode)
+                if(clapperWidget.isFullscreenMode)
                     this._clearTimeout('updateTime');
 
                 clapperWidget.revealControls(false);
@@ -351,7 +351,7 @@ class ClapperPlayer extends PlayerBase
         this._updateTimeTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, nextUpdate, () => {
             this._updateTimeTimeout = null;
 
-            if(clapperWidget.fullscreenMode)
+            if(clapperWidget.isFullscreenMode)
                 this._setUpdateTimeInterval();
 
             return GLib.SOURCE_REMOVE;
@@ -377,7 +377,7 @@ class ClapperPlayer extends PlayerBase
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
 
-        if(!clapperWidget.fullscreenMode && clapperWidget.controlsRevealer.child_revealed) {
+        if(!clapperWidget.isFullscreenMode && clapperWidget.controlsRevealer.child_revealed) {
             const size = window.get_default_size();
 
             if(size[0] > 0 && size[1] > 0) {
@@ -484,7 +484,7 @@ class ClapperPlayer extends PlayerBase
             if(settings.get_boolean('fullscreen-auto')) {
                 const root = player.widget.get_root();
                 const clapperWidget = root.get_child();
-                if(!clapperWidget.fullscreenMode) {
+                if(!clapperWidget.isFullscreenMode) {
                     this.playOnFullscreen = true;
                     root.fullscreen();
 
@@ -570,7 +570,7 @@ class ClapperPlayer extends PlayerBase
                 this.toggle_play();
                 break;
             case Gdk.KEY_Return:
-                if(clapperWidget.fullscreenMode) {
+                if(clapperWidget.isFullscreenMode) {
                     clapperWidget.revealControls(true);
                     this._setHideControlsTimeout();
                 }
@@ -589,7 +589,7 @@ class ClapperPlayer extends PlayerBase
                 clapperWidget.toggleFullscreen();
                 break;
             case Gdk.KEY_Escape:
-                if(clapperWidget.fullscreenMode) {
+                if(clapperWidget.isFullscreenMode) {
                     root = this.widget.get_root();
                     root.unfullscreen();
                 }
@@ -661,7 +661,7 @@ class ClapperPlayer extends PlayerBase
 
             this._setHideControlsTimeout();
 
-            if(clapperWidget.fullscreenMode) {
+            if(clapperWidget.isFullscreenMode) {
                 if(!this._updateTimeTimeout)
                     this._setUpdateTimeInterval();
             }
@@ -685,7 +685,7 @@ class ClapperPlayer extends PlayerBase
             return;
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(clapperWidget.fullscreenMode)
+        if(clapperWidget.isFullscreenMode)
             return;
 
         const { gtk_double_click_distance } = this.widget.get_settings();

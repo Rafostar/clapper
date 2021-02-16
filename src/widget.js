@@ -23,7 +23,7 @@ class ClapperWidget extends Gtk.Grid
         this.windowSize = JSON.parse(settings.get_string('window-size'));
         this.layoutWidth = 0;
 
-        this.fullscreenMode = false;
+        this.isFullscreenMode = false;
         this.isSeekable = false;
         this.isMobileMonitor = false;
 
@@ -100,17 +100,17 @@ class ClapperWidget extends Gtk.Grid
         const root = this.get_root();
         if(!root) return;
 
-        const un = (this.fullscreenMode) ? 'un' : '';
+        const un = (this.isFullscreenMode) ? 'un' : '';
         root[`${un}fullscreen`]();
     }
 
     setFullscreenMode(isFullscreen)
     {
-        if(this.fullscreenMode === isFullscreen)
+        if(this.isFullscreenMode === isFullscreen)
             return;
 
         debug('changing fullscreen mode');
-        this.fullscreenMode = isFullscreen;
+        this.isFullscreenMode = isFullscreen;
 
         const root = this.get_root();
         const action = (isFullscreen) ? 'add' : 'remove';
@@ -527,7 +527,7 @@ class ClapperWidget extends Gtk.Grid
     _onLeave(controller)
     {
         if(
-            this.fullscreenMode
+            this.isFullscreenMode
             || this.player.isWidgetDragging
         )
             return;
