@@ -36,7 +36,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
         else
             this._setHideTimeout();
 
-        /* Restore focusability after we are done */
+        /* Restore focus ability after we are done */
         if(!isReveal) this.set_can_focus(true);
 
         this._timedReveal(isReveal, REVEAL_TIME);
@@ -133,7 +133,7 @@ class ClapperRevealerTop extends CustomRevealer
             orientation: Gtk.Orientation.VERTICAL,
         });
         revealerBox.add_css_class('osd');
-        revealerBox.add_css_class('reavealertop');
+        revealerBox.add_css_class('revealertop');
 
         this.headerBar = new HeaderBar();
         revealerBox.append(this.headerBar);

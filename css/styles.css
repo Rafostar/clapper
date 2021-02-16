@@ -75,10 +75,10 @@ radio {
   font-size: 23px;
   text-shadow: none;
 }
-.reavealertop {
+.revealertop {
   background: transparent;
 }
-.tvmode .reavealertop {
+.tvmode .revealertop {
   min-height: 88px;
   box-shadow: inset 0px 200px 10px -132px rgba(0,0,0,0.4);
   font-family: 'Cantarell', sans-serif;
