@@ -137,12 +137,6 @@ class ClapperWidget extends Gtk.Grid
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
-    _saveWindowSize(size)
-    {
-        settings.set_string('window-size', JSON.stringify(size));
-        debug(`saved window size: ${size[0]}x${size[1]}`);
-    }
-
     _changeControlsPlacement(isOnTop)
     {
         if(isOnTop) {

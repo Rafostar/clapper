@@ -376,11 +376,14 @@ class ClapperPlayer extends PlayerBase
         this.closeRequestSignal = null;
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(!clapperWidget.fullscreenMode) {
+
+        if(!clapperWidget.fullscreenMode && clapperWidget.controlsRevealer.child_revealed) {
             const size = window.get_default_size();
 
-            if(size[0] > 0 && size[1] > 0)
-                clapperWidget._saveWindowSize(size);
+            if(size[0] > 0 && size[1] > 0) {
+                settings.set_string('window-size', JSON.stringify(size));
+                debug(`saved window size: ${size[0]}x${size[1]}`);
+            }
         }
         /* If "quitOnStop" is set here it means that we are in middle of autoclosing */
         if(this.state !== GstClapper.ClapperState.STOPPED && !this.quitOnStop) {
