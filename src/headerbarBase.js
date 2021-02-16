@@ -1,95 +1,193 @@
-const { GObject, Gtk, Pango } = imports.gi;
+const { GObject, Gtk } = imports.gi;
 const Misc = imports.src.misc;
 
 var HeaderBarBase = GObject.registerClass(
-class ClapperHeaderBarBase extends Gtk.HeaderBar
+class ClapperHeaderBarBase extends Gtk.Box
 {
-    _init(window)
+    _init()
     {
         super._init({
             can_focus: false,
+            orientation: Gtk.Orientation.HORIZONTAL,
+            spacing: 6,
+            margin_top: 6,
+            margin_start: 6,
+            margin_end: 6,
         });
+
+        this.isMaximized = false;
+        this.isMenuOnLeft = true;
 
         const clapperPath = Misc.getClapperPath();
         const uiBuilder = Gtk.Builder.new_from_file(
             `${clapperPath}/ui/clapper.ui`
         );
 
-        this.add_css_class('noborder');
-        this.set_title_widget(this._createWidgetForWindow(window));
+        this.menuWidget = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            valign: Gtk.Align.CENTER,
+            spacing: 6,
+        });
 
-        const mainMenuButton = new Gtk.MenuButton({
+        this.menuButton = new Gtk.MenuButton({
             icon_name: 'open-menu-symbolic',
             valign: Gtk.Align.CENTER,
         });
         const mainMenuModel = uiBuilder.get_object('mainMenu');
         const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
-        mainMenuButton.set_popover(mainMenuPopover);
-        mainMenuButton.add_css_class('circular');
-        this.pack_start(mainMenuButton);
+        this.menuButton.set_popover(mainMenuPopover);
+        this.menuButton.add_css_class('circular');
+        this.menuWidget.append(this.menuButton);
 
-        const buttonsBox = new Gtk.Box({
+        this.extraButtonsBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
             valign: Gtk.Align.CENTER,
         });
-        buttonsBox.add_css_class('linked');
+        this.extraButtonsBox.add_css_class('linked');
 
         const floatButton = new Gtk.Button({
             icon_name: 'go-bottom-symbolic',
         });
         floatButton.add_css_class('circular');
-        floatButton.connect('clicked', this._onFloatButtonClicked.bind(this));
-        buttonsBox.append(floatButton);
+        floatButton.connect('clicked',
+            this._onFloatButtonClicked.bind(this)
+        );
+        this.extraButtonsBox.append(floatButton);
 
         const fullscreenButton = new Gtk.Button({
             icon_name: 'view-fullscreen-symbolic',
         });
         fullscreenButton.add_css_class('circular');
-        fullscreenButton.connect('clicked', this._onFullscreenButtonClicked.bind(this));
+        fullscreenButton.connect('clicked',
+            this._onFullscreenButtonClicked.bind(this)
+        );
+        this.extraButtonsBox.append(fullscreenButton);
+        this.menuWidget.append(this.extraButtonsBox);
 
-        buttonsBox.append(fullscreenButton);
-        this.pack_start(buttonsBox);
+        this.spacerWidget = new Gtk.Box({
+            hexpand: true,
+        });
+
+        this.minimizeWidget = this._getWindowButton('minimize');
+        this.maximizeWidget = this._getWindowButton('maximize');
+        this.closeWidget = this._getWindowButton('close');
+
+        const gtkSettings = Gtk.Settings.get_default();
+        this._onLayoutUpdate(gtkSettings);
+
+        gtkSettings.connect(
+            'notify::gtk-decoration-layout',
+            this._onLayoutUpdate.bind(this)
+        );
     }
 
-    updateHeaderBar(title, subtitle)
+    setMenuOnLeft(isOnLeft)
     {
-        this.titleLabel.label = title;
-        this.subtitleLabel.visible = (subtitle !== null);
+        if(this.isMenuOnLeft === isOnLeft)
+            return;
 
-        if(subtitle)
-            this.subtitleLabel.label = subtitle;
+        if(isOnLeft) {
+            this.menuWidget.reorder_child_after(
+                this.extraButtonsBox, this.menuButton
+            );
+        }
+        else {
+            this.menuWidget.reorder_child_after(
+                this.menuButton, this.extraButtonsBox
+            );
+        }
+
+        this.isMenuOnLeft = isOnLeft;
     }
 
-    _createWidgetForWindow(window)
+    setMaximized(isMaximized)
     {
-        const box = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
+        if(this.isMaximized === isMaximized)
+            return;
+
+        this.maximizeWidget.icon_name = (isMaximized)
+            ? 'window-restore-symbolic'
+            : 'window-maximize-symbolic';
+
+        this.isMaximized = isMaximized;
+    }
+
+    _onLayoutUpdate(gtkSettings)
+    {
+        const gtkLayout = gtkSettings.gtk_decoration_layout;
+
+        this._replaceButtons(gtkLayout);
+    }
+
+    _replaceButtons(gtkLayout)
+    {
+        const modLayout = gtkLayout.replace(':', ',spacer,');
+        const layoutArr = modLayout.split(',');
+
+        let lastWidget = null;
+        let showMinimize = false;
+        let showMaximize = false;
+        let showClose = false;
+        let spacerAdded = false;
+
+        for(let name of layoutArr) {
+            const widget = this[`${name}Widget`];
+            if(!widget) continue;
+
+            if(!widget.parent)
+                this.append(widget);
+            else
+                this.reorder_child_after(widget, lastWidget);
+
+            switch(name) {
+                case 'spacer':
+                    spacerAdded = true;
+                    break;
+                case 'minimize':
+                    showMinimize = true;
+                    break;
+                case 'maximize':
+                    showMaximize = true;
+                    break;
+                case 'close':
+                    showClose = true;
+                    break;
+                case 'menu':
+                    this.setMenuOnLeft(!spacerAdded);
+                    break;
+                default:
+                    break;
+            }
+
+            lastWidget = widget;
+        }
+
+        this.minimizeWidget.visible = showMinimize;
+        this.maximizeWidget.visible = showMaximize;
+        this.closeWidget.visible = showClose;
+    }
+
+    _getWindowButton(name)
+    {
+        const button = new Gtk.Button({
+            icon_name: `window-${name}-symbolic`,
             valign: Gtk.Align.CENTER,
         });
+        button.add_css_class('circular');
 
-        this.titleLabel = new Gtk.Label({
-            halign: Gtk.Align.CENTER,
-            single_line_mode: true,
-            ellipsize: Pango.EllipsizeMode.END,
-            width_chars: 5,
-        });
-        this.titleLabel.add_css_class('title');
-        this.titleLabel.set_parent(box);
+        const action = (name === 'maximize')
+            ? 'window.toggle-maximized'
+            : 'window.' + name;
 
-        window.bind_property('title', this.titleLabel, 'label',
-            GObject.BindingFlags.SYNC_CREATE
+        button.connect('clicked',
+            this._onWindowButtonActivate.bind(this, action)
         );
 
-        this.subtitleLabel = new Gtk.Label({
-            halign: Gtk.Align.CENTER,
-            single_line_mode: true,
-            ellipsize: Pango.EllipsizeMode.END,
-        });
-        this.subtitleLabel.add_css_class('subtitle');
-        this.subtitleLabel.set_parent(box);
-        this.subtitleLabel.visible = false;
+        return button;
+    }
 
-        return box;
+    _onWindowButtonActivate(action)
+    {
     }
 
     _onFloatButtonClicked()

@@ -91,7 +91,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
 var RevealerTop = GObject.registerClass(
 class ClapperRevealerTop extends CustomRevealer
 {
-    _init(window)
+    _init()
     {
         super._init({
             transition_duration: REVEAL_TIME,
@@ -133,7 +133,7 @@ class ClapperRevealerTop extends CustomRevealer
         revealerBox.add_css_class('osd');
         revealerBox.add_css_class('reavealertop');
 
-        this.headerBar = new HeaderBar(window);
+        this.headerBar = new HeaderBar();
         revealerBox.append(this.headerBar);
 
         this.revealerGrid = new Gtk.Grid({

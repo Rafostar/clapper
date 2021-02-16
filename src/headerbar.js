@@ -4,11 +4,15 @@ const { HeaderBarBase } = imports.src.headerbarBase;
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends HeaderBarBase
 {
-    _init(window)
+    _init()
     {
-        super._init(window);
+        super._init();
+        this.add_css_class('osdheaderbar');
+    }
 
-        this.title_widget.visible = false;
+    _onWindowButtonActivate(action)
+    {
+        this.activate_action(action, null);
     }
 
     _onFloatButtonClicked()

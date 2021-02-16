@@ -18,10 +18,7 @@ radio {
 .gtk402 .osd trough highlight {
   border-color: inherit;
 }
-.osd headerbar {
-  background: transparent;
-}
-.osd headerbar button {
+.osdheaderbar button {
   border: transparent;
 }
 .adwrounded.csd {

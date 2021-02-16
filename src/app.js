@@ -27,7 +27,7 @@ class ClapperApp extends AppBase
         window.isClapperApp = true;
         window.add_css_class('nobackground');
 
-        const clapperWidget = new Widget(window);
+        const clapperWidget = new Widget();
         window.set_child(clapperWidget);
 
         const dummyHeaderbar = new Gtk.HeaderBar({
