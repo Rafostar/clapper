@@ -29,8 +29,7 @@ class ClapperPlayerBase extends GstClapper.Clapper
         });
 
         this.widget = gtk4plugin.video_sink.widget;
-        this.widget.vexpand = true;
-        this.widget.hexpand = true;
+        this.widget.add_css_class('videowidget');
 
         this.state = GstClapper.ClapperState.STOPPED;
         this.visualization_enabled = false;

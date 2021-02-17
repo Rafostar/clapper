@@ -34,6 +34,11 @@ radio {
   border-radius: 0px;
 }
 
+.videowidget {
+  min-width: 336px;
+  min-height: 189px;
+}
+
 .tvmode popover box {
   text-shadow: none;
   font-size: 21px;
