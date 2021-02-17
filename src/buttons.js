@@ -44,8 +44,8 @@ class ClapperCustomButton extends Gtk.Button
         if(!this.isFullscreen)
             return;
 
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player._setHideControlsTimeout();
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget._setHideControlsTimeout();
     }
 });
 

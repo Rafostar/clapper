@@ -478,13 +478,13 @@ class ClapperControls extends Gtk.Box
         this.disconnect(this.realizeSignal);
         this.realizeSignal = null;
 
-        const { player } = this.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
         const scrollController = new Gtk.EventControllerScroll();
         scrollController.set_flags(
             Gtk.EventControllerScrollFlags.VERTICAL
             | Gtk.EventControllerScrollFlags.DISCRETE
         );
-        scrollController.connect('scroll', player._onScroll.bind(player));
+        scrollController.connect('scroll', clapperWidget._onScroll.bind(clapperWidget));
         this.volumeButton.add_controller(scrollController);
 
         const initialVolume = (settings.get_string('volume-initial') === 'custom')
@@ -541,8 +541,8 @@ class ClapperControls extends Gtk.Box
 
     _onPositionScaleScroll(controller, dx, dy)
     {
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player._onScroll(controller, dx || dy, 0);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget._onScroll(controller, dx || dy, 0);
     }
 
     _onPositionScaleValueChanged(scale)
@@ -617,8 +617,8 @@ class ClapperControls extends Gtk.Box
     /* Only happens when navigating through controls panel */
     _onControlsKeyPressed(controller, keyval, keycode, state)
     {
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player._setHideControlsTimeout();
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget._setHideControlsTimeout();
     }
 
     _onControlsKeyReleased(controller, keyval, keycode, state)
