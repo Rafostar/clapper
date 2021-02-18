@@ -742,8 +742,18 @@ class ClapperWidget extends Gtk.Grid
     _onReleased(gesture, nPress, x, y)
     {
         /* Reveal if touch was not a swipe or was already revealed */
-        if(!this.isSwipePerformed || this.revealerBottom.child_revealed)
-            this.revealControls();
+        if(!this.isSwipePerformed || this.revealerBottom.child_revealed) {
+            const { source } = gesture.get_device();
+
+            switch(source) {
+                case Gdk.InputSource.PEN:
+                case Gdk.InputSource.TOUCHSCREEN:
+                    this.revealControls();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     _onDragUpdate(gesture, offsetX, offsetY)
