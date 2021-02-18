@@ -4,8 +4,6 @@ const Debug = imports.src.debug;
 const DBus = imports.src.dbus;
 const Misc = imports.src.misc;
 
-const REVEAL_TIME = 800;
-
 const { debug } = Debug;
 const { settings } = Misc;
 
@@ -19,6 +17,7 @@ class ClapperCustomRevealer extends Gtk.Revealer
         const defaults = {
             visible: false,
             can_focus: false,
+            transition_duration: 800,
         };
         Object.assign(opts, defaults);
 
@@ -33,35 +32,9 @@ class ClapperCustomRevealer extends Gtk.Revealer
     revealChild(isReveal)
     {
         if(isReveal)
-            this.set_visible(isReveal);
+            this.visible = true;
 
-        /* Restore focus ability after we are done */
-        if(!isReveal) this.set_can_focus(true);
-
-        this._timedReveal(isReveal, REVEAL_TIME);
-    }
-
-    showChild(isReveal)
-    {
-        this.set_visible(isReveal);
-        this._timedReveal(isReveal, 0);
-    }
-
-    set_visible(isVisible)
-    {
-        if(this.visible === isVisible)
-            return false;
-
-        super.set_visible(isVisible);
-        debug(`${this.revealerName} revealer visible: ${isVisible}`);
-
-        return true;
-    }
-
-    _timedReveal(isReveal, time)
-    {
-        this.set_transition_duration(time);
-        this.set_reveal_child(isReveal);
+        this.reveal_child = isReveal;
     }
 });
 
@@ -71,7 +44,6 @@ class ClapperRevealerTop extends CustomRevealer
     _init()
     {
         super._init({
-            transition_duration: REVEAL_TIME,
             transition_type: Gtk.RevealerTransitionType.CROSSFADE,
             valign: Gtk.Align.START,
         });
@@ -125,9 +97,14 @@ class ClapperRevealerTop extends CustomRevealer
         this.set_child(revealerBox);
     }
 
-    setMediaTitle(title)
+    set title(text)
     {
-        this.mediaTitle.label = title;
+        this.mediaTitle.label = text;
+    }
+
+    get title()
+    {
+        return this.mediaTitle.label;
     }
 
     setTimes(currTime, endTime)
@@ -154,7 +131,6 @@ class ClapperRevealerBottom extends CustomRevealer
     _init()
     {
         super._init({
-            transition_duration: REVEAL_TIME,
             transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
             valign: Gtk.Align.END,
         });
@@ -164,6 +140,10 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.add_css_class('osd');
 
         this.set_child(this.revealerBox);
+
+        const motionController = new Gtk.EventControllerMotion();
+        motionController.connect('motion', this._onMotion.bind(this));
+        this.add_controller(motionController);
     }
 
     append(widget)
@@ -176,34 +156,10 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.remove(widget);
     }
 
-    set_visible(isVisible)
+    _onMotion(controller, x, y)
     {
-        const isChange = super.set_visible(isVisible);
-        if(!isChange || !this.can_focus) return;
-
-        const parent = this.get_parent();
-        const playerWidget = parent.get_first_child();
-        if(!playerWidget) return;
-
-        if(isVisible) {
-            const box = this.get_first_child();
-            if(!box) return;
-
-            const controls = box.get_first_child();
-            if(!controls) return;
-
-            const togglePlayButton = controls.get_first_child();
-            if(togglePlayButton) {
-                togglePlayButton.grab_focus();
-                debug('focus moved to toggle play button');
-            }
-            playerWidget.set_can_focus(false);
-        }
-        else {
-            playerWidget.set_can_focus(true);
-            playerWidget.grab_focus();
-            debug('focus moved to player widget');
-        }
+        const clapperWidget = this.root.child;
+        clapperWidget._clearTimeout('hideControls');
     }
 });
 

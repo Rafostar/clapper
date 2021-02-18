@@ -106,8 +106,8 @@ class ClapperControls extends Gtk.Box
         for(let button of this.buttonsArr)
             button.setFullscreenMode(isFullscreen);
 
-        this.unfullscreenButton.set_visible(isFullscreen);
-        this.set_can_focus(isFullscreen);
+        this.unfullscreenButton.visible = isFullscreen;
+        this.can_focus = isFullscreen;
     }
 
     setLiveMode(isLive, isSeekable)
@@ -593,25 +593,33 @@ class ClapperControls extends Gtk.Box
     {
         const isPositionDragging = scale.has_css_class('dragging');
 
-        if((this.isPositionDragging = isPositionDragging))
+        if(this.isPositionDragging === isPositionDragging)
             return;
-
-        const isChapterSeek = this.chapterPopover.visible;
-
-        if(!isPositionDragging)
-            this._setChapterVisible(false);
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
+        if(clapperWidget.isFullscreenMode) {
+            clapperWidget.revealControls();
+
+            if(isPositionDragging)
+                clapperWidget._clearTimeout('hideControls');
+        }
+
+        if((this.isPositionDragging = isPositionDragging))
+            return;
+
         const scaleValue = scale.get_value();
+        const isChapterSeek = this.chapterPopover.visible;
 
         if(!isChapterSeek) {
             const positionSeconds = Math.round(scaleValue);
             clapperWidget.player.seek_seconds(positionSeconds);
         }
-        else
+        else {
             clapperWidget.player.seek_chapter(scaleValue);
+            this._setChapterVisible(false);
+        }
     }
 
     /* Only happens when navigating through controls panel */

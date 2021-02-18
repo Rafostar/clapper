@@ -45,7 +45,11 @@ class ClapperCustomButton extends Gtk.Button
             return;
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
-        clapperWidget._setHideControlsTimeout();
+        clapperWidget.revealControls();
+
+        /* Button opens a popover */
+        if(this.popoverBox)
+            clapperWidget.isPopoverOpen = true;
     }
 });
 
@@ -124,8 +128,15 @@ class ClapperPopoverButtonBase extends CustomButton
 
     _onClosed()
     {
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player.widget.grab_focus();
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+
+        clapperWidget.player.widget.grab_focus();
+
+        /* Set again timeout as popover is now closed */
+        if(clapperWidget.isFullscreenMode)
+            clapperWidget.revealControls();
+
+        clapperWidget.isPopoverOpen = false;
 
         this.unset_state_flags(Gtk.StateFlags.CHECKED);
     }

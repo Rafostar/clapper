@@ -434,11 +434,8 @@ class ClapperPlayer extends PlayerBase
                 bool = true;
             case Gdk.KEY_Left:
                 this.adjust_position(bool);
-                clapperWidget._clearTimeout('hideControls');
-                if(this.keyPressCount > 1) {
-                    clapperWidget.revealerBottom.set_can_focus(false);
-                    clapperWidget.revealerBottom.revealChild(true);
-                }
+                if(this.keyPressCount > 1)
+                    clapperWidget.revealControls();
                 break;
             default:
                 break;
@@ -458,10 +455,8 @@ class ClapperPlayer extends PlayerBase
                 this.toggle_play();
                 break;
             case Gdk.KEY_Return:
-                if(clapperWidget.isFullscreenMode) {
+                if(clapperWidget.isFullscreenMode)
                     clapperWidget.revealControls(true);
-                    clapperWidget._setHideControlsTimeout();
-                }
                 break;
             case Gdk.KEY_Right:
             case Gdk.KEY_Left:
