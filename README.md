@@ -1,28 +1,26 @@
 # Clapper
-A GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit. The media player is using [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
+A GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit.
+The media player is using [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
 
 <p align="center">
-<img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-windowed-mode.png"><br>
+<img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-windowed.png"><br>
   <b>Windowed Mode</b>
 </p>
 
 <p align="center">
-<img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-fullscreen-mode.png"><br>
+<img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-fullscreen.png"><br>
   <b>Fullscreen Mode</b>
 </p>
 
 <p align="center">
-<img src="https://github.com/Rafostar/clapper/raw/master/media/screenshot-floating-mode.png"><br>
+<img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-floating.png"><br>
   <b>Floating Mode</b>
 </p>
-
-### WORK IN PROGRESS
-This is still early WIP. Many features are not implemented yet and quite a few are still unstable.
 
 ### Features:
 * [Hardware acceleration](https://github.com/Rafostar/clapper/wiki/Hardware-acceleration)
 * [Floating mode](https://github.com/Rafostar/clapper/wiki/Floating-mode)
-* [Adaptive UI](https://raw.githubusercontent.com/Rafostar/clapper/master/media/screencast-mobile-ui.webm)
+* [Adaptive UI](https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-mobile.png)
 * [Playlist from file](https://github.com/Rafostar/clapper/wiki/Playlists)
 * Chapters on progress bar
 

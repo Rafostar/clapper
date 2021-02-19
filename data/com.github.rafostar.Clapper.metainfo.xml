@@ -4,21 +4,23 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>Clapper</name>
-  <summary>Play videos and music</summary>
+  <summary>Simple and modern GNOME media player</summary>
   <translation type="gettext">com.github.rafostar.Clapper</translation>
   <launchable type="desktop-id">com.github.rafostar.Clapper.desktop</launchable>
   <description>
     <p>
       Clapper is a GNOME media player build using GJS with GTK4 toolkit.
-      The media player is using GStreamer GstPlayer API as a media backend
-      and renders everything via OpenGL. Player works natively on both
-      Xorg and Wayland. It also supports VA-API on AMD/Intel GPUs.
+      The media player is using GStreamer as a media backend and renders
+      everything via OpenGL. Player works natively on both Xorg and Wayland.
+      It also supports VA-API on AMD/Intel GPUs.
     </p>
     <p>
       The media player has an adaptive GUI. When viewing videos in "Windowed Mode",
       Clapper will use mostly unmodified GTK widgets to match your OS look nicely.
       When player enters "Fullscreen Mode" all GUI elements will become darker, bigger
-      and semi-transparent for your viewing comfort. It also has a "Floating Mode".
+      and semi-transparent for your viewing comfort. It also has a "Floating Mode" which
+      displays video only on top of all other windows for a PiP-like viewing experience.
+      Mobile friendly transitions are also supported.
     </p>
   </description>
   <developer_name>Rafał Dzięgiel</developer_name>
@@ -32,13 +34,16 @@
   </categories>
   <screenshots>
     <screenshot type="default">
-      <image type="source">https://raw.githubusercontent.com/Rafostar/clapper/master/media/screenshot-windowed-mode.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-windowed.png</image>
     </screenshot>
     <screenshot>
-      <image type="source">https://raw.githubusercontent.com/Rafostar/clapper/master/media/screenshot-fullscreen-mode.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-fullscreen.png</image>
     </screenshot>
     <screenshot>
-      <image type="source">https://raw.githubusercontent.com/Rafostar/clapper/master/media/screenshot-floating-mode.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-floating.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-mobile.png</image>
     </screenshot>
   </screenshots>
   <releases>
