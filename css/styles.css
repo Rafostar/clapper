@@ -25,6 +25,12 @@ radio {
   background: alpha(@borders, 0.75);
   min-width: 1px;
 }
+.linkedleft image {
+  margin-left: 2px;
+}
+.linkedright image {
+  margin-right: 2px;
+}
 /* Non-osd style for popover menu */
 .menupopover label {
   color: @theme_text_color;

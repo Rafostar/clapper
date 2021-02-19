@@ -50,6 +50,7 @@ class ClapperHeaderBarBase extends Gtk.Box
             icon_name: 'go-bottom-symbolic',
         });
         floatButton.add_css_class('circular');
+        floatButton.add_css_class('linkedleft');
         floatButton.connect('clicked',
             this._onFloatButtonClicked.bind(this)
         );
@@ -65,6 +66,7 @@ class ClapperHeaderBarBase extends Gtk.Box
             icon_name: 'view-fullscreen-symbolic',
         });
         fullscreenButton.add_css_class('circular');
+        fullscreenButton.add_css_class('linkedright');
         fullscreenButton.connect('clicked',
             this._onFullscreenButtonClicked.bind(this)
         );
