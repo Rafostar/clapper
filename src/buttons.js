@@ -139,10 +139,10 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
 
-        if(this.isFullscreen)
+        if(this.isFullscreen) {
             clapperWidget.revealControls();
-
-        clapperWidget.isPopoverOpen = true;
+            clapperWidget.isPopoverOpen = true;
+        }
 
         this.popover.popup();
     }
