@@ -46,10 +46,6 @@ class ClapperCustomButton extends Gtk.Button
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         clapperWidget.revealControls();
-
-        /* Button opens a popover */
-        if(this.popoverBox)
-            clapperWidget.isPopoverOpen = true;
     }
 });
 
@@ -78,11 +74,20 @@ class ClapperIconToggleButton extends CustomButton
 });
 
 var PopoverButtonBase = GObject.registerClass(
-class ClapperPopoverButtonBase extends CustomButton
+class ClapperPopoverButtonBase extends Gtk.ToggleButton
 {
     _init()
     {
-        super._init();
+        super._init({
+            margin_top: 4,
+            margin_bottom: 4,
+            margin_start: 2,
+            margin_end: 2,
+            can_focus: false,
+        });
+
+        this.isFullscreen = false;
+        this.add_css_class('flat');
 
         this.popover = new Gtk.Popover({
             position: Gtk.PositionType.TOP,
@@ -106,7 +111,16 @@ class ClapperPopoverButtonBase extends CustomButton
         if(this.isFullscreen === isFullscreen)
             return;
 
-        super.setFullscreenMode(isFullscreen);
+        this.margin_top = (isFullscreen) ? 5 : 4;
+        this.margin_start = (isFullscreen) ? 3 : 2;
+        this.margin_end = (isFullscreen) ? 3 : 2;
+        this.can_focus = isFullscreen;
+
+        /* Redraw icon after style class change */
+        if(this.icon_name)
+            this.set_icon_name(this.icon_name);
+
+        this.isFullscreen = isFullscreen;
 
         this.popover.set_offset(0, -this.margin_top);
 
@@ -118,11 +132,18 @@ class ClapperPopoverButtonBase extends CustomButton
         this.popover[action + '_css_class'](cssClass);
     }
 
-    vfunc_clicked()
+    vfunc_toggled()
     {
-        super.vfunc_clicked();
+        if(!this.active)
+            return;
 
-        this.set_state_flags(Gtk.StateFlags.CHECKED, false);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+
+        if(this.isFullscreen)
+            clapperWidget.revealControls();
+
+        clapperWidget.isPopoverOpen = true;
+
         this.popover.popup();
     }
 
@@ -137,8 +158,7 @@ class ClapperPopoverButtonBase extends CustomButton
             clapperWidget.revealControls();
 
         clapperWidget.isPopoverOpen = false;
-
-        this.unset_state_flags(Gtk.StateFlags.CHECKED);
+        this.active = false;
     }
 
     _onCloseRequest()
