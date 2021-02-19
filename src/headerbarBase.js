@@ -209,12 +209,13 @@ class ClapperHeaderBarPopover extends Gtk.PopoverMenu
             menu_model: model,
         });
 
+        this.connect('map', this._onMap.bind(this));
         this.connect('closed', this._onClosed.bind(this));
     }
 
-    _onClosed()
+    _onMap()
     {
-        const { child } = this.get_root();
+        const { child } = this.root;
 
         if(
             !child
@@ -222,6 +223,24 @@ class ClapperHeaderBarPopover extends Gtk.PopoverMenu
             || !child.player.widget
         )
             return;
+
+        child.revealControls();
+        child.isPopoverOpen = true;
+    }
+
+    _onClosed()
+    {
+        const { child } = this.root;
+
+        if(
+            !child
+            || !child.player
+            || !child.player.widget
+        )
+            return;
+
+        child.revealControls();
+        child.isPopoverOpen = false;
 
         child.player.widget.grab_focus();
     }
