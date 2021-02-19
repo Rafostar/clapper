@@ -21,6 +21,10 @@ radio {
 .osdheaderbar button {
   border: transparent;
 }
+.linkseparator {
+  background: alpha(@borders, 0.75);
+  min-width: 1px;
+}
 /* Non-osd style for popover menu */
 .menupopover label {
   color: @theme_text_color;

@@ -55,6 +55,12 @@ class ClapperHeaderBarBase extends Gtk.Box
         );
         this.extraButtonsBox.append(floatButton);
 
+        const separator = new Gtk.Separator({
+            orientation: Gtk.Orientation.VERTICAL,
+        });
+        separator.add_css_class('linkseparator');
+        this.extraButtonsBox.append(separator);
+
         const fullscreenButton = new Gtk.Button({
             icon_name: 'view-fullscreen-symbolic',
         });
