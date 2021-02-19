@@ -35,6 +35,7 @@ class ClapperHeaderBarBase extends Gtk.Box
         });
         const mainMenuModel = uiBuilder.get_object('mainMenu');
         const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
+        mainMenuPopover.add_css_class('menupopover');
         this.menuButton.set_popover(mainMenuPopover);
         this.menuButton.add_css_class('circular');
         this.menuWidget.append(this.menuButton);
