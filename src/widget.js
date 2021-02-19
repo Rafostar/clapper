@@ -151,8 +151,11 @@ class ClapperWidget extends Gtk.Grid
         this._changeControlsPlacement(isFullscreen);
         this.controls.setFullscreenMode(isFullscreen);
 
-        this.revealerTop.headerBar.visible = !isFullscreen;
-        this.revealerTop.revealerGrid.visible = (isFullscreen && !this.isMobileMonitor);
+        const headerbar = this.revealerTop.headerBar;
+        headerbar.visible = (!isFullscreen || this.isMobileMonitor);
+        headerbar.extraButtonsBox.visible = !isFullscreen;
+
+        this.revealerTop.revealerGrid.visible = !headerbar.visible;
 
         this.setControlsCanFocus(false);
 
