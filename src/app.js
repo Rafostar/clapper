@@ -30,7 +30,7 @@ class ClapperApp extends AppBase
         const clapperWidget = new Widget();
         window.set_child(clapperWidget);
 
-        const dummyHeaderbar = new Gtk.HeaderBar({
+        const dummyHeaderbar = new Gtk.Box({
             can_focus: false,
             focusable: false,
             visible: false,
