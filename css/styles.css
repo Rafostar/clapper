@@ -137,6 +137,9 @@ radio {
 .positionscale trough highlight {
   min-height: 4px;
 }
+.osd .positionscale trough highlight {
+  min-height: 6px;
+}
 .tvmode .positionscale trough slider {
   color: transparent;
   background: transparent;
