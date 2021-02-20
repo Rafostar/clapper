@@ -112,6 +112,8 @@ class ClapperWidget extends Gtk.Grid
 
     revealControls(isAllowInput)
     {
+        this._checkSetUpdateTimeInterval();
+
         this.revealerTop.revealChild(true);
         this.revealerBottom.revealChild(true);
 
@@ -156,6 +158,9 @@ class ClapperWidget extends Gtk.Grid
         headerbar.extraButtonsBox.visible = !isFullscreen;
 
         this.revealerTop.revealerGrid.visible = !headerbar.visible;
+
+        if(this.revealerTop.child_revealed)
+            this._checkSetUpdateTimeInterval();
 
         this.setControlsCanFocus(false);
 
@@ -631,6 +636,17 @@ class ClapperWidget extends Gtk.Grid
         });
     }
 
+    _checkSetUpdateTimeInterval()
+    {
+        if(
+            this.isFullscreenMode
+            && !this.isMobileMonitor
+            && !this._updateTimeTimeout
+        ) {
+            this._setUpdateTimeInterval();
+        }
+    }
+
     _setUpdateTimeInterval()
     {
         this._clearTimeout('updateTime');
@@ -872,14 +888,6 @@ class ClapperWidget extends Gtk.Grid
                 this.needsCursorRestore = false;
             }
             this.revealControls();
-
-            if(
-                this.isFullscreenMode
-                && !this.isMobileMonitor
-                && !this._updateTimeTimeout
-            ) {
-                this._setUpdateTimeInterval();
-            }
         }
 
         this.posX = posX;
