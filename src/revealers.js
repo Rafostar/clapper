@@ -48,6 +48,7 @@ class ClapperRevealerTop extends CustomRevealer
             valign: Gtk.Align.START,
         });
         this.revealerName = 'top';
+        this.add_css_class('revealertop');
 
         const initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
@@ -80,7 +81,7 @@ class ClapperRevealerTop extends CustomRevealer
             orientation: Gtk.Orientation.VERTICAL,
         });
         revealerBox.add_css_class('osd');
-        revealerBox.add_css_class('revealertop');
+        revealerBox.add_css_class('revealertopbox');
 
         this.headerBar = new HeaderBar();
         revealerBox.append(this.headerBar);
@@ -89,6 +90,7 @@ class ClapperRevealerTop extends CustomRevealer
             column_spacing: 8,
             visible: false,
         });
+        this.revealerGrid.add_css_class('revealertopgrid');
         this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
         this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
         this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
