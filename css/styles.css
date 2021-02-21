@@ -18,6 +18,9 @@ radio {
 .gtk402 .osd trough highlight {
   border-color: inherit;
 }
+.osdheaderbar {
+  background: transparent;
+}
 .osdheaderbar button {
   border: transparent;
 }
@@ -102,37 +105,34 @@ radio {
   font-size: 23px;
   text-shadow: none;
 }
-.revealertopbox {
-  background: transparent;
-}
-.tvmode .revealertop {
-  box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.4);
-}
-.tvmode .revealertopbox {
-  margin-bottom: -8px;
-  background: rgba(0,0,0,0.4);
-}
-.tvmode .revealertopgrid {
+.tvrevealerboxtop {
   font-family: 'Cantarell', sans-serif;
+  border-radius: 8px;
+  border-bottom-right-radius: 0px;
+}
+.tvrevealerboxbottom {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.tvmode .tvtitle {
   font-size: 28px;
   font-weight: 500;
   text-shadow: none;
 }
 .tvtime {
-  margin-top: -2px;
-  margin-right: -4px;
-  min-width: 4px;
   font-size: 38px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .tvendtime {
-  margin-top: 36px;
-  margin-right: -4px;
-  min-width: 4px;
+  margin-top: -4px;
+  min-height: 4px;
   font-size: 24px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
+}
+.revealerbottombox {
+  border-radius: 8px;
 }
 
 /* Button Inside Popover */
