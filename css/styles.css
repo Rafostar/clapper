@@ -102,12 +102,17 @@ radio {
   font-size: 23px;
   text-shadow: none;
 }
-.revealertop {
+.revealertopbox {
   background: transparent;
 }
 .tvmode .revealertop {
-  min-height: 88px;
-  box-shadow: inset 0px 200px 10px -132px rgba(0,0,0,0.4);
+  box-shadow: 0px 0px 10px 10px rgba(0,0,0,0.4);
+}
+.tvmode .revealertopbox {
+  margin-bottom: -8px;
+  background: rgba(0,0,0,0.4);
+}
+.tvmode .revealertopgrid {
   font-family: 'Cantarell', sans-serif;
   font-size: 28px;
   font-weight: 500;
