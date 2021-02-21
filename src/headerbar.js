@@ -7,6 +7,7 @@ class ClapperHeaderBar extends HeaderBarBase
     _init()
     {
         super._init();
+        this.add_css_class('osd');
         this.add_css_class('osdheaderbar');
     }
 

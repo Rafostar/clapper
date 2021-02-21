@@ -48,7 +48,6 @@ class ClapperRevealerTop extends CustomRevealer
             valign: Gtk.Align.START,
         });
         this.revealerName = 'top';
-        this.add_css_class('revealertop');
 
         const initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
@@ -57,43 +56,59 @@ class ClapperRevealerTop extends CustomRevealer
 
         this.mediaTitle = new Gtk.Label({
             ellipsize: Pango.EllipsizeMode.END,
-            vexpand: true,
+            halign: Gtk.Align.START,
+            valign: Gtk.Align.CENTER,
             hexpand: true,
-            margin_top: 14,
-            margin_start: 12,
-            xalign: 0,
-            yalign: 0,
+            margin_start: 10,
         });
+        this.mediaTitle.add_css_class('tvtitle');
 
-        const timeLabelOpts = {
+        this.currentTime = new Gtk.Label({
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            margin_start: 24,
             margin_end: 10,
-            xalign: 1,
-            yalign: 0,
-        };
-        this.currentTime = new Gtk.Label(timeLabelOpts);
+        });
         this.currentTime.add_css_class('tvtime');
 
-        timeLabelOpts.visible = false;
-        this.endTime = new Gtk.Label(timeLabelOpts);
+        this.endTime = new Gtk.Label({
+            margin_start: 10,
+            margin_end: 10,
+            margin_bottom: 2,
+        });
         this.endTime.add_css_class('tvendtime');
 
         const revealerBox = new Gtk.Box({
             orientation: Gtk.Orientation.VERTICAL,
         });
-        revealerBox.add_css_class('osd');
-        revealerBox.add_css_class('revealertopbox');
-
         this.headerBar = new HeaderBar();
         revealerBox.append(this.headerBar);
 
         this.revealerGrid = new Gtk.Grid({
-            column_spacing: 8,
             visible: false,
+            margin_top: 8,
+            margin_start: 8,
+            margin_end: 8,
         });
-        this.revealerGrid.add_css_class('revealertopgrid');
-        this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
-        this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
-        this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
+
+        const topBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+        });
+        topBox.add_css_class('osd');
+        topBox.add_css_class('tvrevealerboxtop');
+        topBox.append(this.mediaTitle);
+        topBox.append(this.currentTime);
+
+        const bottomBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            halign: Gtk.Align.END,
+        });
+        bottomBox.add_css_class('osd');
+        bottomBox.add_css_class('tvrevealerboxbottom');
+        bottomBox.append(this.endTime);
+
+        this.revealerGrid.attach(topBox, 0, 0, 2, 1);
+        this.revealerGrid.attach(bottomBox, 1, 1, 1, 1);
         revealerBox.append(this.revealerGrid);
 
         this.set_child(revealerBox);
@@ -138,8 +153,14 @@ class ClapperRevealerBottom extends CustomRevealer
         });
 
         this.revealerName = 'bottom';
-        this.revealerBox = new Gtk.Box();
+        this.revealerBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            margin_start: 8,
+            margin_end: 8,
+            margin_bottom: 8,
+        });
         this.revealerBox.add_css_class('osd');
+        this.revealerBox.add_css_class('revealerbottombox');
 
         this.set_child(this.revealerBox);
 
