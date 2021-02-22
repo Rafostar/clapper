@@ -1,5 +1,8 @@
 const { GObject, Gtk } = imports.gi;
+const Debug = imports.src.debug;
 const Misc = imports.src.misc;
+
+const { debug } = Debug;
 
 var HeaderBarBase = GObject.registerClass(
 class ClapperHeaderBarBase extends Gtk.Box
@@ -138,6 +141,8 @@ class ClapperHeaderBarBase extends Gtk.Box
         let showMaximize = false;
         let showClose = false;
         let spacerAdded = false;
+
+        debug(`headerbar layout: ${modLayout}`);
 
         for(let name of layoutArr) {
             const widget = this[`${name}Widget`];
