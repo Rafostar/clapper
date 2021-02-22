@@ -1,28 +1,33 @@
-const { GObject } = imports.gi;
+const { GObject, Gtk } = imports.gi;
 const { HeaderBarBase } = imports.src.headerbarBase;
 
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends HeaderBarBase
 {
-    _init(window)
+    _init()
     {
-        super._init(window);
+        super._init();
+        this.add_css_class('osd');
+        this.add_css_class('osdheaderbar');
+    }
 
-        const clapperWidget = window.get_child();
-        clapperWidget.controls.unfloatButton.bind_property('visible', this, 'visible',
-            GObject.BindingFlags.INVERT_BOOLEAN
-        );
+    _onWindowButtonActivate(action)
+    {
+        this.activate_action(action, null);
     }
 
     _onFloatButtonClicked()
     {
-        const clapperWidget = this.get_prev_sibling();
-        clapperWidget.setFloatingMode(true);
+        const clapperWidget = this.root.child;
+
+        clapperWidget.controlsRevealer.toggleReveal();
+
+        /* Reset timer to not disappear during click */
+        clapperWidget._setHideControlsTimeout();
     }
 
     _onFullscreenButtonClicked()
     {
-        const window = this.get_parent();
-        window.fullscreen();
+        this.root.fullscreen();
     }
 });

@@ -14,10 +14,7 @@ class ClapperPlayer extends PlayerBase
     {
         super._init();
 
-        this.cursorInPlayer = false;
         this.seek_done = true;
-        this.dragAllowed = false;
-        this.isWidgetDragging = false;
         this.doneStartup = false;
         this.needsFastSeekRestore = false;
 
@@ -25,54 +22,14 @@ class ClapperPlayer extends PlayerBase
         this.quitOnStop = false;
         this.needsTocUpdate = true;
 
-        this.posX = 0;
-        this.posY = 0;
         this.keyPressCount = 0;
 
         this._maxVolume = Misc.getLinearValue(Misc.maxVolume);
-
-        this._hideCursorTimeout = null;
-        this._hideControlsTimeout = null;
-        this._updateTimeTimeout = null;
-
-        const clickGesture = new Gtk.GestureClick();
-        clickGesture.set_button(0);
-        clickGesture.connect('pressed', this._onWidgetPressed.bind(this));
-        this.widget.add_controller(clickGesture);
-
-        const dragGesture = new Gtk.GestureDrag();
-        dragGesture.connect('drag-update', this._onWidgetDragUpdate.bind(this));
-        this.widget.add_controller(dragGesture);
-
-        const swipeGesture = new Gtk.GestureSwipe({
-            touch_only: true,
-        });
-        swipeGesture.connect('swipe', this._onWidgetSwipe.bind(this));
-        swipeGesture.connect('update', this._onWidgetSwipeUpdate.bind(this));
-        this.widget.add_controller(swipeGesture);
 
         const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onWidgetKeyPressed.bind(this));
         keyController.connect('key-released', this._onWidgetKeyReleased.bind(this));
         this.widget.add_controller(keyController);
-
-        const scrollController = new Gtk.EventControllerScroll();
-        scrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
-        scrollController.connect('scroll', this._onScroll.bind(this));
-        this.widget.add_controller(scrollController);
-
-        const motionController = new Gtk.EventControllerMotion();
-        motionController.connect('enter', this._onWidgetEnter.bind(this));
-        motionController.connect('leave', this._onWidgetLeave.bind(this));
-        motionController.connect('motion', this._onWidgetMotion.bind(this));
-        this.widget.add_controller(motionController);
-
-        const dropTarget = new Gtk.DropTarget({
-            actions: Gdk.DragAction.COPY,
-        });
-        dropTarget.set_gtypes([GObject.TYPE_STRING]);
-        dropTarget.connect('drop', this._onDataDrop.bind(this));
-        this.widget.add_controller(dropTarget);
 
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
@@ -301,100 +258,20 @@ class ClapperPlayer extends PlayerBase
         }
     }
 
-    getIsSwipeOk(velocity, otherVelocity)
-    {
-        if(!velocity)
-            return false;
-
-        const absVel = Math.abs(velocity);
-
-        if(absVel < 20 || Math.abs(otherVelocity) * 1.5 >= absVel)
-            return false;
-
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-
-        return clapperWidget.fullscreenMode;
-    }
-
-    _setHideCursorTimeout()
-    {
-        this._clearTimeout('hideCursor');
-        this._hideCursorTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
-            this._hideCursorTimeout = null;
-
-            if(this.cursorInPlayer) {
-                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-                const blankCursor = Gdk.Cursor.new_from_name('none', null);
-
-                this.widget.set_cursor(blankCursor);
-                clapperWidget.revealerTop.set_cursor(blankCursor);
-            }
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _setHideControlsTimeout()
-    {
-        this._clearTimeout('hideControls');
-        this._hideControlsTimeout = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 3, () => {
-            this._hideControlsTimeout = null;
-
-            if(this.cursorInPlayer) {
-                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-                if(clapperWidget.fullscreenMode || clapperWidget.floatingMode) {
-                    this._clearTimeout('updateTime');
-                    clapperWidget.revealControls(false);
-                }
-            }
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _setUpdateTimeInterval()
-    {
-        this._clearTimeout('updateTime');
-
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        const nextUpdate = clapperWidget.updateTime();
-
-        if(nextUpdate === null)
-            return;
-
-        this._updateTimeTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, nextUpdate, () => {
-            this._updateTimeTimeout = null;
-
-            if(clapperWidget.fullscreenMode)
-                this._setUpdateTimeInterval();
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _clearTimeout(name)
-    {
-        if(!this[`_${name}Timeout`])
-            return;
-
-        GLib.source_remove(this[`_${name}Timeout`]);
-        this[`_${name}Timeout`] = null;
-
-        if(name === 'updateTime')
-            debug('cleared update time interval');
-    }
-
     _performCloseCleanup(window)
     {
         window.disconnect(this.closeRequestSignal);
         this.closeRequestSignal = null;
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(!clapperWidget.fullscreenMode) {
+
+        if(!clapperWidget.isFullscreenMode && clapperWidget.controlsRevealer.child_revealed) {
             const size = window.get_default_size();
 
-            if(size[0] > 0 && size[1] > 0)
-                clapperWidget._saveWindowSize(size);
+            if(size[0] > 0 && size[1] > 0) {
+                settings.set_string('window-size', JSON.stringify(size));
+                debug(`saved window size: ${size[0]}x${size[1]}`);
+            }
         }
         /* If "quitOnStop" is set here it means that we are in middle of autoclosing */
         if(this.state !== GstClapper.ClapperState.STOPPED && !this.quitOnStop) {
@@ -495,7 +372,7 @@ class ClapperPlayer extends PlayerBase
             if(settings.get_boolean('fullscreen-auto')) {
                 const root = player.widget.get_root();
                 const clapperWidget = root.get_child();
-                if(!clapperWidget.fullscreenMode) {
+                if(!clapperWidget.isFullscreenMode) {
                     this.playOnFullscreen = true;
                     root.fullscreen();
 
@@ -557,11 +434,8 @@ class ClapperPlayer extends PlayerBase
                 bool = true;
             case Gdk.KEY_Left:
                 this.adjust_position(bool);
-                this._clearTimeout('hideControls');
-                if(this.keyPressCount > 1) {
-                    clapperWidget.revealerBottom.set_can_focus(false);
-                    clapperWidget.revealerBottom.revealChild(true);
-                }
+                if(this.keyPressCount > 1)
+                    clapperWidget.revealControls();
                 break;
             default:
                 break;
@@ -581,10 +455,8 @@ class ClapperPlayer extends PlayerBase
                 this.toggle_play();
                 break;
             case Gdk.KEY_Return:
-                if(clapperWidget.fullscreenMode) {
+                if(clapperWidget.isFullscreenMode)
                     clapperWidget.revealControls(true);
-                    this._setHideControlsTimeout();
-                }
                 break;
             case Gdk.KEY_Right:
             case Gdk.KEY_Left:
@@ -592,7 +464,7 @@ class ClapperPlayer extends PlayerBase
                     clapperWidget.controls.positionScale.get_value()
                 );
                 this.seek_seconds(value);
-                this._setHideControlsTimeout();
+                clapperWidget._setHideControlsTimeout();
                 break;
             case Gdk.KEY_F11:
             case Gdk.KEY_f:
@@ -600,7 +472,7 @@ class ClapperPlayer extends PlayerBase
                 clapperWidget.toggleFullscreen();
                 break;
             case Gdk.KEY_Escape:
-                if(clapperWidget.fullscreenMode) {
+                if(clapperWidget.isFullscreenMode) {
                     root = this.widget.get_root();
                     root.unfullscreen();
                 }
@@ -613,193 +485,6 @@ class ClapperPlayer extends PlayerBase
             default:
                 break;
         }
-    }
-
-    _onWidgetPressed(gesture, nPress, x, y)
-    {
-        const button = gesture.get_current_button();
-        const isDouble = (nPress % 2 == 0);
-        this.dragAllowed = !isDouble;
-
-        switch(button) {
-            case Gdk.BUTTON_PRIMARY:
-                if(isDouble) {
-                    const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-                    clapperWidget.toggleFullscreen();
-                }
-                break;
-            case Gdk.BUTTON_SECONDARY:
-                this.toggle_play();
-                break;
-            default:
-                break;
-        }
-    }
-
-    _onWidgetEnter(controller, x, y)
-    {
-        this.cursorInPlayer = true;
-        this.isWidgetDragging = false;
-
-        this._setHideCursorTimeout();
-
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(clapperWidget.fullscreenMode || clapperWidget.floatingMode)
-            this._setHideControlsTimeout();
-    }
-
-    _onWidgetLeave(controller)
-    {
-        this.cursorInPlayer = false;
-
-        this._clearTimeout('hideCursor');
-        this._clearTimeout('hideControls');
-    }
-
-    _onWidgetMotion(controller, posX, posY)
-    {
-        this.cursorInPlayer = true;
-
-        /* GTK4 sometimes generates motions with same coords */
-        if(this.posX === posX && this.posY === posY)
-            return;
-
-        /* Do not show cursor on small movements */
-        if(
-            Math.abs(this.posX - posX) >= 0.5
-            || Math.abs(this.posY - posY) >= 0.5
-        ) {
-            const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-            const defaultCursor = Gdk.Cursor.new_from_name('default', null);
-
-            this.widget.set_cursor(defaultCursor);
-            clapperWidget.revealerTop.set_cursor(defaultCursor);
-            this._setHideCursorTimeout();
-
-            if(clapperWidget.floatingMode && !clapperWidget.fullscreenMode) {
-                clapperWidget.revealerBottom.set_can_focus(false);
-                clapperWidget.revealerBottom.revealChild(true);
-                this._setHideControlsTimeout();
-            }
-            else if(clapperWidget.fullscreenMode) {
-                if(!this._updateTimeTimeout)
-                    this._setUpdateTimeInterval();
-
-                if(!clapperWidget.revealerTop.get_reveal_child()) {
-                    /* Do not grab controls key focus on mouse movement */
-                    clapperWidget.revealerBottom.set_can_focus(false);
-                    clapperWidget.revealControls(true);
-                }
-                this._setHideControlsTimeout();
-            }
-            else {
-                if(this._hideControlsTimeout)
-                    this._clearTimeout('hideControls');
-                if(this._updateTimeTimeout)
-                    this._clearTimeout('updateTime');
-            }
-        }
-
-        this.posX = posX;
-        this.posY = posY;
-    }
-
-    _onWidgetDragUpdate(gesture, offsetX, offsetY)
-    {
-        if(!this.dragAllowed)
-            return;
-
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        if(clapperWidget.fullscreenMode)
-            return;
-
-        const { gtk_double_click_distance } = this.widget.get_settings();
-
-        if (
-            Math.abs(offsetX) > gtk_double_click_distance
-            || Math.abs(offsetY) > gtk_double_click_distance
-        ) {
-            const [isActive, startX, startY] = gesture.get_start_point();
-            if(!isActive) return;
-
-            const native = this.widget.get_native();
-            if(!native) return;
-
-            let [isShared, winX, winY] = this.widget.translate_coordinates(
-                native, startX, startY
-            );
-            if(!isShared) return;
-
-            const [nativeX, nativeY] = native.get_surface_transform();
-            winX += nativeX;
-            winY += nativeY;
-
-            this.isWidgetDragging = true;
-            native.get_surface().begin_move(
-                gesture.get_device(),
-                gesture.get_current_button(),
-                winX,
-                winY,
-                gesture.get_current_event_time()
-            );
-
-            gesture.reset();
-        }
-    }
-
-    _onWidgetSwipe(gesture, velocityX, velocityY)
-    {
-        if(!this.getIsSwipeOk(velocityX, velocityY))
-            return;
-
-        this._onScroll(gesture, -velocityX, 0);
-    }
-
-    _onWidgetSwipeUpdate(gesture, sequence)
-    {
-        const [isCalc, velocityX, velocityY] = gesture.get_velocity();
-        if(!isCalc) return;
-
-        if(!this.getIsSwipeOk(velocityY, velocityX))
-            return;
-
-        const isIncrease = velocityY < 0;
-
-        this.adjust_volume(isIncrease, 0.01);
-    }
-
-    _onScroll(controller, dx, dy)
-    {
-        const isHorizontal = (Math.abs(dx) >= Math.abs(dy));
-        const isIncrease = (isHorizontal) ? dx < 0 : dy < 0;
-
-        if(isHorizontal) {
-            this.adjust_position(isIncrease);
-            const { controls } = this.widget.get_ancestor(Gtk.Grid);
-            const value = Math.round(controls.positionScale.get_value());
-            this.seek_seconds(value);
-        }
-        else
-            this.adjust_volume(isIncrease);
-
-        return true;
-    }
-
-    _onDataDrop(dropTarget, value, x, y)
-    {
-        const playlist = value.split(/\r?\n/).filter(uri => {
-            return Gst.uri_is_valid(uri);
-        });
-
-        if(!playlist.length)
-            return false;
-
-        this.set_playlist(playlist);
-
-        const { application } = this.widget.get_root();
-        application.activate();
-
-        return true;
     }
 
     _onCloseRequest(window)

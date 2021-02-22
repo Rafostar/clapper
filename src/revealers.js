@@ -1,9 +1,11 @@
 const { GLib, GObject, Gtk, Pango } = imports.gi;
+const { HeaderBar } = imports.src.headerbar;
 const Debug = imports.src.debug;
-
-const REVEAL_TIME = 800;
+const DBus = imports.src.dbus;
+const Misc = imports.src.misc;
 
 const { debug } = Debug;
+const { settings } = Misc;
 
 var CustomRevealer = GObject.registerClass(
 class ClapperCustomRevealer extends Gtk.Revealer
@@ -15,74 +17,24 @@ class ClapperCustomRevealer extends Gtk.Revealer
         const defaults = {
             visible: false,
             can_focus: false,
+            transition_duration: 800,
         };
         Object.assign(opts, defaults);
 
         super._init(opts);
 
         this.revealerName = '';
+        this.bind_property('child_revealed', this, 'visible',
+            GObject.BindingFlags.DEFAULT
+        );
     }
 
     revealChild(isReveal)
     {
-        if(isReveal) {
-            this._clearTimeout();
-            this.set_visible(isReveal);
-        }
-        else
-            this._setHideTimeout();
+        if(isReveal)
+            this.visible = true;
 
-        /* Restore focusability after we are done */
-        if(!isReveal) this.set_can_focus(true);
-
-        this._timedReveal(isReveal, REVEAL_TIME);
-    }
-
-    showChild(isReveal)
-    {
-        this._clearTimeout();
-        this.set_visible(isReveal);
-        this._timedReveal(isReveal, 0);
-    }
-
-    set_visible(isVisible)
-    {
-        if(this.visible === isVisible)
-            return false;
-
-        super.set_visible(isVisible);
-        debug(`${this.revealerName} revealer visible: ${isVisible}`);
-
-        return true;
-    }
-
-    _timedReveal(isReveal, time)
-    {
-        this.set_transition_duration(time);
-        this.set_reveal_child(isReveal);
-    }
-
-    /* Drawing revealers on top of video frames
-     * increases CPU usage, so we hide them */
-    _setHideTimeout()
-    {
-        this._clearTimeout();
-
-        this._revealerTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, REVEAL_TIME + 20, () => {
-            this._revealerTimeout = null;
-            this.set_visible(false);
-
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-
-    _clearTimeout()
-    {
-        if(!this._revealerTimeout)
-            return;
-
-        GLib.source_remove(this._revealerTimeout);
-        this._revealerTimeout = null;
+        this.reveal_child = isReveal;
     }
 });
 
@@ -92,55 +44,108 @@ class ClapperRevealerTop extends CustomRevealer
     _init()
     {
         super._init({
-            transition_duration: REVEAL_TIME,
             transition_type: Gtk.RevealerTransitionType.CROSSFADE,
             valign: Gtk.Align.START,
         });
         this.revealerName = 'top';
+        this._requestedTransition = this.transition_type;
 
         const initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
             ? '%I:%M %p'
             : '%H:%M';
 
-        this.revealerGrid = new Gtk.Grid({
-            column_spacing: 8
-        });
-        this.revealerGrid.add_css_class('osd');
-        this.revealerGrid.add_css_class('reavealertop');
-
         this.mediaTitle = new Gtk.Label({
             ellipsize: Pango.EllipsizeMode.END,
-            vexpand: true,
+            halign: Gtk.Align.START,
+            valign: Gtk.Align.CENTER,
+            margin_start: 10,
+            margin_end: 10,
+            visible: false,
+        });
+        this.mediaTitle.add_css_class('tvtitle');
+
+        this.currentTime = new Gtk.Label({
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.CENTER,
+            margin_start: 10,
+            margin_end: 10,
+        });
+        this.currentTime.add_css_class('tvtime');
+
+        this.endTime = new Gtk.Label({
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.START,
+            margin_start: 10,
+            margin_end: 10,
+            visible: false,
+        });
+        this.endTime.add_css_class('tvendtime');
+
+        const revealerBox = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+        });
+        this.headerBar = new HeaderBar();
+        revealerBox.append(this.headerBar);
+
+        this.revealerGrid = new Gtk.Grid({
+            column_spacing: 4,
+            margin_top: 8,
+            margin_start: 8,
+            margin_end: 8,
+            visible: false,
+        });
+        this.revealerGrid.add_css_class('revealertopgrid');
+
+        const topLeftBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+        });
+        topLeftBox.add_css_class('osd');
+        topLeftBox.add_css_class('roundedcorners');
+        topLeftBox.append(this.mediaTitle);
+
+        const topSpacerBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
             hexpand: true,
-            margin_top: 14,
-            margin_start: 12,
-            xalign: 0,
-            yalign: 0,
         });
 
-        const timeLabelOpts = {
-            margin_end: 10,
-            xalign: 1,
-            yalign: 0,
-        };
-        this.currentTime = new Gtk.Label(timeLabelOpts);
-        this.currentTime.add_css_class('osdtime');
+        const topRightBox = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            halign: Gtk.Align.END,
+        });
+        topRightBox.add_css_class('osd');
+        topRightBox.add_css_class('roundedcorners');
+        topRightBox.append(this.currentTime);
+        topRightBox.append(this.endTime);
 
-        timeLabelOpts.visible = false;
-        this.endTime = new Gtk.Label(timeLabelOpts);
-        this.endTime.add_css_class('osdendtime');
+        this.revealerGrid.attach(topLeftBox, 0, 0, 1, 1);
+        this.revealerGrid.attach(topSpacerBox, 1, 0, 1, 1);
+        this.revealerGrid.attach(topRightBox, 2, 0, 1, 2);
+        revealerBox.append(this.revealerGrid);
 
-        this.revealerGrid.attach(this.mediaTitle, 0, 0, 1, 1);
-        this.revealerGrid.attach(this.currentTime, 1, 0, 1, 1);
-        this.revealerGrid.attach(this.endTime, 1, 0, 1, 1);
+        this.set_child(revealerBox);
 
-        this.set_child(this.revealerGrid);
+        this.connect('notify::child-revealed', this._onTopRevealed.bind(this));
     }
 
-    setMediaTitle(title)
+    set title(text)
     {
-        this.mediaTitle.label = title;
+        this.mediaTitle.label = text;
+    }
+
+    get title()
+    {
+        return this.mediaTitle.label;
+    }
+
+    set showTitle(isShow)
+    {
+        this.mediaTitle.visible = isShow;
+    }
+
+    get showTitle()
+    {
+        return this.mediaTitle.visible;
     }
 
     setTimes(currTime, endTime)
@@ -159,6 +164,31 @@ class ClapperRevealerTop extends CustomRevealer
 
         return nextUpdate;
     }
+
+    setFullscreenMode(isFullscreen, isMobileMonitor)
+    {
+        const isTvMode = (isFullscreen && !isMobileMonitor);
+
+        this.headerBar.visible = !isTvMode;
+        this.revealerGrid.visible = isTvMode;
+
+        this.headerBar.extraButtonsBox.visible = !isFullscreen;
+
+        this._requestedTransition = (isTvMode)
+            ? Gtk.RevealerTransitionType.SLIDE_DOWN
+            : Gtk.RevealerTransitionType.CROSSFADE;
+
+        /* Changing transition in middle can have dire consequences,
+           so change only when not in transition */
+        if(this.reveal_child === this.child_revealed)
+            this.transition_type = this._requestedTransition;
+    }
+
+    _onTopRevealed()
+    {
+        if(this.transition_type !== this._requestedTransition)
+            this.transition_type = this._requestedTransition;
+    }
 });
 
 var RevealerBottom = GObject.registerClass(
@@ -167,16 +197,25 @@ class ClapperRevealerBottom extends CustomRevealer
     _init()
     {
         super._init({
-            transition_duration: REVEAL_TIME,
             transition_type: Gtk.RevealerTransitionType.SLIDE_UP,
             valign: Gtk.Align.END,
         });
 
         this.revealerName = 'bottom';
-        this.revealerBox = new Gtk.Box();
+        this.revealerBox = new Gtk.Box({
+            orientation: Gtk.Orientation.HORIZONTAL,
+            margin_start: 8,
+            margin_end: 8,
+            margin_bottom: 8,
+        });
         this.revealerBox.add_css_class('osd');
+        this.revealerBox.add_css_class('roundedcorners');
 
         this.set_child(this.revealerBox);
+
+        const motionController = new Gtk.EventControllerMotion();
+        motionController.connect('motion', this._onMotion.bind(this));
+        this.add_controller(motionController);
     }
 
     append(widget)
@@ -189,43 +228,78 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.remove(widget);
     }
 
-    setFloatingClass(isFloating)
+    _onMotion(controller, x, y)
     {
-        if(isFloating === this.revealerBox.has_css_class('floatingcontrols'))
-            return;
+        const clapperWidget = this.root.child;
+        clapperWidget._clearTimeout('hideControls');
+    }
+});
 
-        const action = (isFloating) ? 'add' : 'remove';
-        this.revealerBox[`${action}_css_class`]('floatingcontrols');
+var ControlsRevealer = GObject.registerClass(
+class ClapperControlsRevealer extends Gtk.Revealer
+{
+    _init()
+    {
+        super._init({
+            transition_duration: 600,
+            transition_type: Gtk.RevealerTransitionType.SLIDE_DOWN,
+            reveal_child: true,
+        });
+
+        this.connect('notify::child-revealed', this._onControlsRevealed.bind(this));
     }
 
-    set_visible(isVisible)
+    toggleReveal()
     {
-        const isChange = super.set_visible(isVisible);
-        if(!isChange || !this.can_focus) return;
+        /* Prevent interrupting transition */
+        if(this.reveal_child !== this.child_revealed)
+            return;
 
-        const parent = this.get_parent();
-        const playerWidget = parent.get_first_child();
-        if(!playerWidget) return;
+        const { widget } = this.root.child.player;
 
-        if(isVisible) {
-            const box = this.get_first_child();
-            if(!box) return;
+        if(this.child_revealed) {
+            const [width] = this.root.get_default_size();
+            const height = widget.get_height();
 
-            const controls = box.get_first_child();
-            if(!controls) return;
-
-            const togglePlayButton = controls.get_first_child();
-            if(togglePlayButton) {
-                togglePlayButton.grab_focus();
-                debug('focus moved to toggle play button');
-            }
-            playerWidget.set_can_focus(false);
+            this.add_tick_callback(
+                this._onUnrevealTick.bind(this, widget, width, height)
+            );
         }
-        else {
-            playerWidget.set_can_focus(true);
-            playerWidget.grab_focus();
-            debug('focus moved to player widget');
+        else
+            this.visible = true;
+
+        widget.height_request = widget.get_height();
+        this.reveal_child ^= true;
+
+        const isFloating = !this.reveal_child;
+        DBus.shellWindowEval('make_above', isFloating);
+
+        const isStick = (isFloating && settings.get_boolean('floating-stick'));
+        DBus.shellWindowEval('stick', isStick);
+    }
+
+    _onControlsRevealed()
+    {
+        if(this.child_revealed) {
+            const clapperWidget = this.root.child;
+            const [width, height] = this.root.get_default_size();
+
+            clapperWidget.player.widget.height_request = -1;
+            this.root.set_default_size(width, height);
         }
+    }
+
+    _onUnrevealTick(playerWidget, width, height)
+    {
+        const isRevealed = this.child_revealed;
+
+        if(!isRevealed) {
+            playerWidget.height_request = -1;
+            this.visible = false;
+        }
+        this.root.set_default_size(width, height);
+
+        return isRevealed;
     }
 });
 
@@ -249,18 +323,6 @@ class ClapperButtonsRevealer extends Gtk.Revealer
             this.connect('notify::reveal-child', this._onRevealChild.bind(this, toggleButton));
             this.connect('notify::child-revealed', this._onChildRevealed.bind(this, toggleButton));
         }
-    }
-
-    set_reveal_child(isReveal)
-    {
-        if(this.reveal_child === isReveal)
-            return;
-
-        const grandson = this.child.get_first_child();
-        if(grandson && grandson.isFloating && !grandson.isFullscreen)
-            return;
-
-        super.set_reveal_child(isReveal);
     }
 
     append(widget)

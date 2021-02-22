@@ -40,6 +40,10 @@
       <default>'[]'</default>
       <summary>Data storing unfinished videos resume info</summary>
     </key>
+    <key name="floating-stick" type="b">
+      <default>false</default>
+      <summary>Auto stick floating window to all workspaces</summary>
+    </key>
 
     <!-- Audio -->
     <key name="audio-offset" type="d">
@@ -103,10 +107,6 @@
     <key name="window-size" type="s">
       <default>'[960, 583]'</default>
       <summary>Stores window size to restore on next launch</summary>
-    </key>
-    <key name="float-size" type="s">
-      <default>'[480, 270]'</default>
-      <summary>Stores floating window size to restore on next launch</summary>
     </key>
     <key name="volume-last" type="d">
       <default>1</default>

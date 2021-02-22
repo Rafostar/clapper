@@ -18,11 +18,7 @@ class ClapperCustomButton extends Gtk.Button
 
         super._init(opts);
 
-        this.floatUnaffected = false;
-        this.wantedVisible = true;
         this.isFullscreen = false;
-        this.isFloating = false;
-
         this.add_css_class('flat');
     }
 
@@ -43,60 +39,24 @@ class ClapperCustomButton extends Gtk.Button
         this.isFullscreen = isFullscreen;
     }
 
-    setFloatingMode(isFloating)
-    {
-        if(this.isFloating === isFloating)
-            return;
-
-        this.isFloating = isFloating;
-
-        if(this.floatUnaffected)
-            return;
-
-        if(isFloating)
-            super.set_visible(false);
-        else
-            super.set_visible(this.wantedVisible);
-    }
-
-    set_visible(isVisible)
-    {
-        this.wantedVisible = isVisible;
-
-        if(this.isFloating && !this.floatUnaffected)
-            super.set_visible(false);
-        else
-            super.set_visible(isVisible);
-    }
-
     vfunc_clicked()
     {
         if(!this.isFullscreen)
             return;
 
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player._setHideControlsTimeout();
-    }
-});
-
-var IconButton = GObject.registerClass(
-class ClapperIconButton extends CustomButton
-{
-    _init(icon)
-    {
-        super._init({
-            icon_name: icon,
-        });
-        this.floatUnaffected = true;
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget.revealControls();
     }
 });
 
 var IconToggleButton = GObject.registerClass(
-class ClapperIconToggleButton extends IconButton
+class ClapperIconToggleButton extends CustomButton
 {
     _init(primaryIcon, secondaryIcon)
     {
-        super._init(primaryIcon);
+        super._init({
+            icon_name: primaryIcon,
+        });
 
         this.primaryIcon = primaryIcon;
         this.secondaryIcon = secondaryIcon;
@@ -114,11 +74,20 @@ class ClapperIconToggleButton extends IconButton
 });
 
 var PopoverButtonBase = GObject.registerClass(
-class ClapperPopoverButtonBase extends CustomButton
+class ClapperPopoverButtonBase extends Gtk.ToggleButton
 {
     _init()
     {
-        super._init();
+        super._init({
+            margin_top: 4,
+            margin_bottom: 4,
+            margin_start: 2,
+            margin_end: 2,
+            can_focus: false,
+        });
+
+        this.isFullscreen = false;
+        this.add_css_class('flat');
 
         this.popover = new Gtk.Popover({
             position: Gtk.PositionType.TOP,
@@ -142,7 +111,16 @@ class ClapperPopoverButtonBase extends CustomButton
         if(this.isFullscreen === isFullscreen)
             return;
 
-        super.setFullscreenMode(isFullscreen);
+        this.margin_top = (isFullscreen) ? 5 : 4;
+        this.margin_start = (isFullscreen) ? 3 : 2;
+        this.margin_end = (isFullscreen) ? 3 : 2;
+        this.can_focus = isFullscreen;
+
+        /* Redraw icon after style class change */
+        if(this.icon_name)
+            this.set_icon_name(this.icon_name);
+
+        this.isFullscreen = isFullscreen;
 
         this.popover.set_offset(0, -this.margin_top);
 
@@ -154,20 +132,33 @@ class ClapperPopoverButtonBase extends CustomButton
         this.popover[action + '_css_class'](cssClass);
     }
 
-    vfunc_clicked()
+    vfunc_toggled()
     {
-        super.vfunc_clicked();
+        if(!this.active)
+            return;
 
-        this.set_state_flags(Gtk.StateFlags.CHECKED, false);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+
+        if(this.isFullscreen) {
+            clapperWidget.revealControls();
+            clapperWidget.isPopoverOpen = true;
+        }
+
         this.popover.popup();
     }
 
     _onClosed()
     {
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player.widget.grab_focus();
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
 
-        this.unset_state_flags(Gtk.StateFlags.CHECKED);
+        clapperWidget.player.widget.grab_focus();
+
+        /* Set again timeout as popover is now closed */
+        if(clapperWidget.isFullscreenMode)
+            clapperWidget.revealControls();
+
+        clapperWidget.isPopoverOpen = false;
+        this.active = false;
     }
 
     _onCloseRequest()

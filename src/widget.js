@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, GstClapper, Gtk } = imports.gi;
+const { Gdk, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const { Controls } = imports.src.controls;
 const Debug = imports.src.debug;
 const Dialogs = imports.src.dialogs;
@@ -20,15 +20,27 @@ class ClapperWidget extends Gtk.Grid
          * separately as a pre-made GTK widget */
         Misc.loadCustomCss();
 
+        this.posX = 0;
+        this.posY = 0;
+
         this.windowSize = JSON.parse(settings.get_string('window-size'));
-        this.floatSize = JSON.parse(settings.get_string('float-size'));
         this.layoutWidth = 0;
 
-        this.fullscreenMode = false;
-        this.floatingMode = false;
+        this.isFullscreenMode = false;
         this.isSeekable = false;
+        this.isMobileMonitor = false;
+
+        this.isDragAllowed = false;
+        this.isSwipePerformed = false;
+
+        this.isCursorInPlayer = false;
+        this.isPopoverOpen = false;
+
+        this._hideControlsTimeout = null;
+        this._updateTimeTimeout = null;
 
         this.needsTracksUpdate = true;
+        this.needsCursorRestore = false;
 
         this.overlay = new Gtk.Overlay();
         this.revealerTop = new Revealers.RevealerTop();
@@ -41,12 +53,17 @@ class ClapperWidget extends Gtk.Grid
         this.controlsBox.add_css_class('controlsbox');
         this.controlsBox.append(this.controls);
 
+        this.controlsRevealer = new Revealers.ControlsRevealer();
+        this.controlsRevealer.set_child(this.controlsBox);
+
         this.attach(this.overlay, 0, 0, 1, 1);
-        this.attach(this.controlsBox, 0, 1, 1, 1);
+        this.attach(this.controlsRevealer, 0, 1, 1, 1);
 
         this.mapSignal = this.connect('map', this._onMap.bind(this));
 
         this.player = new Player();
+        const playerWidget = this.player.widget;
+
         this.controls.elapsedButton.scrolledWindow.set_child(this.player.playlistWidget);
         this.controls.speedAdjustment.bind_property(
             'value', this.player, 'rate', GObject.BindingFlags.BIDIRECTIONAL
@@ -58,39 +75,52 @@ class ClapperWidget extends Gtk.Grid
         /* FIXME: re-enable once ported to new GstPlayer API with messages bus */
         //this.player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
 
-        this.overlay.set_child(this.player.widget);
+        this.overlay.set_child(playerWidget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
 
-        const motionController = new Gtk.EventControllerMotion();
-        motionController.connect('leave', this._onLeave.bind(this));
-        this.add_controller(motionController);
+        const clickGesture = this._getClickGesture();
+        playerWidget.add_controller(clickGesture);
+        const clickGestureTop = this._getClickGesture();
+        this.revealerTop.add_controller(clickGestureTop);
 
-        const topClickGesture = new Gtk.GestureClick();
-        topClickGesture.set_button(0);
-        topClickGesture.connect('pressed', this.player._onWidgetPressed.bind(this.player));
-        this.revealerTop.add_controller(topClickGesture);
+        const dragGesture = this._getDragGesture();
+        playerWidget.add_controller(dragGesture);
+        const dragGestureTop = this._getDragGesture();
+        this.revealerTop.add_controller(dragGestureTop);
 
-        const topMotionController = new Gtk.EventControllerMotion();
-        topMotionController.connect('motion', this.player._onWidgetMotion.bind(this.player));
-        this.revealerTop.add_controller(topMotionController);
+        const swipeGesture = this._getSwipeGesture();
+        playerWidget.add_controller(swipeGesture);
+        const swipeGestureTop = this._getSwipeGesture();
+        this.revealerTop.add_controller(swipeGestureTop);
 
-        const topScrollController = new Gtk.EventControllerScroll();
-        topScrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
-        topScrollController.connect('scroll', this.player._onScroll.bind(this.player));
-        this.revealerTop.add_controller(topScrollController);
+        const scrollController = this._getScrollController();
+        playerWidget.add_controller(scrollController);
+        const scrollControllerTop = this._getScrollController();
+        this.revealerTop.add_controller(scrollControllerTop);
+
+        const motionController = this._getMotionController();
+        playerWidget.add_controller(motionController);
+        const motionControllerTop = this._getMotionController();
+        this.revealerTop.add_controller(motionControllerTop);
+
+        const dropTarget = this._getDropTarget();
+        playerWidget.add_controller(dropTarget);
+        const dropTargetTop = this._getDropTarget();
+        this.revealerTop.add_controller(dropTargetTop);
     }
 
-    revealControls(isReveal)
+    revealControls(isAllowInput)
     {
-        for(let pos of ['Top', 'Bottom'])
-            this[`revealer${pos}`].revealChild(isReveal);
-    }
+        this._checkSetUpdateTimeInterval();
 
-    showControls(isShow)
-    {
-        for(let pos of ['Top', 'Bottom'])
-            this[`revealer${pos}`].showChild(isShow);
+        this.revealerTop.revealChild(true);
+        this.revealerBottom.revealChild(true);
+
+        if(isAllowInput)
+            this.setControlsCanFocus(true);
+
+        this._setHideControlsTimeout();
     }
 
     toggleFullscreen()
@@ -98,98 +128,55 @@ class ClapperWidget extends Gtk.Grid
         const root = this.get_root();
         if(!root) return;
 
-        const un = (this.fullscreenMode) ? 'un' : '';
+        const un = (this.isFullscreenMode) ? 'un' : '';
         root[`${un}fullscreen`]();
     }
 
     setFullscreenMode(isFullscreen)
     {
-        if(this.fullscreenMode === isFullscreen)
+        if(this.isFullscreenMode === isFullscreen)
             return;
 
-        this.fullscreenMode = isFullscreen;
+        debug('changing fullscreen mode');
+        this.isFullscreenMode = isFullscreen;
 
         const root = this.get_root();
         const action = (isFullscreen) ? 'add' : 'remove';
         root[action + '_css_class']('gpufriendlyfs');
 
-        if(!this.floatingMode)
-            this._changeControlsPlacement(isFullscreen);
-        else {
-            this._setWindowFloating(!isFullscreen);
-            this.revealerBottom.setFloatingClass(!isFullscreen);
-            this.controls.setFloatingMode(!isFullscreen);
-            this.controls.unfloatButton.set_visible(!isFullscreen);
-        }
+        if(!this.isMobileMonitor)
+            root[action + '_css_class']('tvmode');
 
+        if(!isFullscreen)
+            this._clearTimeout('updateTime');
+
+        this._changeControlsPlacement(isFullscreen);
         this.controls.setFullscreenMode(isFullscreen);
-        this.showControls(isFullscreen);
-        this.player.widget.grab_focus();
+        this.revealerTop.setFullscreenMode(isFullscreen, this.isMobileMonitor);
+
+        if(this.revealerTop.child_revealed)
+            this._checkSetUpdateTimeInterval();
+
+        this.setControlsCanFocus(false);
 
         if(this.player.playOnFullscreen && isFullscreen) {
             this.player.playOnFullscreen = false;
             this.player.play();
         }
+
+        debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
-    setFloatingMode(isFloating)
+    setControlsCanFocus(isControlsFocus)
     {
-        if(this.floatingMode === isFloating)
-            return;
+        this.revealerBottom.can_focus = isControlsFocus;
+        this.player.widget.can_focus = !isControlsFocus;
 
-        const root = this.get_root();
-        const size = root.get_default_size();
+        const focusWidget = (isControlsFocus)
+            ? this.controls.togglePlayButton
+            : this.player.widget;
 
-        this._saveWindowSize(size);
-
-        if(isFloating) {
-            this.windowSize = size;
-            this.player.widget.set_size_request(192, 108);
-        }
-        else {
-            this.floatSize = size;
-            this.player.widget.set_size_request(-1, -1);
-        }
-
-        this.floatingMode = isFloating;
-
-        this.revealerBottom.setFloatingClass(isFloating);
-        this._changeControlsPlacement(isFloating);
-        this.controls.setFloatingMode(isFloating);
-        this.controls.unfloatButton.set_visible(isFloating);
-        this._setWindowFloating(isFloating);
-
-        const resize = (isFloating)
-            ? this.floatSize
-            : this.windowSize;
-
-        root.set_default_size(resize[0], resize[1]);
-        debug(`resized window: ${resize[0]}x${resize[1]}`);
-
-        this.revealerBottom.showChild(false);
-        this.player.widget.grab_focus();
-    }
-
-    _setWindowFloating(isFloating)
-    {
-        const root = this.get_root();
-        const cssClass = 'floatingwindow';
-
-        if(isFloating === root.has_css_class(cssClass))
-            return;
-
-        const action = (isFloating) ? 'add' : 'remove';
-        root[action + '_css_class'](cssClass);
-    }
-
-    _saveWindowSize(size)
-    {
-        const rootName = (this.floatingMode)
-            ? 'float'
-            : 'window';
-
-        settings.set_string(`${rootName}-size`, JSON.stringify(size));
-        debug(`saved ${rootName} size: ${size[0]}x${size[1]}`);
+        focusWidget.grab_focus();
     }
 
     _changeControlsPlacement(isOnTop)
@@ -212,8 +199,8 @@ class ClapperWidget extends Gtk.Grid
         if(!mediaInfo)
             return GLib.SOURCE_REMOVE;
 
-        /* Set titlebar media title and path */
-        this.updateTitles(mediaInfo);
+        /* Set titlebar media title */
+        this.updateTitle(mediaInfo);
 
         /* Show/hide position scale on LIVE */
         const isLive = mediaInfo.is_live();
@@ -322,26 +309,21 @@ class ClapperWidget extends Gtk.Grid
         return GLib.SOURCE_REMOVE;
     }
 
-    updateTitles(mediaInfo)
+    updateTitle(mediaInfo)
     {
         let title = mediaInfo.get_title();
-        let subtitle = this.player.playlistWidget.getActiveFilename();
 
         if(!title) {
+            const subtitle = this.player.playlistWidget.getActiveFilename();
+
             title = (subtitle.includes('.'))
                 ? subtitle.split('.').slice(0, -1).join('.')
                 : subtitle;
-
-            subtitle = null;
         }
 
-        const root = this.get_root();
-        const headerbar = root.get_titlebar();
-
-        if(headerbar && headerbar.updateHeaderBar)
-            headerbar.updateHeaderBar(title, subtitle);
-
-        this.revealerTop.setMediaTitle(title);
+        this.root.title = title;
+        this.revealerTop.title = title;
+        this.revealerTop.showTitle = true;
     }
 
     updateTime()
@@ -564,15 +546,16 @@ class ClapperWidget extends Gtk.Grid
 
     _onStateNotify(toplevel)
     {
+        const isMaximized = Boolean(
+            toplevel.state & Gdk.ToplevelState.MAXIMIZED
+        );
         const isFullscreen = Boolean(
             toplevel.state & Gdk.ToplevelState.FULLSCREEN
         );
+        const headerBar = this.revealerTop.headerBar;
 
-        if(this.fullscreenMode === isFullscreen)
-            return;
-
+        headerBar.setMaximized(isMaximized);
         this.setFullscreenMode(isFullscreen);
-        debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
     _onLayoutUpdate(surface, width, height)
@@ -582,18 +565,6 @@ class ClapperWidget extends Gtk.Grid
 
         this.layoutWidth = width;
         this.controls._onPlayerResize(width, height);
-    }
-
-    _onLeave(controller)
-    {
-        if(
-            this.fullscreenMode
-            || !this.floatingMode
-            || this.player.isWidgetDragging
-        )
-            return;
-
-        this.revealerBottom.revealChild(false);
     }
 
     _onMap()
@@ -616,11 +587,327 @@ class ClapperWidget extends Gtk.Grid
         const monitorWidth = Math.max(geometry.width, geometry.height);
 
         if(monitorWidth < 1280) {
-            this.controls.isMobileMonitor = true;
+            this.isMobileMonitor = true;
             debug('mobile monitor detected');
         }
 
         surface.connect('notify::state', this._onStateNotify.bind(this));
         surface.connect('layout', this._onLayoutUpdate.bind(this));
+    }
+
+    _clearTimeout(name)
+    {
+        if(!this[`_${name}Timeout`])
+            return;
+
+        GLib.source_remove(this[`_${name}Timeout`]);
+        this[`_${name}Timeout`] = null;
+
+        if(name === 'updateTime')
+            debug('cleared update time interval');
+    }
+
+    _setHideControlsTimeout()
+    {
+        this._clearTimeout('hideControls');
+
+        let time = 2500;
+
+        if(this.isFullscreenMode && !this.isMobileMonitor)
+            time += 1500;
+
+        this._hideControlsTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, () => {
+            this._hideControlsTimeout = null;
+
+            if(this.isCursorInPlayer) {
+                const blankCursor = Gdk.Cursor.new_from_name('none', null);
+
+                this.player.widget.set_cursor(blankCursor);
+                this.revealerTop.set_cursor(blankCursor);
+                this.needsCursorRestore = true;
+            }
+            if(!this.isPopoverOpen) {
+                this._clearTimeout('updateTime');
+
+                this.revealerTop.revealChild(false);
+                this.revealerBottom.revealChild(false);
+            }
+            this.setControlsCanFocus(false);
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _checkSetUpdateTimeInterval()
+    {
+        if(
+            this.isFullscreenMode
+            && !this.isMobileMonitor
+            && !this._updateTimeTimeout
+        ) {
+            this._setUpdateTimeInterval();
+        }
+    }
+
+    _setUpdateTimeInterval()
+    {
+        this._clearTimeout('updateTime');
+
+        const nextUpdate = this.updateTime();
+
+        if(nextUpdate === null)
+            return;
+
+        this._updateTimeTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, nextUpdate, () => {
+            this._updateTimeTimeout = null;
+
+            if(this.isFullscreenMode)
+                this._setUpdateTimeInterval();
+
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _getClickGesture()
+    {
+        const clickGesture = new Gtk.GestureClick();
+        clickGesture.set_button(0);
+        clickGesture.connect('pressed', this._onPressed.bind(this));
+        clickGesture.connect('released', this._onReleased.bind(this));
+
+        return clickGesture;
+    }
+
+    _getDragGesture()
+    {
+        const dragGesture = new Gtk.GestureDrag();
+        dragGesture.connect('drag-update', this._onDragUpdate.bind(this));
+
+        return dragGesture;
+    }
+
+    _getSwipeGesture()
+    {
+        const swipeGesture = new Gtk.GestureSwipe({
+            touch_only: true,
+        });
+        swipeGesture.connect('swipe', this._onSwipe.bind(this));
+        swipeGesture.connect('update', this._onSwipeUpdate.bind(this));
+
+        return swipeGesture;
+    }
+
+    _getScrollController()
+    {
+        const scrollController = new Gtk.EventControllerScroll();
+        scrollController.set_flags(Gtk.EventControllerScrollFlags.BOTH_AXES);
+        scrollController.connect('scroll', this._onScroll.bind(this));
+
+        return scrollController;
+    }
+
+    _getMotionController()
+    {
+        const motionController = new Gtk.EventControllerMotion();
+        motionController.connect('enter', this._onEnter.bind(this));
+        motionController.connect('leave', this._onLeave.bind(this));
+        motionController.connect('motion', this._onMotion.bind(this));
+
+        return motionController;
+    }
+
+    _getDropTarget()
+    {
+        const dropTarget = new Gtk.DropTarget({
+            actions: Gdk.DragAction.COPY,
+        });
+        dropTarget.set_gtypes([GObject.TYPE_STRING]);
+        dropTarget.connect('drop', this._onDataDrop.bind(this));
+
+        return dropTarget;
+    }
+
+    _getIsSwipeOk(velocity, otherVelocity)
+    {
+        if(!velocity)
+            return false;
+
+        const absVel = Math.abs(velocity);
+
+        if(absVel < 20 || Math.abs(otherVelocity) * 1.5 >= absVel)
+            return false;
+
+        return this.isFullscreenMode;
+    }
+
+    _onPressed(gesture, nPress, x, y)
+    {
+        const button = gesture.get_current_button();
+        const isDouble = (nPress % 2 == 0);
+        this.isDragAllowed = !isDouble;
+        this.isSwipePerformed = false;
+
+        switch(button) {
+            case Gdk.BUTTON_PRIMARY:
+                if(isDouble)
+                    this.toggleFullscreen();
+                break;
+            case Gdk.BUTTON_SECONDARY:
+                this.player.toggle_play();
+                break;
+            default:
+                break;
+        }
+    }
+
+    _onReleased(gesture, nPress, x, y)
+    {
+        /* Reveal if touch was not a swipe or was already revealed */
+        if(!this.isSwipePerformed || this.revealerBottom.child_revealed) {
+            const { source } = gesture.get_device();
+
+            switch(source) {
+                case Gdk.InputSource.PEN:
+                case Gdk.InputSource.TOUCHSCREEN:
+                    this.revealControls();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    _onDragUpdate(gesture, offsetX, offsetY)
+    {
+        if(!this.isDragAllowed || this.isFullscreenMode)
+            return;
+
+        const { gtk_double_click_distance } = this.get_settings();
+
+        if (
+            Math.abs(offsetX) > gtk_double_click_distance
+            || Math.abs(offsetY) > gtk_double_click_distance
+        ) {
+            const [isActive, startX, startY] = gesture.get_start_point();
+            if(!isActive) return;
+
+            const playerWidget = this.player.widget;
+
+            const native = playerWidget.get_native();
+            if(!native) return;
+
+            let [isShared, winX, winY] = playerWidget.translate_coordinates(
+                native, startX, startY
+            );
+            if(!isShared) return;
+
+            const [nativeX, nativeY] = native.get_surface_transform();
+            winX += nativeX;
+            winY += nativeY;
+
+            native.get_surface().begin_move(
+                gesture.get_device(),
+                gesture.get_current_button(),
+                winX,
+                winY,
+                gesture.get_current_event_time()
+            );
+
+            gesture.reset();
+        }
+    }
+
+    _onSwipe(gesture, velocityX, velocityY)
+    {
+        if(!this._getIsSwipeOk(velocityX, velocityY))
+            return;
+
+        this._onScroll(gesture, -velocityX, 0);
+        this.isSwipePerformed = true;
+    }
+
+    _onSwipeUpdate(gesture, sequence)
+    {
+        const [isCalc, velocityX, velocityY] = gesture.get_velocity();
+        if(!isCalc) return;
+
+        if(!this._getIsSwipeOk(velocityY, velocityX))
+            return;
+
+        const isIncrease = velocityY < 0;
+
+        this.player.adjust_volume(isIncrease, 0.01);
+        this.isSwipePerformed = true;
+    }
+
+    _onScroll(controller, dx, dy)
+    {
+        const isHorizontal = (Math.abs(dx) >= Math.abs(dy));
+        const isIncrease = (isHorizontal) ? dx < 0 : dy < 0;
+
+        if(isHorizontal) {
+            this.player.adjust_position(isIncrease);
+            const value = Math.round(this.controls.positionScale.get_value());
+            this.player.seek_seconds(value);
+        }
+        else
+            this.player.adjust_volume(isIncrease);
+
+        return true;
+    }
+
+    _onEnter(controller, x, y)
+    {
+        this.isCursorInPlayer = true;
+    }
+
+    _onLeave(controller)
+    {
+        if(this.isFullscreenMode)
+            return;
+
+        this.isCursorInPlayer = false;
+    }
+
+    _onMotion(controller, posX, posY)
+    {
+        this.isCursorInPlayer = true;
+
+        /* GTK4 sometimes generates motions with same coords */
+        if(this.posX === posX && this.posY === posY)
+            return;
+
+        /* Do not show cursor on small movements */
+        if(
+            Math.abs(this.posX - posX) >= 0.5
+            || Math.abs(this.posY - posY) >= 0.5
+        ) {
+            if(this.needsCursorRestore) {
+                const defaultCursor = Gdk.Cursor.new_from_name('default', null);
+
+                this.player.widget.set_cursor(defaultCursor);
+                this.revealerTop.set_cursor(defaultCursor);
+                this.needsCursorRestore = false;
+            }
+            this.revealControls();
+        }
+
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    _onDataDrop(dropTarget, value, x, y)
+    {
+        const playlist = value.split(/\r?\n/).filter(uri => {
+            return Gst.uri_is_valid(uri);
+        });
+
+        if(!playlist.length)
+            return false;
+
+        this.player.set_playlist(playlist);
+        this.root.application.activate();
+
+        return true;
     }
 });

@@ -28,8 +28,6 @@ class ClapperControls extends Gtk.Box
         this.currentPosition = 0;
         this.currentDuration = 0;
         this.isPositionDragging = false;
-
-        this.isMobileMonitor = false;
         this.isMobile = false;
 
         this.showHours = false;
@@ -49,7 +47,6 @@ class ClapperControls extends Gtk.Box
             'go-previous-symbolic',
             'go-next-symbolic'
         );
-        revealTracksButton.floatUnaffected = false;
         revealTracksButton.add_css_class('narrowbutton');
         this.buttonsArr.push(revealTracksButton);
         const tracksRevealer = new Revealers.ButtonsRevealer(
@@ -92,12 +89,6 @@ class ClapperControls extends Gtk.Box
         this.unfullscreenButton.connect('clicked', this._onUnfullscreenClicked.bind(this));
         this.unfullscreenButton.set_visible(false);
 
-        this.unfloatButton = this.addButton(
-            'preferences-desktop-remote-desktop-symbolic'
-        );
-        this.unfloatButton.connect('clicked', this._onUnfloatClicked.bind(this));
-        this.unfloatButton.set_visible(false);
-
         const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onControlsKeyPressed.bind(this));
         keyController.connect('key-released', this._onControlsKeyReleased.bind(this));
@@ -115,16 +106,8 @@ class ClapperControls extends Gtk.Box
         for(let button of this.buttonsArr)
             button.setFullscreenMode(isFullscreen);
 
-        this.unfullscreenButton.set_visible(isFullscreen);
-        this.set_can_focus(isFullscreen);
-    }
-
-    setFloatingMode(isFloating)
-    {
-        this.isMobile = null;
-
-        for(let button of this.buttonsArr)
-            button.setFloatingMode(isFloating);
+        this.unfullscreenButton.visible = isFullscreen;
+        this.can_focus = isFullscreen;
     }
 
     setLiveMode(isLive, isSeekable)
@@ -149,7 +132,7 @@ class ClapperControls extends Gtk.Box
     {
         const button = (buttonIcon instanceof Gtk.Button)
             ? buttonIcon
-            : new Buttons.IconButton(buttonIcon);
+            : new Buttons.CustomButton({ icon_name: buttonIcon });
 
         if(!revealer)
             this.append(button);
@@ -495,13 +478,13 @@ class ClapperControls extends Gtk.Box
         this.disconnect(this.realizeSignal);
         this.realizeSignal = null;
 
-        const { player } = this.get_ancestor(Gtk.Grid);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
         const scrollController = new Gtk.EventControllerScroll();
         scrollController.set_flags(
             Gtk.EventControllerScrollFlags.VERTICAL
             | Gtk.EventControllerScrollFlags.DISCRETE
         );
-        scrollController.connect('scroll', player._onScroll.bind(player));
+        scrollController.connect('scroll', clapperWidget._onScroll.bind(clapperWidget));
         this.volumeButton.add_controller(scrollController);
 
         const initialVolume = (settings.get_string('volume-initial') === 'custom')
@@ -528,12 +511,6 @@ class ClapperControls extends Gtk.Box
     {
         const root = button.get_root();
         root.unfullscreen();
-    }
-
-    _onUnfloatClicked(button)
-    {
-        const clapperWidget = this.get_ancestor(Gtk.Grid);
-        clapperWidget.setFloatingMode(false);
     }
 
     _onCheckButtonToggled(checkButton)
@@ -564,8 +541,8 @@ class ClapperControls extends Gtk.Box
 
     _onPositionScaleScroll(controller, dx, dy)
     {
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player._onScroll(controller, dx || dy, 0);
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget._onScroll(controller, dx || dy, 0);
     }
 
     _onPositionScaleValueChanged(scale)
@@ -616,32 +593,40 @@ class ClapperControls extends Gtk.Box
     {
         const isPositionDragging = scale.has_css_class('dragging');
 
-        if((this.isPositionDragging = isPositionDragging))
+        if(this.isPositionDragging === isPositionDragging)
             return;
-
-        const isChapterSeek = this.chapterPopover.visible;
-
-        if(!isPositionDragging)
-            this._setChapterVisible(false);
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
+        if(clapperWidget.isFullscreenMode) {
+            clapperWidget.revealControls();
+
+            if(isPositionDragging)
+                clapperWidget._clearTimeout('hideControls');
+        }
+
+        if((this.isPositionDragging = isPositionDragging))
+            return;
+
         const scaleValue = scale.get_value();
+        const isChapterSeek = this.chapterPopover.visible;
 
         if(!isChapterSeek) {
             const positionSeconds = Math.round(scaleValue);
             clapperWidget.player.seek_seconds(positionSeconds);
         }
-        else
+        else {
             clapperWidget.player.seek_chapter(scaleValue);
+            this._setChapterVisible(false);
+        }
     }
 
     /* Only happens when navigating through controls panel */
     _onControlsKeyPressed(controller, keyval, keycode, state)
     {
-        const { player } = this.get_ancestor(Gtk.Grid);
-        player._setHideControlsTimeout();
+        const clapperWidget = this.get_ancestor(Gtk.Grid);
+        clapperWidget._setHideControlsTimeout();
     }
 
     _onControlsKeyReleased(controller, keyval, keycode, state)

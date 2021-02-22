@@ -95,6 +95,12 @@ class ClapperAppBase extends Gtk.Application
         const theme = gtkSettings.gtk_theme_name;
         debug(`user selected theme: ${theme}`);
 
+        if(
+            theme.startsWith('Adwaita')
+            && !this.active_window.has_css_class('adwrounded')
+        )
+            this.active_window.add_css_class('adwrounded');
+
         if(!theme.endsWith('-dark'))
             return;
 
