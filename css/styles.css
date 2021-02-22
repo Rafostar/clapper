@@ -58,6 +58,9 @@ radio {
 .adwrounded.tiled-bottom {
   border-radius: 0px;
 }
+.roundedcorners {
+  border-radius: 8px;
+}
 
 .videowidget {
   min-width: 336px;
@@ -105,14 +108,10 @@ radio {
   font-size: 23px;
   text-shadow: none;
 }
-.tvrevealerboxtop {
+
+/* Top Revealer */
+.tvmode .revealertopgrid {
   font-family: 'Cantarell', sans-serif;
-  border-radius: 8px;
-  border-bottom-right-radius: 0px;
-}
-.tvrevealerboxbottom {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
 }
 .tvmode .tvtitle {
   font-size: 28px;
@@ -120,19 +119,20 @@ radio {
   text-shadow: none;
 }
 .tvtime {
+  margin-top: -2px;
+  margin-bottom: -2px;
+  min-height: 4px;
   font-size: 38px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 .tvendtime {
   margin-top: -4px;
-  min-height: 4px;
+  margin-bottom: 2px;
+  min-height: 6px;
   font-size: 24px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-.revealerbottombox {
-  border-radius: 8px;
 }
 
 /* Button Inside Popover */

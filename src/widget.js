@@ -152,12 +152,7 @@ class ClapperWidget extends Gtk.Grid
 
         this._changeControlsPlacement(isFullscreen);
         this.controls.setFullscreenMode(isFullscreen);
-
-        const headerbar = this.revealerTop.headerBar;
-        headerbar.visible = (!isFullscreen || this.isMobileMonitor);
-        headerbar.extraButtonsBox.visible = !isFullscreen;
-
-        this.revealerTop.revealerGrid.visible = !headerbar.visible;
+        this.revealerTop.setFullscreenMode(isFullscreen, this.isMobileMonitor);
 
         if(this.revealerTop.child_revealed)
             this._checkSetUpdateTimeInterval();
@@ -328,6 +323,7 @@ class ClapperWidget extends Gtk.Grid
 
         this.root.title = title;
         this.revealerTop.title = title;
+        this.revealerTop.showTitle = true;
     }
 
     updateTime()
