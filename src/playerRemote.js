@@ -1,6 +1,13 @@
 const { GObject } = imports.gi;
 const { WebClient } = imports.src.webClient;
 
+var ClapperState = {
+    STOPPED: 0,
+    BUFFERING: 1,
+    PAUSED: 2,
+    PLAYING: 3,
+};
+
 var PlayerRemote = GObject.registerClass(
 class ClapperPlayerRemote extends GObject.Object
 {

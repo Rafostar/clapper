@@ -1,7 +1,7 @@
-const { GObject, Gtk, GstClapper } = imports.gi;
+const { GObject, Gtk } = imports.gi;
 const Buttons = imports.src.buttons;
 const Misc = imports.src.misc;
-const { PlayerRemote } = imports.src.playerRemote;
+const { PlayerRemote, ClapperState } = imports.src.playerRemote;
 
 var WidgetRemote = GObject.registerClass(
 class ClapperWidgetRemote extends Gtk.Grid
@@ -50,11 +50,11 @@ class ClapperWidgetRemote extends Gtk.Grid
         switch(action) {
             case 'state_changed':
                 switch(value) {
-                    case GstClapper.ClapperState.STOPPED:
-                    case GstClapper.ClapperState.PAUSED:
+                    case ClapperState.STOPPED:
+                    case ClapperState.PAUSED:
                         this.togglePlayButton.setPrimaryIcon();
                         break;
-                    case GstClapper.ClapperState.PLAYING:
+                    case ClapperState.PLAYING:
                         this.togglePlayButton.setSecondaryIcon();
                         break;
                     default:

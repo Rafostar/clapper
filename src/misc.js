@@ -1,4 +1,4 @@
-const { Gio, GstAudio, GstClapper, Gdk, Gtk } = imports.gi;
+const { Gio, GstAudio, Gdk, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 
 const { debug } = Debug;
@@ -48,11 +48,11 @@ function loadCustomCss()
     );
 }
 
-function inhibitForState(state, window)
+function setAppInhibit(isInhibit, window)
 {
     let isInhibited = false;
 
-    if(state === GstClapper.ClapperState.PLAYING) {
+    if(isInhibit) {
         if(inhibitCookie)
             return;
 

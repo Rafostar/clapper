@@ -1,4 +1,4 @@
-const { Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
+const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
@@ -320,7 +320,8 @@ class ClapperPlayer extends PlayerBase
 
                 return;
             }
-            Misc.inhibitForState(state, root);
+            const isInhibit = (state === GstClapper.ClapperState.PLAYING);
+            Misc.setAppInhibit(isInhibit, root);
         }
 
         const clapperWidget = player.widget.get_ancestor(Gtk.Grid);
