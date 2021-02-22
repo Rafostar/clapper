@@ -137,14 +137,21 @@ class ClapperHeaderBarBase extends Gtk.Box
         const layoutArr = modLayout.split(',');
 
         let lastWidget = null;
+
         let showMinimize = false;
         let showMaximize = false;
         let showClose = false;
+
+        let menuAdded = false;
         let spacerAdded = false;
 
         debug(`headerbar layout: ${modLayout}`);
 
         for(let name of layoutArr) {
+            /* Menu might be named "appmenu" */
+            if(!menuAdded && name === 'appmenu')
+                name = 'menu';
+
             const widget = this[`${name}Widget`];
             if(!widget) continue;
 
@@ -168,6 +175,7 @@ class ClapperHeaderBarBase extends Gtk.Box
                     break;
                 case 'menu':
                     this.setMenuOnLeft(!spacerAdded);
+                    menuAdded = true;
                     break;
                 default:
                     break;
