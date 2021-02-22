@@ -610,7 +610,13 @@ class ClapperWidget extends Gtk.Grid
     _setHideControlsTimeout()
     {
         this._clearTimeout('hideControls');
-        this._hideControlsTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 2500, () => {
+
+        let time = 2500;
+
+        if(this.isFullscreenMode && !this.isMobileMonitor)
+            time += 1500;
+
+        this._hideControlsTimeout = GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, () => {
             this._hideControlsTimeout = null;
 
             if(this.isCursorInPlayer) {
