@@ -58,23 +58,26 @@ class ClapperRevealerTop extends CustomRevealer
             ellipsize: Pango.EllipsizeMode.END,
             halign: Gtk.Align.START,
             valign: Gtk.Align.CENTER,
-            hexpand: true,
             margin_start: 10,
+            margin_end: 10,
+            visible: false,
         });
         this.mediaTitle.add_css_class('tvtitle');
 
         this.currentTime = new Gtk.Label({
             halign: Gtk.Align.END,
             valign: Gtk.Align.CENTER,
-            margin_start: 24,
+            margin_start: 10,
             margin_end: 10,
         });
         this.currentTime.add_css_class('tvtime');
 
         this.endTime = new Gtk.Label({
+            halign: Gtk.Align.END,
+            valign: Gtk.Align.START,
             margin_start: 10,
             margin_end: 10,
-            margin_bottom: 2,
+            visible: false,
         });
         this.endTime.add_css_class('tvendtime');
 
@@ -85,30 +88,38 @@ class ClapperRevealerTop extends CustomRevealer
         revealerBox.append(this.headerBar);
 
         this.revealerGrid = new Gtk.Grid({
-            visible: false,
+            column_spacing: 4,
             margin_top: 8,
             margin_start: 8,
             margin_end: 8,
+            visible: false,
         });
+        this.revealerGrid.add_css_class('revealertopgrid');
 
-        const topBox = new Gtk.Box({
+        const topLeftBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
         });
-        topBox.add_css_class('osd');
-        topBox.add_css_class('tvrevealerboxtop');
-        topBox.append(this.mediaTitle);
-        topBox.append(this.currentTime);
+        topLeftBox.add_css_class('osd');
+        topLeftBox.add_css_class('roundedcorners');
+        topLeftBox.append(this.mediaTitle);
 
-        const bottomBox = new Gtk.Box({
+        const topSpacerBox = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
+            hexpand: true,
+        });
+
+        const topRightBox = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
             halign: Gtk.Align.END,
         });
-        bottomBox.add_css_class('osd');
-        bottomBox.add_css_class('tvrevealerboxbottom');
-        bottomBox.append(this.endTime);
+        topRightBox.add_css_class('osd');
+        topRightBox.add_css_class('roundedcorners');
+        topRightBox.append(this.currentTime);
+        topRightBox.append(this.endTime);
 
-        this.revealerGrid.attach(topBox, 0, 0, 2, 1);
-        this.revealerGrid.attach(bottomBox, 1, 1, 1, 1);
+        this.revealerGrid.attach(topLeftBox, 0, 0, 1, 1);
+        this.revealerGrid.attach(topSpacerBox, 1, 0, 1, 1);
+        this.revealerGrid.attach(topRightBox, 2, 0, 1, 2);
         revealerBox.append(this.revealerGrid);
 
         this.set_child(revealerBox);
@@ -122,6 +133,16 @@ class ClapperRevealerTop extends CustomRevealer
     get title()
     {
         return this.mediaTitle.label;
+    }
+
+    set showTitle(isShow)
+    {
+        this.mediaTitle.visible = isShow;
+    }
+
+    get showTitle()
+    {
+        return this.mediaTitle.visible;
     }
 
     setTimes(currTime, endTime)
@@ -139,6 +160,20 @@ class ClapperRevealerTop extends CustomRevealer
         debug(`updated current time: ${now}, ends at: ${end}`);
 
         return nextUpdate;
+    }
+
+    setFullscreenMode(isFullscreen, isMobileMonitor)
+    {
+        const isTvMode = (isFullscreen && !isMobileMonitor);
+
+        this.headerBar.visible = !isTvMode;
+        this.revealerGrid.visible = isTvMode;
+
+        this.headerBar.extraButtonsBox.visible = !isFullscreen;
+
+        this.transition_type = (isTvMode)
+            ? Gtk.RevealerTransitionType.SLIDE_DOWN
+            : Gtk.RevealerTransitionType.CROSSFADE;
     }
 });
 
@@ -160,7 +195,7 @@ class ClapperRevealerBottom extends CustomRevealer
             margin_bottom: 8,
         });
         this.revealerBox.add_css_class('osd');
-        this.revealerBox.add_css_class('revealerbottombox');
+        this.revealerBox.add_css_class('roundedcorners');
 
         this.set_child(this.revealerBox);
 
