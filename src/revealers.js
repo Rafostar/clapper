@@ -48,6 +48,7 @@ class ClapperRevealerTop extends CustomRevealer
             valign: Gtk.Align.START,
         });
         this.revealerName = 'top';
+        this._requestedTransition = this.transition_type;
 
         const initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
@@ -123,6 +124,8 @@ class ClapperRevealerTop extends CustomRevealer
         revealerBox.append(this.revealerGrid);
 
         this.set_child(revealerBox);
+
+        this.connect('notify::child-revealed', this._onTopRevealed.bind(this));
     }
 
     set title(text)
@@ -171,9 +174,20 @@ class ClapperRevealerTop extends CustomRevealer
 
         this.headerBar.extraButtonsBox.visible = !isFullscreen;
 
-        this.transition_type = (isTvMode)
+        this._requestedTransition = (isTvMode)
             ? Gtk.RevealerTransitionType.SLIDE_DOWN
             : Gtk.RevealerTransitionType.CROSSFADE;
+
+        /* Changing transition in middle can have dire consequences,
+           so change only when not in transition */
+        if(this.reveal_child === this.child_revealed)
+            this.transition_type = this._requestedTransition;
+    }
+
+    _onTopRevealed()
+    {
+        if(this.transition_type !== this._requestedTransition)
+            this.transition_type = this._requestedTransition;
     }
 });
 
