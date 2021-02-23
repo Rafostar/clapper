@@ -10,12 +10,14 @@ class ClapperAppRemote extends AppBase
     {
         super.vfunc_startup();
 
+        const window = this.active_window;
+
         const clapperWidget = new WidgetRemote();
-        this.active_window.set_child(clapperWidget);
+        window.set_child(clapperWidget);
 
         const headerBar = new HeaderBarRemote();
-        this.active_window.set_titlebar(headerBar);
+        window.set_titlebar(headerBar);
 
-        this.active_window.maximize();
+        window.maximize();
     }
 });
