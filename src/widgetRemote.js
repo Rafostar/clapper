@@ -62,8 +62,7 @@ class ClapperWidgetRemote extends Gtk.Grid
                 }
                 break;
             case 'close':
-                const root = this.get_root();
-                root.run_dispose();
+                this.root.run_dispose();
                 break;
             default:
                 break;

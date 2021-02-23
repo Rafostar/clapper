@@ -17,6 +17,8 @@ class ClapperHeaderBarBase extends Gtk.Box
             margin_start: 6,
             margin_end: 6,
         });
+        this.add_css_class('osd');
+        this.add_css_class('osdheaderbar');
 
         this.isMaximized = false;
         this.isMenuOnLeft = true;
@@ -197,12 +199,11 @@ class ClapperHeaderBarBase extends Gtk.Box
         });
         button.add_css_class('circular');
 
-        const action = (name === 'maximize')
-            ? 'window.toggle-maximized'
-            : 'window.' + name;
+        if(name === 'maximize')
+            name = 'toggle-maximized';
 
         button.connect('clicked',
-            this._onWindowButtonActivate.bind(this, action)
+            this._onWindowButtonActivate.bind(this, name)
         );
 
         return button;

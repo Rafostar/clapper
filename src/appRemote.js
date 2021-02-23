@@ -1,6 +1,6 @@
 const { GObject } = imports.gi;
 const { AppBase } = imports.src.appBase;
-const { HeaderBarBase } = imports.src.headerbarBase;
+const { HeaderBarRemote } = imports.src.headerbarRemote;
 const { WidgetRemote } = imports.src.widgetRemote;
 
 var AppRemote = GObject.registerClass(
@@ -13,7 +13,7 @@ class ClapperAppRemote extends AppBase
         const clapperWidget = new WidgetRemote();
         this.active_window.set_child(clapperWidget);
 
-        const headerBar = new HeaderBarBase(this.active_window);
+        const headerBar = new HeaderBarRemote();
         this.active_window.set_titlebar(headerBar);
 
         this.active_window.maximize();

@@ -1,19 +1,12 @@
-const { GObject, Gtk } = imports.gi;
+const { GObject } = imports.gi;
 const { HeaderBarBase } = imports.src.headerbarBase;
 
 var HeaderBar = GObject.registerClass(
 class ClapperHeaderBar extends HeaderBarBase
 {
-    _init()
-    {
-        super._init();
-        this.add_css_class('osd');
-        this.add_css_class('osdheaderbar');
-    }
-
     _onWindowButtonActivate(action)
     {
-        this.activate_action(action, null);
+        this.activate_action(`window.${action}`, null);
     }
 
     _onFloatButtonClicked()

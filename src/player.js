@@ -252,8 +252,23 @@ class ClapperPlayer extends PlayerBase
             case 'set_playlist':
                 this[action](value);
                 break;
+            case 'toggle_maximized':
+                action = 'toggle-maximized';
+            case 'minimize':
+            case 'close':
+                this.widget.activate_action(`window.${action}`, null);
+                break;
             default:
-                super.receiveWs(action, value);
+                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+
+                switch(action) {
+                    case 'toggle_fullscreen':
+                        clapperWidget.toggleFullscreen();
+                        break;
+                    default:
+                        super.receiveWs(action, value);
+                        break;
+                }
                 break;
         }
     }
