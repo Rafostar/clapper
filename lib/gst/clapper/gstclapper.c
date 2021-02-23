@@ -331,7 +331,7 @@ gst_clapper_class_init (GstClapperClass * klass)
 
   param_specs[PROP_VOLUME] =
       g_param_spec_double ("volume", "Volume", "Volume",
-      0, 10.0, DEFAULT_VOLUME, G_PARAM_READWRITE |
+      0, 3.375, DEFAULT_VOLUME, G_PARAM_READWRITE |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_MUTE] =
