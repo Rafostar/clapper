@@ -93,13 +93,14 @@ class ClapperAppBase extends Gtk.Application
     _onThemeChanged(gtkSettings)
     {
         const theme = gtkSettings.gtk_theme_name;
+        const window = this.active_window;
+
         debug(`user selected theme: ${theme}`);
 
-        if(
-            theme.startsWith('Adwaita')
-            && !this.active_window.has_css_class('adwrounded')
-        )
-            this.active_window.add_css_class('adwrounded');
+        /* FIXME: AFAIK there is no way to detect theme rounded corners.
+           Having 2/4 corners rounded in floating mode is not good. */
+        if(!window.has_css_class('adwrounded'))
+            window.add_css_class('adwrounded');
 
         if(!theme.endsWith('-dark'))
             return;
