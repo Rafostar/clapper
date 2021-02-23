@@ -63,8 +63,8 @@ radio {
 }
 
 .videowidget {
-  min-width: 336px;
-  min-height: 189px;
+  min-width: 320px;
+  min-height: 180px;
 }
 
 .tvmode popover box {
