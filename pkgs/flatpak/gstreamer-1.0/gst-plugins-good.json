@@ -16,8 +16,8 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-good.git",
-            "tag": "1.18.1",
-            "commit": "7c44cdb0e00dd1c9932d8e5194b09fcf4e1e6fc1"
+            "tag": "1.18.3",
+            "commit": "e816c6cd73c9e0676828c9e227a049ebad3d019f"
         },
         {
             "type": "patch",

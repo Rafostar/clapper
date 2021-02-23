@@ -10,8 +10,8 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi.git",
-            "tag": "1.18.1",
-            "commit": "f9e925af3645439f7b7a4580700fcd6ce17fc1c9"
+            "tag": "1.18.3",
+            "commit": "5890079ecbf2f9c76a5ded398cda8fd2ac822d21"
         },
         {
             "type": "patch",

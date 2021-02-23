@@ -17,8 +17,8 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gstreamer.git",
-            "tag": "1.18.1",
-            "commit": "29a8099d1d4bd8717c13923e710e92e67e335353"
+            "tag": "1.18.3",
+            "commit": "a42fe476d3ee5576921f67a331464065ec33b9a4"
         }
     ]
 }
