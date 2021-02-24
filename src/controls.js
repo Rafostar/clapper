@@ -473,7 +473,7 @@ class ClapperControls extends Gtk.Box
             ? settings.get_int('volume-value') / 100
             : settings.get_double('volume-last');
 
-        this.volumeScale.set_value(initialVolume);
+        clapperWidget.player.volume = initialVolume;
     }
 
     _onPlayerResize(width, height)
