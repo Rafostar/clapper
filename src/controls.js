@@ -28,6 +28,7 @@ class ClapperControls extends Gtk.Box
         this.currentDuration = 0;
         this.isPositionDragging = false;
         this.isMobile = false;
+        this.isFullscreen = false;
 
         this.showHours = false;
         this.durationFormatted = '00:00';
@@ -107,6 +108,8 @@ class ClapperControls extends Gtk.Box
 
         this.unfullscreenButton.visible = isFullscreen;
         this.can_focus = isFullscreen;
+
+        this.isFullscreen = isFullscreen;
     }
 
     setLiveMode(isLive, isSeekable)
@@ -583,13 +586,22 @@ class ClapperControls extends Gtk.Box
     {
         const isPositionDragging = scale.has_css_class('dragging');
 
+        /* When scale enters "fine-tune", slider changes position a little.
+         * We do not want that to cause seek time change on TV mode */
+        if(
+            this.isFullscreen
+            && !this.isMobile
+            && scale.has_css_class('fine-tune')
+        )
+            scale.remove_css_class('fine-tune');
+
         if(this.isPositionDragging === isPositionDragging)
             return;
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        if(clapperWidget.isFullscreenMode) {
+        if(this.isFullscreen) {
             clapperWidget.revealControls();
 
             if(isPositionDragging)
