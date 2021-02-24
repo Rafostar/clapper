@@ -530,7 +530,7 @@ class ClapperWidget extends Gtk.Grid
 
     _onPlayerVolumeChanged(player)
     {
-        const volume = player.get_volume();
+        const volume = player.volume;
 
         /* FIXME: This check should not be needed, GstPlayer should not
          * emit 'volume-changed' with the same values, but it does. */
@@ -540,8 +540,7 @@ class ClapperWidget extends Gtk.Grid
         /* Once above is fixed in GstPlayer, remove this var too */
         this.controls.currentVolume = volume;
 
-        const cubicVolume = Misc.getCubicValue(volume);
-        this.controls._updateVolumeButtonIcon(cubicVolume);
+        this.controls._updateVolumeButtonIcon(volume);
     }
 
     _onStateNotify(toplevel)

@@ -24,8 +24,6 @@ class ClapperPlayer extends PlayerBase
 
         this.keyPressCount = 0;
 
-        this._maxVolume = Misc.getLinearValue(Misc.maxVolume);
-
         const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onWidgetKeyPressed.bind(this));
         keyController.connect('key-released', this._onWidgetKeyReleased.bind(this));
@@ -180,17 +178,6 @@ class ClapperPlayer extends PlayerBase
         this.seek_seconds(seconds);
     }
 
-    set_volume(volume)
-    {
-        if(volume < 0)
-            volume = 0;
-        else if(volume > this._maxVolume)
-            volume = this._maxVolume;
-
-        super.set_volume(volume);
-        debug(`set player volume: ${volume}`);
-    }
-
     adjust_position(isIncrease)
     {
         this.seek_done = false;
@@ -316,7 +303,9 @@ class ClapperPlayer extends PlayerBase
             }
             settings.set_string('resume-database', JSON.stringify([resumeInfo]));
         }
-        settings.set_double('volume-last', this.volume);
+        const volume = this.volume;
+        debug(`saving last volume: ${volume}`);
+        settings.set_double('volume-last', volume);
 
         clapperWidget.controls._onCloseRequest();
     }

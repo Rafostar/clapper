@@ -95,21 +95,3 @@ function getFormattedTime(time, showHours)
     const parsed = (hours) ? `${hours}:` : '';
     return parsed + `${minutes}:${seconds}`;
 }
-
-function getCubicValue(linearVal)
-{
-    return GstAudio.StreamVolume.convert_volume(
-        GstAudio.StreamVolumeFormat.LINEAR,
-        GstAudio.StreamVolumeFormat.CUBIC,
-        linearVal
-    );
-}
-
-function getLinearValue(cubicVal)
-{
-    return GstAudio.StreamVolume.convert_volume(
-        GstAudio.StreamVolumeFormat.CUBIC,
-        GstAudio.StreamVolumeFormat.LINEAR,
-        cubicVal
-    );
-}
