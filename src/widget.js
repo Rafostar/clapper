@@ -563,6 +563,10 @@ class ClapperWidget extends Gtk.Grid
             return;
 
         this.layoutWidth = width;
+
+        if(this.isFullscreenMode)
+            this.revealerBottom.setLayoutMargins(width);
+
         this.controls._onPlayerResize(width, height);
     }
 

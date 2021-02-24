@@ -228,6 +228,19 @@ class ClapperRevealerBottom extends CustomRevealer
         this.revealerBox.remove(widget);
     }
 
+    setLayoutMargins(layoutWidth)
+    {
+        const maxWidth = 1720;
+
+        if(layoutWidth <= maxWidth)
+            return;
+
+        const margin = (layoutWidth - maxWidth) / 2;
+
+        this.margin_start = margin;
+        this.margin_end = margin;
+    }
+
     _onMotion(controller, x, y)
     {
         const clapperWidget = this.root.child;
