@@ -65,15 +65,15 @@ class ClapperWidget extends Gtk.Grid
         const playerWidget = this.player.widget;
 
         this.controls.elapsedButton.scrolledWindow.set_child(this.player.playlistWidget);
+
         this.controls.speedAdjustment.bind_property(
             'value', this.player, 'rate', GObject.BindingFlags.BIDIRECTIONAL
         );
-
+        this.controls.volumeAdjustment.bind_property(
+            'value', this.player, 'volume', GObject.BindingFlags.BIDIRECTIONAL
+        );
         this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
-
-        /* FIXME: re-enable once ported to new GstPlayer API with messages bus */
-        //this.player.connect('volume-changed', this._onPlayerVolumeChanged.bind(this));
 
         this.overlay.set_child(playerWidget);
         this.overlay.add_overlay(this.revealerTop);
@@ -526,21 +526,6 @@ class ClapperWidget extends Gtk.Grid
             return;
 
         this.controls.positionScale.set_value(positionSeconds);
-    }
-
-    _onPlayerVolumeChanged(player)
-    {
-        const volume = player.volume;
-
-        /* FIXME: This check should not be needed, GstPlayer should not
-         * emit 'volume-changed' with the same values, but it does. */
-        if(volume === this.controls.currentVolume)
-            return;
-
-        /* Once above is fixed in GstPlayer, remove this var too */
-        this.controls.currentVolume = volume;
-
-        this.controls._updateVolumeButtonIcon(volume);
     }
 
     _onStateNotify(toplevel)

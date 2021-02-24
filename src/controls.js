@@ -24,7 +24,6 @@ class ClapperControls extends Gtk.Box
             can_focus: false,
         });
 
-        this.currentVolume = 0;
         this.currentPosition = 0;
         this.currentDuration = 0;
         this.isPositionDragging = false;
@@ -409,26 +408,6 @@ class ClapperControls extends Gtk.Box
         this.volumeButton.popoverBox.append(this.volumeScale);
     }
 
-    _updateVolumeButtonIcon(volume)
-    {
-        const icon = (volume <= 0)
-            ? 'muted'
-            : (volume <= 0.3)
-            ? 'low'
-            : (volume <= 0.7)
-            ? 'medium'
-            : (volume <= 1)
-            ? 'high'
-            : 'overamplified';
-
-        const iconName = `audio-volume-${icon}-symbolic`;
-        if(this.volumeButton.icon_name === iconName)
-            return;
-
-        this.volumeButton.set_icon_name(iconName);
-        debug(`set volume icon: ${icon}`);
-    }
-
     _setChapterVisible(isVisible)
     {
         const type = (isVisible) ? 'Show' : 'Hide';
@@ -567,9 +546,6 @@ class ClapperControls extends Gtk.Box
     _onVolumeScaleValueChanged(scale)
     {
         const volume = scale.get_value();
-        const { player } = this.get_ancestor(Gtk.Grid);
-
-        player.set_volume(volume);
 
         /* FIXME: All of below should be placed in 'volume-changed'
          *  event once we move to message bus API */
@@ -585,7 +561,22 @@ class ClapperControls extends Gtk.Box
                 scale.remove_css_class(cssClass);
         }
 
-        this._updateVolumeButtonIcon(volume);
+        const icon = (volume <= 0)
+            ? 'muted'
+            : (volume <= 0.3)
+            ? 'low'
+            : (volume <= 0.7)
+            ? 'medium'
+            : (volume <= 1)
+            ? 'high'
+            : 'overamplified';
+
+        const iconName = `audio-volume-${icon}-symbolic`;
+        if(this.volumeButton.icon_name === iconName)
+            return;
+
+        this.volumeButton.icon_name = iconName;
+        debug(`set volume icon: ${icon}`);
     }
 
     _onPositionScaleDragging(scale)
