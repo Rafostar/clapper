@@ -3222,7 +3222,7 @@ gst_clapper_seek_internal_locked (GstClapper * self)
       flags |= GST_SEEK_FLAG_ACCURATE;
       break;
     case GST_CLAPPER_SEEK_MODE_FAST:
-      flags |= GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_SNAP_AFTER;
+      flags |= GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_SNAP_NEAREST;
       break;
     default:
       break;
