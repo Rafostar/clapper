@@ -9,7 +9,7 @@ const ID_POSTFIX = 'Remote';
 Misc.clapperPath = `${pkg.datadir}/${Misc.appId}`;
 Misc.appId += '.' + ID_POSTFIX;
 
-function main()
+function main(argv)
 {
-    new AppRemote().run();
+    new AppRemote().run(argv);
 }

@@ -62,11 +62,6 @@ class ClapperAppBase extends Gtk.Application
         );
     }
 
-    run(arr)
-    {
-        super.run(arr || []);
-    }
-
     _onFirstActivate()
     {
         const gtkSettings = Gtk.Settings.get_default();
