@@ -3482,9 +3482,9 @@ gst_clapper_get_duration (GstClapper * self)
  * gst_clapper_get_volume:
  * @clapper: #GstClapper instance
  *
- * Returns the current volume level, as a percentage between 0 and 1.
+ * Returns the current volume level, as a percentage between 0 and 1.5
  *
- * Returns: the volume as percentage between 0 and 1.
+ * Returns: the cubic volume as percentage between 0 and 1.5
  */
 gdouble
 gst_clapper_get_volume (GstClapper * self)
@@ -3501,9 +3501,10 @@ gst_clapper_get_volume (GstClapper * self)
 /**
  * gst_clapper_set_volume:
  * @clapper: #GstClapper instance
- * @val: the new volume level, as a percentage between 0 and 1
+ * @val: the new volume level, as a percentage between 0 and 1.5
  *
- * Sets the volume level of the stream as a percentage between 0 and 1.
+ * Sets the volume level of the stream as a percentage between 0 and 1.5
+ * Volume operates on a cubic scale.
  */
 void
 gst_clapper_set_volume (GstClapper * self, gdouble val)
