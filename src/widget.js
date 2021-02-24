@@ -333,7 +333,10 @@ class ClapperWidget extends Gtk.Grid
 
     updateTime()
     {
-        if(!this.revealerTop.visible)
+        if(
+            !this.revealerTop.visible
+            || !this.revealerTop.revealerGrid.visible
+        )
             return null;
 
         const currTime = GLib.DateTime.new_now_local();

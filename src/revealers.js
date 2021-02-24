@@ -182,7 +182,7 @@ class ClapperRevealerTop extends CustomRevealer
             : Gtk.RevealerTransitionType.CROSSFADE;
 
         /* Changing transition in middle can have dire consequences,
-           so change only when not in transition */
+         * so change only when not in transition */
         if(this.reveal_child === this.child_revealed)
             this.transition_type = this._requestedTransition;
     }
