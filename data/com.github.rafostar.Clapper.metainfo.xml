@@ -22,6 +22,11 @@
       displays video only on top of all other windows for a PiP-like viewing experience.
       Mobile friendly transitions are also supported.
     </p>
+    <p>
+      For best stability Wayland session is recommended. Wayland users with AMD/Intel GPUs
+      can try enabling HIGHLY EXPERIMENTAL "vah264dec" plugin inside player preferences
+      for reduced CPU and GPU usage on standard (8-bit) H.264 videos.
+    </p>
   </description>
   <developer_name>Rafał Dzięgiel</developer_name>
   <url type="homepage">https://rafostar.github.io/clapper</url>
