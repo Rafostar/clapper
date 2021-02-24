@@ -321,6 +321,7 @@ class ClapperControls extends Gtk.Box
         this.speedAdjustment.set_lower(0.01);
         this.speedAdjustment.set_upper(2);
         this.speedAdjustment.set_value(1);
+        this.speedAdjustment.set_page_increment(0.1);
 
         speedScale.add_mark(0.25, Gtk.PositionType.BOTTOM, '0.25x');
         speedScale.add_mark(1, Gtk.PositionType.BOTTOM, 'Normal');
