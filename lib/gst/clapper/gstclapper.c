@@ -36,6 +36,7 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 #include <gst/video/colorbalance.h>
+#include <gst/audio/streamvolume.h>
 #include <gst/tag/tag.h>
 #include <gst/pbutils/descriptions.h>
 
@@ -331,7 +332,7 @@ gst_clapper_class_init (GstClapperClass * klass)
 
   param_specs[PROP_VOLUME] =
       g_param_spec_double ("volume", "Volume", "Volume",
-      0, 10.0, DEFAULT_VOLUME, G_PARAM_READWRITE |
+      0, 1.5, DEFAULT_VOLUME, G_PARAM_READWRITE |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_MUTE] =
@@ -656,10 +657,22 @@ gst_clapper_set_property (GObject * object, guint prop_id,
           gst_clapper_set_suburi_internal, self, NULL);
       break;
     }
-    case PROP_VOLUME:
-      GST_DEBUG_OBJECT (self, "Set volume=%lf", g_value_get_double (value));
-      g_object_set_property (G_OBJECT (self->playbin), "volume", value);
+    case PROP_VOLUME: {
+      GValue volume_linear = G_VALUE_INIT;
+      gdouble volume = g_value_get_double (value);
+
+      GST_DEBUG_OBJECT (self, "Set volume=%lf", volume);
+      volume = gst_stream_volume_convert_volume (
+          GST_STREAM_VOLUME_FORMAT_CUBIC, GST_STREAM_VOLUME_FORMAT_LINEAR, volume);
+      GST_DEBUG_OBJECT (self, "Converted linear volume=%lf", volume);
+
+      g_value_init (&volume_linear, G_TYPE_DOUBLE);
+      g_value_set_double (&volume_linear, volume);
+      g_object_set_property (G_OBJECT (self->playbin), "volume", &volume_linear);
+
+      g_value_unset (&volume_linear);
       break;
+    }
     case PROP_RATE:
       g_mutex_lock (&self->lock);
       self->rate = g_value_get_double (value);
@@ -757,11 +770,17 @@ gst_clapper_get_property (GObject * object, guint prop_id,
       g_value_take_object (value, subtitle_info);
       break;
     }
-    case PROP_VOLUME:
+    case PROP_VOLUME: {
+      gdouble volume;
+
       g_object_get_property (G_OBJECT (self->playbin), "volume", value);
-      GST_TRACE_OBJECT (self, "Returning volume=%lf",
-          g_value_get_double (value));
+      volume = g_value_get_double (value);
+      volume = gst_stream_volume_convert_volume (
+          GST_STREAM_VOLUME_FORMAT_LINEAR, GST_STREAM_VOLUME_FORMAT_CUBIC, volume);
+      g_value_set_double (value, volume);
+      GST_TRACE_OBJECT (self, "Returning volume=%lf", volume);
       break;
+    }
     case PROP_RATE:
       g_mutex_lock (&self->lock);
       g_value_set_double (value, self->rate);

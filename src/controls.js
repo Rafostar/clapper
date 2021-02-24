@@ -489,7 +489,7 @@ class ClapperControls extends Gtk.Box
 
         const initialVolume = (settings.get_string('volume-initial') === 'custom')
             ? settings.get_int('volume-value') / 100
-            : Misc.getCubicValue(settings.get_double('volume-last'));
+            : settings.get_double('volume-last');
 
         this.volumeScale.set_value(initialVolume);
     }
@@ -567,10 +567,9 @@ class ClapperControls extends Gtk.Box
     _onVolumeScaleValueChanged(scale)
     {
         const volume = scale.get_value();
-        const linearVolume = Misc.getLinearValue(volume);
         const { player } = this.get_ancestor(Gtk.Grid);
 
-        player.set_volume(linearVolume);
+        player.set_volume(volume);
 
         /* FIXME: All of below should be placed in 'volume-changed'
          *  event once we move to message bus API */
