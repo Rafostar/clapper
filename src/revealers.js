@@ -216,6 +216,7 @@ class ClapperRevealerBottom extends CustomRevealer
             margin_start: 8,
             margin_end: 8,
             margin_bottom: 8,
+            visible: false,
         });
         this.revealerBox.add_css_class('osd');
         this.revealerBox.add_css_class('roundedcorners');

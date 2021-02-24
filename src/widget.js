@@ -153,9 +153,11 @@ class ClapperWidget extends Gtk.Grid
         if(!isFullscreen)
             this._clearTimeout('updateTime');
 
+        this.revealerTop.setFullscreenMode(isFullscreen, this.isMobileMonitor);
+        this.revealerBottom.revealerBox.visible = isFullscreen;
+
         this._changeControlsPlacement(isFullscreen);
         this.controls.setFullscreenMode(isFullscreen);
-        this.revealerTop.setFullscreenMode(isFullscreen, this.isMobileMonitor);
 
         if(this.revealerTop.child_revealed)
             this._checkSetUpdateTimeInterval();
