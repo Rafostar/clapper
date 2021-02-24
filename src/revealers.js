@@ -194,6 +194,7 @@ class ClapperRevealerTop extends CustomRevealer
 
         if(this.child_revealed) {
             const clapperWidget = this.root.child;
+            if(!clapperWidget) return;
 
             clapperWidget._setHideControlsTimeout();
         }
