@@ -120,7 +120,10 @@ class ClapperWidget extends Gtk.Grid
         if(isAllowInput)
             this.setControlsCanFocus(true);
 
-        this._setHideControlsTimeout();
+        /* Reset timeout if already revealed, otherwise
+         * timeout will be set after reveal finishes */
+        if(this.revealerTop.child_revealed)
+            this._setHideControlsTimeout();
     }
 
     toggleFullscreen()

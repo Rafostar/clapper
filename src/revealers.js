@@ -31,6 +31,9 @@ class ClapperCustomRevealer extends Gtk.Revealer
 
     revealChild(isReveal)
     {
+        if(this.reveal_child === isReveal)
+            return;
+
         if(isReveal)
             this.visible = true;
 
@@ -188,6 +191,12 @@ class ClapperRevealerTop extends CustomRevealer
     {
         if(this.transition_type !== this._requestedTransition)
             this.transition_type = this._requestedTransition;
+
+        if(this.child_revealed) {
+            const clapperWidget = this.root.child;
+
+            clapperWidget._setHideControlsTimeout();
+        }
     }
 });
 
