@@ -259,8 +259,8 @@ radio {
 .tvmode .chapterlabel {
   min-width: 40px;
   text-shadow: none;
-  font-size: 21px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
 }
 
 /* Preferences */
