@@ -15,8 +15,8 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-ugly.git",
-            "tag": "1.18.3",
-            "commit": "ad60e5463f591caa1c8470f180fd0ef8fce4a802"
+            "tag": "1.18.1",
+            "commit": "720672eed30b3be47b2f26d67554786c0d3693ad"
         }
     ]
 }

@@ -22,8 +22,8 @@
         {
             "type": "git",
             "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad.git",
-            "tag": "1.18.3",
-            "commit": "382e373d9be363f1e21b12990a4d12f1ecb6df41"
+            "tag": "1.18.1",
+            "commit": "e5c3c106a2da607953fea36e3a253b382c939684"
         },
         {
             "type": "patch",
