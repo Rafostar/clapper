@@ -181,18 +181,27 @@ class ClapperRevealerTop extends CustomRevealer
             ? Gtk.RevealerTransitionType.SLIDE_DOWN
             : Gtk.RevealerTransitionType.CROSSFADE;
 
-        /* Changing transition in middle can have dire consequences,
-         * so change only when not in transition */
-        if(this.reveal_child === this.child_revealed)
+        const isRevealed = this.child_revealed;
+
+        /* FIXME: Changing transition in middle or when not fully
+         * revealed has dire consequences, seems to be a GTK4 bug */
+        if(isRevealed && isRevealed === this.reveal_child)
+            this._checkSwitchTransitionType();
+    }
+
+    _checkSwitchTransitionType()
+    {
+        if(this.transition_type !== this._requestedTransition)
             this.transition_type = this._requestedTransition;
     }
 
     _onTopRevealed()
     {
-        if(this.transition_type !== this._requestedTransition)
-            this.transition_type = this._requestedTransition;
-
         if(this.child_revealed) {
+            /* TODO: Move before above if statement when GTK4 can handle
+             * changing transition type while not fully revealed */
+            this._checkSwitchTransitionType();
+
             const clapperWidget = this.root.child;
             if(!clapperWidget) return;
 

@@ -333,9 +333,11 @@ class ClapperWidget extends Gtk.Grid
 
     updateTime()
     {
+        const revealerTop = this.revealerTop;
+
         if(
-            !this.revealerTop.visible
-            || !this.revealerTop.revealerGrid.visible
+            !revealerTop.visible
+            || !revealerTop.revealerGrid.visible
         )
             return null;
 
