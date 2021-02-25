@@ -24,6 +24,10 @@
         {
             "type": "patch",
             "path": "gtk4-popover-unrealize.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gtk4-broadway-fix-unsafe-variable-type.patch"
         }
     ]
 }
