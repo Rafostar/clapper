@@ -1,8 +1,8 @@
 #
 # spec file for package clapper
 #
-# Copyright (C) 2020  sp1rit
-# Copyright (C) 2020  Rafostar
+# Copyright (C) 2020    sp1rit
+# Copyright (C) 2020-21 Rafostar
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 %global glib2_version 2.56.0
 
 Name:           clapper
-Version:        0.0.0
+Version:        0.1.0
 Release:        1%{?dist}
 Summary:        Simple and modern GNOME media player
 
@@ -126,6 +126,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_libdir}/%{appname}/
 
 %changelog
+* Fri Feb 25 2021 Rafostar <rafostar.github@gmail.com> - 0.1.0-1
+- New version
+
 * Sun Feb 7 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-10
 - Install gstclapper libs to app named subdirectory
 

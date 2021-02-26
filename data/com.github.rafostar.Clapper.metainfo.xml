@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.1.0" date="2021-02-26">
+      <description>
+        <p>First stable release</p>
+      </description>
+    </release>
     <release version="0.0.0" date="2020-10-31">
       <description>
         <p>GitHub version</p>

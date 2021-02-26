@@ -2,7 +2,7 @@ Format: 3.0 (quilt)
 Source: clapper
 Binary: clapper
 Architecture: any
-Version: 0.0.0
+Version: 0.1.0
 Maintainer: Rafostar <rafostar.github@gmail.com>
 Build-Depends: debhelper (>= 10),
                meson (>= 0.50),
