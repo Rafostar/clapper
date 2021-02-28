@@ -28,9 +28,9 @@ The media player is using [GStreamer](https://gstreamer.freedesktop.org/) as a m
 The `Flatpak` package includes all required dependencies and codecs.
 Additionally it also has a few patches, thus some functionalities work better (or are only available) in `Flatpak` version (until my changes are accepted upstream). List of patches used in this version can be found [here](https://github.com/Rafostar/clapper/issues/35).
 
-```sh
-flatpak install https://rafostar.github.io/flatpak/com.github.rafostar.Clapper.flatpakref
-```
+<a href='https://flathub.org/apps/details/com.github.rafostar.Clapper'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
+
+**Important:** If you have been using the flatpak package from my custom 3rd party repo, please remove it and replace your installation with version from Flathub. That repository will not be maintained any longer. Thank you for understanding.
 
 ## Packages
 The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
@@ -39,7 +39,9 @@ The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this 
 Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper))
 
 #### Arch Linux
-You can get Clapper from the AUR: [clapper-git](https://aur.archlinux.org/packages/clapper-git)
+You can get Clapper from the AUR:
+* [clapper](https://aur.archlinux.org/packages/clapper) (stable version)
+* [clapper-git](https://aur.archlinux.org/packages/clapper-git)
 
 ## Installation from source code
 ```sh
@@ -57,7 +59,7 @@ All these libs are acting "on their own" and no function calls from `GJS` relate
 **Q:** What settings should I set to maximize performance?<br>
 **A:** As of now, player works best on `Wayland` session. `Wayland` users can try enabling highly experimental `vah264dec` plugin for improved performance (this plugin does not work on `Xorg` right now) for standard (8-bit) `H.264` videos.
 It can be enabled from inside player preferences dialog inside `Advanced -> GStreamer` tab using customizable `Plugin Ranking` feature.
-Since the whole app is rendered using your GPU, users of VERY weak GPUs might try to disable the "render window shadows" option to have more GPU power available for non-fullscreen video rendering.
+Since the whole app is rendered using your GPU, users of VERY weak GPUs might want to disable the "render window shadows" option to have more GPU power available for non-fullscreen video rendering.
 
 ## Other Questions?
 Feel free to ask me any questions.<br>
