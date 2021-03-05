@@ -55,6 +55,10 @@ struct _GtkGstBaseWidget
   gint display_width;
   gint display_height;
 
+  /* Widget dimensions */
+  gint scaled_width;
+  gint scaled_height;
+
   gboolean negotiated;
   GstBuffer *pending_buffer;
   GstBuffer *buffer;

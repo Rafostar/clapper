@@ -91,6 +91,23 @@ gtk_gst_base_widget_measure (GtkWidget * widget, GtkOrientation orientation,
   *minimum_baseline = -1;
   *natural_baseline = -1;
 }
+
+static void
+gtk_gst_base_widget_size_allocate (GtkWidget * widget,
+    gint width, gint height, gint baseline)
+{
+  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+  gint scale_factor = gtk_widget_get_scale_factor (widget);
+
+  GTK_GST_BASE_WIDGET_LOCK (base_widget);
+
+  base_widget->scaled_width = width * scale_factor;
+  base_widget->scaled_height = height * scale_factor;
+
+  GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
+
+  gtk_gl_area_queue_render (GTK_GL_AREA (widget));
+}
 #endif
 
 static void
@@ -170,7 +187,6 @@ _calculate_par (GtkGstBaseWidget * widget, GstVideoInfo * info)
     display_par_d = 1;
   }
 
-
   ok = gst_video_calculate_display_ratio (&widget->display_ratio_num,
       &widget->display_ratio_den, width, height, par_n, par_d, display_par_n,
       display_par_d);
@@ -234,7 +250,7 @@ _queue_draw (GtkGstBaseWidget * widget)
 
     gtk_widget_queue_resize (GTK_WIDGET (widget));
   } else {
-    gtk_widget_queue_draw (GTK_WIDGET (widget));
+    gtk_gl_area_queue_render (GTK_GL_AREA (widget));
   }
 
   GTK_GST_BASE_WIDGET_UNLOCK (widget);
@@ -308,8 +324,7 @@ gtk_gst_base_widget_key_event (GtkEventControllerKey * key_controller,
 }
 
 static void
-_fit_stream_to_allocated_size (GtkGstBaseWidget * base_widget,
-    GtkAllocation * allocation, GstVideoRectangle * result)
+_fit_stream_to_allocated_size (GtkGstBaseWidget * base_widget, GstVideoRectangle * result)
 {
   if (base_widget->force_aspect_ratio) {
     GstVideoRectangle src, dst;
@@ -321,15 +336,15 @@ _fit_stream_to_allocated_size (GtkGstBaseWidget * base_widget,
 
     dst.x = 0;
     dst.y = 0;
-    dst.w = allocation->width;
-    dst.h = allocation->height;
+    dst.w = base_widget->scaled_width;
+    dst.h = base_widget->scaled_height;
 
     gst_video_sink_center_rect (src, dst, result, TRUE);
   } else {
     result->x = 0;
     result->y = 0;
-    result->w = allocation->width;
-    result->h = allocation->height;
+    result->w = base_widget->scaled_width;
+    result->h = base_widget->scaled_height;
   }
 }
 
@@ -338,11 +353,9 @@ _display_size_to_stream_size (GtkGstBaseWidget * base_widget, gdouble x,
     gdouble y, gdouble * stream_x, gdouble * stream_y)
 {
   gdouble stream_width, stream_height;
-  GtkAllocation allocation;
   GstVideoRectangle result;
 
-  gtk_widget_get_allocation (GTK_WIDGET (base_widget), &allocation);
-  _fit_stream_to_allocated_size (base_widget, &allocation, &result);
+  _fit_stream_to_allocated_size (base_widget, &result);
 
   stream_width = (gdouble) GST_VIDEO_INFO_WIDTH (&base_widget->v_info);
   stream_height = (gdouble) GST_VIDEO_INFO_HEIGHT (&base_widget->v_info);
@@ -475,6 +488,7 @@ gtk_gst_base_widget_class_init (GtkGstBaseWidgetClass * klass)
 
 #if defined(BUILD_FOR_GTK4)
   widget_klass->measure = gtk_gst_base_widget_measure;
+  widget_klass->size_allocate = gtk_gst_base_widget_size_allocate;
 #else
   widget_klass->get_preferred_width = gtk_gst_base_widget_get_preferred_width;
   widget_klass->get_preferred_height = gtk_gst_base_widget_get_preferred_height;

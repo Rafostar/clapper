@@ -253,14 +253,9 @@ gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
   if (base_widget->force_aspect_ratio) {
     GstVideoRectangle src, dst, result;
-    gint widget_width, widget_height, widget_scale;
 
     gl->ClearColor (0.0, 0.0, 0.0, 1.0);
     gl->Clear (GL_COLOR_BUFFER_BIT);
-
-    widget_scale = gtk_widget_get_scale_factor (GTK_WIDGET (widget));
-    widget_width = gtk_widget_get_allocated_width (GTK_WIDGET (widget));
-    widget_height = gtk_widget_get_allocated_height (GTK_WIDGET (widget));
 
     src.x = 0;
     src.y = 0;
@@ -269,8 +264,8 @@ gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
     dst.x = 0;
     dst.y = 0;
-    dst.w = widget_width * widget_scale;
-    dst.h = widget_height * widget_scale;
+    dst.w = base_widget->scaled_width;
+    dst.h = base_widget->scaled_height;
 
     gst_video_sink_center_rect (src, dst, &result, TRUE);
 
@@ -429,6 +424,8 @@ gtk_gst_gl_widget_init (GtkGstGLWidget * gst_widget)
   gtk_gl_area_set_has_alpha (GTK_GL_AREA (gst_widget),
       !base_widget->ignore_alpha);
 #endif
+
+  gtk_gl_area_set_auto_render (GTK_GL_AREA (gst_widget), FALSE);
 }
 
 static void
