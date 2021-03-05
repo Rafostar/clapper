@@ -33,7 +33,6 @@ GST_DEBUG_CATEGORY (gst_debug_gtk_base_widget);
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
-#define DEFAULT_IGNORE_ALPHA        TRUE
 #define DEFAULT_IGNORE_TEXTURES     FALSE
 
 enum
@@ -41,7 +40,6 @@ enum
   PROP_0,
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
-  PROP_IGNORE_ALPHA,
   PROP_IGNORE_TEXTURES,
 };
 
@@ -122,9 +120,6 @@ gtk_gst_base_widget_set_property (GObject * object, guint prop_id,
       gtk_widget->par_n = gst_value_get_fraction_numerator (value);
       gtk_widget->par_d = gst_value_get_fraction_denominator (value);
       break;
-    case PROP_IGNORE_ALPHA:
-      gtk_widget->ignore_alpha = g_value_get_boolean (value);
-      break;
     case PROP_IGNORE_TEXTURES:
       gtk_widget->ignore_textures = g_value_get_boolean (value);
       break;
@@ -146,9 +141,6 @@ gtk_gst_base_widget_get_property (GObject * object, guint prop_id,
       break;
     case PROP_PIXEL_ASPECT_RATIO:
       gst_value_set_fraction (value, gtk_widget->par_n, gtk_widget->par_d);
-      break;
-    case PROP_IGNORE_ALPHA:
-      g_value_set_boolean (value, gtk_widget->ignore_alpha);
       break;
     case PROP_IGNORE_TEXTURES:
       g_value_set_boolean (value, gtk_widget->ignore_textures);
@@ -439,11 +431,6 @@ gtk_gst_base_widget_class_init (GtkGstBaseWidgetClass * klass)
           "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
           G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (gobject_klass, PROP_IGNORE_ALPHA,
-      g_param_spec_boolean ("ignore-alpha", "Ignore Alpha",
-          "When enabled, alpha will be ignored and converted to black",
-          DEFAULT_IGNORE_ALPHA, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
   g_object_class_install_property (gobject_klass, PROP_IGNORE_TEXTURES,
       g_param_spec_boolean ("ignore-textures", "Ignore Textures",
           "When enabled, textures will be ignored and not drawn",
@@ -462,7 +449,6 @@ gtk_gst_base_widget_init (GtkGstBaseWidget * widget)
   widget->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
   widget->par_n = DEFAULT_PAR_N;
   widget->par_d = DEFAULT_PAR_D;
-  widget->ignore_alpha = DEFAULT_IGNORE_ALPHA;
   widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
 
   gst_video_info_init (&widget->v_info);

@@ -38,7 +38,6 @@ GST_DEBUG_CATEGORY (gst_debug_gtk_base_sink);
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
-#define DEFAULT_IGNORE_ALPHA        TRUE
 #define DEFAULT_IGNORE_TEXTURES     FALSE
 
 static void gst_gtk_base_sink_finalize (GObject * object);
@@ -70,7 +69,6 @@ enum
   PROP_WIDGET,
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
-  PROP_IGNORE_ALPHA,
   PROP_IGNORE_TEXTURES,
 };
 
@@ -141,7 +139,6 @@ gst_gtk_base_sink_init (GstGtkBaseSink * gtk_sink)
   gtk_sink->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
   gtk_sink->par_n = DEFAULT_PAR_N;
   gtk_sink->par_d = DEFAULT_PAR_D;
-  gtk_sink->ignore_alpha = DEFAULT_IGNORE_ALPHA;
   gtk_sink->ignore_textures = DEFAULT_IGNORE_TEXTURES;
 }
 
@@ -259,9 +256,6 @@ gst_gtk_base_sink_get_property (GObject * object, guint prop_id,
     case PROP_PIXEL_ASPECT_RATIO:
       gst_value_set_fraction (value, gtk_sink->par_n, gtk_sink->par_d);
       break;
-    case PROP_IGNORE_ALPHA:
-      g_value_set_boolean (value, gtk_sink->ignore_alpha);
-      break;
     case PROP_IGNORE_TEXTURES:
       g_value_set_boolean (value, gtk_sink->ignore_textures);
       break;
@@ -284,9 +278,6 @@ gst_gtk_base_sink_set_property (GObject * object, guint prop_id,
     case PROP_PIXEL_ASPECT_RATIO:
       gtk_sink->par_n = gst_value_get_fraction_numerator (value);
       gtk_sink->par_d = gst_value_get_fraction_denominator (value);
-      break;
-    case PROP_IGNORE_ALPHA:
-      gtk_sink->ignore_alpha = g_value_get_boolean (value);
       break;
     case PROP_IGNORE_TEXTURES:
       gtk_sink->ignore_textures = g_value_get_boolean (value);
