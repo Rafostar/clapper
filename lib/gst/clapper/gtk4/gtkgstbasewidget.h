@@ -25,22 +25,29 @@
 #include <gtk/gtk.h>
 #include <gst/gst.h>
 #include <gst/video/video.h>
-
-#define GTK_GST_BASE_WIDGET(w)         ((GtkGstBaseWidget *)(w))
-#define GTK_GST_BASE_WIDGET_CLASS(k)   ((GtkGstBaseWidgetClass *)(k))
-#define GTK_GST_BASE_WIDGET_LOCK(w)    g_mutex_lock(&((GtkGstBaseWidget*)(w))->lock)
-#define GTK_GST_BASE_WIDGET_UNLOCK(w)  g_mutex_unlock(&((GtkGstBaseWidget*)(w))->lock)
+#include <gst/gl/gl.h>
 
 G_BEGIN_DECLS
 
+GType gtk_gst_base_widget_get_type (void);
+#define GTK_TYPE_GST_BASE_WIDGET            (gtk_gst_base_widget_get_type())
+#define GTK_GST_BASE_WIDGET(obj)            (G_TYPE_CHECK_INSTANCE_CAST((obj),GTK_TYPE_GST_BASE_WIDGET,GtkGstBaseWidget))
+#define GTK_GST_BASE_WIDGET_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST((klass),GTK_TYPE_GST_BASE_WIDGET,GtkGstBaseWidgetClass))
+#define GTK_IS_GST_BASE_WIDGET(obj)         (G_TYPE_CHECK_INSTANCE_TYPE((obj),GTK_TYPE_GST_BASE_WIDGET))
+#define GTK_IS_GST_BASE_WIDGET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass),GTK_TYPE_GST_BASE_WIDGET))
+#define GTK_GST_BASE_WIDGET_CAST(obj)       ((GtkGstBaseWidget*)(obj))
+#define GTK_GST_BASE_WIDGET_LOCK(w)         g_mutex_lock(&((GtkGstBaseWidget*)(w))->lock)
+#define GTK_GST_BASE_WIDGET_UNLOCK(w)       g_mutex_unlock(&((GtkGstBaseWidget*)(w))->lock)
+
 typedef struct _GtkGstBaseWidget GtkGstBaseWidget;
 typedef struct _GtkGstBaseWidgetClass GtkGstBaseWidgetClass;
+typedef struct _GtkGstBaseWidgetPrivate GtkGstBaseWidgetPrivate;
 
 struct _GtkGstBaseWidget
 {
-  union {
-    GtkGLArea gl_area;
-  } parent;
+  /* <private> */
+  GtkGLArea parent;
+  GtkGstBaseWidgetPrivate *priv;
 
   /* properties */
   gboolean force_aspect_ratio;
@@ -80,21 +87,20 @@ struct _GtkGstBaseWidget
 
 struct _GtkGstBaseWidgetClass
 {
-  union {
-    GtkGLAreaClass gl_area_class;
-  } parent_class;
+  GtkGLAreaClass parent_class;
 };
-
-/* For implementer */
-void            gtk_gst_base_widget_class_init           (GtkGstBaseWidgetClass * klass);
-void            gtk_gst_base_widget_init                 (GtkGstBaseWidget * widget);
-
-void            gtk_gst_base_widget_finalize             (GObject * object);
 
 /* API */
 gboolean        gtk_gst_base_widget_set_format           (GtkGstBaseWidget * widget, GstVideoInfo * v_info);
 void            gtk_gst_base_widget_set_buffer           (GtkGstBaseWidget * widget, GstBuffer * buffer);
 void            gtk_gst_base_widget_set_element          (GtkGstBaseWidget * widget, GstElement * element);
+
+GtkWidget *     gtk_gst_base_widget_new (void);
+
+gboolean        gtk_gst_base_widget_init_winsys          (GtkGstBaseWidget * widget);
+GstGLDisplay *  gtk_gst_base_widget_get_display          (GtkGstBaseWidget * widget);
+GstGLContext *  gtk_gst_base_widget_get_context          (GtkGstBaseWidget * widget);
+GstGLContext *  gtk_gst_base_widget_get_gtk_context      (GtkGstBaseWidget * widget);
 
 G_END_DECLS
 

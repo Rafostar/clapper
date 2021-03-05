@@ -34,7 +34,6 @@
 #include "gtkconfig.h"
 #include "gstgtkbasesink.h"
 #include "gstgtkutils.h"
-#include "gtkgstglwidget.h"
 
 GST_DEBUG_CATEGORY (gst_debug_gtk_base_sink);
 #define GST_CAT_DEFAULT gst_debug_gtk_base_sink
@@ -154,7 +153,7 @@ gst_gtk_base_sink_class_init (GstGtkBaseSinkClass * klass)
 
   gstvideosink_class->show_frame = gst_gtk_base_sink_show_frame;
 
-  gstgtkbasesink_class->create_widget = gtk_gst_gl_widget_new;
+  gstgtkbasesink_class->create_widget = gtk_gst_base_widget_new;
   gstgtkbasesink_class->window_title = GTKCONFIG_NAME " GL Renderer";
 
   gst_element_class_set_metadata (gstelement_class,
@@ -512,27 +511,27 @@ static gboolean
 gst_gtk_base_sink_start (GstBaseSink * bsink)
 {
   GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (bsink);
-  GtkGstGLWidget *gst_widget;
+  GtkGstBaseWidget *base_widget;
 
   if (!(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
       gst_gtk_base_sink_start_on_main, bsink)))
     return FALSE;
 
   /* After this point, base_sink->widget will always be set */
-  gst_widget = GTK_GST_GL_WIDGET (base_sink->widget);
+  base_widget = GTK_GST_BASE_WIDGET (base_sink->widget);
 
-  if (!gtk_gst_gl_widget_init_winsys (gst_widget)) {
+  if (!gtk_gst_base_widget_init_winsys (base_widget)) {
     GST_ELEMENT_ERROR (bsink, RESOURCE, NOT_FOUND, ("%s",
             "Failed to initialize OpenGL with GTK"), (NULL));
     return FALSE;
   }
 
   if (!base_sink->display)
-    base_sink->display = gtk_gst_gl_widget_get_display (gst_widget);
+    base_sink->display = gtk_gst_base_widget_get_display (base_widget);
   if (!base_sink->context)
-    base_sink->context = gtk_gst_gl_widget_get_context (gst_widget);
+    base_sink->context = gtk_gst_base_widget_get_context (base_widget);
   if (!base_sink->gtk_context)
-    base_sink->gtk_context = gtk_gst_gl_widget_get_gtk_context (gst_widget);
+    base_sink->gtk_context = gtk_gst_base_widget_get_gtk_context (base_widget);
 
   if (!base_sink->display || !base_sink->context || !base_sink->gtk_context) {
     GST_ELEMENT_ERROR (bsink, RESOURCE, NOT_FOUND, ("%s",
