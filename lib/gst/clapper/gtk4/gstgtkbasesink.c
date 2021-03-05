@@ -31,7 +31,6 @@
 
 #include <gst/gl/gstglfuncs.h>
 
-#include "gtkconfig.h"
 #include "gstgtkbasesink.h"
 #include "gstgtkutils.h"
 
@@ -154,10 +153,10 @@ gst_gtk_base_sink_class_init (GstGtkBaseSinkClass * klass)
   gstvideosink_class->show_frame = gst_gtk_base_sink_show_frame;
 
   gstgtkbasesink_class->create_widget = gtk_gst_base_widget_new;
-  gstgtkbasesink_class->window_title = GTKCONFIG_NAME " GL Renderer";
+  gstgtkbasesink_class->window_title = "GTK4 GL Renderer";
 
   gst_element_class_set_metadata (gstelement_class,
-      GTKCONFIG_NAME " GL Video Sink",
+      "GTK4 GL Video Sink",
       "Sink/Video", "A video sink that renders to a GtkWidget using OpenGL",
       "Matthew Waters <matthew@centricular.com>, "
       "Rafał Dzięgiel <rafostar.github@gmail.com>");
