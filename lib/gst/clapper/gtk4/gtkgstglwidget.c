@@ -84,6 +84,10 @@ static const GLfloat vertices[] = {
   1.0f, -1.0f, 0.0f, 1.0f, 1.0f
 };
 
+static const GLushort indices[] = {
+  0, 1, 2, 0, 2, 3
+};
+
 G_DEFINE_TYPE_WITH_CODE (GtkGstGLWidget, gtk_gst_gl_widget, GTK_TYPE_GL_AREA,
     G_ADD_PRIVATE (GtkGstGLWidget)
     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "gtkgstglwidget", 0,
@@ -162,59 +166,6 @@ gtk_gst_gl_widget_init_redisplay (GtkGstGLWidget * gst_widget)
   priv->initiated = TRUE;
 }
 
-static void
-_redraw_texture (GtkGstGLWidget * gst_widget, guint tex)
-{
-  GtkGstGLWidgetPrivate *priv = gst_widget->priv;
-  const GstGLFuncs *gl = priv->context->gl_vtable;
-  const GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
-
-  if (gst_widget->base.force_aspect_ratio) {
-    GstVideoRectangle src, dst, result;
-    gint widget_width, widget_height, widget_scale;
-
-    gl->ClearColor (0.0, 0.0, 0.0, 1.0);
-    gl->Clear (GL_COLOR_BUFFER_BIT);
-
-    widget_scale = gtk_widget_get_scale_factor ((GtkWidget *) gst_widget);
-    widget_width = gtk_widget_get_allocated_width ((GtkWidget *) gst_widget);
-    widget_height = gtk_widget_get_allocated_height ((GtkWidget *) gst_widget);
-
-    src.x = 0;
-    src.y = 0;
-    src.w = gst_widget->base.display_width;
-    src.h = gst_widget->base.display_height;
-
-    dst.x = 0;
-    dst.y = 0;
-    dst.w = widget_width * widget_scale;
-    dst.h = widget_height * widget_scale;
-
-    gst_video_sink_center_rect (src, dst, &result, TRUE);
-
-    gl->Viewport (result.x, result.y, result.w, result.h);
-  }
-
-  gst_gl_shader_use (priv->shader);
-
-  if (gl->BindVertexArray)
-    gl->BindVertexArray (priv->vao);
-  gtk_gst_gl_widget_bind_buffer (gst_widget);
-
-  gl->ActiveTexture (GL_TEXTURE0);
-  gl->BindTexture (GL_TEXTURE_2D, tex);
-  gst_gl_shader_set_uniform_1i (priv->shader, "tex", 0);
-
-  gl->DrawElements (GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
-
-  if (gl->BindVertexArray)
-    gl->BindVertexArray (0);
-  else
-    gtk_gst_gl_widget_unbind_buffer (gst_widget);
-
-  gl->BindTexture (GL_TEXTURE_2D, 0);
-}
-
 static inline void
 _draw_black (GstGLContext * context)
 {
@@ -236,8 +187,11 @@ _draw_black_with_gdk (GdkGLContext * gdk_context)
 static gboolean
 gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 {
-  GtkGstGLWidgetPrivate *priv = GTK_GST_GL_WIDGET (widget)->priv;
+  GtkGstGLWidget *gst_widget = GTK_GST_GL_WIDGET (widget);
   GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+
+  GtkGstGLWidgetPrivate *priv = gst_widget->priv;
+  const GstGLFuncs *gl;
 
   GTK_GST_BASE_WIDGET_LOCK (widget);
 
@@ -252,7 +206,7 @@ gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
   if (!priv->initiated || !base_widget->negotiated) {
     if (!priv->initiated)
-      gtk_gst_gl_widget_init_redisplay (GTK_GST_GL_WIDGET (widget));
+      gtk_gst_gl_widget_init_redisplay (gst_widget);
 
     _draw_black (priv->other_context);
     goto done;
@@ -271,9 +225,6 @@ gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
     }
 
     priv->current_tex = *(guint *) gl_frame.data[0];
-    gst_gl_insert_debug_marker (priv->other_context, "redrawing texture %u",
-        priv->current_tex);
-
     gst_gl_overlay_compositor_upload_overlays (priv->overlay_compositor,
         buffer);
 
@@ -297,11 +248,57 @@ gtk_gst_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
   GST_DEBUG ("rendering buffer %p with gdk context %p",
       base_widget->buffer, context);
 
-  _redraw_texture (GTK_GST_GL_WIDGET (widget), priv->current_tex);
-  gst_gl_overlay_compositor_draw_overlays (priv->overlay_compositor);
+  /* Draw texture */
+  gl = priv->context->gl_vtable;
 
-  gst_gl_insert_debug_marker (priv->other_context, "texture %u redrawn",
-      priv->current_tex);
+  if (base_widget->force_aspect_ratio) {
+    GstVideoRectangle src, dst, result;
+    gint widget_width, widget_height, widget_scale;
+
+    gl->ClearColor (0.0, 0.0, 0.0, 1.0);
+    gl->Clear (GL_COLOR_BUFFER_BIT);
+
+    widget_scale = gtk_widget_get_scale_factor (GTK_WIDGET (widget));
+    widget_width = gtk_widget_get_allocated_width (GTK_WIDGET (widget));
+    widget_height = gtk_widget_get_allocated_height (GTK_WIDGET (widget));
+
+    src.x = 0;
+    src.y = 0;
+    src.w = base_widget->display_width;
+    src.h = base_widget->display_height;
+
+    dst.x = 0;
+    dst.y = 0;
+    dst.w = widget_width * widget_scale;
+    dst.h = widget_height * widget_scale;
+
+    gst_video_sink_center_rect (src, dst, &result, TRUE);
+
+    gl->Viewport (result.x, result.y, result.w, result.h);
+  }
+
+  gst_gl_shader_use (priv->shader);
+
+  if (gl->BindVertexArray)
+    gl->BindVertexArray (priv->vao);
+
+  gtk_gst_gl_widget_bind_buffer (gst_widget);
+
+  gl->ActiveTexture (GL_TEXTURE0);
+  gl->BindTexture (GL_TEXTURE_2D, priv->current_tex);
+  gst_gl_shader_set_uniform_1i (priv->shader, "tex", 0);
+
+  gl->DrawElements (GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+
+  if (gl->BindVertexArray)
+    gl->BindVertexArray (0);
+  else
+    gtk_gst_gl_widget_unbind_buffer (gst_widget);
+
+  gl->BindTexture (GL_TEXTURE_2D, 0);
+
+  /* Draw subtitles */
+  gst_gl_overlay_compositor_draw_overlays (priv->overlay_compositor);
 
 done:
   if (priv->other_context)
