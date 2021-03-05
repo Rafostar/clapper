@@ -26,10 +26,6 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 
-#if !defined(BUILD_FOR_GTK4)
-#include <gdk/gdk.h>
-#endif
-
 #define GTK_GST_BASE_WIDGET(w)         ((GtkGstBaseWidget *)(w))
 #define GTK_GST_BASE_WIDGET_CLASS(k)   ((GtkGstBaseWidgetClass *)(k))
 #define GTK_GST_BASE_WIDGET_LOCK(w)    g_mutex_lock(&((GtkGstBaseWidget*)(w))->lock)

@@ -32,7 +32,6 @@ gstclapper_defines = [
   '-DBUILDING_GST_CLAPPER',
   '-DGST_USE_UNSTABLE_API',
   '-DHAVE_GTK_GL',
-  '-DBUILD_FOR_GTK4',
 ]
 gtk_deps = [gstgl_dep, gstglproto_dep]
 have_gtk_gl_windowing = false

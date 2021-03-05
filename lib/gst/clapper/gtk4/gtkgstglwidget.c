@@ -31,20 +31,12 @@
 #include <gst/video/video.h>
 
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
-#if defined(BUILD_FOR_GTK4)
 #include <gdk/x11/gdkx.h>
-#else
-#include <gdk/gdkx.h>
-#endif
 #include <gst/gl/x11/gstgldisplay_x11.h>
 #endif
 
 #if GST_GL_HAVE_WINDOW_WAYLAND && defined (GDK_WINDOWING_WAYLAND)
-#if defined(BUILD_FOR_GTK4)
 #include <gdk/wayland/gdkwayland.h>
-#else
-#include <gdk/gdkwayland.h>
-#endif
 #include <gst/gl/wayland/gstgldisplay_wayland.h>
 #endif
 
@@ -418,12 +410,6 @@ gtk_gst_gl_widget_init (GtkGstGLWidget * gst_widget)
     priv->display = gst_gl_display_new ();
 
   GST_INFO ("Created %" GST_PTR_FORMAT, priv->display);
-
-  /* GTK4 always has alpha */
-#if !defined(BUILD_FOR_GTK4)
-  gtk_gl_area_set_has_alpha (GTK_GL_AREA (gst_widget),
-      !base_widget->ignore_alpha);
-#endif
 
   gtk_gl_area_set_auto_render (GTK_GL_AREA (gst_widget), FALSE);
 }

@@ -77,7 +77,6 @@ gtk_gst_base_widget_get_preferred_height (GtkWidget * widget, gint * min,
     *natural = video_height;
 }
 
-#if defined(BUILD_FOR_GTK4)
 static void
 gtk_gst_base_widget_measure (GtkWidget * widget, GtkOrientation orientation,
     gint for_size, gint * min, gint * natural,
@@ -108,7 +107,6 @@ gtk_gst_base_widget_size_allocate (GtkWidget * widget,
 
   gtk_gl_area_queue_render (GTK_GL_AREA (widget));
 }
-#endif
 
 static void
 gtk_gst_base_widget_set_property (GObject * object, guint prop_id,
@@ -276,25 +274,6 @@ _gdk_key_to_navigation_string (guint keyval)
   }
 }
 
-static GdkEvent *
-_get_current_event (GtkEventController * controller)
-{
-#if defined(BUILD_FOR_GTK4)
-  return gtk_event_controller_get_current_event (controller);
-#else
-  return gtk_get_current_event ();
-#endif
-}
-
-static void
-_gdk_event_free (GdkEvent * event)
-{
-#if !defined(BUILD_FOR_GTK4)
-  if (event)
-    gdk_event_free (event);
-#endif
-}
-
 static gboolean
 gtk_gst_base_widget_key_event (GtkEventControllerKey * key_controller,
     guint keyval, guint keycode, GdkModifierType state)
@@ -306,7 +285,7 @@ gtk_gst_base_widget_key_event (GtkEventControllerKey * key_controller,
 
   if ((element = g_weak_ref_get (&base_widget->element))) {
     if (GST_IS_NAVIGATION (element)) {
-      GdkEvent *event = _get_current_event (controller);
+      GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *str = _gdk_key_to_navigation_string (keyval);
 
       if (str) {
@@ -315,7 +294,6 @@ gtk_gst_base_widget_key_event (GtkEventControllerKey * key_controller,
             GDK_KEY_PRESS ? "key-press" : "key-release";
         gst_navigation_send_key_event (GST_NAVIGATION (element), key_type, str);
       }
-      _gdk_event_free (event);
     }
     g_object_unref (element);
   }
@@ -387,12 +365,7 @@ _display_size_to_stream_size (GtkGstBaseWidget * base_widget, gdouble x,
 }
 
 static gboolean
-gtk_gst_base_widget_button_event (
-#if defined(BUILD_FOR_GTK4)
-    GtkGestureClick * gesture,
-#else
-    GtkGestureMultiPress * gesture,
-#endif
+gtk_gst_base_widget_button_event (GtkGestureClick * gesture,
     gint n_press, gdouble x, gdouble y)
 {
   GtkEventController *controller = GTK_EVENT_CONTROLLER (gesture);
@@ -402,28 +375,18 @@ gtk_gst_base_widget_button_event (
 
   if ((element = g_weak_ref_get (&base_widget->element))) {
     if (GST_IS_NAVIGATION (element)) {
-      GdkEvent *event = _get_current_event (controller);
+      GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *key_type =
           gdk_event_get_event_type (event) == GDK_BUTTON_PRESS
           ? "mouse-button-press" : "mouse-button-release";
       gdouble stream_x, stream_y;
-#if !defined(BUILD_FOR_GTK4)
-      guint button;
-      gdk_event_get_button (event, &button);
-#endif
 
       _display_size_to_stream_size (base_widget, x, y, &stream_x, &stream_y);
 
       gst_navigation_send_mouse_event (GST_NAVIGATION (element), key_type,
-#if defined(BUILD_FOR_GTK4)
           /* Gesture is set to ignore other buttons so we do not have to check */
           GDK_BUTTON_PRIMARY,
-#else
-          button,
-#endif
           stream_x, stream_y);
-
-      _gdk_event_free (event);
     }
     g_object_unref (element);
   }
@@ -486,13 +449,8 @@ gtk_gst_base_widget_class_init (GtkGstBaseWidgetClass * klass)
           "When enabled, textures will be ignored and not drawn",
           DEFAULT_IGNORE_TEXTURES, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-#if defined(BUILD_FOR_GTK4)
   widget_klass->measure = gtk_gst_base_widget_measure;
   widget_klass->size_allocate = gtk_gst_base_widget_size_allocate;
-#else
-  widget_klass->get_preferred_width = gtk_gst_base_widget_get_preferred_width;
-  widget_klass->get_preferred_height = gtk_gst_base_widget_get_preferred_height;
-#endif
 
   GST_DEBUG_CATEGORY_INIT (gst_debug_gtk_base_widget, "gtkbasewidget", 0,
       "GTK Video Base Widget");
@@ -513,36 +471,22 @@ gtk_gst_base_widget_init (GtkGstBaseWidget * widget)
   g_weak_ref_init (&widget->element, NULL);
   g_mutex_init (&widget->lock);
 
-  widget->key_controller = gtk_event_controller_key_new (
-#if !defined(BUILD_FOR_GTK4)
-      GTK_WIDGET (widget)
-#endif
-      );
+  widget->key_controller = gtk_event_controller_key_new ();
   g_signal_connect (widget->key_controller, "key-pressed",
       G_CALLBACK (gtk_gst_base_widget_key_event), NULL);
   g_signal_connect (widget->key_controller, "key-released",
       G_CALLBACK (gtk_gst_base_widget_key_event), NULL);
 
-  widget->motion_controller = gtk_event_controller_motion_new (
-#if !defined(BUILD_FOR_GTK4)
-      GTK_WIDGET (widget)
-#endif
-      );
+  widget->motion_controller = gtk_event_controller_motion_new ();
   g_signal_connect (widget->motion_controller, "motion",
       G_CALLBACK (gtk_gst_base_widget_motion_event), NULL);
 
-  widget->click_gesture =
-#if defined(BUILD_FOR_GTK4)
-      gtk_gesture_click_new ();
-#else
-      gtk_gesture_multi_press_new (GTK_WIDGET (widget));
-#endif
+  widget->click_gesture = gtk_gesture_click_new ();
   g_signal_connect (widget->click_gesture, "pressed",
       G_CALLBACK (gtk_gst_base_widget_button_event), NULL);
   g_signal_connect (widget->click_gesture, "released",
       G_CALLBACK (gtk_gst_base_widget_button_event), NULL);
 
-#if defined(BUILD_FOR_GTK4)
   /* Otherwise widget in grid will appear as a 1x1px
    * video which might be misleading for users */
   gtk_widget_set_hexpand (GTK_WIDGET (widget), TRUE);
@@ -556,7 +500,6 @@ gtk_gst_base_widget_init (GtkGstBaseWidget * widget)
   gtk_widget_add_controller (GTK_WIDGET (widget), widget->motion_controller);
   gtk_widget_add_controller (GTK_WIDGET (widget),
       GTK_EVENT_CONTROLLER (widget->click_gesture));
-#endif
 
   gtk_widget_set_can_focus (GTK_WIDGET (widget), TRUE);
 }
@@ -565,14 +508,6 @@ void
 gtk_gst_base_widget_finalize (GObject * object)
 {
   GtkGstBaseWidget *widget = GTK_GST_BASE_WIDGET (object);
-
-  /* GTK4 takes ownership of EventControllers
-   * while GTK3 still needs manual unref */
-#if !defined(BUILD_FOR_GTK4)
-  g_object_unref (widget->key_controller);
-  g_object_unref (widget->motion_controller);
-  g_object_unref (widget->click_gesture);
-#endif
 
   gst_buffer_replace (&widget->pending_buffer, NULL);
   gst_buffer_replace (&widget->buffer, NULL);

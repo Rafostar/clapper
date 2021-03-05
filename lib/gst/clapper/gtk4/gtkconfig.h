@@ -18,14 +18,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#if defined(BUILD_FOR_GTK4)
 #define GTKCONFIG_PLUGIN gtk4
 #define GTKCONFIG_NAME "GTK4"
 #define GTKCONFIG_SINK "gtk4sink"
 #define GTKCONFIG_GLSINK "gtk4glsink"
-#else
-#define GTKCONFIG_PLUGIN gtk
-#define GTKCONFIG_NAME "GTK"
-#define GTKCONFIG_SINK "gtksink"
-#define GTKCONFIG_GLSINK "gtkglsink"
-#endif
