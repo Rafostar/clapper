@@ -11,7 +11,6 @@ gstclapper_sources = [
   'gtk4/gstgtkbasesink.c',
   'gtk4/gstgtkutils.c',
   'gtk4/gtkgstbasewidget.c',
-  'gtk4/gstgtkglsink.c',
   'gtk4/gtkgstglwidget.c',
 ]
 gstclapper_headers = [

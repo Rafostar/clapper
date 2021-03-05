@@ -29,8 +29,12 @@
 #include "config.h"
 #endif
 
+#include <gst/gl/gstglfuncs.h>
+
+#include "gtkconfig.h"
 #include "gstgtkbasesink.h"
 #include "gstgtkutils.h"
+#include "gtkgstglwidget.h"
 
 GST_DEBUG_CATEGORY (gst_debug_gtk_base_sink);
 #define GST_CAT_DEFAULT gst_debug_gtk_base_sink
@@ -40,12 +44,25 @@ GST_DEBUG_CATEGORY (gst_debug_gtk_base_sink);
 #define DEFAULT_PAR_D               1
 #define DEFAULT_IGNORE_TEXTURES     FALSE
 
+static GstStaticPadTemplate gst_gtk_base_sink_template =
+    GST_STATIC_PAD_TEMPLATE ("sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE_WITH_FEATURES
+        (GST_CAPS_FEATURE_MEMORY_GL_MEMORY, "RGBA") "; "
+        GST_VIDEO_CAPS_MAKE_WITH_FEATURES
+        (GST_CAPS_FEATURE_MEMORY_GL_MEMORY ", "
+            GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION, "RGBA")));
+
 static void gst_gtk_base_sink_finalize (GObject * object);
 static void gst_gtk_base_sink_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * param_spec);
 static void gst_gtk_base_sink_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * param_spec);
 
+static gboolean gst_gtk_base_sink_propose_allocation (GstBaseSink * bsink,
+    GstQuery * query);
+static gboolean gst_gtk_base_sink_query (GstBaseSink * bsink, GstQuery * query);
 static gboolean gst_gtk_base_sink_start (GstBaseSink * bsink);
 static gboolean gst_gtk_base_sink_stop (GstBaseSink * bsink);
 
@@ -55,6 +72,8 @@ gst_gtk_base_sink_change_state (GstElement * element,
 
 static void gst_gtk_base_sink_get_times (GstBaseSink * bsink, GstBuffer * buf,
     GstClockTime * start, GstClockTime * end);
+static GstCaps *gst_gtk_base_sink_get_caps (GstBaseSink * bsink,
+    GstCaps * filter);
 static gboolean gst_gtk_base_sink_set_caps (GstBaseSink * bsink,
     GstCaps * caps);
 static GstFlowReturn gst_gtk_base_sink_show_frame (GstVideoSink * bsink,
@@ -73,13 +92,12 @@ enum
 };
 
 #define gst_gtk_base_sink_parent_class parent_class
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GstGtkBaseSink, gst_gtk_base_sink,
+G_DEFINE_TYPE_WITH_CODE (GstGtkBaseSink, gst_gtk_base_sink,
     GST_TYPE_VIDEO_SINK,
     G_IMPLEMENT_INTERFACE (GST_TYPE_NAVIGATION,
         gst_gtk_base_sink_navigation_interface_init);
     GST_DEBUG_CATEGORY_INIT (gst_debug_gtk_base_sink,
         "gtkbasesink", 0, "GTK Video Sink base class"));
-
 
 static void
 gst_gtk_base_sink_class_init (GstGtkBaseSinkClass * klass)
@@ -88,11 +106,13 @@ gst_gtk_base_sink_class_init (GstGtkBaseSinkClass * klass)
   GstElementClass *gstelement_class;
   GstBaseSinkClass *gstbasesink_class;
   GstVideoSinkClass *gstvideosink_class;
+  GstGtkBaseSinkClass *gstgtkbasesink_class;
 
   gobject_class = (GObjectClass *) klass;
   gstelement_class = (GstElementClass *) klass;
   gstbasesink_class = (GstBaseSinkClass *) klass;
   gstvideosink_class = (GstVideoSinkClass *) klass;
+  gstgtkbasesink_class = (GstGtkBaseSinkClass *) klass;
 
   gobject_class->set_property = gst_gtk_base_sink_set_property;
   gobject_class->get_property = gst_gtk_base_sink_get_property;
@@ -123,12 +143,28 @@ gst_gtk_base_sink_class_init (GstGtkBaseSinkClass * klass)
   gobject_class->finalize = gst_gtk_base_sink_finalize;
 
   gstelement_class->change_state = gst_gtk_base_sink_change_state;
+
+  gstbasesink_class->get_caps = gst_gtk_base_sink_get_caps;
   gstbasesink_class->set_caps = gst_gtk_base_sink_set_caps;
   gstbasesink_class->get_times = gst_gtk_base_sink_get_times;
+  gstbasesink_class->propose_allocation = gst_gtk_base_sink_propose_allocation;
+  gstbasesink_class->query = gst_gtk_base_sink_query;
   gstbasesink_class->start = gst_gtk_base_sink_start;
   gstbasesink_class->stop = gst_gtk_base_sink_stop;
 
   gstvideosink_class->show_frame = gst_gtk_base_sink_show_frame;
+
+  gstgtkbasesink_class->create_widget = gtk_gst_gl_widget_new;
+  gstgtkbasesink_class->window_title = GTKCONFIG_NAME " GL Renderer";
+
+  gst_element_class_set_metadata (gstelement_class,
+      GTKCONFIG_NAME " GL Video Sink",
+      "Sink/Video", "A video sink that renders to a GtkWidget using OpenGL",
+      "Matthew Waters <matthew@centricular.com>, "
+      "Rafał Dzięgiel <rafostar.github@gmail.com>");
+
+  gst_element_class_add_static_pad_template (gstelement_class,
+      &gst_gtk_base_sink_template);
 
   gst_type_mark_as_plugin_api (GST_TYPE_GTK_BASE_SINK, 0);
 }
@@ -145,18 +181,18 @@ gst_gtk_base_sink_init (GstGtkBaseSink * gtk_sink)
 static void
 gst_gtk_base_sink_finalize (GObject * object)
 {
-  GstGtkBaseSink *gtk_sink = GST_GTK_BASE_SINK (object);
+  GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (object);
 
   GST_DEBUG ("finalizing base sink");
 
-  GST_OBJECT_LOCK (gtk_sink);
-  if (gtk_sink->window && gtk_sink->window_destroy_id)
-    g_signal_handler_disconnect (gtk_sink->window, gtk_sink->window_destroy_id);
-  if (gtk_sink->widget && gtk_sink->widget_destroy_id)
-    g_signal_handler_disconnect (gtk_sink->widget, gtk_sink->widget_destroy_id);
+  GST_OBJECT_LOCK (base_sink);
+  if (base_sink->window && base_sink->window_destroy_id)
+    g_signal_handler_disconnect (base_sink->window, base_sink->window_destroy_id);
+  if (base_sink->widget && base_sink->widget_destroy_id)
+    g_signal_handler_disconnect (base_sink->widget, base_sink->widget_destroy_id);
 
-  g_clear_object (&gtk_sink->widget);
-  GST_OBJECT_UNLOCK (gtk_sink);
+  g_clear_object (&base_sink->widget);
+  GST_OBJECT_UNLOCK (base_sink);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -320,6 +356,118 @@ gst_gtk_base_sink_navigation_interface_init (GstNavigationInterface * iface)
 }
 
 static gboolean
+gst_gtk_base_sink_propose_allocation (GstBaseSink * bsink, GstQuery * query)
+{
+  GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (bsink);
+  GstBufferPool *pool = NULL;
+  GstStructure *config;
+  GstCaps *caps;
+  GstVideoInfo info;
+  guint size;
+  gboolean need_pool;
+  GstStructure *allocation_meta = NULL;
+  gint display_width, display_height;
+
+  if (!base_sink->display || !base_sink->context)
+    return FALSE;
+
+  gst_query_parse_allocation (query, &caps, &need_pool);
+
+  if (caps == NULL)
+    goto no_caps;
+
+  if (!gst_video_info_from_caps (&info, caps))
+    goto invalid_caps;
+
+  /* the normal size of a frame */
+  size = info.size;
+
+  if (need_pool) {
+    GST_DEBUG_OBJECT (base_sink, "create new pool");
+    pool = gst_gl_buffer_pool_new (base_sink->context);
+
+    config = gst_buffer_pool_get_config (pool);
+    gst_buffer_pool_config_set_params (config, caps, size, 0, 0);
+    gst_buffer_pool_config_add_option (config,
+        GST_BUFFER_POOL_OPTION_GL_SYNC_META);
+
+    if (!gst_buffer_pool_set_config (pool, config))
+      goto config_failed;
+  }
+
+  /* we need at least 2 buffer because we hold on to the last one */
+  gst_query_add_allocation_pool (query, pool, size, 2, 0);
+  if (pool)
+    gst_object_unref (pool);
+
+  GST_OBJECT_LOCK (base_sink);
+  display_width = base_sink->display_width;
+  display_height = base_sink->display_height;
+  GST_OBJECT_UNLOCK (base_sink);
+
+  if (display_width != 0 && display_height != 0) {
+    GST_DEBUG_OBJECT (base_sink, "sending alloc query with size %dx%d",
+        display_width, display_height);
+    allocation_meta = gst_structure_new ("GstVideoOverlayCompositionMeta",
+        "width", G_TYPE_UINT, display_width,
+        "height", G_TYPE_UINT, display_height, NULL);
+  }
+
+  gst_query_add_allocation_meta (query,
+      GST_VIDEO_OVERLAY_COMPOSITION_META_API_TYPE, allocation_meta);
+
+  if (allocation_meta)
+    gst_structure_free (allocation_meta);
+
+  /* we also support various metadata */
+  gst_query_add_allocation_meta (query, GST_VIDEO_META_API_TYPE, 0);
+
+  if (base_sink->context->gl_vtable->FenceSync)
+    gst_query_add_allocation_meta (query, GST_GL_SYNC_META_API_TYPE, 0);
+
+  return TRUE;
+
+  /* ERRORS */
+no_caps:
+  {
+    GST_DEBUG_OBJECT (bsink, "no caps specified");
+    return FALSE;
+  }
+invalid_caps:
+  {
+    GST_DEBUG_OBJECT (bsink, "invalid caps specified");
+    return FALSE;
+  }
+config_failed:
+  {
+    GST_DEBUG_OBJECT (bsink, "failed setting config");
+    return FALSE;
+  }
+}
+
+static gboolean
+gst_gtk_base_sink_query (GstBaseSink * bsink, GstQuery * query)
+{
+  GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (bsink);
+  gboolean res = FALSE;
+
+  switch (GST_QUERY_TYPE (query)) {
+    case GST_QUERY_CONTEXT:
+    {
+      if (gst_gl_handle_context_query ((GstElement *) base_sink, query,
+              base_sink->display, base_sink->context, base_sink->gtk_context))
+        return TRUE;
+      break;
+    }
+    default:
+      res = GST_BASE_SINK_CLASS (parent_class)->query (bsink, query);
+      break;
+  }
+
+  return res;
+}
+
+static gboolean
 gst_gtk_base_sink_start_on_main (GstBaseSink * bsink)
 {
   GstGtkBaseSink *gst_sink = GST_GTK_BASE_SINK (bsink);
@@ -330,7 +478,7 @@ gst_gtk_base_sink_start_on_main (GstBaseSink * bsink)
   if (gst_gtk_base_sink_get_widget (gst_sink) == NULL)
     return FALSE;
 
-  /* After this point, gtk_sink->widget will always be set */
+  /* After this point, base_sink->widget will always be set */
 
   root = gtk_widget_get_root (GTK_WIDGET (gst_sink->widget));
   if (!GTK_IS_ROOT (root)) {
@@ -363,8 +511,39 @@ gst_gtk_base_sink_start_on_main (GstBaseSink * bsink)
 static gboolean
 gst_gtk_base_sink_start (GstBaseSink * bsink)
 {
-  return ! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
-      gst_gtk_base_sink_start_on_main, bsink);
+  GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (bsink);
+  GtkGstGLWidget *gst_widget;
+
+  if (!(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
+      gst_gtk_base_sink_start_on_main, bsink)))
+    return FALSE;
+
+  /* After this point, base_sink->widget will always be set */
+  gst_widget = GTK_GST_GL_WIDGET (base_sink->widget);
+
+  if (!gtk_gst_gl_widget_init_winsys (gst_widget)) {
+    GST_ELEMENT_ERROR (bsink, RESOURCE, NOT_FOUND, ("%s",
+            "Failed to initialize OpenGL with GTK"), (NULL));
+    return FALSE;
+  }
+
+  if (!base_sink->display)
+    base_sink->display = gtk_gst_gl_widget_get_display (gst_widget);
+  if (!base_sink->context)
+    base_sink->context = gtk_gst_gl_widget_get_context (gst_widget);
+  if (!base_sink->gtk_context)
+    base_sink->gtk_context = gtk_gst_gl_widget_get_gtk_context (gst_widget);
+
+  if (!base_sink->display || !base_sink->context || !base_sink->gtk_context) {
+    GST_ELEMENT_ERROR (bsink, RESOURCE, NOT_FOUND, ("%s",
+            "Failed to retrieve OpenGL context from GTK"), (NULL));
+    return FALSE;
+  }
+
+  gst_gl_element_propagate_display_context (GST_ELEMENT (bsink),
+      base_sink->display);
+
+  return TRUE;
 }
 
 static gboolean
@@ -384,9 +563,21 @@ gst_gtk_base_sink_stop_on_main (GstBaseSink * bsink)
 static gboolean
 gst_gtk_base_sink_stop (GstBaseSink * bsink)
 {
-  GstGtkBaseSink *gst_sink = GST_GTK_BASE_SINK (bsink);
+  GstGtkBaseSink *base_sink = GST_GTK_BASE_SINK (bsink);
 
-  if (gst_sink->window)
+  if (base_sink->display) {
+    gst_object_unref (base_sink->display);
+    base_sink->display = NULL;
+  }
+  if (base_sink->context) {
+    gst_object_unref (base_sink->context);
+    base_sink->context = NULL;
+  }
+  if (base_sink->gtk_context) {
+    gst_object_unref (base_sink->gtk_context);
+    base_sink->gtk_context = NULL;
+  }
+  if (base_sink->window)
     return ! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
         gst_gtk_base_sink_stop_on_main, bsink);
 
@@ -466,7 +657,32 @@ gst_gtk_base_sink_get_times (GstBaseSink * bsink, GstBuffer * buf,
   }
 }
 
-gboolean
+static GstCaps *
+gst_gtk_base_sink_get_caps (GstBaseSink * bsink, GstCaps * filter)
+{
+  GstCaps *tmp = NULL;
+  GstCaps *result = NULL;
+
+  tmp = gst_pad_get_pad_template_caps (GST_BASE_SINK_PAD (bsink));
+
+  if (filter) {
+    GST_DEBUG_OBJECT (bsink, "intersecting with filter caps %" GST_PTR_FORMAT,
+        filter);
+
+    result = gst_caps_intersect_full (filter, tmp, GST_CAPS_INTERSECT_FIRST);
+    gst_caps_unref (tmp);
+  } else {
+    result = tmp;
+  }
+
+  result = gst_gl_overlay_compositor_add_caps (result);
+
+  GST_DEBUG_OBJECT (bsink, "returning caps: %" GST_PTR_FORMAT, result);
+
+  return result;
+}
+
+static gboolean
 gst_gtk_base_sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
 {
   GstGtkBaseSink *gtk_sink = GST_GTK_BASE_SINK (bsink);

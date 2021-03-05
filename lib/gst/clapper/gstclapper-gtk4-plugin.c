@@ -30,7 +30,7 @@
 #endif
 
 #include "gstclapper-gtk4-plugin.h"
-#include "gtk4/gstgtkglsink.h"
+#include "gtk4/gstgtkbasesink.h"
 
 enum
 {
@@ -78,7 +78,7 @@ gst_clapper_gtk4_plugin_constructed (GObject * object)
   GstClapperGtk4Plugin *self = GST_CLAPPER_GTK4_PLUGIN (object);
 
   if (!self->video_sink)
-    self->video_sink = g_object_new (GST_TYPE_GTK_GL_SINK, NULL);
+    self->video_sink = g_object_new (GST_TYPE_GTK_BASE_SINK, NULL);
 
   gst_object_ref_sink (self->video_sink);
 

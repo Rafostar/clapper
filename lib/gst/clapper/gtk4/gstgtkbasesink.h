@@ -25,6 +25,7 @@
 #include <gst/gst.h>
 #include <gst/video/gstvideosink.h>
 #include <gst/video/video.h>
+#include <gst/gl/gl.h>
 
 #include "gtkgstbasewidget.h"
 
@@ -37,7 +38,6 @@
 #define GST_GTK_BASE_SINK_CAST(obj)       ((GstGtkBaseSink*)(obj))
 
 G_BEGIN_DECLS
-
 typedef struct _GstGtkBaseSink GstGtkBaseSink;
 typedef struct _GstGtkBaseSinkClass GstGtkBaseSinkClass;
 
@@ -71,6 +71,17 @@ struct _GstGtkBaseSink
   GtkWidget            *window;
   gulong                widget_destroy_id;
   gulong                window_destroy_id;
+
+  GstGLDisplay         *display;
+  GstGLContext         *context;
+  GstGLContext         *gtk_context;
+
+  GstGLUpload          *upload;
+  GstBuffer            *uploaded_buffer;
+
+  /* read/write with object lock */
+  gint                  display_width;
+  gint                  display_height;
 };
 
 /**
