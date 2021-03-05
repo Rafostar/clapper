@@ -8,9 +8,9 @@ gstclapper_sources = [
   'gstclapper-visualization.c',
   'gstclapper-gtk4-plugin.c',
 
-  'gtk4/gstgtkbasesink.c',
+  'gtk4/gstclapperglsink.c',
   'gtk4/gstgtkutils.c',
-  'gtk4/gtkgstbasewidget.c',
+  'gtk4/gtkclapperglwidget.c',
 ]
 gstclapper_headers = [
   'clapper.h',

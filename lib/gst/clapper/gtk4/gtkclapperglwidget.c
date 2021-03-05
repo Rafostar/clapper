@@ -27,7 +27,7 @@
 #include <gst/gl/gstglfuncs.h>
 #include <gst/video/video.h>
 
-#include "gtkgstbasewidget.h"
+#include "gtkclapperglwidget.h"
 #include "gstgtkutils.h"
 
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
@@ -41,23 +41,23 @@
 #endif
 
 /**
- * SECTION:gtkgstbasewidget
- * @title: GtkGstBaseWidget
+ * SECTION:gtkclapperglwidget
+ * @title: GtkClapperGLWidget
  * @short_description: a #GtkGLArea that renders GStreamer video #GstBuffers
  * @see_also: #GtkGLArea, #GstBuffer
  *
- * #GtkGstBaseWidget is an #GtkWidget that renders GStreamer video buffers.
+ * #GtkClapperGLWidget is a #GtkWidget that renders GStreamer video buffers.
  */
 
-GST_DEBUG_CATEGORY (gst_debug_gtk_base_widget);
-#define GST_CAT_DEFAULT gst_debug_gtk_base_widget
+GST_DEBUG_CATEGORY (gst_debug_clapper_gl_widget);
+#define GST_CAT_DEFAULT gst_debug_clapper_gl_widget
 
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
 #define DEFAULT_IGNORE_TEXTURES     FALSE
 
-struct _GtkGstBaseWidgetPrivate
+struct _GtkClapperGLWidgetPrivate
 {
   gboolean initiated;
   GstGLDisplay *display;
@@ -85,10 +85,10 @@ static const GLushort indices[] = {
   0, 1, 2, 0, 2, 3
 };
 
-G_DEFINE_TYPE_WITH_CODE (GtkGstBaseWidget, gtk_gst_base_widget, GTK_TYPE_GL_AREA,
-    G_ADD_PRIVATE (GtkGstBaseWidget)
-    GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "gtkgstbasewidget", 0,
-        "GTK Gst Base Widget"));
+G_DEFINE_TYPE_WITH_CODE (GtkClapperGLWidget, gtk_clapper_gl_widget, GTK_TYPE_GL_AREA,
+    G_ADD_PRIVATE (GtkClapperGLWidget)
+    GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "gtkclapperglwidget", 0,
+        "GTK Clapper GL Widget"));
 
 enum
 {
@@ -99,13 +99,13 @@ enum
 };
 
 static void
-gtk_gst_base_widget_get_preferred_width (GtkWidget * widget, gint * min,
+gtk_clapper_gl_widget_get_preferred_width (GtkWidget * widget, gint * min,
     gint * natural)
 {
-  GtkGstBaseWidget *base_widget = (GtkGstBaseWidget *) widget;
-  gint video_width = base_widget->display_width;
+  GtkClapperGLWidget *clapper_widget = (GtkClapperGLWidget *) widget;
+  gint video_width = clapper_widget->display_width;
 
-  if (!base_widget->negotiated)
+  if (!clapper_widget->negotiated)
     video_width = 10;
 
   if (min)
@@ -115,13 +115,13 @@ gtk_gst_base_widget_get_preferred_width (GtkWidget * widget, gint * min,
 }
 
 static void
-gtk_gst_base_widget_get_preferred_height (GtkWidget * widget, gint * min,
+gtk_clapper_gl_widget_get_preferred_height (GtkWidget * widget, gint * min,
     gint * natural)
 {
-  GtkGstBaseWidget *base_widget = (GtkGstBaseWidget *) widget;
-  gint video_height = base_widget->display_height;
+  GtkClapperGLWidget *clapper_widget = (GtkClapperGLWidget *) widget;
+  gint video_height = clapper_widget->display_height;
 
-  if (!base_widget->negotiated)
+  if (!clapper_widget->negotiated)
     video_height = 10;
 
   if (min)
@@ -131,52 +131,52 @@ gtk_gst_base_widget_get_preferred_height (GtkWidget * widget, gint * min,
 }
 
 static void
-gtk_gst_base_widget_measure (GtkWidget * widget, GtkOrientation orientation,
+gtk_clapper_gl_widget_measure (GtkWidget * widget, GtkOrientation orientation,
     gint for_size, gint * min, gint * natural,
     gint * minimum_baseline, gint * natural_baseline)
 {
   if (orientation == GTK_ORIENTATION_HORIZONTAL)
-    gtk_gst_base_widget_get_preferred_width (widget, min, natural);
+    gtk_clapper_gl_widget_get_preferred_width (widget, min, natural);
   else
-    gtk_gst_base_widget_get_preferred_height (widget, min, natural);
+    gtk_clapper_gl_widget_get_preferred_height (widget, min, natural);
 
   *minimum_baseline = -1;
   *natural_baseline = -1;
 }
 
 static void
-gtk_gst_base_widget_size_allocate (GtkWidget * widget,
+gtk_clapper_gl_widget_size_allocate (GtkWidget * widget,
     gint width, gint height, gint baseline)
 {
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   gint scale_factor = gtk_widget_get_scale_factor (widget);
 
-  GTK_GST_BASE_WIDGET_LOCK (base_widget);
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
 
-  base_widget->scaled_width = width * scale_factor;
-  base_widget->scaled_height = height * scale_factor;
+  clapper_widget->scaled_width = width * scale_factor;
+  clapper_widget->scaled_height = height * scale_factor;
 
-  GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 
   gtk_gl_area_queue_render (GTK_GL_AREA (widget));
 }
 
 static void
-gtk_gst_base_widget_set_property (GObject * object, guint prop_id,
+gtk_clapper_gl_widget_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec)
 {
-  GtkGstBaseWidget *gtk_widget = GTK_GST_BASE_WIDGET (object);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (object);
 
   switch (prop_id) {
     case PROP_FORCE_ASPECT_RATIO:
-      gtk_widget->force_aspect_ratio = g_value_get_boolean (value);
+      clapper_widget->force_aspect_ratio = g_value_get_boolean (value);
       break;
     case PROP_PIXEL_ASPECT_RATIO:
-      gtk_widget->par_n = gst_value_get_fraction_numerator (value);
-      gtk_widget->par_d = gst_value_get_fraction_denominator (value);
+      clapper_widget->par_n = gst_value_get_fraction_numerator (value);
+      clapper_widget->par_d = gst_value_get_fraction_denominator (value);
       break;
     case PROP_IGNORE_TEXTURES:
-      gtk_widget->ignore_textures = g_value_get_boolean (value);
+      clapper_widget->ignore_textures = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -185,20 +185,20 @@ gtk_gst_base_widget_set_property (GObject * object, guint prop_id,
 }
 
 static void
-gtk_gst_base_widget_get_property (GObject * object, guint prop_id,
+gtk_clapper_gl_widget_get_property (GObject * object, guint prop_id,
     GValue * value, GParamSpec * pspec)
 {
-  GtkGstBaseWidget *gtk_widget = GTK_GST_BASE_WIDGET (object);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (object);
 
   switch (prop_id) {
     case PROP_FORCE_ASPECT_RATIO:
-      g_value_set_boolean (value, gtk_widget->force_aspect_ratio);
+      g_value_set_boolean (value, clapper_widget->force_aspect_ratio);
       break;
     case PROP_PIXEL_ASPECT_RATIO:
-      gst_value_set_fraction (value, gtk_widget->par_n, gtk_widget->par_d);
+      gst_value_set_fraction (value, clapper_widget->par_n, clapper_widget->par_d);
       break;
     case PROP_IGNORE_TEXTURES:
-      g_value_set_boolean (value, gtk_widget->ignore_textures);
+      g_value_set_boolean (value, clapper_widget->ignore_textures);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -207,7 +207,7 @@ gtk_gst_base_widget_get_property (GObject * object, guint prop_id,
 }
 
 static gboolean
-_calculate_par (GtkGstBaseWidget * widget, GstVideoInfo * info)
+_calculate_par (GtkClapperGLWidget * clapper_widget, GstVideoInfo * info)
 {
   gboolean ok;
   gint width, height;
@@ -224,16 +224,16 @@ _calculate_par (GtkGstBaseWidget * widget, GstVideoInfo * info)
     par_n = 1;
 
   /* get display's PAR */
-  if (widget->par_n != 0 && widget->par_d != 0) {
-    display_par_n = widget->par_n;
-    display_par_d = widget->par_d;
+  if (clapper_widget->par_n != 0 && clapper_widget->par_d != 0) {
+    display_par_n = clapper_widget->par_n;
+    display_par_d = clapper_widget->par_d;
   } else {
     display_par_n = 1;
     display_par_d = 1;
   }
 
-  ok = gst_video_calculate_display_ratio (&widget->display_ratio_num,
-      &widget->display_ratio_den, width, height, par_n, par_d, display_par_n,
+  ok = gst_video_calculate_display_ratio (&clapper_widget->display_ratio_num,
+      &clapper_widget->display_ratio_den, width, height, par_n, par_d, display_par_n,
       display_par_d);
 
   if (ok) {
@@ -246,59 +246,59 @@ _calculate_par (GtkGstBaseWidget * widget, GstVideoInfo * info)
 }
 
 static void
-_apply_par (GtkGstBaseWidget * widget)
+_apply_par (GtkClapperGLWidget * clapper_widget)
 {
   guint display_ratio_num, display_ratio_den;
   gint width, height;
 
-  width = GST_VIDEO_INFO_WIDTH (&widget->v_info);
-  height = GST_VIDEO_INFO_HEIGHT (&widget->v_info);
+  width = GST_VIDEO_INFO_WIDTH (&clapper_widget->v_info);
+  height = GST_VIDEO_INFO_HEIGHT (&clapper_widget->v_info);
 
-  display_ratio_num = widget->display_ratio_num;
-  display_ratio_den = widget->display_ratio_den;
+  display_ratio_num = clapper_widget->display_ratio_num;
+  display_ratio_den = clapper_widget->display_ratio_den;
 
   if (height % display_ratio_den == 0) {
     GST_DEBUG ("keeping video height");
-    widget->display_width = (guint)
+    clapper_widget->display_width = (guint)
         gst_util_uint64_scale_int (height, display_ratio_num,
         display_ratio_den);
-    widget->display_height = height;
+    clapper_widget->display_height = height;
   } else if (width % display_ratio_num == 0) {
     GST_DEBUG ("keeping video width");
-    widget->display_width = width;
-    widget->display_height = (guint)
+    clapper_widget->display_width = width;
+    clapper_widget->display_height = (guint)
         gst_util_uint64_scale_int (width, display_ratio_den, display_ratio_num);
   } else {
     GST_DEBUG ("approximating while keeping video height");
-    widget->display_width = (guint)
+    clapper_widget->display_width = (guint)
         gst_util_uint64_scale_int (height, display_ratio_num,
         display_ratio_den);
-    widget->display_height = height;
+    clapper_widget->display_height = height;
   }
 
-  GST_DEBUG ("scaling to %dx%d", widget->display_width, widget->display_height);
+  GST_DEBUG ("scaling to %dx%d", clapper_widget->display_width, clapper_widget->display_height);
 }
 
 static gboolean
-_queue_draw (GtkGstBaseWidget * widget)
+_queue_draw (GtkClapperGLWidget * clapper_widget)
 {
-  GTK_GST_BASE_WIDGET_LOCK (widget);
-  widget->draw_id = 0;
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
+  clapper_widget->draw_id = 0;
 
-  if (widget->pending_resize) {
-    widget->pending_resize = FALSE;
+  if (clapper_widget->pending_resize) {
+    clapper_widget->pending_resize = FALSE;
 
-    widget->v_info = widget->pending_v_info;
-    widget->negotiated = TRUE;
+    clapper_widget->v_info = clapper_widget->pending_v_info;
+    clapper_widget->negotiated = TRUE;
 
-    _apply_par (widget);
+    _apply_par (clapper_widget);
 
-    gtk_widget_queue_resize (GTK_WIDGET (widget));
+    gtk_widget_queue_resize (GTK_WIDGET (clapper_widget));
   } else {
-    gtk_gl_area_queue_render (GTK_GL_AREA (widget));
+    gtk_gl_area_queue_render (GTK_GL_AREA (clapper_widget));
   }
 
-  GTK_GST_BASE_WIDGET_UNLOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 
   return G_SOURCE_REMOVE;
 }
@@ -322,15 +322,15 @@ _gdk_key_to_navigation_string (guint keyval)
 }
 
 static gboolean
-gtk_gst_base_widget_key_event (GtkEventControllerKey * key_controller,
+gtk_clapper_gl_widget_key_event (GtkEventControllerKey * key_controller,
     guint keyval, guint keycode, GdkModifierType state)
 {
   GtkEventController *controller = GTK_EVENT_CONTROLLER (key_controller);
   GtkWidget *widget = gtk_event_controller_get_widget (controller);
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   GstElement *element;
 
-  if ((element = g_weak_ref_get (&base_widget->element))) {
+  if ((element = g_weak_ref_get (&clapper_widget->element))) {
     if (GST_IS_NAVIGATION (element)) {
       GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *str = _gdk_key_to_navigation_string (keyval);
@@ -349,41 +349,41 @@ gtk_gst_base_widget_key_event (GtkEventControllerKey * key_controller,
 }
 
 static void
-_fit_stream_to_allocated_size (GtkGstBaseWidget * base_widget, GstVideoRectangle * result)
+_fit_stream_to_allocated_size (GtkClapperGLWidget * clapper_widget, GstVideoRectangle * result)
 {
-  if (base_widget->force_aspect_ratio) {
+  if (clapper_widget->force_aspect_ratio) {
     GstVideoRectangle src, dst;
 
     src.x = 0;
     src.y = 0;
-    src.w = base_widget->display_width;
-    src.h = base_widget->display_height;
+    src.w = clapper_widget->display_width;
+    src.h = clapper_widget->display_height;
 
     dst.x = 0;
     dst.y = 0;
-    dst.w = base_widget->scaled_width;
-    dst.h = base_widget->scaled_height;
+    dst.w = clapper_widget->scaled_width;
+    dst.h = clapper_widget->scaled_height;
 
     gst_video_sink_center_rect (src, dst, result, TRUE);
   } else {
     result->x = 0;
     result->y = 0;
-    result->w = base_widget->scaled_width;
-    result->h = base_widget->scaled_height;
+    result->w = clapper_widget->scaled_width;
+    result->h = clapper_widget->scaled_height;
   }
 }
 
 static void
-_display_size_to_stream_size (GtkGstBaseWidget * base_widget, gdouble x,
+_display_size_to_stream_size (GtkClapperGLWidget * clapper_widget, gdouble x,
     gdouble y, gdouble * stream_x, gdouble * stream_y)
 {
   gdouble stream_width, stream_height;
   GstVideoRectangle result;
 
-  _fit_stream_to_allocated_size (base_widget, &result);
+  _fit_stream_to_allocated_size (clapper_widget, &result);
 
-  stream_width = (gdouble) GST_VIDEO_INFO_WIDTH (&base_widget->v_info);
-  stream_height = (gdouble) GST_VIDEO_INFO_HEIGHT (&base_widget->v_info);
+  stream_width = (gdouble) GST_VIDEO_INFO_WIDTH (&clapper_widget->v_info);
+  stream_height = (gdouble) GST_VIDEO_INFO_HEIGHT (&clapper_widget->v_info);
 
   /* from display coordinates to stream coordinates */
   if (result.w > 0)
@@ -394,8 +394,8 @@ _display_size_to_stream_size (GtkGstBaseWidget * base_widget, gdouble x,
   /* clip to stream size */
   if (*stream_x < 0.)
     *stream_x = 0.;
-  if (*stream_x > GST_VIDEO_INFO_WIDTH (&base_widget->v_info))
-    *stream_x = GST_VIDEO_INFO_WIDTH (&base_widget->v_info);
+  if (*stream_x > GST_VIDEO_INFO_WIDTH (&clapper_widget->v_info))
+    *stream_x = GST_VIDEO_INFO_WIDTH (&clapper_widget->v_info);
 
   /* same for y-axis */
   if (result.h > 0)
@@ -405,22 +405,22 @@ _display_size_to_stream_size (GtkGstBaseWidget * base_widget, gdouble x,
 
   if (*stream_y < 0.)
     *stream_y = 0.;
-  if (*stream_y > GST_VIDEO_INFO_HEIGHT (&base_widget->v_info))
-    *stream_y = GST_VIDEO_INFO_HEIGHT (&base_widget->v_info);
+  if (*stream_y > GST_VIDEO_INFO_HEIGHT (&clapper_widget->v_info))
+    *stream_y = GST_VIDEO_INFO_HEIGHT (&clapper_widget->v_info);
 
   GST_TRACE ("transform %fx%f into %fx%f", x, y, *stream_x, *stream_y);
 }
 
 static gboolean
-gtk_gst_base_widget_button_event (GtkGestureClick * gesture,
+gtk_clapper_gl_widget_button_event (GtkGestureClick * gesture,
     gint n_press, gdouble x, gdouble y)
 {
   GtkEventController *controller = GTK_EVENT_CONTROLLER (gesture);
   GtkWidget *widget = gtk_event_controller_get_widget (controller);
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   GstElement *element;
 
-  if ((element = g_weak_ref_get (&base_widget->element))) {
+  if ((element = g_weak_ref_get (&clapper_widget->element))) {
     if (GST_IS_NAVIGATION (element)) {
       GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *key_type =
@@ -428,7 +428,7 @@ gtk_gst_base_widget_button_event (GtkGestureClick * gesture,
           ? "mouse-button-press" : "mouse-button-release";
       gdouble stream_x, stream_y;
 
-      _display_size_to_stream_size (base_widget, x, y, &stream_x, &stream_y);
+      _display_size_to_stream_size (clapper_widget, x, y, &stream_x, &stream_y);
 
       gst_navigation_send_mouse_event (GST_NAVIGATION (element), key_type,
           /* Gesture is set to ignore other buttons so we do not have to check */
@@ -442,19 +442,19 @@ gtk_gst_base_widget_button_event (GtkGestureClick * gesture,
 }
 
 static gboolean
-gtk_gst_base_widget_motion_event (GtkEventControllerMotion * motion_controller,
+gtk_clapper_gl_widget_motion_event (GtkEventControllerMotion * motion_controller,
     gdouble x, gdouble y)
 {
   GtkEventController *controller = GTK_EVENT_CONTROLLER (motion_controller);
   GtkWidget *widget = gtk_event_controller_get_widget (controller);
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   GstElement *element;
 
-  if ((element = g_weak_ref_get (&base_widget->element))) {
+  if ((element = g_weak_ref_get (&clapper_widget->element))) {
     if (GST_IS_NAVIGATION (element)) {
       gdouble stream_x, stream_y;
 
-      _display_size_to_stream_size (base_widget, x, y, &stream_x, &stream_y);
+      _display_size_to_stream_size (clapper_widget, x, y, &stream_x, &stream_y);
 
       gst_navigation_send_mouse_event (GST_NAVIGATION (element), "mouse-move",
           0, stream_x, stream_y);
@@ -466,9 +466,9 @@ gtk_gst_base_widget_motion_event (GtkEventControllerMotion * motion_controller,
 }
 
 static void
-gtk_gst_base_widget_bind_buffer (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_bind_buffer (GtkClapperGLWidget * clapper_widget)
 {
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl = priv->context->gl_vtable;
 
   gl->BindBuffer (GL_ARRAY_BUFFER, priv->vertex_buffer);
@@ -486,9 +486,9 @@ gtk_gst_base_widget_bind_buffer (GtkGstBaseWidget * base_widget)
 }
 
 static void
-gtk_gst_base_widget_unbind_buffer (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_unbind_buffer (GtkClapperGLWidget * clapper_widget)
 {
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl = priv->context->gl_vtable;
 
   gl->BindBuffer (GL_ARRAY_BUFFER, 0);
@@ -498,9 +498,9 @@ gtk_gst_base_widget_unbind_buffer (GtkGstBaseWidget * base_widget)
 }
 
 static void
-gtk_gst_base_widget_init_redisplay (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_init_redisplay (GtkClapperGLWidget * clapper_widget)
 {
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl = priv->context->gl_vtable;
   GError *error = NULL;
 
@@ -526,7 +526,7 @@ gtk_gst_base_widget_init_redisplay (GtkGstBaseWidget * base_widget)
       GL_STATIC_DRAW);
 
   if (gl->GenVertexArrays) {
-    gtk_gst_base_widget_bind_buffer (base_widget);
+    gtk_clapper_gl_widget_bind_buffer (clapper_widget);
     gl->BindVertexArray (0);
   }
 
@@ -557,39 +557,39 @@ _draw_black_with_gdk (GdkGLContext * gdk_context)
 }
 
 static gboolean
-gtk_gst_base_widget_render (GtkGLArea * widget, GdkGLContext * context)
+gtk_clapper_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 {
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (widget);
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
 
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl;
 
-  GTK_GST_BASE_WIDGET_LOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_LOCK (widget);
 
   /* Draw black with GDK context when priv is not available yet.
      GTK calls render with GDK context already active. */
-  if (!priv->context || !priv->other_context || base_widget->ignore_textures) {
+  if (!priv->context || !priv->other_context || clapper_widget->ignore_textures) {
     _draw_black_with_gdk (context);
     goto done;
   }
 
   gst_gl_context_activate (priv->other_context, TRUE);
 
-  if (!priv->initiated || !base_widget->negotiated) {
+  if (!priv->initiated || !clapper_widget->negotiated) {
     if (!priv->initiated)
-      gtk_gst_base_widget_init_redisplay (base_widget);
+      gtk_clapper_gl_widget_init_redisplay (clapper_widget);
 
     _draw_black (priv->other_context);
     goto done;
   }
 
   /* Upload latest buffer */
-  if (base_widget->pending_buffer) {
-    GstBuffer *buffer = base_widget->pending_buffer;
+  if (clapper_widget->pending_buffer) {
+    GstBuffer *buffer = clapper_widget->pending_buffer;
     GstVideoFrame gl_frame;
     GstGLSyncMeta *sync_meta;
 
-    if (!gst_video_frame_map (&gl_frame, &base_widget->v_info, buffer,
+    if (!gst_video_frame_map (&gl_frame, &clapper_widget->v_info, buffer,
             GST_MAP_READ | GST_MAP_GL)) {
       _draw_black (priv->other_context);
       goto done;
@@ -608,21 +608,21 @@ gtk_gst_base_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
     gst_video_frame_unmap (&gl_frame);
 
-    if (base_widget->buffer)
-      gst_buffer_unref (base_widget->buffer);
+    if (clapper_widget->buffer)
+      gst_buffer_unref (clapper_widget->buffer);
 
     /* Keep the buffer to ensure current_tex stay valid */
-    base_widget->buffer = buffer;
-    base_widget->pending_buffer = NULL;
+    clapper_widget->buffer = buffer;
+    clapper_widget->pending_buffer = NULL;
   }
 
   GST_DEBUG ("rendering buffer %p with gdk context %p",
-      base_widget->buffer, context);
+      clapper_widget->buffer, context);
 
   /* Draw texture */
   gl = priv->context->gl_vtable;
 
-  if (base_widget->force_aspect_ratio) {
+  if (clapper_widget->force_aspect_ratio) {
     GstVideoRectangle src, dst, result;
 
     gl->ClearColor (0.0, 0.0, 0.0, 1.0);
@@ -630,13 +630,13 @@ gtk_gst_base_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
     src.x = 0;
     src.y = 0;
-    src.w = base_widget->display_width;
-    src.h = base_widget->display_height;
+    src.w = clapper_widget->display_width;
+    src.h = clapper_widget->display_height;
 
     dst.x = 0;
     dst.y = 0;
-    dst.w = base_widget->scaled_width;
-    dst.h = base_widget->scaled_height;
+    dst.w = clapper_widget->scaled_width;
+    dst.h = clapper_widget->scaled_height;
 
     gst_video_sink_center_rect (src, dst, &result, TRUE);
 
@@ -648,7 +648,7 @@ gtk_gst_base_widget_render (GtkGLArea * widget, GdkGLContext * context)
   if (gl->BindVertexArray)
     gl->BindVertexArray (priv->vao);
 
-  gtk_gst_base_widget_bind_buffer (base_widget);
+  gtk_clapper_gl_widget_bind_buffer (clapper_widget);
 
   gl->ActiveTexture (GL_TEXTURE0);
   gl->BindTexture (GL_TEXTURE_2D, priv->current_tex);
@@ -659,7 +659,7 @@ gtk_gst_base_widget_render (GtkGLArea * widget, GdkGLContext * context)
   if (gl->BindVertexArray)
     gl->BindVertexArray (0);
   else
-    gtk_gst_base_widget_unbind_buffer (base_widget);
+    gtk_clapper_gl_widget_unbind_buffer (clapper_widget);
 
   gl->BindTexture (GL_TEXTURE_2D, 0);
 
@@ -670,18 +670,18 @@ done:
   if (priv->other_context)
     gst_gl_context_activate (priv->other_context, FALSE);
 
-  GTK_GST_BASE_WIDGET_UNLOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (widget);
   return FALSE;
 }
 
 static void
-_reset_gl (GtkGstBaseWidget * base_widget)
+_reset_gl (GtkClapperGLWidget * clapper_widget)
 {
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl = priv->other_context->gl_vtable;
 
   if (!priv->gdk_context)
-    priv->gdk_context = gtk_gl_area_get_context (GTK_GL_AREA (base_widget));
+    priv->gdk_context = gtk_gl_area_get_context (GTK_GL_AREA (clapper_widget));
 
   if (priv->gdk_context == NULL)
     return;
@@ -724,13 +724,13 @@ _reset_gl (GtkGstBaseWidget * base_widget)
 }
 
 static void
-gtk_gst_base_widget_finalize (GObject * object)
+gtk_clapper_gl_widget_finalize (GObject * object)
 {
-  GtkGstBaseWidget *base_widget = GTK_GST_BASE_WIDGET (object);
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (object);
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
 
   if (priv->other_context)
-    gst_gtk_invoke_on_main ((GThreadFunc) (GCallback) _reset_gl, base_widget);
+    gst_gtk_invoke_on_main ((GThreadFunc) (GCallback) _reset_gl, clapper_widget);
 
   if (priv->context)
     gst_object_unref (priv->context);
@@ -738,75 +738,75 @@ gtk_gst_base_widget_finalize (GObject * object)
   if (priv->display)
     gst_object_unref (priv->display);
 
-  if (base_widget->draw_id)
-    g_source_remove (base_widget->draw_id);
+  if (clapper_widget->draw_id)
+    g_source_remove (clapper_widget->draw_id);
 
-  gst_buffer_replace (&base_widget->pending_buffer, NULL);
-  gst_buffer_replace (&base_widget->buffer, NULL);
-  g_mutex_clear (&base_widget->lock);
-  g_weak_ref_clear (&base_widget->element);
+  gst_buffer_replace (&clapper_widget->pending_buffer, NULL);
+  gst_buffer_replace (&clapper_widget->buffer, NULL);
+  g_mutex_clear (&clapper_widget->lock);
+  g_weak_ref_clear (&clapper_widget->element);
 
-  G_OBJECT_CLASS (gtk_gst_base_widget_parent_class)->finalize (object);
+  G_OBJECT_CLASS (gtk_clapper_gl_widget_parent_class)->finalize (object);
 }
 
 void
-gtk_gst_base_widget_set_element (GtkGstBaseWidget * widget,
+gtk_clapper_gl_widget_set_element (GtkClapperGLWidget * clapper_widget,
     GstElement * element)
 {
-  g_weak_ref_set (&widget->element, element);
+  g_weak_ref_set (&clapper_widget->element, element);
 }
 
 gboolean
-gtk_gst_base_widget_set_format (GtkGstBaseWidget * widget,
+gtk_clapper_gl_widget_set_format (GtkClapperGLWidget * clapper_widget,
     GstVideoInfo * v_info)
 {
-  GTK_GST_BASE_WIDGET_LOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
 
-  if (gst_video_info_is_equal (&widget->pending_v_info, v_info)) {
-    GTK_GST_BASE_WIDGET_UNLOCK (widget);
+  if (gst_video_info_is_equal (&clapper_widget->pending_v_info, v_info)) {
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
     return TRUE;
   }
 
-  if (!_calculate_par (widget, v_info)) {
-    GTK_GST_BASE_WIDGET_UNLOCK (widget);
+  if (!_calculate_par (clapper_widget, v_info)) {
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
     return FALSE;
   }
 
-  widget->pending_resize = TRUE;
-  widget->pending_v_info = *v_info;
+  clapper_widget->pending_resize = TRUE;
+  clapper_widget->pending_v_info = *v_info;
 
-  GTK_GST_BASE_WIDGET_UNLOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 
   return TRUE;
 }
 
 void
-gtk_gst_base_widget_set_buffer (GtkGstBaseWidget * widget, GstBuffer * buffer)
+gtk_clapper_gl_widget_set_buffer (GtkClapperGLWidget * clapper_widget,
+    GstBuffer * buffer)
 {
-  /* As we have no type, this is better then no check */
-  g_return_if_fail (GTK_IS_WIDGET (widget));
+  g_return_if_fail (GTK_IS_CLAPPER_GL_WIDGET (clapper_widget));
 
-  GTK_GST_BASE_WIDGET_LOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
 
-  gst_buffer_replace (&widget->pending_buffer, buffer);
+  gst_buffer_replace (&clapper_widget->pending_buffer, buffer);
 
-  if (!widget->draw_id) {
-    widget->draw_id = g_idle_add_full (G_PRIORITY_DEFAULT,
-        (GSourceFunc) _queue_draw, widget, NULL);
+  if (!clapper_widget->draw_id) {
+    clapper_widget->draw_id = g_idle_add_full (G_PRIORITY_DEFAULT,
+        (GSourceFunc) _queue_draw, clapper_widget, NULL);
   }
 
-  GTK_GST_BASE_WIDGET_UNLOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 }
 
 static void
-_get_gl_context (GtkGstBaseWidget * base_widget)
+_get_gl_context (GtkClapperGLWidget * clapper_widget)
 {
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   GstGLPlatform platform = GST_GL_PLATFORM_NONE;
   GstGLAPI gl_api = GST_GL_API_NONE;
   guintptr gl_handle = 0;
 
-  gtk_widget_realize (GTK_WIDGET (base_widget));
+  gtk_widget_realize (GTK_WIDGET (clapper_widget));
 
   if (priv->other_context)
     gst_object_unref (priv->other_context);
@@ -815,11 +815,11 @@ _get_gl_context (GtkGstBaseWidget * base_widget)
   if (priv->gdk_context)
     g_object_unref (priv->gdk_context);
 
-  priv->gdk_context = gtk_gl_area_get_context (GTK_GL_AREA (base_widget));
+  priv->gdk_context = gtk_gl_area_get_context (GTK_GL_AREA (clapper_widget));
   if (priv->gdk_context == NULL) {
-    GError *error = gtk_gl_area_get_error (GTK_GL_AREA (base_widget));
+    GError *error = gtk_gl_area_get_error (GTK_GL_AREA (clapper_widget));
 
-    GST_ERROR_OBJECT (base_widget, "Error creating GdkGLContext : %s",
+    GST_ERROR_OBJECT (clapper_widget, "Error creating GdkGLContext : %s",
         error ? error->message : "No error set by Gdk");
     g_clear_error (&error);
     return;
@@ -889,15 +889,15 @@ _get_gl_context (GtkGstBaseWidget * base_widget)
 }
 
 static void
-gtk_gst_base_widget_class_init (GtkGstBaseWidgetClass * klass)
+gtk_clapper_gl_widget_class_init (GtkClapperGLWidgetClass * klass)
 {
   GObjectClass *gobject_klass = (GObjectClass *) klass;
   GtkWidgetClass *widget_klass = (GtkWidgetClass *) klass;
   GtkGLAreaClass *gl_area_klass = (GtkGLAreaClass *) klass;
 
-  gobject_klass->set_property = gtk_gst_base_widget_set_property;
-  gobject_klass->get_property = gtk_gst_base_widget_get_property;
-  gobject_klass->finalize = gtk_gst_base_widget_finalize;
+  gobject_klass->set_property = gtk_clapper_gl_widget_set_property;
+  gobject_klass->get_property = gtk_clapper_gl_widget_get_property;
+  gobject_klass->finalize = gtk_clapper_gl_widget_finalize;
 
   g_object_class_install_property (gobject_klass, PROP_FORCE_ASPECT_RATIO,
       g_param_spec_boolean ("force-aspect-ratio",
@@ -916,65 +916,62 @@ gtk_gst_base_widget_class_init (GtkGstBaseWidgetClass * klass)
           "When enabled, textures will be ignored and not drawn",
           DEFAULT_IGNORE_TEXTURES, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  widget_klass->measure = gtk_gst_base_widget_measure;
-  widget_klass->size_allocate = gtk_gst_base_widget_size_allocate;
+  widget_klass->measure = gtk_clapper_gl_widget_measure;
+  widget_klass->size_allocate = gtk_clapper_gl_widget_size_allocate;
 
-  gl_area_klass->render = gtk_gst_base_widget_render;
-
-  GST_DEBUG_CATEGORY_INIT (gst_debug_gtk_base_widget, "gtkbasewidget", 0,
-      "GTK Video Base Widget");
+  gl_area_klass->render = gtk_clapper_gl_widget_render;
 }
 
 static void
-gtk_gst_base_widget_init (GtkGstBaseWidget * widget)
+gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
 {
   GdkDisplay *display;
-  GtkGstBaseWidgetPrivate *priv;
+  GtkClapperGLWidgetPrivate *priv;
+  GtkWidget *widget = GTK_WIDGET (clapper_widget);
 
-  widget->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
-  widget->par_n = DEFAULT_PAR_N;
-  widget->par_d = DEFAULT_PAR_D;
-  widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
+  clapper_widget->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
+  clapper_widget->par_n = DEFAULT_PAR_N;
+  clapper_widget->par_d = DEFAULT_PAR_D;
+  clapper_widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
 
-  gst_video_info_init (&widget->v_info);
-  gst_video_info_init (&widget->pending_v_info);
+  gst_video_info_init (&clapper_widget->v_info);
+  gst_video_info_init (&clapper_widget->pending_v_info);
 
-  g_weak_ref_init (&widget->element, NULL);
-  g_mutex_init (&widget->lock);
+  g_weak_ref_init (&clapper_widget->element, NULL);
+  g_mutex_init (&clapper_widget->lock);
 
-  widget->key_controller = gtk_event_controller_key_new ();
-  g_signal_connect (widget->key_controller, "key-pressed",
-      G_CALLBACK (gtk_gst_base_widget_key_event), NULL);
-  g_signal_connect (widget->key_controller, "key-released",
-      G_CALLBACK (gtk_gst_base_widget_key_event), NULL);
+  clapper_widget->key_controller = gtk_event_controller_key_new ();
+  g_signal_connect (clapper_widget->key_controller, "key-pressed",
+      G_CALLBACK (gtk_clapper_gl_widget_key_event), NULL);
+  g_signal_connect (clapper_widget->key_controller, "key-released",
+      G_CALLBACK (gtk_clapper_gl_widget_key_event), NULL);
 
-  widget->motion_controller = gtk_event_controller_motion_new ();
-  g_signal_connect (widget->motion_controller, "motion",
-      G_CALLBACK (gtk_gst_base_widget_motion_event), NULL);
+  clapper_widget->motion_controller = gtk_event_controller_motion_new ();
+  g_signal_connect (clapper_widget->motion_controller, "motion",
+      G_CALLBACK (gtk_clapper_gl_widget_motion_event), NULL);
 
-  widget->click_gesture = gtk_gesture_click_new ();
-  g_signal_connect (widget->click_gesture, "pressed",
-      G_CALLBACK (gtk_gst_base_widget_button_event), NULL);
-  g_signal_connect (widget->click_gesture, "released",
-      G_CALLBACK (gtk_gst_base_widget_button_event), NULL);
+  clapper_widget->click_gesture = gtk_gesture_click_new ();
+  g_signal_connect (clapper_widget->click_gesture, "pressed",
+      G_CALLBACK (gtk_clapper_gl_widget_button_event), NULL);
+  g_signal_connect (clapper_widget->click_gesture, "released",
+      G_CALLBACK (gtk_clapper_gl_widget_button_event), NULL);
 
   /* Otherwise widget in grid will appear as a 1x1px
    * video which might be misleading for users */
-  gtk_widget_set_hexpand (GTK_WIDGET (widget), TRUE);
-  gtk_widget_set_vexpand (GTK_WIDGET (widget), TRUE);
+  gtk_widget_set_hexpand (widget, TRUE);
+  gtk_widget_set_vexpand (widget, TRUE);
 
-  gtk_widget_set_focusable (GTK_WIDGET (widget), TRUE);
-  gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (widget->click_gesture),
+  gtk_widget_set_focusable (widget, TRUE);
+  gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (clapper_widget->click_gesture),
       GDK_BUTTON_PRIMARY);
 
-  gtk_widget_add_controller (GTK_WIDGET (widget), widget->key_controller);
-  gtk_widget_add_controller (GTK_WIDGET (widget), widget->motion_controller);
-  gtk_widget_add_controller (GTK_WIDGET (widget),
-      GTK_EVENT_CONTROLLER (widget->click_gesture));
+  gtk_widget_add_controller (widget, clapper_widget->key_controller);
+  gtk_widget_add_controller (widget, clapper_widget->motion_controller);
+  gtk_widget_add_controller (widget, GTK_EVENT_CONTROLLER (clapper_widget->click_gesture));
 
-  gtk_widget_set_can_focus (GTK_WIDGET (widget), TRUE);
+  gtk_widget_set_can_focus (widget, TRUE);
 
-  widget->priv = priv = gtk_gst_base_widget_get_instance_private (widget);
+  clapper_widget->priv = priv = gtk_clapper_gl_widget_get_instance_private (clapper_widget);
 
   display = gdk_display_get_default ();
 
@@ -1005,37 +1002,37 @@ gtk_gst_base_widget_init (GtkGstBaseWidget * widget)
 }
 
 GtkWidget *
-gtk_gst_base_widget_new (void)
+gtk_clapper_gl_widget_new (void)
 {
-  return (GtkWidget *) g_object_new (GTK_TYPE_GST_BASE_WIDGET, NULL);
+  return (GtkWidget *) g_object_new (GTK_TYPE_CLAPPER_GL_WIDGET, NULL);
 }
 
 gboolean
-gtk_gst_base_widget_init_winsys (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_init_winsys (GtkClapperGLWidget * clapper_widget)
 {
-  GtkGstBaseWidgetPrivate *priv = base_widget->priv;
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   GError *error = NULL;
 
-  g_return_val_if_fail (GTK_IS_GST_BASE_WIDGET (base_widget), FALSE);
+  g_return_val_if_fail (GTK_IS_CLAPPER_GL_WIDGET (clapper_widget), FALSE);
   g_return_val_if_fail (priv->display != NULL, FALSE);
 
-  GTK_GST_BASE_WIDGET_LOCK (base_widget);
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
 
   if (priv->display && priv->gdk_context && priv->other_context) {
     GST_TRACE ("have already initialized contexts");
-    GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
     return TRUE;
   }
 
   if (!priv->other_context) {
-    GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
-    gst_gtk_invoke_on_main ((GThreadFunc) (GCallback) _get_gl_context, base_widget);
-    GTK_GST_BASE_WIDGET_LOCK (base_widget);
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
+    gst_gtk_invoke_on_main ((GThreadFunc) (GCallback) _get_gl_context, clapper_widget);
+    GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
   }
 
   if (!GST_IS_GL_CONTEXT (priv->other_context)) {
     GST_FIXME ("Could not retrieve Gdk OpenGL context");
-    GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
     return FALSE;
   }
 
@@ -1046,39 +1043,39 @@ gtk_gst_base_widget_init_winsys (GtkGstBaseWidget * base_widget)
         error ? error->message : "Unknown");
     g_clear_error (&error);
     GST_OBJECT_UNLOCK (priv->display);
-    GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
     return FALSE;
   }
   gst_gl_display_add_context (priv->display, priv->context);
   GST_OBJECT_UNLOCK (priv->display);
 
-  GTK_GST_BASE_WIDGET_UNLOCK (base_widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
   return TRUE;
 }
 
 GstGLContext *
-gtk_gst_base_widget_get_gtk_context (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_get_gtk_context (GtkClapperGLWidget * clapper_widget)
 {
-  if (!base_widget->priv->other_context)
+  if (!clapper_widget->priv->other_context)
     return NULL;
 
-  return gst_object_ref (base_widget->priv->other_context);
+  return gst_object_ref (clapper_widget->priv->other_context);
 }
 
 GstGLContext *
-gtk_gst_base_widget_get_context (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_get_context (GtkClapperGLWidget * clapper_widget)
 {
-  if (!base_widget->priv->context)
+  if (!clapper_widget->priv->context)
     return NULL;
 
-  return gst_object_ref (base_widget->priv->context);
+  return gst_object_ref (clapper_widget->priv->context);
 }
 
 GstGLDisplay *
-gtk_gst_base_widget_get_display (GtkGstBaseWidget * base_widget)
+gtk_clapper_gl_widget_get_display (GtkClapperGLWidget * clapper_widget)
 {
-  if (!base_widget->priv->display)
+  if (!clapper_widget->priv->display)
     return NULL;
 
-  return gst_object_ref (base_widget->priv->display);
+  return gst_object_ref (clapper_widget->priv->display);
 }
