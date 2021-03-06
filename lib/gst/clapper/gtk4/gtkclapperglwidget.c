@@ -293,12 +293,14 @@ _queue_draw (GtkClapperGLWidget * clapper_widget)
 
     _apply_par (clapper_widget);
 
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
+
     gtk_widget_queue_resize (GTK_WIDGET (clapper_widget));
   } else {
+    GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
+
     gtk_gl_area_queue_render (GTK_GL_AREA (clapper_widget));
   }
-
-  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 
   return G_SOURCE_REMOVE;
 }
