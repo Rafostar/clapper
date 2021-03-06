@@ -26,20 +26,6 @@
 
 G_BEGIN_DECLS
 
-/* PluginType */
-GST_CLAPPER_API
-GType         gst_clapper_gtk4_plugin_type_get_type     (void);
-#define       GST_TYPE_CLAPPER_GTK4_PLUGIN_TYPE         (gst_clapper_gtk4_plugin_type_get_type ())
-
-/**
- * GstClapperGtk4PluginType:
- * @GST_CLAPPER_GTK4_PLUGIN_TYPE_GLAREA: GTK4 GLArea sink.
- */
-typedef enum
-{
-  GST_CLAPPER_GTK4_PLUGIN_TYPE_GLAREA,
-} GstClapperGtk4PluginType;
-
 #define GST_TYPE_CLAPPER_GTK4_PLUGIN             (gst_clapper_gtk4_plugin_get_type ())
 #define GST_IS_CLAPPER_GTK4_PLUGIN(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GST_TYPE_CLAPPER_GTK4_PLUGIN))
 #define GST_IS_CLAPPER_GTK4_PLUGIN_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GST_TYPE_CLAPPER_GTK4_PLUGIN))
@@ -79,7 +65,7 @@ GST_CLAPPER_API
 GType gst_clapper_gtk4_plugin_get_type             (void);
 
 GST_CLAPPER_API
-GstClapperGtk4Plugin * gst_clapper_gtk4_plugin_new (const GstClapperGtk4PluginType plugin_type);
+GstClapperGtk4Plugin * gst_clapper_gtk4_plugin_new (void);
 
 G_END_DECLS
 
