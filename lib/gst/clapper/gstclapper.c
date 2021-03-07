@@ -2743,7 +2743,16 @@ mute_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
 static void
 source_setup_cb (GstElement * playbin, GstElement * source, GstClapper * self)
 {
+  GParamSpec *prop = g_object_class_find_property (G_OBJECT_GET_CLASS (source),
+      "user-agent");
 
+  if (prop && prop->value_type == G_TYPE_STRING) {
+    const gchar *user_agent =
+        "Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0";
+
+    GST_INFO_OBJECT (self, "Setting source user-agent: %s", user_agent);
+    g_object_set (source, "user-agent", user_agent, NULL);
+  }
 }
 
 static gpointer
