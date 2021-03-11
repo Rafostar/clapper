@@ -104,3 +104,8 @@ function encodeHTML(text)
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&apos;');
 }
+
+function decodeURIPlus(uri)
+{
+    return decodeURI(uri.replace(/\+/g, ' '));
+}

@@ -93,7 +93,7 @@ class ClapperPlayer extends PlayerBase
             throw new Error('no YouTube video URI');
 
         this.customVideoTitle = (info.videoDetails && info.videoDetails.title)
-            ? info.videoDetails.title
+            ? Misc.decodeURIPlus(info.videoDetails.title)
             : videoId;
 
         return videoUri;
