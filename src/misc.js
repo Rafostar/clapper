@@ -1,4 +1,4 @@
-const { Gio, GstAudio, Gdk, Gtk } = imports.gi;
+const { Gio, Gdk, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 
 const { debug } = Debug;
@@ -94,4 +94,13 @@ function getFormattedTime(time, showHours)
 
     const parsed = (hours) ? `${hours}:` : '';
     return parsed + `${minutes}:${seconds}`;
+}
+
+function encodeHTML(text)
+{
+    return text.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }

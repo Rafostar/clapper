@@ -1,7 +1,9 @@
 const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
+const Dash = imports.src.dash;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
+const YouTube = imports.src.youtube;
 const { PlayerBase } = imports.src.playerBase;
 
 const { debug } = Debug;
@@ -17,6 +19,7 @@ class ClapperPlayer extends PlayerBase
         this.seek_done = true;
         this.doneStartup = false;
         this.needsFastSeekRestore = false;
+        this.customVideoTitle = null;
 
         this.playOnFullscreen = false;
         this.quitOnStop = false;
@@ -40,8 +43,20 @@ class ClapperPlayer extends PlayerBase
 
     set_uri(uri)
     {
-        if(Gst.Uri.get_protocol(uri) !== 'file')
-            return super.set_uri(uri);
+        this.customVideoTitle = null;
+
+        if(Gst.Uri.get_protocol(uri) !== 'file') {
+            const [isYouTubeUri, videoId] = YouTube.checkYouTubeUri(uri);
+
+            if(!isYouTubeUri)
+                return super.set_uri(uri);
+
+            this.getYouTubeUriAsync(videoId)
+                .then(ytUri => super.set_uri(ytUri))
+                .catch(debug);
+
+            return;
+        }
 
         let file = Gio.file_new_for_uri(uri);
         if(!file.query_exists(null)) {
@@ -52,10 +67,36 @@ class ClapperPlayer extends PlayerBase
 
             return;
         }
-        if(uri.endsWith('.claps'))
-            return this.load_playlist_file(file);
+        if(uri.endsWith('.claps')) {
+            this.load_playlist_file(file);
+
+            return;
+        }
 
         super.set_uri(uri);
+    }
+
+    async getYouTubeUriAsync(videoId)
+    {
+        const client = new YouTube.YouTubeClient();
+        const info = await client.getVideoInfoPromise(videoId).catch(debug);
+
+        if(!info)
+            throw new Error('no YouTube video info');
+
+        const dash = Dash.generateDash(info);
+        const videoUri = (dash)
+            ? await Dash.saveDashPromise(dash).catch(debug)
+            : client.getBestCombinedUri(info);
+
+        if(!videoUri)
+            throw new Error('no YouTube video URI');
+
+        this.customVideoTitle = (info.videoDetails && info.videoDetails.title)
+            ? info.videoDetails.title
+            : videoId;
+
+        return videoUri;
     }
 
     load_playlist_file(file)
