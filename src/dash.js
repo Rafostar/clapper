@@ -158,7 +158,7 @@ function _getStreamRepresentation(stream)
     repArr.push(
         `        <BaseURL>${encodedURL}</BaseURL>`,
         `<!-- FIXME: causes string query omission bug in dashdemux`,
-	`        <SegmentBase indexRange="${segRange}">`,
+        `        <SegmentBase indexRange="${segRange}">`,
         `          <Initialization range="${initRange}"/>`,
         `        </SegmentBase>`,
         `-->`,
