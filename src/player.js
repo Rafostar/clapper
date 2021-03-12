@@ -26,6 +26,7 @@ class ClapperPlayer extends PlayerBase
         this.needsTocUpdate = true;
 
         this.keyPressCount = 0;
+        this.ytClient = null;
 
         const keyController = new Gtk.EventControllerKey();
         keyController.connect('key-pressed', this._onWidgetKeyPressed.bind(this));
@@ -78,8 +79,10 @@ class ClapperPlayer extends PlayerBase
 
     async getYouTubeUriAsync(videoId)
     {
-        const client = new YouTube.YouTubeClient();
-        const info = await client.getVideoInfoPromise(videoId).catch(debug);
+        if(!this.ytClient)
+            this.ytClient = new YouTube.YouTubeClient();
+
+        const info = await this.ytClient.getVideoInfoPromise(videoId).catch(debug);
 
         if(!info)
             throw new Error('no YouTube video info');
@@ -87,7 +90,7 @@ class ClapperPlayer extends PlayerBase
         const dash = Dash.generateDash(info);
         const videoUri = (dash)
             ? await Dash.saveDashPromise(dash).catch(debug)
-            : client.getBestCombinedUri(info);
+            : this.ytClient.getBestCombinedUri(info);
 
         if(!videoUri)
             throw new Error('no YouTube video URI');

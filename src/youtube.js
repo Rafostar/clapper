@@ -4,27 +4,54 @@ const Debug = imports.src.debug;
 
 const { debug } = Debug;
 
-var YouTubeClient = GObject.registerClass(
-class ClapperYouTubeClient extends Soup.Session
+var YouTubeClient = GObject.registerClass({
+    Signals: {
+        'info-resolved': {
+            param_types: [GObject.TYPE_BOOLEAN]
+        }
+    }
+}, class ClapperYouTubeClient extends Soup.Session
 {
     _init()
     {
         super._init({
             timeout: 5,
         });
+
+        /* videoID of current active download */
+        this.downloadingVideoId = null;
+
+        this.downloadAborted = false;
+        this.lastInfo = null;
     }
 
     getVideoInfoPromise(videoId)
     {
-        return new Promise(async (resolve, reject) => {
-            const url = `https://www.youtube.com/get_video_info?video_id=${videoId}&el=embedded`;
-            let tries = 2;
+        /* If in middle of download and same videoID,
+         * resolve to current download */
+        if(
+            this.downloadingVideoId
+            && this.downloadingVideoId === videoId
+        )
+            return this._getCurrentDownloadPromise();
 
+        return new Promise(async (resolve, reject) => {
+            /* Do not redownload info for the same video */
+            if(this.compareLastVideoId(videoId))
+                return resolve(this.lastInfo);
+
+            this.abort();
+
+            let tries = 2;
             while(tries--) {
                 debug(`obtaining YouTube video info: ${videoId}`);
+                this.downloadingVideoId = videoId;
 
-                const info = await this._getInfoPromise(url).catch(debug);
+                const info = await this._getInfoPromise(videoId).catch(debug);
                 if(!info) {
+                    if(this.downloadAborted)
+                        return reject(new Error('download aborted'));
+
                     debug(`failed, remaining tries: ${tries}`);
                     continue;
                 }
@@ -33,15 +60,30 @@ class ClapperYouTubeClient extends Soup.Session
                 if(
                     !info.playabilityStatus
                     || !info.playabilityStatus.status === 'OK'
-                )
+                ) {
+                    this.emit('info-resolved', false);
+                    this.downloadingVideoId = null;
+
                     return reject(new Error('video is not playable'));
+                }
 
                 /* Check if data contains streaming URIs */
-                if(!info.streamingData)
+                if(!info.streamingData) {
+                    this.emit('info-resolved', false);
+                    this.downloadingVideoId = null;
+
                     return reject(new Error('video response data is missing URIs'));
+                }
+
+                this.lastInfo = info;
+                this.emit('info-resolved', true);
+                this.downloadingVideoId = null;
 
                 return resolve(info);
             }
+
+            this.emit('info-resolved', false);
+            this.downloadingVideoId = null;
 
             reject(new Error('could not obtain YouTube video info'));
         });
@@ -65,9 +107,45 @@ class ClapperYouTubeClient extends Soup.Session
         return combinedStream.url;
     }
 
-    _getInfoPromise(url)
+    compareLastVideoId(videoId)
+    {
+        if(!this.lastInfo)
+            return false;
+
+        if(
+            !this.lastInfo
+            || !this.lastInfo.videoDetails
+            || this.lastInfo.videoDetails.videoId !== videoId
+            /* TODO: check if video expired */
+        )
+            return false;
+
+        return true;
+    }
+
+    _getCurrentDownloadPromise()
+    {
+        debug('resolving after current download finishes');
+
+        return new Promise((resolve, reject) => {
+            const infoResolvedSignal = this.connect('info-resolved', (self, success) => {
+                this.disconnect(infoResolvedSignal);
+
+                debug('current download finished, resolving');
+
+                if(!success)
+                    return reject(new Error('info resolve was unsuccessful'));
+
+                /* At this point new video info is set */
+                resolve(this.lastInfo);
+            });
+        });
+    }
+
+    _getInfoPromise(videoId)
     {
         return new Promise((resolve, reject) => {
+            const url = `https://www.youtube.com/get_video_info?video_id=${videoId}&el=embedded`;
             const message = Soup.Message.new('GET', url);
             let data = '';
 
@@ -85,8 +163,14 @@ class ClapperYouTubeClient extends Soup.Session
 
                 debug('got message response');
 
-                if(msg.status_code !== 200)
-                    return reject(new Error(`response code: ${msg.status_code}`));
+                const statusCode = msg.status_code;
+
+                /* Internal Soup codes mean download abort
+                 * or some other error that cannot be handled */
+                this.downloadAborted = (statusCode < 10);
+
+                if(statusCode !== 200)
+                    return reject(new Error(`response code: ${statusCode}`));
 
                 debug('parsing video info JSON');
 

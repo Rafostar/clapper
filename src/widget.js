@@ -4,6 +4,7 @@ const Debug = imports.src.debug;
 const Dialogs = imports.src.dialogs;
 const Misc = imports.src.misc;
 const { Player } = imports.src.player;
+const YouTube = imports.src.youtube;
 const Revealers = imports.src.revealers;
 
 const { debug } = Debug;
@@ -721,9 +722,11 @@ class ClapperWidget extends Gtk.Grid
     {
         const dropTarget = new Gtk.DropTarget({
             actions: Gdk.DragAction.COPY,
+            preload: true,
         });
         dropTarget.set_gtypes([GObject.TYPE_STRING]);
         dropTarget.connect('drop', this._onDataDrop.bind(this));
+        dropTarget.connect('notify::value', this._onDropValueNotify.bind(this));
 
         return dropTarget;
     }
@@ -895,6 +898,31 @@ class ClapperWidget extends Gtk.Grid
 
         this.posX = posX;
         this.posY = posY;
+    }
+
+    _onDropValueNotify(dropTarget)
+    {
+        if(!dropTarget.value)
+            return;
+
+        const uris = dropTarget.value.split(/\r?\n/);
+        const firstUri = uris[0];
+
+        if(uris.length > 1 || !Gst.uri_is_valid(firstUri))
+            return;
+
+        /* Check if user is dragging a YouTube link */
+        const [isYouTubeUri, videoId] = YouTube.checkYouTubeUri(firstUri);
+        if(!isYouTubeUri) return;
+
+        /* Since this is a YouTube video,
+         * create YT client if it was not created yet */
+        if(!this.player.ytClient)
+            this.player.ytClient = new YouTube.YouTubeClient();
+
+        /* Speed up things by prefetching new video info before drop */
+        if(!this.player.ytClient.compareLastVideoId(videoId))
+            this.player.ytClient.getVideoInfoPromise(videoId).catch(debug);
     }
 
     _onDataDrop(dropTarget, value, x, y)
