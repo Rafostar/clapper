@@ -56,23 +56,21 @@ var YouTubeClient = GObject.registerClass({
                     continue;
                 }
 
-                /* Check if video is playable */
-                if(
+                const invalidInfoMsg = (
                     !info.playabilityStatus
                     || !info.playabilityStatus.status === 'OK'
-                ) {
+                )
+                    ? 'video is not playable'
+                    : (!info.streamingData)
+                    ? 'video response data is missing URIs'
+                    : null;
+
+                if(invalidInfoMsg) {
+                    this.lastInfo = null;
                     this.emit('info-resolved', false);
                     this.downloadingVideoId = null;
 
-                    return reject(new Error('video is not playable'));
-                }
-
-                /* Check if data contains streaming URIs */
-                if(!info.streamingData) {
-                    this.emit('info-resolved', false);
-                    this.downloadingVideoId = null;
-
-                    return reject(new Error('video response data is missing URIs'));
+                    return reject(new Error(invalidInfoMsg));
                 }
 
                 this.lastInfo = info;
@@ -82,6 +80,8 @@ var YouTubeClient = GObject.registerClass({
                 return resolve(info);
             }
 
+            /* Do not clear video info here, as we still have
+             * valid info from last video that can be reused */
             this.emit('info-resolved', false);
             this.downloadingVideoId = null;
 
