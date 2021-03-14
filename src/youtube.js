@@ -100,6 +100,14 @@ var YouTubeClient = GObject.registerClass({
                         break;
                     }
                     const ytUri = `https://www.youtube.com${ytPath}`;
+                    if(
+                        /* check if site has "/" after ".com" */
+                        ytUri[23] !== '/'
+                        || !Gst.Uri.is_valid(ytUri)
+                    ) {
+                        debug(`misformed player URI: ${ytUri}`);
+                        break;
+                    }
                     debug(`found player URI: ${ytUri}`);
 
                     /* TODO: cache */
