@@ -388,6 +388,7 @@ var YouTubeClient = GObject.registerClass({
         const sig = gstUri.get_query_value(queryKeys.sig);
 
         const key = YTDL.sig.decipher(cipher, actions);
+        if(!key) return null;
 
         debug('stream deciphered');
 
