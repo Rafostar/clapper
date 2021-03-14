@@ -1,6 +1,7 @@
-const { GLib, GObject, Gst, Soup } = imports.gi;
+const { Gio, GLib, GObject, Gst, Soup } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
+const Misc = imports.src.misc;
 const YTDL = imports.src.assets['node-ytdl-core'];
 
 const { debug } = Debug;
@@ -23,6 +24,10 @@ var YouTubeClient = GObject.registerClass({
         this.downloadingVideoId = null;
 
         this.lastInfo = null;
+        this.cachedSig = {
+            id: null,
+            actions: null,
+        };
     }
 
     getVideoInfoPromise(videoId)
@@ -110,8 +115,15 @@ var YouTubeClient = GObject.registerClass({
                     }
                     debug(`found player URI: ${ytUri}`);
 
-                    /* TODO: cache */
+                    const ytId = ytPath.split('/').find(el => Misc.isHex(el));
                     let actions;
+
+                    if(this.cachedSig.id === ytId) {
+                        debug('reusing cached cipher actions');
+                        actions = this.cachedSig.actions;
+                    }
+
+                    /* TODO: load cache from file */
 
                     if(!actions) {
                         const [pBody, isAbortedPlayer] =
@@ -121,6 +133,7 @@ var YouTubeClient = GObject.registerClass({
                             break;
                         }
                         actions = YTDL.sig.extractActions(pBody);
+                        this._createCacheFileAsync(ytId, actions);
                     }
 
                     if(!actions || !actions.length) {
@@ -128,6 +141,13 @@ var YouTubeClient = GObject.registerClass({
                         break;
                     }
                     debug('successfully obtained decipher actions');
+
+                    if(this.cachedSig.id !== ytId) {
+                        this.cachedSig.id = ytId;
+                        this.cachedSig.actions = actions;
+                        debug('set current decipher actions for reuse');
+                    }
+
                     const isDeciphered = this._decipherStreamingData(
                         info.streamingData, actions
                     );
@@ -393,6 +413,24 @@ var YouTubeClient = GObject.registerClass({
         debug('stream deciphered');
 
         return `${url}&${sig}=${key}`;
+    }
+
+    _createCacheFileAsync(ytId, actions)
+    {
+        const cachePath = GLib.get_user_cache_dir() + '/' + ytId;
+        const cacheFile = Gio.File.new_for_path(cachePath);
+
+        debug('saving cipher actions to cache file');
+
+        cacheFile.replace_contents_bytes_async(
+            GLib.Bytes.new_take(actions),
+            null,
+            false,
+            Gio.FileCreateFlags.NONE,
+            null
+        )
+        .then(() => debug('saved cache file'))
+        .catch(debug);
     }
 });
 

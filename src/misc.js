@@ -109,3 +109,8 @@ function decodeURIPlus(uri)
 {
     return decodeURI(uri.replace(/\+/g, ' '));
 }
+
+function isHex(num)
+{
+    return Boolean(num.match(/[0-9a-f]+$/i));
+}
