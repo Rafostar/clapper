@@ -107,8 +107,6 @@ class ClapperWidget extends Gtk.Grid
 
         const dropTarget = this._getDropTarget();
         playerWidget.add_controller(dropTarget);
-        const dropTargetTop = this._getDropTarget();
-        this.revealerTop.add_controller(dropTargetTop);
     }
 
     revealControls(isAllowInput)
