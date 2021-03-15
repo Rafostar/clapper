@@ -1,6 +1,7 @@
-const { GLib, GObject, Gst, Soup } = imports.gi;
+const { Gio, GLib, GObject, Gst, Soup } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
+const Misc = imports.src.misc;
 const YTDL = imports.src.assets['node-ytdl-core'];
 
 const { debug } = Debug;
@@ -23,6 +24,10 @@ var YouTubeClient = GObject.registerClass({
         this.downloadingVideoId = null;
 
         this.lastInfo = null;
+        this.cachedSig = {
+            id: null,
+            actions: null,
+        };
     }
 
     getVideoInfoPromise(videoId)
@@ -47,7 +52,8 @@ var YouTubeClient = GObject.registerClass({
                 debug(`obtaining YouTube video info: ${videoId}`);
                 this.downloadingVideoId = videoId;
 
-                const [info, isAborted] = await this._getInfoPromise(videoId).catch(debug);
+                let [info, isAborted] = await this._getInfoPromise(videoId).catch(debug);
+
                 if(!info) {
                     if(isAborted)
                         return reject(new Error('download aborted'));
@@ -79,55 +85,68 @@ var YouTubeClient = GObject.registerClass({
                 if(!info.streamingData.adaptiveFormats)
                     info.streamingData.adaptiveFormats = [];
 
-                const isCipher = this._getIsCipher(info.streamingData);
-                if(isCipher) {
+                if(this._getIsCipher(info.streamingData)) {
                     debug('video requires deciphering');
 
-                    const embedUri = `https://www.youtube.com/embed/${videoId}`;
-                    const [body, isAbortedBody] =
-                        await this._downloadDataPromise(embedUri).catch(debug);
+                    /* Decipher actions do not change too often, so try
+                     * to reuse without triggering too many requests ban */
+                    let actions = this.cachedSig.actions;
 
-                    if(isAbortedBody)
-                        break;
+                    if(actions)
+                        debug('using remembered decipher actions');
+                    else {
+                        const embedUri = `https://www.youtube.com/embed/${videoId}`;
+                        const [body, isAbortedBody] =
+                            await this._downloadDataPromise(embedUri).catch(debug);
 
-                    /* We need matching info, so start from beginning */
-                    if(!body)
-                        continue;
+                        if(isAbortedBody)
+                            break;
+                        if(!body)
+                            continue;
 
-                    const ytPath = body.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
-                    if(!ytPath) {
-                        debug(new Error('could not find YouTube player URI'));
-                        break;
-                    }
-                    const ytUri = `https://www.youtube.com${ytPath}`;
-                    if(
-                        /* check if site has "/" after ".com" */
-                        ytUri[23] !== '/'
-                        || !Gst.Uri.is_valid(ytUri)
-                    ) {
-                        debug(`misformed player URI: ${ytUri}`);
-                        break;
-                    }
-                    debug(`found player URI: ${ytUri}`);
-
-                    /* TODO: cache */
-                    let actions;
-
-                    if(!actions) {
-                        const [pBody, isAbortedPlayer] =
-                            await this._downloadDataPromise(ytUri).catch(debug);
-                        if(!pBody || isAbortedPlayer) {
-                            debug(new Error('could not download player body'));
+                        const ytPath = body.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
+                        if(!ytPath) {
+                            debug(new Error('could not find YouTube player URI'));
                             break;
                         }
-                        actions = YTDL.sig.extractActions(pBody);
-                    }
+                        const ytUri = `https://www.youtube.com${ytPath}`;
+                        if(
+                            /* check if site has "/" after ".com" */
+                            ytUri[23] !== '/'
+                            || !Gst.Uri.is_valid(ytUri)
+                        ) {
+                            debug(`misformed player URI: ${ytUri}`);
+                            break;
+                        }
+                        debug(`found player URI: ${ytUri}`);
 
-                    if(!actions || !actions.length) {
-                        debug(new Error('could not extract decipher actions'));
-                        break;
+                        const ytId = ytPath.split('/').find(el => Misc.isHex(el));
+                        actions = await this._getCacheFileActionsPromise(ytId).catch(debug);
+
+                        if(!actions) {
+                            const [pBody, isAbortedPlayer] =
+                                await this._downloadDataPromise(ytUri).catch(debug);
+                            if(!pBody || isAbortedPlayer) {
+                                debug(new Error('could not download player body'));
+                                break;
+                            }
+                            actions = YTDL.sig.extractActions(pBody);
+                            if(actions) {
+                                debug('deciphered');
+                                this._createCacheFileAsync(ytId, actions);
+                            }
+                        }
+                        if(!actions || !actions.length) {
+                            debug(new Error('could not extract decipher actions'));
+                            break;
+                        }
+                        if(this.cachedSig.id !== ytId) {
+                            this.cachedSig.id = ytId;
+                            this.cachedSig.actions = actions;
+                        }
                     }
-                    debug('successfully obtained decipher actions');
+                    debug(`successfully obtained decipher actions: ${actions}`);
+
                     const isDeciphered = this._decipherStreamingData(
                         info.streamingData, actions
                     );
@@ -194,6 +213,8 @@ var YouTubeClient = GObject.registerClass({
                 debug(`got chunk of data, length: ${chunk.length}`);
 
                 const chunkData = chunk.get_data();
+                if(!chunkData) return;
+
                 data += (chunkData instanceof Uint8Array)
                     ? ByteArray.toString(chunkData)
                     : chunkData;
@@ -393,6 +414,75 @@ var YouTubeClient = GObject.registerClass({
         debug('stream deciphered');
 
         return `${url}&${sig}=${key}`;
+    }
+
+    async _createCacheFileAsync(ytId, actions)
+    {
+        debug('saving cipher actions to cache file');
+
+        const ytCacheDir = Gio.File.new_for_path([
+            GLib.get_user_cache_dir(),
+            Misc.appId,
+            'yt-sig'
+        ].join('/'));
+
+        for(let dir of [ytCacheDir.get_parent(), ytCacheDir]) {
+            if(dir.query_exists(null))
+                continue;
+
+            const dirCreated = await dir.make_directory_async(
+                GLib.PRIORITY_DEFAULT,
+                null,
+            ).catch(debug);
+
+            if(!dirCreated) {
+                debug(new Error(`could not create dir: ${dir.get_path()}`));
+                return;
+            }
+        }
+
+        const cacheFile = ytCacheDir.get_child(ytId);
+        cacheFile.replace_contents_bytes_async(
+            GLib.Bytes.new_take(actions),
+            null,
+            false,
+            Gio.FileCreateFlags.NONE,
+            null
+        )
+        .then(() => debug('saved cache file'))
+        .catch(debug);
+    }
+
+    _getCacheFileActionsPromise(ytId)
+    {
+        return new Promise((resolve, reject) => {
+            debug('checking decipher actions from cache file');
+
+            const ytActionsFile = Gio.File.new_for_path([
+                GLib.get_user_cache_dir(),
+                Misc.appId,
+                'yt-sig',
+                ytId
+            ].join('/'));
+
+            if(!ytActionsFile.query_exists(null)) {
+                debug(`no such cache file: ${ytId}`);
+                return resolve(null);
+            }
+
+            ytActionsFile.load_bytes_async(null)
+                .then(result => {
+                    const data = result[0].get_data();
+                    if(!data || !data.length)
+                        return reject(new Error('actions cache file is empty'));
+
+                    if(data instanceof Uint8Array)
+                        resolve(ByteArray.toString(data));
+                    else
+                        resolve(data);
+                })
+                .catch(err => reject(err));
+        });
     }
 });
 
