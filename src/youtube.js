@@ -52,7 +52,8 @@ var YouTubeClient = GObject.registerClass({
                 debug(`obtaining YouTube video info: ${videoId}`);
                 this.downloadingVideoId = videoId;
 
-                const [info, isAborted] = await this._getInfoPromise(videoId).catch(debug);
+                let [info, isAborted] = await this._getInfoPromise(videoId).catch(debug);
+
                 if(!info) {
                     if(isAborted)
                         return reject(new Error('download aborted'));
@@ -84,68 +85,63 @@ var YouTubeClient = GObject.registerClass({
                 if(!info.streamingData.adaptiveFormats)
                     info.streamingData.adaptiveFormats = [];
 
-                const isCipher = this._getIsCipher(info.streamingData);
-                if(isCipher) {
+                if(this._getIsCipher(info.streamingData)) {
                     debug('video requires deciphering');
 
-                    const embedUri = `https://www.youtube.com/embed/${videoId}`;
-                    const [body, isAbortedBody] =
-                        await this._downloadDataPromise(embedUri).catch(debug);
-
-                    if(isAbortedBody)
-                        break;
-
-                    /* We need matching info, so start from beginning */
-                    if(!body)
-                        continue;
-
-                    const ytPath = body.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
-                    if(!ytPath) {
-                        debug(new Error('could not find YouTube player URI'));
-                        break;
-                    }
-                    const ytUri = `https://www.youtube.com${ytPath}`;
-                    if(
-                        /* check if site has "/" after ".com" */
-                        ytUri[23] !== '/'
-                        || !Gst.Uri.is_valid(ytUri)
-                    ) {
-                        debug(`misformed player URI: ${ytUri}`);
-                        break;
-                    }
-                    debug(`found player URI: ${ytUri}`);
-
-                    const ytId = ytPath.split('/').find(el => Misc.isHex(el));
-                    let actions;
-
-                    if(this.cachedSig.id === ytId) {
-                        debug('reusing cached cipher actions');
-                        actions = this.cachedSig.actions;
-                    }
-
-                    /* TODO: load cache from file */
-
+                    /* Decipher actions do not change too often, so try
+                     * to reuse without triggering too many requests ban */
+                    let actions = this.cachedSig.actions;
                     if(!actions) {
-                        const [pBody, isAbortedPlayer] =
-                            await this._downloadDataPromise(ytUri).catch(debug);
-                        if(!pBody || isAbortedPlayer) {
-                            debug(new Error('could not download player body'));
+                        const embedUri = `https://www.youtube.com/embed/${videoId}`;
+                        const [body, isAbortedBody] =
+                            await this._downloadDataPromise(embedUri).catch(debug);
+
+                        if(isAbortedBody)
+                            break;
+                        if(!body)
+                            continue;
+
+                        const ytPath = body.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
+                        if(!ytPath) {
+                            debug(new Error('could not find YouTube player URI'));
                             break;
                         }
-                        actions = YTDL.sig.extractActions(pBody);
-                        this._createCacheFileAsync(ytId, actions);
-                    }
+                        const ytUri = `https://www.youtube.com${ytPath}`;
+                        if(
+                            /* check if site has "/" after ".com" */
+                            ytUri[23] !== '/'
+                            || !Gst.Uri.is_valid(ytUri)
+                        ) {
+                            debug(`misformed player URI: ${ytUri}`);
+                            break;
+                        }
+                        debug(`found player URI: ${ytUri}`);
 
-                    if(!actions || !actions.length) {
-                        debug(new Error('could not extract decipher actions'));
-                        break;
-                    }
-                    debug('successfully obtained decipher actions');
+                        const ytId = ytPath.split('/').find(el => Misc.isHex(el));
 
-                    if(this.cachedSig.id !== ytId) {
-                        this.cachedSig.id = ytId;
-                        this.cachedSig.actions = actions;
-                        debug('set current decipher actions for reuse');
+                        /* TODO: load cache from file */
+
+                        if(!actions) {
+                            const [pBody, isAbortedPlayer] =
+                                await this._downloadDataPromise(ytUri).catch(debug);
+                            if(!pBody || isAbortedPlayer) {
+                                debug(new Error('could not download player body'));
+                                break;
+                            }
+                            actions = YTDL.sig.extractActions(pBody);
+                            this._createCacheFileAsync(ytId, actions);
+                        }
+                        if(!actions || !actions.length) {
+                            debug(new Error('could not extract decipher actions'));
+                            break;
+                        }
+                        debug('successfully obtained decipher actions');
+
+                        if(this.cachedSig.id !== ytId) {
+                            this.cachedSig.id = ytId;
+                            this.cachedSig.actions = actions;
+                            debug('remembered current decipher actions for reuse');
+                        }
                     }
 
                     const isDeciphered = this._decipherStreamingData(
@@ -214,6 +210,8 @@ var YouTubeClient = GObject.registerClass({
                 debug(`got chunk of data, length: ${chunk.length}`);
 
                 const chunkData = chunk.get_data();
+                if(!chunkData) return;
+
                 data += (chunkData instanceof Uint8Array)
                     ? ByteArray.toString(chunkData)
                     : chunkData;
