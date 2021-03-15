@@ -129,7 +129,10 @@ var YouTubeClient = GObject.registerClass({
                                 break;
                             }
                             actions = YTDL.sig.extractActions(pBody);
-                            this._createCacheFileAsync(ytId, actions);
+                            if(actions) {
+                                debug('deciphered');
+                                this._createCacheFileAsync(ytId, actions);
+                            }
                         }
                         if(!actions || !actions.length) {
                             debug(new Error('could not extract decipher actions'));
