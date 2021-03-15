@@ -399,6 +399,7 @@ var YouTubeClient = GObject.registerClass({
 function checkYouTubeUri(uri)
 {
     const gstUri = Gst.Uri.from_string(uri);
+    const originalHost = gstUri.get_host();
     gstUri.normalize();
 
     const host = gstUri.get_host();
@@ -415,6 +416,12 @@ function checkYouTubeUri(uri)
             videoId = gstUri.get_path_segments()[1];
             break;
         default:
+            const scheme = gstUri.get_scheme();
+            if(scheme === 'yt' || scheme === 'youtube') {
+                /* ID is case sensitive */
+                videoId = originalHost;
+                break;
+            }
             success = false;
             break;
     }
