@@ -493,14 +493,18 @@ function checkYouTubeUri(uri)
     gstUri.normalize();
 
     const host = gstUri.get_host();
-
-    let success = true;
     let videoId = null;
 
     switch(host) {
         case 'www.youtube.com':
         case 'youtube.com':
             videoId = gstUri.get_query_value('v');
+            if(!videoId) {
+                /* Handle embedded videos */
+                const segments = gstUri.get_path_segments();
+                if(segments && segments.length)
+                    videoId = segments[segments.length - 1];
+            }
             break;
         case 'youtu.be':
             videoId = gstUri.get_path_segments()[1];
@@ -512,9 +516,10 @@ function checkYouTubeUri(uri)
                 videoId = originalHost;
                 break;
             }
-            success = false;
             break;
     }
+
+    const success = (videoId != null);
 
     return [success, videoId];
 }
