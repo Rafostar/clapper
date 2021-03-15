@@ -91,7 +91,10 @@ var YouTubeClient = GObject.registerClass({
                     /* Decipher actions do not change too often, so try
                      * to reuse without triggering too many requests ban */
                     let actions = this.cachedSig.actions;
-                    if(!actions) {
+
+                    if(actions)
+                        debug('using remembered decipher actions');
+                    else {
                         const embedUri = `https://www.youtube.com/embed/${videoId}`;
                         const [body, isAbortedBody] =
                             await this._downloadDataPromise(embedUri).catch(debug);
@@ -118,8 +121,7 @@ var YouTubeClient = GObject.registerClass({
                         debug(`found player URI: ${ytUri}`);
 
                         const ytId = ytPath.split('/').find(el => Misc.isHex(el));
-
-                        /* TODO: load cache from file */
+                        actions = await this._getCacheFileActionsPromise(ytId).catch(debug);
 
                         if(!actions) {
                             const [pBody, isAbortedPlayer] =
@@ -138,14 +140,12 @@ var YouTubeClient = GObject.registerClass({
                             debug(new Error('could not extract decipher actions'));
                             break;
                         }
-                        debug('successfully obtained decipher actions');
-
                         if(this.cachedSig.id !== ytId) {
                             this.cachedSig.id = ytId;
                             this.cachedSig.actions = actions;
-                            debug('remembered current decipher actions for reuse');
                         }
                     }
+                    debug(`successfully obtained decipher actions: ${actions}`);
 
                     const isDeciphered = this._decipherStreamingData(
                         info.streamingData, actions
@@ -416,13 +416,32 @@ var YouTubeClient = GObject.registerClass({
         return `${url}&${sig}=${key}`;
     }
 
-    _createCacheFileAsync(ytId, actions)
+    async _createCacheFileAsync(ytId, actions)
     {
-        const cachePath = GLib.get_user_cache_dir() + '/' + ytId;
-        const cacheFile = Gio.File.new_for_path(cachePath);
-
         debug('saving cipher actions to cache file');
 
+        const ytCacheDir = Gio.File.new_for_path([
+            GLib.get_user_cache_dir(),
+            Misc.appId,
+            'yt-sig'
+        ].join('/'));
+
+        for(let dir of [ytCacheDir.get_parent(), ytCacheDir]) {
+            if(dir.query_exists(null))
+                continue;
+
+            const dirCreated = await dir.make_directory_async(
+                GLib.PRIORITY_DEFAULT,
+                null,
+            ).catch(debug);
+
+            if(!dirCreated) {
+                debug(new Error(`could not create dir: ${dir.get_path()}`));
+                return;
+            }
+        }
+
+        const cacheFile = ytCacheDir.get_child(ytId);
         cacheFile.replace_contents_bytes_async(
             GLib.Bytes.new_take(actions),
             null,
@@ -432,6 +451,38 @@ var YouTubeClient = GObject.registerClass({
         )
         .then(() => debug('saved cache file'))
         .catch(debug);
+    }
+
+    _getCacheFileActionsPromise(ytId)
+    {
+        return new Promise((resolve, reject) => {
+            debug('checking decipher actions from cache file');
+
+            const ytActionsFile = Gio.File.new_for_path([
+                GLib.get_user_cache_dir(),
+                Misc.appId,
+                'yt-sig',
+                ytId
+            ].join('/'));
+
+            if(!ytActionsFile.query_exists(null)) {
+                debug(`no such cache file: ${ytId}`);
+                return resolve(null);
+            }
+
+            ytActionsFile.load_bytes_async(null)
+                .then(result => {
+                    const data = result[0].get_data();
+                    if(!data || !data.length)
+                        return reject(new Error('actions cache file is empty'));
+
+                    if(data instanceof Uint8Array)
+                        resolve(ByteArray.toString(data));
+                    else
+                        resolve(data);
+                })
+                .catch(err => reject(err));
+        });
     }
 });
 
