@@ -237,13 +237,17 @@ var YouTubeClient = GObject.registerClass({
                 if(statusCode === 200)
                     return resolve(result);
 
+                debug(new Error(`response code: ${statusCode}`));
+
                 /* Internal Soup codes mean download aborted
                  * or some other error that cannot be handled
                  * and we do not want to retry in such case */
-                if(statusCode < 10)
+                if(statusCode < 10 || statusCode === 429) {
                     result.isAborted = true;
+                    return resolve(result);
+                }
 
-                return reject(new Error(`response code: ${statusCode}`));
+                return reject(new Error('could not download data'));
             });
         });
     }
