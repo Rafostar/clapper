@@ -76,7 +76,9 @@ var YouTubeClient = GObject.registerClass({
                 this.initAsyncState = InitAsyncState.DONE;
             }
 
-            let tries = 2;
+            /* Too many tries might trigger 429 ban,
+             * leave while with break as a "goto" replacement */
+            let tries = 1;
             while(tries--) {
                 debug(`obtaining YouTube video info: ${videoId}`);
                 this.downloadingVideoId = videoId;
@@ -84,13 +86,10 @@ var YouTubeClient = GObject.registerClass({
                 let result = await this._getInfoPromise(videoId).catch(debug);
 
                 if(!result || !result.data) {
-                    if(result && result.isAborted) {
+                    if(result && result.isAborted)
                         debug(new Error('download aborted'));
-                        break;
-                    }
 
-                    debug(`failed, remaining tries: ${tries}`);
-                    continue;
+                    break;
                 }
                 const info = result.data;
 
@@ -134,7 +133,7 @@ var YouTubeClient = GObject.registerClass({
                             break;
                         else if(!result || !result.data) {
                             debug(new Error('could not download embed body'));
-                            continue;
+                            break;
                         }
 
                         const ytPath = result.data.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
@@ -163,7 +162,7 @@ var YouTubeClient = GObject.registerClass({
                                 break;
                             else if(!result || !result.data) {
                                 debug(new Error('could not download player body'));
-                                continue;
+                                break;
                             }
 
                             actions = YTDL.sig.extractActions(result.data);
