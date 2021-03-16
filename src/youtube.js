@@ -166,7 +166,7 @@ var YouTubeClient = GObject.registerClass({
                                 continue;
                             }
 
-                            actions = YTDL.sig.extractActions(pBody);
+                            actions = YTDL.sig.extractActions(result.data);
                             if(actions) {
                                 debug('deciphered');
                                 this._createCacheFileAsync(ytId, actions);
