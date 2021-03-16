@@ -52,15 +52,16 @@ var YouTubeClient = GObject.registerClass({
                 debug(`obtaining YouTube video info: ${videoId}`);
                 this.downloadingVideoId = videoId;
 
-                let [info, isAborted] = await this._getInfoPromise(videoId).catch(debug);
+                let result = await this._getInfoPromise(videoId).catch(debug);
 
-                if(!info) {
-                    if(isAborted)
+                if(!result || !result.data) {
+                    if(result && result.isAborted)
                         return reject(new Error('download aborted'));
 
                     debug(`failed, remaining tries: ${tries}`);
                     continue;
                 }
+                const info = result.data;
 
                 const invalidInfoMsg = (
                     !info.playabilityStatus
@@ -96,15 +97,16 @@ var YouTubeClient = GObject.registerClass({
                         debug('using remembered decipher actions');
                     else {
                         const embedUri = `https://www.youtube.com/embed/${videoId}`;
-                        const [body, isAbortedBody] =
-                            await this._downloadDataPromise(embedUri).catch(debug);
+                        result = await this._downloadDataPromise(embedUri).catch(debug);
 
-                        if(isAbortedBody)
+                        if(result && result.isAborted)
                             break;
-                        if(!body)
+                        else if(!result || !result.data) {
+                            debug(new Error('could not download embed body'));
                             continue;
+                        }
 
-                        const ytPath = body.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
+                        const ytPath = result.data.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
                         if(!ytPath) {
                             debug(new Error('could not find YouTube player URI'));
                             break;
@@ -124,12 +126,15 @@ var YouTubeClient = GObject.registerClass({
                         actions = await this._getCacheFileActionsPromise(ytId).catch(debug);
 
                         if(!actions) {
-                            const [pBody, isAbortedPlayer] =
-                                await this._downloadDataPromise(ytUri).catch(debug);
-                            if(!pBody || isAbortedPlayer) {
-                                debug(new Error('could not download player body'));
+                            result = await this._downloadDataPromise(ytUri).catch(debug);
+
+                            if(result && result.isAborted)
                                 break;
+                            else if(!result || !result.data) {
+                                debug(new Error('could not download player body'));
+                                continue;
                             }
+
                             actions = YTDL.sig.extractActions(pBody);
                             if(actions) {
                                 debug('deciphered');
@@ -207,7 +212,10 @@ var YouTubeClient = GObject.registerClass({
     {
         return new Promise((resolve, reject) => {
             const message = Soup.Message.new('GET', url);
-            let data = '';
+            const result = {
+                data: '',
+                isAborted: false,
+            };
 
             const chunkSignal = message.connect('got-chunk', (msg, chunk) => {
                 debug(`got chunk of data, length: ${chunk.length}`);
@@ -215,7 +223,7 @@ var YouTubeClient = GObject.registerClass({
                 const chunkData = chunk.get_data();
                 if(!chunkData) return;
 
-                data += (chunkData instanceof Uint8Array)
+                result.data += (chunkData instanceof Uint8Array)
                     ? ByteArray.toString(chunkData)
                     : chunkData;
             });
@@ -226,16 +234,16 @@ var YouTubeClient = GObject.registerClass({
                 debug('got message response');
                 const statusCode = msg.status_code;
 
+                if(statusCode === 200)
+                    return resolve(result);
+
                 /* Internal Soup codes mean download aborted
                  * or some other error that cannot be handled
                  * and we do not want to retry in such case */
                 if(statusCode < 10)
-                    return resolve([null, true]);
+                    result.isAborted = true;
 
-                if(statusCode !== 200)
-                    return reject(new Error(`response code: ${statusCode}`));
-
-                resolve([data, false]);
+                return reject(new Error(`response code: ${statusCode}`));
             });
         });
     }
@@ -269,13 +277,13 @@ var YouTubeClient = GObject.registerClass({
             ].join('&');
             const url = `https://www.youtube.com/get_video_info?${query}`;
 
-            this._downloadDataPromise(url).then(res => {
-                if(res[1])
-                    return resolve([null, true]);
+            this._downloadDataPromise(url).then(result => {
+                if(result.isAborted)
+                    return resolve(result);
 
                 debug('parsing video info JSON');
 
-                const gstUri = Gst.Uri.from_string('?' + res[0]);
+                const gstUri = Gst.Uri.from_string('?' + result.data);
 
                 if(!gstUri)
                     return reject(new Error('could not convert query to URI'));
@@ -294,7 +302,9 @@ var YouTubeClient = GObject.registerClass({
                     return reject(new Error('could not parse video info JSON'));
 
                 debug('successfully parsed video info JSON');
-                resolve([info, false]);
+                result.data = info;
+
+                resolve(result);
             })
             .catch(err => reject(err));
         });
