@@ -1,10 +1,17 @@
 const { Gio, GLib, GObject, Gst, Soup } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
+const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
 const YTDL = imports.src.assets['node-ytdl-core'];
 
 const { debug } = Debug;
+
+const InitAsyncState = {
+    NONE: 0,
+    IN_PROGRESS: 1,
+    DONE: 2,
+};
 
 var YouTubeClient = GObject.registerClass({
     Signals: {
@@ -19,6 +26,7 @@ var YouTubeClient = GObject.registerClass({
         super._init({
             timeout: 5,
         });
+        this.initAsyncState = InitAsyncState.NONE;
 
         /* videoID of current active download */
         this.downloadingVideoId = null;
@@ -47,6 +55,27 @@ var YouTubeClient = GObject.registerClass({
 
             this.abort();
 
+            /* Prevent doing this code more than once at a time */
+            if(this.initAsyncState === InitAsyncState.NONE) {
+                this.initAsyncState = InitAsyncState.IN_PROGRESS;
+
+                debug('loading cookies DB');
+                const cacheDir = await FileOps.createCacheDirPromise().catch(debug);
+                if(!cacheDir) {
+                    this.initAsyncState = InitAsyncState.NONE;
+                    return reject(new Error('could not create cookies DB'));
+                }
+
+                const cookiesDB = new Soup.CookieJarDB({
+                    filename: cacheDir.get_child('cookies.sqlite').get_path(),
+                    read_only: false,
+                });
+                this.add_feature(cookiesDB);
+                debug('successfully loaded cookies DB');
+
+                this.initAsyncState = InitAsyncState.DONE;
+            }
+
             let tries = 2;
             while(tries--) {
                 debug(`obtaining YouTube video info: ${videoId}`);
@@ -55,8 +84,10 @@ var YouTubeClient = GObject.registerClass({
                 let result = await this._getInfoPromise(videoId).catch(debug);
 
                 if(!result || !result.data) {
-                    if(result && result.isAborted)
-                        return reject(new Error('download aborted'));
+                    if(result && result.isAborted) {
+                        debug(new Error('download aborted'));
+                        break;
+                    }
 
                     debug(`failed, remaining tries: ${tries}`);
                     continue;
