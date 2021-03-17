@@ -83,7 +83,34 @@ var YouTubeClient = GObject.registerClass({
                 debug(`obtaining YouTube video info: ${videoId}`);
                 this.downloadingVideoId = videoId;
 
-                let result = await this._getInfoPromise(videoId).catch(debug);
+                let result;
+                let isFoundInTemp = false;
+
+                const tempInfo = await this._getFileContentsPromise('tmp', 'yt-info', videoId).catch(debug);
+                if(tempInfo) {
+                    debug('checking temp info for requested video');
+                    let parsedTempInfo;
+
+                    try { parsedTempInfo = JSON.parse(tempInfo); }
+                    catch(err) { debug(err); }
+
+                    if(parsedTempInfo) {
+                        const nowSeconds = Math.floor(Date.now() / 1000);
+                        const { expireDate } = parsedTempInfo.streamingData;
+
+                        if(expireDate && expireDate > nowSeconds) {
+                            debug(`found usable info, remaining live: ${expireDate - nowSeconds}`);
+
+                            isFoundInTemp = true;
+                            result = { data: parsedTempInfo };
+                        }
+                        else
+                            debug('temp info expired');
+                    }
+                }
+
+                if(!result)
+                    result = await this._getInfoPromise(videoId).catch(debug);
 
                 if(!result || !result.data) {
                     if(result && result.isAborted)
@@ -153,7 +180,7 @@ var YouTubeClient = GObject.registerClass({
                         debug(`found player URI: ${ytUri}`);
 
                         const ytId = ytPath.split('/').find(el => Misc.isHex(el));
-                        actions = await this._getCacheFileActionsPromise(ytId).catch(debug);
+                        actions = await this._getFileContentsPromise('user_cache', 'yt-sig', ytId).catch(debug);
 
                         if(!actions) {
                             result = await this._downloadDataPromise(ytUri).catch(debug);
@@ -167,8 +194,8 @@ var YouTubeClient = GObject.registerClass({
 
                             actions = YTDL.sig.extractActions(result.data);
                             if(actions) {
-                                debug('deciphered');
-                                this._createCacheFileAsync(ytId, actions);
+                                debug('deciphered, saving cipher actions to cache file');
+                                this._createSubdirFileAsync('user_cache', 'yt-sig', ytId, actions);
                             }
                         }
                         if(!actions || !actions.length) {
@@ -189,6 +216,19 @@ var YouTubeClient = GObject.registerClass({
                         debug('streaming data could not be deciphered');
                         break;
                     }
+                }
+
+                if(!isFoundInTemp) {
+                    const exp = info.streamingData.expiresInSeconds || 0;
+                    const len = info.videoDetails.lengthSeconds || 3;
+
+                    /* Estimated safe time for rewatching video */
+                    info.streamingData.expireDate = Math.floor(Date.now() / 1000)
+                        + Number(exp) - (3 * len);
+
+                    this._createSubdirFileAsync(
+                        'tmp', 'yt-info', videoId, JSON.stringify(info)
+                    );
                 }
 
                 this.lastInfo = info;
@@ -330,7 +370,7 @@ var YouTubeClient = GObject.registerClass({
                 let info = null;
 
                 try { info = JSON.parse(playerResponse); }
-                catch(err) { debug(err.message) }
+                catch(err) { debug(err.message); }
 
                 if(!info)
                     return reject(new Error('could not parse video info JSON'));
@@ -460,65 +500,53 @@ var YouTubeClient = GObject.registerClass({
         return `${url}&${sig}=${key}`;
     }
 
-    async _createCacheFileAsync(ytId, actions)
+    async _createSubdirFileAsync(place, folderName, fileName, data)
     {
-        debug('saving cipher actions to cache file');
-
-        const ytCacheDir = Gio.File.new_for_path([
-            GLib.get_user_cache_dir(),
+        const destDir = Gio.File.new_for_path([
+            GLib[`get_${place}_dir`](),
             Misc.appId,
-            'yt-sig'
+            folderName
         ].join('/'));
 
-        for(let dir of [ytCacheDir.get_parent(), ytCacheDir]) {
-            if(dir.query_exists(null))
-                continue;
-
-            const dirCreated = await dir.make_directory_async(
-                GLib.PRIORITY_DEFAULT,
-                null,
-            ).catch(debug);
-
-            if(!dirCreated) {
-                debug(new Error(`could not create dir: ${dir.get_path()}`));
-                return;
-            }
+        for(let dir of [destDir.get_parent(), destDir]) {
+            const createdDir = await FileOps.createDirPromise(dir).catch(debug);
+            if(!createdDir) return;
         }
 
-        const cacheFile = ytCacheDir.get_child(ytId);
-        cacheFile.replace_contents_bytes_async(
-            GLib.Bytes.new_take(actions),
+        const destFile = destDir.get_child(fileName);
+        destFile.replace_contents_bytes_async(
+            GLib.Bytes.new_take(data),
             null,
             false,
             Gio.FileCreateFlags.NONE,
             null
         )
-        .then(() => debug('saved cache file'))
+        .then(() => debug(`saved file: ${destFile.get_path()}`))
         .catch(debug);
     }
 
-    _getCacheFileActionsPromise(ytId)
+    _getFileContentsPromise(place, folderName, fileName)
     {
         return new Promise((resolve, reject) => {
-            debug('checking decipher actions from cache file');
+            debug(`reading data from ${place} file`);
 
-            const ytActionsFile = Gio.File.new_for_path([
-                GLib.get_user_cache_dir(),
+            const file = Gio.File.new_for_path([
+                GLib[`get_${place}_dir`](),
                 Misc.appId,
-                'yt-sig',
-                ytId
+                folderName,
+                fileName
             ].join('/'));
 
-            if(!ytActionsFile.query_exists(null)) {
-                debug(`no such cache file: ${ytId}`);
+            if(!file.query_exists(null)) {
+                debug(`no such file: ${file.get_path()}`);
                 return resolve(null);
             }
 
-            ytActionsFile.load_bytes_async(null)
+            file.load_bytes_async(null)
                 .then(result => {
                     const data = result[0].get_data();
                     if(!data || !data.length)
-                        return reject(new Error('actions cache file is empty'));
+                        return reject(new Error('source file is empty'));
 
                     if(data instanceof Uint8Array)
                         resolve(ByteArray.toString(data));
