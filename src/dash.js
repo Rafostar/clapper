@@ -1,5 +1,6 @@
 const { Gio, GLib } = imports.gi;
 const Debug = imports.src.debug;
+const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
 
 const { debug } = Debug;
@@ -45,11 +46,14 @@ function generateDash(info)
 
 function saveDashPromise(dash)
 {
-    return new Promise((resolve, reject) => {
-        const tempPath = GLib.get_tmp_dir() + '/.clapper.mpd';
-        const dashFile = Gio.File.new_for_path(tempPath);
+    debug('saving dash file');
 
-        debug('saving dash file');
+    return new Promise(async (resolve, reject) => {
+        const tempDir = await FileOps.createTempDirPromise().catch(debug);
+        if(!tempDir)
+            return reject(new Error('could not create folder in temp directory'));
+
+        const dashFile = tempDir.get_child('.clapper.mpd');
 
         dashFile.replace_contents_bytes_async(
             GLib.Bytes.new_take(dash),

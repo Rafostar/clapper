@@ -18,7 +18,7 @@ function createCacheDirPromise()
 function createTempDirPromise()
 {
     const dir = Gio.File.new_for_path(
-        GLib.get_tmp_dir() + '/.' + Misc.appId
+        GLib.get_tmp_dir() + '/' + Misc.appId
     );
 
     return createDirPromise(dir);
@@ -26,18 +26,20 @@ function createTempDirPromise()
 
 function createDirPromise(dir)
 {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         if(dir.query_exists(null))
             return resolve(dir);
 
-        const dirCreated = await dir.make_directory_async(
+        dir.make_directory_async(
             GLib.PRIORITY_DEFAULT,
             null,
-        ).catch(debug);
+        )
+        .then(success => {
+            if(success)
+                return resolve(dir);
 
-        if(!dirCreated)
-            return reject(new Error(`could not create dir: ${dir.get_path()}`));
-
-        resolve(dir);
+            reject(new Error(`could not create dir: ${dir.get_path()}`));
+        })
+        .catch(err => reject(err));
     });
 }
