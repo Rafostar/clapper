@@ -25,6 +25,9 @@ var YouTubeClient = GObject.registerClass({
     {
         super._init({
             timeout: 5,
+            max_conns_per_host: 1,
+            /* TODO: share this with GstClapper lib (define only once) */
+            user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0',
         });
         this.initAsyncState = InitAsyncState.NONE;
 
