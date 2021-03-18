@@ -166,7 +166,11 @@ var YouTubeClient = GObject.registerClass({
                             break;
                         }
 
-                        const ytPath = result.data.match(/(?<=jsUrl\":\").*?(?=\")/gs)[0];
+                        let ytPath = result.data.match(/jsUrl\":\"(.*?)\.js/g);
+                        if(ytPath) {
+                            ytPath = (ytPath[0] && ytPath[0].length > 16)
+                                 ? ytPath[0].substring(8) : null;
+                        }
                         if(!ytPath) {
                             debug(new Error('could not find YouTube player URI'));
                             break;
