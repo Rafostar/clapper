@@ -155,17 +155,19 @@ function _getStreamRepresentation(stream)
         repArr.push(`      <AudioChannelConfiguration ${audioConfArr.join(' ')}/>`);
     }
 
-    const encodedURL = Misc.encodeHTML(stream.url);
+    const modURL = stream.url
+        .replace('?', '/')
+        .replace(/&/g, '/')
+        .replace(/=/g, '/');
+
     const segRange = `${stream.indexRange.start}-${stream.indexRange.end}`;
     const initRange = `${stream.initRange.start}-${stream.initRange.end}`;
 
     repArr.push(
-        `        <BaseURL>${encodedURL}</BaseURL>`,
-        `<!-- FIXME: causes string query omission bug in dashdemux`,
+        `        <BaseURL>${modURL}</BaseURL>`,
         `        <SegmentBase indexRange="${segRange}">`,
         `          <Initialization range="${initRange}"/>`,
         `        </SegmentBase>`,
-        `-->`,
         `      </Representation>`,
     );
 
