@@ -564,6 +564,12 @@ var YouTubeClient = GObject.registerClass({
                     return false;
                 }
                 stream.url = formatUrl;
+
+                /* Remove unneeded data */
+                if(stream.signatureCipher)
+                    delete stream.signatureCipher;
+                if(stream.cipher)
+                    delete stream.cipher;
             }
         }
         debug('all streams deciphered');
