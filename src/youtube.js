@@ -35,6 +35,11 @@ var YouTubeClient = GObject.registerClass({
         this.downloadingVideoId = null;
 
         this.lastInfo = null;
+        this.postInfo = {
+            clientVersion: null,
+            visitorData: "",
+        };
+
         this.cachedSig = {
             id: null,
             actions: null,
@@ -109,6 +114,16 @@ var YouTubeClient = GObject.registerClass({
                         }
                         else
                             debug('temp info expired');
+                    }
+                }
+
+                if(!result)
+                    result = await this._getPlayerInfoPromise(videoId).catch(debug);
+
+                if(!result || !result.data) {
+                    if(result && result.isAborted) {
+                        debug(new Error('download aborted'));
+                        break;
                     }
                 }
 
@@ -285,34 +300,31 @@ var YouTubeClient = GObject.registerClass({
         return true;
     }
 
-    _downloadDataPromise(url)
+    _downloadDataPromise(url, method, reqData)
     {
         return new Promise((resolve, reject) => {
-            const message = Soup.Message.new('GET', url);
+            const message = Soup.Message.new(method || 'GET', url);
             const result = {
-                data: '',
+                data: null,
                 isAborted: false,
             };
 
-            const chunkSignal = message.connect('got-chunk', (msg, chunk) => {
-                debug(`got chunk of data, length: ${chunk.length}`);
-
-                const chunkData = chunk.get_data();
-                if(!chunkData) return;
-
-                result.data += (chunkData instanceof Uint8Array)
-                    ? ByteArray.toString(chunkData)
-                    : chunkData;
-            });
+            if(reqData) {
+                message.set_request(
+                    "application/json",
+                    Soup.MemoryUse.COPY,
+                    reqData
+                );
+            }
 
             this.queue_message(message, (session, msg) => {
-                msg.disconnect(chunkSignal);
-
                 debug('got message response');
                 const statusCode = msg.status_code;
 
-                if(statusCode === 200)
+                if(statusCode === 200) {
+                    result.data = msg.response_body.data;
                     return resolve(result);
+                }
 
                 debug(new Error(`response code: ${statusCode}`));
 
@@ -348,6 +360,50 @@ var YouTubeClient = GObject.registerClass({
         });
     }
 
+    _getPlayerInfoPromise(videoId)
+    {
+        const data = this._getPlayerPostData(videoId);
+        const apiKey = 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8';
+        const url = `https://www.youtube.com/youtubei/v1/player?key=${apiKey}`;
+
+        return new Promise((resolve, reject) => {
+            if(!data) {
+                debug('not using player info due to missing data');
+                return resolve(null);
+            }
+            debug('downloading info from player');
+
+            this._downloadDataPromise(url, 'POST', data).then(result => {
+                if(result.isAborted)
+                    return resolve(result);
+
+                debug('parsing player info JSON');
+
+                let info = null;
+
+                try { info = JSON.parse(result.data); }
+                catch(err) { debug(err.message); }
+
+                if(!info)
+                    return reject(new Error('could not parse video info JSON'));
+
+                debug('successfully parsed video info JSON');
+
+                /* Update post info values from response */
+                if(info && info.responseContext && info.responseContext.visitorData) {
+                    const visData = info.responseContext.visitorData;
+
+                    this.postInfo.visitorData = visData;
+                    debug(`new visitor ID: ${visData}`);
+                }
+
+                result.data = info;
+                resolve(result);
+            })
+            .catch(err => reject(err));
+        });
+    }
+
     _getInfoPromise(videoId)
     {
         return new Promise((resolve, reject) => {
@@ -357,6 +413,8 @@ var YouTubeClient = GObject.registerClass({
                 `eurl=https://youtube.googleapis.com/v/${videoId}`,
             ].join('&');
             const url = `https://www.youtube.com/get_video_info?${query}`;
+
+            debug('downloading info from video');
 
             this._downloadDataPromise(url).then(result => {
                 if(result.isAborted)
@@ -370,6 +428,12 @@ var YouTubeClient = GObject.registerClass({
                     return reject(new Error('could not convert query to URI'));
 
                 const playerResponse = gstUri.get_query_value('player_response');
+                const cliVer = gstUri.get_query_value('cver');
+
+                if(cliVer && cliVer !== this.postInfo.clientVersion) {
+                    this.postInfo.clientVersion = cliVer;
+                    debug(`updated client version: ${cliVer}`);
+                }
 
                 if(!playerResponse)
                     return reject(new Error('no player response in query'));
@@ -504,7 +568,7 @@ var YouTubeClient = GObject.registerClass({
 
         debug('stream deciphered');
 
-        return `${url}&${sig}=${key}`;
+        return `${url}&${sig}=${encodeURIComponent(key)}`;
     }
 
     async _createSubdirFileAsync(place, folderName, fileName, data)
@@ -562,6 +626,60 @@ var YouTubeClient = GObject.registerClass({
                 })
                 .catch(err => reject(err));
         });
+    }
+
+    _getPlayerPostData(videoId)
+    {
+        const cliVer = this.postInfo.clientVersion;
+        if(!cliVer) return null;
+
+        const visitor = this.postInfo.visitorData;
+        const ua = this.user_agent;
+        const browserVer = ua.substring(ua.lastIndexOf('/') + 1);
+
+        if(!visitor)
+            debug('visitor ID is unknown');
+
+        const data = {
+            videoId: videoId,
+            context: {
+                client: {
+                    visitorData: visitor,
+                    userAgent: `${ua},gzip(gfe)`,
+                    clientName: "WEB",
+                    clientVersion: cliVer,
+                    osName: "X11",
+                    osVersion: "",
+                    originalUrl: `https://www.youtube.com/watch?v=${videoId}`,
+                    browserName: "Firefox",
+                    browserVersion: browserVer,
+                    playerType: "UNIPLAYER"
+                },
+                user: {
+                    lockedSafetyMode: false
+                },
+                request: {
+                    useSsl: true,
+                    internalExperimentFlags: [],
+                    consistencyTokenJars: []
+                }
+            },
+            playbackContext: {
+                contentPlaybackContext: {
+                    html5Preference: "HTML5_PREF_WANTS",
+                    lactMilliseconds: "1069",
+                    referer: `https://www.youtube.com/watch?v=${videoId}`,
+                    signatureTimestamp: 18702,
+                    autoCaptionsDefaultOn: false,
+                    liveContext: {
+                        startWalltime: "0"
+                    }
+                }
+            },
+            captionParams: {}
+        };
+
+        return JSON.stringify(data);
     }
 });
 

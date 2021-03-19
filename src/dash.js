@@ -155,16 +155,16 @@ function _getStreamRepresentation(stream)
         repArr.push(`      <AudioChannelConfiguration ${audioConfArr.join(' ')}/>`);
     }
 
-    const modURL = stream.url
+    const encodedURL = Misc.encodeHTML(stream.url)
         .replace('?', '/')
-        .replace(/&/g, '/')
+        .replace(/&amp;/g, '/')
         .replace(/=/g, '/');
 
     const segRange = `${stream.indexRange.start}-${stream.indexRange.end}`;
     const initRange = `${stream.initRange.start}-${stream.initRange.end}`;
 
     repArr.push(
-        `        <BaseURL>${modURL}</BaseURL>`,
+        `        <BaseURL>${encodedURL}</BaseURL>`,
         `        <SegmentBase indexRange="${segRange}">`,
         `          <Initialization range="${initRange}"/>`,
         `        </SegmentBase>`,
