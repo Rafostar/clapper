@@ -520,12 +520,6 @@ class ClapperPlayer extends PlayerBase
             case Gdk.KEY_F:
                 clapperWidget.toggleFullscreen();
                 break;
-            case Gdk.KEY_Escape:
-                if(clapperWidget.isFullscreenMode) {
-                    root = this.widget.get_root();
-                    root.unfullscreen();
-                }
-                break;
             case Gdk.KEY_q:
             case Gdk.KEY_Q:
                 root = this.widget.get_root();
