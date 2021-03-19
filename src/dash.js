@@ -160,15 +160,28 @@ function _getStreamRepresentation(stream)
         .replace(/&amp;/g, '/')
         .replace(/=/g, '/');
 
-    const segRange = `${stream.indexRange.start}-${stream.indexRange.end}`;
-    const initRange = `${stream.initRange.start}-${stream.initRange.end}`;
+    repArr.push(
+        `        <BaseURL>${encodedURL}</BaseURL>`
+    );
+
+    if(stream.indexRange) {
+        const segRange = `${stream.indexRange.start}-${stream.indexRange.end}`;
+        repArr.push(
+            `        <SegmentBase indexRange="${segRange}">`
+        );
+        if(stream.initRange) {
+            const initRange = `${stream.initRange.start}-${stream.initRange.end}`;
+            repArr.push(
+                `          <Initialization range="${initRange}"/>`
+            );
+        }
+        repArr.push(
+            `        </SegmentBase>`
+        );
+    }
 
     repArr.push(
-        `        <BaseURL>${encodedURL}</BaseURL>`,
-        `        <SegmentBase indexRange="${segRange}">`,
-        `          <Initialization range="${initRange}"/>`,
-        `        </SegmentBase>`,
-        `      </Representation>`,
+        `      </Representation>`
     );
 
     return repArr.join('\n');
