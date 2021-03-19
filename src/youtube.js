@@ -136,30 +136,22 @@ var YouTubeClient = GObject.registerClass({
 
                     break;
                 }
-                const info = result.data;
 
                 const invalidInfoMsg = (
-                    !info.playabilityStatus
-                    || !info.playabilityStatus.status === 'OK'
+                    !result.data.playabilityStatus
+                    || !result.data.playabilityStatus.status === 'OK'
                 )
                     ? 'video is not playable'
-                    : (!info.streamingData)
+                    : (!result.data.streamingData)
                     ? 'video response data is missing streaming data'
                     : null;
 
                 if(invalidInfoMsg) {
-                    this.lastInfo = null;
-
                     debug(new Error(invalidInfoMsg));
                     break;
                 }
 
-                /* Make sure we have all formats arrays,
-                 * so we will not have to keep checking */
-                if(!info.streamingData.formats)
-                    info.streamingData.formats = [];
-                if(!info.streamingData.adaptiveFormats)
-                    info.streamingData.adaptiveFormats = [];
+                const info = this._getReducedInfo(result.data);
 
                 if(this._getIsCipher(info.streamingData)) {
                     debug('video requires deciphering');
@@ -358,6 +350,28 @@ var YouTubeClient = GObject.registerClass({
                 resolve(this.lastInfo);
             });
         });
+    }
+
+    _getReducedInfo(info)
+    {
+        const reduced = {
+            videoDetails: {
+                videoId: info.videoDetails.videoId,
+                title: info.videoDetails.title,
+                lengthSeconds: info.videoDetails.lengthSeconds,
+                isLiveContent: info.videoDetails.isLiveContent
+            },
+            streamingData: info.streamingData
+        };
+
+        /* Make sure we have all formats arrays,
+         * so we will not have to keep checking */
+        if(!reduced.streamingData.formats)
+            reduced.streamingData.formats = [];
+        if(!reduced.streamingData.adaptiveFormats)
+            reduced.streamingData.adaptiveFormats = [];
+
+        return reduced;
     }
 
     _getPlayerInfoPromise(videoId)
