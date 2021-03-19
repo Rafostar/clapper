@@ -119,7 +119,6 @@ var YouTubeClient = GObject.registerClass({
 
                 if(!result)
                     result = await this._getPlayerInfoPromise(videoId).catch(debug);
-
                 if(!result || !result.data) {
                     if(result && result.isAborted) {
                         debug(new Error('download aborted'));
@@ -129,7 +128,6 @@ var YouTubeClient = GObject.registerClass({
 
                 if(!result)
                     result = await this._getInfoPromise(videoId).catch(debug);
-
                 if(!result || !result.data) {
                     if(result && result.isAborted)
                         debug(new Error('download aborted'));
@@ -137,18 +135,13 @@ var YouTubeClient = GObject.registerClass({
                     break;
                 }
 
-                const invalidInfoMsg = (
-                    !result.data.playabilityStatus
-                    || !result.data.playabilityStatus.status === 'OK'
-                )
-                    ? 'video is not playable'
-                    : (!result.data.streamingData)
-                    ? 'video response data is missing streaming data'
-                    : null;
+                if(!isFoundInTemp) {
+                    const [isPlayable, reason] = this._getPlayabilityStatus(result.data);
 
-                if(invalidInfoMsg) {
-                    debug(new Error(invalidInfoMsg));
-                    break;
+                    if(!isPlayable) {
+                        debug(new Error(reason));
+                        break;
+                    }
                 }
 
                 const info = this._getReducedInfo(result.data);
@@ -350,6 +343,20 @@ var YouTubeClient = GObject.registerClass({
                 resolve(this.lastInfo);
             });
         });
+    }
+
+    _getPlayabilityStatus(info)
+    {
+        if(
+            !info.playabilityStatus
+            || !info.playabilityStatus.status === 'OK'
+        )
+            return [false, 'video is not playable'];
+
+        if(!info.streamingData)
+            return [false, 'video response data is missing streaming data'];
+
+        return [true, null];
     }
 
     _getReducedInfo(info)
