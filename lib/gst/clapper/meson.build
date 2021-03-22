@@ -8,11 +8,9 @@ gstclapper_sources = [
   'gstclapper-visualization.c',
   'gstclapper-gtk4-plugin.c',
 
-  'gtk4/gstgtkbasesink.c',
+  'gtk4/gstclapperglsink.c',
   'gtk4/gstgtkutils.c',
-  'gtk4/gtkgstbasewidget.c',
-  'gtk4/gstgtkglsink.c',
-  'gtk4/gtkgstglwidget.c',
+  'gtk4/gtkclapperglwidget.c',
 ]
 gstclapper_headers = [
   'clapper.h',
@@ -32,7 +30,6 @@ gstclapper_defines = [
   '-DBUILDING_GST_CLAPPER',
   '-DGST_USE_UNSTABLE_API',
   '-DHAVE_GTK_GL',
-  '-DBUILD_FOR_GTK4',
 ]
 gtk_deps = [gstgl_dep, gstglproto_dep]
 have_gtk_gl_windowing = false

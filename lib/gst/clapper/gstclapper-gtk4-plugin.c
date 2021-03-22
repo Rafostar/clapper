@@ -30,7 +30,7 @@
 #endif
 
 #include "gstclapper-gtk4-plugin.h"
-#include "gtk4/gstgtkglsink.h"
+#include "gtk4/gstclapperglsink.h"
 
 enum
 {
@@ -77,9 +77,7 @@ gst_clapper_gtk4_plugin_constructed (GObject * object)
 {
   GstClapperGtk4Plugin *self = GST_CLAPPER_GTK4_PLUGIN (object);
 
-  if (!self->video_sink)
-    self->video_sink = g_object_new (GST_TYPE_GTK_GL_SINK, NULL);
-
+  self->video_sink = g_object_new (GST_TYPE_CLAPPER_GL_SINK, NULL);
   gst_object_ref_sink (self->video_sink);
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
@@ -111,35 +109,15 @@ gst_clapper_gtk4_plugin_finalize (GObject * object)
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
-#define C_ENUM(v) ((gint) v)
-
-GType
-gst_clapper_gtk4_plugin_type_get_type (void)
-{
-  static gsize id = 0;
-  static const GEnumValue values[] = {
-    {C_ENUM (GST_CLAPPER_GTK4_PLUGIN_TYPE_GLAREA), "GST_CLAPPER_GTK4_PLUGIN_TYPE_GLAREA", "glarea"},
-    {0, NULL, NULL}
-  };
-
-  if (g_once_init_enter (&id)) {
-    GType tmp = g_enum_register_static ("GstClapperGtk4PluginType", values);
-    g_once_init_leave (&id, tmp);
-  }
-
-  return (GType) id;
-}
-
 /**
  * gst_clapper_gtk4_plugin_new:
- * @plugin_type: (allow-none): Requested GstClapperGtk4PluginType
  *
  * Creates a new GTK4 plugin.
  *
  * Returns: (transfer full): the new GstClapperGtk4Plugin
  */
 GstClapperGtk4Plugin *
-gst_clapper_gtk4_plugin_new (G_GNUC_UNUSED const GstClapperGtk4PluginType plugin_type)
+gst_clapper_gtk4_plugin_new (void)
 {
   return g_object_new (GST_TYPE_CLAPPER_GTK4_PLUGIN, NULL);
 }
