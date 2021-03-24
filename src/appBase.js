@@ -44,9 +44,12 @@ class ClapperAppBase extends Gtk.Application
                 name: action
             });
             simpleAction.connect(
-                'activate', () => Menu.actions[action](this.active_window)
+                'activate', () => Menu.actions[action].run(this.active_window)
             );
             this.add_action(simpleAction);
+
+            if(Menu.actions[action].accels)
+                this.set_accels_for_action(`app.${action}`, Menu.actions[action].accels);
         }
     }
 
