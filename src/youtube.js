@@ -227,11 +227,10 @@ var YouTubeClient = GObject.registerClass({
 
                 if(!isFoundInTemp) {
                     const exp = info.streamingData.expiresInSeconds || 0;
-                    const len = info.videoDetails.lengthSeconds || 3;
+                    const dateSeconds = Math.floor(Date.now() / 1000);
 
                     /* Estimated safe time for rewatching video */
-                    info.streamingData.expireDate = Math.floor(Date.now() / 1000)
-                        + Number(exp) - (3 * len);
+                    info.streamingData.expireDate = dateSeconds + Number(exp);
 
                     this._createSubdirFileAsync(
                         'tmp', 'yt-info', videoId, JSON.stringify(info)
