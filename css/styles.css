@@ -88,10 +88,10 @@ radio {
 .tvmode .playercontrols {
   -gtk-icon-size: 24px;
 }
-.playbackicon {
+.adwicons .playbackicon {
   -gtk-icon-size: 20px;
 }
-.tvmode .playbackicon {
+.adwicons.tvmode .playbackicon {
   -gtk-icon-size: 28px;
 }
 .labelbutton {

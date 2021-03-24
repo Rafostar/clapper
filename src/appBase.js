@@ -74,7 +74,9 @@ class ClapperAppBase extends Gtk.Application
             Gio.SettingsBindFlags.GET
         );
         this._onThemeChanged(gtkSettings);
+        this._onIconThemeChanged(gtkSettings);
         gtkSettings.connect('notify::gtk-theme-name', this._onThemeChanged.bind(this));
+        gtkSettings.connect('notify::gtk-icon-theme-name', this._onIconThemeChanged.bind(this));
 
         this.windowShowSignal = this.active_window.connect(
             'show', this._onWindowShow.bind(this)
@@ -109,5 +111,21 @@ class ClapperAppBase extends Gtk.Application
 
         gtkSettings.gtk_theme_name = parsedTheme;
         debug(`set theme: ${parsedTheme}`);
+    }
+
+    _onIconThemeChanged(gtkSettings)
+    {
+        const iconTheme = gtkSettings.gtk_icon_theme_name;
+        const window = this.active_window;
+        const hasAdwIcons = window.has_css_class('adwicons');
+
+        if(iconTheme === 'Adwaita') {
+            if(!hasAdwIcons)
+                window.add_css_class('adwicons');
+        }
+        else {
+            if(hasAdwIcons)
+                window.remove_css_class('adwicons');
+        }
     }
 });
