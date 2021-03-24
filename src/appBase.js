@@ -33,12 +33,6 @@ class ClapperAppBase extends Gtk.Application
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
 
-        if(
-            settings.get_boolean('dark-theme')
-            && settings.get_boolean('brighter-sliders')
-        )
-            window.add_css_class('brightscale');
-
         for(let action in Menu.actions) {
             const simpleAction = new Gio.SimpleAction({
                 name: action
@@ -94,6 +88,7 @@ class ClapperAppBase extends Gtk.Application
     {
         const theme = gtkSettings.gtk_theme_name;
         const window = this.active_window;
+        const hasAdwThemeDark = window.has_css_class('adwthemedark');
 
         debug(`user selected theme: ${theme}`);
 
@@ -101,6 +96,17 @@ class ClapperAppBase extends Gtk.Application
            Having 2/4 corners rounded in floating mode is not good. */
         if(!window.has_css_class('adwrounded'))
             window.add_css_class('adwrounded');
+
+        if(theme.startsWith('Adwaita')) {
+            const isDarkTheme = settings.get_boolean('dark-theme');
+
+            if(isDarkTheme && !hasAdwThemeDark)
+                window.add_css_class('adwthemedark');
+            else if(!isDarkTheme && hasAdwThemeDark)
+                window.remove_css_class('adwthemedark');
+        }
+        else if(hasAdwThemeDark)
+            window.remove_css_class('adwthemedark');
 
         if(!theme.endsWith('-dark'))
             return;
@@ -123,9 +129,7 @@ class ClapperAppBase extends Gtk.Application
             if(!hasAdwIcons)
                 window.add_css_class('adwicons');
         }
-        else {
-            if(hasAdwIcons)
-                window.remove_css_class('adwicons');
-        }
+        else if(hasAdwIcons)
+            window.remove_css_class('adwicons');
     }
 });

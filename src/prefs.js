@@ -329,9 +329,7 @@ class ClapperTweaksPage extends PrefsBase.Grid
         super._init();
 
         this.addTitle('Appearance');
-        const darkCheck = this.addCheckButton('Enable dark theme', 'dark-theme');
-        const brighterCheck = this.addCheckButton('Make sliders brighter', 'brighter-sliders');
-        darkCheck.bind_property('active', brighterCheck, 'visible', GObject.BindingFlags.SYNC_CREATE);
+        this.addCheckButton('Enable dark theme', 'dark-theme');
 
         this.addTitle('Performance');
         this.addCheckButton('Render window shadows', 'render-shadows');

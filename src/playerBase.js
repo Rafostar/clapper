@@ -176,27 +176,11 @@ class ClapperPlayerBase extends GstClapper.Clapper
                 debug(`set subtitle-video offset: ${value}`);
                 break;
             case 'dark-theme':
-            case 'brighter-sliders':
                 root = this.widget.get_root();
                 if(!root || !root.isClapperApp)
                     break;
 
-                const brightClass = 'brightscale';
-                const isBrighter = root.has_css_class(brightClass);
-
-                if(key === 'dark-theme' && isBrighter && !settings.get_boolean(key)) {
-                    root.remove_css_class(brightClass);
-                    debug('remove brighter sliders');
-                    break;
-                }
-
-                const setBrighter = settings.get_boolean('brighter-sliders');
-                if(setBrighter === isBrighter)
-                    break;
-
-                action = (setBrighter) ? 'add' : 'remove';
-                root[action + '_css_class'](brightClass);
-                debug(`${action} brighter sliders`);
+                root.application._onThemeChanged(Gtk.Settings.get_default());
                 break;
             case 'play-flags':
                 const initialFlags = this.pipeline.flags;
