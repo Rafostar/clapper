@@ -151,9 +151,7 @@ class ClapperPlayerBase extends GstClapper.Clapper
                 break;
             case 'render-shadows':
                 root = this.widget.get_root();
-                /* Editing theme of someone else app is taboo */
-                if(!root || !root.isClapperApp)
-                    break;
+                if(!root) break;
 
                 const gpuClass = 'gpufriendly';
                 const renderShadows = settings.get_boolean(key);
@@ -177,8 +175,7 @@ class ClapperPlayerBase extends GstClapper.Clapper
                 break;
             case 'dark-theme':
                 root = this.widget.get_root();
-                if(!root || !root.isClapperApp)
-                    break;
+                if(!root) break;
 
                 root.application._onThemeChanged(Gtk.Settings.get_default());
                 break;

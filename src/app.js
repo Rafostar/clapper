@@ -23,18 +23,15 @@ class ClapperApp extends AppBase
         super.vfunc_startup();
 
         const window = this.active_window;
-
-        window.isClapperApp = true;
-        window.add_css_class('nobackground');
-
         const clapperWidget = new Widget();
-        window.set_child(clapperWidget);
-
         const dummyHeaderbar = new Gtk.Box({
             can_focus: false,
             focusable: false,
             visible: false,
         });
+
+        window.add_css_class('nobackground');
+        window.set_child(clapperWidget);
         window.set_titlebar(dummyHeaderbar);
     }
 
