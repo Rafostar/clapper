@@ -25,7 +25,7 @@ radio {
   border: transparent;
 }
 .linkseparator {
-  background: alpha(@borders, 0.75);
+  background: rgba(24,24,24,0.72);
   min-width: 1px;
 }
 .linkedleft image {
