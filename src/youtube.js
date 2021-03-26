@@ -43,6 +43,7 @@ var YouTubeClient = GObject.registerClass({
         this.cachedSig = {
             id: null,
             actions: null,
+            timestamp: "",
         };
     }
 
@@ -93,6 +94,7 @@ var YouTubeClient = GObject.registerClass({
 
                 let result;
                 let isFoundInTemp = false;
+                let isUsingPlayerResp = false;
 
                 const tempInfo = await this._getFileContentsPromise('tmp', 'yt-info', videoId).catch(debug);
                 if(tempInfo) {
@@ -125,6 +127,7 @@ var YouTubeClient = GObject.registerClass({
                         break;
                     }
                 }
+                isUsingPlayerResp = (result != null);
 
                 if(!result)
                     result = await this._getInfoPromise(videoId).catch(debug);
@@ -144,7 +147,7 @@ var YouTubeClient = GObject.registerClass({
                     }
                 }
 
-                const info = this._getReducedInfo(result.data);
+                let info = this._getReducedInfo(result.data);
 
                 if(this._getIsCipher(info.streamingData)) {
                     debug('video requires deciphering');
@@ -156,6 +159,7 @@ var YouTubeClient = GObject.registerClass({
                     if(actions)
                         debug('using remembered decipher actions');
                     else {
+                        let sts = "";
                         const embedUri = `https://www.youtube.com/embed/${videoId}`;
                         result = await this._downloadDataPromise(embedUri).catch(debug);
 
@@ -187,7 +191,18 @@ var YouTubeClient = GObject.registerClass({
                         debug(`found player URI: ${ytUri}`);
 
                         const ytId = ytPath.split('/').find(el => Misc.isHex(el));
-                        actions = await this._getFileContentsPromise('user_cache', 'yt-sig', ytId).catch(debug);
+                        let ytSigData = await this._getFileContentsPromise('user_cache', 'yt-sig', ytId).catch(debug);
+                        if(ytSigData) {
+                            ytSigData = ytSigData.split(';');
+
+                            if(ytSigData[0] && ytSigData[0] > 0) {
+                                sts = ytSigData[0];
+                                debug(`found local sts: ${sts}`);
+                            }
+
+                            const actionsIndex = (ytSigData.length > 1) ? 1 : 0;
+                            actions = ytSigData[actionsIndex];
+                        }
 
                         if(!actions) {
                             result = await this._downloadDataPromise(ytUri).catch(debug);
@@ -199,10 +214,22 @@ var YouTubeClient = GObject.registerClass({
                                 break;
                             }
 
+                            const stsArr = result.data.match(/signatureTimestamp[=\:]\d+/g);
+                            if(stsArr) {
+                                sts = (stsArr[0] && stsArr[0].length > 19)
+                                    ? stsArr[0].substring(19) : null;
+
+                                if(isNaN(sts) || sts <= 0)
+                                    sts = "";
+                                else
+                                    debug(`extracted player sts: ${sts}`);
+                            }
+
                             actions = YTDL.sig.extractActions(result.data);
                             if(actions) {
                                 debug('deciphered, saving cipher actions to cache file');
-                                this._createSubdirFileAsync('user_cache', 'yt-sig', ytId, actions);
+                                const saveData = sts + ';' + actions;
+                                this._createSubdirFileAsync('user_cache', 'yt-sig', ytId, saveData);
                             }
                         }
                         if(!actions || !actions.length) {
@@ -212,6 +239,22 @@ var YouTubeClient = GObject.registerClass({
                         if(this.cachedSig.id !== ytId) {
                             this.cachedSig.id = ytId;
                             this.cachedSig.actions = actions;
+                            this.cachedSig.timestamp = sts;
+
+                            /* Cipher info from player without timestamp is invalid
+                             * so download it again now that we have a timestamp */
+                            if(isUsingPlayerResp && sts > 0) {
+                                debug(`redownloading player info with sts: ${sts}`);
+
+                                result = await this._getPlayerInfoPromise(videoId).catch(debug);
+                                if(!result || !result.data) {
+                                    if(result && result.isAborted)
+                                        debug(new Error('download aborted'));
+
+                                    break;
+                                }
+                                info = this._getReducedInfo(result.data);
+                            }
                         }
                     }
                     debug(`successfully obtained decipher actions: ${actions}`);
@@ -431,6 +474,7 @@ var YouTubeClient = GObject.registerClass({
                 `video_id=${videoId}`,
                 `el=embedded`,
                 `eurl=https://youtube.googleapis.com/v/${videoId}`,
+                `sts=${this.cachedSig.timestamp}`,
             ].join('&');
             const url = `https://www.youtube.com/get_video_info?${query}`;
 
@@ -660,6 +704,8 @@ var YouTubeClient = GObject.registerClass({
         if(!cliVer) return null;
 
         const visitor = this.postInfo.visitorData;
+        const sts = this.cachedSig.timestamp || null;
+
         const ua = this.user_agent;
         const browserVer = ua.substring(ua.lastIndexOf('/') + 1);
 
@@ -695,7 +741,7 @@ var YouTubeClient = GObject.registerClass({
                     html5Preference: "HTML5_PREF_WANTS",
                     lactMilliseconds: "1069",
                     referer: `https://www.youtube.com/watch?v=${videoId}`,
-                    signatureTimestamp: 18702,
+                    signatureTimestamp: sts,
                     autoCaptionsDefaultOn: false,
                     liveContext: {
                         startWalltime: "0"
