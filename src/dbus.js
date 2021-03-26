@@ -17,6 +17,7 @@ const ShellProxyWrapper = Gio.DBusProxy.makeProxyWrapper(`
 
 let shellProxy = null;
 
+debug('initializing GNOME Shell DBus proxy');
 new ShellProxyWrapper(
     Gio.DBus.session,
     'org.gnome.Shell',
