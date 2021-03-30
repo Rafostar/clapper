@@ -1,5 +1,11 @@
 const { GObject, Gtk } = imports.gi;
 
+/* Negative values from CSS */
+const PopoverOffset = {
+  DEFAULT: -3,
+  TVMODE: -4,
+};
+
 var CustomButton = GObject.registerClass(
 class ClapperCustomButton extends Gtk.Button
 {
@@ -8,10 +14,8 @@ class ClapperCustomButton extends Gtk.Button
         opts = opts || {};
 
         const defaults = {
-            margin_top: 4,
-            margin_bottom: 4,
-            margin_start: 2,
-            margin_end: 2,
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
             can_focus: false,
         };
         Object.assign(opts, defaults);
@@ -27,9 +31,6 @@ class ClapperCustomButton extends Gtk.Button
         if(this.isFullscreen === isFullscreen)
             return;
 
-        this.margin_top = (isFullscreen) ? 5 : 4;
-        this.margin_start = (isFullscreen) ? 3 : 2;
-        this.margin_end = (isFullscreen) ? 3 : 2;
         this.can_focus = isFullscreen;
 
         /* Redraw icon after style class change */
@@ -79,10 +80,8 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
     _init()
     {
         super._init({
-            margin_top: 4,
-            margin_bottom: 4,
-            margin_start: 2,
-            margin_end: 2,
+            halign: Gtk.Align.CENTER,
+            valign: Gtk.Align.CENTER,
             can_focus: false,
         });
 
@@ -97,7 +96,7 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
         });
 
         this.popover.set_child(this.popoverBox);
-        this.popover.set_offset(0, -this.margin_top);
+        this.popover.set_offset(0, PopoverOffset.DEFAULT);
 
         if(this.isFullscreen)
             this.popover.add_css_class('osd');
@@ -111,9 +110,6 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
         if(this.isFullscreen === isFullscreen)
             return;
 
-        this.margin_top = (isFullscreen) ? 5 : 4;
-        this.margin_start = (isFullscreen) ? 3 : 2;
-        this.margin_end = (isFullscreen) ? 3 : 2;
         this.can_focus = isFullscreen;
 
         /* Redraw icon after style class change */
@@ -122,7 +118,12 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
 
         this.isFullscreen = isFullscreen;
 
-        this.popover.set_offset(0, -this.margin_top);
+        /* TODO: Fullscreen non-tv mode */
+        const offset = (isFullscreen)
+            ? PopoverOffset.TVMODE
+            : PopoverOffset.DEFAULT;
+
+        this.popover.set_offset(0, offset);
 
         const cssClass = 'osd';
         if(isFullscreen === this.popover.has_css_class(cssClass))
@@ -189,7 +190,7 @@ class ClapperLabelPopoverButton extends PopoverButtonBase
             label: text,
             single_line_mode: true,
         });
-        this.customLabel.add_css_class('labelbutton');
+        this.customLabel.add_css_class('labelbuttonlabel');
         this.set_child(this.customLabel);
     }
 

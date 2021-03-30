@@ -4,9 +4,6 @@ const Debug = imports.src.debug;
 const Misc = imports.src.misc;
 const Revealers = imports.src.revealers;
 
-const CONTROLS_MARGIN = 2;
-const CONTROLS_SPACING = 0;
-
 const { debug } = Debug;
 const { settings } = Misc;
 
@@ -17,9 +14,6 @@ class ClapperControls extends Gtk.Box
     {
         super._init({
             orientation: Gtk.Orientation.HORIZONTAL,
-            margin_start: CONTROLS_MARGIN,
-            margin_end: CONTROLS_MARGIN,
-            spacing: CONTROLS_SPACING,
             valign: Gtk.Align.END,
             can_focus: false,
         });
@@ -439,7 +433,7 @@ class ClapperControls extends Gtk.Box
                     const scaleHeight = this.positionScale.parent.get_height();
 
                     this.chapterPopover.set_pointing_to(new Gdk.Rectangle({
-                        x: 2,
+                        x: -2,
                         y: -(controlsHeight - scaleHeight) / 2,
                         width: 2 * end,
                         height: 0,

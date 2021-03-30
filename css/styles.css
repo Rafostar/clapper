@@ -9,7 +9,7 @@ radio {
 .osd list {
   background: none;
 }
-.osd list row {
+.osd list row image {
   -gtk-icon-shadow: none;
 }
 .gtk402 trough highlight {
@@ -75,9 +75,28 @@ radio {
   font-size: 21px;
   font-weight: 500;
 }
-.tvmode button {
+.playercontrols {
+  margin-bottom: -1px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.tvmode .playercontrols {
+  margin-left: 1px;
+  margin-right: 1px;
+}
+.playercontrols button {
+  margin: 3px;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+.tvmode .playercontrols button {
   min-width: 32px;
   min-height: 32px;
+  margin: 4px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.tvmode button image {
   -gtk-icon-shadow: none;
 }
 .tvmode radio {
@@ -88,7 +107,7 @@ radio {
   min-height: 17px;
 }
 
-.tvmode .playercontrols {
+.tvmode .playercontrols button image {
   -gtk-icon-size: 24px;
 }
 .adwicons .playbackicon {
@@ -97,18 +116,16 @@ radio {
 .adwicons.tvmode .playbackicon {
   -gtk-icon-size: 28px;
 }
-.labelbutton {
+.labelbuttonlabel {
   margin-left: -4px;
   margin-right: -4px;
-  margin-top: 1px;
   min-width: 8px;
   font-family: 'Cantarell', sans-serif;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
-.tvmode .labelbutton {
-  margin-top: 0px;
-  font-size: 23px;
+.tvmode .labelbuttonlabel {
+  font-size: 22px;
   text-shadow: none;
 }
 
@@ -146,11 +163,9 @@ radio {
 
 /* Position Scale */
 .positionscale {
-  margin-top: -2px;
-  margin-bottom: -2px;
-}
-.tvmode .positionscale {
-  margin-top: -1px;
+  margin: -2px;
+  margin-left: -4px;
+  margin-right: -4px;
 }
 .positionscale trough highlight {
   min-height: 4px;
