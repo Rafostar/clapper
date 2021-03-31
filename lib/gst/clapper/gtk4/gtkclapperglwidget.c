@@ -52,8 +52,6 @@
 GST_DEBUG_CATEGORY (gst_debug_clapper_gl_widget);
 #define GST_CAT_DEFAULT gst_debug_clapper_gl_widget
 
-#define SUPPORTED_GL_APIS GST_GL_API_OPENGL3 | GST_GL_API_GLES2
-
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
@@ -1001,7 +999,6 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
     priv->display = gst_gl_display_new ();
 
   GST_INFO ("Created %" GST_PTR_FORMAT, priv->display);
-  gst_gl_display_filter_gl_api (priv->display, SUPPORTED_GL_APIS);
 
   gtk_gl_area_set_auto_render (GTK_GL_AREA (widget), FALSE);
 }
