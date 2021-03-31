@@ -80,10 +80,6 @@ radio {
   margin-left: 2px;
   margin-right: 2px;
 }
-.tvmode .playercontrols {
-  margin-left: 1px;
-  margin-right: 1px;
-}
 .playercontrols button {
   margin: 3px;
   margin-left: 1px;
@@ -92,7 +88,7 @@ radio {
 .tvmode .playercontrols button {
   min-width: 32px;
   min-height: 32px;
-  margin: 4px;
+  margin: 5px;
   margin-left: 3px;
   margin-right: 3px;
 }

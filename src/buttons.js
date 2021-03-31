@@ -3,7 +3,7 @@ const { GObject, Gtk } = imports.gi;
 /* Negative values from CSS */
 const PopoverOffset = {
   DEFAULT: -3,
-  TVMODE: -4,
+  TVMODE: -5,
 };
 
 var CustomButton = GObject.registerClass(
