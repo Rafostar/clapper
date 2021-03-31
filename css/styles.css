@@ -75,8 +75,10 @@ radio {
   font-size: 21px;
   font-weight: 500;
 }
-.playercontrols {
+.adwicons .playercontrols {
   margin-bottom: -1px;
+}
+.playercontrols {
   margin-left: 2px;
   margin-right: 2px;
 }
