@@ -4,9 +4,13 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-Gio._promisify(Gio._LocalFilePrototype, 'load_bytes_async', 'load_bytes_finish');
-Gio._promisify(Gio._LocalFilePrototype, 'make_directory_async', 'make_directory_finish');
-Gio._promisify(Gio._LocalFilePrototype, 'replace_contents_bytes_async', 'replace_contents_finish');
+/* FIXME: Use Gio._LocalFilePrototype once we are safe to assume
+ * that GJS with https://gitlab.gnome.org/GNOME/gjs/-/commit/ec9385b8 is used. */
+const LocalFilePrototype = Gio.File.new_for_path('/').constructor.prototype;
+
+Gio._promisify(LocalFilePrototype, 'load_bytes_async', 'load_bytes_finish');
+Gio._promisify(LocalFilePrototype, 'make_directory_async', 'make_directory_finish');
+Gio._promisify(LocalFilePrototype, 'replace_contents_bytes_async', 'replace_contents_finish');
 
 function createCacheDirPromise()
 {
