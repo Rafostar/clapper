@@ -1,5 +1,4 @@
 const { GObject, Gst, Soup } = imports.gi;
-const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
