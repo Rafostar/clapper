@@ -2,6 +2,7 @@ const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Dash = imports.src.dash;
 const Debug = imports.src.debug;
+const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
 const YouTube = imports.src.youtube;
 const { PlayerBase } = imports.src.playerBase;
@@ -88,9 +89,19 @@ class ClapperPlayer extends PlayerBase
             throw new Error('no YouTube video info');
 
         const dash = Dash.generateDash(info);
-        const videoUri = (dash)
-            ? await Dash.saveDashPromise(dash).catch(debug)
-            : this.ytClient.getBestCombinedUri(info);
+        let videoUri = null;
+
+        if(dash) {
+            const dashFile = await FileOps.saveFilePromise(
+                'tmp', null, 'clapper.mpd', dash
+            ).catch(debug);
+
+            if(dashFile)
+                videoUri = dashFile.get_uri();
+        }
+
+        if(!videoUri)
+            videoUri = this.ytClient.getBestCombinedUri(info);
 
         if(!videoUri)
             throw new Error('no YouTube video URI');

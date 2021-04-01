@@ -1,4 +1,3 @@
-const { Gio, GLib } = imports.gi;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
@@ -48,32 +47,6 @@ function generateDash(info)
     debug('dash generated');
 
     return dash;
-}
-
-function saveDashPromise(dash)
-{
-    debug('saving dash file');
-
-    return new Promise(async (resolve, reject) => {
-        const tempDir = await FileOps.createTempDirPromise().catch(debug);
-        if(!tempDir)
-            return reject(new Error('could not create folder in temp directory'));
-
-        const dashFile = tempDir.get_child('.clapper.mpd');
-
-        dashFile.replace_contents_bytes_async(
-            GLib.Bytes.new_take(dash),
-            null,
-            false,
-            Gio.FileCreateFlags.NONE,
-            null
-        )
-        .then(() => {
-            debug('saved dash file');
-            resolve(dashFile.get_uri());
-        })
-        .catch(err => reject(err));
-    });
 }
 
 function _addAdaptationSet(streamsArr)

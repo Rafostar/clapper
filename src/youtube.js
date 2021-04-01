@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gst, Soup } = imports.gi;
+const { GObject, Gst, Soup } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
@@ -96,7 +96,7 @@ var YouTubeClient = GObject.registerClass({
                 let isFoundInTemp = false;
                 let isUsingPlayerResp = false;
 
-                const tempInfo = await this._getFileContentsPromise('tmp', 'yt-info', videoId).catch(debug);
+                const tempInfo = await FileOps.getFileContentsPromise('tmp', 'yt-info', videoId).catch(debug);
                 if(tempInfo) {
                     debug('checking temp info for requested video');
                     let parsedTempInfo;
@@ -191,7 +191,7 @@ var YouTubeClient = GObject.registerClass({
                         debug(`found player URI: ${ytUri}`);
 
                         const ytId = ytPath.split('/').find(el => Misc.isHex(el));
-                        let ytSigData = await this._getFileContentsPromise('user_cache', 'yt-sig', ytId).catch(debug);
+                        let ytSigData = await FileOps.getFileContentsPromise('user_cache', 'yt-sig', ytId).catch(debug);
                         if(ytSigData) {
                             ytSigData = ytSigData.split(';');
 
@@ -229,7 +229,8 @@ var YouTubeClient = GObject.registerClass({
                             if(actions) {
                                 debug('deciphered, saving cipher actions to cache file');
                                 const saveData = sts + ';' + actions;
-                                this._createSubdirFileAsync('user_cache', 'yt-sig', ytId, saveData);
+                                /* We do not need to wait for it */
+                                FileOps.saveFilePromise('user_cache', 'yt-sig', ytId, saveData);
                             }
                         }
                         if(!actions || !actions.length) {
@@ -275,7 +276,8 @@ var YouTubeClient = GObject.registerClass({
                     /* Estimated safe time for rewatching video */
                     info.streamingData.expireDate = dateSeconds + Number(exp);
 
-                    this._createSubdirFileAsync(
+                    /* Last info is stored in variable, so don't wait here */
+                    FileOps.saveFilePromise(
                         'tmp', 'yt-info', videoId, JSON.stringify(info)
                     );
                 }
@@ -641,69 +643,6 @@ var YouTubeClient = GObject.registerClass({
         debug('stream deciphered');
 
         return `${url}&${sig}=${encodeURIComponent(key)}`;
-    }
-
-    async _createSubdirFileAsync(place, folderName, fileName, data)
-    {
-        const destPath = [
-            GLib[`get_${place}_dir`](),
-            Misc.appId,
-            folderName
-        ].join('/');
-
-        const destDir = Gio.File.new_for_path(destPath);
-        debug(`saving file: ${destPath}`);
-
-        for(let dir of [destDir.get_parent(), destDir]) {
-            const createdDir = await FileOps.createDirPromise(dir).catch(debug);
-            if(!createdDir) return;
-        }
-
-        const destFile = destDir.get_child(fileName);
-        destFile.replace_contents_bytes_async(
-            GLib.Bytes.new_take(data),
-            null,
-            false,
-            Gio.FileCreateFlags.NONE,
-            null
-        )
-        .then(() => debug(`saved file: ${destPath}`))
-        .catch(debug);
-    }
-
-    _getFileContentsPromise(place, folderName, fileName)
-    {
-        return new Promise((resolve, reject) => {
-            const destPath = [
-                GLib[`get_${place}_dir`](),
-                Misc.appId,
-                folderName,
-                fileName
-            ].join('/');
-
-            const file = Gio.File.new_for_path(destPath);
-            debug(`reading data from: ${destPath}`);
-
-            if(!file.query_exists(null)) {
-                debug(`no such file: ${file.get_path()}`);
-                return resolve(null);
-            }
-
-            file.load_bytes_async(null)
-                .then(result => {
-                    const data = result[0].get_data();
-                    if(!data || !data.length)
-                        return reject(new Error('source file is empty'));
-
-                    debug(`read data from: ${destPath}`);
-
-                    if(data instanceof Uint8Array)
-                        resolve(ByteArray.toString(data));
-                    else
-                        resolve(data);
-                })
-                .catch(err => reject(err));
-        });
     }
 
     _getPlayerPostData(videoId)

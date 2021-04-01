@@ -4,7 +4,9 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
+Gio._promisify(Gio._LocalFilePrototype, 'load_bytes_async', 'load_bytes_finish');
 Gio._promisify(Gio._LocalFilePrototype, 'make_directory_async', 'make_directory_finish');
+Gio._promisify(Gio._LocalFilePrototype, 'replace_contents_bytes_async', 'replace_contents_finish');
 
 function createCacheDirPromise()
 {
@@ -24,6 +26,7 @@ function createTempDirPromise()
     return createDirPromise(dir);
 }
 
+/* Creates dir and resolves with it */
 function createDirPromise(dir)
 {
     return new Promise((resolve, reject) => {
@@ -32,7 +35,7 @@ function createDirPromise(dir)
 
         dir.make_directory_async(
             GLib.PRIORITY_DEFAULT,
-            null,
+            null
         )
         .then(success => {
             if(success)
@@ -41,5 +44,78 @@ function createDirPromise(dir)
             reject(new Error(`could not create dir: ${dir.get_path()}`));
         })
         .catch(err => reject(err));
+    });
+}
+
+/* Saves file in optional subdirectory and resolves with it */
+function saveFilePromise(place, subdirName, fileName, data)
+{
+    return new Promise(async (resolve, reject) => {
+        let destPath = GLib[`get_${place}_dir`]() + '/' + Misc.appId;
+
+        if(subdirName)
+            destPath += `/${subdirName}`;
+
+        const destDir = Gio.File.new_for_path(destPath);
+        debug(`saving file: ${destPath}`);
+
+        const checkFolders = (subdirName)
+            ? [destDir.get_parent(), destDir]
+            : [destDir];
+
+        for(let dir of checkFolders) {
+            const createdDir = await createDirPromise(dir).catch(debug);
+            if(!createdDir)
+                return reject(new Error(`could not create dir: ${dir.get_path()}`));
+        }
+
+        const destFile = destDir.get_child(fileName);
+        destFile.replace_contents_bytes_async(
+            GLib.Bytes.new_take(data),
+            null,
+            false,
+            Gio.FileCreateFlags.NONE,
+            null
+        )
+        .then(() => {
+            debug(`saved file: ${destPath}`);
+            resolve(destFile);
+        })
+        .catch(err => reject(err));
+    });
+}
+
+function getFileContentsPromise(place, folderName, fileName)
+{
+    return new Promise((resolve, reject) => {
+        const destPath = [
+            GLib[`get_${place}_dir`](),
+            Misc.appId,
+            folderName,
+            fileName
+        ].join('/');
+
+        const file = Gio.File.new_for_path(destPath);
+        debug(`reading data from: ${destPath}`);
+
+        if(!file.query_exists(null)) {
+            debug(`no such file: ${file.get_path()}`);
+            return resolve(null);
+        }
+
+        file.load_bytes_async(null)
+            .then(result => {
+                const data = result[0].get_data();
+                if(!data || !data.length)
+                    return reject(new Error('source file is empty'));
+
+                debug(`read data from: ${destPath}`);
+
+                if(data instanceof Uint8Array)
+                    resolve(ByteArray.toString(data));
+                else
+                    resolve(data);
+            })
+            .catch(err => reject(err));
     });
 }
