@@ -56,12 +56,14 @@ function createDirPromise(dir)
 function saveFilePromise(place, subdirName, fileName, data)
 {
     return new Promise(async (resolve, reject) => {
-        let destPath = GLib[`get_${place}_dir`]() + '/' + Misc.appId;
+        let folderPath = GLib[`get_${place}_dir`]() + '/' + Misc.appId;
 
         if(subdirName)
-            destPath += `/${subdirName}`;
+            folderPath += `/${subdirName}`;
 
-        const destDir = Gio.File.new_for_path(destPath);
+        const destDir = Gio.File.new_for_path(folderPath);
+        const destPath = folderPath + '/' + fileName;
+
         debug(`saving file: ${destPath}`);
 
         const checkFolders = (subdirName)
@@ -90,15 +92,15 @@ function saveFilePromise(place, subdirName, fileName, data)
     });
 }
 
-function getFileContentsPromise(place, folderName, fileName)
+function getFileContentsPromise(place, subdirName, fileName)
 {
     return new Promise((resolve, reject) => {
-        const destPath = [
-            GLib[`get_${place}_dir`](),
-            Misc.appId,
-            folderName,
-            fileName
-        ].join('/');
+        let destPath = GLib[`get_${place}_dir`]() + '/' + Misc.appId;
+
+        if(subdirName)
+            destPath += `/${subdirName}`;
+
+        destPath += `/${fileName}`;
 
         const file = Gio.File.new_for_path(destPath);
         debug(`reading data from: ${destPath}`);
