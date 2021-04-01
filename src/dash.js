@@ -14,6 +14,8 @@ function generateDash(info)
     )
         return null;
 
+    debug('generating dash');
+
     /* TODO: Options in prefs to set preferred video formats for adaptive streaming */
     const videoStream = info.streamingData.adaptiveFormats.find(stream => {
         return (stream.mimeType.startsWith('video/mp4') && stream.quality === 'hd1080');
@@ -27,7 +29,7 @@ function generateDash(info)
 
     const bufferSec = Math.min(4, info.videoDetails.lengthSeconds);
 
-    return [
+    const dash = [
         `<?xml version="1.0" encoding="UTF-8"?>`,
         `<MPD xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`,
         `  xmlns="urn:mpeg:dash:schema:mpd:2011"`,
@@ -42,6 +44,10 @@ function generateDash(info)
         `  </Period>`,
         `</MPD>`
     ].join('\n');
+
+    debug('dash generated');
+
+    return dash;
 }
 
 function saveDashPromise(dash)

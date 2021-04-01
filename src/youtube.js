@@ -284,6 +284,8 @@ var YouTubeClient = GObject.registerClass({
                 this.emit('info-resolved', true);
                 this.downloadingVideoId = null;
 
+                debug('video info is ready to use');
+
                 return resolve(info);
             }
 
@@ -643,11 +645,14 @@ var YouTubeClient = GObject.registerClass({
 
     async _createSubdirFileAsync(place, folderName, fileName, data)
     {
-        const destDir = Gio.File.new_for_path([
+        const destPath = [
             GLib[`get_${place}_dir`](),
             Misc.appId,
             folderName
-        ].join('/'));
+        ].join('/');
+
+        const destDir = Gio.File.new_for_path(destPath);
+        debug(`saving file: ${destPath}`);
 
         for(let dir of [destDir.get_parent(), destDir]) {
             const createdDir = await FileOps.createDirPromise(dir).catch(debug);
@@ -662,21 +667,22 @@ var YouTubeClient = GObject.registerClass({
             Gio.FileCreateFlags.NONE,
             null
         )
-        .then(() => debug(`saved file: ${destFile.get_path()}`))
+        .then(() => debug(`saved file: ${destPath}`))
         .catch(debug);
     }
 
     _getFileContentsPromise(place, folderName, fileName)
     {
         return new Promise((resolve, reject) => {
-            debug(`reading data from ${place} file`);
-
-            const file = Gio.File.new_for_path([
+            const destPath = [
                 GLib[`get_${place}_dir`](),
                 Misc.appId,
                 folderName,
                 fileName
-            ].join('/'));
+            ].join('/');
+
+            const file = Gio.File.new_for_path(destPath);
+            debug(`reading data from: ${destPath}`);
 
             if(!file.query_exists(null)) {
                 debug(`no such file: ${file.get_path()}`);
@@ -688,6 +694,8 @@ var YouTubeClient = GObject.registerClass({
                     const data = result[0].get_data();
                     if(!data || !data.length)
                         return reject(new Error('source file is empty'));
+
+                    debug(`read data from: ${destPath}`);
 
                     if(data instanceof Uint8Array)
                         resolve(ByteArray.toString(data));
