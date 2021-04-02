@@ -97,7 +97,7 @@ class ClapperAppBase extends Gtk.Application
         if(!window.has_css_class('adwrounded'))
             window.add_css_class('adwrounded');
 
-        if(theme.startsWith('Adwaita')) {
+        if(theme.startsWith('Adwaita') || theme.startsWith('Default')) {
             const isDarkTheme = settings.get_boolean('dark-theme');
 
             if(isDarkTheme && !hasAdwThemeDark)
@@ -125,7 +125,7 @@ class ClapperAppBase extends Gtk.Application
         const window = this.active_window;
         const hasAdwIcons = window.has_css_class('adwicons');
 
-        if(iconTheme === 'Adwaita') {
+        if(iconTheme === 'Adwaita' || iconTheme === 'Default') {
             if(!hasAdwIcons)
                 window.add_css_class('adwicons');
         }
