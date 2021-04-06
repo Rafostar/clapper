@@ -40,7 +40,6 @@ class ClapperWidget extends Gtk.Grid
         this._hideControlsTimeout = null;
         this._updateTimeTimeout = null;
 
-        this.needsTracksUpdate = true;
         this.needsCursorRestore = false;
 
         this.overlay = new Gtk.Overlay();
@@ -75,6 +74,7 @@ class ClapperWidget extends Gtk.Grid
         );
         this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
+        this.player.connect('media-info-updated', this._onMediaInfoUpdated.bind(this));
 
         this.overlay.set_child(playerWidget);
         this.overlay.add_overlay(this.revealerTop);
@@ -197,12 +197,8 @@ class ClapperWidget extends Gtk.Grid
         this.controlsBox.set_visible(!isOnTop);
     }
 
-    _updateMediaInfo()
+    _onMediaInfoUpdated(player, mediaInfo)
     {
-        const mediaInfo = this.player.get_media_info();
-        if(!mediaInfo)
-            return GLib.SOURCE_REMOVE;
-
         /* Set titlebar media title */
         this.updateTitle(mediaInfo);
 
@@ -212,8 +208,7 @@ class ClapperWidget extends Gtk.Grid
         this.controls.setLiveMode(isLive, this.isSeekable);
 
         if(this.player.needsTocUpdate) {
-            /* FIXME: Remove `get_toc` check after required GstPlay(er) ver bump */
-            if(!isLive && mediaInfo.get_toc)
+            if(!isLive)
                 this.updateChapters(mediaInfo.get_toc());
 
             this.player.needsTocUpdate = false;
@@ -309,8 +304,6 @@ class ClapperWidget extends Gtk.Grid
             anyButtonShown = true;
         }
         this.controls.revealTracksRevealer.set_visible(anyButtonShown);
-
-        return GLib.SOURCE_REMOVE;
     }
 
     updateTitle(mediaInfo)
@@ -449,16 +442,12 @@ class ClapperWidget extends Gtk.Grid
                     this.controls.positionScale.clear_marks();
                     this.controls.chapters = null;
                 }
-                if(!player.playlistWidget.getActiveIsLocalFile()) {
-                    this.needsTracksUpdate = true;
-                }
                 break;
             case GstClapper.ClapperState.STOPPED:
                 debug('player state changed to: STOPPED');
                 this.controls.currentPosition = 0;
                 this.controls.positionScale.set_value(0);
                 this.controls.togglePlayButton.setPrimaryIcon();
-                this.needsTracksUpdate = true;
                 break;
             case GstClapper.ClapperState.PAUSED:
                 debug('player state changed to: PAUSED');
@@ -467,13 +456,6 @@ class ClapperWidget extends Gtk.Grid
             case GstClapper.ClapperState.PLAYING:
                 debug('player state changed to: PLAYING');
                 this.controls.togglePlayButton.setSecondaryIcon();
-                if(this.needsTracksUpdate) {
-                    this.needsTracksUpdate = false;
-                    GLib.idle_add(
-                        GLib.PRIORITY_DEFAULT_IDLE,
-                        this._updateMediaInfo.bind(this)
-                    );
-                }
                 break;
             default:
                 break;

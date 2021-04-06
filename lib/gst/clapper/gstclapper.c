@@ -106,6 +106,7 @@ enum
   SIGNAL_ERROR,
   SIGNAL_WARNING,
   SIGNAL_VIDEO_DIMENSIONS_CHANGED,
+  SIGNAL_MEDIA_INFO_UPDATED,
   SIGNAL_MUTE_CHANGED,
   SIGNAL_LAST
 };
@@ -420,6 +421,11 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("error", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 1, G_TYPE_ERROR);
+
+  signals[SIGNAL_MEDIA_INFO_UPDATED] =
+      g_signal_new ("media-info-updated", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
+      NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_CLAPPER_MEDIA_INFO);
 
   signals[SIGNAL_VIDEO_DIMENSIONS_CHANGED] =
       g_signal_new ("video-dimensions-changed", G_TYPE_FROM_CLASS (klass),
@@ -836,6 +842,48 @@ main_loop_running_cb (gpointer user_data)
   g_mutex_unlock (&self->lock);
 
   return G_SOURCE_REMOVE;
+}
+
+typedef struct
+{
+  GstClapper *clapper;
+  GstClapperMediaInfo *info;
+} MediaInfoUpdatedSignalData;
+
+static void
+media_info_updated_dispatch (gpointer user_data)
+{
+  MediaInfoUpdatedSignalData *data = user_data;
+
+  if (data->clapper->inhibit_sigs)
+    return;
+
+  if (data->clapper->target_state >= GST_STATE_PAUSED) {
+    g_signal_emit (data->clapper, signals[SIGNAL_MEDIA_INFO_UPDATED], 0,
+        data->info);
+  }
+}
+
+static void
+free_media_info_updated_signal_data (MediaInfoUpdatedSignalData * data)
+{
+  g_object_unref (data->clapper);
+  g_object_unref (data->info);
+  g_free (data);
+}
+
+static void
+emit_media_info_updated (GstClapper * self)
+{
+  MediaInfoUpdatedSignalData *data = g_new (MediaInfoUpdatedSignalData, 1);
+  data->clapper = g_object_ref (self);
+  g_mutex_lock (&self->lock);
+  data->info = gst_clapper_media_info_copy (self->media_info);
+  g_mutex_unlock (&self->lock);
+
+  gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
+      media_info_updated_dispatch, data,
+      (GDestroyNotify) free_media_info_updated_signal_data);
 }
 
 typedef struct
@@ -1468,7 +1516,17 @@ notify_caps_cb (G_GNUC_UNUSED GObject * object,
 {
   GstClapper *self = GST_CLAPPER (user_data);
 
-  check_video_dimensions_changed (self);
+  if (self->target_state >= GST_STATE_PAUSED) {
+    gboolean has_media_info = FALSE;
+
+    check_video_dimensions_changed (self);
+    g_mutex_lock (&self->lock);
+    has_media_info = (self->media_info != NULL);
+    g_mutex_unlock (&self->lock);
+
+    if (has_media_info)
+      emit_media_info_updated (self);
+  }
 }
 
 typedef struct
@@ -1568,6 +1626,7 @@ state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
       } else {
         self->cached_duration = GST_CLOCK_TIME_NONE;
       }
+      emit_media_info_updated (self);
     }
 
     if (new_state == GST_STATE_PAUSED
