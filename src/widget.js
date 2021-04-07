@@ -23,8 +23,6 @@ class ClapperWidget extends Gtk.Grid
 
         this.posX = 0;
         this.posY = 0;
-
-        this.windowSize = JSON.parse(settings.get_string('window-size'));
         this.layoutWidth = 0;
 
         this.isFullscreenMode = false;
@@ -58,8 +56,6 @@ class ClapperWidget extends Gtk.Grid
 
         this.attach(this.overlay, 0, 0, 1, 1);
         this.attach(this.controlsRevealer, 0, 1, 1, 1);
-
-        this.mapSignal = this.connect('map', this._onMap.bind(this));
 
         this.player = new Player();
         const playerWidget = this.player.widget;
@@ -549,20 +545,17 @@ class ClapperWidget extends Gtk.Grid
         this.controls._onPlayerResize(width, height);
     }
 
-    _onMap()
+    _onWindowMap(window)
     {
-        this.disconnect(this.mapSignal);
-
-        const root = this.get_root();
-        const surface = root.get_surface();
-        const monitor = root.display.get_monitor_at_surface(surface);
+        const surface = window.get_surface();
+        const monitor = window.display.get_monitor_at_surface(surface);
         const geometry = monitor.geometry;
-        const size = this.windowSize;
+        const size = JSON.parse(settings.get_string('window-size'));
 
         debug(`monitor application-pixels: ${geometry.width}x${geometry.height}`);
 
         if(geometry.width >= size[0] && geometry.height >= size[1]) {
-            root.set_default_size(size[0], size[1]);
+            window.set_default_size(size[0], size[1]);
             debug(`restored window size: ${size[0]}x${size[1]}`);
         }
 

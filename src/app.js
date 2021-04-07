@@ -30,6 +30,8 @@ class ClapperApp extends AppBase
         window.add_css_class('nobackground');
         window.set_child(clapperWidget);
         window.set_titlebar(dummyHeaderbar);
+
+        this.mapSignal = window.connect('map', this._onWindowMap.bind(this));
     }
 
     vfunc_open(files, hint)
@@ -38,5 +40,13 @@ class ClapperApp extends AppBase
 
         this._openFiles(files);
         this.activate();
+    }
+
+    _onWindowMap(window)
+    {
+        window.disconnect(this.mapSignal);
+        this.mapSignal = null;
+
+        window.child._onWindowMap(window);
     }
 });
