@@ -25,6 +25,10 @@
         {
             "type": "patch",
             "path": "gst-plugins-base-autodetect-subtitle-text-encoding.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-base-do-not-set-backbuffer.patch"
         }
     ]
 }
