@@ -1,1 +1,3 @@
-lib/* linguist-vendored
+lib/**/* linguist-vendored
+lib/**/**/* linguist-vendored
+lib/gst/clapper/gtk4/* linguist-vendored=false
