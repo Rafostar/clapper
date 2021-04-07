@@ -24,10 +24,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         filter.add_mime_type('video/*');
         filter.add_mime_type('audio/*');
         filter.add_mime_type('application/claps');
-        this.subsMimes = [
-            'application/x-subrip',
-        ];
-        this.subsMimes.forEach(mime => filter.add_mime_type(mime));
+        Misc.subsMimes.forEach(mime => filter.add_mime_type(mime));
         this.add_filter(filter);
 
         this.responseSignal = this.connect('response', this._onResponse.bind(this));
@@ -46,36 +43,26 @@ class ClapperFileChooser extends Gtk.FileChooserNative
 
         if(response === Gtk.ResponseType.ACCEPT) {
             const files = this.get_files();
-            const playlist = [];
+            const filesArray = [];
 
             let index = 0;
             let file;
-            let subs;
 
             while((file = files.get_item(index))) {
-                const filename = file.get_basename();
-                const [type, isUncertain] = Gio.content_type_guess(filename, null);
-
-                if(this.subsMimes.includes(type)) {
-                    subs = file;
-                    files.remove(index);
-
-                    continue;
-                }
-
-                playlist.push(file);
+                filesArray.push(file);
                 index++;
             }
 
-            const { player } = this.get_transient_for().get_child();
+            const { application } = this.transient_for;
+            const isHandlesOpen = Boolean(
+                application.flags & Gio.ApplicationFlags.HANDLES_OPEN
+            );
 
-            if(playlist.length)
-                player.set_playlist(playlist);
-
-            /* add subs to single selected video
-               or to already playing file  */
-            if(subs && !files.get_item(1))
-                player.set_subtitles(subs);
+            /* Remote app does not handle open */
+            if(isHandlesOpen)
+               application.open(filesArray, "");
+            else
+               application._openFiles(filesArray);
         }
 
         this.unref();

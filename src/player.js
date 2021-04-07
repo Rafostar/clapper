@@ -141,24 +141,14 @@ class ClapperPlayer extends PlayerBase
         this.set_playlist(playlist);
     }
 
-    _preparePlaylist(playlist)
+    set_playlist(playlist)
     {
         this.playlistWidget.removeAll();
 
         for(let source of playlist) {
-            const uri = (source.get_uri != null)
-                ? source.get_uri()
-                : Gst.uri_is_valid(source)
-                ? source
-                : Gst.filename_to_uri(source);
-
+            const uri = this._getSourceUri(source);
             this.playlistWidget.addItem(uri);
         }
-    }
-
-    set_playlist(playlist)
-    {
-        this._preparePlaylist(playlist);
 
         const firstTrack = this.playlistWidget.get_row_at_index(0);
         if(!firstTrack) return;
@@ -168,9 +158,7 @@ class ClapperPlayer extends PlayerBase
 
     set_subtitles(source)
     {
-        const uri = (source.get_uri)
-            ? source.get_uri()
-            : source;
+        const uri = this._getSourceUri(source);
 
         this.set_subtitle_uri(uri);
         this.set_subtitle_track_enabled(true);
@@ -292,6 +280,7 @@ class ClapperPlayer extends PlayerBase
             case 'play':
             case 'pause':
             case 'set_playlist':
+            case 'set_subtitles':
                 this[action](value);
                 break;
             case 'toggle_maximized':
@@ -313,6 +302,15 @@ class ClapperPlayer extends PlayerBase
                 }
                 break;
         }
+    }
+
+    _getSourceUri(source)
+    {
+        return (source.get_uri != null)
+            ? source.get_uri()
+            : Gst.uri_is_valid(source)
+            ? source
+            : Gst.filename_to_uri(source);
     }
 
     _performCloseCleanup(window)

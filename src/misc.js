@@ -5,6 +5,9 @@ const { debug } = Debug;
 
 var appName = 'Clapper';
 var appId = 'com.github.rafostar.Clapper';
+var subsMimes = [
+    'application/x-subrip',
+];
 
 var clapperPath = null;
 var clapperVersion = null;
@@ -94,6 +97,33 @@ function getFormattedTime(time, showHours)
 
     const parsed = (hours) ? `${hours}:` : '';
     return parsed + `${minutes}:${seconds}`;
+}
+
+function parsePlaylistFiles(filesArray)
+{
+    let index = filesArray.length;
+    let subs = null;
+
+    while(index--) {
+        const file = filesArray[index];
+        const filename = (file.get_basename)
+            ? file.get_basename()
+            : file.substring(file.lastIndexOf('/') + 1);
+
+        const [type, isUncertain] = Gio.content_type_guess(filename, null);
+
+        if(subsMimes.includes(type)) {
+            subs = file;
+            filesArray.splice(index, 1);
+        }
+    }
+
+    /* We only support single video
+     * with external subtitles */
+    if(subs && filesArray.length > 1)
+        subs = null;
+
+    return [filesArray, subs];
 }
 
 function encodeHTML(text)

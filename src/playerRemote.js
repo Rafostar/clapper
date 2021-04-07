@@ -23,17 +23,27 @@ class ClapperPlayerRemote extends GObject.Object
         const uris = [];
 
         /* We can not send GioFiles via WebSocket */
-        for(let source of playlist) {
-            const uri = (source.get_uri != null)
-                ? source.get_uri()
-                : source;
-
-            uris.push(uri);
-        }
+        for(let source of playlist)
+            uris.push(this._getSourceUri(source));
 
         this.webclient.sendMessage({
             action: 'set_playlist',
             value: uris
         });
+    }
+
+    set_subtitles(source)
+    {
+        this.webclient.sendMessage({
+            action: 'set_subtitles',
+            value: this._getSourceUri(source)
+        });
+    }
+
+    _getSourceUri(source)
+    {
+        return (source.get_uri != null)
+            ? source.get_uri()
+            : source;
     }
 });

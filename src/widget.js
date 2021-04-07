@@ -1,4 +1,4 @@
-const { Gdk, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
+const { Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const { Controls } = imports.src.controls;
 const Debug = imports.src.debug;
 const Dialogs = imports.src.dialogs;
@@ -907,15 +907,17 @@ class ClapperWidget extends Gtk.Grid
 
     _onDataDrop(dropTarget, value, x, y)
     {
-        const playlist = value.split(/\r?\n/).filter(uri => {
+        const files = value.split(/\r?\n/).filter(uri => {
             return Gst.uri_is_valid(uri);
         });
 
-        if(!playlist.length)
+        if(!files.length)
             return false;
 
-        this.player.set_playlist(playlist);
-        this.root.application.activate();
+        for(let index in files)
+            files[index] = Gio.File.new_for_uri(files[index]);
+
+        this.root.application.open(files, "");
 
         return true;
     }

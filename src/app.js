@@ -12,10 +12,7 @@ class ClapperApp extends AppBase
     {
         super._init();
 
-        this.set_flags(
-            this.get_flags()
-            | Gio.ApplicationFlags.HANDLES_OPEN
-        );
+        this.flags |= Gio.ApplicationFlags.HANDLES_OPEN;
     }
 
     vfunc_startup()
@@ -39,26 +36,7 @@ class ClapperApp extends AppBase
     {
         super.vfunc_open(files, hint);
 
-        const { player } = this.active_window.get_child();
-
-        if(!this.doneFirstActivate)
-            player._preparePlaylist(files);
-        else
-            player.set_playlist(files);
-
+        this._openFiles(files);
         this.activate();
-    }
-
-    _onWindowShow(window)
-    {
-        super._onWindowShow(window);
-
-        const { player } = this.active_window.get_child();
-        const success = player.playlistWidget.nextTrack();
-
-        if(!success)
-            debug('playlist is empty');
-
-        player.widget.grab_focus();
     }
 });

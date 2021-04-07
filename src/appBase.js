@@ -59,6 +59,17 @@ class ClapperAppBase extends Gtk.Application
         );
     }
 
+    _openFiles(files)
+    {
+        const [playlist, subs] = Misc.parsePlaylistFiles(files);
+        const { player } = this.active_window.get_child();
+
+        if(playlist && playlist.length)
+            player.set_playlist(playlist);
+        if(subs)
+            player.set_subtitles(subs);
+    }
+
     _onFirstActivate()
     {
         const gtkSettings = Gtk.Settings.get_default();
@@ -71,17 +82,7 @@ class ClapperAppBase extends Gtk.Application
         this._onIconThemeChanged(gtkSettings);
         gtkSettings.connect('notify::gtk-theme-name', this._onThemeChanged.bind(this));
         gtkSettings.connect('notify::gtk-icon-theme-name', this._onIconThemeChanged.bind(this));
-
-        this.windowShowSignal = this.active_window.connect(
-            'show', this._onWindowShow.bind(this)
-        );
         this.doneFirstActivate = true;
-    }
-
-    _onWindowShow(window)
-    {
-        window.disconnect(this.windowShowSignal);
-        this.windowShowSignal = null;
     }
 
     _onThemeChanged(gtkSettings)
