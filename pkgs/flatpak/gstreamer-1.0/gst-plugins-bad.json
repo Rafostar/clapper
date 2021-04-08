@@ -36,6 +36,10 @@
         {
             "type": "patch",
             "path": "gst-plugins-bad-assrender-fix-mimetype-detection.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gst-plugins-bad-dashdemux-sdix-range-download.patch"
         }
     ]
 }

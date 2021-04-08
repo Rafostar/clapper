@@ -1,0 +1,86 @@
+From be0f4bc94fad9fe182c97eef389954b5f63f7092 Mon Sep 17 00:00:00 2001
+From: Jun Xie <jun.xie@samsung.com>
+Date: Sat, 4 Nov 2017 14:48:54 +0800
+Subject: [PATCH] dashdemux: fix segmentBase type with 'sidx' not using range
+ download issue
+
+1. for utilizing range download and enable bitrate switch
+   * update fragment info after 'sidx' is downloaded and parsed,
+     so that media segment's range is set by 'sidx' entry info.
+   * while updating fragment info, setting range_end by 'sidx' entry size.
+
+2. for singleSegmentBase type WITHOUT @indexRange explicitly presented in MPD file
+   * set '*sidx_seek_needed' to true, early terminate currently no-range downloading whole file,
+     then jump to the requested SIDX entry by using sidx info.
+
+3. for 'ref type 1' 'sidx'
+   * keep current behaviour for 'ref type 1', download as a whole file without range download
+
+https://bugzilla.gnome.org/show_bug.cgi?id=788763
+
+diff --git a/ext/dash/gstdashdemux.c b/ext/dash/gstdashdemux.c
+index e38240800..7554a44b2 100644
+--- a/ext/dash/gstdashdemux.c
++++ b/ext/dash/gstdashdemux.c
+@@ -1356,7 +1356,7 @@ gst_dash_demux_stream_update_fragment_info (GstAdaptiveDemuxStream * stream)
+             stream->fragment.range_start + entry->size - 1;
+         dashstream->actual_position += entry->duration;
+       } else {
+-        stream->fragment.range_end = fragment.range_end;
++        stream->fragment.range_end = stream->fragment.range_start + entry->size - 1;
+       }
+     } else {
+       dashstream->actual_position = stream->fragment.timestamp =
+@@ -1572,7 +1572,7 @@ gst_dash_demux_stream_has_next_subfragment (GstAdaptiveDemuxStream * stream)
+ 
+   if (dashstream->sidx_parser.status == GST_ISOFF_SIDX_PARSER_FINISHED) {
+     if (stream->demux->segment.rate > 0.0) {
+-      if (sidx->entry_index + 1 < sidx->entries_count)
++      if (sidx->entry_index < sidx->entries_count)
+         return TRUE;
+     } else {
+       if (sidx->entry_index >= 1)
+@@ -2903,6 +2903,7 @@ gst_dash_demux_parse_isobmff (GstAdaptiveDemux * demux,
+       GstByteReader sub_reader;
+       GstIsoffParserResult res;
+       guint dummy;
++      gboolean ref_type1_found = FALSE;
+ 
+       dash_stream->sidx_base_offset =
+           dash_stream->isobmff_parser.current_start_offset + size;
+@@ -2932,6 +2933,7 @@ gst_dash_demux_parse_isobmff (GstAdaptiveDemux * demux,
+             GST_FIXME_OBJECT (stream->pad, "SIDX ref_type 1 not supported yet");
+             dash_stream->sidx_position = GST_CLOCK_TIME_NONE;
+             gst_isoff_sidx_parser_clear (&dash_stream->sidx_parser);
++            ref_type1_found = TRUE;
+             break;
+           }
+         }
+@@ -2968,8 +2970,9 @@ gst_dash_demux_parse_isobmff (GstAdaptiveDemux * demux,
+           }
+         }
+ 
+-        if (dash_stream->sidx_parser.status == GST_ISOFF_SIDX_PARSER_FINISHED &&
+-            SIDX (dash_stream)->entry_index != 0) {
++        if ((dash_stream->sidx_parser.status == GST_ISOFF_SIDX_PARSER_FINISHED &&
++            SIDX (dash_stream)->entry_index != 0) || (!stream->downloading_index &&
++            !ref_type1_found)) {
+           /* Need to jump to the requested SIDX entry. Push everything up to
+            * the SIDX box below and let the caller handle everything else */
+           *sidx_seek_needed = TRUE;
+diff --git a/gst-libs/gst/adaptivedemux/gstadaptivedemux.c b/gst-libs/gst/adaptivedemux/gstadaptivedemux.c
+index a495ec2e7..3a09a76b1 100644
+--- a/gst-libs/gst/adaptivedemux/gstadaptivedemux.c
++++ b/gst-libs/gst/adaptivedemux/gstadaptivedemux.c
+@@ -3378,6 +3378,9 @@ gst_adaptive_demux_stream_download_header_fragment (GstAdaptiveDemuxStream *
+       ret = gst_adaptive_demux_stream_download_uri (demux, stream,
+           stream->fragment.index_uri, stream->fragment.index_range_start,
+           stream->fragment.index_range_end, NULL);
++
++      gst_adaptive_demux_stream_update_fragment_info(stream->demux, stream);
++
+       stream->downloading_index = FALSE;
+     }
+   }
+-- 
+2.7.4
