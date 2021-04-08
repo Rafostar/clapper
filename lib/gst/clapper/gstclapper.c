@@ -2800,17 +2800,17 @@ mute_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
 }
 
 static void
-source_setup_cb (GstElement * playbin, GstElement * source, GstClapper * self)
+element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
 {
-  GParamSpec *prop = g_object_class_find_property (G_OBJECT_GET_CLASS (source),
+  GParamSpec *prop = g_object_class_find_property (G_OBJECT_GET_CLASS (element),
       "user-agent");
 
   if (prop && prop->value_type == G_TYPE_STRING) {
     const gchar *user_agent =
         "Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0";
 
-    GST_INFO_OBJECT (self, "Setting source user-agent: %s", user_agent);
-    g_object_set (source, "user-agent", user_agent, NULL);
+    GST_INFO_OBJECT (self, "Setting element user-agent: %s", user_agent);
+    g_object_set (element, "user-agent", user_agent, NULL);
   }
 }
 
@@ -2923,8 +2923,8 @@ gst_clapper_main (gpointer data)
       G_CALLBACK (volume_notify_cb), self);
   g_signal_connect (self->playbin, "notify::mute",
       G_CALLBACK (mute_notify_cb), self);
-  g_signal_connect (self->playbin, "source-setup",
-      G_CALLBACK (source_setup_cb), self);
+  g_signal_connect (self->playbin, "element-setup",
+      G_CALLBACK (element_setup_cb), self);
 
   self->target_state = GST_STATE_NULL;
   self->current_state = GST_STATE_NULL;
