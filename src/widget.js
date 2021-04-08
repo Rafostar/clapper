@@ -893,9 +893,14 @@ class ClapperWidget extends Gtk.Grid
         if(!this.player.ytClient)
             this.player.ytClient = new YouTube.YouTubeClient();
 
+        const { ytClient } = this.player;
+
         /* Speed up things by prefetching new video info before drop */
-        if(!this.player.ytClient.compareLastVideoId(videoId))
-            this.player.ytClient.getVideoInfoPromise(videoId).catch(debug);
+        if(
+            !ytClient.compareLastVideoId(videoId)
+            && ytClient.downloadingVideoId !== videoId
+        )
+            ytClient.getVideoInfoPromise(videoId).catch(debug);
     }
 
     _onDataDrop(dropTarget, value, x, y)
