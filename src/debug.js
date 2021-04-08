@@ -19,9 +19,19 @@ clapperDebugger.enabled = (
     || G_DEBUG_ENV != null
     && G_DEBUG_ENV.includes('Clapper')
 );
-const clapperDebug = clapperDebugger.debug;
 
-function debug(msg, levelName)
+const ytDebugger = new Debug.Debugger('YouTube', {
+    name_printer: new Ink.Printer({
+        font: Ink.Font.BOLD,
+        color: Ink.Color.RED
+    }),
+    time_printer: new Ink.Printer({
+        color: Ink.Color.LIGHT_BLUE
+    }),
+    high_precision: true,
+});
+
+function _debug(msg, levelName, debuggerName)
 {
     levelName = levelName || 'LEVEL_DEBUG';
 
@@ -30,12 +40,32 @@ function debug(msg, levelName)
         msg = msg.message;
     }
 
-    if(levelName !== 'LEVEL_CRITICAL')
-        return clapperDebug(msg);
+    if(levelName !== 'LEVEL_CRITICAL') {
+        switch(debuggerName) {
+            case 'Clapper':
+                clapperDebugger.debug(msg);
+                break;
+            case 'YouTube':
+                ytDebugger.debug(msg);
+                break;
+        }
+
+        return;
+    }
 
     GLib.log_structured(
-        'Clapper', GLib.LogLevelFlags[levelName], {
+        debuggerName, GLib.LogLevelFlags[levelName], {
             MESSAGE: msg,
-            SYSLOG_IDENTIFIER: 'clapper'
+            SYSLOG_IDENTIFIER: debuggerName.toLowerCase()
     });
+}
+
+function debug(msg, levelName)
+{
+    _debug(msg, levelName, 'Clapper');
+}
+
+function ytDebug(msg, levelName)
+{
+    _debug(msg, levelName, 'YouTube');
 }

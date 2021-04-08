@@ -4,7 +4,7 @@ const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
 const YTDL = imports.src.assets['node-ytdl-core'];
 
-const { debug } = Debug;
+const debug = Debug.ytDebug;
 
 const InitAsyncState = {
     NONE: 0,
