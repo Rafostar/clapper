@@ -18,7 +18,6 @@ class ClapperPlayer extends PlayerBase
         super._init();
 
         this.seek_done = true;
-        this.doneStartup = false;
         this.needsFastSeekRestore = false;
         this.customVideoTitle = null;
 
@@ -429,18 +428,19 @@ class ClapperPlayer extends PlayerBase
         debug(`URI loaded: ${uri}`);
         this.needsTocUpdate = true;
 
-        if(!this.doneStartup) {
-            this.doneStartup = true;
+        if(settings.get_boolean('fullscreen-auto')) {
+            const root = player.widget.get_root();
+            const clapperWidget = root.get_child();
+            /* Do not enter fullscreen when already in it
+             * or when in floating mode */
+            if(
+                !clapperWidget.isFullscreenMode
+                && clapperWidget.controlsRevealer.reveal_child
+            ) {
+                this.playOnFullscreen = true;
+                root.fullscreen();
 
-            if(settings.get_boolean('fullscreen-auto')) {
-                const root = player.widget.get_root();
-                const clapperWidget = root.get_child();
-                if(!clapperWidget.isFullscreenMode) {
-                    this.playOnFullscreen = true;
-                    root.fullscreen();
-
-                    return;
-                }
+                return;
             }
         }
         this.play();
