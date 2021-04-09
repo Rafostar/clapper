@@ -107,10 +107,10 @@ class ClapperWidget extends Gtk.Grid
 
     revealControls(isAllowInput)
     {
-        this._checkSetUpdateTimeInterval();
-
         this.revealerTop.revealChild(true);
         this.revealerBottom.revealChild(true);
+
+        this._checkSetUpdateTimeInterval();
 
         if(isAllowInput)
             this.setControlsCanFocus(true);
