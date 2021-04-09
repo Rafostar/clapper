@@ -203,6 +203,9 @@ class ClapperWidget extends Gtk.Grid
         this.isSeekable = mediaInfo.is_seekable();
         this.controls.setLiveMode(isLive, this.isSeekable);
 
+        /* Update remaining end time if visible */
+        this.updateTime();
+
         if(this.player.needsTocUpdate) {
             if(!isLive)
                 this.updateChapters(mediaInfo.get_toc());
@@ -324,11 +327,11 @@ class ClapperWidget extends Gtk.Grid
 
     updateTime()
     {
-        const revealerTop = this.revealerTop;
-
         if(
-            !revealerTop.visible
-            || !revealerTop.revealerGrid.visible
+            !this.revealerTop.visible
+            || !this.revealerTop.revealerGrid.visible
+            || !this.isFullscreenMode
+            || this.isMobileMonitor
         )
             return null;
 
@@ -458,7 +461,7 @@ class ClapperWidget extends Gtk.Grid
         }
 
         const isNotStopped = (state !== GstClapper.ClapperState.STOPPED);
-        this.revealerTop.endTime.set_visible(isNotStopped);
+        this.revealerTop.endTime.visible = isNotStopped;
     }
 
     _onPlayerDurationChanged(player, duration)

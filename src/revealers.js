@@ -162,7 +162,7 @@ class ClapperRevealerTop extends CustomRevealer
 
         /* Make sure that next timeout is always run after clock changes,
          * by delaying it for additional few milliseconds */
-        const nextUpdate = 60002 - parseInt(currTime.get_seconds() * 1000);
+        const nextUpdate = 60004 - parseInt(currTime.get_seconds() * 1000);
         debug(`updated current time: ${now}, ends at: ${end}`);
 
         return nextUpdate;
