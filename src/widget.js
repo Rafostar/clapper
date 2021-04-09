@@ -283,7 +283,7 @@ class ClapperWidget extends Gtk.Grid
 
             if(currStream && type !== 'subtitle') {
                 const caps = currStream.get_caps();
-                debug(`${type} caps: ${caps.to_string()}`, 'LEVEL_INFO');
+                debug(`${type} caps: ${caps.to_string()}`);
             }
             if(type === 'video') {
                 const isShowVis = (parsedInfo[`${type}Tracks`].length === 0);

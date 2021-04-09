@@ -31,41 +31,34 @@ const ytDebugger = new Debug.Debugger('YouTube', {
     high_precision: true,
 });
 
-function _debug(msg, levelName, debuggerName)
+function _debug(msg, debuggerName)
 {
-    levelName = levelName || 'LEVEL_DEBUG';
-
     if(msg.message) {
-        levelName = 'LEVEL_CRITICAL';
-        msg = msg.message;
-    }
-
-    if(levelName !== 'LEVEL_CRITICAL') {
-        switch(debuggerName) {
-            case 'Clapper':
-                clapperDebugger.debug(msg);
-                break;
-            case 'YouTube':
-                ytDebugger.debug(msg);
-                break;
-        }
+        GLib.log_structured(
+            debuggerName, GLib.LogLevelFlags.LEVEL_CRITICAL, {
+                MESSAGE: msg.message,
+                SYSLOG_IDENTIFIER: debuggerName.toLowerCase()
+        });
 
         return;
     }
 
-    GLib.log_structured(
-        debuggerName, GLib.LogLevelFlags[levelName], {
-            MESSAGE: msg,
-            SYSLOG_IDENTIFIER: debuggerName.toLowerCase()
-    });
+    switch(debuggerName) {
+        case 'Clapper':
+            clapperDebugger.debug(msg);
+            break;
+        case 'YouTube':
+            ytDebugger.debug(msg);
+            break;
+    }
 }
 
-function debug(msg, levelName)
+function debug(msg)
 {
-    _debug(msg, levelName, 'Clapper');
+    _debug(msg, 'Clapper');
 }
 
-function ytDebug(msg, levelName)
+function ytDebug(msg)
 {
-    _debug(msg, levelName, 'YouTube');
+    _debug(msg, 'YouTube');
 }

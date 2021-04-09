@@ -448,7 +448,7 @@ class ClapperPlayer extends PlayerBase
 
     _onPlayerWarning(player, error)
     {
-        debug(error.message, 'LEVEL_WARNING');
+        debug(error.message);
     }
 
     _onPlayerError(player, error)

@@ -131,7 +131,7 @@ function getFileFromLocalUri(uri)
     const file = Gio.file_new_for_uri(uri);
 
     if(!file.query_exists(null)) {
-        debug(`file does not exist: ${file.get_path()}`, 'LEVEL_WARNING');
+        debug(new Error(`file does not exist: ${file.get_path()}`));
 
         return null;
     }
