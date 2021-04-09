@@ -430,21 +430,23 @@ class ClapperPlayer extends PlayerBase
         debug(`URI loaded: ${uri}`);
         this.needsTocUpdate = true;
 
-        if(this.canAutoFullscreen && settings.get_boolean('fullscreen-auto')) {
-            const root = player.widget.get_root();
-            const clapperWidget = root.get_child();
+        if(this.canAutoFullscreen) {
             this.canAutoFullscreen = false;
 
-            /* Do not enter fullscreen when already in it
-             * or when in floating mode */
-            if(
-                !clapperWidget.isFullscreenMode
-                && clapperWidget.controlsRevealer.reveal_child
-            ) {
-                this.playOnFullscreen = true;
-                root.fullscreen();
+            if(settings.get_boolean('fullscreen-auto')) {
+                const root = player.widget.get_root();
+                const clapperWidget = root.get_child();
+                /* Do not enter fullscreen when already in it
+                 * or when in floating mode */
+                if(
+                    !clapperWidget.isFullscreenMode
+                    && clapperWidget.controlsRevealer.reveal_child
+                ) {
+                    this.playOnFullscreen = true;
+                    root.fullscreen();
 
-                return;
+                    return;
+                }
             }
         }
         this.play();
