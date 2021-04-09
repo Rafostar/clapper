@@ -316,11 +316,11 @@ class ClapperWidget extends Gtk.Grid
             title = this.player.customVideoTitle;
 
         if(!title) {
-            const subtitle = this.player.playlistWidget.getActiveFilename();
+            const item = this.player.playlistWidget.getActiveRow();
 
-            title = (subtitle.includes('.'))
-                ? subtitle.split('.').slice(0, -1).join('.')
-                : subtitle;
+            title = (item.isLocalFile && item.filename.includes('.'))
+                ? item.filename.split('.').slice(0, -1).join('.')
+                : item.filename;
         }
 
         this.root.title = title;

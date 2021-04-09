@@ -55,22 +55,17 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         return true;
     }
 
+    getActiveRow()
+    {
+        return this.get_row_at_index(this.activeRowId);
+    }
+
     getActiveFilename()
     {
-        const row = this.get_row_at_index(this.activeRowId);
+        const row = this.getActiveRow();
         if(!row) return null;
 
         return row.filename;
-    }
-
-    /* FIXME: Remove once/if GstPlay(er) gets
-     * less vague MediaInfo signals */
-    getActiveIsLocalFile()
-    {
-        const row = this.get_row_at_index(this.activeRowId);
-        if(!row) return null;
-
-        return row.isLocalFile;
     }
 
     deactivateActiveItem()
@@ -78,7 +73,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         if(this.activeRowId < 0)
             return;
 
-        const row = this.get_row_at_index(this.activeRowId);
+        const row = this.getActiveRow();
         if(!row) return null;
 
         const icon = row.child.get_first_child();
