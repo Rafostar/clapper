@@ -21,6 +21,7 @@ class ClapperPlayer extends PlayerBase
         this.needsFastSeekRestore = false;
         this.customVideoTitle = null;
 
+        this.canAutoFullscreen = false;
         this.playOnFullscreen = false;
         this.quitOnStop = false;
         this.needsTocUpdate = true;
@@ -141,6 +142,7 @@ class ClapperPlayer extends PlayerBase
     set_playlist(playlist)
     {
         this.playlistWidget.removeAll();
+        this.canAutoFullscreen = true;
 
         for(let source of playlist) {
             const uri = this._getSourceUri(source);
@@ -428,9 +430,11 @@ class ClapperPlayer extends PlayerBase
         debug(`URI loaded: ${uri}`);
         this.needsTocUpdate = true;
 
-        if(settings.get_boolean('fullscreen-auto')) {
+        if(this.canAutoFullscreen && settings.get_boolean('fullscreen-auto')) {
             const root = player.widget.get_root();
             const clapperWidget = root.get_child();
+            this.canAutoFullscreen = false;
+
             /* Do not enter fullscreen when already in it
              * or when in floating mode */
             if(
