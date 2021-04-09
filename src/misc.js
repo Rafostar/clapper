@@ -126,6 +126,19 @@ function parsePlaylistFiles(filesArray)
     return [filesArray, subs];
 }
 
+function getFileFromLocalUri(uri)
+{
+    const file = Gio.file_new_for_uri(uri);
+
+    if(!file.query_exists(null)) {
+        debug(`file does not exist: ${file.get_path()}`, 'LEVEL_WARNING');
+
+        return null;
+    }
+
+    return file;
+}
+
 function encodeHTML(text)
 {
     return text.replace(/&/g, '&amp;')

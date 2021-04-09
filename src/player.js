@@ -60,10 +60,8 @@ class ClapperPlayer extends PlayerBase
             return;
         }
 
-        let file = Gio.file_new_for_uri(uri);
-        if(!file.query_exists(null)) {
-            debug(`file does not exist: ${file.get_path()}`, 'LEVEL_WARNING');
-
+        const file = Misc.getFileFromLocalUri(uri);
+        if(!file) {
             if(!this.playlistWidget.nextTrack())
                 debug('set media reached end of playlist');
 
@@ -159,6 +157,13 @@ class ClapperPlayer extends PlayerBase
     set_subtitles(source)
     {
         const uri = this._getSourceUri(source);
+
+        /* Check local file existence */
+        if(
+            Gst.Uri.get_protocol(uri) === 'file'
+            && !Misc.getFileFromLocalUri(uri)
+        )
+            return;
 
         this.set_subtitle_uri(uri);
         this.set_subtitle_track_enabled(true);
