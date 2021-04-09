@@ -128,6 +128,9 @@ class ClapperRevealerTop extends CustomRevealer
 
         this.set_child(revealerBox);
 
+        this.mediaTitle.bind_property('visible', this.endTime, 'visible',
+            GObject.BindingFlags.DEFAULT
+        );
         this.connect('notify::child-revealed', this._onTopRevealed.bind(this));
     }
 

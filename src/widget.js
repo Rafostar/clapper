@@ -449,6 +449,7 @@ class ClapperWidget extends Gtk.Grid
                 debug('player state changed to: STOPPED');
                 this.controls.currentPosition = 0;
                 this.controls.positionScale.set_value(0);
+                this.revealerTop.showTitle = false;
                 this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstClapper.ClapperState.PAUSED:
@@ -462,9 +463,6 @@ class ClapperWidget extends Gtk.Grid
             default:
                 break;
         }
-
-        const isNotStopped = (state !== GstClapper.ClapperState.STOPPED);
-        this.revealerTop.endTime.visible = isNotStopped;
     }
 
     _onPlayerDurationChanged(player, duration)
