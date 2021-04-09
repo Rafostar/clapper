@@ -151,14 +151,16 @@ class ClapperRevealerTop extends CustomRevealer
         return this.mediaTitle.visible;
     }
 
-    setTimes(currTime, endTime)
+    setTimes(currTime, endTime, isEndKnown)
     {
         const now = currTime.format(this.timeFormat);
-        const end = endTime.format(this.timeFormat);
-        const endText = `Ends at: ${end}`;
+        this.currentTime.label = now;
 
-        this.currentTime.set_label(now);
-        this.endTime.set_label(endText);
+        const end = (isEndKnown)
+            ? endTime.format(this.timeFormat)
+            : 'unknown';
+
+        this.endTime.label = `Ends at: ${end}`;
 
         /* Make sure that next timeout is always run after clock changes,
          * by delaying it for additional few milliseconds */

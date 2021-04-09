@@ -198,9 +198,12 @@ class ClapperWidget extends Gtk.Grid
         /* Set titlebar media title */
         this.updateTitle(mediaInfo);
 
+        /* FIXME: replace number with Gst.CLOCK_TIME_NONE when GJS
+         * can do UINT64: https://gitlab.gnome.org/GNOME/gjs/-/merge_requests/524 */
+        const isLive = (mediaInfo.is_live() || player.duration === 18446744073709552000);
+        this.isSeekable = (!isLive && mediaInfo.is_seekable());
+
         /* Show/hide position scale on LIVE */
-        const isLive = mediaInfo.is_live();
-        this.isSeekable = mediaInfo.is_seekable();
         this.controls.setLiveMode(isLive, this.isSeekable);
 
         /* Update remaining end time if visible */
@@ -339,7 +342,7 @@ class ClapperWidget extends Gtk.Grid
         const endTime = currTime.add_seconds(
             this.controls.positionAdjustment.get_upper() - this.controls.currentPosition
         );
-        const nextUpdate = this.revealerTop.setTimes(currTime, endTime);
+        const nextUpdate = this.revealerTop.setTimes(currTime, endTime, this.isSeekable);
 
         return nextUpdate;
     }
