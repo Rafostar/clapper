@@ -101,7 +101,7 @@
 
     <!-- Other -->
     <key name="window-size" type="s">
-      <default>'[960, 583]'</default>
+      <default>'[800, 490]'</default>
       <summary>Stores window size to restore on next launch</summary>
     </key>
     <key name="volume-last" type="d">
