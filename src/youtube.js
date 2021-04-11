@@ -1,4 +1,5 @@
 const { GObject, Gst, Soup } = imports.gi;
+const Dash = imports.src.dash;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
@@ -300,6 +301,51 @@ var YouTubeClient = GObject.registerClass({
 
             reject(new Error('could not obtain YouTube video info'));
         });
+    }
+
+    async getPlaybackDataAsync(videoId)
+    {
+        const info = await this.getVideoInfoPromise(videoId).catch(debug);
+
+        if(!info)
+            throw new Error('no YouTube video info');
+
+        let uri = null;
+        const dashInfo = await this.getDashInfoAsync(info).catch(debug);
+
+        if(dashInfo) {
+            debug('parsed video info to dash info');
+            const dash = Dash.generateDash(dashInfo);
+
+            if(dash) {
+                debug('got dash data');
+
+                const dashFile = await FileOps.saveFilePromise(
+                    'tmp', null, 'clapper.mpd', dash
+                ).catch(debug);
+
+                if(dashFile)
+                    uri = dashFile.get_uri();
+
+                debug('got dash file');
+            }
+        }
+
+        if(!uri)
+            uri = this.ytClient.getBestCombinedUri(info);
+
+        if(!uri)
+            throw new Error('no YouTube video URI');
+
+        debug(`final URI: ${uri}`);
+
+        const title = (info.videoDetails && info.videoDetails.title)
+            ? Misc.decodeURIPlus(info.videoDetails.title)
+            : videoId;
+
+        debug(`title: ${title}`);
+
+        return { uri, title };
     }
 
     async getDashInfoAsync(info)

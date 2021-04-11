@@ -1,8 +1,6 @@
 const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
-const Dash = imports.src.dash;
 const Debug = imports.src.debug;
-const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
 const YouTube = imports.src.youtube;
 const { PlayerBase } = imports.src.playerBase;
@@ -53,8 +51,14 @@ class ClapperPlayer extends PlayerBase
             if(!isYouTubeUri)
                 return super.set_uri(uri);
 
-            this.getYouTubeUriAsync(videoId)
-                .then(ytUri => super.set_uri(ytUri))
+            if(!this.ytClient)
+                this.ytClient = new YouTube.YouTubeClient();
+
+            this.ytClient.getPlaybackDataAsync(videoId)
+                .then(data => {
+                    this.customVideoTitle = data.title;
+                    super.set_uri(data.uri);
+                })
                 .catch(debug);
 
             return;
@@ -74,48 +78,6 @@ class ClapperPlayer extends PlayerBase
         }
 
         super.set_uri(uri);
-    }
-
-    async getYouTubeUriAsync(videoId)
-    {
-        if(!this.ytClient)
-            this.ytClient = new YouTube.YouTubeClient();
-
-        const info = await this.ytClient.getVideoInfoPromise(videoId).catch(debug);
-
-        if(!info)
-            throw new Error('no YouTube video info');
-
-        let videoUri = null;
-        const dashInfo = await this.ytClient.getDashInfoAsync(info).catch(debug);
-
-        if(dashInfo) {
-            debug('parsed video info to dash info');
-            const dash = Dash.generateDash(dashInfo);
-
-            if(dash) {
-                debug('got dash');
-
-                const dashFile = await FileOps.saveFilePromise(
-                    'tmp', null, 'clapper.mpd', dash
-                ).catch(debug);
-
-                if(dashFile)
-                    videoUri = dashFile.get_uri();
-            }
-        }
-
-        if(!videoUri)
-            videoUri = this.ytClient.getBestCombinedUri(info);
-
-        if(!videoUri)
-            throw new Error('no YouTube video URI');
-
-        this.customVideoTitle = (info.videoDetails && info.videoDetails.title)
-            ? Misc.decodeURIPlus(info.videoDetails.title)
-            : videoId;
-
-        return videoUri;
     }
 
     load_playlist_file(file)
