@@ -286,10 +286,10 @@ var YouTubeClient = GObject.registerClass({
                 }
 
                 this.lastInfo = info;
+                debug('video info is ready to use');
+
                 this.emit('info-resolved', true);
                 this.downloadingVideoId = null;
-
-                debug('video info is ready to use');
 
                 return resolve(info);
             }
