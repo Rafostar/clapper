@@ -86,16 +86,23 @@ class ClapperPlayer extends PlayerBase
         if(!info)
             throw new Error('no YouTube video info');
 
-        const dash = Dash.generateDash(info);
         let videoUri = null;
+        const dashInfo = await this.ytClient.getDashInfoAsync(info).catch(debug);
 
-        if(dash) {
-            const dashFile = await FileOps.saveFilePromise(
-                'tmp', null, 'clapper.mpd', dash
-            ).catch(debug);
+        if(dashInfo) {
+            debug('parsed video info to dash info');
+            const dash = Dash.generateDash(dashInfo);
 
-            if(dashFile)
-                videoUri = dashFile.get_uri();
+            if(dash) {
+                debug('got dash');
+
+                const dashFile = await FileOps.saveFilePromise(
+                    'tmp', null, 'clapper.mpd', dash
+                ).catch(debug);
+
+                if(dashFile)
+                    videoUri = dashFile.get_uri();
+            }
         }
 
         if(!videoUri)

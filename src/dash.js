@@ -4,29 +4,11 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-function generateDash(info)
+function generateDash(dashInfo)
 {
-    if(
-        !info.streamingData
-        || !info.streamingData.adaptiveFormats
-        || !info.streamingData.adaptiveFormats.length
-    )
-        return null;
-
     debug('generating dash');
 
-    /* TODO: Options in prefs to set preferred video formats for adaptive streaming */
-    const videoStream = info.streamingData.adaptiveFormats.find(stream => {
-        return (stream.mimeType.startsWith('video/mp4') && stream.quality === 'hd1080');
-    });
-    const audioStream = info.streamingData.adaptiveFormats.find(stream => {
-        return (stream.mimeType.startsWith('audio/mp4'));
-    });
-
-    if(!videoStream || !audioStream)
-        return null;
-
-    const bufferSec = Math.min(4, info.videoDetails.lengthSeconds);
+    const bufferSec = Math.min(4, dashInfo.duration);
 
     const dash = [
         `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -34,19 +16,23 @@ function generateDash(info)
         `  xmlns="urn:mpeg:dash:schema:mpd:2011"`,
         `  xsi:schemaLocation="urn:mpeg:dash:schema:mpd:2011 DASH-MPD.xsd"`,
         `  type="static"`,
-        `  mediaPresentationDuration="PT${info.videoDetails.lengthSeconds}S"`,
+        `  mediaPresentationDuration="PT${dashInfo.duration}S"`,
         `  minBufferTime="PT${bufferSec}S"`,
         `  profiles="urn:mpeg:dash:profile:isoff-on-demand:2011">`,
-        `  <Period>`,
-             _addAdaptationSet([videoStream]),
-             _addAdaptationSet([audioStream]),
+        `  <Period>`
+    ];
+
+    for(let adaptation of dashInfo.adaptations)
+        dash.push(_addAdaptationSet(adaptation));
+
+    dash.push(
         `  </Period>`,
         `</MPD>`
-    ].join('\n');
+    );
 
     debug('dash generated');
 
-    return dash;
+    return dash.join('\n');
 }
 
 function _addAdaptationSet(streamsArr)

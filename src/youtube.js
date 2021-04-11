@@ -23,7 +23,7 @@ var YouTubeClient = GObject.registerClass({
     _init()
     {
         super._init({
-            timeout: 5,
+            timeout: 7,
             max_conns_per_host: 1,
             /* TODO: share this with GstClapper lib (define only once) */
             user_agent: 'Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0',
@@ -190,7 +190,10 @@ var YouTubeClient = GObject.registerClass({
                         debug(`found player URI: ${ytUri}`);
 
                         const ytId = ytPath.split('/').find(el => Misc.isHex(el));
-                        let ytSigData = await FileOps.getFileContentsPromise('user_cache', 'yt-sig', ytId).catch(debug);
+                        let ytSigData = await FileOps.getFileContentsPromise(
+                            'user_cache', 'yt-sig', ytId
+                        ).catch(debug);
+
                         if(ytSigData) {
                             ytSigData = ytSigData.split(';');
 
@@ -299,8 +302,53 @@ var YouTubeClient = GObject.registerClass({
         });
     }
 
+    async getDashInfoAsync(info)
+    {
+        if(
+            !info.streamingData
+            || !info.streamingData.adaptiveFormats
+            || !info.streamingData.adaptiveFormats.length
+        )
+            return null;
+
+        /* TODO: Options in prefs to set preferred video formats for adaptive streaming */
+        const videoStream = info.streamingData.adaptiveFormats.find(stream => {
+            return (stream.mimeType.startsWith('video/mp4') && stream.quality === 'hd1080');
+        });
+        const audioStream = info.streamingData.adaptiveFormats.find(stream => {
+            return (stream.mimeType.startsWith('audio/mp4'));
+        });
+
+        if(!videoStream || !audioStream)
+            return null;
+
+        debug('following redirects');
+
+        for(let stream of [videoStream, audioStream]) {
+            debug(`initial URL: ${stream.url}`);
+
+            const result = await this._downloadDataPromise(stream.url, 'HEAD').catch(debug);
+            if(!result) return null;
+
+            stream.url = result.uri;
+            debug(`resolved URL: ${stream.url}`);
+        }
+
+        debug('all redirects resolved');
+
+        return {
+            duration: info.videoDetails.lengthSeconds,
+            adaptations: [
+                [videoStream],
+                [audioStream],
+            ]
+        };
+    }
+
     getBestCombinedUri(info)
     {
+        debug('obtaining best combined URL');
+
         if(!info.streamingData.formats.length)
             return null;
 
@@ -332,11 +380,14 @@ var YouTubeClient = GObject.registerClass({
 
     _downloadDataPromise(url, method, reqData)
     {
+        method = method || 'GET';
+
         return new Promise((resolve, reject) => {
-            const message = Soup.Message.new(method || 'GET', url);
+            const message = Soup.Message.new(method, url);
             const result = {
                 data: null,
                 isAborted: false,
+                uri: null,
             };
 
             if(reqData) {
@@ -353,6 +404,10 @@ var YouTubeClient = GObject.registerClass({
 
                 if(statusCode === 200) {
                     result.data = msg.response_body.data;
+
+                    if(method === 'HEAD')
+                        result.uri = msg.uri.to_string(false);
+
                     return resolve(result);
                 }
 
