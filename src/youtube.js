@@ -332,7 +332,7 @@ var YouTubeClient = GObject.registerClass({
         }
 
         if(!uri)
-            uri = this.ytClient.getBestCombinedUri(info);
+            uri = this.getBestCombinedUri(info);
 
         if(!uri)
             throw new Error('no YouTube video URI');
