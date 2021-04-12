@@ -169,6 +169,9 @@ struct _GstClapper
    * is emitted after gst_clapper_stop/pause() has been called by the user. */
   gboolean inhibit_sigs;
 
+  /* If should emit media info updated signal */
+  gboolean needs_info_update;
+
   /* For playbin3 */
   gboolean use_playbin3;
   GstStreamCollection *collection;
@@ -264,6 +267,7 @@ gst_clapper_init (GstClapper * self)
   self->seek_position = GST_CLOCK_TIME_NONE;
   self->last_seek_time = GST_CLOCK_TIME_NONE;
   self->inhibit_sigs = FALSE;
+  self->needs_info_update = FALSE;
 
   GST_TRACE_OBJECT (self, "Initialized");
 }
@@ -878,6 +882,7 @@ emit_media_info_updated (GstClapper * self)
   MediaInfoUpdatedSignalData *data = g_new (MediaInfoUpdatedSignalData, 1);
   data->clapper = g_object_ref (self);
   g_mutex_lock (&self->lock);
+  self->needs_info_update = FALSE;
   data->info = gst_clapper_media_info_copy (self->media_info);
   g_mutex_unlock (&self->lock);
 
@@ -1517,15 +1522,12 @@ notify_caps_cb (G_GNUC_UNUSED GObject * object,
   GstClapper *self = GST_CLAPPER (user_data);
 
   if (self->target_state >= GST_STATE_PAUSED) {
-    gboolean has_media_info = FALSE;
-
     check_video_dimensions_changed (self);
-    g_mutex_lock (&self->lock);
-    has_media_info = (self->media_info != NULL);
-    g_mutex_unlock (&self->lock);
 
-    if (has_media_info)
-      emit_media_info_updated (self);
+    g_mutex_lock (&self->lock);
+    if (self->media_info != NULL)
+      self->needs_info_update = TRUE;
+    g_mutex_unlock (&self->lock);
   }
 }
 
@@ -2328,6 +2330,7 @@ stream_notify_cb (GstStreamCollection * collection, GstStream * stream,
 {
   GstClapperStreamInfo *info;
   const gchar *stream_id;
+  gboolean emit_update = FALSE;
 
   if (!self->media_info)
     return;
@@ -2342,7 +2345,11 @@ stream_notify_cb (GstStreamCollection * collection, GstStream * stream,
       gst_clapper_stream_info_find_from_stream_id (self->media_info, stream_id);
   if (info)
     gst_clapper_stream_info_update_from_stream (self, info, stream);
+  emit_update = (self->needs_info_update && GST_IS_CLAPPER_VIDEO_INFO (info));
   g_mutex_unlock (&self->lock);
+
+  if (emit_update)
+    emit_media_info_updated (self);
 }
 
 static void
@@ -2731,8 +2738,13 @@ static void
 video_tags_changed_cb (G_GNUC_UNUSED GstElement * playbin, gint stream_index,
     gpointer user_data)
 {
-  tags_changed_cb (GST_CLAPPER (user_data), stream_index,
+  GstClapper *self = GST_CLAPPER (user_data);
+
+  tags_changed_cb (self, stream_index,
       GST_TYPE_CLAPPER_VIDEO_INFO);
+
+  if (self->needs_info_update)
+    emit_media_info_updated (self);
 }
 
 static void
