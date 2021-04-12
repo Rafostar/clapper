@@ -308,21 +308,21 @@ class ClapperPlayer extends PlayerBase
         }
         /* If "quitOnStop" is set here it means that we are in middle of autoclosing */
         if(this.state !== GstClapper.ClapperState.STOPPED && !this.quitOnStop) {
+            const playlistItem = this.playlistWidget.getActiveRow();
+
             let resumeInfo = {};
-            if(settings.get_boolean('resume-enabled')) {
-                const resumeTitle = this.playlistWidget.getActiveFilename();
+            if(playlistItem.isLocalFile && settings.get_boolean('resume-enabled')) {
                 const resumeTime = Math.floor(this.position / 1000000000);
                 const resumeDuration = this.duration / 1000000000;
 
-                /* Do not save resume info when title is too long (random URI),
-                 * video is very short, just started or almost finished */
+                /* Do not save resume info when video is very short,
+                 * just started or almost finished */
                 if(
-                    resumeTitle.length < 300
-                    && resumeDuration > 60
+                    resumeDuration > 60
                     && resumeTime > 15
                     && resumeDuration - resumeTime > 20
                 ) {
-                    resumeInfo.title = resumeTitle;
+                    resumeInfo.title = playlistItem.filename;
                     resumeInfo.time = resumeTime;
                     resumeInfo.duration = resumeDuration;
 
