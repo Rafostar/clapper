@@ -110,6 +110,9 @@ class ClapperPlayer extends PlayerBase
 
     set_playlist(playlist)
     {
+        if(this.state !== GstClapper.ClapperState.STOPPED)
+            this.stop();
+
         this.playlistWidget.removeAll();
         this.canAutoFullscreen = true;
 
