@@ -6,6 +6,7 @@ const Misc = imports.src.misc;
 const YTDL = imports.src.assets['node-ytdl-core'];
 
 const debug = Debug.ytDebug;
+const { settings } = Misc;
 
 const InitAsyncState = {
     NONE: 0,
@@ -358,7 +359,7 @@ var YouTubeClient = GObject.registerClass({
             return null;
 
         /* TODO: Options in prefs to set preferred video formats and adaptive streaming */
-        const isAdaptiveEnabled = false;
+        const isAdaptiveEnabled = settings.get_boolean('yt-adaptive-enabled');
         const allowedFormats = {
             video: [
                 133,

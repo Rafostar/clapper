@@ -99,6 +99,12 @@
       <summary>Set PlayFlags for playbin</summary>
     </key>
 
+    <!-- YouTube -->
+    <key name="yt-adaptive-enabled" type="b">
+      <default>false</default>
+      <summary>Enable to use adaptive streaming</summary>
+    </key>
+
     <!-- Other -->
     <key name="window-size" type="s">
       <default>'[800, 490]'</default>
