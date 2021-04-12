@@ -37,7 +37,9 @@ function generateDash(dashInfo)
 
 function _addAdaptationSet(streamsArr)
 {
-    const mimeInfo = _getMimeInfo(streamsArr[0].mimeType);
+    /* We just need it for adaptation type,
+     * so any stream will do */
+    const { mimeInfo } = streamsArr[0];
 
     const adaptArr = [
         `contentType="${mimeInfo.content}"`,
@@ -93,11 +95,9 @@ function _addAdaptationSet(streamsArr)
 
 function _getStreamRepresentation(stream)
 {
-    const mimeInfo = _getMimeInfo(stream.mimeType);
-
     const repOptsArr = [
         `id="${stream.itag}"`,
-        `codecs="${mimeInfo.codecs}"`,
+        `codecs="${stream.mimeInfo.codecs}"`,
         `bandwidth="${stream.bitrate}"`,
     ];
 
@@ -120,13 +120,8 @@ function _getStreamRepresentation(stream)
         repArr.push(`      <AudioChannelConfiguration ${audioConfArr.join(' ')}/>`);
     }
 
-    const encodedURL = Misc.encodeHTML(stream.url)
-        .replace('?', '/')
-        .replace(/&amp;/g, '/')
-        .replace(/=/g, '/');
-
     repArr.push(
-        `        <BaseURL>${encodedURL}</BaseURL>`
+        `        <BaseURL>${stream.url}</BaseURL>`
     );
 
     if(stream.indexRange) {
@@ -150,22 +145,6 @@ function _getStreamRepresentation(stream)
     );
 
     return repArr.join('\n');
-}
-
-function _getMimeInfo(mimeType)
-{
-    const mimeArr = mimeType.split(';');
-
-    let codecs = mimeArr.find(info => info.includes('codecs')).split('=')[1];
-    codecs = codecs.substring(1, codecs.length - 1);
-
-    const mimeInfo = {
-        content: mimeArr[0].split('/')[0],
-        type: mimeArr[0],
-        codecs,
-    };
-
-    return mimeInfo;
 }
 
 function _getPar(width, height)

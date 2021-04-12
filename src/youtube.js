@@ -357,27 +357,75 @@ var YouTubeClient = GObject.registerClass({
         )
             return null;
 
-        /* TODO: Options in prefs to set preferred video formats for adaptive streaming */
-        const videoStream = info.streamingData.adaptiveFormats.find(stream => {
-            return (stream.mimeType.startsWith('video/mp4') && stream.quality === 'hd1080');
-        });
-        const audioStream = info.streamingData.adaptiveFormats.find(stream => {
-            return (stream.mimeType.startsWith('audio/mp4'));
-        });
+        /* TODO: Options in prefs to set preferred video formats and adaptive streaming */
+        const isAdaptiveEnabled = false;
+        const allowedFormats = {
+            video: [
+                133,
+                134,
+                135,
+                136,
+                137,
+                298,
+                299,
+            ],
+            audio: [
+                140,
+            ]
+        };
 
-        if(!videoStream || !audioStream)
-            return null;
+        const filteredStreams = {
+            video: [],
+            audio: [],
+        };
+
+        for(let fmt of ['video', 'audio']) {
+            debug(`filtering ${fmt} streams`);
+            let index = allowedFormats[fmt].length;
+
+            while(index--) {
+                const itag = allowedFormats[fmt][index];
+                const foundStream = info.streamingData.adaptiveFormats.find(stream => (stream.itag == itag));
+                if(foundStream) {
+                    /* Parse and convert mimeType string into object */
+                    foundStream.mimeInfo = this._getMimeInfo(foundStream.mimeType);
+
+                    /* Sanity check */
+                    if(!foundStream.mimeInfo || foundStream.mimeInfo.content !== fmt) {
+                        debug(new Error(`mimeType parsing failed on stream: ${itag}`));
+                        continue;
+                    }
+
+                    /* Sort from worst to best */
+                    filteredStreams[fmt].unshift(foundStream);
+                    debug(`added ${fmt} itag: ${foundStream.itag}`);
+
+                    if(!isAdaptiveEnabled)
+                        break;
+                }
+            }
+            if(!filteredStreams[fmt].length) {
+                debug(`dash info ${fmt} streams list is empty`);
+                return null;
+            }
+        }
 
         debug('following redirects');
 
-        for(let stream of [videoStream, audioStream]) {
-            debug(`initial URL: ${stream.url}`);
+        for(let fmtArr of Object.values(filteredStreams)) {
+            for(let stream of fmtArr) {
+                debug(`initial URL: ${stream.url}`);
 
-            const result = await this._downloadDataPromise(stream.url, 'HEAD').catch(debug);
-            if(!result) return null;
+                const result = await this._downloadDataPromise(stream.url, 'HEAD').catch(debug);
+                if(!result) return null;
 
-            stream.url = result.uri;
-            debug(`resolved URL: ${stream.url}`);
+                stream.url = Misc.encodeHTML(result.uri)
+                    .replace('?', '/')
+                    .replace(/&amp;/g, '/')
+                    .replace(/=/g, '/');
+
+                debug(`resolved URL: ${stream.url}`);
+            }
         }
 
         debug('all redirects resolved');
@@ -385,8 +433,8 @@ var YouTubeClient = GObject.registerClass({
         return {
             duration: info.videoDetails.lengthSeconds,
             adaptations: [
-                [videoStream],
-                [audioStream],
+                filteredStreams.video,
+                filteredStreams.audio,
             ]
         };
     }
@@ -525,6 +573,26 @@ var YouTubeClient = GObject.registerClass({
             reduced.streamingData.adaptiveFormats = [];
 
         return reduced;
+    }
+
+    _getMimeInfo(mimeType)
+    {
+        debug(`parsing mimeType: ${mimeType}`);
+
+        const mimeArr = mimeType.split(';');
+
+        let codecs = mimeArr.find(info => info.includes('codecs')).split('=')[1];
+        codecs = codecs.substring(1, codecs.length - 1);
+
+        const mimeInfo = {
+            content: mimeArr[0].split('/')[0],
+            type: mimeArr[0],
+            codecs,
+        };
+
+        debug(`parsed mimeType: ${JSON.stringify(mimeInfo)}`);
+
+        return mimeInfo;
     }
 
     _getPlayerInfoPromise(videoId)
