@@ -26,7 +26,7 @@
 %global glib2_version 2.56.0
 
 Name:           clapper
-Version:        0.1.0
+Version:        0.2.0
 Release:        1%{?dist}
 Summary:        Simple and modern GNOME media player
 
@@ -126,6 +126,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_libdir}/%{appname}/
 
 %changelog
+* Tue Apr 13 2021 Rafostar <rafostar.github@gmail.com> - 0.2.0-1
+- New version
+
 * Fri Feb 25 2021 Rafostar <rafostar.github@gmail.com> - 0.1.0-1
 - New version
 
