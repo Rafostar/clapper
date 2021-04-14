@@ -151,7 +151,7 @@ class ClapperHeaderBarBase extends Gtk.Box
 
         for(let name of layoutArr) {
             /* Menu might be named "appmenu" */
-            if(!menuAdded && (!name || name === 'appmenu'))
+            if(!menuAdded && (!name || name === 'appmenu' || name === 'icon'))
                 name = 'menu';
 
             const widget = this[`${name}Widget`];
