@@ -18,6 +18,8 @@ class ClapperControls extends Gtk.Box
             can_focus: false,
         });
 
+        this.minFullViewWidth = 560;
+
         this.currentPosition = 0;
         this.currentDuration = 0;
         this.isPositionDragging = false;
@@ -473,7 +475,7 @@ class ClapperControls extends Gtk.Box
 
     _onPlayerResize(width, height)
     {
-        const isMobile = (width < 560);
+        const isMobile = (width < this.minFullViewWidth);
         if(this.isMobile === isMobile)
             return;
 

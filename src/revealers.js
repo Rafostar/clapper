@@ -370,6 +370,18 @@ class ClapperButtonsRevealer extends Gtk.Revealer
         this.get_child().append(widget);
     }
 
+    revealInstantly(isReveal)
+    {
+        if(this.child_revealed === isReveal)
+            return;
+
+        const initialDuration = this.transition_duration;
+
+        this.transition_duration = 0;
+        this.reveal_child = isReveal;
+        this.transition_duration = initialDuration;
+    }
+
     _setRotateClass(icon, isAdd)
     {
         const cssClass = 'halfrotate';
@@ -388,7 +400,8 @@ class ClapperButtonsRevealer extends Gtk.Revealer
 
     _onRevealChild(button)
     {
-        this._setRotateClass(button.child, true);
+        if(this.reveal_child !== this.child_revealed)
+            this._setRotateClass(button.child, true);
     }
 
     _onChildRevealed(button)

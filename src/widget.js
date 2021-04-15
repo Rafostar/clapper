@@ -541,6 +541,12 @@ class ClapperWidget extends Gtk.Grid
         if(width === this.layoutWidth)
             return;
 
+        /* Launch without showing revealers transitions on mobile width */
+        if(!this.layoutWidth && width < this.controls.minFullViewWidth) {
+            for(let revealer of this.controls.revealersArr)
+                revealer.revealInstantly(false);
+        }
+
         this.layoutWidth = width;
 
         if(this.isFullscreenMode)
