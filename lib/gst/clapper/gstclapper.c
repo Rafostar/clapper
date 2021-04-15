@@ -880,9 +880,9 @@ static void
 emit_media_info_updated (GstClapper * self)
 {
   MediaInfoUpdatedSignalData *data = g_new (MediaInfoUpdatedSignalData, 1);
+  self->needs_info_update = FALSE;
   data->clapper = g_object_ref (self);
   g_mutex_lock (&self->lock);
-  self->needs_info_update = FALSE;
   data->info = gst_clapper_media_info_copy (self->media_info);
   g_mutex_unlock (&self->lock);
 
@@ -946,9 +946,12 @@ change_state (GstClapper * self, GstClapperState state)
       gst_clapper_state_get_name (state));
   self->app_state = state;
 
-  if (state == GST_CLAPPER_STATE_STOPPED && self->rate != 1.0) {
-    self->rate = 1.0;
-    emit_rate_notify (self);
+  if (state == GST_CLAPPER_STATE_STOPPED) {
+    self->needs_info_update = FALSE;
+    if (self->rate != 1.0) {
+      self->rate = 1.0;
+      emit_rate_notify (self);
+    }
   }
 
   if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
@@ -2343,9 +2346,10 @@ stream_notify_cb (GstStreamCollection * collection, GstStream * stream,
   g_mutex_lock (&self->lock);
   info =
       gst_clapper_stream_info_find_from_stream_id (self->media_info, stream_id);
-  if (info)
+  if (info) {
     gst_clapper_stream_info_update_from_stream (self, info, stream);
-  emit_update = (self->needs_info_update && GST_IS_CLAPPER_VIDEO_INFO (info));
+    emit_update = (self->needs_info_update && GST_IS_CLAPPER_VIDEO_INFO (info));
+  }
   g_mutex_unlock (&self->lock);
 
   if (emit_update)
