@@ -151,12 +151,8 @@ gtk_clapper_gl_widget_size_allocate (GtkWidget * widget,
   GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   gint scale_factor = gtk_widget_get_scale_factor (widget);
 
-  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
-
   clapper_widget->scaled_width = width * scale_factor;
   clapper_widget->scaled_height = height * scale_factor;
-
-  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 
   gtk_gl_area_queue_render (GTK_GL_AREA (widget));
 }
@@ -566,7 +562,7 @@ gtk_clapper_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
   GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl;
 
-  GTK_CLAPPER_GL_WIDGET_LOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
 
   /* Draw black with GDK context when priv is not available yet.
      GTK calls render with GDK context already active. */
@@ -672,7 +668,7 @@ done:
   if (priv->other_context)
     gst_gl_context_activate (priv->other_context, FALSE);
 
-  GTK_CLAPPER_GL_WIDGET_UNLOCK (widget);
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
   return FALSE;
 }
 
