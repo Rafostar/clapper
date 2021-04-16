@@ -19,6 +19,7 @@ class ClapperPlayer extends PlayerBase
         this.needsFastSeekRestore = false;
         this.customVideoTitle = null;
 
+        this.windowMapped = false;
         this.canAutoFullscreen = false;
         this.playOnFullscreen = false;
         this.quitOnStop = false;
@@ -54,7 +55,11 @@ class ClapperPlayer extends PlayerBase
             if(!this.ytClient)
                 this.ytClient = new YouTube.YouTubeClient();
 
-            this.ytClient.getPlaybackDataAsync(videoId)
+            const { root } = this.widget;
+            const surface = root.get_surface();
+            const monitor = root.display.get_monitor_at_surface(surface);
+
+            this.ytClient.getPlaybackDataAsync(videoId, monitor)
                 .then(data => {
                     this.customVideoTitle = data.title;
                     super.set_uri(data.uri);
@@ -121,10 +126,9 @@ class ClapperPlayer extends PlayerBase
             this.playlistWidget.addItem(uri);
         }
 
-        const firstTrack = this.playlistWidget.get_row_at_index(0);
-        if(!firstTrack) return;
-
-        firstTrack.activate();
+        /* If not mapped yet, first track will play after map */
+        if(this.windowMapped)
+            this._playFirstTrack();
     }
 
     set_subtitles(source)
@@ -289,6 +293,14 @@ class ClapperPlayer extends PlayerBase
             : Gst.uri_is_valid(source)
             ? source
             : Gst.filename_to_uri(source);
+    }
+
+    _playFirstTrack()
+    {
+        const firstTrack = this.playlistWidget.get_row_at_index(0);
+        if(!firstTrack) return;
+
+        firstTrack.activate();
     }
 
     _performCloseCleanup(window)
@@ -520,6 +532,12 @@ class ClapperPlayer extends PlayerBase
             default:
                 break;
         }
+    }
+
+    _onWindowMap(window)
+    {
+        this.windowMapped = true;
+        this._playFirstTrack();
     }
 
     _onCloseRequest(window)

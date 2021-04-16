@@ -578,6 +578,8 @@ class ClapperWidget extends Gtk.Grid
 
         surface.connect('notify::state', this._onStateNotify.bind(this));
         surface.connect('layout', this._onLayoutUpdate.bind(this));
+
+        this.player._onWindowMap(window);
     }
 
     _clearTimeout(name)

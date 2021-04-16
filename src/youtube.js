@@ -3,6 +3,7 @@ const Dash = imports.src.dash;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
+const YTItags = imports.src.youtubeItags;
 const YTDL = imports.src.assets['node-ytdl-core'];
 
 const debug = Debug.ytDebug;
@@ -304,7 +305,7 @@ var YouTubeClient = GObject.registerClass({
         });
     }
 
-    async getPlaybackDataAsync(videoId)
+    async getPlaybackDataAsync(videoId, monitor)
     {
         const info = await this.getVideoInfoPromise(videoId).catch(debug);
 
@@ -312,7 +313,13 @@ var YouTubeClient = GObject.registerClass({
             throw new Error('no YouTube video info');
 
         let uri = null;
-        const dashInfo = await this.getDashInfoAsync(info).catch(debug);
+        const itagOpts = {
+            width: monitor.geometry.width * monitor.scale_factor,
+            height: monitor.geometry.height * monitor.scale_factor,
+            codec: 'h264',
+            types: ['standard', 'hfr'],
+        };
+        const dashInfo = await this.getDashInfoAsync(info, itagOpts).catch(debug);
 
         if(dashInfo) {
             debug('parsed video info to dash info');
@@ -333,7 +340,7 @@ var YouTubeClient = GObject.registerClass({
         }
 
         if(!uri)
-            uri = this.getBestCombinedUri(info);
+            uri = this.getBestCombinedUri(info, itagOpts);
 
         if(!uri)
             throw new Error('no YouTube video URI');
@@ -349,7 +356,7 @@ var YouTubeClient = GObject.registerClass({
         return { uri, title };
     }
 
-    async getDashInfoAsync(info)
+    async getDashInfoAsync(info, itagOpts)
     {
         if(
             !info.streamingData
@@ -360,20 +367,10 @@ var YouTubeClient = GObject.registerClass({
 
         /* TODO: Options in prefs to set preferred video formats and adaptive streaming */
         const isAdaptiveEnabled = settings.get_boolean('yt-adaptive-enabled');
-        const allowedFormats = {
-            video: [
-                133,
-                134,
-                135,
-                136,
-                137,
-                298,
-                299,
-            ],
-            audio: [
-                140,
-            ]
-        };
+
+        debug(`obtaining dash itags for resolution: ${itagOpts.width}x${itagOpts.height}`);
+        const dashItags = YTItags.getDashItags(itagOpts);
+        debug(`dash itags: ${JSON.stringify(dashItags)}`);
 
         const filteredStreams = {
             video: [],
@@ -382,11 +379,11 @@ var YouTubeClient = GObject.registerClass({
 
         for(let fmt of ['video', 'audio']) {
             debug(`filtering ${fmt} streams`);
-            let index = allowedFormats[fmt].length;
+            let index = dashItags[fmt].length;
 
             while(index--) {
-                const itag = allowedFormats[fmt][index];
-                const foundStream = info.streamingData.adaptiveFormats.find(stream => (stream.itag == itag));
+                const itag = dashItags[fmt][index];
+                const foundStream = info.streamingData.adaptiveFormats.find(stream => stream.itag == itag);
                 if(foundStream) {
                     /* Parse and convert mimeType string into object */
                     foundStream.mimeInfo = this._getMimeInfo(foundStream.mimeType);
@@ -440,16 +437,33 @@ var YouTubeClient = GObject.registerClass({
         };
     }
 
-    getBestCombinedUri(info)
+    getBestCombinedUri(info, itagOpts)
     {
-        debug('obtaining best combined URL');
+        debug(`obtaining best combined URL for resolution: ${itagOpts.width}x${itagOpts.height}`);
 
         if(!info.streamingData.formats.length)
             return null;
 
-        const combinedStream = info.streamingData.formats[
-            info.streamingData.formats.length - 1
-        ];
+        let combinedStream;
+
+        const combinedItags = YTItags.getCombinedItags(itagOpts);
+        let index = combinedItags.length;
+
+        while(index--) {
+            const itag = combinedItags[index];
+            combinedStream = info.streamingData.formats.find(stream => stream.itag == itag);
+            if(combinedStream) {
+                debug(`found best combined itag: ${combinedStream.itag}`);
+                break;
+            }
+        }
+
+        if(!combinedStream) {
+            debug('trying any combined stream as last resort');
+            combinedStream = info.streamingData.formats[
+                info.streamingData.formats.length - 1
+            ];
+        }
 
         if(!combinedStream || !combinedStream.url)
             return null;
