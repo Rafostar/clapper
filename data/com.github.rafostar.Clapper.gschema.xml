@@ -102,7 +102,11 @@
     <!-- YouTube -->
     <key name="yt-adaptive-enabled" type="b">
       <default>false</default>
-      <summary>Enable to use adaptive streaming</summary>
+      <summary>Enable to use adaptive streaming for YouTube</summary>
+    </key>
+    <key name="yt-quality-type" type="s">
+      <default>"hfr"</default>
+      <summary>Max YouTube video quality type</summary>
     </key>
 
     <!-- Other -->

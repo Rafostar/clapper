@@ -132,6 +132,22 @@ class ClapperNetworkPage extends PrefsBase.Grid
     }
 });
 
+var YouTubePage = GObject.registerClass(
+class ClapperYouTubePage extends PrefsBase.Grid
+{
+    _init()
+    {
+        super._init();
+
+        this.addTitle('YouTube');
+        this.addCheckButton('Adaptive streaming', 'yt-adaptive-enabled');
+        this.addComboBoxText('Max quality', [
+            ['normal', "Normal"],
+            ['hfr', "HFR"],
+        ], 'yt-quality-type');
+    }
+});
+
 var GStreamerPage = GObject.registerClass(
 class ClapperGStreamerPage extends PrefsBase.Grid
 {

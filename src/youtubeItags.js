@@ -1,7 +1,7 @@
 const Itags = {
   video: {
     h264: {
-      standard: {
+      normal: {
         240:  133,
         360:  134,
         480:  135,
@@ -49,10 +49,14 @@ function getDashItags(opts)
             ? Itags.audio.aac
             : Itags.audio.opus
     };
+    const types = Object.keys(Itags.video[opts.codec]);
 
-    for(let type of opts.types) {
+    for(let type of types) {
         const formats = Itags.video[opts.codec][type];
         _appendItagArray(allowed.video, opts, formats);
+
+        if(type === opts.type)
+            break;
     }
 
     return allowed;

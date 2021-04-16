@@ -228,6 +228,10 @@ class ClapperPrefsDialog extends Gtk.Dialog
                     {
                         title: 'Network',
                         widget: Prefs.NetworkPage,
+                    },
+                    {
+                        title: 'YouTube',
+                        widget: Prefs.YouTubePage,
                     }
                 ]
             },

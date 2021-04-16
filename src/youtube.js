@@ -317,7 +317,7 @@ var YouTubeClient = GObject.registerClass({
             width: monitor.geometry.width * monitor.scale_factor,
             height: monitor.geometry.height * monitor.scale_factor,
             codec: 'h264',
-            types: ['standard', 'hfr'],
+            type: settings.get_string('yt-quality-type'),
         };
         const dashInfo = await this.getDashInfoAsync(info, itagOpts).catch(debug);
 
