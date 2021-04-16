@@ -37,8 +37,6 @@ function _appendItagArray(arr, opts, formats)
         )
             break;
     }
-
-    return arr;
 }
 
 function getDashItags(opts)
