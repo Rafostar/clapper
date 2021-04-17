@@ -140,7 +140,7 @@ class ClapperYouTubePage extends PrefsBase.Grid
         super._init();
 
         this.addTitle('YouTube');
-        this.addCheckButton('Adaptive streaming', 'yt-adaptive-enabled');
+        this.addCheckButton('Prefer adaptive streaming', 'yt-adaptive-enabled');
         this.addComboBoxText('Max quality', [
             ['normal', "Normal"],
             ['hfr', "HFR"],
