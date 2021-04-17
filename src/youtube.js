@@ -319,23 +319,28 @@ var YouTubeClient = GObject.registerClass({
             codec: 'h264',
             type: settings.get_string('yt-quality-type'),
         };
-        const dashInfo = await this.getDashInfoAsync(info, itagOpts).catch(debug);
 
-        if(dashInfo) {
-            debug('parsed video info to dash info');
-            const dash = Dash.generateDash(dashInfo);
+        uri = this.getHLSUri(info, itagOpts);
 
-            if(dash) {
-                debug('got dash data');
+        if(!uri) {
+            const dashInfo = await this.getDashInfoAsync(info, itagOpts).catch(debug);
 
-                const dashFile = await FileOps.saveFilePromise(
-                    'tmp', null, 'clapper.mpd', dash
-                ).catch(debug);
+            if(dashInfo) {
+                debug('parsed video info to dash info');
+                const dash = Dash.generateDash(dashInfo);
 
-                if(dashFile)
-                    uri = dashFile.get_uri();
+                if(dash) {
+                    debug('got dash data');
 
-                debug('got dash file');
+                    const dashFile = await FileOps.saveFilePromise(
+                        'tmp', null, 'clapper.mpd', dash
+                    ).catch(debug);
+
+                    if(dashFile)
+                        uri = dashFile.get_uri();
+
+                    debug('got dash file');
+                }
             }
         }
 
@@ -435,6 +440,27 @@ var YouTubeClient = GObject.registerClass({
                 filteredStreams.audio,
             ]
         };
+    }
+
+    getHLSUri(info, itagOpts)
+    {
+        const isLive = info.videoDetails.isLiveContent;
+        debug(`video is live: ${isLive}`);
+
+        /* YouTube only uses HLS for live content */
+        if(!isLive)
+            return null;
+
+        const hlsUri = info.streamingData.hlsManifestUrl;
+        if(!hlsUri) {
+            debug(new Error('no HLS manifest URL'));
+            return null;
+        }
+
+        /* TODO: download manifest and select best resolution
+         * for monitor when adaptive streaming is disabled */
+
+        return hlsUri;
     }
 
     getBestCombinedUri(info, itagOpts)
@@ -708,14 +734,21 @@ var YouTubeClient = GObject.registerClass({
 
     _getIsCipher(data)
     {
-        /* Check only first best combined,
-         * AFAIK there are no videos without it */
-        if(data.formats[0].url)
+        const stream = (data.formats.length)
+            ? data.formats[0]
+            : data.adaptiveFormats[0];
+
+        if(!stream) {
+            debug(new Error('no streams'));
+            return false;
+        }
+
+        if(stream.url)
             return false;
 
         if(
-            data.formats[0].signatureCipher
-            || data.formats[0].cipher
+            stream.signatureCipher
+            || stream.cipher
         )
             return true;
 
