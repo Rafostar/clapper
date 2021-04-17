@@ -318,6 +318,7 @@ var YouTubeClient = GObject.registerClass({
             height: monitor.geometry.height * monitor.scale_factor,
             codec: 'h264',
             type: settings.get_string('yt-quality-type'),
+            adaptive: settings.get_boolean('yt-adaptive-enabled'),
         };
 
         uri = await this.getHLSUriAsync(info, itagOpts);
@@ -376,7 +377,7 @@ var YouTubeClient = GObject.registerClass({
             return null;
         }
 
-        if(!settings.get_boolean('yt-adaptive-enabled')) {
+        if(!itagOpts.adaptive) {
             const result = await this._downloadDataPromise(hlsUri).catch(debug);
             if(!result || !result.data) {
                 debug(new Error('HLS manifest download failed'));
@@ -419,9 +420,6 @@ var YouTubeClient = GObject.registerClass({
         )
             return null;
 
-        /* TODO: Options in prefs to set preferred video formats and adaptive streaming */
-        const isAdaptiveEnabled = settings.get_boolean('yt-adaptive-enabled');
-
         debug(`obtaining DASH itags for resolution: ${itagOpts.width}x${itagOpts.height}`);
         const dashItags = YTItags.getDashItags(itagOpts);
         debug(`DASH itags: ${JSON.stringify(dashItags)}`);
@@ -452,7 +450,7 @@ var YouTubeClient = GObject.registerClass({
                     filteredStreams[fmt].unshift(foundStream);
                     debug(`added ${fmt} itag: ${foundStream.itag}`);
 
-                    if(!isAdaptiveEnabled)
+                    if(!itagOpts.adaptive)
                         break;
                 }
             }
