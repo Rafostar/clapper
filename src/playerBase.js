@@ -164,12 +164,12 @@ class ClapperPlayerBase extends GstClapper.Clapper
                 root[action + '_css_class'](gpuClass);
                 break;
             case 'audio-offset':
-                value = Math.round(settings.get_double(key) * -1000000);
+                value = Math.round(settings.get_double(key) * -Gst.MSECOND);
                 this.set_audio_video_offset(value);
                 debug(`set audio-video offset: ${value}`);
                 break;
             case 'subtitle-offset':
-                value = Math.round(settings.get_double(key) * -1000000);
+                value = Math.round(settings.get_double(key) * -Gst.MSECOND);
                 this.set_subtitle_video_offset(value);
                 debug(`set subtitle-video offset: ${value}`);
                 break;

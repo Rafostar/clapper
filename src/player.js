@@ -183,7 +183,7 @@ class ClapperPlayer extends PlayerBase
 
     seek_seconds(seconds)
     {
-        this.seek(seconds * 1000000000);
+        this.seek(seconds * Gst.SECOND);
     }
 
     seek_chapter(seconds)
@@ -324,8 +324,8 @@ class ClapperPlayer extends PlayerBase
 
             let resumeInfo = {};
             if(playlistItem.isLocalFile && settings.get_boolean('resume-enabled')) {
-                const resumeTime = Math.floor(this.position / 1000000000);
-                const resumeDuration = this.duration / 1000000000;
+                const resumeTime = Math.floor(this.position / Gst.SECOND);
+                const resumeDuration = this.duration / Gst.SECOND;
 
                 /* Do not save resume info when video is very short,
                  * just started or almost finished */

@@ -371,7 +371,7 @@ class ClapperWidget extends Gtk.Grid
             return;
         }
 
-        const pos = Math.floor(start / 1000000) / 1000;
+        const pos = Math.floor(start / Gst.MSECOND) / 1000;
         const tags = subentry.get_tags();
 
         this.controls.positionScale.add_mark(pos, Gtk.PositionType.TOP, null);
@@ -467,7 +467,7 @@ class ClapperWidget extends Gtk.Grid
 
     _onPlayerDurationChanged(player, duration)
     {
-        const durationSeconds = duration / 1000000000;
+        const durationSeconds = duration / Gst.SECOND;
         const durationFloor = Math.floor(durationSeconds);
 
         /* Sometimes GstPlayer might re-emit
@@ -515,7 +515,7 @@ class ClapperWidget extends Gtk.Grid
         )
             return;
 
-        const positionSeconds = Math.round(position / 1000000000);
+        const positionSeconds = Math.round(position / Gst.SECOND);
         if(positionSeconds === this.controls.currentPosition)
             return;
 
