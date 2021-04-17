@@ -320,7 +320,7 @@ var YouTubeClient = GObject.registerClass({
             type: settings.get_string('yt-quality-type'),
         };
 
-        uri = this.getHLSUri(info, itagOpts);
+        uri = await this.getHLSUriAsync(info, itagOpts);
 
         if(!uri) {
             const dashInfo = await this.getDashInfoAsync(info, itagOpts).catch(debug);
@@ -361,6 +361,55 @@ var YouTubeClient = GObject.registerClass({
         return { uri, title };
     }
 
+    async getHLSUriAsync(info, itagOpts)
+    {
+        const isLive = info.videoDetails.isLiveContent;
+        debug(`video is live: ${isLive}`);
+
+        /* YouTube only uses HLS for live content */
+        if(!isLive)
+            return null;
+
+        const hlsUri = info.streamingData.hlsManifestUrl;
+        if(!hlsUri) {
+            debug(new Error('no HLS manifest URL'));
+            return null;
+        }
+
+        if(!settings.get_boolean('yt-adaptive-enabled')) {
+            const result = await this._downloadDataPromise(hlsUri).catch(debug);
+            if(!result || !result.data) {
+                debug(new Error('HLS manifest download failed'));
+                return hlsUri;
+            }
+
+            const hlsArr = result.data.split('\n');
+            const hlsStreams = [];
+
+            let index = hlsArr.length;
+            while(index--) {
+                const url = hlsArr[index];
+                if(!Gst.Uri.is_valid(url))
+                    continue;
+
+                const itagIndex = url.indexOf('/itag/') + 6;
+                const itag = url.substring(itagIndex, itagIndex + 2);
+
+                hlsStreams.push({ itag, url });
+            }
+
+            debug(`obtaining HLS itags for resolution: ${itagOpts.width}x${itagOpts.height}`);
+            const hlsItags = YTItags.getHLSItags(itagOpts);
+            debug(`HLS itags: ${JSON.stringify(hlsItags)}`);
+
+            const hlsStream = this.getBestStreamFromItags(hlsStreams, hlsItags);
+            if(hlsStream)
+                return hlsStream.url;
+        }
+
+        return hlsUri;
+    }
+
     async getDashInfoAsync(info, itagOpts)
     {
         if(
@@ -373,9 +422,9 @@ var YouTubeClient = GObject.registerClass({
         /* TODO: Options in prefs to set preferred video formats and adaptive streaming */
         const isAdaptiveEnabled = settings.get_boolean('yt-adaptive-enabled');
 
-        debug(`obtaining dash itags for resolution: ${itagOpts.width}x${itagOpts.height}`);
+        debug(`obtaining DASH itags for resolution: ${itagOpts.width}x${itagOpts.height}`);
         const dashItags = YTItags.getDashItags(itagOpts);
-        debug(`dash itags: ${JSON.stringify(dashItags)}`);
+        debug(`DASH itags: ${JSON.stringify(dashItags)}`);
 
         const filteredStreams = {
             video: [],
@@ -442,59 +491,43 @@ var YouTubeClient = GObject.registerClass({
         };
     }
 
-    getHLSUri(info, itagOpts)
-    {
-        const isLive = info.videoDetails.isLiveContent;
-        debug(`video is live: ${isLive}`);
-
-        /* YouTube only uses HLS for live content */
-        if(!isLive)
-            return null;
-
-        const hlsUri = info.streamingData.hlsManifestUrl;
-        if(!hlsUri) {
-            debug(new Error('no HLS manifest URL'));
-            return null;
-        }
-
-        /* TODO: download manifest and select best resolution
-         * for monitor when adaptive streaming is disabled */
-
-        return hlsUri;
-    }
-
     getBestCombinedUri(info, itagOpts)
     {
         debug(`obtaining best combined URL for resolution: ${itagOpts.width}x${itagOpts.height}`);
+        const streams = info.streamingData.formats;
 
-        if(!info.streamingData.formats.length)
+        if(!streams.length)
             return null;
 
-        let combinedStream;
-
         const combinedItags = YTItags.getCombinedItags(itagOpts);
-        let index = combinedItags.length;
-
-        while(index--) {
-            const itag = combinedItags[index];
-            combinedStream = info.streamingData.formats.find(stream => stream.itag == itag);
-            if(combinedStream) {
-                debug(`found best combined itag: ${combinedStream.itag}`);
-                break;
-            }
-        }
+        let combinedStream = this.getBestStreamFromItags(streams, combinedItags);
 
         if(!combinedStream) {
             debug('trying any combined stream as last resort');
-            combinedStream = info.streamingData.formats[
-                info.streamingData.formats.length - 1
-            ];
+            combinedStream = streams[streams.length - 1];
         }
 
         if(!combinedStream || !combinedStream.url)
             return null;
 
         return combinedStream.url;
+    }
+
+    getBestStreamFromItags(streams, itags)
+    {
+        let index = itags.length;
+
+        while(index--) {
+            const itag = itags[index];
+            const stream = streams.find(stream => stream.itag == itag);
+            if(stream) {
+                debug(`found preferred stream itag: ${stream.itag}`);
+                return stream;
+            }
+        }
+        debug('could not find preferred stream for itags');
+
+        return null;
     }
 
     compareLastVideoId(videoId)

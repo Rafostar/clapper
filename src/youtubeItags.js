@@ -21,6 +21,13 @@ const Itags = {
     combined: {
         360: 18,
         720: 22,
+    },
+    hls: {
+        240: 92,
+        360: 93,
+        480: 94,
+        720: 95,
+        1080: 96,
     }
 };
 
@@ -37,6 +44,8 @@ function _appendItagArray(arr, opts, formats)
         )
             break;
     }
+
+    return arr;
 }
 
 function getDashItags(opts)
@@ -62,8 +71,10 @@ function getDashItags(opts)
 
 function getCombinedItags(opts)
 {
-    const arr = [];
-    _appendItagArray(arr, opts, Itags.combined);
+    return _appendItagArray([], opts, Itags.combined);
+}
 
-    return arr;
+function getHLSItags(opts)
+{
+    return _appendItagArray([], opts, Itags.hls);
 }
