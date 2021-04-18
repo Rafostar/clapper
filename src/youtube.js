@@ -364,7 +364,11 @@ var YouTubeClient = GObject.registerClass({
 
     async getHLSUriAsync(info, itagOpts)
     {
-        const isLive = info.videoDetails.isLiveContent;
+        const isLive = (
+            info.videoDetails.isLiveContent
+            && (!info.videoDetails.lengthSeconds
+            || Number(info.videoDetails.lengthSeconds) <= 0)
+        );
         debug(`video is live: ${isLive}`);
 
         /* YouTube only uses HLS for live content */
