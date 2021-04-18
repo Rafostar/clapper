@@ -1,19 +1,44 @@
-const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
+const { Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
 const YouTube = imports.src.youtube;
-const { PlayerBase } = imports.src.playerBase;
+const { PlaylistWidget } = imports.src.playlist;
+const { WebApp } = imports.src.webApp;
 
 const { debug } = Debug;
 const { settings } = Misc;
 
+let WebServer;
+
 var Player = GObject.registerClass(
-class ClapperPlayer extends PlayerBase
+class ClapperPlayer extends GstClapper.Clapper
 {
     _init()
     {
-        super._init();
+        const gtk4plugin = new GstClapper.ClapperGtk4Plugin();
+        const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
+        glsinkbin.sink = gtk4plugin.video_sink;
+
+        const dispatcher = new GstClapper.ClapperGMainContextSignalDispatcher();
+        const renderer = new GstClapper.ClapperVideoOverlayVideoRenderer({
+            video_sink: glsinkbin
+        });
+
+        super._init({
+            signal_dispatcher: dispatcher,
+            video_renderer: renderer
+        });
+
+        this.widget = gtk4plugin.video_sink.widget;
+        this.widget.add_css_class('videowidget');
+
+        this.state = GstClapper.ClapperState.STOPPED;
+        this.visualization_enabled = false;
+
+        this.webserver = null;
+        this.webapp = null;
+        this.playlistWidget = new PlaylistWidget();
 
         this.seek_done = true;
         this.needsFastSeekRestore = false;
@@ -33,13 +58,91 @@ class ClapperPlayer extends PlayerBase
         keyController.connect('key-released', this._onWidgetKeyReleased.bind(this));
         this.widget.add_controller(keyController);
 
+        this.set_all_plugins_ranks();
+        this.set_initial_config();
+        this.set_and_bind_settings();
+
         this.connect('state-changed', this._onStateChanged.bind(this));
         this.connect('uri-loaded', this._onUriLoaded.bind(this));
         this.connect('end-of-stream', this._onStreamEnded.bind(this));
         this.connect('warning', this._onPlayerWarning.bind(this));
         this.connect('error', this._onPlayerError.bind(this));
 
+        settings.connect('changed', this._onSettingsKeyChanged.bind(this));
+
         this._realizeSignal = this.widget.connect('realize', this._onWidgetRealize.bind(this));
+    }
+
+    set_and_bind_settings()
+    {
+        const settingsToSet = [
+            'seeking-mode',
+            'audio-offset',
+            'subtitle-offset',
+            'play-flags',
+            'webserver-enabled'
+        ];
+
+        for(let key of settingsToSet)
+            this._onSettingsKeyChanged(settings, key);
+
+        const flag = Gio.SettingsBindFlags.GET;
+        settings.bind('subtitle-font', this.pipeline, 'subtitle_font_desc', flag);
+    }
+
+    set_initial_config()
+    {
+        this.set_mute(false);
+
+        /* FIXME: change into option in preferences */
+        const pipeline = this.get_pipeline();
+        pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
+    }
+
+    set_all_plugins_ranks()
+    {
+        let data = [];
+
+        /* Set empty plugin list if someone messed it externally */
+        try {
+            data = JSON.parse(settings.get_string('plugin-ranking'));
+            if(!Array.isArray(data))
+                throw new Error('plugin ranking data is not an array!');
+        }
+        catch(err) {
+            debug(err);
+            settings.set_string('plugin-ranking', "[]");
+        }
+
+        for(let plugin of data) {
+            if(!plugin.apply || !plugin.name)
+                continue;
+
+            this.set_plugin_rank(plugin.name, plugin.rank);
+        }
+    }
+
+    set_plugin_rank(name, rank)
+    {
+        const gstRegistry = Gst.Registry.get();
+        const feature = gstRegistry.lookup_feature(name);
+        if(!feature)
+            return debug(`plugin unavailable: ${name}`);
+
+        const oldRank = feature.get_rank();
+        if(rank === oldRank)
+            return;
+
+        feature.set_rank(rank);
+        debug(`changed rank: ${oldRank} -> ${rank} for ${name}`);
+    }
+
+    draw_black(isEnabled)
+    {
+        this.widget.ignore_textures = isEnabled;
+
+        if(this.state !== GstClapper.ClapperState.PLAYING)
+            this.widget.queue_render();
     }
 
     set_uri(uri)
@@ -255,6 +358,14 @@ class ClapperPlayer extends PlayerBase
         this[action]();
     }
 
+    emitWs(action, value)
+    {
+        if(!this.webserver)
+            return;
+
+        this.webserver.sendMessage({ action, value });
+    }
+
     receiveWs(action, value)
     {
         switch(action) {
@@ -279,7 +390,7 @@ class ClapperPlayer extends PlayerBase
                         clapperWidget.toggleFullscreen();
                         break;
                     default:
-                        super.receiveWs(action, value);
+                        debug(`unhandled WebSocket action: ${action}`);
                         break;
                 }
                 break;
@@ -549,5 +660,110 @@ class ClapperPlayer extends PlayerBase
 
         this.quitOnStop = true;
         this.stop();
+    }
+
+    _onSettingsKeyChanged(settings, key)
+    {
+        let root, value, action;
+
+        switch(key) {
+            case 'seeking-mode':
+                this.seekingMode = settings.get_string('seeking-mode');
+                switch(this.seekingMode) {
+                    case 'fast':
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
+                        break;
+                    case 'accurate':
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.ACCURATE);
+                        break;
+                    default:
+                        this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
+                        break;
+                }
+                break;
+            case 'render-shadows':
+                root = this.widget.get_root();
+                if(!root) break;
+
+                const gpuClass = 'gpufriendly';
+                const renderShadows = settings.get_boolean(key);
+                const hasShadows = !root.has_css_class(gpuClass);
+
+                if(renderShadows === hasShadows)
+                    break;
+
+                action = (renderShadows) ? 'remove' : 'add';
+                root[action + '_css_class'](gpuClass);
+                break;
+            case 'audio-offset':
+                value = Math.round(settings.get_double(key) * -Gst.MSECOND);
+                this.set_audio_video_offset(value);
+                debug(`set audio-video offset: ${value}`);
+                break;
+            case 'subtitle-offset':
+                value = Math.round(settings.get_double(key) * -Gst.MSECOND);
+                this.set_subtitle_video_offset(value);
+                debug(`set subtitle-video offset: ${value}`);
+                break;
+            case 'dark-theme':
+                root = this.widget.get_root();
+                if(!root) break;
+
+                root.application._onThemeChanged(Gtk.Settings.get_default());
+                break;
+            case 'play-flags':
+                const initialFlags = this.pipeline.flags;
+                const settingsFlags = settings.get_int(key);
+
+                if(initialFlags === settingsFlags)
+                    break;
+
+                this.pipeline.flags = settingsFlags;
+                debug(`changed play flags: ${initialFlags} -> ${settingsFlags}`);
+                break;
+            case 'webserver-enabled':
+            case 'webapp-enabled':
+                const webserverEnabled = settings.get_boolean('webserver-enabled');
+
+                if(webserverEnabled) {
+                    if(!WebServer) {
+                        /* Probably most users will not use this,
+                         * so conditional import for faster startup */
+                        WebServer = imports.src.webServer.WebServer;
+                    }
+
+                    if(!this.webserver) {
+                        this.webserver = new WebServer(settings.get_int('webserver-port'));
+                        this.webserver.passMsgData = this.receiveWs.bind(this);
+                    }
+                    this.webserver.startListening();
+
+                    const webappEnabled = settings.get_boolean('webapp-enabled');
+
+                    if(!this.webapp && !webappEnabled)
+                        break;
+
+                    if(webappEnabled) {
+                        if(!this.webapp)
+                            this.webapp = new WebApp();
+
+                        this.webapp.startDaemonApp(settings.get_int('webapp-port'));
+                    }
+                }
+                else if(this.webserver) {
+                    /* remote app will close when connection is lost
+                     * which will cause the daemon to close too */
+                    this.webserver.stopListening();
+                }
+                break;
+            case 'webserver-port':
+                if(!this.webserver)
+                    break;
+
+                this.webserver.setListeningPort(settings.get_int(key));
+                break;
+            default:
+                break;
+        }
     }
 });
