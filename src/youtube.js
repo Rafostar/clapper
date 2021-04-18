@@ -373,7 +373,8 @@ var YouTubeClient = GObject.registerClass({
 
         const hlsUri = info.streamingData.hlsManifestUrl;
         if(!hlsUri) {
-            debug(new Error('no HLS manifest URL'));
+            /* HLS may be unavailable on finished live streams */
+            debug('no HLS manifest URL');
             return null;
         }
 
@@ -466,8 +467,16 @@ var YouTubeClient = GObject.registerClass({
             for(let stream of fmtArr) {
                 debug(`initial URL: ${stream.url}`);
 
-                const result = await this._downloadDataPromise(stream.url, 'HEAD').catch(debug);
-                if(!result) return null;
+                /* Errors in some cases are to be expected here,
+                 * so be quiet about them and use fallback methods */
+                const result = await this._downloadDataPromise(
+                    stream.url, 'HEAD'
+                ).catch(err => debug(err.message));
+
+                if(!result || !result.uri) {
+                    debug('redirect could not be resolved');
+                    return null;
+                }
 
                 stream.url = Misc.encodeHTML(result.uri)
                     .replace('?', '/')
@@ -577,7 +586,7 @@ var YouTubeClient = GObject.registerClass({
                     return resolve(result);
                 }
 
-                debug(new Error(`response code: ${statusCode}`));
+                debug(`response code: ${statusCode}`);
 
                 /* Internal Soup codes mean download aborted
                  * or some other error that cannot be handled
