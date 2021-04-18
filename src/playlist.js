@@ -119,6 +119,7 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
             this.isLocalFile = true;
         }
         this.filename = filename || uri;
+        this.set_tooltip_text(this.filename);
 
         const box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
