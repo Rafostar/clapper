@@ -296,12 +296,9 @@ class ClapperPlayer extends GstClapper.Clapper
             return;
         }
 
-        /* FIXME: Remove this check when GstPlay(er) have set_seek_mode function */
-        if(this.set_seek_mode) {
-            this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
-            this.seekingMode = 'normal';
-            this.needsFastSeekRestore = true;
-        }
+        this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
+        this.seekingMode = 'normal';
+        this.needsFastSeekRestore = true;
 
         this.seek_seconds(seconds);
     }
