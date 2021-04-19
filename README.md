@@ -62,8 +62,7 @@ It can be enabled from inside player preferences dialog inside `Advanced -> GStr
 Since the whole app is rendered using your GPU, users of VERY weak GPUs might want to disable the "render window shadows" option to have more GPU power available for non-fullscreen video rendering.
 
 ## Other Questions?
-Feel free to ask me any questions.<br>
-Use either GitHub [discussions](https://github.com/Rafostar/clapper/discussions) or come and talk on Matrix: **#clapper-player:matrix.org**
+Feel free to ask me any questions. Come and talk on Matrix: [#clapper-player:matrix.org](https://matrix.to/#/#clapper-player:matrix.org)
 
 ## Special Thanks
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
