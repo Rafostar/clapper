@@ -52,6 +52,24 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.2.1" date="2021-04-19">
+      <description>
+        <p>Player:</p>
+        <ul>
+          <li>Fix missing top left menu buttons on some system configurations</li>
+          <li>Fix potential video sink deadlock</li>
+          <li>Do not show mobile controls transition on launch</li>
+          <li>Show tooltip with full playlist item text on hover</li>
+        </ul>
+        <p>YouTube:</p>
+        <ul>
+          <li>Auto select best matching resolution for used monitor</li>
+          <li>Added some YouTube related preferences</li>
+          <li>Added support for live HLS videos</li>
+          <li>Added support for non-adaptive live HLS streaming</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.2.0" date="2021-04-13">
       <description>
         <p>New features:</p>
