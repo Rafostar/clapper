@@ -65,6 +65,12 @@ class ClapperAppBase extends Gtk.Application
         const urisArr = [];
 
         for(let file of files) {
+            const uri = file.get_uri();
+            if(!uri.startsWith('file:')) {
+                urisArr.push(uri);
+                continue;
+            }
+
             /* If file is not a dir its URI will be returned in an array */
             const uris = await FileOps.getDirFilesUrisPromise(file).catch(debug);
             if(uris && uris.length)
