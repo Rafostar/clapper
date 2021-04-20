@@ -62,7 +62,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
             if(isHandlesOpen)
                application.open(filesArray, "");
             else
-               application._openFiles(filesArray);
+               application._openFilesAsync(filesArray);
         }
 
         this.unref();

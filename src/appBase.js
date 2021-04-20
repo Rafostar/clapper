@@ -1,5 +1,6 @@
 const { Gio, GLib, GObject, Gtk } = imports.gi;
 const Debug = imports.src.debug;
+const FileOps = imports.src.fileOps;
 const Menu = imports.src.menu;
 const Misc = imports.src.misc;
 
@@ -59,9 +60,18 @@ class ClapperAppBase extends Gtk.Application
         );
     }
 
-    _openFiles(files)
+    async _openFilesAsync(files)
     {
-        const [playlist, subs] = Misc.parsePlaylistFiles(files);
+        const urisArr = [];
+
+        for(let file of files) {
+            /* If file is not a dir its URI will be returned in an array */
+            const uris = await FileOps.getDirFilesUrisPromise(file).catch(debug);
+            if(uris && uris.length)
+                urisArr.push(...uris);
+        }
+
+        const [playlist, subs] = Misc.parsePlaylistFiles(urisArr);
         const { player } = this.active_window.get_child();
 
         if(playlist && playlist.length)

@@ -38,8 +38,7 @@ class ClapperApp extends AppBase
     {
         super.vfunc_open(files, hint);
 
-        this._openFiles(files);
-        this.activate();
+        this._openFilesAsync(files).then(() => this.activate()).catch(debug);
     }
 
     _onWindowMap(window)
