@@ -631,13 +631,13 @@ class ClapperPlayer extends GstClapper.Clapper
     /* Also happens after using controls navigation for selected keys */
     _onWidgetKeyReleased(controller, keyval, keycode, state)
     {
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        let value, root;
-
         /* Ignore releases that did not trigger keypress
-         * e.g. left "Super" key */
+         * e.g. while holding left "Super" key */
         if(!this.keyPressCount)
             return;
+
+        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
+        let value, root;
 
         this.keyPressCount = 0;
 
