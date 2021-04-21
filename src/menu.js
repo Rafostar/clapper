@@ -1,4 +1,3 @@
-const { GObject, Gtk } = imports.gi;
 const Dialogs = imports.src.dialogs;
 
 var actions = {

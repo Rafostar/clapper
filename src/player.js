@@ -1,4 +1,4 @@
-const { Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
+const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
