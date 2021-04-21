@@ -221,17 +221,31 @@ class ClapperPlayer extends GstClapper.Clapper
         if(this.state !== GstClapper.ClapperState.STOPPED)
             this.stop();
 
+        debug('new playlist');
+
         this.playlistWidget.removeAll();
         this.canAutoFullscreen = true;
 
-        for(let source of playlist) {
-            const uri = this._getSourceUri(source);
-            this.playlistWidget.addItem(uri);
-        }
+        this._addPlaylistItems(playlist);
 
         /* If not mapped yet, first track will play after map */
         if(this.windowMapped)
             this._playFirstTrack();
+    }
+
+    append_playlist(playlist)
+    {
+        debug('appending playlist');
+        this._addPlaylistItems(playlist);
+
+        if(
+            !this.windowMapped
+            || this.state !== GstClapper.ClapperState.STOPPED
+        )
+            return;
+
+        if(!this.playlistWidget.nextTrack())
+            debug('playlist append failed');
     }
 
     set_subtitles(source)
@@ -370,6 +384,7 @@ class ClapperPlayer extends GstClapper.Clapper
             case 'play':
             case 'pause':
             case 'set_playlist':
+            case 'append_playlist':
             case 'set_subtitles':
                 this[action](value);
                 break;
@@ -391,6 +406,16 @@ class ClapperPlayer extends GstClapper.Clapper
                         break;
                 }
                 break;
+        }
+    }
+
+    _addPlaylistItems(playlist)
+    {
+        for(let source of playlist) {
+            const uri = this._getSourceUri(source);
+
+            debug(`added uri: ${uri}`);
+            this.playlistWidget.addItem(uri);
         }
     }
 

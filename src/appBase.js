@@ -17,6 +17,7 @@ class ClapperAppBase extends Gtk.Application
         });
 
         this.doneFirstActivate = false;
+        this.isFileAppend = false;
     }
 
     vfunc_startup()
@@ -79,11 +80,15 @@ class ClapperAppBase extends Gtk.Application
 
         const [playlist, subs] = Misc.parsePlaylistFiles(urisArr);
         const { player } = this.active_window.get_child();
+        const action = (this.isFileAppend) ? 'append' : 'set';
 
         if(playlist && playlist.length)
-            player.set_playlist(playlist);
+            player[`${action}_playlist`](playlist);
         if(subs)
             player.set_subtitles(subs);
+
+        /* Restore default behavior */
+        this.isFileAppend = false;
     }
 
     _onFirstActivate()
