@@ -706,10 +706,11 @@ class ClapperWidget extends Gtk.Grid
     _getDropTarget()
     {
         const dropTarget = new Gtk.DropTarget({
-            actions: Gdk.DragAction.COPY,
+            actions: Gdk.DragAction.COPY | Gdk.DragAction.MOVE,
             preload: true,
         });
         dropTarget.set_gtypes([GObject.TYPE_STRING]);
+        dropTarget.connect('motion', this._onDataMotion.bind(this));
         dropTarget.connect('drop', this._onDataDrop.bind(this));
         dropTarget.connect('notify::value', this._onDropValueNotify.bind(this));
 
@@ -915,6 +916,11 @@ class ClapperWidget extends Gtk.Grid
             ytClient.getVideoInfoPromise(videoId).catch(debug);
     }
 
+    _onDataMotion(dropTarget, x, y)
+    {
+        return Gdk.DragAction.MOVE;
+    }
+
     _onDataDrop(dropTarget, value, x, y)
     {
         const files = value.split(/\r?\n/).filter(uri => {
@@ -927,7 +933,9 @@ class ClapperWidget extends Gtk.Grid
         for(let index in files)
             files[index] = Gio.File.new_for_uri(files[index]);
 
-        this.root.application.open(files, "");
+        const app = this.root.application;
+        app.isFileAppend = Boolean(dropTarget.drop.actions & Gdk.DragAction.COPY);
+        app.open(files, "");
 
         return true;
     }
