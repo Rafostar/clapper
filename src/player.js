@@ -634,6 +634,11 @@ class ClapperPlayer extends GstClapper.Clapper
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         let value, root;
 
+        /* Ignore releases that did not trigger keypress
+         * e.g. left "Super" key */
+        if(!this.keyPressCount)
+            return;
+
         this.keyPressCount = 0;
 
         switch(keyval) {
