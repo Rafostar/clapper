@@ -429,7 +429,7 @@ class ClapperPlayer extends GstClapper.Clapper
             return false;
 
         const now = this.position / Gst.SECOND;
-        const chapterTimes = Object.keys(chapters);
+        const chapterTimes = Object.keys(chapters).sort((a, b) => a - b);
         if(isPrevious)
             chapterTimes.reverse();
 
