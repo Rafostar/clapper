@@ -369,6 +369,16 @@ class ClapperPlayer extends GstClapper.Clapper
         this[action]();
     }
 
+    next_chapter()
+    {
+        return this._switchChapter(false);
+    }
+
+    prev_chapter()
+    {
+        return this._switchChapter(true);
+    }
+
     emitWs(action, value)
     {
         if(!this.webserver)
@@ -407,6 +417,30 @@ class ClapperPlayer extends GstClapper.Clapper
                 }
                 break;
         }
+    }
+
+    _switchChapter(isPrevious)
+    {
+        if(this.state === GstClapper.ClapperState.STOPPED)
+            return false;
+
+        const { chapters } = this.widget.root.child.controls;
+        if(!chapters)
+            return false;
+
+        const now = this.position / Gst.SECOND;
+        let chapterTimes = Object.keys(chapters);
+        if(isPrevious)
+            chapterTimes.reverse();
+
+        const chapter = chapterTimes.find(time => (isPrevious)
+            ? now - 2.5 > time
+            : now < time
+        );
+        if(!chapter)
+            return false;
+
+        this.seek_chapter(chapter);
     }
 
     _addPlaylistItems(playlist)

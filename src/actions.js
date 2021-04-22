@@ -22,5 +22,13 @@ var actions = {
     prev_track: {
         run: (window) => window.child.player.playlistWidget.prevTrack(),
         accels: ['<Ctrl>Left'],
+    },
+    next_chapter: {
+        run: (window) => window.child.player.next_chapter(),
+        accels: ['<Shift>Right'],
+    },
+    prev_chapter: {
+        run: (window) => window.child.player.prev_chapter(),
+        accels: ['<Shift>Left'],
     }
 };
