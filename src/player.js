@@ -608,8 +608,6 @@ class ClapperPlayer extends GstClapper.Clapper
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
         let bool = false;
 
-        this.keyPressCount++;
-
         switch(keyval) {
             case Gdk.KEY_Up:
                 bool = true;
@@ -623,9 +621,27 @@ class ClapperPlayer extends GstClapper.Clapper
                 if(this.keyPressCount > 1)
                     clapperWidget.revealControls();
                 break;
-            default:
+            case Gdk.KEY_space:
+                this.toggle_play();
                 break;
+            case Gdk.KEY_Return:
+                if(clapperWidget.isFullscreenMode)
+                    clapperWidget.revealControls(true);
+                break;
+            case Gdk.KEY_F11:
+            case Gdk.KEY_f:
+            case Gdk.KEY_F:
+                clapperWidget.toggleFullscreen();
+                break;
+            case Gdk.KEY_q:
+            case Gdk.KEY_Q:
+                this.widget.root.emit('close-request');
+                break;
+            default:
+                return;
         }
+
+        this.keyPressCount++;
     }
 
     /* Also happens after using controls navigation for selected keys */
@@ -637,18 +653,11 @@ class ClapperPlayer extends GstClapper.Clapper
             return;
 
         const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        let value, root;
+        let value;
 
         this.keyPressCount = 0;
 
         switch(keyval) {
-            case Gdk.KEY_space:
-                this.toggle_play();
-                break;
-            case Gdk.KEY_Return:
-                if(clapperWidget.isFullscreenMode)
-                    clapperWidget.revealControls(true);
-                break;
             case Gdk.KEY_Right:
             case Gdk.KEY_Left:
                 value = Math.round(
@@ -656,16 +665,6 @@ class ClapperPlayer extends GstClapper.Clapper
                 );
                 this.seek_seconds(value);
                 clapperWidget._setHideControlsTimeout();
-                break;
-            case Gdk.KEY_F11:
-            case Gdk.KEY_f:
-            case Gdk.KEY_F:
-                clapperWidget.toggleFullscreen();
-                break;
-            case Gdk.KEY_q:
-            case Gdk.KEY_Q:
-                root = this.widget.get_root();
-                root.emit('close-request');
                 break;
             default:
                 break;
