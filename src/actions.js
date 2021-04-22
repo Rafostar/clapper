@@ -14,5 +14,13 @@ var actions = {
     },
     about: {
         run: (window) => new Dialogs.AboutDialog(window),
+    },
+    next_track: {
+        run: (window) => window.child.player.playlistWidget.nextTrack(),
+        accels: ['<Ctrl>Right'],
+    },
+    prev_track: {
+        run: (window) => window.child.player.playlistWidget.prevTrack(),
+        accels: ['<Ctrl>Left'],
     }
 };

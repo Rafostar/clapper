@@ -46,13 +46,12 @@ class ClapperPlaylistWidget extends Gtk.ListBox
 
     nextTrack()
     {
-        const nextRow = this.get_row_at_index(this.activeRowId + 1);
-        if(!nextRow)
-            return false;
+        return this._switchTrack(false);
+    }
 
-        nextRow.activate();
-
-        return true;
+    prevTrack()
+    {
+        return this._switchTrack(true);
     }
 
     getActiveRow()
@@ -81,6 +80,21 @@ class ClapperPlaylistWidget extends Gtk.ListBox
 
         icon.icon_name = 'open-menu-symbolic';
         button.icon_name = 'list-remove-symbolic';
+    }
+
+    _switchTrack(isPrevious)
+    {
+        const rowId = (isPrevious)
+            ? this.activeRowId - 1
+            : this.activeRowId + 1;
+
+        const row = this.get_row_at_index(rowId);
+        if(!row)
+            return false;
+
+        row.activate();
+
+        return true;
     }
 
     _onRowActivated(listBox, row)
