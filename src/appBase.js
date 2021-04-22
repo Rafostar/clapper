@@ -1,8 +1,8 @@
 const { Gio, GLib, GObject, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
-const Menu = imports.src.menu;
 const Misc = imports.src.misc;
+const { actions } = imports.src.actions;
 
 const { debug } = Debug;
 const { settings } = Misc;
@@ -35,15 +35,15 @@ class ClapperAppBase extends Gtk.Application
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
 
-        for(let name in Menu.actions) {
+        for(let name in actions) {
             const simpleAction = new Gio.SimpleAction({ name });
             simpleAction.connect(
-                'activate', () => Menu.actions[name].run(this.active_window)
+                'activate', () => actions[name].run(this.active_window)
             );
             this.add_action(simpleAction);
 
-            if(Menu.actions[name].accels)
-                this.set_accels_for_action(`app.${name}`, Menu.actions[name].accels);
+            if(actions[name].accels)
+                this.set_accels_for_action(`app.${name}`, actions[name].accels);
         }
     }
 

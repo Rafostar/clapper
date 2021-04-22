@@ -4,11 +4,11 @@
     <section>
       <item>
         <attribute name="label" translatable="yes">Open Local...</attribute>
-        <attribute name="action">app.openLocal</attribute>
+        <attribute name="action">app.open_local</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Open URI...</attribute>
-        <attribute name="action">app.openUri</attribute>
+        <attribute name="action">app.open_uri</attribute>
       </item>
     </section>
     <section>
