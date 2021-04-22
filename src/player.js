@@ -441,6 +441,8 @@ class ClapperPlayer extends GstClapper.Clapper
             return false;
 
         this.seek_chapter(chapter);
+
+        return true;
     }
 
     _addPlaylistItems(playlist)
