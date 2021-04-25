@@ -6,7 +6,7 @@ const YouTube = imports.src.youtube;
 const { PlaylistWidget } = imports.src.playlist;
 const { WebApp } = imports.src.webApp;
 
-const { debug } = Debug;
+const { debug, warn } = Debug;
 const { settings } = Misc;
 
 let WebServer;
@@ -119,8 +119,10 @@ class ClapperPlayer extends GstClapper.Clapper
     {
         const gstRegistry = Gst.Registry.get();
         const feature = gstRegistry.lookup_feature(name);
-        if(!feature)
-            return debug(`plugin unavailable: ${name}`);
+        if(!feature) {
+            warn(`cannot change rank of unavailable plugin: ${name}`);
+            return;
+        }
 
         const oldRank = feature.get_rank();
         if(rank === oldRank)

@@ -31,14 +31,23 @@ const ytDebugger = new Debug.Debugger('YouTube', {
     high_precision: true,
 });
 
-function _debug(msg, debuggerName)
+function _logStructured(debuggerName, msg, level)
+{
+    GLib.log_structured(
+        debuggerName, level, {
+            MESSAGE: msg,
+            SYSLOG_IDENTIFIER: debuggerName.toLowerCase()
+    });
+}
+
+function _debug(debuggerName, msg)
 {
     if(msg.message) {
-        GLib.log_structured(
-            debuggerName, GLib.LogLevelFlags.LEVEL_CRITICAL, {
-                MESSAGE: msg.message,
-                SYSLOG_IDENTIFIER: debuggerName.toLowerCase()
-        });
+        _logStructured(
+            debuggerName,
+            msg.message,
+            GLib.LogLevelFlags.LEVEL_CRITICAL
+        );
 
         return;
     }
@@ -55,10 +64,15 @@ function _debug(msg, debuggerName)
 
 function debug(msg)
 {
-    _debug(msg, 'Clapper');
+    _debug('Clapper', msg);
 }
 
 function ytDebug(msg)
 {
-    _debug(msg, 'YouTube');
+    _debug('YouTube', msg);
+}
+
+function warn(msg)
+{
+    _logStructured('Clapper', msg, GLib.LogLevelFlags.LEVEL_WARNING);
 }
