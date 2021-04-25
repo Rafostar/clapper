@@ -38,6 +38,7 @@ class ClapperPlayer extends GstClapper.Clapper
 
         this.webserver = null;
         this.webapp = null;
+        this.ytClient = null;
         this.playlistWidget = new PlaylistWidget();
 
         this.seek_done = true;
@@ -49,14 +50,6 @@ class ClapperPlayer extends GstClapper.Clapper
         this.playOnFullscreen = false;
         this.quitOnStop = false;
         this.needsTocUpdate = true;
-
-        this.keyPressCount = 0;
-        this.ytClient = null;
-
-        const keyController = new Gtk.EventControllerKey();
-        keyController.connect('key-pressed', this._onWidgetKeyPressed.bind(this));
-        keyController.connect('key-released', this._onWidgetKeyReleased.bind(this));
-        this.widget.add_controller(keyController);
 
         this.set_all_plugins_ranks();
         this.set_initial_config();
@@ -636,75 +629,6 @@ class ClapperPlayer extends GstClapper.Clapper
         this.closeRequestSignal = root.connect(
             'close-request', this._onCloseRequest.bind(this)
         );
-    }
-
-    /* Widget only - does not happen when using controls navigation */
-    _onWidgetKeyPressed(controller, keyval, keycode, state)
-    {
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        let bool = false;
-
-        switch(keyval) {
-            case Gdk.KEY_Up:
-                bool = true;
-            case Gdk.KEY_Down:
-                this.adjust_volume(bool);
-                break;
-            case Gdk.KEY_Right:
-                bool = true;
-            case Gdk.KEY_Left:
-                this.adjust_position(bool);
-                if(this.keyPressCount > 1)
-                    clapperWidget.revealControls();
-                break;
-            case Gdk.KEY_space:
-                this.toggle_play();
-                break;
-            case Gdk.KEY_Return:
-                if(clapperWidget.isFullscreenMode)
-                    clapperWidget.revealControls(true);
-                break;
-            case Gdk.KEY_F11:
-            case Gdk.KEY_f:
-            case Gdk.KEY_F:
-                clapperWidget.toggleFullscreen();
-                break;
-            case Gdk.KEY_q:
-            case Gdk.KEY_Q:
-                this.widget.root.emit('close-request');
-                break;
-            default:
-                return;
-        }
-
-        this.keyPressCount++;
-    }
-
-    /* Also happens after using controls navigation for selected keys */
-    _onWidgetKeyReleased(controller, keyval, keycode, state)
-    {
-        /* Ignore releases that did not trigger keypress
-         * e.g. while holding left "Super" key */
-        if(!this.keyPressCount)
-            return;
-
-        const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-        let value;
-
-        this.keyPressCount = 0;
-
-        switch(keyval) {
-            case Gdk.KEY_Right:
-            case Gdk.KEY_Left:
-                value = Math.round(
-                    clapperWidget.controls.positionScale.get_value()
-                );
-                this.seek_seconds(value);
-                clapperWidget._setHideControlsTimeout();
-                break;
-            default:
-                break;
-        }
     }
 
     _onWindowMap(window)

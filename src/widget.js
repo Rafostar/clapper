@@ -31,6 +31,7 @@ class ClapperWidget extends Gtk.Grid
 
         this.isDragAllowed = false;
         this.isSwipePerformed = false;
+        this.isReleaseKeyEnabled = false;
 
         this.isCursorInPlayer = false;
         this.isPopoverOpen = false;
@@ -103,17 +104,19 @@ class ClapperWidget extends Gtk.Grid
 
         const dropTarget = this._getDropTarget();
         playerWidget.add_controller(dropTarget);
+
+        /* Applied only for widget to detect simple action key releases */
+        const keyController = new Gtk.EventControllerKey();
+        keyController.connect('key-released', this._onKeyReleased.bind(this));
+        this.add_controller(keyController);
     }
 
-    revealControls(isAllowInput)
+    revealControls()
     {
         this.revealerTop.revealChild(true);
         this.revealerBottom.revealChild(true);
 
         this._checkSetUpdateTimeInterval();
-
-        if(isAllowInput)
-            this.setControlsCanFocus(true);
 
         /* Reset timeout if already revealed, otherwise
          * timeout will be set after reveal finishes */
@@ -157,26 +160,12 @@ class ClapperWidget extends Gtk.Grid
         if(this.revealerTop.child_revealed)
             this._checkSetUpdateTimeInterval();
 
-        this.setControlsCanFocus(false);
-
         if(this.player.playOnFullscreen && isFullscreen) {
             this.player.playOnFullscreen = false;
             this.player.play();
         }
 
         debug(`interface in fullscreen mode: ${isFullscreen}`);
-    }
-
-    setControlsCanFocus(isControlsFocus)
-    {
-        this.revealerBottom.can_focus = isControlsFocus;
-        this.player.widget.can_focus = !isControlsFocus;
-
-        const focusWidget = (isControlsFocus)
-            ? this.controls.togglePlayButton
-            : this.player.widget;
-
-        focusWidget.grab_focus();
     }
 
     _changeControlsPlacement(isOnTop)
@@ -619,7 +608,6 @@ class ClapperWidget extends Gtk.Grid
                 this.revealerTop.revealChild(false);
                 this.revealerBottom.revealChild(false);
             }
-            this.setControlsCanFocus(false);
 
             return GLib.SOURCE_REMOVE;
         });
@@ -764,6 +752,28 @@ class ClapperWidget extends Gtk.Grid
                 default:
                     break;
             }
+        }
+    }
+
+    _onKeyReleased(controller, keyval, keycode, state)
+    {
+        /* Ignore releases that did not trigger keypress
+         * e.g. while holding left "Super" key */
+        if(!this.isReleaseKeyEnabled)
+            return;
+
+        switch(keyval) {
+            case Gdk.KEY_Right:
+            case Gdk.KEY_Left:
+                const value = Math.round(
+                    this.controls.positionScale.get_value()
+                );
+                this.player.seek_seconds(value);
+                this._setHideControlsTimeout();
+                this.isReleaseKeyEnabled = false;
+                break;
+            default:
+                break;
         }
     }
 

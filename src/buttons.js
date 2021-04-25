@@ -31,8 +31,6 @@ class ClapperCustomButton extends Gtk.Button
         if(this.isFullscreen === isFullscreen)
             return;
 
-        this.can_focus = isFullscreen;
-
         /* Redraw icon after style class change */
         if(this.icon_name)
             this.set_icon_name(this.icon_name);
@@ -110,8 +108,6 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
         if(this.isFullscreen === isFullscreen)
             return;
 
-        this.can_focus = isFullscreen;
-
         /* Redraw icon after style class change */
         if(this.icon_name)
             this.set_icon_name(this.icon_name);
@@ -151,8 +147,6 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
     _onClosed()
     {
         const clapperWidget = this.get_ancestor(Gtk.Grid);
-
-        clapperWidget.player.widget.grab_focus();
 
         /* Set again timeout as popover is now closed */
         if(clapperWidget.isFullscreenMode)

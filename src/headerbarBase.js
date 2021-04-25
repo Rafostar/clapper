@@ -37,6 +37,7 @@ class ClapperHeaderBarBase extends Gtk.Box
         this.menuButton = new Gtk.MenuButton({
             icon_name: 'open-menu-symbolic',
             valign: Gtk.Align.CENTER,
+            can_focus: false,
         });
         const mainMenuModel = uiBuilder.get_object('mainMenu');
         const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
@@ -53,6 +54,7 @@ class ClapperHeaderBarBase extends Gtk.Box
 
         const floatButton = new Gtk.Button({
             icon_name: 'go-bottom-symbolic',
+            can_focus: false,
         });
         floatButton.add_css_class('circular');
         floatButton.add_css_class('linkedleft');
@@ -69,6 +71,7 @@ class ClapperHeaderBarBase extends Gtk.Box
 
         const fullscreenButton = new Gtk.Button({
             icon_name: 'view-fullscreen-symbolic',
+            can_focus: false,
         });
         fullscreenButton.add_css_class('circular');
         fullscreenButton.add_css_class('linkedright');
@@ -196,6 +199,7 @@ class ClapperHeaderBarBase extends Gtk.Box
         const button = new Gtk.Button({
             icon_name: `window-${name}-symbolic`,
             valign: Gtk.Align.CENTER,
+            can_focus: false,
         });
         button.add_css_class('circular');
 
@@ -263,7 +267,5 @@ class ClapperHeaderBarPopover extends Gtk.PopoverMenu
 
         child.revealControls();
         child.isPopoverOpen = false;
-
-        child.player.widget.grab_focus();
     }
 });
