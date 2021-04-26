@@ -588,7 +588,6 @@ class ClapperPlayer extends GstClapper.Clapper
                 }
             }
         }
-        this.play();
     }
 
     _onPlayerWarning(player, error)

@@ -550,10 +550,9 @@ gst_clapper_set_uri_internal (gpointer user_data)
   gst_clapper_stop_internal (self, FALSE);
 
   g_mutex_lock (&self->lock);
-
   GST_DEBUG_OBJECT (self, "Changing URI to '%s'", GST_STR_NULL (self->uri));
-
   g_object_set (self->playbin, "uri", self->uri, NULL);
+  g_object_set (self->playbin, "suburi", NULL, NULL);
 
   if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
           signals[SIGNAL_URI_LOADED], 0, NULL, NULL, NULL) != 0) {
@@ -566,9 +565,9 @@ gst_clapper_set_uri_internal (gpointer user_data)
         (GDestroyNotify) uri_loaded_signal_data_free);
   }
 
-  g_object_set (self->playbin, "suburi", NULL, NULL);
-
   g_mutex_unlock (&self->lock);
+
+  gst_clapper_play_internal (self);
 
   return G_SOURCE_REMOVE;
 }
@@ -3086,6 +3085,11 @@ gst_clapper_play (GstClapper * self)
 {
   g_return_if_fail (GST_IS_CLAPPER (self));
 
+  if (self->app_state == GST_CLAPPER_STATE_STOPPED) {
+    GST_DEBUG_OBJECT (self, "Player stopped, play request ignored");
+    return;
+  }
+
   g_mutex_lock (&self->lock);
   self->inhibit_sigs = FALSE;
   g_mutex_unlock (&self->lock);
@@ -3157,15 +3161,22 @@ gst_clapper_pause (GstClapper * self)
 {
   g_return_if_fail (GST_IS_CLAPPER (self));
 
-  /* Do not try to pause on DVD navigation */
-  if (G_LIKELY (self->cached_duration > 1000000000)) {
-    g_mutex_lock (&self->lock);
-    self->inhibit_sigs = FALSE;
-    g_mutex_unlock (&self->lock);
-
-    g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,
-        gst_clapper_pause_internal, self, NULL);
+  if (self->app_state == GST_CLAPPER_STATE_STOPPED) {
+    GST_DEBUG_OBJECT (self, "Player stopped, pause request ignored");
+    return;
   }
+
+  if (G_UNLIKELY (self->cached_duration <= GST_SECOND)) {
+    GST_DEBUG_OBJECT (self, "Cannot pause on this stream");
+    return;
+  }
+
+  g_mutex_lock (&self->lock);
+  self->inhibit_sigs = FALSE;
+  g_mutex_unlock (&self->lock);
+
+  g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,
+      gst_clapper_pause_internal, self, NULL);
 }
 
 /**
@@ -3179,11 +3190,6 @@ void
 gst_clapper_toggle_play (GstClapper * self)
 {
   g_return_if_fail (GST_IS_CLAPPER (self));
-
-  if (self->app_state == GST_CLAPPER_STATE_STOPPED) {
-    GST_DEBUG_OBJECT (self, "Player stopped, toggle_play ignored");
-    return;
-  }
 
   if (self->app_state == GST_CLAPPER_STATE_PLAYING)
     gst_clapper_pause (self);
