@@ -46,8 +46,6 @@ class ClapperPlayer extends GstClapper.Clapper
         this.customVideoTitle = null;
 
         this.windowMapped = false;
-        this.canAutoFullscreen = false;
-        this.playOnFullscreen = false;
         this.quitOnStop = false;
         this.needsTocUpdate = true;
 
@@ -217,11 +215,21 @@ class ClapperPlayer extends GstClapper.Clapper
             this.stop();
 
         debug('new playlist');
-
         this.playlistWidget.removeAll();
-        this.canAutoFullscreen = true;
-
         this._addPlaylistItems(playlist);
+
+        if(settings.get_boolean('fullscreen-auto')) {
+            const { root } = this.playlistWidget;
+            /* Do not enter fullscreen when already in it
+             * or when in floating mode */
+            if(
+                root
+                && root.child
+                && !root.child.isFullscreenMode
+                && root.child.controlsRevealer.reveal_child
+            )
+                root.fullscreen();
+        }
 
         /* If not mapped yet, first track will play after map */
         if(this.windowMapped)
@@ -568,26 +576,6 @@ class ClapperPlayer extends GstClapper.Clapper
     {
         debug(`URI loaded: ${uri}`);
         this.needsTocUpdate = true;
-
-        if(this.canAutoFullscreen) {
-            this.canAutoFullscreen = false;
-
-            if(settings.get_boolean('fullscreen-auto')) {
-                const root = player.widget.get_root();
-                const clapperWidget = root.get_child();
-                /* Do not enter fullscreen when already in it
-                 * or when in floating mode */
-                if(
-                    !clapperWidget.isFullscreenMode
-                    && clapperWidget.controlsRevealer.reveal_child
-                ) {
-                    this.playOnFullscreen = true;
-                    root.fullscreen();
-
-                    return;
-                }
-            }
-        }
     }
 
     _onPlayerWarning(player, error)

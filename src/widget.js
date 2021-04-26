@@ -160,11 +160,6 @@ class ClapperWidget extends Gtk.Grid
         if(this.revealerTop.child_revealed)
             this._checkSetUpdateTimeInterval();
 
-        if(this.player.playOnFullscreen && isFullscreen) {
-            this.player.playOnFullscreen = false;
-            this.player.play();
-        }
-
         debug(`interface in fullscreen mode: ${isFullscreen}`);
     }
 
