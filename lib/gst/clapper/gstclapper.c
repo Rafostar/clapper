@@ -139,7 +139,7 @@ struct _GstClapper
   GstElement *playbin;
   GstBus *bus;
   GstState target_state, current_state;
-  gboolean is_live, is_eos;
+  gboolean is_live;
   GSource *tick_source, *ready_timeout_source;
   GstClockTime cached_duration;
 
@@ -1129,7 +1129,6 @@ emit_error (GstClapper * self, GError * err)
   self->target_state = GST_STATE_NULL;
   self->current_state = GST_STATE_NULL;
   self->is_live = FALSE;
-  self->is_eos = FALSE;
   gst_element_set_state (self->playbin, GST_STATE_NULL);
   change_state (self, GST_CLAPPER_STATE_STOPPED);
   self->buffering = 100;
@@ -1316,9 +1315,9 @@ eos_cb (G_GNUC_UNUSED GstBus * bus, G_GNUC_UNUSED GstMessage * msg,
     gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
         eos_dispatch, g_object_ref (self), (GDestroyNotify) g_object_unref);
   }
-  change_state (self, GST_CLAPPER_STATE_STOPPED);
-  self->buffering = 100;
-  self->is_eos = TRUE;
+
+  /* TODO: repeat instead of stop */
+  gst_clapper_stop_internal (self, FALSE);
 }
 
 typedef struct
@@ -2946,7 +2945,6 @@ gst_clapper_main (gpointer data)
   self->current_state = GST_STATE_NULL;
   change_state (self, GST_CLAPPER_STATE_STOPPED);
   self->buffering = 100;
-  self->is_eos = FALSE;
   self->is_live = FALSE;
   self->rate = 1.0;
   self->seek_mode = DEFAULT_SEEK_MODE;
@@ -3040,7 +3038,7 @@ gst_clapper_play_internal (gpointer user_data)
   if (self->current_state < GST_STATE_PAUSED)
     change_state (self, GST_CLAPPER_STATE_BUFFERING);
 
-  if (self->current_state >= GST_STATE_PAUSED && !self->is_eos
+  if (self->current_state >= GST_STATE_PAUSED
       && self->buffering >= 100 && !(self->seek_position != GST_CLOCK_TIME_NONE
           || self->seek_pending)) {
     state_ret = gst_element_set_state (self->playbin, GST_STATE_PLAYING);
@@ -3055,21 +3053,6 @@ gst_clapper_play_internal (gpointer user_data)
   } else if (state_ret == GST_STATE_CHANGE_NO_PREROLL) {
     self->is_live = TRUE;
     GST_DEBUG_OBJECT (self, "Pipeline is live");
-  }
-
-  if (self->is_eos) {
-    gboolean ret;
-
-    GST_DEBUG_OBJECT (self, "Was EOS, seeking to beginning");
-    self->is_eos = FALSE;
-    ret =
-        gst_element_seek_simple (self->playbin, GST_FORMAT_TIME,
-        GST_SEEK_FLAG_FLUSH, 0);
-    if (!ret) {
-      GST_ERROR_OBJECT (self, "Seek to beginning failed");
-      gst_clapper_stop_internal (self, TRUE);
-      gst_clapper_play_internal (self);
-    }
   }
 
   return G_SOURCE_REMOVE;
@@ -3131,21 +3114,6 @@ gst_clapper_pause_internal (gpointer user_data)
   } else if (state_ret == GST_STATE_CHANGE_NO_PREROLL) {
     self->is_live = TRUE;
     GST_DEBUG_OBJECT (self, "Pipeline is live");
-  }
-
-  if (self->is_eos) {
-    gboolean ret;
-
-    GST_DEBUG_OBJECT (self, "Was EOS, seeking to beginning");
-    self->is_eos = FALSE;
-    ret =
-        gst_element_seek_simple (self->playbin, GST_FORMAT_TIME,
-        GST_SEEK_FLAG_FLUSH, 0);
-    if (!ret) {
-      GST_ERROR_OBJECT (self, "Seek to beginning failed");
-      gst_clapper_stop_internal (self, TRUE);
-      gst_clapper_pause_internal (self);
-    }
   }
 
   return G_SOURCE_REMOVE;
@@ -3216,7 +3184,6 @@ gst_clapper_stop_internal (GstClapper * self, gboolean transient)
   self->target_state = GST_STATE_NULL;
   self->current_state = GST_STATE_READY;
   self->is_live = FALSE;
-  self->is_eos = FALSE;
   gst_bus_set_flushing (self->bus, TRUE);
   gst_element_set_state (self->playbin, GST_STATE_READY);
   gst_bus_set_flushing (self->bus, FALSE);
@@ -3325,7 +3292,6 @@ gst_clapper_seek_internal_locked (GstClapper * self)
   g_mutex_unlock (&self->lock);
 
   remove_tick_source (self);
-  self->is_eos = FALSE;
 
   flags |= GST_SEEK_FLAG_FLUSH;
 
