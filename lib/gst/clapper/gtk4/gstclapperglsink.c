@@ -604,6 +604,12 @@ gst_clapper_gl_sink_change_state (GstElement * element, GstStateChange transitio
     return ret;
 
   switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      GST_OBJECT_LOCK (clapper_sink);
+      if (clapper_sink->widget)
+        clapper_sink->widget->ignore_textures = FALSE;
+      GST_OBJECT_UNLOCK (clapper_sink);
+      break;
     case GST_STATE_CHANGE_READY_TO_PAUSED:
     {
       GtkWindow *window = NULL;
@@ -619,6 +625,12 @@ gst_clapper_gl_sink_change_state (GstElement * element, GstStateChange transitio
       }
       break;
     }
+    case GST_STATE_CHANGE_READY_TO_NULL:
+      GST_OBJECT_LOCK (clapper_sink);
+      if (clapper_sink->widget)
+        clapper_sink->widget->ignore_textures = TRUE;
+      GST_OBJECT_UNLOCK (clapper_sink);
+      /* Fall through to render black bg */
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       GST_OBJECT_LOCK (clapper_sink);
       if (clapper_sink->widget)
