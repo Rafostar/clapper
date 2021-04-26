@@ -162,6 +162,9 @@ GST_CLAPPER_API
 void         gst_clapper_pause                              (GstClapper *clapper);
 
 GST_CLAPPER_API
+void         gst_clapper_toggle_play                        (GstClapper *clapper);
+
+GST_CLAPPER_API
 void         gst_clapper_stop                               (GstClapper *clapper);
 
 GST_CLAPPER_API

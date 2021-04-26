@@ -355,15 +355,6 @@ class ClapperPlayer extends GstClapper.Clapper
         controls.volumeScale.set_value(volume);
     }
 
-    toggle_play()
-    {
-        const action = (this.state === GstClapper.ClapperState.PLAYING)
-            ? 'pause'
-            : 'play';
-
-        this[action]();
-    }
-
     next_chapter()
     {
         return this._switchChapter(false);

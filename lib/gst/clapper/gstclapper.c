@@ -3168,6 +3168,29 @@ gst_clapper_pause (GstClapper * self)
   }
 }
 
+/**
+ * gst_clapper_toggle_play:
+ * @clapper: #GstClapper instance
+ *
+ * Toggle between play and pause on the loaded stream.
+ * This function does nothing if player is stopped.
+ */
+void
+gst_clapper_toggle_play (GstClapper * self)
+{
+  g_return_if_fail (GST_IS_CLAPPER (self));
+
+  if (self->app_state == GST_CLAPPER_STATE_STOPPED) {
+    GST_DEBUG_OBJECT (self, "Player stopped, toggle_play ignored");
+    return;
+  }
+
+  if (self->app_state == GST_CLAPPER_STATE_PLAYING)
+    gst_clapper_pause (self);
+  else
+    gst_clapper_play (self);
+}
+
 static void
 gst_clapper_stop_internal (GstClapper * self, gboolean transient)
 {
