@@ -33,7 +33,6 @@ class ClapperPlayer extends GstClapper.Clapper
         this.widget = gtk4plugin.video_sink.widget;
         this.widget.add_css_class('videowidget');
 
-        this.state = GstClapper.ClapperState.STOPPED;
         this.visualization_enabled = false;
 
         this.webserver = null;
@@ -518,7 +517,6 @@ class ClapperPlayer extends GstClapper.Clapper
 
     _onStateChanged(player, state)
     {
-        this.state = state;
         this.emitWs('state_changed', state);
 
         if(state !== GstClapper.ClapperState.BUFFERING) {

@@ -50,6 +50,7 @@
 GST_DEBUG_CATEGORY_STATIC (gst_clapper_debug);
 #define GST_CAT_DEFAULT gst_clapper_debug
 
+#define DEFAULT_STATE GST_CLAPPER_STATE_STOPPED
 #define DEFAULT_URI NULL
 #define DEFAULT_POSITION GST_CLOCK_TIME_NONE
 #define DEFAULT_DURATION GST_CLOCK_TIME_NONE
@@ -75,6 +76,7 @@ enum
   PROP_0,
   PROP_VIDEO_RENDERER,
   PROP_SIGNAL_DISPATCHER,
+  PROP_STATE,
   PROP_URI,
   PROP_SUBURI,
   PROP_POSITION,
@@ -268,6 +270,7 @@ gst_clapper_init (GstClapper * self)
   self->last_seek_time = GST_CLOCK_TIME_NONE;
   self->inhibit_sigs = FALSE;
   self->needs_info_update = FALSE;
+  self->app_state = GST_CLAPPER_STATE_STOPPED;
 
   GST_TRACE_OBJECT (self, "Initialized");
 }
@@ -295,6 +298,11 @@ gst_clapper_class_init (GstClapperClass * klass)
       "Signal Dispatcher", "Dispatcher for the signals to e.g. event loops",
       GST_TYPE_CLAPPER_SIGNAL_DISPATCHER,
       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  param_specs[PROP_STATE] =
+      g_param_spec_enum ("state", "Clapper State", "Current player state",
+      GST_TYPE_CLAPPER_STATE, DEFAULT_STATE, G_PARAM_READABLE |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_URI] = g_param_spec_string ("uri", "URI", "Current URI",
@@ -730,6 +738,11 @@ gst_clapper_get_property (GObject * object, guint prop_id,
   GstClapper *self = GST_CLAPPER (object);
 
   switch (prop_id) {
+    case PROP_STATE:
+      g_mutex_lock (&self->lock);
+      g_value_set_enum (value, self->app_state);
+      g_mutex_unlock (&self->lock);
+      break;
     case PROP_URI:
       g_mutex_lock (&self->lock);
       g_value_set_string (value, self->uri);
@@ -3440,6 +3453,24 @@ remove_seek_source (GstClapper * self)
   g_source_destroy (self->seek_source);
   g_source_unref (self->seek_source);
   self->seek_source = NULL;
+}
+
+/**
+ * gst_clapper_get_state:
+ * @clapper: #GstClapper instance
+ *
+ * Returns: Current player state
+ */
+GstClapperState
+gst_clapper_get_state (GstClapper * self)
+{
+  GstClapperState state;
+
+  g_return_val_if_fail (GST_IS_CLAPPER (self), DEFAULT_STATE);
+
+  g_object_get (self, "state", &state, NULL);
+
+  return state;
 }
 
 /**

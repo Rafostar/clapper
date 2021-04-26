@@ -171,6 +171,10 @@ GST_CLAPPER_API
 void         gst_clapper_seek                               (GstClapper *clapper, GstClockTime position);
 
 GST_CLAPPER_API
+GstClapperState
+             gst_clapper_get_state                          (GstClapper *clapper);
+
+GST_CLAPPER_API
 GstClapperSeekMode
              gst_clapper_get_seek_mode                      (GstClapper *clapper);
 
