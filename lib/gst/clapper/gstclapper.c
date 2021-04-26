@@ -565,6 +565,7 @@ gst_clapper_set_uri_internal (gpointer user_data)
         (GDestroyNotify) uri_loaded_signal_data_free);
   }
 
+  self->inhibit_sigs = FALSE;
   g_mutex_unlock (&self->lock);
 
   gst_clapper_play_internal (self);
@@ -3219,10 +3220,8 @@ gst_clapper_stop_internal (GstClapper * self, gboolean transient)
   gst_bus_set_flushing (self->bus, TRUE);
   gst_element_set_state (self->playbin, GST_STATE_READY);
   gst_bus_set_flushing (self->bus, FALSE);
-  change_state (self, transient
-      && self->app_state !=
-      GST_CLAPPER_STATE_STOPPED ? GST_CLAPPER_STATE_BUFFERING :
-      GST_CLAPPER_STATE_STOPPED);
+  change_state (self, transient && self->app_state != GST_CLAPPER_STATE_STOPPED
+      ? GST_CLAPPER_STATE_BUFFERING : GST_CLAPPER_STATE_STOPPED);
   self->buffering = 100;
   self->cached_duration = GST_CLOCK_TIME_NONE;
   g_mutex_lock (&self->lock);
