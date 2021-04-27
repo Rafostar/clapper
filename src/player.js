@@ -568,6 +568,10 @@ class ClapperPlayer extends GstClapper.Clapper
             this.quitOnStop = true;
             this._performCloseCleanup(this.widget.get_root());
         }
+
+        /* When this signal is connected player
+         * wants us to decide if it should stop */
+        this.stop();
     }
 
     _onUriLoaded(player, uri)

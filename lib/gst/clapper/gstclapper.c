@@ -1323,14 +1323,13 @@ eos_cb (G_GNUC_UNUSED GstBus * bus, G_GNUC_UNUSED GstMessage * msg,
   tick_cb (self);
   remove_tick_source (self);
 
+  /* When connected client should handle what to do (stop/repeat) */
   if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
           signals[SIGNAL_END_OF_STREAM], 0, NULL, NULL, NULL) != 0) {
     gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
         eos_dispatch, g_object_ref (self), (GDestroyNotify) g_object_unref);
-  }
-
-  /* TODO: repeat instead of stop */
-  gst_clapper_stop_internal (self, FALSE);
+  } else
+    gst_clapper_stop_internal (self, FALSE);
 }
 
 typedef struct
