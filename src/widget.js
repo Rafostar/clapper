@@ -431,10 +431,8 @@ class ClapperWidget extends Gtk.Grid
                 break;
             case GstClapper.ClapperState.STOPPED:
                 debug('player state changed to: STOPPED');
-                this.controls.currentPosition = 0;
-                this.controls.positionScale.set_value(0);
+                this.controls.setInitialState();
                 this.revealerTop.showTitle = false;
-                this.controls.togglePlayButton.setPrimaryIcon();
                 break;
             case GstClapper.ClapperState.PAUSED:
                 debug('player state changed to: PAUSED');

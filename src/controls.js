@@ -7,6 +7,8 @@ const Revealers = imports.src.revealers;
 const { debug } = Debug;
 const { settings } = Misc;
 
+const INITIAL_ELAPSED = '00:00/00:00';
+
 var Controls = GObject.registerClass(
 class ClapperControls extends Gtk.Box
 {
@@ -21,7 +23,6 @@ class ClapperControls extends Gtk.Box
         this.minFullViewWidth = 560;
 
         this.currentPosition = 0;
-        this.currentDuration = 0;
         this.isPositionDragging = false;
         this.isMobile = false;
         this.isFullscreen = false;
@@ -107,6 +108,21 @@ class ClapperControls extends Gtk.Box
             this.elapsedButton.set_label('LIVE');
 
         this.positionScale.visible = isSeekable;
+    }
+
+    setInitialState()
+    {
+        this.currentPosition = 0;
+        this.positionScale.set_value(0);
+        this.positionScale.visible = false;
+
+        this.elapsedButton.set_label(INITIAL_ELAPSED);
+        this.togglePlayButton.setPrimaryIcon();
+
+        for(let type of ['video', 'audio', 'subtitle'])
+            this[`${type}TracksButton`].visible = false;
+
+        this.visualizationsButton.visible = false;
     }
 
     updateElapsedLabel(value)
@@ -291,7 +307,7 @@ class ClapperControls extends Gtk.Box
     _addElapsedButton()
     {
         const elapsedRevealer = new Revealers.ButtonsRevealer('SLIDE_RIGHT');
-        this.elapsedButton = this.addElapsedPopoverButton('00:00/00:00', elapsedRevealer);
+        this.elapsedButton = this.addElapsedPopoverButton(INITIAL_ELAPSED, elapsedRevealer);
         elapsedRevealer.set_reveal_child(true);
         this.revealersArr.push(elapsedRevealer);
 
