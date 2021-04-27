@@ -560,7 +560,7 @@ class ClapperPlayer extends GstClapper.Clapper
         debug(`end of stream: ${lastTrackId}`);
         this.emitWs('end_of_stream', lastTrackId);
 
-        if(this.playlistWidget.nextTrack())
+        if(this.playlistWidget._handleStreamEnded(player))
             return;
 
         if(settings.get_boolean('close-auto')) {

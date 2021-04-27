@@ -1,5 +1,11 @@
 const { Gdk, GLib, GObject, Gst, Gtk, Pango } = imports.gi;
 
+var RepeatMode = {
+    NONE: 0,
+    TRACK: 1,
+    PLAYLIST: 2,
+};
+
 var PlaylistWidget = GObject.registerClass(
 class ClapperPlaylistWidget extends Gtk.ListBox
 {
@@ -9,6 +15,8 @@ class ClapperPlaylistWidget extends Gtk.ListBox
             selection_mode: Gtk.SelectionMode.NONE,
         });
         this.activeRowId = -1;
+        this.repeatMode = RepeatMode.NONE;
+
         this.connect('row-activated', this._onRowActivated.bind(this));
     }
 
@@ -88,6 +96,11 @@ class ClapperPlaylistWidget extends Gtk.ListBox
             ? this.activeRowId - 1
             : this.activeRowId + 1;
 
+        return this._changeActiveRow(rowId);
+    }
+
+    _changeActiveRow(rowId)
+    {
         const row = this.get_row_at_index(rowId);
         if(!row)
             return false;
@@ -109,6 +122,29 @@ class ClapperPlaylistWidget extends Gtk.ListBox
 
         this.activeRowId = row.get_index();
         player.set_uri(row.uri);
+    }
+
+    _handleStreamEnded(player)
+    {
+        /* Seek to beginning when repeating track
+         * or playlist with only one item */
+        if(
+            this.repeatMode === RepeatMode.TRACK
+            || (this.repeatMode === RepeatMode.PLAYLIST
+            && this.activeRowId === 0
+            && !this.get_row_at_index(1))
+        ) {
+            player.seek(0);
+            return true;
+        }
+
+        if(this.nextTrack())
+            return true;
+
+        if(this.repeatMode === RepeatMode.PLAYLIST)
+            return this._changeActiveRow(0);
+
+        return false;
     }
 });
 
