@@ -36,7 +36,8 @@ Additionally it also has a few patches, thus some functionalities work better (o
 The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
 
 #### Debian, Fedora & openSUSE
-Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper))
+Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).<br>
+Those are automatically build on each git commit, thus are considered unstable.
 
 #### Arch Linux
 You can get Clapper from the AUR:
