@@ -1,4 +1,7 @@
 const { Gdk, GLib, GObject, Gst, Gtk, Pango } = imports.gi;
+const Debug = imports.src.debug;
+
+const { debug, warn } = Debug;
 
 var RepeatMode = {
     NONE: 0,
@@ -90,6 +93,26 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         button.icon_name = 'list-remove-symbolic';
     }
 
+    changeRepeatMode(mode)
+    {
+        const lastMode = Object.keys(RepeatMode).length - 1;
+
+        if(mode < 0 || mode > lastMode) {
+            warn(`ignored invalid repeat mode value: ${mode}`);
+            return;
+        }
+
+        if(mode >= 0)
+            this.repeatMode = mode;
+        else {
+            this.repeatMode++;
+            if(this.repeatMode > lastMode)
+                this.repeatMode = 0;
+        }
+
+        debug(`set repeat mode: ${this.repeatMode}`);
+    }
+
     _switchTrack(isPrevious)
     {
         const rowId = (isPrevious)
@@ -134,6 +157,8 @@ class ClapperPlaylistWidget extends Gtk.ListBox
             && this.activeRowId === 0
             && !this.get_row_at_index(1))
         ) {
+            debug('seeking to beginning');
+
             player.seek(0);
             return true;
         }

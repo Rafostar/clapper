@@ -14,6 +14,7 @@ var actions = {
     volume_up: ['Up'],
     volume_down: ['Down'],
     toggle_play: ['space'],
+    change_repeat: ['<Ctrl>r'],
     reveal_controls: ['Return'],
     toggle_fullscreen: ['F11', 'f'],
     quit: ['<Ctrl>q', 'q'],
@@ -71,6 +72,9 @@ function handleAction(action, window)
             break;
         case 'toggle_fullscreen':
             clapperWidget.toggleFullscreen();
+            break;
+        case 'change_repeat':
+            player.playlistWidget.changeRepeatMode();
             break;
         case 'quit':
             clapperWidget.root.emit('close-request');
