@@ -454,14 +454,9 @@ class ClapperWidget extends Gtk.Grid
         const durationSeconds = duration / Gst.SECOND;
         const durationFloor = Math.floor(durationSeconds);
 
-        /* Sometimes GstPlayer might re-emit
-         * duration changed during playback */
-        if(this.controls.currentDuration === durationFloor)
-            return;
+        debug(`duration changed: ${durationSeconds}`);
 
-        this.controls.currentDuration = durationFloor;
         this.controls.showHours = (durationFloor >= 3600);
-
         this.controls.positionAdjustment.set_upper(durationFloor);
         this.controls.durationFormatted = Misc.getFormattedTime(durationFloor);
         this.controls.updateElapsedLabel();

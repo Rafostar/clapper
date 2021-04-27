@@ -1575,7 +1575,8 @@ duration_changed_signal_data_free (DurationChangedSignalData * data)
 static void
 emit_duration_changed (GstClapper * self, GstClockTime duration)
 {
-  if (self->cached_duration == duration)
+  if (self->cached_duration == duration
+      || self->cached_duration / GST_MSECOND == duration / GST_MSECOND)
     return;
 
   GST_DEBUG_OBJECT (self, "Duration changed %" GST_TIME_FORMAT,
