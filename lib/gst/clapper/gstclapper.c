@@ -1987,6 +1987,16 @@ streams_selected_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
   g_mutex_unlock (&self->lock);
 }
 
+static gboolean
+clapper_get_has_flag (GstClapper * self, gint pos)
+{
+  gint flags;
+
+  g_object_get (self->playbin, "flags", &flags, NULL);
+
+  return (flags & pos) == pos;
+}
+
 static void
 clapper_set_flag (GstClapper * self, gint pos)
 {
@@ -2283,19 +2293,6 @@ gst_clapper_stream_info_find_from_stream_id (GstClapperMediaInfo * media_info,
   }
 
   return NULL;
-}
-
-static gboolean
-is_track_enabled (GstClapper * self, gint pos)
-{
-  gint flags;
-
-  g_object_get (G_OBJECT (self->playbin), "flags", &flags, NULL);
-
-  if ((flags & pos))
-    return TRUE;
-
-  return FALSE;
 }
 
 static GstClapperStreamInfo *
@@ -3720,7 +3717,7 @@ gst_clapper_get_current_audio_track (GstClapper * self)
 
   g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
 
-  if (!is_track_enabled (self, GST_PLAY_FLAG_AUDIO))
+  if (!clapper_get_has_flag (self, GST_PLAY_FLAG_AUDIO))
     return NULL;
 
   if (self->use_playbin3) {
@@ -3752,7 +3749,7 @@ gst_clapper_get_current_video_track (GstClapper * self)
 
   g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
 
-  if (!is_track_enabled (self, GST_PLAY_FLAG_VIDEO))
+  if (!clapper_get_has_flag (self, GST_PLAY_FLAG_VIDEO))
     return NULL;
 
   if (self->use_playbin3) {
@@ -3784,7 +3781,7 @@ gst_clapper_get_current_subtitle_track (GstClapper * self)
 
   g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
 
-  if (!is_track_enabled (self, GST_PLAY_FLAG_SUBTITLE))
+  if (!clapper_get_has_flag (self, GST_PLAY_FLAG_SUBTITLE))
     return NULL;
 
   if (self->use_playbin3) {
@@ -4063,7 +4060,7 @@ gst_clapper_get_current_visualization (GstClapper * self)
 
   g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
 
-  if (!is_track_enabled (self, GST_PLAY_FLAG_VIS))
+  if (!clapper_get_has_flag (self, GST_PLAY_FLAG_VIS))
     return NULL;
 
   g_object_get (self->playbin, "vis-plugin", &vis_plugin, NULL);
