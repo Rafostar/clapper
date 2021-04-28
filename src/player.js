@@ -388,10 +388,23 @@ class ClapperPlayer extends GstClapper.Clapper
             case 'pause':
                 this[action]();
                 break;
+            case 'seek':
             case 'set_playlist':
             case 'append_playlist':
             case 'set_subtitles':
                 this[action](value);
+                break;
+            case 'change_playlist_item':
+                this.playlistWidget.changeActiveRow(value);
+                break;
+            case 'toggle_fullscreen':
+            case 'volume_up':
+            case 'volume_down':
+            case 'next_track':
+            case 'prev_track':
+            case 'next_chapter':
+            case 'prev_chapter':
+                this.widget.activate_action(`app.${action}`, null);
                 break;
             case 'toggle_maximized':
                 action = 'toggle-maximized';
@@ -400,16 +413,7 @@ class ClapperPlayer extends GstClapper.Clapper
                 this.widget.activate_action(`window.${action}`, null);
                 break;
             default:
-                const clapperWidget = this.widget.get_ancestor(Gtk.Grid);
-
-                switch(action) {
-                    case 'toggle_fullscreen':
-                        clapperWidget.toggleFullscreen();
-                        break;
-                    default:
-                        debug(`unhandled WebSocket action: ${action}`);
-                        break;
-                }
+                warn(`unhandled WebSocket action: ${action}`);
                 break;
         }
     }

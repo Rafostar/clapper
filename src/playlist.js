@@ -91,6 +91,17 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         button.icon_name = 'list-remove-symbolic';
     }
 
+    changeActiveRow(rowId)
+    {
+        const row = this.get_row_at_index(rowId);
+        if(!row)
+            return false;
+
+        row.activate();
+
+        return true;
+    }
+
     changeRepeatMode(mode)
     {
         const lastMode = Object.keys(RepeatMode).length - 1;
@@ -117,18 +128,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
             ? this.activeRowId - 1
             : this.activeRowId + 1;
 
-        return this._changeActiveRow(rowId);
-    }
-
-    _changeActiveRow(rowId)
-    {
-        const row = this.get_row_at_index(rowId);
-        if(!row)
-            return false;
-
-        row.activate();
-
-        return true;
+        return this.changeActiveRow(rowId);
     }
 
     _onRowActivated(listBox, row)
@@ -165,7 +165,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
             return true;
 
         if(this.repeatMode === RepeatMode.PLAYLIST)
-            return this._changeActiveRow(0);
+            return this.changeActiveRow(0);
 
         return false;
     }
