@@ -77,7 +77,7 @@ function handleAction(action, window)
             player.playlistWidget.changeRepeatMode();
             break;
         case 'quit':
-            clapperWidget.root.emit('close-request');
+            clapperWidget.activate_action('window.close', null);
             break;
         case 'toggle_play':
         case 'next_chapter':

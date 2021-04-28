@@ -34,9 +34,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         const itemIndex = item.get_index();
 
         if(itemIndex === this.activeRowId) {
-            const root = this.get_root();
-            root.emit('close-request');
-
+            this.activate_action('window.close', null);
             return;
         }
 
