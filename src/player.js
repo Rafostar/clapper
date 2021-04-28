@@ -386,6 +386,8 @@ class ClapperPlayer extends GstClapper.Clapper
             case 'toggle_play':
             case 'play':
             case 'pause':
+                this[action]();
+                break;
             case 'set_playlist':
             case 'append_playlist':
             case 'set_subtitles':

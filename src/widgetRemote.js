@@ -27,7 +27,7 @@ class ClapperWidgetRemote extends Gtk.Grid
         this.togglePlayButton.remove_css_class('flat');
         this.togglePlayButton.child.add_css_class('playbackicon');
         this.togglePlayButton.connect(
-            'clicked', this.sendWs.bind(this, 'toggle_play')
+            'clicked', () => this.sendWs('toggle_play')
         );
 
         this.attach(this.togglePlayButton, 0, 0, 1, 1);
