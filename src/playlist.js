@@ -9,6 +9,12 @@ var RepeatMode = {
     PLAYLIST: 2,
 };
 
+const repeatIcons = [
+    'media-playlist-consecutive-symbolic',
+    'media-playlist-repeat-song-symbolic',
+    'media-playlist-repeat-symbolic',
+];
+
 var PlaylistWidget = GObject.registerClass(
 class ClapperPlaylistWidget extends Gtk.ListBox
 {
@@ -76,21 +82,6 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         return row.filename;
     }
 
-    deactivateActiveItem()
-    {
-        if(this.activeRowId < 0)
-            return;
-
-        const row = this.getActiveRow();
-        if(!row) return null;
-
-        const icon = row.child.get_first_child();
-        const button = row.child.get_last_child();
-
-        icon.icon_name = 'open-menu-symbolic';
-        button.icon_name = 'list-remove-symbolic';
-    }
-
     changeActiveRow(rowId)
     {
         const row = this.get_row_at_index(rowId);
@@ -105,6 +96,8 @@ class ClapperPlaylistWidget extends Gtk.ListBox
     changeRepeatMode(mode)
     {
         const lastMode = Object.keys(RepeatMode).length - 1;
+        const row = this.getActiveRow();
+        if(!row) return null;
 
         if(mode < 0 || mode > lastMode) {
             warn(`ignored invalid repeat mode value: ${mode}`);
@@ -119,7 +112,28 @@ class ClapperPlaylistWidget extends Gtk.ListBox
                 this.repeatMode = 0;
         }
 
+        const repeatButton = row.child.get_first_child();
+        repeatButton.icon_name = repeatIcons[this.repeatMode];
+
         debug(`set repeat mode: ${this.repeatMode}`);
+    }
+
+    _deactivateActiveItem(isRemoveChange)
+    {
+        if(this.activeRowId < 0)
+            return;
+
+        const row = this.getActiveRow();
+        if(!row) return null;
+
+        const repeatButton = row.child.get_first_child();
+        repeatButton.sensitive = false;
+        repeatButton.icon_name = 'open-menu-symbolic';
+
+        if(isRemoveChange) {
+            const removeButton = row.child.get_last_child();
+            removeButton.icon_name = 'list-remove-symbolic';
+        }
     }
 
     _switchTrack(isPrevious)
@@ -134,12 +148,13 @@ class ClapperPlaylistWidget extends Gtk.ListBox
     _onRowActivated(listBox, row)
     {
         const { player } = this.get_ancestor(Gtk.Grid);
-        const icon = row.child.get_first_child();
-        const button = row.child.get_last_child();
+        const repeatButton = row.child.get_first_child();
+        const removeButton = row.child.get_last_child();
 
-        this.deactivateActiveItem();
-        icon.icon_name = 'media-playback-start-symbolic';
-        button.icon_name = 'window-close-symbolic';
+        this._deactivateActiveItem(true);
+        repeatButton.sensitive = true;
+        repeatButton.icon_name = repeatIcons[this.repeatMode];
+        removeButton.icon_name = 'window-close-symbolic';
 
         this.activeRowId = row.get_index();
         player.set_uri(row.uri);
@@ -167,6 +182,8 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         if(this.repeatMode === RepeatMode.PLAYLIST)
             return this.changeActiveRow(0);
 
+        this._deactivateActiveItem(false);
+
         return false;
     }
 });
@@ -177,7 +194,6 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
     _init(uri)
     {
         super._init({
-            /* TODO: Fix playlist navigation in fullscreen */
             can_focus: false,
         });
 
@@ -201,9 +217,14 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
             margin_end: 6,
             height_request: 22,
         });
-        const icon = new Gtk.Image({
+        const repeatButton = new Gtk.Button({
             icon_name: 'open-menu-symbolic',
+            sensitive: false,
         });
+        repeatButton.add_css_class('flat');
+        repeatButton.add_css_class('circular');
+        repeatButton.add_css_class('popoverbutton');
+        repeatButton.connect('clicked', this._onRepeatClicked.bind(this));
         const label = new Gtk.Label({
             label: this.filename,
             single_line_mode: true,
@@ -212,17 +233,17 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
             hexpand: true,
             halign: Gtk.Align.START,
         });
-        const button = new Gtk.Button({
+        const removeButton = new Gtk.Button({
             icon_name: 'list-remove-symbolic',
         });
-        button.add_css_class('flat');
-        button.add_css_class('circular');
-        button.add_css_class('popoverbutton');
-        button.connect('clicked', this._onRemoveClicked.bind(this));
+        removeButton.add_css_class('flat');
+        removeButton.add_css_class('circular');
+        removeButton.add_css_class('popoverbutton');
+        removeButton.connect('clicked', this._onRemoveClicked.bind(this));
 
-        box.append(icon);
+        box.append(repeatButton);
         box.append(label);
-        box.append(button);
+        box.append(removeButton);
         this.set_child(box);
 
 /* FIXME: D&D inside popover is broken in GTK4
@@ -243,6 +264,13 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         dropTarget.connect('drop', this._onDrop.bind(this));
         this.add_controller(dropTarget);
 */
+    }
+
+    _onRepeatClicked(button)
+    {
+        const listBox = this.get_ancestor(Gtk.ListBox);
+
+        listBox.changeRepeatMode();
     }
 
     _onRemoveClicked(button)
