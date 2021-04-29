@@ -7,12 +7,14 @@ var RepeatMode = {
     NONE: 0,
     TRACK: 1,
     PLAYLIST: 2,
+    SHUFFLE: 3,
 };
 
 const repeatIcons = [
     'media-playlist-consecutive-symbolic',
     'media-playlist-repeat-song-symbolic',
     'media-playlist-repeat-symbolic',
+    'media-playlist-shuffle-symbolic',
 ];
 
 var PlaylistWidget = GObject.registerClass(
@@ -174,6 +176,36 @@ class ClapperPlaylistWidget extends Gtk.ListBox
 
             player.seek(0);
             return true;
+        }
+
+        if(this.repeatMode === RepeatMode.SHUFFLE) {
+            const playlistIds = [];
+            let index = 0;
+
+            debug('selecting random playlist item');
+
+            while(this.get_row_at_index(index)) {
+                /* We prefer to not repeat the same track */
+                if(index !== this.activeRowId)
+                    playlistIds.push(index);
+
+                index++;
+            }
+
+            if(playlistIds.length) {
+                const randomId = playlistIds[
+                    Math.floor(Math.random() * playlistIds.length)
+                ];
+                debug(`selected random playlist item: ${randomId}`);
+
+                return this.changeActiveRow(randomId);
+            }
+            else {
+                debug('only one playlist item, playing again');
+
+                player.seek(0);
+                return true;
+            }
         }
 
         if(this.nextTrack())
