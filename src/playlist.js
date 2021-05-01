@@ -192,20 +192,14 @@ class ClapperPlaylistWidget extends Gtk.ListBox
                 index++;
             }
 
-            if(playlistIds.length) {
-                const randomId = playlistIds[
-                    Math.floor(Math.random() * playlistIds.length)
-                ];
-                debug(`selected random playlist item: ${randomId}`);
+            /* We always have non-empty array here,
+             * otherwise seek to beginning is performed */
+            const randomId = playlistIds[
+                Math.floor(Math.random() * playlistIds.length)
+            ];
+            debug(`selected random playlist item: ${randomId}`);
 
-                return this.changeActiveRow(randomId);
-            }
-            else {
-                debug('only one playlist item, playing again');
-
-                player.seek(0);
-                return true;
-            }
+            return this.changeActiveRow(randomId);
         }
 
         if(this.nextTrack())
