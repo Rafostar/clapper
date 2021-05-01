@@ -168,7 +168,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
          * or playlist with only one item */
         if(
             this.repeatMode === RepeatMode.TRACK
-            || (this.repeatMode === RepeatMode.PLAYLIST
+            || (this.repeatMode !== RepeatMode.NONE
             && this.activeRowId === 0
             && !this.get_row_at_index(1))
         ) {
