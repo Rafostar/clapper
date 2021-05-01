@@ -270,7 +270,10 @@ class ClapperWidget extends Gtk.Grid
                 debug(`${type} caps: ${caps.to_string()}`);
             }
             if(type === 'video') {
-                const isShowVis = (parsedInfo[`${type}Tracks`].length === 0);
+                const isShowVis = (
+                    !parsedInfo.videoTracks.length
+                    && parsedInfo.audioTracks.length
+                );
                 this.showVisualizationsButton(isShowVis);
             }
             if(!parsedInfo[`${type}Tracks`].length) {
