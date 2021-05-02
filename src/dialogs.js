@@ -112,8 +112,6 @@ class ClapperUriDialog extends Gtk.Dialog
         area.append(box);
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
-
-        this.ref();
         this.show();
     }
 
@@ -257,8 +255,6 @@ class ClapperPrefsDialog extends Gtk.Dialog
         area.append(prefsNotebook);
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
-
-        this.ref();
         this.show();
     }
 
@@ -319,8 +315,6 @@ class ClapperAboutDialog extends Gtk.AboutDialog
         });
 
         this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
-
-        this.ref();
         this.show();
     }
 
