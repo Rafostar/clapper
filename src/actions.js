@@ -2,6 +2,7 @@ const Dialogs = imports.src.dialogs;
 
 var actions = {
     open_local: ['<Ctrl>O'],
+    export_playlist: ['<Ctrl>E'],
     open_uri: ['<Ctrl>U'],
     prefs: null,
     about: null,
@@ -30,7 +31,8 @@ function handleAction(action, window)
 
     switch(action.name) {
         case 'open_local':
-            new Dialogs.FileChooser(window);
+        case 'export_playlist':
+            new Dialogs.FileChooser(window, action.name);
             break;
         case 'open_uri':
             new Dialogs.UriDialog(window);

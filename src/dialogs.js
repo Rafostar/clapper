@@ -1,6 +1,7 @@
 const { Gio, GObject, Gtk, Gst } = imports.gi;
 const System = imports.system;
 const Debug = imports.src.debug;
+const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
 const Prefs = imports.src.prefs;
 const PrefsBase = imports.src.prefsBase;
@@ -10,13 +11,36 @@ const { debug } = Debug;
 var FileChooser = GObject.registerClass(
 class ClapperFileChooser extends Gtk.FileChooserNative
 {
-    _init(window)
+    _init(window, purpose)
     {
         super._init({
             transient_for: window,
             modal: true,
-            select_multiple: true,
         });
+
+        switch(purpose) {
+            case 'open_local':
+                this._prepareOpenLocal();
+                break;
+            case 'export_playlist':
+                this._prepareExportPlaylist();
+                break;
+            default:
+                debug(new Error(`unknown file chooser purpose: ${purpose}`));
+                break;
+        }
+
+        this.chooserPurpose = purpose;
+        this.responseSignal = this.connect('response', this._onResponse.bind(this));
+
+        /* File chooser closes itself when nobody is holding its ref */
+        this.ref();
+        this.show();
+    }
+
+    _prepareOpenLocal()
+    {
+        this.select_multiple = true;
 
         const filter = new Gtk.FileFilter({
             name: 'Media Files',
@@ -26,12 +50,18 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         filter.add_mime_type('application/claps');
         Misc.subsMimes.forEach(mime => filter.add_mime_type(mime));
         this.add_filter(filter);
+    }
 
-        this.responseSignal = this.connect('response', this._onResponse.bind(this));
+    _prepareExportPlaylist()
+    {
+        this.action = Gtk.FileChooserAction.SAVE;
+        this.set_current_name('playlist.claps');
 
-        /* File chooser closes itself when nobody is holding its ref */
-        this.ref();
-        this.show();
+        const filter = new Gtk.FileFilter({
+            name: 'Playlist Files',
+        });
+        filter.add_mime_type('application/claps');
+        this.add_filter(filter);
     }
 
     _onResponse(filechooser, response)
@@ -42,30 +72,57 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         this.responseSignal = null;
 
         if(response === Gtk.ResponseType.ACCEPT) {
-            const files = this.get_files();
-            const filesArray = [];
-
-            let index = 0;
-            let file;
-
-            while((file = files.get_item(index))) {
-                filesArray.push(file);
-                index++;
+            switch(this.chooserPurpose) {
+                case 'open_local':
+                    this._handleOpenLocal();
+                    break;
+                case 'export_playlist':
+                    this._handleExportPlaylist();
+                    break;
             }
-
-            const { application } = this.transient_for;
-            const isHandlesOpen = Boolean(
-                application.flags & Gio.ApplicationFlags.HANDLES_OPEN
-            );
-
-            /* Remote app does not handle open */
-            if(isHandlesOpen)
-               application.open(filesArray, "");
-            else
-               application._openFilesAsync(filesArray);
         }
 
         this.unref();
+    }
+
+    _handleOpenLocal()
+    {
+        const files = this.get_files();
+        const filesArray = [];
+
+        let index = 0;
+        let file;
+
+        while((file = files.get_item(index))) {
+            filesArray.push(file);
+            index++;
+        }
+
+        const { application } = this.transient_for;
+        const isHandlesOpen = Boolean(
+            application.flags & Gio.ApplicationFlags.HANDLES_OPEN
+        );
+
+        /* Remote app does not handle open */
+        if(isHandlesOpen)
+           application.open(filesArray, "");
+        else
+           application._openFilesAsync(filesArray);
+    }
+
+    _handleExportPlaylist()
+    {
+        const file = this.get_file();
+        const { playlistWidget } = this.transient_for.child.player;
+        const playlist = playlistWidget.getPlaylist(true);
+
+        FileOps.saveFileSimplePromise(file, playlist.join('\n'))
+            .then(() => {
+                debug(`exported playlist to file: ${file.get_path()}`);
+            })
+            .catch(err => {
+                debug(err);
+            });
     }
 });
 

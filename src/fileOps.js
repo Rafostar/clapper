@@ -57,6 +57,18 @@ function createDirPromise(dir)
     });
 }
 
+/* Simple save data to GioFile */
+function saveFileSimplePromise(file, data)
+{
+    return file.replace_contents_bytes_async(
+        GLib.Bytes.new_take(data),
+        null,
+        false,
+        Gio.FileCreateFlags.NONE,
+        null
+    );
+}
+
 /* Saves file in optional subdirectory and resolves with it */
 function saveFilePromise(place, subdirName, fileName, data)
 {
@@ -82,18 +94,12 @@ function saveFilePromise(place, subdirName, fileName, data)
         }
 
         const destFile = destDir.get_child(fileName);
-        destFile.replace_contents_bytes_async(
-            GLib.Bytes.new_take(data),
-            null,
-            false,
-            Gio.FileCreateFlags.NONE,
-            null
-        )
-        .then(() => {
-            debug(`saved file: ${destPath}`);
-            resolve(destFile);
-        })
-        .catch(err => reject(err));
+        saveFileSimplePromise(destFile, data)
+            .then(() => {
+                debug(`saved file: ${destPath}`);
+                resolve(destFile);
+            })
+            .catch(err => reject(err));
     });
 }
 

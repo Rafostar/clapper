@@ -76,6 +76,24 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         return this.get_row_at_index(this.activeRowId);
     }
 
+    getPlaylist(useFilePaths)
+    {
+        const playlist = [];
+        let index = 0;
+        let item;
+
+        while((item = this.get_row_at_index(index))) {
+            const path = (useFilePaths && item.isLocalFile)
+                ? GLib.filename_from_uri(item.uri)[0]
+                : item.uri;
+
+            playlist.push(path);
+            index++;
+        }
+
+        return playlist;
+    }
+
     getActiveFilename()
     {
         const row = this.getActiveRow();
