@@ -464,6 +464,13 @@ gtk_clapper_gl_widget_motion_event (GtkEventControllerMotion * motion_controller
 }
 
 static void
+gtk_clapper_gl_widget_settings_changed (GtkGLArea * glarea)
+{
+  GST_DEBUG ("GTK settings changed, queued render");
+  gtk_gl_area_queue_render (glarea);
+}
+
+static void
 gtk_clapper_gl_widget_bind_buffer (GtkClapperGLWidget * clapper_widget)
 {
   GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
@@ -1014,6 +1021,9 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
   GST_INFO ("Created %" GST_PTR_FORMAT, priv->display);
 
   gtk_gl_area_set_auto_render (GTK_GL_AREA (widget), FALSE);
+
+  g_signal_connect_swapped (gtk_widget_get_settings (widget), "notify",
+      G_CALLBACK (gtk_clapper_gl_widget_settings_changed), GTK_GL_AREA (widget));
 }
 
 GtkWidget *
