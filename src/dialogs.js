@@ -83,6 +83,7 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         }
 
         this.unref();
+        this.destroy();
     }
 
     _handleOpenLocal()
