@@ -1,3 +1,3 @@
-[submodule "pkgs/flatpak/shared-modules"]
-	path = pkgs/flatpak/shared-modules
-	url = https://github.com/flathub/shared-modules.git
+[submodule "pkgs/flatpak/flathub"]
+	path = pkgs/flatpak/flathub
+	url = https://github.com/flathub/com.github.rafostar.Clapper.git

@@ -1,4 +1,6 @@
 build/
+builddir/
 repo/
 .flatpak-builder/
 com.github.rafostar.Clapper.flatpak
+flathub/com.github.rafostar.Clapper.json
