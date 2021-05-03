@@ -34,18 +34,6 @@ class ClapperAppBase extends Gtk.Application
 
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
-
-        for(let name in Actions.actions) {
-            const simpleAction = new Gio.SimpleAction({ name });
-            simpleAction.connect('activate', (action) =>
-                Actions.handleAction(action, this.active_window)
-            );
-            this.add_action(simpleAction);
-
-            const accels = Actions.actions[name];
-            if(accels)
-                this.set_accels_for_action(`app.${name}`, accels);
-        }
     }
 
     vfunc_activate()
@@ -92,6 +80,18 @@ class ClapperAppBase extends Gtk.Application
 
     _onFirstActivate()
     {
+        for(let name in Actions.actions) {
+            const simpleAction = new Gio.SimpleAction({ name });
+            simpleAction.connect('activate', (action) =>
+                Actions.handleAction(action, this.active_window)
+            );
+            this.add_action(simpleAction);
+
+            const accels = Actions.actions[name];
+            if(accels)
+                this.set_accels_for_action(`app.${name}`, accels);
+        }
+
         const gtkSettings = Gtk.Settings.get_default();
         settings.bind(
             'dark-theme', gtkSettings,
