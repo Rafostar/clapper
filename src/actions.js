@@ -1,10 +1,13 @@
+const { Gtk } = imports.gi;
 const Dialogs = imports.src.dialogs;
+const Misc = imports.src.misc;
 
 var actions = {
     open_local: ['<Ctrl>O'],
     export_playlist: ['<Ctrl>E'],
     open_uri: ['<Ctrl>U'],
     prefs: null,
+    shortcuts: ['F1', '<Ctrl>question'],
     about: null,
     progress_forward: ['Right'],
     progress_backward: ['Left'],
@@ -39,6 +42,16 @@ function handleAction(action, window)
             break;
         case 'prefs':
             new Dialogs.PrefsDialog(window);
+            break;
+        case 'shortcuts':
+            if(!window.get_help_overlay()) {
+                const clapperPath = Misc.getClapperPath();
+                const helpBuilder = Gtk.Builder.new_from_file(
+                    `${clapperPath}/ui/help-overlay.ui`
+                );
+                window.set_help_overlay(helpBuilder.get_object('help_overlay'));
+            }
+            clapperWidget.activate_action('win.show-help-overlay', null);
             break;
         case 'about':
             new Dialogs.AboutDialog(window);
