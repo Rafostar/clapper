@@ -15,11 +15,11 @@
 - [X] Picture-in-Picture mode window (floating window)
 - [ ] Touch gestures/swipes support
 - Media playlists:
-  - [ ] Add more items to playlist via GUI
+  - [X] Add more items to playlist via D&D
   - [X] Select video from playlist
   - [ ] Reorder playlist items via D&D
   - [X] Load special playlist file (.claps)
-  - [ ] Save to playlist file from GUI
+  - [X] Save to playlist file from GUI
 - Seeking:
   - [X] Customizable seek time
   - [X] Set seek mode (default, accurate, fast)
@@ -31,7 +31,7 @@
   - [X] Audio offset
 - [ ] MDNS and UPNP (discovering media in local network)
 - [X] DND files from Nautilus to play (ignore incompatible ones)
-  - [ ] Support dropping whole folders
+  - [X] Support dropping whole folders
 - [ ] Search for subtitles, download and activate (SMplayer)
 - [ ] Auto add subtitles from same folder
   - [ ] Set global subtitles folders
