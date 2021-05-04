@@ -171,6 +171,10 @@ struct _GstClapper
    * is emitted after gst_clapper_stop/pause() has been called by the user. */
   gboolean inhibit_sigs;
 
+  /* If TRUE, player is in initial ready state after
+   * new media was loaded and it can be played */
+  gboolean can_start;
+
   /* If should emit media info updated signal */
   gboolean needs_info_update;
 
@@ -270,6 +274,7 @@ gst_clapper_init (GstClapper * self)
   self->last_seek_time = GST_CLOCK_TIME_NONE;
   self->inhibit_sigs = FALSE;
   self->needs_info_update = FALSE;
+  self->can_start = FALSE;
   self->app_state = GST_CLAPPER_STATE_STOPPED;
 
   GST_TRACE_OBJECT (self, "Initialized");
@@ -561,6 +566,7 @@ gst_clapper_set_uri_internal (gpointer user_data)
   GST_DEBUG_OBJECT (self, "Changing URI to '%s'", GST_STR_NULL (self->uri));
   g_object_set (self->playbin, "uri", self->uri, NULL);
   g_object_set (self->playbin, "suburi", NULL, NULL);
+  self->can_start = TRUE;
 
   if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
           signals[SIGNAL_URI_LOADED], 0, NULL, NULL, NULL) != 0) {
@@ -573,10 +579,7 @@ gst_clapper_set_uri_internal (gpointer user_data)
         (GDestroyNotify) uri_loaded_signal_data_free);
   }
 
-  self->inhibit_sigs = FALSE;
   g_mutex_unlock (&self->lock);
-
-  gst_clapper_play_internal (self);
 
   return G_SOURCE_REMOVE;
 }
@@ -3079,13 +3082,14 @@ gst_clapper_play (GstClapper * self)
 {
   g_return_if_fail (GST_IS_CLAPPER (self));
 
-  if (self->app_state == GST_CLAPPER_STATE_STOPPED) {
+  if (!self->can_start && self->app_state == GST_CLAPPER_STATE_STOPPED) {
     GST_DEBUG_OBJECT (self, "Player stopped, play request ignored");
     return;
   }
 
   g_mutex_lock (&self->lock);
   self->inhibit_sigs = FALSE;
+  self->can_start = FALSE;
   g_mutex_unlock (&self->lock);
 
   g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,

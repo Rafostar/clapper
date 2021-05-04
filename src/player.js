@@ -584,6 +584,8 @@ class ClapperPlayer extends GstClapper.Clapper
     {
         debug(`URI loaded: ${uri}`);
         this.needsTocUpdate = true;
+
+        player.play();
     }
 
     _onPlayerWarning(player, error)
