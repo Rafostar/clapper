@@ -1891,6 +1891,27 @@ element_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
   }
 }
 
+static void
+qos_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
+{
+  GstClapper *self = GST_CLAPPER (user_data);
+  gboolean live;
+  guint64 running_time, stream_time, timestamp, duration;
+
+  gst_message_parse_qos (msg, &live, &running_time, &stream_time,
+      &timestamp, &duration);
+
+  GST_DEBUG_OBJECT (self, "QOS dropped buffer"
+      ", element live: %s"
+      ", running time: %" GST_TIME_FORMAT
+      ", stream time: %" GST_TIME_FORMAT
+      ", timestamp: %" GST_TIME_FORMAT
+      ", duration: %" GST_TIME_FORMAT,
+      live ? "yes" : "no", GST_TIME_ARGS (running_time),
+      GST_TIME_ARGS (stream_time), GST_TIME_ARGS (timestamp),
+      GST_TIME_ARGS (duration));
+}
+
 /* Must be called with lock */
 static gboolean
 update_stream_collection (GstClapper * self, GstStreamCollection * collection)
@@ -2925,6 +2946,9 @@ gst_clapper_main (gpointer data)
       G_CALLBACK (element_cb), self);
   g_signal_connect (G_OBJECT (bus), "message::tag", G_CALLBACK (tags_cb), self);
   g_signal_connect (G_OBJECT (bus), "message::toc", G_CALLBACK (toc_cb), self);
+
+  if (gst_debug_category_get_threshold (gst_clapper_debug) >= GST_LEVEL_DEBUG)
+    g_signal_connect (G_OBJECT (bus), "message::qos", G_CALLBACK (qos_cb), self);
 
   if (self->use_playbin3) {
     g_signal_connect (G_OBJECT (bus), "message::stream-collection",
