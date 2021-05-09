@@ -12,6 +12,7 @@
         "--socket=pulseaudio",
         "--share=network",
         "--device=all",
+        "--filesystem=xdg-run/pipewire-0:ro",
         "--filesystem=xdg-videos",
         "--talk-name=org.gnome.Shell",
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
@@ -49,5 +50,8 @@
                 }
             ]
         }
+    ],
+    "cleanup-commands": [
+        "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
 }
