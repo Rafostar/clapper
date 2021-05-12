@@ -38,6 +38,7 @@ class ClapperWidget extends Gtk.Grid
 
         this._hideControlsTimeout = null;
         this._updateTimeTimeout = null;
+        this.surfaceMapSignal = null;
 
         this.needsCursorRestore = false;
 
@@ -144,9 +145,6 @@ class ClapperWidget extends Gtk.Grid
         const root = this.get_root();
         const action = (isFullscreen) ? 'add' : 'remove';
         root[action + '_css_class']('gpufriendlyfs');
-
-        if(!this.isMobileMonitor)
-            root[action + '_css_class']('tvmode');
 
         if(!isFullscreen)
             this._clearTimeout('updateTime');
@@ -538,28 +536,68 @@ class ClapperWidget extends Gtk.Grid
     _onWindowMap(window)
     {
         const surface = window.get_surface();
-        const monitor = window.display.get_monitor_at_surface(surface);
-        const geometry = monitor.geometry;
-        const size = JSON.parse(settings.get_string('window-size'));
 
-        debug(`monitor application-pixels: ${geometry.width}x${geometry.height}`);
-
-        if(geometry.width >= size[0] && geometry.height >= size[1]) {
-            window.set_default_size(size[0], size[1]);
-            debug(`restored window size: ${size[0]}x${size[1]}`);
-        }
-
-        const monitorWidth = Math.max(geometry.width, geometry.height);
-
-        if(monitorWidth < 1280) {
-            this.isMobileMonitor = true;
-            debug('mobile monitor detected');
-        }
+        if(!surface.mapped)
+            this.surfaceMapSignal = surface.connect(
+                'notify::mapped', this._onSurfaceMapNotify.bind(this)
+            );
+        else
+            this._onSurfaceMapNotify(surface);
 
         surface.connect('notify::state', this._onStateNotify.bind(this));
+        surface.connect('enter-monitor', this._onEnterMonitor.bind(this));
         surface.connect('layout', this._onLayoutUpdate.bind(this));
 
         this.player._onWindowMap(window);
+    }
+
+    _onSurfaceMapNotify(surface)
+    {
+        if(!surface.mapped)
+            return;
+
+        if(this.surfaceMapSignal) {
+            surface.disconnect(this.surfaceMapSignal);
+            this.surfaceMapSignal = null;
+        }
+
+        const monitor = surface.display.get_monitor_at_surface(surface);
+        const size = JSON.parse(settings.get_string('window-size'));
+        const hasMonitor = Boolean(monitor && monitor.geometry);
+
+        /* Let GTK handle window restore if no monitor, otherwise
+           check if its size is greater then saved window size */
+        if(
+            !hasMonitor
+            || (monitor.geometry.width >= size[0]
+            && monitor.geometry.height >= size[1])
+        ) {
+            if(!hasMonitor)
+                debug('restoring window size without monitor geometry');
+
+            this.root.set_default_size(size[0], size[1]);
+            debug(`restored window size: ${size[0]}x${size[1]}`);
+        }
+    }
+
+    _onEnterMonitor(surface, monitor)
+    {
+        debug('entered new monitor');
+
+        const { geometry } = monitor;
+        debug(`monitor application-pixels: ${geometry.width}x${geometry.height}`);
+
+        const monitorWidth = Math.max(geometry.width, geometry.height);
+        this.isMobileMonitor = (monitorWidth < 1280);
+        debug(`mobile monitor detected: ${this.isMobileMonitor}`);
+
+        const hasTVCss = this.root.has_css_class('tvmode');
+        if(hasTVCss === this.isMobileMonitor) {
+            const action = (this.isMobileMonitor) ? 'remove' : 'add';
+            this.root[action + '_css_class']('tvmode');
+        }
+        /* Update top revealer display mode */
+        this.revealerTop.setFullscreenMode(this.isFullscreenMode, this.isMobileMonitor);
     }
 
     _clearTimeout(name)
@@ -611,6 +649,7 @@ class ClapperWidget extends Gtk.Grid
             && !this.isMobileMonitor
             && !this._updateTimeTimeout
         ) {
+            debug('setting update time interval');
             this._setUpdateTimeInterval();
         }
     }

@@ -70,7 +70,7 @@ radio {
   min-height: 180px;
 }
 
-.tvmode popover box {
+.fullscreen.tvmode popover box {
   text-shadow: none;
   font-size: 21px;
   font-weight: 500;
@@ -87,17 +87,17 @@ radio {
   margin-left: 1px;
   margin-right: 1px;
 }
-.tvmode .playercontrols button {
+.fullscreen.tvmode .playercontrols button {
   min-width: 32px;
   min-height: 32px;
   margin: 5px;
   margin-left: 3px;
   margin-right: 3px;
 }
-.tvmode button image {
+.fullscreen.tvmode button image {
   -gtk-icon-shadow: none;
 }
-.tvmode radio {
+.fullscreen.tvmode radio {
   margin-left: 0px;
   margin-right: 4px;
   border: 2px solid;
@@ -105,13 +105,13 @@ radio {
   min-height: 17px;
 }
 
-.tvmode .playercontrols button image {
+.fullscreen.tvmode .playercontrols button image {
   -gtk-icon-size: 24px;
 }
 .adwicons .playbackicon {
   -gtk-icon-size: 20px;
 }
-.adwicons.tvmode .playbackicon {
+.adwicons.fullscreen.tvmode .playbackicon {
   -gtk-icon-size: 28px;
 }
 .labelbuttonlabel {
@@ -122,21 +122,21 @@ radio {
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
-.tvmode .labelbuttonlabel {
+.fullscreen.tvmode .labelbuttonlabel {
   font-size: 22px;
   text-shadow: none;
 }
 
 /* Top Revealer */
-.tvmode .revealertopgrid {
+.fullscreen.tvmode .revealertopgrid {
   font-family: 'Cantarell', sans-serif;
 }
-.tvmode .tvtitle {
+.fullscreen.tvmode .tvtitle {
   font-size: 28px;
   font-weight: 500;
   text-shadow: none;
 }
-.tvtime {
+.fullscreen.tvmode .tvtime {
   margin-top: -2px;
   margin-bottom: -2px;
   min-height: 4px;
@@ -144,7 +144,7 @@ radio {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.tvendtime {
+.fullscreen.tvmode .tvendtime {
   margin-top: -4px;
   margin-bottom: 2px;
   min-height: 6px;
@@ -171,7 +171,7 @@ radio {
 .osd .positionscale trough highlight {
   min-height: 6px;
 }
-.tvmode .positionscale trough slider {
+.fullscreen.tvmode .positionscale trough slider {
   color: transparent;
   background: transparent;
   border-color: transparent;
@@ -183,11 +183,11 @@ radio {
 .positionscale.fine-tune mark indicator {
   min-height: 6px;
 }
-.tvmode .positionscale mark indicator {
+.fullscreen.tvmode .positionscale mark indicator {
   min-height: 7px;
   min-width: 2px;
 }
-.tvmode .positionscale.fine-tune mark indicator {
+.fullscreen.tvmode .positionscale.fine-tune mark indicator {
   min-height: 7px;
   min-width: 2px;
 }
@@ -199,17 +199,17 @@ radio {
   margin-top: 4px;
   margin-bottom: -6px;
 }
-.tvmode .positionscale marks.top {
+.fullscreen.tvmode .positionscale marks.top {
   margin-bottom: 2px;
 }
-.tvmode .positionscale marks.bottom {
+.fullscreen.tvmode .positionscale marks.bottom {
   margin-top: 2px;
 }
-.tvmode .positionscale trough highlight {
+.fullscreen.tvmode .positionscale trough highlight {
   border-radius: 3px;
   min-height: 20px;
 }
-.tvmode .positionscale.fine-tune trough highlight {
+.fullscreen.tvmode .positionscale.fine-tune trough highlight {
   border-radius: 3px;
   min-height: 20px;
 }
@@ -221,7 +221,7 @@ radio {
   margin-right: -6px;
   min-height: 180px;
 }
-.tvmode .volumescale {
+.fullscreen.tvmode .volumescale {
   margin: 2px;
   margin-left: -6px;
   margin-right: -4px;
@@ -232,7 +232,7 @@ radio {
   margin-top: -4px;
   margin-bottom: -6px;
 }
-.tvmode .volumescale trough highlight {
+.fullscreen.tvmode .volumescale trough highlight {
   min-width: 6px;
 }
 .overamp trough highlight {
@@ -246,10 +246,10 @@ radio {
 .elapsedpopoverbox box separator {
   background: @insensitive_fg_color;
 }
-.tvmode .elapsedpopoverbox {
+.fullscreen.tvmode .elapsedpopoverbox {
   min-width: 360px;
 }
-.tvmode .speedscale trough highlight {
+.fullscreen.tvmode .speedscale trough highlight {
   min-height: 6px;
 }
 
@@ -272,7 +272,7 @@ radio {
 .chapterlabel {
   min-width: 32px;
 }
-.tvmode .chapterlabel {
+.fullscreen.tvmode .chapterlabel {
   min-width: 40px;
   text-shadow: none;
   font-size: 22px;
