@@ -34,6 +34,8 @@ class ClapperAppBase extends Gtk.Application
 
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
+
+        window.add_css_class('gpufriendlyfs');
     }
 
     vfunc_activate()

@@ -142,10 +142,6 @@ class ClapperWidget extends Gtk.Grid
         debug('changing fullscreen mode');
         this.isFullscreenMode = isFullscreen;
 
-        const root = this.get_root();
-        const action = (isFullscreen) ? 'add' : 'remove';
-        root[action + '_css_class']('gpufriendlyfs');
-
         if(!isFullscreen)
             this._clearTimeout('updateTime');
 
