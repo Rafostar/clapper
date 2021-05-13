@@ -141,7 +141,7 @@ class ClapperPlayer extends GstClapper.Clapper
     {
         this.customVideoTitle = null;
 
-        if(Gst.Uri.get_protocol(uri) !== 'file') {
+        if(Misc.getUriProtocol(uri) !== 'file') {
             const [isYouTubeUri, videoId] = YouTube.checkYouTubeUri(uri);
 
             if(!isYouTubeUri)
@@ -256,7 +256,7 @@ class ClapperPlayer extends GstClapper.Clapper
 
         /* Check local file existence */
         if(
-            Gst.Uri.get_protocol(uri) === 'file'
+            Misc.getUriProtocol(uri) === 'file'
             && !Misc.getFileFromLocalUri(uri)
         )
             return;

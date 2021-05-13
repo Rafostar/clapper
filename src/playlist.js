@@ -1,5 +1,6 @@
-const { Gdk, GLib, GObject, Gst, Gtk, Pango } = imports.gi;
+const { Gdk, GLib, GObject, Gtk, Pango } = imports.gi;
 const Debug = imports.src.debug;
+const Misc = imports.src.misc;
 
 const { debug, warn } = Debug;
 
@@ -245,7 +246,7 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         this.isLocalFile = false;
 
         let filename;
-        if(Gst.Uri.get_protocol(uri) === 'file') {
+        if(Misc.getUriProtocol(uri) === 'file') {
             filename = GLib.path_get_basename(
                 GLib.filename_from_uri(uri)[0]
             );

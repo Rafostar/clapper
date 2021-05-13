@@ -140,6 +140,13 @@ function getFileFromLocalUri(uri)
     return file;
 }
 
+/* JS replacement of "Gst.Uri.get_protocol" */
+function getUriProtocol(uri)
+{
+    const arr = uri.split(':');
+    return (arr.length > 1) ? arr[0] : null;
+}
+
 function encodeHTML(text)
 {
     return text.replace(/&/g, '&amp;')
