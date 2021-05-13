@@ -7,6 +7,7 @@ var appName = 'Clapper';
 var appId = 'com.github.rafostar.Clapper';
 var subsMimes = [
     'application/x-subrip',
+    'text/x-ssa',
 ];
 
 var clapperPath = null;
