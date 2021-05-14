@@ -32,7 +32,12 @@
 
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
 #include <gdk/x11/gdkx.h>
+#if GST_GL_HAVE_PLATFORM_EGL
+#include <gst/gl/egl/gstgldisplay_egl.h>
+#endif
+#if GST_GL_HAVE_PLATFORM_GLX
 #include <gst/gl/x11/gstgldisplay_x11.h>
+#endif
 #endif
 
 #if GST_GL_HAVE_WINDOW_WAYLAND && defined (GDK_WINDOWING_WAYLAND)
@@ -852,27 +857,23 @@ _get_gl_context (GtkClapperGLWidget * clapper_widget)
   gdk_gl_context_make_current (priv->gdk_context);
 
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
-  if (GST_IS_GL_DISPLAY_X11 (priv->display)) {
-#if GST_GL_HAVE_PLATFORM_GLX
-    if (!gl_handle) {
-      platform = GST_GL_PLATFORM_GLX;
-      gl_handle = gst_gl_context_get_current_gl_context (platform);
-    }
-#endif
-
 #if GST_GL_HAVE_PLATFORM_EGL
-    if (!gl_handle) {
-      platform = GST_GL_PLATFORM_EGL;
-      gl_handle = gst_gl_context_get_current_gl_context (platform);
-    }
+  if (GST_IS_GL_DISPLAY_EGL (priv->display)) {
+    platform = GST_GL_PLATFORM_EGL;
+    gl_handle = gst_gl_context_get_current_gl_context (platform);
+  }
 #endif
-
-    if (gl_handle) {
-      gl_api = _get_current_gl_api (platform);
-      priv->other_context =
-          gst_gl_context_new_wrapped (priv->display, gl_handle,
-          platform, gl_api);
-    }
+#if GST_GL_HAVE_PLATFORM_GLX
+  if (!gl_handle && GST_IS_GL_DISPLAY_X11 (priv->display)) {
+    platform = GST_GL_PLATFORM_GLX;
+    gl_handle = gst_gl_context_get_current_gl_context (platform);
+  }
+#endif
+  if (gl_handle) {
+    gl_api = _get_current_gl_api (platform);
+    priv->other_context =
+        gst_gl_context_new_wrapped (priv->display, gl_handle,
+        platform, gl_api);
   }
 #endif
 #if GST_GL_HAVE_WINDOW_WAYLAND && GST_GL_HAVE_PLATFORM_EGL && defined (GDK_WINDOWING_WAYLAND)
@@ -999,9 +1000,20 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
 
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
   if (GDK_IS_X11_DISPLAY (display)) {
-    priv->display = (GstGLDisplay *)
-        gst_gl_display_x11_new_with_display (gdk_x11_display_get_xdisplay
-        (display));
+    gpointer display_ptr;
+#if GST_GL_HAVE_PLATFORM_EGL && GTK_CHECK_VERSION(4,4,0)
+    display_ptr = gdk_x11_display_get_egl_display (display);
+    if (display_ptr)
+      priv->display = (GstGLDisplay *)
+          gst_gl_display_egl_new_with_egl_display (display_ptr);
+#endif
+#if GST_GL_HAVE_PLATFORM_GLX
+    if (!priv->display) {
+      display_ptr = gdk_x11_display_get_xdisplay (display);
+      priv->display = (GstGLDisplay *)
+          gst_gl_display_x11_new_with_display (display_ptr);
+    }
+#endif
   }
 #endif
 #if GST_GL_HAVE_WINDOW_WAYLAND && defined (GDK_WINDOWING_WAYLAND)
