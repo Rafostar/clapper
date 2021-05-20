@@ -1,3 +1,5 @@
+gnome = import('gnome')
+
 gstclapper_sources = [
   'gstclapper.c',
   'gstclapper-signal-dispatcher.c',
@@ -6,6 +8,7 @@ gstclapper_sources = [
   'gstclapper-g-main-context-signal-dispatcher.c',
   'gstclapper-video-overlay-video-renderer.c',
   'gstclapper-visualization.c',
+  'gstclapper-mpris.c',
   'gstclapper-gtk4-plugin.c',
 
   'gtk4/gstclapperglsink.c',
@@ -23,6 +26,7 @@ gstclapper_headers = [
   'gstclapper-g-main-context-signal-dispatcher.h',
   'gstclapper-video-overlay-video-renderer.h',
   'gstclapper-visualization.h',
+  'gstclapper-mpris.h',
   'gstclapper-gtk4-plugin.h',
 ]
 gstclapper_defines = [
@@ -67,15 +71,22 @@ if not have_gtk_gl_windowing
   error('GTK4 widget requires GL windowing')
 endif
 
+gstclapper_mpris_gdbus = gnome.gdbus_codegen('gstclapper-mpris-gdbus',
+  sources: '../../../data/gstclapper-mpris-gdbus.xml',
+  interface_prefix: 'org.mpris.',
+  namespace: 'GstClapperMpris'
+)
+
 gstclapper = library('gstclapper-' + api_version,
-  gstclapper_sources,
+  gstclapper_sources + gstclapper_mpris_gdbus,
   c_args : gstclapper_defines,
   link_args : noseh_link_args,
   include_directories : [configinc, libsinc],
   version : libversion,
   install : true,
   install_dir : clapper_libdir,
-  dependencies : [gtk4_dep, gstbase_dep, gstvideo_dep, gstaudio_dep,
+  dependencies : [gtk4_dep, glib_dep, gio_dep,
+    gstbase_dep, gstvideo_dep, gstaudio_dep,
     gsttag_dep, gstpbutils_dep, libm] + gtk_deps,
 )
 

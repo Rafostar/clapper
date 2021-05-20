@@ -46,6 +46,7 @@
 #include "gstclapper-signal-dispatcher-private.h"
 #include "gstclapper-video-renderer-private.h"
 #include "gstclapper-media-info-private.h"
+#include "gstclapper-mpris-private.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_clapper_debug);
 #define GST_CAT_DEFAULT gst_clapper_debug
@@ -76,6 +77,7 @@ enum
   PROP_0,
   PROP_VIDEO_RENDERER,
   PROP_SIGNAL_DISPATCHER,
+  PROP_MPRIS,
   PROP_STATE,
   PROP_URI,
   PROP_SUBURI,
@@ -127,6 +129,7 @@ struct _GstClapper
 
   GstClapperVideoRenderer *video_renderer;
   GstClapperSignalDispatcher *signal_dispatcher;
+  GstClapperMpris *mpris;
 
   gchar *uri;
   gchar *redirect_uri;
@@ -303,6 +306,13 @@ gst_clapper_class_init (GstClapperClass * klass)
       "Signal Dispatcher", "Dispatcher for the signals to e.g. event loops",
       GST_TYPE_CLAPPER_SIGNAL_DISPATCHER,
       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  param_specs[PROP_MPRIS] =
+      g_param_spec_object ("mpris",
+      "MPRIS", "Clapper MPRIS for playback control over DBus",
+      GST_TYPE_CLAPPER_MPRIS,
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_STATE] =
@@ -491,7 +501,7 @@ gst_clapper_finalize (GObject * object)
 {
   GstClapper *self = GST_CLAPPER (object);
 
-  GST_TRACE_OBJECT (self, "Finalizing");
+  GST_TRACE_OBJECT (self, "Finalize");
 
   g_free (self->uri);
   g_free (self->redirect_uri);
@@ -507,6 +517,8 @@ gst_clapper_finalize (GObject * object)
     g_object_unref (self->video_renderer);
   if (self->signal_dispatcher)
     g_object_unref (self->signal_dispatcher);
+  if (self->mpris)
+    g_object_unref (self->mpris);
   if (self->current_vis_element)
     gst_object_unref (self->current_vis_element);
   if (self->collection)
@@ -649,6 +661,9 @@ gst_clapper_set_property (GObject * object, guint prop_id,
     case PROP_SIGNAL_DISPATCHER:
       self->signal_dispatcher = g_value_dup_object (value);
       break;
+    case PROP_MPRIS:
+      self->mpris = g_value_dup_object (value);
+      break;
     case PROP_URI:{
       g_mutex_lock (&self->lock);
       g_free (self->uri);
@@ -741,6 +756,9 @@ gst_clapper_get_property (GObject * object, guint prop_id,
   GstClapper *self = GST_CLAPPER (object);
 
   switch (prop_id) {
+    case PROP_MPRIS:
+      g_value_set_object (value, self->mpris);
+      break;
     case PROP_STATE:
       g_mutex_lock (&self->lock);
       g_value_set_enum (value, self->app_state);
@@ -979,6 +997,23 @@ change_state (GstClapper * self, GstClapperState state)
     gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
         state_changed_dispatch, data,
         (GDestroyNotify) state_changed_signal_data_free);
+  }
+
+  if (!self->mpris)
+    return;
+
+  switch (state) {
+    case GST_CLAPPER_STATE_STOPPED:
+      gst_clapper_mpris_set_playback_status (self->mpris, "Stopped");
+      break;
+    case GST_CLAPPER_STATE_PAUSED:
+      gst_clapper_mpris_set_playback_status (self->mpris, "Paused");
+      break;
+    case GST_CLAPPER_STATE_PLAYING:
+      gst_clapper_mpris_set_playback_status (self->mpris, "Playing");
+      break;
+    default:
+      break;
   }
 }
 
@@ -2925,6 +2960,9 @@ gst_clapper_main (gpointer data)
   self->bus = bus = gst_element_get_bus (self->playbin);
   gst_bus_add_signal_watch (bus);
 
+  if (self->mpris)
+    gst_clapper_mpris_set_clapper (self->mpris, self);
+
   g_signal_connect (G_OBJECT (bus), "message::error", G_CALLBACK (error_cb),
       self);
   g_signal_connect (G_OBJECT (bus), "message::warning", G_CALLBACK (warning_cb),
@@ -3025,6 +3063,7 @@ gst_clapper_main (gpointer data)
  * gst_clapper_new:
  * @video_renderer: (transfer full) (allow-none): GstClapperVideoRenderer to use
  * @signal_dispatcher: (transfer full) (allow-none): GstClapperSignalDispatcher to use
+ * @mpris: (transfer full) (allow-none): GstClapperMpris to use
  *
  * Creates a new #GstClapper instance that uses @signal_dispatcher to dispatch
  * signals to some event loop system, or emits signals directly if NULL is
@@ -3038,18 +3077,20 @@ gst_clapper_main (gpointer data)
  */
 GstClapper *
 gst_clapper_new (GstClapperVideoRenderer * video_renderer,
-    GstClapperSignalDispatcher * signal_dispatcher)
+    GstClapperSignalDispatcher * signal_dispatcher,
+    GstClapperMpris * mpris)
 {
   GstClapper *self;
 
-  self =
-      g_object_new (GST_TYPE_CLAPPER, "video-renderer", video_renderer,
-      "signal-dispatcher", signal_dispatcher, NULL);
+  self = g_object_new (GST_TYPE_CLAPPER, "video-renderer", video_renderer,
+      "signal-dispatcher", signal_dispatcher, "mpris", mpris, NULL);
 
   if (video_renderer)
     g_object_unref (video_renderer);
   if (signal_dispatcher)
     g_object_unref (signal_dispatcher);
+  if (mpris)
+    g_object_unref (mpris);
 
   return self;
 }
@@ -3697,6 +3738,28 @@ gst_clapper_get_pipeline (GstClapper * self)
   g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
 
   g_object_get (self, "pipeline", &val, NULL);
+
+  return val;
+}
+
+/**
+ * gst_clapper_get_mpris:
+ * @clapper: #GstClapper instance
+ *
+ * A Function to get the #GstClapperMpris instance.
+ *
+ * Returns: (transfer full): mpris instance.
+ *
+ * The caller should free it with g_object_unref()
+ */
+GstClapperMpris *
+gst_clapper_get_mpris (GstClapper * self)
+{
+  GstClapperMpris *val;
+
+  g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
+
+  g_object_get (self, "mpris", &val, NULL);
 
   return val;
 }

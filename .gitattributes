@@ -1,4 +1,5 @@
 extras/**/* linguist-vendored
 lib/**/* linguist-vendored
 lib/**/**/* linguist-vendored
+lib/gst/clapper/gstclapper-mpris* linguist-vendored=false
 lib/gst/clapper/gtk4/* linguist-vendored=false

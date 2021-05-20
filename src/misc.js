@@ -1,4 +1,4 @@
-const { Gio, Gdk, Gtk } = imports.gi;
+const { Gio, GLib, Gdk, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 
 const { debug } = Debug;
@@ -37,6 +37,57 @@ function getClapperVersion()
         : (pkg)
         ? pkg.version
         : '';
+}
+
+function getClapperThemeIconUri()
+{
+    const display = Gdk.Display.get_default();
+    if(!display) return null;
+
+    const iconTheme = Gtk.IconTheme.get_for_display(display);
+    if(!iconTheme || !iconTheme.has_icon(appId))
+        return null;
+
+    const iconPaintable = iconTheme.lookup_icon(appId, null, 256, 1,
+        Gtk.TextDirection.NONE, Gtk.IconLookupFlags.FORCE_REGULAR
+    );
+    const iconFile = iconPaintable.get_file();
+    if(!iconFile) return null;
+
+    const iconPath = iconFile.get_path();
+    if(!iconPath) return null;
+
+    let substractName = iconPath.substring(
+        iconPath.indexOf('/icons/') + 7, iconPath.indexOf('/scalable/')
+    );
+    if(!substractName || substractName.includes('/'))
+        return null;
+
+    substractName = substractName.toLowerCase();
+    const postFix = (substractName === iconTheme.theme_name.toLowerCase())
+        ? substractName
+        : 'hicolor';
+    const cacheIconName = `clapper-${postFix}.svg`;
+
+    /* We need to have this icon placed in a folder
+     * accessible from both app runtime and gnome-shell */
+    const expectedFile = Gio.File.new_for_path(
+        GLib.get_user_cache_dir() + `/${appId}/icons/${cacheIconName}`
+    );
+    if(!expectedFile.query_exists(null)) {
+        debug('no cached icon file');
+
+        const dirPath = expectedFile.get_parent().get_path();
+        GLib.mkdir_with_parents(dirPath, 493); // octal 755
+        iconFile.copy(expectedFile,
+            Gio.FileCopyFlags.TARGET_DEFAULT_PERMS, null, null
+        );
+        debug(`icon copied to cache dir: ${cacheIconName}`);
+    }
+    const iconUri = expectedFile.get_uri();
+    debug(`using cached clapper icon uri: ${iconUri}`);
+
+    return iconUri;
 }
 
 function loadCustomCss()
