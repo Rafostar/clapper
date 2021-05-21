@@ -1682,6 +1682,15 @@ state_changed_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
         self->cached_duration = GST_CLOCK_TIME_NONE;
       }
       emit_media_info_updated (self);
+      if (self->mpris) {
+        GstClapperMediaInfo *info;
+
+        g_mutex_lock (&self->lock);
+        info = gst_clapper_media_info_copy (self->media_info);
+        g_mutex_unlock (&self->lock);
+
+        gst_clapper_mpris_set_media_info (self->mpris, info);
+      }
     }
 
     if (new_state == GST_STATE_PAUSED

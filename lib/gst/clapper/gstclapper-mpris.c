@@ -43,6 +43,8 @@ struct _GstClapperMpris
   GstClapperMprisMediaPlayer2 *base_skeleton;
   GstClapperMprisMediaPlayer2Player *player_skeleton;
 
+  GstClapperMediaInfo *media_info;
+
   guint name_id;
 
   /* Properties */
@@ -51,6 +53,8 @@ struct _GstClapperMpris
   gchar *identity;
   gchar *desktop_entry;
   gchar *default_art_url;
+
+  gboolean parse_media_info;
 
   /* Current status */
   gchar *playback_status;
@@ -111,6 +115,9 @@ gst_clapper_mpris_init (GstClapperMpris * self)
   self->default_art_url = NULL;
 
   self->playback_status = g_strdup ("Stopped");
+  self->can_play = FALSE;
+  self->parse_media_info = FALSE;
+  self->media_info = NULL;
 
   GST_TRACE_OBJECT (self, "Initialized");
 }
@@ -230,6 +237,8 @@ gst_clapper_mpris_finalize (GObject * object)
     g_object_unref (self->base_skeleton);
   if (self->player_skeleton)
     g_object_unref (self->player_skeleton);
+  if (self->media_info)
+    g_object_unref (self->media_info);
 
   g_mutex_clear (&self->lock);
   g_cond_clear (&self->cond);
@@ -376,6 +385,51 @@ mpris_update_props_dispatch (gpointer user_data)
   GST_DEBUG_OBJECT (self, "Updating MPRIS props");
   g_mutex_lock (&self->lock);
 
+  if (self->parse_media_info) {
+    GVariantBuilder builder;
+    guint64 duration;
+    const gchar *track_id, *uri, *title;
+
+    GST_DEBUG_OBJECT (self, "Parsing media info");
+    g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+
+    track_id = _get_mpris_trackid (self);
+    uri = gst_clapper_media_info_get_uri (self->media_info);
+    title = gst_clapper_media_info_get_title (self->media_info);
+
+    if (track_id) {
+      g_variant_builder_add (&builder, "{sv}", "mpris:trackid",
+          g_variant_new_string (track_id));
+      GST_DEBUG_OBJECT (self, "mpris:trackid: %s", track_id);
+    }
+    if (uri) {
+      g_variant_builder_add (&builder, "{sv}", "xesam:url",
+          g_variant_new_string (uri));
+      GST_DEBUG_OBJECT (self, "xesam:url: %s", uri);
+    }
+    if (title) {
+      g_variant_builder_add (&builder, "{sv}", "xesam:title",
+          g_variant_new_string (title));
+      GST_DEBUG_OBJECT (self, "xesam:title: %s", title);
+    }
+
+    duration = gst_clapper_media_info_get_duration (self->media_info);
+    duration = (duration != GST_CLOCK_TIME_NONE) ? duration / GST_USECOND : 0;
+    g_variant_builder_add (&builder, "{sv}", "mpris:length", g_variant_new_uint64 (duration));
+    GST_DEBUG_OBJECT (self, "mpris:length: %ld", duration);
+
+    /* TODO: Check for image sample */
+    if (self->default_art_url) {
+      g_variant_builder_add (&builder, "{sv}", "mpris:artUrl", g_variant_new_string (self->default_art_url));
+      GST_DEBUG_OBJECT (self, "mpris:artUrl: %s", self->default_art_url);
+    }
+
+    GST_DEBUG_OBJECT (self, "Media info parsed");
+    self->parse_media_info = FALSE;
+
+    gst_clapper_mpris_media_player2_player_set_metadata (
+        self->player_skeleton, g_variant_builder_end (&builder));
+  }
   if (gst_clapper_mpris_media_player2_player_get_can_play (
           self->player_skeleton) != self->can_play) {
     /* "can-play" is bound with "can-pause" */
@@ -391,6 +445,7 @@ mpris_update_props_dispatch (gpointer user_data)
   }
 
   g_mutex_unlock (&self->lock);
+  GST_DEBUG_OBJECT (self, "MPRIS props updated");
 
   return G_SOURCE_REMOVE;
 }
@@ -497,6 +552,19 @@ gst_clapper_mpris_set_playback_status (GstClapperMpris * self, const gchar * sta
   self->playback_status = g_strdup (status);
   self->can_play = strcmp (status, "Stopped") != 0;
 
+  g_mutex_unlock (&self->lock);
+
+  mpris_dispatcher_update_dispatch (self);
+}
+
+void
+gst_clapper_mpris_set_media_info (GstClapperMpris *self, GstClapperMediaInfo *info)
+{
+  g_mutex_lock (&self->lock);
+  if (self->media_info)
+    g_object_unref (self->media_info);
+  self->media_info = info;
+  self->parse_media_info = TRUE;
   g_mutex_unlock (&self->lock);
 
   mpris_dispatcher_update_dispatch (self);
