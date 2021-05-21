@@ -1066,6 +1066,8 @@ tick_cb (gpointer user_data)
           position_updated_dispatch, data,
           (GDestroyNotify) position_updated_signal_data_free);
     }
+    if (self->mpris)
+      gst_clapper_mpris_set_position (self->mpris, position);
   }
 
   return G_SOURCE_CONTINUE;
@@ -3517,6 +3519,29 @@ gst_clapper_seek (GstClapper * self, GstClockTime position)
     }
   }
   g_mutex_unlock (&self->lock);
+}
+
+/**
+ * gst_clapper_seek_offset:
+ * @clapper: #GstClapper instance
+ * @offset: offset from current position to seek to in nanoseconds
+ *
+ * Seeks the currently-playing stream to the @offset time
+ * in nanoseconds.
+ */
+void
+gst_clapper_seek_offset (GstClapper * self, GstClockTime offset)
+{
+  GstClockTime position;
+
+  g_return_if_fail (GST_IS_CLAPPER (self));
+  g_return_if_fail (GST_CLOCK_TIME_IS_VALID (offset));
+
+  position = gst_clapper_get_position (self);
+
+  /* TODO: Prevent negative values */
+
+  gst_clapper_seek (self, position + offset);
 }
 
 static void
