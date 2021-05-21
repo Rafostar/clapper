@@ -29,10 +29,13 @@ G_GNUC_INTERNAL
 void gst_clapper_mpris_set_clapper                  (GstClapperMpris *self, GstClapper *clapper);
 
 G_GNUC_INTERNAL
+void gst_clapper_mpris_set_media_info               (GstClapperMpris *self, GstClapperMediaInfo *info);
+
+G_GNUC_INTERNAL
 void gst_clapper_mpris_set_playback_status          (GstClapperMpris *self, const gchar *status);
 
 G_GNUC_INTERNAL
-void gst_clapper_mpris_set_media_info               (GstClapperMpris *self, GstClapperMediaInfo *info);
+void gst_clapper_mpris_set_position                 (GstClapperMpris *self, gint64 position);
 
 G_END_DECLS
 

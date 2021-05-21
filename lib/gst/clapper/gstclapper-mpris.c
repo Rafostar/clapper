@@ -59,6 +59,7 @@ struct _GstClapperMpris
   /* Current status */
   gchar *playback_status;
   gboolean can_play;
+  guint64 position;
 
   GThread *thread;
   GMutex lock;
@@ -114,10 +115,12 @@ gst_clapper_mpris_init (GstClapperMpris * self)
   self->desktop_entry = NULL;
   self->default_art_url = NULL;
 
-  self->playback_status = g_strdup ("Stopped");
-  self->can_play = FALSE;
   self->parse_media_info = FALSE;
   self->media_info = NULL;
+
+  self->playback_status = g_strdup ("Stopped");
+  self->can_play = FALSE;
+  self->position = 0;
 
   GST_TRACE_OBJECT (self, "Initialized");
 }
@@ -283,6 +286,8 @@ handle_play_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
 {
   GstClapper *clapper = GST_CLAPPER (user_data);
 
+  GST_DEBUG ("Handle Play");
+
   gst_clapper_play (clapper);
   gst_clapper_mpris_media_player2_player_complete_play (player_skeleton, invocation);
 
@@ -294,6 +299,8 @@ handle_pause_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
     GDBusMethodInvocation * invocation, gpointer user_data)
 {
   GstClapper *clapper = GST_CLAPPER (user_data);
+
+  GST_DEBUG ("Handle Pause");
 
   gst_clapper_pause (clapper);
   gst_clapper_mpris_media_player2_player_complete_pause (player_skeleton, invocation);
@@ -307,8 +314,39 @@ handle_play_pause_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
 {
   GstClapper *clapper = GST_CLAPPER (user_data);
 
+  GST_DEBUG ("Handle PlayPause");
+
   gst_clapper_toggle_play (clapper);
   gst_clapper_mpris_media_player2_player_complete_play_pause (player_skeleton, invocation);
+
+  return TRUE;
+}
+
+static gboolean
+handle_seek_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
+    GDBusMethodInvocation * invocation, gint64 offset, gpointer user_data)
+{
+  GstClapper *clapper = GST_CLAPPER (user_data);
+
+  GST_DEBUG ("Handle Seek");
+
+  gst_clapper_seek_offset (clapper, offset * GST_USECOND);
+  gst_clapper_mpris_media_player2_player_complete_seek (player_skeleton, invocation);
+
+  return TRUE;
+}
+
+static gboolean
+handle_set_position_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
+    GDBusMethodInvocation * invocation, const gchar * track_id,
+    gint64 position, gpointer user_data)
+{
+  GstClapper *clapper = GST_CLAPPER (user_data);
+
+  GST_DEBUG ("Handle SetPosition");
+
+  gst_clapper_seek (clapper, position * GST_USECOND);
+  gst_clapper_mpris_media_player2_player_complete_set_position (player_skeleton, invocation);
 
   return TRUE;
 }
@@ -353,6 +391,7 @@ name_acquired_cb (GDBusConnection * connection,
   gst_clapper_mpris_media_player2_player_set_playback_status (self->player_skeleton, "Stopped");
   gst_clapper_mpris_media_player2_player_set_minimum_rate (self->player_skeleton, 0.01);
   gst_clapper_mpris_media_player2_player_set_maximum_rate (self->player_skeleton, 2.0);
+  gst_clapper_mpris_media_player2_player_set_can_seek (self->player_skeleton, TRUE);
   gst_clapper_mpris_media_player2_player_set_can_control (self->player_skeleton, TRUE);
 
   g_object_bind_property (self->player_skeleton, "can-play",
@@ -433,15 +472,21 @@ mpris_update_props_dispatch (gpointer user_data)
   if (gst_clapper_mpris_media_player2_player_get_can_play (
           self->player_skeleton) != self->can_play) {
     /* "can-play" is bound with "can-pause" */
-    GST_DEBUG_OBJECT (self, "CanPlay/CanPause: %s", self->can_play ? "yes" : "no");
     gst_clapper_mpris_media_player2_player_set_can_play (
         self->player_skeleton, self->can_play);
+    GST_DEBUG_OBJECT (self, "CanPlay/CanPause: %s", self->can_play ? "yes" : "no");
   }
   if (strcmp (gst_clapper_mpris_media_player2_player_get_playback_status (
           self->player_skeleton), self->playback_status) != 0) {
-    GST_DEBUG_OBJECT (self, "PlaybackStatus: %s", self->playback_status);
     gst_clapper_mpris_media_player2_player_set_playback_status (
         self->player_skeleton, self->playback_status);
+    GST_DEBUG_OBJECT (self, "PlaybackStatus: %s", self->playback_status);
+  }
+  if (gst_clapper_mpris_media_player2_player_get_position (
+          self->player_skeleton) != self->position) {
+    gst_clapper_mpris_media_player2_player_set_position (
+        self->player_skeleton, self->position);
+    GST_DEBUG_OBJECT (self, "Position: %ld", self->position);
   }
 
   g_mutex_unlock (&self->lock);
@@ -537,13 +582,16 @@ gst_clapper_mpris_set_clapper (GstClapperMpris * self, GstClapper * clapper)
       G_CALLBACK (handle_pause_cb), clapper);
   g_signal_connect (self->player_skeleton, "handle-play-pause",
       G_CALLBACK (handle_play_pause_cb), clapper);
+  g_signal_connect (self->player_skeleton, "handle-seek",
+      G_CALLBACK (handle_seek_cb), clapper);
+  g_signal_connect (self->player_skeleton, "handle-set-position",
+      G_CALLBACK (handle_set_position_cb), clapper);
 }
 
 void
 gst_clapper_mpris_set_playback_status (GstClapperMpris * self, const gchar * status)
 {
   g_mutex_lock (&self->lock);
-
   if (strcmp (self->playback_status, status) == 0) {
     g_mutex_unlock (&self->lock);
     return;
@@ -551,7 +599,22 @@ gst_clapper_mpris_set_playback_status (GstClapperMpris * self, const gchar * sta
   g_free (self->playback_status);
   self->playback_status = g_strdup (status);
   self->can_play = strcmp (status, "Stopped") != 0;
+  g_mutex_unlock (&self->lock);
 
+  mpris_dispatcher_update_dispatch (self);
+}
+
+void
+gst_clapper_mpris_set_position (GstClapperMpris * self, gint64 position)
+{
+  position /= GST_USECOND;
+
+  g_mutex_lock (&self->lock);
+  if (self->position == position) {
+    g_mutex_unlock (&self->lock);
+    return;
+  }
+  self->position = position;
   g_mutex_unlock (&self->lock);
 
   mpris_dispatcher_update_dispatch (self);
