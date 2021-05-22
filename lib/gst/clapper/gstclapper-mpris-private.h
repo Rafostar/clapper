@@ -26,7 +26,8 @@
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-void gst_clapper_mpris_set_clapper                  (GstClapperMpris *self, GstClapper *clapper);
+void gst_clapper_mpris_set_clapper                  (GstClapperMpris *self, GstClapper *clapper,
+                                                        GstClapperSignalDispatcher *signal_dispatcher);
 
 G_GNUC_INTERNAL
 void gst_clapper_mpris_set_media_info               (GstClapperMpris *self, GstClapperMediaInfo *info);

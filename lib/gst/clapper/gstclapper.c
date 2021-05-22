@@ -3005,7 +3005,7 @@ gst_clapper_main (gpointer data)
   gst_bus_add_signal_watch (bus);
 
   if (self->mpris)
-    gst_clapper_mpris_set_clapper (self->mpris, self);
+    gst_clapper_mpris_set_clapper (self->mpris, self, self->signal_dispatcher);
 
   g_signal_connect (G_OBJECT (bus), "message::error", G_CALLBACK (error_cb),
       self);

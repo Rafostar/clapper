@@ -24,6 +24,12 @@
 #include "gstclapper-mpris-gdbus.h"
 #include "gstclapper-mpris.h"
 #include "gstclapper-mpris-private.h"
+#include "gstclapper-signal-dispatcher-private.h"
+
+GST_DEBUG_CATEGORY_STATIC (gst_clapper_mpris_debug);
+#define GST_CAT_DEFAULT gst_clapper_mpris_debug
+
+#define MPRIS_DEFAULT_VOLUME 1.0
 
 enum
 {
@@ -33,6 +39,7 @@ enum
   PROP_IDENTITY,
   PROP_DESKTOP_ENTRY,
   PROP_DEFAULT_ART_URL,
+  PROP_VOLUME,
   PROP_LAST
 };
 
@@ -43,6 +50,7 @@ struct _GstClapperMpris
   GstClapperMprisMediaPlayer2 *base_skeleton;
   GstClapperMprisMediaPlayer2Player *player_skeleton;
 
+  GstClapperSignalDispatcher *signal_dispatcher;
   GstClapperMediaInfo *media_info;
 
   guint name_id;
@@ -73,9 +81,6 @@ struct _GstClapperMprisClass
   GObjectClass parent_class;
 };
 
-GST_DEBUG_CATEGORY_STATIC (gst_clapper_mpris_debug);
-#define GST_CAT_DEFAULT gst_clapper_mpris_debug
-
 #define parent_class gst_clapper_mpris_parent_class
 G_DEFINE_TYPE (GstClapperMpris, gst_clapper_mpris, G_TYPE_OBJECT);
 
@@ -83,6 +88,8 @@ static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 
 static void gst_clapper_mpris_set_property (GObject * object, guint prop_id,
     const GValue * value, GParamSpec * pspec);
+static void gst_clapper_mpris_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec);
 static void gst_clapper_mpris_dispose (GObject * object);
 static void gst_clapper_mpris_finalize (GObject * object);
 static void gst_clapper_mpris_constructed (GObject * object);
@@ -115,8 +122,9 @@ gst_clapper_mpris_init (GstClapperMpris * self)
   self->desktop_entry = NULL;
   self->default_art_url = NULL;
 
-  self->parse_media_info = FALSE;
+  self->signal_dispatcher = NULL;
   self->media_info = NULL;
+  self->parse_media_info = FALSE;
 
   self->playback_status = g_strdup ("Stopped");
   self->can_play = FALSE;
@@ -131,6 +139,7 @@ gst_clapper_mpris_class_init (GstClapperMprisClass * klass)
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
   gobject_class->set_property = gst_clapper_mpris_set_property;
+  gobject_class->get_property = gst_clapper_mpris_get_property;
   gobject_class->dispose = gst_clapper_mpris_dispose;
   gobject_class->finalize = gst_clapper_mpris_finalize;
   gobject_class->constructed = gst_clapper_mpris_constructed;
@@ -165,6 +174,11 @@ gst_clapper_mpris_class_init (GstClapperMprisClass * klass)
       NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
+  param_specs[PROP_VOLUME] =
+      g_param_spec_double ("volume", "Volume", "Volume",
+      0, 1.5, MPRIS_DEFAULT_VOLUME, G_PARAM_READWRITE |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 }
 
@@ -189,6 +203,25 @@ gst_clapper_mpris_set_property (GObject * object, guint prop_id,
       break;
     case PROP_DEFAULT_ART_URL:
       self->default_art_url = g_value_dup_string (value);
+      break;
+    case PROP_VOLUME:
+      g_object_set_property (G_OBJECT (self->player_skeleton), "volume", value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+gst_clapper_mpris_get_property (GObject * object, guint prop_id,
+    GValue * value, GParamSpec * pspec)
+{
+  GstClapperMpris *self = GST_CLAPPER_MPRIS (object);
+
+  switch (prop_id) {
+    case PROP_VOLUME:
+      g_object_get_property (G_OBJECT (self->player_skeleton), "volume", value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -240,6 +273,8 @@ gst_clapper_mpris_finalize (GObject * object)
     g_object_unref (self->base_skeleton);
   if (self->player_skeleton)
     g_object_unref (self->player_skeleton);
+  if (self->signal_dispatcher)
+    g_object_unref (self->signal_dispatcher);
   if (self->media_info)
     g_object_unref (self->media_info);
 
@@ -349,6 +384,23 @@ handle_set_position_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
   gst_clapper_mpris_media_player2_player_complete_set_position (player_skeleton, invocation);
 
   return TRUE;
+}
+
+static void
+volume_notify_dispatch (gpointer user_data)
+{
+  GstClapperMpris *self = user_data;
+
+  g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_VOLUME]);
+}
+
+static void
+handle_volume_notify_cb (G_GNUC_UNUSED GObject * obj,
+    G_GNUC_UNUSED GParamSpec * pspec, GstClapperMpris * self)
+{
+  gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, NULL,
+      volume_notify_dispatch, g_object_ref (self),
+      (GDestroyNotify) g_object_unref);
 }
 
 static void
@@ -574,8 +626,12 @@ done:
 }
 
 void
-gst_clapper_mpris_set_clapper (GstClapperMpris * self, GstClapper * clapper)
+gst_clapper_mpris_set_clapper (GstClapperMpris * self, GstClapper * clapper,
+    GstClapperSignalDispatcher * signal_dispatcher)
 {
+  if (signal_dispatcher)
+    self->signal_dispatcher = g_object_ref (signal_dispatcher);
+
   g_signal_connect (self->player_skeleton, "handle-play",
       G_CALLBACK (handle_play_cb), clapper);
   g_signal_connect (self->player_skeleton, "handle-pause",
@@ -586,6 +642,10 @@ gst_clapper_mpris_set_clapper (GstClapperMpris * self, GstClapper * clapper)
       G_CALLBACK (handle_seek_cb), clapper);
   g_signal_connect (self->player_skeleton, "handle-set-position",
       G_CALLBACK (handle_set_position_cb), clapper);
+
+  g_object_bind_property (clapper, "volume", self, "volume", G_BINDING_BIDIRECTIONAL);
+  g_signal_connect (self->player_skeleton, "notify::volume",
+      G_CALLBACK (handle_volume_notify_cb), self);
 }
 
 void
