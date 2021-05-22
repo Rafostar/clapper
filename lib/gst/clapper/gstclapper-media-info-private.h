@@ -108,7 +108,7 @@ struct _GstClapperMediaInfo
   GList *video_stream_list;
   GList *subtitle_stream_list;
 
-  GstClockTime  duration;
+  GstClockTime duration;
 };
 
 struct _GstClapperMediaInfoClass

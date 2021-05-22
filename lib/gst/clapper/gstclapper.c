@@ -1804,8 +1804,12 @@ request_state_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 static void
 media_info_update (GstClapper * self, GstClapperMediaInfo * info)
 {
-  g_free (info->title);
-  info->title = get_from_tags (self, info, get_title);
+  /* Update title from new tags or leave the title from URI */
+  gchar *tags_title = get_from_tags (self, info, get_title);
+  if (tags_title) {
+    g_free (info->title);
+    info->title = tags_title;
+  }
 
   g_free (info->container);
   info->container = get_from_tags (self, info, get_container_format);
@@ -2672,6 +2676,32 @@ subtitle_changed_cb (G_GNUC_UNUSED GObject * object, gpointer user_data)
   g_mutex_unlock (&self->lock);
 }
 
+static gchar *
+get_title_from_uri (const gchar * uri)
+{
+  gchar *proto = gst_uri_get_protocol (uri);
+  gchar *title = NULL;
+
+  if (strcmp (proto, "file") == 0) {
+    const gchar *ext = strrchr (uri, '.');
+    if (ext && strlen (ext) < 8) {
+      gchar *filename = g_filename_from_uri (uri, NULL, NULL);
+      if (filename) {
+        gchar *base = g_path_get_basename (filename);
+        g_free (filename);
+        title = g_strndup (base, strlen (base) - strlen (ext));
+        g_free (base);
+      }
+    }
+  } else if (strcmp (proto, "dvb") == 0) {
+    const gchar *channel = strrchr (uri, '/') + 1;
+    title = g_strdup (channel);
+  }
+  g_free (proto);
+
+  return title;
+}
+
 static void *
 get_title (GstTagList * tags)
 {
@@ -2788,12 +2818,15 @@ gst_clapper_media_info_create (GstClapper * self)
   }
 
   media_info->title = get_from_tags (self, media_info, get_title);
+  if (!media_info->title)
+    media_info->title = get_title_from_uri (self->uri);
+
   media_info->container =
       get_from_tags (self, media_info, get_container_format);
   media_info->image_sample = get_from_tags (self, media_info, get_cover_sample);
 
-  GST_DEBUG_OBJECT (self, "uri: %s title: %s duration: %" GST_TIME_FORMAT
-      " seekable: %s live: %s container: %s image_sample %p",
+  GST_DEBUG_OBJECT (self, "uri: %s, title: %s, duration: %" GST_TIME_FORMAT
+      ", seekable: %s, live: %s, container: %s, image_sample %p",
       media_info->uri, media_info->title, GST_TIME_ARGS (media_info->duration),
       media_info->seekable ? "yes" : "no", media_info->is_live ? "yes" : "no",
       media_info->container, media_info->image_sample);

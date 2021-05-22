@@ -767,7 +767,8 @@ gst_clapper_media_info_get_toc (const GstClapperMediaInfo * info)
  * gst_clapper_media_info_get_title:
  * @info: a #GstClapperMediaInfo
  *
- * Returns: the media title.
+ * Returns: the media title. When metadata does not contain title,
+ * returns title parsed from URI.
  */
 const gchar *
 gst_clapper_media_info_get_title (const GstClapperMediaInfo * info)
