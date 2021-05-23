@@ -386,6 +386,22 @@ handle_set_position_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
   return TRUE;
 }
 
+static gboolean
+handle_open_uri_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
+    GDBusMethodInvocation * invocation, const gchar * uri,
+    gpointer user_data)
+{
+  GstClapper *clapper = GST_CLAPPER (user_data);
+
+  GST_DEBUG ("Handle OpenUri");
+
+  /* FIXME: set one item playlist instead */
+  gst_clapper_set_uri (clapper, uri);
+  gst_clapper_mpris_media_player2_player_complete_open_uri (player_skeleton, invocation);
+
+  return TRUE;
+}
+
 static void
 volume_notify_dispatch (gpointer user_data)
 {
@@ -424,6 +440,47 @@ _get_mpris_trackid (GstClapperMpris * self)
 }
 
 static void
+_set_supported_uri_schemes (GstClapperMpris * self)
+{
+  const gchar *uri_schemes[96] = {};
+  GList *elements, *el;
+  guint index = 0;
+
+  elements = gst_element_factory_list_get_elements (
+      GST_ELEMENT_FACTORY_TYPE_SRC, GST_RANK_NONE);
+
+  for (el = elements; el != NULL; el = el->next) {
+    const gchar *const *protocols;
+    GstElementFactory *factory = GST_ELEMENT_FACTORY (el->data);
+
+    if (gst_element_factory_get_uri_type (factory) != GST_URI_SRC)
+      continue;
+
+    protocols = gst_element_factory_get_uri_protocols (factory);
+    if (protocols == NULL || *protocols == NULL)
+      continue;
+
+    while (*protocols != NULL) {
+      guint j = index;
+
+      while (j--) {
+        if (strcmp (uri_schemes[j], *protocols) == 0)
+          goto next;
+      }
+      uri_schemes[index] = *protocols;
+      GST_DEBUG_OBJECT (self, "Added supported URI scheme: %s", *protocols);
+      ++index;
+next:
+      ++protocols;
+    }
+  }
+  gst_plugin_feature_list_free (elements);
+
+  gst_clapper_mpris_media_player2_set_supported_uri_schemes (
+      self->base_skeleton, uri_schemes);
+}
+
+static void
 name_acquired_cb (GDBusConnection * connection,
     const gchar *name, gpointer user_data)
 {
@@ -439,6 +496,8 @@ name_acquired_cb (GDBusConnection * connection,
     gst_clapper_mpris_media_player2_set_identity (self->base_skeleton, self->identity);
   if (self->desktop_entry)
     gst_clapper_mpris_media_player2_set_desktop_entry (self->base_skeleton, self->desktop_entry);
+
+  _set_supported_uri_schemes (self);
 
   gst_clapper_mpris_media_player2_player_set_playback_status (self->player_skeleton, "Stopped");
   gst_clapper_mpris_media_player2_player_set_minimum_rate (self->player_skeleton, 0.01);
@@ -642,6 +701,8 @@ gst_clapper_mpris_set_clapper (GstClapperMpris * self, GstClapper * clapper,
       G_CALLBACK (handle_seek_cb), clapper);
   g_signal_connect (self->player_skeleton, "handle-set-position",
       G_CALLBACK (handle_set_position_cb), clapper);
+  g_signal_connect (self->player_skeleton, "handle-open-uri",
+      G_CALLBACK (handle_open_uri_cb), clapper);
 
   g_object_bind_property (clapper, "volume", self, "volume", G_BINDING_BIDIRECTIONAL);
   g_signal_connect (self->player_skeleton, "notify::volume",
