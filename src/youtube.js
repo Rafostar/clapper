@@ -729,6 +729,7 @@ var YouTubeClient = GObject.registerClass({
         return new Promise((resolve, reject) => {
             const query = [
                 `video_id=${videoId}`,
+                `html5=1`,
                 `el=embedded`,
                 `eurl=https://youtube.googleapis.com/v/${videoId}`,
                 `sts=${this.cachedSig.timestamp}`,
