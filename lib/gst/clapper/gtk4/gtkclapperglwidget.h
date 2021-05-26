@@ -61,6 +61,10 @@ struct _GtkClapperGLWidget
   gint scaled_width;
   gint scaled_height;
 
+  /* Position coords */
+  gdouble last_pos_x;
+  gdouble last_pos_y;
+
   gboolean negotiated;
   GstBuffer *pending_buffer;
   GstBuffer *buffer;

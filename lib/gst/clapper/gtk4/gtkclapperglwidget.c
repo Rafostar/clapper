@@ -452,10 +452,13 @@ gtk_clapper_gl_widget_motion_event (GtkEventControllerMotion * motion_controller
   GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   GstElement *element;
 
-  if ((element = g_weak_ref_get (&clapper_widget->element))) {
+  if (x != clapper_widget->last_pos_x && y != clapper_widget->last_pos_y &&
+          (element = g_weak_ref_get (&clapper_widget->element))) {
     if (GST_IS_NAVIGATION (element)) {
       gdouble stream_x, stream_y;
 
+      clapper_widget->last_pos_x = x;
+      clapper_widget->last_pos_y = y;
       _display_size_to_stream_size (clapper_widget, x, y, &stream_x, &stream_y);
 
       gst_navigation_send_mouse_event (GST_NAVIGATION (element), "mouse-move",
@@ -955,6 +958,8 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
   clapper_widget->par_d = DEFAULT_PAR_D;
   clapper_widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
   clapper_widget->app_context = g_main_context_ref_thread_default ();
+  clapper_widget->last_pos_x = 0;
+  clapper_widget->last_pos_y = 0;
 
   gst_video_info_init (&clapper_widget->v_info);
   gst_video_info_init (&clapper_widget->pending_v_info);
