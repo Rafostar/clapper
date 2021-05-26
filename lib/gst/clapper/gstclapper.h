@@ -30,6 +30,7 @@
 #include <gst/clapper/gstclapper-signal-dispatcher.h>
 #include <gst/clapper/gstclapper-video-renderer.h>
 #include <gst/clapper/gstclapper-media-info.h>
+#include <gst/clapper/gstclapper-mpris.h>
 
 G_BEGIN_DECLS
 
@@ -153,7 +154,8 @@ GST_CLAPPER_API
 GType        gst_clapper_get_type                           (void);
 
 GST_CLAPPER_API
-GstClapper * gst_clapper_new                                (GstClapperVideoRenderer *video_renderer, GstClapperSignalDispatcher *signal_dispatcher);
+GstClapper * gst_clapper_new                                (GstClapperVideoRenderer *video_renderer, GstClapperSignalDispatcher *signal_dispatcher,
+                                                                GstClapperMpris *mpris);
 
 GST_CLAPPER_API
 void         gst_clapper_play                               (GstClapper *clapper);
@@ -169,6 +171,9 @@ void         gst_clapper_stop                               (GstClapper *clapper
 
 GST_CLAPPER_API
 void         gst_clapper_seek                               (GstClapper *clapper, GstClockTime position);
+
+GST_CLAPPER_API
+void         gst_clapper_seek_offset                        (GstClapper *clapper, GstClockTime offset);
 
 GST_CLAPPER_API
 GstClapperState
@@ -219,6 +224,10 @@ void         gst_clapper_set_mute                           (GstClapper *clapper
 
 GST_CLAPPER_API
 GstElement * gst_clapper_get_pipeline                       (GstClapper *clapper);
+
+GST_CLAPPER_API
+GstClapperMpris *
+             gst_clapper_get_mpris                          (GstClapper *clapper);
 
 GST_CLAPPER_API
 void         gst_clapper_set_video_track_enabled            (GstClapper *clapper, gboolean enabled);

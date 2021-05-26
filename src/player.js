@@ -20,14 +20,18 @@ class ClapperPlayer extends GstClapper.Clapper
         const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
         glsinkbin.sink = gtk4plugin.video_sink;
 
-        const dispatcher = new GstClapper.ClapperGMainContextSignalDispatcher();
-        const renderer = new GstClapper.ClapperVideoOverlayVideoRenderer({
-            video_sink: glsinkbin
-        });
-
         super._init({
-            signal_dispatcher: dispatcher,
-            video_renderer: renderer
+            signal_dispatcher: new GstClapper.ClapperGMainContextSignalDispatcher(),
+            video_renderer: new GstClapper.ClapperVideoOverlayVideoRenderer({
+                video_sink: glsinkbin,
+            }),
+            mpris: new GstClapper.ClapperMpris({
+                own_name: `org.mpris.MediaPlayer2.${Misc.appName}`,
+                id_path: '/' + Misc.appId.replace(/\./g, '/'),
+                identity: Misc.appName,
+                desktop_entry: Misc.appId,
+                default_art_url: Misc.getClapperThemeIconUri(),
+            }),
         });
 
         this.widget = gtk4plugin.video_sink.widget;

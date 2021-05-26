@@ -1,6 +1,4 @@
-/* GStreamer
- *
- * Copyright (C) 2014 Sebastian Dröge <sebastian@centricular.com>
+/*
  * Copyright (C) 2021 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -19,16 +17,27 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CLAPPER_H__
-#define __CLAPPER_H__
+#ifndef __GST_CLAPPER_MPRIS_PRIVATE_H__
+#define __GST_CLAPPER_MPRIS_PRIVATE_H__
 
-#include <gst/clapper/clapper-prelude.h>
-#include <gst/clapper/gstclapper.h>
-#include <gst/clapper/gstclapper-media-info.h>
-#include <gst/clapper/gstclapper-g-main-context-signal-dispatcher.h>
-#include <gst/clapper/gstclapper-video-overlay-video-renderer.h>
-#include <gst/clapper/gstclapper-visualization.h>
 #include <gst/clapper/gstclapper-mpris.h>
-#include <gst/clapper/gstclapper-gtk4-plugin.h>
+#include <gst/clapper/gstclapper.h>
 
-#endif /* __CLAPPER_H__ */
+G_BEGIN_DECLS
+
+G_GNUC_INTERNAL
+void gst_clapper_mpris_set_clapper                  (GstClapperMpris *self, GstClapper *clapper,
+                                                        GstClapperSignalDispatcher *signal_dispatcher);
+
+G_GNUC_INTERNAL
+void gst_clapper_mpris_set_media_info               (GstClapperMpris *self, GstClapperMediaInfo *info);
+
+G_GNUC_INTERNAL
+void gst_clapper_mpris_set_playback_status          (GstClapperMpris *self, const gchar *status);
+
+G_GNUC_INTERNAL
+void gst_clapper_mpris_set_position                 (GstClapperMpris *self, gint64 position);
+
+G_END_DECLS
+
+#endif /* __GST_CLAPPER_MPRIS_PRIVATE_H__ */
