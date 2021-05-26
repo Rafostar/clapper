@@ -284,7 +284,6 @@ static gboolean
 _queue_draw (GtkClapperGLWidget * clapper_widget)
 {
   GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
-  clapper_widget->draw_id = 0;
 
   if (clapper_widget->pending_resize) {
     clapper_widget->pending_resize = FALSE;
@@ -748,8 +747,8 @@ gtk_clapper_gl_widget_finalize (GObject * object)
   if (priv->display)
     gst_object_unref (priv->display);
 
-  if (clapper_widget->draw_id)
-    g_source_remove (clapper_widget->draw_id);
+  if (clapper_widget->app_context)
+    g_main_context_unref (clapper_widget->app_context);
 
   gst_buffer_replace (&clapper_widget->pending_buffer, NULL);
   gst_buffer_replace (&clapper_widget->buffer, NULL);
@@ -800,10 +799,9 @@ gtk_clapper_gl_widget_set_buffer (GtkClapperGLWidget * clapper_widget,
 
   gst_buffer_replace (&clapper_widget->pending_buffer, buffer);
 
-  if (!clapper_widget->draw_id) {
-    clapper_widget->draw_id = g_idle_add_full (G_PRIORITY_DEFAULT,
-        (GSourceFunc) _queue_draw, clapper_widget, NULL);
-  }
+  g_main_context_invoke_full (clapper_widget->app_context,
+      G_PRIORITY_DEFAULT - 10, (GSourceFunc) _queue_draw,
+      g_object_ref (clapper_widget), g_object_unref);
 
   GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 }
@@ -956,6 +954,7 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
   clapper_widget->par_n = DEFAULT_PAR_N;
   clapper_widget->par_d = DEFAULT_PAR_D;
   clapper_widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
+  clapper_widget->app_context = g_main_context_ref_thread_default ();
 
   gst_video_info_init (&clapper_widget->v_info);
   gst_video_info_init (&clapper_widget->pending_v_info);
