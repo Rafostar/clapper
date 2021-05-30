@@ -2983,11 +2983,22 @@ gst_clapper_main (gpointer data)
     GstElement *video_sink =
         gst_clapper_video_renderer_create_video_sink (self->video_renderer, self);
     if (video_sink) {
+      const gchar *fps_env;
       GstPad *video_sink_pad = gst_element_get_static_pad (video_sink, "sink");
       if (video_sink_pad) {
         g_signal_connect (video_sink_pad, "notify::caps",
             (GCallback) notify_caps_cb, self);
         gst_object_unref (video_sink_pad);
+      }
+      fps_env = g_getenv ("GST_CLAPPER_DISPLAY_FPS");
+      if (fps_env && g_str_has_prefix (fps_env, "1")) {
+        GstElement *fpsdisplaysink =
+            gst_element_factory_make ("fpsdisplaysink", "fpsdisplaysink");
+        if (fpsdisplaysink) {
+          GST_DEBUG_OBJECT (self, "FPS display enabled");
+          g_object_set (fpsdisplaysink, "video-sink", video_sink, NULL);
+          video_sink = fpsdisplaysink;
+        }
       }
       g_object_set (self->playbin, "video-sink", video_sink, NULL);
     }
