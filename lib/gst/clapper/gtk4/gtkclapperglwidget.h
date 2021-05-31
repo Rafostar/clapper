@@ -69,7 +69,6 @@ struct _GtkClapperGLWidget
   GstBuffer *pending_buffer;
   GstBuffer *buffer;
   GstVideoInfo v_info;
-  GMainContext *app_context;
 
   /* resize */
   gboolean pending_resize;
@@ -85,6 +84,9 @@ struct _GtkClapperGLWidget
   GtkEventController *key_controller;
   GtkEventController *motion_controller;
   GtkGesture *click_gesture;
+
+  /* Pending draw idles callback */
+  guint draw_id;
 };
 
 struct _GtkClapperGLWidgetClass
