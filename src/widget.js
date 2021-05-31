@@ -291,17 +291,14 @@ class ClapperWidget extends Gtk.Grid
 
     updateTitle(mediaInfo)
     {
-        let title = mediaInfo.get_title();
+        let title = this.player.customVideoTitle;
 
         if(!title)
-            title = this.player.customVideoTitle;
+            title = mediaInfo.get_title();
 
         if(!title) {
             const item = this.player.playlistWidget.getActiveRow();
-
-            title = (item.isLocalFile && item.filename.includes('.'))
-                ? item.filename.split('.').slice(0, -1).join('.')
-                : item.filename;
+            title = item.filename;
         }
 
         this.root.title = title;
