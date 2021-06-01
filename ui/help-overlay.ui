@@ -22,7 +22,7 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes">Reveal controls (fullscreen only)</property>
+                <property name="title" translatable="yes">Reveal OSD (fullscreen only)</property>
                 <property name="accelerator">Return</property>
               </object>
             </child>
