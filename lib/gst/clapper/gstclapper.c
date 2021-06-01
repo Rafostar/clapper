@@ -2930,9 +2930,21 @@ mute_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
 static void
 element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
 {
-  GParamSpec *prop = g_object_class_find_property (G_OBJECT_GET_CLASS (element),
-      "user-agent");
+  GstElementFactory *factory;
+  GParamSpec *prop;
 
+  factory = gst_element_get_factory (element);
+  if (factory) {
+    gchar *plugin_name = gst_object_get_name (GST_OBJECT_CAST (factory));
+    if (plugin_name) {
+      GST_INFO_OBJECT (self, "Plugin setup: %s", plugin_name);
+
+      /* TODO: Set plugin props */
+    }
+    g_free (plugin_name);
+  }
+
+  prop = g_object_class_find_property (G_OBJECT_GET_CLASS (element), "user-agent");
   if (prop && prop->value_type == G_TYPE_STRING) {
     const gchar *user_agent =
         "Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0";
