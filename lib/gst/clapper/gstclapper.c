@@ -4019,7 +4019,7 @@ gst_clapper_set_audio_track (GstClapper * self, gint stream_index)
   GstClapperStreamInfo *info;
   gboolean ret = TRUE;
 
-  g_return_val_if_fail (GST_IS_CLAPPER (self), 0);
+  g_return_val_if_fail (GST_IS_CLAPPER (self), FALSE);
 
   g_mutex_lock (&self->lock);
   info = gst_clapper_stream_info_find (self->media_info,
@@ -4060,7 +4060,7 @@ gst_clapper_set_video_track (GstClapper * self, gint stream_index)
   GstClapperStreamInfo *info;
   gboolean ret = TRUE;
 
-  g_return_val_if_fail (GST_IS_CLAPPER (self), 0);
+  g_return_val_if_fail (GST_IS_CLAPPER (self), FALSE);
 
   /* check if stream_index exist in our internal media_info list */
   g_mutex_lock (&self->lock);
@@ -4102,7 +4102,7 @@ gst_clapper_set_subtitle_track (GstClapper * self, gint stream_index)
   GstClapperStreamInfo *info;
   gboolean ret = TRUE;
 
-  g_return_val_if_fail (GST_IS_CLAPPER (self), 0);
+  g_return_val_if_fail (GST_IS_CLAPPER (self), FALSE);
 
   g_mutex_lock (&self->lock);
   info = gst_clapper_stream_info_find (self->media_info,
