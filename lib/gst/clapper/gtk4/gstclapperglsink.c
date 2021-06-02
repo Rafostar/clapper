@@ -40,7 +40,6 @@ GST_DEBUG_CATEGORY (gst_debug_clapper_gl_sink);
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
-#define DEFAULT_IGNORE_TEXTURES     FALSE
 
 static GstStaticPadTemplate gst_clapper_gl_sink_template =
     GST_STATIC_PAD_TEMPLATE ("sink",
@@ -86,7 +85,6 @@ enum
   PROP_WIDGET,
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
-  PROP_IGNORE_TEXTURES,
 };
 
 #define gst_clapper_gl_sink_parent_class parent_class
@@ -133,11 +131,6 @@ gst_clapper_gl_sink_class_init (GstClapperGLSinkClass * klass)
           "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
           G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (gobject_class, PROP_IGNORE_TEXTURES,
-      g_param_spec_boolean ("ignore-textures", "Ignore Textures",
-          "When enabled, textures will be ignored and not drawn",
-          DEFAULT_IGNORE_TEXTURES, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
   gobject_class->finalize = gst_clapper_gl_sink_finalize;
 
   gstelement_class->change_state = gst_clapper_gl_sink_change_state;
@@ -173,7 +166,6 @@ gst_clapper_gl_sink_init (GstClapperGLSink * clapper_sink)
   clapper_sink->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
   clapper_sink->par_n = DEFAULT_PAR_N;
   clapper_sink->par_d = DEFAULT_PAR_D;
-  clapper_sink->ignore_textures = DEFAULT_IGNORE_TEXTURES;
 }
 
 static void
@@ -242,9 +234,6 @@ gst_clapper_gl_sink_get_widget (GstClapperGLSink * clapper_sink)
   clapper_sink->bind_pixel_aspect_ratio =
       g_object_bind_property (clapper_sink, "pixel-aspect-ratio", clapper_sink->widget,
       "pixel-aspect-ratio", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-  clapper_sink->bind_ignore_textures =
-      g_object_bind_property (clapper_sink, "ignore-textures", clapper_sink->widget,
-      "ignore-textures", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
   /* Take the floating ref, other wise the destruction of the container will
    * make this widget disappear possibly before we are done. */
@@ -290,9 +279,6 @@ gst_clapper_gl_sink_get_property (GObject * object, guint prop_id,
     case PROP_PIXEL_ASPECT_RATIO:
       gst_value_set_fraction (value, clapper_sink->par_n, clapper_sink->par_d);
       break;
-    case PROP_IGNORE_TEXTURES:
-      g_value_set_boolean (value, clapper_sink->ignore_textures);
-      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -312,9 +298,6 @@ gst_clapper_gl_sink_set_property (GObject * object, guint prop_id,
     case PROP_PIXEL_ASPECT_RATIO:
       clapper_sink->par_n = gst_value_get_fraction_numerator (value);
       clapper_sink->par_d = gst_value_get_fraction_denominator (value);
-      break;
-    case PROP_IGNORE_TEXTURES:
-      clapper_sink->ignore_textures = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -606,12 +589,14 @@ gst_clapper_gl_sink_change_state (GstElement * element, GstStateChange transitio
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
       GST_OBJECT_LOCK (clapper_sink);
-      if (clapper_sink->widget)
-        clapper_sink->widget->ignore_textures = FALSE;
+      if (clapper_sink->widget) {
+        GTK_CLAPPER_GL_WIDGET_LOCK (clapper_sink->widget);
+        clapper_sink->widget->ignore_buffers = FALSE;
+        GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_sink->widget);
+      }
       GST_OBJECT_UNLOCK (clapper_sink);
       break;
-    case GST_STATE_CHANGE_READY_TO_PAUSED:
-    {
+    case GST_STATE_CHANGE_READY_TO_PAUSED:{
       GtkWindow *window = NULL;
 
       GST_OBJECT_LOCK (clapper_sink);
@@ -627,8 +612,11 @@ gst_clapper_gl_sink_change_state (GstElement * element, GstStateChange transitio
     }
     case GST_STATE_CHANGE_READY_TO_NULL:
       GST_OBJECT_LOCK (clapper_sink);
-      if (clapper_sink->widget)
-        clapper_sink->widget->ignore_textures = TRUE;
+      if (clapper_sink->widget) {
+        GTK_CLAPPER_GL_WIDGET_LOCK (clapper_sink->widget);
+        clapper_sink->widget->ignore_buffers = TRUE;
+        GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_sink->widget);
+      }
       GST_OBJECT_UNLOCK (clapper_sink);
       /* Fall through to render black bg */
     case GST_STATE_CHANGE_PAUSED_TO_READY:

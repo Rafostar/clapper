@@ -60,7 +60,6 @@ GST_DEBUG_CATEGORY (gst_debug_clapper_gl_widget);
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
-#define DEFAULT_IGNORE_TEXTURES     FALSE
 
 struct _GtkClapperGLWidgetPrivate
 {
@@ -100,7 +99,6 @@ enum
   PROP_0,
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
-  PROP_IGNORE_TEXTURES,
 };
 
 static void
@@ -176,9 +174,6 @@ gtk_clapper_gl_widget_set_property (GObject * object, guint prop_id,
       clapper_widget->par_n = gst_value_get_fraction_numerator (value);
       clapper_widget->par_d = gst_value_get_fraction_denominator (value);
       break;
-    case PROP_IGNORE_TEXTURES:
-      clapper_widget->ignore_textures = g_value_get_boolean (value);
-      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -197,9 +192,6 @@ gtk_clapper_gl_widget_get_property (GObject * object, guint prop_id,
       break;
     case PROP_PIXEL_ASPECT_RATIO:
       gst_value_set_fraction (value, clapper_widget->par_n, clapper_widget->par_d);
-      break;
-    case PROP_IGNORE_TEXTURES:
-      g_value_set_boolean (value, clapper_widget->ignore_textures);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -581,7 +573,7 @@ gtk_clapper_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
   /* Draw black with GDK context when priv is not available yet.
      GTK calls render with GDK context already active. */
-  if (!priv->context || !priv->other_context || clapper_widget->ignore_textures) {
+  if (!priv->context || !priv->other_context || clapper_widget->ignore_buffers) {
     _draw_black_with_gdk (context);
     goto done;
   }
@@ -937,11 +929,6 @@ gtk_clapper_gl_widget_class_init (GtkClapperGLWidgetClass * klass)
           "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
           G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (gobject_klass, PROP_IGNORE_TEXTURES,
-      g_param_spec_boolean ("ignore-textures", "Ignore Textures",
-          "When enabled, textures will be ignored and not drawn",
-          DEFAULT_IGNORE_TEXTURES, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
   widget_klass->measure = gtk_clapper_gl_widget_measure;
   widget_klass->size_allocate = gtk_clapper_gl_widget_size_allocate;
 
@@ -958,7 +945,7 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
   clapper_widget->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
   clapper_widget->par_n = DEFAULT_PAR_N;
   clapper_widget->par_d = DEFAULT_PAR_D;
-  clapper_widget->ignore_textures = DEFAULT_IGNORE_TEXTURES;
+  clapper_widget->ignore_buffers = FALSE;
   clapper_widget->last_pos_x = 0;
   clapper_widget->last_pos_y = 0;
 

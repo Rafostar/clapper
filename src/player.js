@@ -133,14 +133,6 @@ class ClapperPlayer extends GstClapper.Clapper
         debug(`changed rank: ${oldRank} -> ${rank} for ${name}`);
     }
 
-    draw_black(isEnabled)
-    {
-        this.widget.ignore_textures = isEnabled;
-
-        if(this.state !== GstClapper.ClapperState.PLAYING)
-            this.widget.queue_render();
-    }
-
     set_uri(uri)
     {
         this.customVideoTitle = null;

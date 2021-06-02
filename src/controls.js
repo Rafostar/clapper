@@ -247,9 +247,6 @@ class ClapperControls extends Gtk.Box
         }
 
         if(checkButton.activeId < 0) {
-            if(checkButton.type === 'video')
-                clapperWidget.player.draw_black(true);
-
             return clapperWidget.player[
                 `set_${checkButton.type}_track_enabled`
             ](false);
@@ -259,9 +256,6 @@ class ClapperControls extends Gtk.Box
 
         clapperWidget.player[setTrack](checkButton.activeId);
         clapperWidget.player[`${setTrack}_enabled`](true);
-
-        if(checkButton.type === 'video')
-            clapperWidget.player.draw_black(false);
     }
 
     _handleVisualizationChange(checkButton)
