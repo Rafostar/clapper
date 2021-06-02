@@ -19,6 +19,16 @@ var settings = new Gio.Settings({
 
 var maxVolume = 1.5;
 
+/* Keys must be lowercase */
+const subsTitles = {
+    sdh: 'SDH',
+    cc: 'CC',
+    traditional: 'Traditional',
+    simplified: 'Simplified',
+    honorifics: 'Honorifics',
+};
+const subsKeys = Object.keys(subsTitles);
+
 let inhibitCookie;
 
 function getClapperPath()
@@ -88,6 +98,17 @@ function getClapperThemeIconUri()
     debug(`using cached clapper icon uri: ${iconUri}`);
 
     return iconUri;
+}
+
+function getSubsTitle(infoTitle)
+{
+    if(!infoTitle)
+        return null;
+
+    const searchName = infoTitle.toLowerCase();
+    const found = subsKeys.find(key => key === searchName);
+
+    return (found) ? subsTitles[found] : null;
 }
 
 function loadCustomCss()

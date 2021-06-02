@@ -231,7 +231,11 @@ class ClapperWidget extends Gtk.Grid
                     break;
                 case GstClapper.ClapperSubtitleInfo:
                     type = 'subtitle';
-                    text = info.get_language() || 'Undetermined';
+                    const subsLang = info.get_language();
+                    text = (subsLang) ? subsLang.split(',')[0] : 'Undetermined';
+                    const subsTitle = Misc.getSubsTitle(info.get_title());
+                    if(subsTitle)
+                        text += ', ' + subsTitle;
                     break;
                 default:
                     debug(`unrecognized media info type: ${info.constructor}`);
