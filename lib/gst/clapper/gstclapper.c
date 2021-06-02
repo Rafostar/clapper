@@ -2125,11 +2125,14 @@ gst_clapper_subtitle_info_update (GstClapper * self,
 {
   GstClapperSubtitleInfo *info = (GstClapperSubtitleInfo *) stream_info;
 
-  if (stream_info->tags) {
+  /* Free the old info */
+  g_free (info->title);
+  info->title = NULL;
+  g_free (info->language);
+  info->language = NULL;
 
-    /* free the old language info */
-    g_free (info->language);
-    info->language = NULL;
+  if (stream_info->tags) {
+    gst_tag_list_get_string (stream_info->tags, GST_TAG_TITLE, &info->title);
 
     /* First try to get the language full name from tag, if name is not
      * available then try language code. If we find the language code
@@ -2171,13 +2174,10 @@ gst_clapper_subtitle_info_update (GstClapper * self,
         g_free (suburi);
       }
     }
-
-  } else {
-    g_free (info->language);
-    info->language = NULL;
   }
 
-  GST_DEBUG_OBJECT (self, "language=%s", info->language);
+  GST_DEBUG_OBJECT (self, "Subtitle title: %s", info->title);
+  GST_DEBUG_OBJECT (self, "Subtitle language: %s", info->language);
 }
 
 static void

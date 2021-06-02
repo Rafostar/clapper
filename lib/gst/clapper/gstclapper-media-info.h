@@ -170,7 +170,10 @@ GST_CLAPPER_API
 GType         gst_clapper_subtitle_info_get_type (void);
 
 GST_CLAPPER_API
-const gchar * gst_clapper_subtitle_info_get_language (const GstClapperSubtitleInfo* info);
+const gchar * gst_clapper_subtitle_info_get_title    (const GstClapperSubtitleInfo *info);
+
+GST_CLAPPER_API
+const gchar * gst_clapper_subtitle_info_get_language (const GstClapperSubtitleInfo *info);
 
 #define GST_TYPE_CLAPPER_MEDIA_INFO \
   (gst_clapper_media_info_get_type())

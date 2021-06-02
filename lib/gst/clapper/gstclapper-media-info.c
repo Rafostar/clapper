@@ -379,6 +379,7 @@ gst_clapper_subtitle_info_finalize (GObject * object)
 {
   GstClapperSubtitleInfo *info = GST_CLAPPER_SUBTITLE_INFO (object);
 
+  g_free (info->title);
   g_free (info->language);
 
   G_OBJECT_CLASS (gst_clapper_subtitle_info_parent_class)->finalize (object);
@@ -390,6 +391,20 @@ gst_clapper_subtitle_info_class_init (GstClapperSubtitleInfoClass * klass)
   GObjectClass *gobject_class = (GObjectClass *) klass;
 
   gobject_class->finalize = gst_clapper_subtitle_info_finalize;
+}
+
+/**
+ * gst_clapper_subtitle_info_get_title:
+ * @info: a #GstClapperSubtitleInfo
+ *
+ * Returns: the title of the stream, or NULL if unknown.
+ */
+const gchar *
+gst_clapper_subtitle_info_get_title (const GstClapperSubtitleInfo * info)
+{
+  g_return_val_if_fail (GST_IS_CLAPPER_SUBTITLE_INFO (info), NULL);
+
+  return info->title;
 }
 
 /**
@@ -513,6 +528,8 @@ gst_clapper_subtitle_info_copy (GstClapperSubtitleInfo * ref)
   GstClapperSubtitleInfo *ret;
 
   ret = gst_clapper_subtitle_info_new ();
+  if (ref->title)
+    ret->title = g_strdup (ref->title);
   if (ref->language)
     ret->language = g_strdup (ref->language);
 

@@ -45,6 +45,7 @@ struct _GstClapperSubtitleInfo
 {
   GstClapperStreamInfo  parent;
 
+  gchar *title;
   gchar *language;
 };
 
