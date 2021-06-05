@@ -771,12 +771,8 @@ gst_clapper_mpris_new (const gchar * own_name, const gchar * id_path,
     const gchar * identity, const gchar * desktop_entry,
     const gchar * default_art_url)
 {
-  GstClapperMpris *self;
-
-  self = g_object_new (GST_TYPE_CLAPPER,
+  return g_object_new (GST_TYPE_CLAPPER_MPRIS,
       "own-name", own_name, "id_path", id_path,
       "identity", identity, "desktop-entry", desktop_entry,
       "default-art-url", default_art_url, NULL);
-
-  return self;
 }
