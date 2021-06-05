@@ -1,6 +1,4 @@
-/* GStreamer
- *
- * Copyright (C) 2014 Sebastian Dröge <sebastian@centricular.com>
+/*
  * Copyright (C) 2021 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -19,18 +17,27 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CLAPPER_H__
-#define __CLAPPER_H__
+#ifndef __GST_CLAPPER_PLAYLIST_PRIVATE_H__
+#define __GST_CLAPPER_PLAYLIST_PRIVATE_H__
 
-#include <gst/clapper/clapper-prelude.h>
-#include <gst/clapper/gstclapper.h>
-#include <gst/clapper/gstclapper-media-info.h>
-#include <gst/clapper/gstclapper-g-main-context-signal-dispatcher.h>
-#include <gst/clapper/gstclapper-video-overlay-video-renderer.h>
-#include <gst/clapper/gstclapper-visualization.h>
-#include <gst/clapper/gstclapper-playlist.h>
-#include <gst/clapper/gstclapper-playlist-item.h>
-#include <gst/clapper/gstclapper-mpris.h>
-#include <gst/clapper/gstclapper-gtk4-plugin.h>
+#include "gstclapper-playlist.h"
 
-#endif /* __CLAPPER_H__ */
+struct _GstClapperPlaylist
+{
+  GstObject parent;
+
+  gchar *uuid;
+  gint id_count;
+  GArray *items;
+  gint active_index;
+};
+
+struct _GstClapperPlaylistClass
+{
+  GstObjectClass parent_class;
+};
+
+G_GNUC_INTERNAL
+void gst_clapper_playlist_emit_item_activated (GstClapperPlaylist *playlist, GstClapperPlaylistItem *item);
+
+#endif /* __GST_CLAPPER_PLAYLIST_PRIVATE_H__ */

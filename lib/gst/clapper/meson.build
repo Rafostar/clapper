@@ -8,6 +8,8 @@ gstclapper_sources = [
   'gstclapper-g-main-context-signal-dispatcher.c',
   'gstclapper-video-overlay-video-renderer.c',
   'gstclapper-visualization.c',
+  'gstclapper-playlist.c',
+  'gstclapper-playlist-item.c',
   'gstclapper-mpris.c',
   'gstclapper-gtk4-plugin.c',
 
@@ -26,6 +28,8 @@ gstclapper_headers = [
   'gstclapper-g-main-context-signal-dispatcher.h',
   'gstclapper-video-overlay-video-renderer.h',
   'gstclapper-visualization.h',
+  'gstclapper-playlist.h',
+  'gstclapper-playlist-item.h',
   'gstclapper-mpris.h',
   'gstclapper-gtk4-plugin.h',
 ]

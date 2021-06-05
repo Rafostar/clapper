@@ -30,6 +30,8 @@
 #include <gst/clapper/gstclapper-signal-dispatcher.h>
 #include <gst/clapper/gstclapper-video-renderer.h>
 #include <gst/clapper/gstclapper-media-info.h>
+#include <gst/clapper/gstclapper-playlist.h>
+#include <gst/clapper/gstclapper-playlist-item.h>
 #include <gst/clapper/gstclapper-mpris.h>
 
 G_BEGIN_DECLS
@@ -193,16 +195,7 @@ GST_CLAPPER_API
 gdouble      gst_clapper_get_rate                           (GstClapper *clapper);
 
 GST_CLAPPER_API
-gchar *      gst_clapper_get_uri                            (GstClapper *clapper);
-
-GST_CLAPPER_API
-void         gst_clapper_set_uri                            (GstClapper *clapper, const gchar *uri);
-
-GST_CLAPPER_API
-gchar *      gst_clapper_get_subtitle_uri                   (GstClapper *clapper);
-
-GST_CLAPPER_API
-void         gst_clapper_set_subtitle_uri                   (GstClapper *clapper, const gchar *uri);
+void         gst_clapper_set_playlist                       (GstClapper *clapper, GstClapperPlaylist *playlist);
 
 GST_CLAPPER_API
 GstClockTime gst_clapper_get_position                       (GstClapper *clapper);

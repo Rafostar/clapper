@@ -46,6 +46,7 @@
 #include "gstclapper-signal-dispatcher-private.h"
 #include "gstclapper-video-renderer-private.h"
 #include "gstclapper-media-info-private.h"
+#include "gstclapper-playlist-item-private.h"
 #include "gstclapper-mpris-private.h"
 
 GST_DEBUG_CATEGORY_STATIC (gst_clapper_debug);
@@ -79,8 +80,7 @@ enum
   PROP_SIGNAL_DISPATCHER,
   PROP_MPRIS,
   PROP_STATE,
-  PROP_URI,
-  PROP_SUBURI,
+  PROP_PLAYLIST,
   PROP_POSITION,
   PROP_DURATION,
   PROP_MEDIA_INFO,
@@ -134,6 +134,7 @@ struct _GstClapper
   gchar *uri;
   gchar *redirect_uri;
   gchar *suburi;
+  gchar *custom_title;
 
   GThread *thread;
   GMutex lock;
@@ -188,6 +189,12 @@ struct _GstClapper
   gchar *audio_sid;
   gchar *subtitle_sid;
   gulong stream_notify_id;
+
+  /* For playlist */
+  GstClapperPlaylist *playlist;
+  GstClapperPlaylistItem *active_item;
+  gulong item_activated_id;
+  gulong suburi_notify_id;
 };
 
 struct _GstClapperClass
@@ -320,12 +327,8 @@ gst_clapper_class_init (GstClapperClass * klass)
       GST_TYPE_CLAPPER_STATE, DEFAULT_STATE, G_PARAM_READABLE |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
-  param_specs[PROP_URI] = g_param_spec_string ("uri", "URI", "Current URI",
-      DEFAULT_URI, G_PARAM_READWRITE |
-      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
-
-  param_specs[PROP_SUBURI] = g_param_spec_string ("suburi", "Subtitle URI",
-      "Current Subtitle URI", NULL, G_PARAM_READWRITE |
+  param_specs[PROP_PLAYLIST] = g_param_spec_string ("playlist", "Playlist",
+      "Current Playlist", NULL, G_PARAM_READWRITE |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_POSITION] =
@@ -519,6 +522,8 @@ gst_clapper_finalize (GObject * object)
     g_object_unref (self->signal_dispatcher);
   if (self->mpris)
     g_object_unref (self->mpris);
+  if (self->playlist)
+    gst_object_unref (self->playlist);
   if (self->current_vis_element)
     gst_object_unref (self->current_vis_element);
   if (self->collection)
@@ -568,35 +573,6 @@ uri_loaded_signal_data_free (UriLoadedSignalData * data)
 }
 
 static gboolean
-gst_clapper_set_uri_internal (gpointer user_data)
-{
-  GstClapper *self = user_data;
-
-  gst_clapper_stop_internal (self, FALSE);
-
-  g_mutex_lock (&self->lock);
-  GST_DEBUG_OBJECT (self, "Changing URI to '%s'", GST_STR_NULL (self->uri));
-  g_object_set (self->playbin, "uri", self->uri, NULL);
-  g_object_set (self->playbin, "suburi", NULL, NULL);
-  self->can_start = TRUE;
-
-  if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
-          signals[SIGNAL_URI_LOADED], 0, NULL, NULL, NULL) != 0) {
-    UriLoadedSignalData *data = g_new (UriLoadedSignalData, 1);
-
-    data->clapper = g_object_ref (self);
-    data->uri = g_strdup (self->uri);
-    gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
-        uri_loaded_dispatch, data,
-        (GDestroyNotify) uri_loaded_signal_data_free);
-  }
-
-  g_mutex_unlock (&self->lock);
-
-  return G_SOURCE_REMOVE;
-}
-
-static gboolean
 gst_clapper_set_suburi_internal (gpointer user_data)
 {
   GstClapper *self = user_data;
@@ -626,6 +602,100 @@ gst_clapper_set_suburi_internal (gpointer user_data)
     gst_clapper_play_internal (self);
 
   return G_SOURCE_REMOVE;
+}
+
+static void
+suburi_notify_cb (GstClapperPlaylistItem * item, GParamSpec * pspec,
+    GstClapper * self)
+{
+  g_mutex_lock (&self->lock);
+  g_free (self->suburi);
+  self->suburi = g_strdup (item->suburi);
+  GST_DEBUG_OBJECT (self, "Set suburi: %s", self->suburi);
+  g_mutex_unlock (&self->lock);
+
+  g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT + 1,
+      gst_clapper_set_suburi_internal, self, NULL);
+}
+
+static void
+gst_clapper_set_playlist_item_locked (GstClapper * self,
+    GstClapperPlaylistItem * item)
+{
+  if (self->suburi_notify_id)
+    g_signal_handler_disconnect (self->active_item, self->suburi_notify_id);
+
+  gst_object_replace ((GstObject **) & self->active_item,
+      (GstObject *) item);
+
+  g_free (self->uri);
+  self->uri = g_strdup (self->active_item->uri);
+
+  g_free (self->redirect_uri);
+  self->redirect_uri = NULL;
+
+  g_free (self->suburi);
+  self->suburi = g_strdup (self->active_item->suburi);
+
+  g_free (self->custom_title);
+  self->custom_title = g_strdup (self->active_item->custom_title);
+
+  GST_DEBUG_OBJECT (self, "Changing URI to '%s'",
+      GST_STR_NULL (self->uri));
+  g_object_set (self->playbin, "uri", self->uri, NULL);
+
+  GST_DEBUG_OBJECT (self, "Changing SUBURI to '%s'",
+      GST_STR_NULL (self->suburi));
+  g_object_set (self->playbin, "suburi", self->suburi, NULL);
+
+  self->suburi_notify_id = g_signal_connect (self->active_item,
+      "notify::suburi", G_CALLBACK (suburi_notify_cb), self);
+
+  self->can_start = TRUE;
+
+  if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
+          signals[SIGNAL_URI_LOADED], 0, NULL, NULL, NULL) != 0) {
+    UriLoadedSignalData *data = g_new (UriLoadedSignalData, 1);
+
+    data->clapper = g_object_ref (self);
+    data->uri = g_strdup (self->uri);
+    gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
+        uri_loaded_dispatch, data,
+        (GDestroyNotify) uri_loaded_signal_data_free);
+  }
+}
+
+static gboolean
+gst_clapper_set_playlist_internal (gpointer user_data)
+{
+  GstClapper *self = user_data;
+  GstClapperPlaylistItem *item;
+
+  gst_clapper_stop_internal (self, FALSE);
+
+  g_mutex_lock (&self->lock);
+  item = gst_clapper_playlist_get_item_at_index (self->playlist, 0);
+  if (!item) {
+    GST_DEBUG_OBJECT (self, "Set empty playlist");
+    goto out;
+  }
+  gst_clapper_set_playlist_item_locked (self, item);
+
+out:
+  g_mutex_unlock (&self->lock);
+
+  return G_SOURCE_REMOVE;
+}
+
+static void
+item_activated_cb (G_GNUC_UNUSED GstClapperPlaylist * playlist,
+   GstClapperPlaylistItem * item, gpointer user_data)
+{
+  GstClapper *self = GST_CLAPPER (user_data);
+
+  g_mutex_lock (&self->lock);
+  gst_clapper_set_playlist_item_locked (self, item);
+  g_mutex_unlock (&self->lock);
 }
 
 static void
@@ -664,35 +734,21 @@ gst_clapper_set_property (GObject * object, guint prop_id,
     case PROP_MPRIS:
       self->mpris = g_value_dup_object (value);
       break;
-    case PROP_URI:{
+    case PROP_PLAYLIST:
       g_mutex_lock (&self->lock);
-      g_free (self->uri);
-      g_free (self->redirect_uri);
-      self->redirect_uri = NULL;
-
-      g_free (self->suburi);
-      self->suburi = NULL;
-
-      self->uri = g_value_dup_string (value);
-      GST_DEBUG_OBJECT (self, "Set uri=%s", self->uri);
+      if (self->playlist) {
+        if (self->item_activated_id)
+          g_signal_handler_disconnect (self->playlist, self->item_activated_id);
+        gst_object_unref (self->playlist);
+      }
+      self->playlist = g_value_dup_object (value);
+      self->item_activated_id = g_signal_connect (self->playlist, "item-activated",
+          G_CALLBACK (item_activated_cb), self);
       g_mutex_unlock (&self->lock);
 
       g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,
-          gst_clapper_set_uri_internal, self, NULL);
+          gst_clapper_set_playlist_internal, self, NULL);
       break;
-    }
-    case PROP_SUBURI:{
-      g_mutex_lock (&self->lock);
-      g_free (self->suburi);
-
-      self->suburi = g_value_dup_string (value);
-      GST_DEBUG_OBJECT (self, "Set suburi=%s", self->suburi);
-      g_mutex_unlock (&self->lock);
-
-      g_main_context_invoke_full (self->context, G_PRIORITY_DEFAULT,
-          gst_clapper_set_suburi_internal, self, NULL);
-      break;
-    }
     case PROP_VOLUME: {
       GValue volume_linear = G_VALUE_INIT;
       gdouble volume = g_value_get_double (value);
@@ -764,18 +820,6 @@ gst_clapper_get_property (GObject * object, guint prop_id,
       g_value_set_enum (value, self->app_state);
       g_mutex_unlock (&self->lock);
       break;
-    case PROP_URI:
-      g_mutex_lock (&self->lock);
-      g_value_set_string (value, self->uri);
-      g_mutex_unlock (&self->lock);
-      break;
-    case PROP_SUBURI:
-      g_mutex_lock (&self->lock);
-      g_value_set_string (value, self->suburi);
-      g_mutex_unlock (&self->lock);
-      GST_DEBUG_OBJECT (self, "Returning suburi=%s",
-          g_value_get_string (value));
-      break;
     case PROP_POSITION:{
       gint64 position = GST_CLOCK_TIME_NONE;
 
@@ -785,12 +829,11 @@ gst_clapper_get_property (GObject * object, guint prop_id,
           GST_TIME_ARGS (g_value_get_uint64 (value)));
       break;
     }
-    case PROP_DURATION:{
+    case PROP_DURATION:
       g_value_set_uint64 (value, self->cached_duration);
       GST_TRACE_OBJECT (self, "Returning duration=%" GST_TIME_FORMAT,
           GST_TIME_ARGS (g_value_get_uint64 (value)));
       break;
-    }
     case PROP_MEDIA_INFO:{
       GstClapperMediaInfo *media_info = gst_clapper_get_media_info (self);
       g_value_take_object (value, media_info);
@@ -837,20 +880,18 @@ gst_clapper_get_property (GObject * object, guint prop_id,
     case PROP_PIPELINE:
       g_value_set_object (value, self->playbin);
       break;
-    case PROP_VIDEO_MULTIVIEW_MODE:{
+    case PROP_VIDEO_MULTIVIEW_MODE:
       g_object_get_property (G_OBJECT (self->playbin), "video-multiview-mode",
           value);
       GST_TRACE_OBJECT (self, "Return multiview mode=%d",
           g_value_get_enum (value));
       break;
-    }
-    case PROP_VIDEO_MULTIVIEW_FLAGS:{
+    case PROP_VIDEO_MULTIVIEW_FLAGS:
       g_object_get_property (G_OBJECT (self->playbin), "video-multiview-flags",
           value);
       GST_TRACE_OBJECT (self, "Return multiview flags=%x",
           g_value_get_flags (value));
       break;
-    }
     case PROP_AUDIO_VIDEO_OFFSET:
       g_object_get_property (G_OBJECT (self->playbin), "av-offset", value);
       break;
@@ -1804,11 +1845,13 @@ request_state_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 static void
 media_info_update (GstClapper * self, GstClapperMediaInfo * info)
 {
-  /* Update title from new tags or leave the title from URI */
-  gchar *tags_title = get_from_tags (self, info, get_title);
-  if (tags_title) {
-    g_free (info->title);
-    info->title = tags_title;
+  if (!self->custom_title) {
+    /* Update title from new tags or leave the title from URI */
+    gchar *tags_title = get_from_tags (self, info, get_title);
+    if (tags_title) {
+      g_free (info->title);
+      info->title = tags_title;
+    }
   }
 
   g_free (info->container);
@@ -2817,7 +2860,10 @@ gst_clapper_media_info_create (GstClapper * self)
         GST_TYPE_CLAPPER_SUBTITLE_INFO);
   }
 
-  media_info->title = get_from_tags (self, media_info, get_title);
+  if (self->custom_title)
+    media_info->title = g_strdup (self->custom_title);
+  if (!media_info->title)
+    media_info->title = get_from_tags (self, media_info, get_title);
   if (!media_info->title)
     media_info->title = get_title_from_uri (self->uri);
 
@@ -3630,77 +3676,19 @@ gst_clapper_get_state (GstClapper * self)
 }
 
 /**
- * gst_clapper_get_uri:
+ * gst_clapper_set_playlist:
  * @clapper: #GstClapper instance
+ * @playlist: #GstClapperPlaylist instance
  *
- * Gets the URI of the currently-playing stream.
- *
- * Returns: (transfer full): a string containing the URI of the
- * currently-playing stream. g_free() after usage.
- */
-gchar *
-gst_clapper_get_uri (GstClapper * self)
-{
-  gchar *val;
-
-  g_return_val_if_fail (GST_IS_CLAPPER (self), DEFAULT_URI);
-
-  g_object_get (self, "uri", &val, NULL);
-
-  return val;
-}
-
-/**
- * gst_clapper_set_uri:
- * @clapper: #GstClapper instance
- * @uri: next URI to play.
- *
- * Sets the next URI to play.
+ * Sets the new #GstClapperPlaylist
  */
 void
-gst_clapper_set_uri (GstClapper * self, const gchar * val)
+gst_clapper_set_playlist (GstClapper * self, GstClapperPlaylist * val)
 {
   g_return_if_fail (GST_IS_CLAPPER (self));
+  g_return_if_fail (GST_IS_CLAPPER_PLAYLIST (val));
 
-  g_object_set (self, "uri", val, NULL);
-}
-
-/**
- * gst_clapper_set_subtitle_uri:
- * @clapper: #GstClapper instance
- * @uri: subtitle URI
- *
- * Sets the external subtitle URI. This should be combined with a call to
- * gst_clapper_set_subtitle_track_enabled(@clapper, TRUE) so the subtitles are actually
- * rendered.
- */
-void
-gst_clapper_set_subtitle_uri (GstClapper * self, const gchar * suburi)
-{
-  g_return_if_fail (GST_IS_CLAPPER (self));
-
-  g_object_set (self, "suburi", suburi, NULL);
-}
-
-/**
- * gst_clapper_get_subtitle_uri:
- * @clapper: #GstClapper instance
- *
- * current subtitle URI
- *
- * Returns: (transfer full): URI of the current external subtitle.
- *   g_free() after usage.
- */
-gchar *
-gst_clapper_get_subtitle_uri (GstClapper * self)
-{
-  gchar *val = NULL;
-
-  g_return_val_if_fail (GST_IS_CLAPPER (self), NULL);
-
-  g_object_get (self, "suburi", &val, NULL);
-
-  return val;
+  g_object_set (self, "playlist", val, NULL);
 }
 
 /**

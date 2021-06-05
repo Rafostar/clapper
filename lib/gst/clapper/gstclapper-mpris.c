@@ -392,11 +392,17 @@ handle_open_uri_cb (GstClapperMprisMediaPlayer2Player * player_skeleton,
     gpointer user_data)
 {
   GstClapper *clapper = GST_CLAPPER (user_data);
+  GstClapperPlaylist *playlist;
+  GstClapperPlaylistItem *item;
 
   GST_DEBUG ("Handle OpenUri");
 
-  /* FIXME: set one item playlist instead */
-  gst_clapper_set_uri (clapper, uri);
+  playlist = gst_clapper_playlist_new ();
+  item = gst_clapper_playlist_item_new (uri);
+
+  gst_clapper_playlist_append (playlist, item);
+
+  gst_clapper_set_playlist (clapper, playlist);
   gst_clapper_mpris_media_player2_player_complete_open_uri (player_skeleton, invocation);
 
   return TRUE;
