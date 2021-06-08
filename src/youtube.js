@@ -38,7 +38,7 @@ var YouTubeClient = GObject.registerClass({
 
         this.lastInfo = null;
         this.postInfo = {
-            clientVersion: null,
+            clientVersion: "2.20210605.09.00",
             visitorData: "",
         };
 
