@@ -757,7 +757,9 @@ gst_clapper_get_property (GObject * object, guint prop_id,
 
   switch (prop_id) {
     case PROP_MPRIS:
+      g_mutex_lock (&self->lock);
       g_value_set_object (value, self->mpris);
+      g_mutex_unlock (&self->lock);
       break;
     case PROP_STATE:
       g_mutex_lock (&self->lock);
