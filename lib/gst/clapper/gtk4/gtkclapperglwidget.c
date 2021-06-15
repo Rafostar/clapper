@@ -993,7 +993,7 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
   if (GDK_IS_X11_DISPLAY (display)) {
     gpointer display_ptr;
-#if GST_GL_HAVE_PLATFORM_EGL && GTK_CHECK_VERSION(4,4,0)
+#if GST_GL_HAVE_PLATFORM_EGL && GTK_CHECK_VERSION(4,3,1)
     display_ptr = gdk_x11_display_get_egl_display (display);
     if (display_ptr)
       priv->display = (GstGLDisplay *)
