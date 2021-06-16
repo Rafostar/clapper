@@ -22,8 +22,23 @@
 #ifndef __GST_GTK_UTILS_H__
 #define __GST_GTK_UTILS_H__
 
+#define DEFAULT_FORCE_ASPECT_RATIO  TRUE
+#define DEFAULT_PAR_N               0
+#define DEFAULT_PAR_D               1
+
 #include <glib.h>
+#include <glib-object.h>
+
+enum
+{
+  PROP_0,
+  PROP_WIDGET,
+  PROP_FORCE_ASPECT_RATIO,
+  PROP_PIXEL_ASPECT_RATIO,
+};
 
 gpointer gst_gtk_invoke_on_main (GThreadFunc func, gpointer data);
+
+void gst_gtk_install_shared_properties (GObjectClass *gobject_class);
 
 #endif /* __GST_GTK_UTILS_H__ */

@@ -19,6 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <gst/gst.h>
 #include "gstgtkutils.h"
 
 struct invoke_context
@@ -68,4 +69,20 @@ gst_gtk_invoke_on_main (GThreadFunc func, gpointer data)
   g_cond_clear (&info.cond);
 
   return info.res;
+}
+
+void
+gst_gtk_install_shared_properties (GObjectClass *gobject_class)
+{
+  g_object_class_install_property (gobject_class, PROP_FORCE_ASPECT_RATIO,
+      g_param_spec_boolean ("force-aspect-ratio",
+          "Force aspect ratio",
+          "When enabled, scaling will respect original aspect ratio",
+          DEFAULT_FORCE_ASPECT_RATIO,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_class, PROP_PIXEL_ASPECT_RATIO,
+      gst_param_spec_fraction ("pixel-aspect-ratio", "Pixel Aspect Ratio",
+          "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
+          G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }

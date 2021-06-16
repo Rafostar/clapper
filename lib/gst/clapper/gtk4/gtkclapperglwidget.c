@@ -57,10 +57,6 @@
 GST_DEBUG_CATEGORY (gst_debug_clapper_gl_widget);
 #define GST_CAT_DEFAULT gst_debug_clapper_gl_widget
 
-#define DEFAULT_FORCE_ASPECT_RATIO  TRUE
-#define DEFAULT_PAR_N               0
-#define DEFAULT_PAR_D               1
-
 struct _GtkClapperGLWidgetPrivate
 {
   gboolean initiated;
@@ -93,13 +89,6 @@ G_DEFINE_TYPE_WITH_CODE (GtkClapperGLWidget, gtk_clapper_gl_widget, GTK_TYPE_GL_
     G_ADD_PRIVATE (GtkClapperGLWidget)
     GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "gtkclapperglwidget", 0,
         "GTK Clapper GL Widget"));
-
-enum
-{
-  PROP_0,
-  PROP_FORCE_ASPECT_RATIO,
-  PROP_PIXEL_ASPECT_RATIO,
-};
 
 static void
 gtk_clapper_gl_widget_get_preferred_width (GtkWidget * widget, gint * min,
@@ -909,30 +898,20 @@ _get_gl_context (GtkClapperGLWidget * clapper_widget)
 static void
 gtk_clapper_gl_widget_class_init (GtkClapperGLWidgetClass * klass)
 {
-  GObjectClass *gobject_klass = (GObjectClass *) klass;
-  GtkWidgetClass *widget_klass = (GtkWidgetClass *) klass;
-  GtkGLAreaClass *gl_area_klass = (GtkGLAreaClass *) klass;
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+  GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
+  GtkGLAreaClass *gl_area_class = (GtkGLAreaClass *) klass;
 
-  gobject_klass->set_property = gtk_clapper_gl_widget_set_property;
-  gobject_klass->get_property = gtk_clapper_gl_widget_get_property;
-  gobject_klass->finalize = gtk_clapper_gl_widget_finalize;
+  gobject_class->set_property = gtk_clapper_gl_widget_set_property;
+  gobject_class->get_property = gtk_clapper_gl_widget_get_property;
+  gobject_class->finalize = gtk_clapper_gl_widget_finalize;
 
-  g_object_class_install_property (gobject_klass, PROP_FORCE_ASPECT_RATIO,
-      g_param_spec_boolean ("force-aspect-ratio",
-          "Force aspect ratio",
-          "When enabled, scaling will respect original aspect ratio",
-          DEFAULT_FORCE_ASPECT_RATIO,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  gst_gtk_install_shared_properties (gobject_class);
 
-  g_object_class_install_property (gobject_klass, PROP_PIXEL_ASPECT_RATIO,
-      gst_param_spec_fraction ("pixel-aspect-ratio", "Pixel Aspect Ratio",
-          "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
-          G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  widget_class->measure = gtk_clapper_gl_widget_measure;
+  widget_class->size_allocate = gtk_clapper_gl_widget_size_allocate;
 
-  widget_klass->measure = gtk_clapper_gl_widget_measure;
-  widget_klass->size_allocate = gtk_clapper_gl_widget_size_allocate;
-
-  gl_area_klass->render = gtk_clapper_gl_widget_render;
+  gl_area_class->render = gtk_clapper_gl_widget_render;
 }
 
 static void

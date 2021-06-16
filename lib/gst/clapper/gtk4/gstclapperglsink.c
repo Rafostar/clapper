@@ -37,10 +37,6 @@
 GST_DEBUG_CATEGORY (gst_debug_clapper_gl_sink);
 #define GST_CAT_DEFAULT gst_debug_clapper_gl_sink
 
-#define DEFAULT_FORCE_ASPECT_RATIO  TRUE
-#define DEFAULT_PAR_N               0
-#define DEFAULT_PAR_D               1
-
 static GstStaticPadTemplate gst_clapper_gl_sink_template =
     GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
@@ -79,14 +75,6 @@ static GstFlowReturn gst_clapper_gl_sink_show_frame (GstVideoSink * bsink,
 static void
 gst_clapper_gl_sink_navigation_interface_init (GstNavigationInterface * iface);
 
-enum
-{
-  PROP_0,
-  PROP_WIDGET,
-  PROP_FORCE_ASPECT_RATIO,
-  PROP_PIXEL_ASPECT_RATIO,
-};
-
 #define gst_clapper_gl_sink_parent_class parent_class
 G_DEFINE_TYPE_WITH_CODE (GstClapperGLSink, gst_clapper_gl_sink,
     GST_TYPE_VIDEO_SINK,
@@ -112,6 +100,7 @@ gst_clapper_gl_sink_class_init (GstClapperGLSinkClass * klass)
 
   gobject_class->set_property = gst_clapper_gl_sink_set_property;
   gobject_class->get_property = gst_clapper_gl_sink_get_property;
+  gobject_class->finalize = gst_clapper_gl_sink_finalize;
 
   g_object_class_install_property (gobject_class, PROP_WIDGET,
       g_param_spec_object ("widget", "GTK Widget",
@@ -119,19 +108,7 @@ gst_clapper_gl_sink_class_init (GstClapperGLSinkClass * klass)
           "(must only be get from the GTK main thread)",
           GTK_TYPE_WIDGET, G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_property (gobject_class, PROP_FORCE_ASPECT_RATIO,
-      g_param_spec_boolean ("force-aspect-ratio",
-          "Force aspect ratio",
-          "When enabled, scaling will respect original aspect ratio",
-          DEFAULT_FORCE_ASPECT_RATIO,
-          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  g_object_class_install_property (gobject_class, PROP_PIXEL_ASPECT_RATIO,
-      gst_param_spec_fraction ("pixel-aspect-ratio", "Pixel Aspect Ratio",
-          "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
-          G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
-
-  gobject_class->finalize = gst_clapper_gl_sink_finalize;
+  gst_gtk_install_shared_properties (gobject_class);
 
   gstelement_class->change_state = gst_clapper_gl_sink_change_state;
 
