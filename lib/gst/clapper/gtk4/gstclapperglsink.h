@@ -58,15 +58,14 @@ struct _GstClapperGLSink
 
   GtkClapperGLWidget *widget;
 
+  gboolean had_eos;
+
   /* properties */
   gboolean force_aspect_ratio;
-  GBinding *bind_aspect_ratio;
-
   gint par_n, par_d;
-  GBinding *bind_pixel_aspect_ratio;
+  gboolean keep_last_frame;
 
   gboolean ignore_textures;
-  GBinding *bind_ignore_textures;
 
   GtkWidget *window;
   gulong widget_destroy_id;

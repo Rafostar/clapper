@@ -52,6 +52,7 @@ struct _GtkClapperGLWidget
   /* properties */
   gboolean force_aspect_ratio;
   gint par_n, par_d;
+  gboolean keep_last_frame;
 
   gint display_width;
   gint display_height;

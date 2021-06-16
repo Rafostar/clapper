@@ -85,4 +85,11 @@ gst_gtk_install_shared_properties (GObjectClass *gobject_class)
       gst_param_spec_fraction ("pixel-aspect-ratio", "Pixel Aspect Ratio",
           "The pixel aspect ratio of the device", DEFAULT_PAR_N, DEFAULT_PAR_D,
           G_MAXINT, 1, 1, 1, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
+  g_object_class_install_property (gobject_class, PROP_KEEP_LAST_FRAME,
+      g_param_spec_boolean ("keep-last-frame",
+          "Keep last frame",
+          "Keep showing last video frame after playback instead of black screen",
+          DEFAULT_KEEP_LAST_FRAME,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }

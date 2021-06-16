@@ -14,6 +14,10 @@
       <default>100</default>
       <summary>Custom initial volume value in percentage after startup</summary>
     </key>
+    <key name="keep-last-frame" type="b">
+      <default>false</default>
+      <summary>Keep showing last video frame after playback finishes</summary>
+    </key>
     <key name="close-auto" type="b">
       <default>false</default>
       <summary>Automatically close the app after playback finishes</summary>

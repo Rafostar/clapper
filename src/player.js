@@ -81,7 +81,8 @@ class ClapperPlayer extends GstClapper.Clapper
             this._onSettingsKeyChanged(settings, key);
 
         const flag = Gio.SettingsBindFlags.GET;
-        settings.bind('subtitle-font', this.pipeline, 'subtitle_font_desc', flag);
+        settings.bind('keep-last-frame', this.widget, 'keep-last-frame', flag);
+        settings.bind('subtitle-font', this.pipeline, 'subtitle-font-desc', flag);
     }
 
     set_initial_config()

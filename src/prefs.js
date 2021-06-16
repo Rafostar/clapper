@@ -41,6 +41,7 @@ class ClapperGeneralPage extends PrefsBase.Grid
         comboBox.connect('changed', this._onVolumeInitialChanged.bind(this, spinButton));
 
         this.addTitle('Finish');
+        this.addCheckButton('Keep showing last frame', 'keep-last-frame');
         this.addCheckButton('Close after playback', 'close-auto');
     }
 

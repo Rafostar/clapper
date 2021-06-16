@@ -163,6 +163,9 @@ gtk_clapper_gl_widget_set_property (GObject * object, guint prop_id,
       clapper_widget->par_n = gst_value_get_fraction_numerator (value);
       clapper_widget->par_d = gst_value_get_fraction_denominator (value);
       break;
+    case PROP_KEEP_LAST_FRAME:
+      clapper_widget->keep_last_frame = g_value_get_boolean (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -181,6 +184,9 @@ gtk_clapper_gl_widget_get_property (GObject * object, guint prop_id,
       break;
     case PROP_PIXEL_ASPECT_RATIO:
       gst_value_set_fraction (value, clapper_widget->par_n, clapper_widget->par_d);
+      break;
+    case PROP_KEEP_LAST_FRAME:
+      g_value_set_boolean (value, clapper_widget->keep_last_frame);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -924,6 +930,7 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
   clapper_widget->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
   clapper_widget->par_n = DEFAULT_PAR_N;
   clapper_widget->par_d = DEFAULT_PAR_D;
+  clapper_widget->keep_last_frame = DEFAULT_KEEP_LAST_FRAME;
   clapper_widget->ignore_buffers = FALSE;
   clapper_widget->last_pos_x = 0;
   clapper_widget->last_pos_y = 0;

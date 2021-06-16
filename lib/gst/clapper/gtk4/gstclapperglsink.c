@@ -58,6 +58,7 @@ static gboolean gst_clapper_gl_sink_propose_allocation (GstBaseSink * bsink,
 static gboolean gst_clapper_gl_sink_query (GstBaseSink * bsink, GstQuery * query);
 static gboolean gst_clapper_gl_sink_start (GstBaseSink * bsink);
 static gboolean gst_clapper_gl_sink_stop (GstBaseSink * bsink);
+static GstFlowReturn gst_clapper_gl_sink_wait_event (GstBaseSink * bsink, GstEvent * event);
 
 static GstStateChangeReturn
 gst_clapper_gl_sink_change_state (GstElement * element,
@@ -119,6 +120,7 @@ gst_clapper_gl_sink_class_init (GstClapperGLSinkClass * klass)
   gstbasesink_class->query = gst_clapper_gl_sink_query;
   gstbasesink_class->start = gst_clapper_gl_sink_start;
   gstbasesink_class->stop = gst_clapper_gl_sink_stop;
+  gstbasesink_class->wait_event = gst_clapper_gl_sink_wait_event;
 
   gstvideosink_class->show_frame = gst_clapper_gl_sink_show_frame;
 
@@ -143,6 +145,9 @@ gst_clapper_gl_sink_init (GstClapperGLSink * clapper_sink)
   clapper_sink->force_aspect_ratio = DEFAULT_FORCE_ASPECT_RATIO;
   clapper_sink->par_n = DEFAULT_PAR_N;
   clapper_sink->par_d = DEFAULT_PAR_D;
+  clapper_sink->keep_last_frame = DEFAULT_KEEP_LAST_FRAME;
+
+  clapper_sink->had_eos = FALSE;
 }
 
 static void
@@ -205,12 +210,12 @@ gst_clapper_gl_sink_get_widget (GstClapperGLSink * clapper_sink)
   clapper_sink->widget = (GtkClapperGLWidget *)
       GST_CLAPPER_GL_SINK_GET_CLASS (clapper_sink)->create_widget ();
 
-  clapper_sink->bind_aspect_ratio =
-      g_object_bind_property (clapper_sink, "force-aspect-ratio", clapper_sink->widget,
+  g_object_bind_property (clapper_sink, "force-aspect-ratio", clapper_sink->widget,
       "force-aspect-ratio", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
-  clapper_sink->bind_pixel_aspect_ratio =
-      g_object_bind_property (clapper_sink, "pixel-aspect-ratio", clapper_sink->widget,
+  g_object_bind_property (clapper_sink, "pixel-aspect-ratio", clapper_sink->widget,
       "pixel-aspect-ratio", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+  g_object_bind_property (clapper_sink, "keep-last-frame", clapper_sink->widget,
+      "keep-last-frame", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
 
   /* Take the floating ref, other wise the destruction of the container will
    * make this widget disappear possibly before we are done. */
@@ -256,6 +261,9 @@ gst_clapper_gl_sink_get_property (GObject * object, guint prop_id,
     case PROP_PIXEL_ASPECT_RATIO:
       gst_value_set_fraction (value, clapper_sink->par_n, clapper_sink->par_d);
       break;
+    case PROP_KEEP_LAST_FRAME:
+      g_value_set_boolean (value, clapper_sink->keep_last_frame);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -275,6 +283,9 @@ gst_clapper_gl_sink_set_property (GObject * object, guint prop_id,
     case PROP_PIXEL_ASPECT_RATIO:
       clapper_sink->par_n = gst_value_get_fraction_numerator (value);
       clapper_sink->par_d = gst_value_get_fraction_denominator (value);
+      break;
+    case PROP_KEEP_LAST_FRAME:
+      clapper_sink->keep_last_frame = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -566,6 +577,7 @@ gst_clapper_gl_sink_change_state (GstElement * element, GstStateChange transitio
   switch (transition) {
     case GST_STATE_CHANGE_NULL_TO_READY:
       GST_OBJECT_LOCK (clapper_sink);
+      clapper_sink->had_eos = FALSE;
       if (clapper_sink->widget) {
         GTK_CLAPPER_GL_WIDGET_LOCK (clapper_sink->widget);
         clapper_sink->widget->ignore_buffers = FALSE;
@@ -591,7 +603,8 @@ gst_clapper_gl_sink_change_state (GstElement * element, GstStateChange transitio
       GST_OBJECT_LOCK (clapper_sink);
       if (clapper_sink->widget) {
         GTK_CLAPPER_GL_WIDGET_LOCK (clapper_sink->widget);
-        clapper_sink->widget->ignore_buffers = TRUE;
+        clapper_sink->widget->ignore_buffers =
+            !clapper_sink->had_eos || !clapper_sink->keep_last_frame;
         GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_sink->widget);
       }
       GST_OBJECT_UNLOCK (clapper_sink);
@@ -681,6 +694,29 @@ gst_clapper_gl_sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
   GST_OBJECT_UNLOCK (clapper_sink);
 
   return TRUE;
+}
+
+static GstFlowReturn
+gst_clapper_gl_sink_wait_event (GstBaseSink * bsink, GstEvent * event)
+{
+  GstClapperGLSink *clapper_sink = GST_CLAPPER_GL_SINK (bsink);
+  GstFlowReturn ret;
+
+  ret = GST_BASE_SINK_CLASS (parent_class)->wait_event (bsink, event);
+
+  switch (event->type) {
+    case GST_EVENT_EOS:
+      if (ret == GST_FLOW_OK) {
+        GST_OBJECT_LOCK (clapper_sink);
+        clapper_sink->had_eos = TRUE;
+        GST_OBJECT_UNLOCK (clapper_sink);
+      }
+      break;
+    default:
+      break;
+  }
+
+  return ret;
 }
 
 static GstFlowReturn

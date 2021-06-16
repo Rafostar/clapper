@@ -25,6 +25,7 @@
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
 #define DEFAULT_PAR_N               0
 #define DEFAULT_PAR_D               1
+#define DEFAULT_KEEP_LAST_FRAME     FALSE
 
 #include <glib.h>
 #include <glib-object.h>
@@ -35,6 +36,7 @@ enum
   PROP_WIDGET,
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
+  PROP_KEEP_LAST_FRAME
 };
 
 gpointer gst_gtk_invoke_on_main (GThreadFunc func, gpointer data);
