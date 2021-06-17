@@ -40,7 +40,7 @@
 - [X] Remote playback controls via HTTP (VLC) + WebSockets
   - [ ] Expand available API
   - [ ] API documentation
-- [ ] Integration with the top bar
-  - [ ] MPRIS support
-  - [ ] Controls in the notifications panel
+- [X] Integration with the top bar
+  - [X] MPRIS support
+  - [X] Controls in the notifications panel
   - [ ] Progress bar in the notifications panel (maybe via extension)
