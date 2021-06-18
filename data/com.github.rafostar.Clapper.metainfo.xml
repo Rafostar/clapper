@@ -25,7 +25,7 @@
     <p>
       For best stability Wayland session is recommended. Wayland users with AMD/Intel GPUs
       can try enabling HIGHLY EXPERIMENTAL "vah264dec" plugin inside player preferences
-      for reduced CPU and GPU usage on standard (8-bit) H.264 videos.
+      for reduced CPU and GPU usage on H.264 videos.
     </p>
   </description>
   <developer_name>Rafał Dzięgiel</developer_name>
@@ -52,6 +52,26 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.3.0" date="2021-06-18">
+      <description>
+        <p>Changes:</p>
+        <ul>
+          <li>Added MPRIS support</li>
+          <li>Added repeat modes: single video, whole playlist and shuffle</li>
+          <li>Support opening folders with media files</li>
+          <li>Append playlist items by holding Ctrl while doing Drag and Drop</li>
+          <li>Improved handling of keyboard shortcuts</li>
+          <li>Added more keyboard shortcuts</li>
+          <li>Added window that shows available keyboard shortcuts</li>
+          <li>Show black screen by default after playback (make showing last frame optional instead)</li>
+          <li>Added ability to export playlist to file</li>
+          <li>Improve handling of changing displays with different resolutions</li>
+          <li>Added support for EGL under x11 with GTK 4.3.1 or later</li>
+          <li>Added missing symbolic app icon</li>
+          <li>Some misc bug fixes and code cleanups</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.2.1" date="2021-04-19">
       <description>
         <p>Player:</p>
