@@ -23,6 +23,7 @@ The media player is using [GStreamer](https://gstreamer.freedesktop.org/) as a m
 * [Adaptive UI](https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-mobile.png)
 * [Playlist from file](https://github.com/Rafostar/clapper/wiki/Playlists)
 * Chapters on progress bar
+* MPRIS support
 
 ## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
