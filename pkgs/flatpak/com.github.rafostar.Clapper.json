@@ -12,6 +12,7 @@
         "--socket=pulseaudio",
         "--share=network",
         "--device=all",
+        "--filesystem=xdg-run/pipewire-0:ro",
         "--filesystem=xdg-videos",
         "--own-name=org.mpris.MediaPlayer2.Clapper",
         "--talk-name=org.gnome.Shell",
@@ -51,5 +52,8 @@
                 }
             ]
         }
+    ],
+    "cleanup-commands": [
+        "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
 }

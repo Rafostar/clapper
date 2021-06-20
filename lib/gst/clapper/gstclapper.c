@@ -2962,8 +2962,8 @@ gst_clapper_main (gpointer data)
   GstClapper *self = GST_CLAPPER (data);
   GstBus *bus;
   GSource *source;
-  GstElement *scaletempo;
-  const gchar *env;
+  GstElement *scaletempo, *pipewiresink;
+  const gchar *pb_env, *pw_env;
 
   GST_TRACE_OBJECT (self, "Starting main thread");
 
@@ -2975,8 +2975,8 @@ gst_clapper_main (gpointer data)
   g_source_attach (source, self->context);
   g_source_unref (source);
 
-  env = g_getenv ("GST_CLAPPER_USE_PLAYBIN3");
-  if (env && g_str_has_prefix (env, "1"))
+  pb_env = g_getenv ("GST_CLAPPER_USE_PLAYBIN3");
+  if (pb_env && g_str_has_prefix (pb_env, "1"))
     self->use_playbin3 = TRUE;
 
   if (self->use_playbin3) {
@@ -3018,12 +3018,23 @@ gst_clapper_main (gpointer data)
     }
   }
 
+  pw_env = g_getenv ("GST_CLAPPER_USE_PIPEWIRE");
+  if (pw_env && g_str_has_prefix (pw_env, "1")) {
+    pipewiresink = gst_element_factory_make ("pipewiresink", NULL);
+    if (pipewiresink) {
+      g_object_set (self->playbin, "audio-sink", pipewiresink, NULL);
+    } else {
+      g_warning ("GstClapper: pipewiresink element not available. "
+          "Default audio sink will be used instead.");
+    }
+  }
+
   scaletempo = gst_element_factory_make ("scaletempo", NULL);
   if (scaletempo) {
     g_object_set (self->playbin, "audio-filter", scaletempo, NULL);
   } else {
-    g_warning ("GstClapper: scaletempo element not available. Audio pitch "
-        "will not be preserved during trick modes");
+    g_warning ("GstClapper: scaletempo element not available. "
+        "Audio pitch will not be preserved during trick modes.");
   }
 
   self->bus = bus = gst_element_get_bus (self->playbin);
