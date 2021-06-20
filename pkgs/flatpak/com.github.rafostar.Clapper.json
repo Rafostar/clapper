@@ -27,7 +27,7 @@
         "flathub/lib/sassc.json",
         "flathub/lib/liba52.json",
         "flathub/lib/libmpeg2.json",
-        "lib/libdv.json",
+        "flathub/lib/libdv.json",
         "flathub/lib/libdvdcss.json",
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
