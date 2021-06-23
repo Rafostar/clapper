@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gtk } = imports.gi;
+const { Gio, GLib, GObject, Gdk, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
@@ -144,15 +144,26 @@ class ClapperAppBase extends Gtk.Application
 
     _onIconThemeChanged(gtkSettings)
     {
-        const iconTheme = gtkSettings.gtk_icon_theme_name;
+        const iconThemeName = gtkSettings.gtk_icon_theme_name;
         const window = this.active_window;
         const hasAdwIcons = window.has_css_class('adwicons');
 
-        if(iconTheme === 'Adwaita' || iconTheme === 'Default') {
+        if(iconThemeName === 'Adwaita' || iconThemeName === 'Default') {
             if(!hasAdwIcons)
                 window.add_css_class('adwicons');
         }
         else if(hasAdwIcons)
             window.remove_css_class('adwicons');
+
+        const display = Gdk.Display.get_default();
+        if(!display) return;
+
+        const iconTheme = Gtk.IconTheme.get_for_display(display);
+        if(!iconTheme) return;
+
+        const { headerBar } = window.child.revealerTop;
+        if(!headerBar) return;
+
+        headerBar._onIconThemeChanged(iconTheme);
     }
 });

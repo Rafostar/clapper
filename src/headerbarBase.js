@@ -22,6 +22,7 @@ class ClapperHeaderBarBase extends Gtk.Box
 
         this.isMaximized = false;
         this.isMenuOnLeft = true;
+        this.hasPipIcons = false;
 
         const clapperPath = Misc.getClapperPath();
         const uiBuilder = Gtk.Builder.new_from_file(
@@ -213,16 +214,45 @@ class ClapperHeaderBarBase extends Gtk.Box
         return button;
     }
 
+    _updateFloatIcon(isFloating)
+    {
+        const floatButton = this.extraButtonsBox.get_first_child();
+        if(!floatButton) return;
+
+        const iconName = (!this.hasPipIcons)
+            ? 'go-bottom-symbolic'
+            : (isFloating)
+            ? 'pip-out-symbolic'
+            : 'pip-in-symbolic';
+
+        if(floatButton.icon_name !== iconName)
+            floatButton.icon_name = iconName;
+    }
+
     _onWindowButtonActivate(action)
     {
     }
 
-    _onFloatButtonClicked()
+    _onFloatButtonClicked(button)
     {
     }
 
-    _onFullscreenButtonClicked()
+    _onFullscreenButtonClicked(button)
     {
+    }
+
+    _onIconThemeChanged(iconTheme)
+    {
+        /* Those icons are relatively new,
+         * so check if theme has them */
+        this.hasPipIcons = (
+            iconTheme.has_icon('pip-in-symbolic')
+            && iconTheme.has_icon('pip-out-symbolic')
+        );
+
+        const { controlsRevealer } = this.root.child;
+
+        this._updateFloatIcon(!controlsRevealer.reveal_child);
     }
 });
 

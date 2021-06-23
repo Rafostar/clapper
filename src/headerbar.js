@@ -9,17 +9,20 @@ class ClapperHeaderBar extends HeaderBarBase
         this.activate_action(`window.${action}`, null);
     }
 
-    _onFloatButtonClicked()
+    _onFloatButtonClicked(button)
     {
         const clapperWidget = this.root.child;
+        const { controlsRevealer } = clapperWidget;
 
-        clapperWidget.controlsRevealer.toggleReveal();
+        controlsRevealer.toggleReveal();
 
         /* Reset timer to not disappear during click */
         clapperWidget._setHideControlsTimeout();
+
+        this._updateFloatIcon(!controlsRevealer.reveal_child);
     }
 
-    _onFullscreenButtonClicked()
+    _onFullscreenButtonClicked(button)
     {
         this.root.fullscreen();
     }
