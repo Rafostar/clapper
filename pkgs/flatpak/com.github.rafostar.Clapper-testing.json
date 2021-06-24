@@ -1,0 +1,53 @@
+{
+    "app-id": "com.github.rafostar.Clapper",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "40",
+    "sdk": "org.gnome.Sdk",
+    "command": "com.github.rafostar.Clapper",
+    "finish-args": [
+        "--share=ipc",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--device=dri",
+        "--socket=pulseaudio",
+        "--share=network",
+        "--device=all",
+        "--filesystem=xdg-run/pipewire-0:ro",
+        "--filesystem=xdg-videos",
+        "--own-name=org.mpris.MediaPlayer2.Clapper",
+        "--talk-name=org.gnome.Shell",
+        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
+        "--env=GST_VAAPI_ALL_DRIVERS=1"
+    ],
+    "modules": [
+        "flathub/shared-modules/gudev/gudev.json",
+        "flathub/lib/liba52.json",
+        "flathub/lib/libmpeg2.json",
+        "flathub/lib/libdv.json",
+        "flathub/lib/libdvdcss.json",
+        "flathub/lib/libdvdread.json",
+        "flathub/lib/libdvdnav.json",
+        "flathub/lib/libass.json",
+        "flathub/lib/ffmpeg.json",
+        "testing/gstreamer-1.0/gstreamer.json",
+        "testing/gstreamer-1.0/gst-plugins-base.json",
+        "testing/gstreamer-1.0/gst-plugins-good.json",
+        "testing/gstreamer-1.0/gst-plugins-bad.json",
+        "testing/gstreamer-1.0/gst-plugins-ugly.json",
+        "testing/gstreamer-1.0/gst-libav.json",
+        "testing/gstreamer-1.0/gstreamer-vaapi.json",
+        {
+            "name": "clapper",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "../../."
+                }
+            ]
+        }
+    ],
+    "cleanup-commands": [
+        "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
+    ]
+}

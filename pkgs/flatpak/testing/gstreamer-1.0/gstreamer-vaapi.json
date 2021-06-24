@@ -1,0 +1,16 @@
+{
+    "name": "gstreamer-vaapi",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Ddoc=disabled",
+        "-Dexamples=disabled",
+        "-Dtests=disabled"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi.git",
+            "branch": "master"
+        }
+    ]
+}
