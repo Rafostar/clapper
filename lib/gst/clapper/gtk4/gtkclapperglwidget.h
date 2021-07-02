@@ -100,12 +100,13 @@ gboolean        gtk_clapper_gl_widget_set_format           (GtkClapperGLWidget *
 void            gtk_clapper_gl_widget_set_buffer           (GtkClapperGLWidget * widget, GstBuffer * buffer);
 void            gtk_clapper_gl_widget_set_element          (GtkClapperGLWidget * widget, GstElement * element);
 
-GtkWidget *     gtk_clapper_gl_widget_new (void);
+GtkWidget *     gtk_clapper_gl_widget_new                  (void);
 
 gboolean        gtk_clapper_gl_widget_init_winsys          (GtkClapperGLWidget * widget);
 GstGLDisplay *  gtk_clapper_gl_widget_get_display          (GtkClapperGLWidget * widget);
 GstGLContext *  gtk_clapper_gl_widget_get_context          (GtkClapperGLWidget * widget);
 GstGLContext *  gtk_clapper_gl_widget_get_gtk_context      (GtkClapperGLWidget * widget);
+gboolean        gtk_clapper_gl_widget_update_output_format (GtkClapperGLWidget * widget, GstCaps * caps);
 
 G_END_DECLS
 
