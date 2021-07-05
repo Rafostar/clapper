@@ -37,15 +37,27 @@
 GST_DEBUG_CATEGORY (gst_debug_clapper_gl_sink);
 #define GST_CAT_DEFAULT gst_debug_clapper_gl_sink
 
+#define GST_CLAPPER_GL_SINK_CAPS \
+    "video/x-raw(" GST_CAPS_FEATURE_MEMORY_GL_MEMORY "), "              \
+    "format = (string) RGBA, "                                          \
+    "width = " GST_VIDEO_SIZE_RANGE ", "                                \
+    "height = " GST_VIDEO_SIZE_RANGE ", "                               \
+    "framerate = " GST_VIDEO_FPS_RANGE ", "                             \
+    "texture-target = (string) { 2D, external-oes } "                   \
+    " ; "                                                               \
+    "video/x-raw(" GST_CAPS_FEATURE_MEMORY_GL_MEMORY ","                \
+    GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION "), "           \
+    "format = (string) RGBA, "                                          \
+    "width = " GST_VIDEO_SIZE_RANGE ", "                                \
+    "height = " GST_VIDEO_SIZE_RANGE ", "                               \
+    "framerate = " GST_VIDEO_FPS_RANGE ", "                             \
+    "texture-target = (string) { 2D, external-oes } "
+
 static GstStaticPadTemplate gst_clapper_gl_sink_template =
     GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (GST_VIDEO_CAPS_MAKE_WITH_FEATURES
-        (GST_CAPS_FEATURE_MEMORY_GL_MEMORY, "RGBA") "; "
-        GST_VIDEO_CAPS_MAKE_WITH_FEATURES
-        (GST_CAPS_FEATURE_MEMORY_GL_MEMORY ", "
-            GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION, "RGBA")));
+    GST_STATIC_CAPS (GST_CLAPPER_GL_SINK_CAPS));
 
 static void gst_clapper_gl_sink_finalize (GObject * object);
 static void gst_clapper_gl_sink_set_property (GObject * object, guint prop_id,
@@ -672,6 +684,7 @@ static gboolean
 gst_clapper_gl_sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
 {
   GstClapperGLSink *clapper_sink = GST_CLAPPER_GL_SINK (bsink);
+  gboolean res = FALSE;
 
   GST_DEBUG ("set caps with %" GST_PTR_FORMAT, caps);
 
@@ -691,9 +704,11 @@ gst_clapper_gl_sink_set_caps (GstBaseSink * bsink, GstCaps * caps)
     GST_OBJECT_UNLOCK (clapper_sink);
     return FALSE;
   }
+
+  res = gtk_clapper_gl_widget_update_output_format (clapper_sink->widget, caps);
   GST_OBJECT_UNLOCK (clapper_sink);
 
-  return TRUE;
+  return res;
 }
 
 static GstFlowReturn

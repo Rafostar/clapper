@@ -26,9 +26,11 @@
 #include <stdio.h>
 #include <gst/gl/gstglfuncs.h>
 #include <gst/video/video.h>
+#include <gst/video/gstvideoaffinetransformationmeta.h>
 
 #include "gtkclapperglwidget.h"
 #include "gstgtkutils.h"
+#include "gstclapperglutils.h"
 
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
 #include <gdk/x11/gdkx.h>
@@ -60,17 +62,24 @@ GST_DEBUG_CATEGORY (gst_debug_clapper_gl_widget);
 struct _GtkClapperGLWidgetPrivate
 {
   gboolean initiated;
+
   GstGLDisplay *display;
   GdkGLContext *gdk_context;
   GstGLContext *other_context;
   GstGLContext *context;
+
+  GstGLTextureTarget texture_target;
+  guint gl_target;
+
   GstGLUpload *upload;
   GstGLShader *shader;
+
   GLuint vao;
   GLuint vertex_buffer;
   GLint attr_position;
   GLint attr_texture;
   GLuint current_tex;
+
   GstGLOverlayCompositor *overlay_compositor;
 };
 
@@ -503,9 +512,42 @@ gtk_clapper_gl_widget_init_redisplay (GtkClapperGLWidget * clapper_widget)
   GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl = priv->context->gl_vtable;
   GError *error = NULL;
+  GstGLSLStage *frag_stage, *vert_stage;
 
   gst_gl_insert_debug_marker (priv->other_context, "initializing redisplay");
-  if (!(priv->shader = gst_gl_shader_new_default (priv->context, &error))) {
+
+  vert_stage = gst_glsl_stage_new_with_string (priv->context,
+      GL_VERTEX_SHADER, GST_GLSL_VERSION_NONE,
+      GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY,
+      gst_gl_shader_string_vertex_mat4_vertex_transform);
+  if (priv->texture_target == GST_GL_TEXTURE_TARGET_EXTERNAL_OES) {
+    gchar *frag_str;
+
+    frag_str =
+        gst_gl_shader_string_fragment_external_oes_get_default
+        (priv->context, GST_GLSL_VERSION_NONE,
+        GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY);
+    frag_stage = gst_glsl_stage_new_with_string (priv->context,
+        GL_FRAGMENT_SHADER, GST_GLSL_VERSION_NONE,
+        GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY, frag_str);
+
+    g_free (frag_str);
+  } else {
+    frag_stage = gst_glsl_stage_new_default_fragment (priv->context);
+  }
+
+  if (!vert_stage || !frag_stage) {
+    GST_ERROR ("Failed to retrieve fragment shader for texture target");
+    if (vert_stage)
+      gst_object_unref (vert_stage);
+    if (frag_stage)
+      gst_object_unref (frag_stage);
+    return;
+  }
+
+  if (!(priv->shader =
+      gst_gl_shader_new_link_with_stages (priv->context, &error,
+          vert_stage, frag_stage, NULL))) {
     GST_ERROR ("Failed to initialize shader: %s", error->message);
     return;
   }
@@ -532,8 +574,9 @@ gtk_clapper_gl_widget_init_redisplay (GtkClapperGLWidget * clapper_widget)
 
   gl->BindBuffer (GL_ARRAY_BUFFER, 0);
 
-  priv->overlay_compositor =
-      gst_gl_overlay_compositor_new (priv->other_context);
+  if (!priv->overlay_compositor)
+    priv->overlay_compositor =
+        gst_gl_overlay_compositor_new (priv->other_context);
 
   priv->initiated = TRUE;
 }
@@ -563,6 +606,9 @@ gtk_clapper_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
 
   GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   const GstGLFuncs *gl;
+
+  GstVideoAffineTransformationMeta *af_meta;
+  gfloat matrix[16];
 
   GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
 
@@ -651,8 +697,14 @@ gtk_clapper_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
   gtk_clapper_gl_widget_bind_buffer (clapper_widget);
 
   gl->ActiveTexture (GL_TEXTURE0);
-  gl->BindTexture (GL_TEXTURE_2D, priv->current_tex);
+  gl->BindTexture (priv->gl_target, priv->current_tex);
   gst_gl_shader_set_uniform_1i (priv->shader, "tex", 0);
+
+  af_meta = gst_buffer_get_video_affine_transformation_meta (
+      clapper_widget->buffer);
+  gst_clapper_gl_get_affine_transformation_meta_as_ndc (af_meta, matrix);
+  gst_gl_shader_set_uniform_matrix_4fv (priv->shader,
+      "u_transformation", 1, FALSE, matrix);
 
   gl->DrawElements (GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 
@@ -661,7 +713,7 @@ gtk_clapper_gl_widget_render (GtkGLArea * widget, GdkGLContext * context)
   else
     gtk_clapper_gl_widget_unbind_buffer (clapper_widget);
 
-  gl->BindTexture (GL_TEXTURE_2D, 0);
+  gl->BindTexture (priv->gl_target, 0);
 
   /* Draw subtitles */
   gst_gl_overlay_compositor_draw_overlays (priv->overlay_compositor);
@@ -675,10 +727,34 @@ done:
 }
 
 static void
-_reset_gl (GtkClapperGLWidget * clapper_widget)
+_cleanup_gl_private (GtkClapperGLWidgetPrivate * priv)
+{
+  const GstGLFuncs *gl = priv->other_context->gl_vtable;
+
+  if (priv->vao) {
+    gl->DeleteVertexArrays (1, &priv->vao);
+    priv->vao = 0;
+  }
+  if (priv->vertex_buffer) {
+    gl->DeleteBuffers (1, &priv->vertex_buffer);
+    priv->vertex_buffer = 0;
+  }
+  if (priv->upload) {
+    gst_object_unref (priv->upload);
+    priv->upload = NULL;
+  }
+  if (priv->shader) {
+    gst_object_unref (priv->shader);
+    priv->shader = NULL;
+  }
+  if (priv->overlay_compositor)
+    gst_gl_overlay_compositor_free_overlays (priv->overlay_compositor);
+}
+
+static void
+_cleanup_gl_thread (GtkClapperGLWidget * clapper_widget)
 {
   GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
-  const GstGLFuncs *gl = priv->other_context->gl_vtable;
 
   if (!priv->gdk_context)
     priv->gdk_context = gtk_gl_area_get_context (GTK_GL_AREA (clapper_widget));
@@ -689,25 +765,29 @@ _reset_gl (GtkClapperGLWidget * clapper_widget)
   gdk_gl_context_make_current (priv->gdk_context);
   gst_gl_context_activate (priv->other_context, TRUE);
 
-  if (priv->vao) {
-    gl->DeleteVertexArrays (1, &priv->vao);
-    priv->vao = 0;
-  }
+  _cleanup_gl_private (priv);
 
-  if (priv->vertex_buffer) {
-    gl->DeleteBuffers (1, &priv->vertex_buffer);
-    priv->vertex_buffer = 0;
-  }
+  gst_gl_context_activate (priv->other_context, FALSE);
+  gdk_gl_context_clear_current ();
 
-  if (priv->upload) {
-    gst_object_unref (priv->upload);
-    priv->upload = NULL;
-  }
+  priv->initiated = FALSE;
+}
 
-  if (priv->shader) {
-    gst_object_unref (priv->shader);
-    priv->shader = NULL;
-  }
+static void
+_reset_gl (GtkClapperGLWidget * clapper_widget)
+{
+  GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
+
+  if (!priv->gdk_context)
+    priv->gdk_context = gtk_gl_area_get_context (GTK_GL_AREA (clapper_widget));
+
+  if (priv->gdk_context == NULL)
+    return;
+
+  gdk_gl_context_make_current (priv->gdk_context);
+  gst_gl_context_activate (priv->other_context, TRUE);
+
+  _cleanup_gl_private (priv);
 
   if (priv->overlay_compositor)
     gst_object_unref (priv->overlay_compositor);
@@ -1010,6 +1090,9 @@ gtk_clapper_gl_widget_init (GtkClapperGLWidget * clapper_widget)
 
   GST_INFO ("Created %" GST_PTR_FORMAT, priv->display);
 
+  priv->texture_target = GST_GL_TEXTURE_TARGET_NONE;
+  priv->gl_target = 0;
+
   gtk_gl_area_set_auto_render (GTK_GL_AREA (widget), FALSE);
 
   g_signal_connect_swapped (gtk_widget_get_settings (widget), "notify",
@@ -1093,4 +1176,45 @@ gtk_clapper_gl_widget_get_display (GtkClapperGLWidget * clapper_widget)
     return NULL;
 
   return gst_object_ref (clapper_widget->priv->display);
+}
+
+gboolean
+gtk_clapper_gl_widget_update_output_format (GtkClapperGLWidget * clapper_widget,
+    GstCaps * caps)
+{
+  GtkClapperGLWidgetPrivate *priv;
+  GstGLTextureTarget previous_target;
+  GstStructure *structure;
+  const gchar *target_str;
+  gboolean cleanup_gl;
+
+  GTK_CLAPPER_GL_WIDGET_LOCK (clapper_widget);
+  priv = clapper_widget->priv;
+
+  previous_target = priv->texture_target;
+  structure = gst_caps_get_structure (caps, 0);
+  target_str = gst_structure_get_string (structure, "texture-target");
+
+  if (!target_str)
+    target_str = GST_GL_TEXTURE_TARGET_2D_STR;
+
+  priv->texture_target = gst_gl_texture_target_from_string (target_str);
+  if (!priv->texture_target)
+    goto fail;
+
+  GST_DEBUG_OBJECT (clapper_widget, "Using texture-target: %s", target_str);
+  priv->gl_target = gst_gl_texture_target_to_gl (priv->texture_target);
+
+  cleanup_gl = (previous_target != GST_GL_TEXTURE_TARGET_NONE &&
+      priv->texture_target != previous_target);
+
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
+  if (cleanup_gl)
+    gst_gtk_invoke_on_main ((GThreadFunc) (GCallback) _cleanup_gl_thread, clapper_widget);
+
+  return TRUE;
+
+fail:
+  GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
+  return FALSE;
 }

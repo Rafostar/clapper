@@ -14,6 +14,7 @@ gstclapper_sources = [
   'gtk4/gstclapperglsink.c',
   'gtk4/gstgtkutils.c',
   'gtk4/gtkclapperglwidget.c',
+  'gtk4/gstclapperglutils.c',
 ]
 gstclapper_headers = [
   'clapper.h',
