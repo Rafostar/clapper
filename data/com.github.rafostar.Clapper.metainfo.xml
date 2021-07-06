@@ -12,7 +12,8 @@
       Clapper is a GNOME media player build using GJS with GTK4 toolkit.
       The media player is using GStreamer as a media backend and renders
       everything via OpenGL. Player works natively on both Xorg and Wayland.
-      It also supports VA-API on AMD/Intel GPUs.
+      It also supports hardware acceleration through VA-API on AMD/Intel GPUs,
+      NVDEC for Nvidia and V4L2 for mobile devices.
     </p>
     <p>
       The media player has an adaptive GUI. When viewing videos in "Windowed Mode",
@@ -21,11 +22,6 @@
       and semi-transparent for your viewing comfort. It also has a "Floating Mode" which
       displays video only on top of all other windows for a PiP-like viewing experience.
       Mobile friendly transitions are also supported.
-    </p>
-    <p>
-      For best stability Wayland session is recommended. Wayland users with AMD/Intel GPUs
-      can try enabling HIGHLY EXPERIMENTAL "vah264dec" plugin inside player preferences
-      for reduced CPU and GPU usage on H.264 videos.
     </p>
   </description>
   <developer_name>Rafał Dzięgiel</developer_name>
