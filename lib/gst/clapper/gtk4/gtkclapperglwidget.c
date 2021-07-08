@@ -330,7 +330,7 @@ gtk_clapper_gl_widget_key_event (GtkEventControllerKey * key_controller,
   GstElement *element;
 
   if ((element = g_weak_ref_get (&clapper_widget->element))) {
-    if (GST_IS_NAVIGATION (element)) {
+    if (GST_IS_NAVIGATION (element) && element->current_state > GST_STATE_READY) {
       GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *str = _gdk_key_to_navigation_string (keyval);
 
@@ -419,8 +419,11 @@ gtk_clapper_gl_widget_button_event (GtkGestureClick * gesture,
   GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   GstElement *element;
 
+  if (clapper_widget->display_width == 0 || clapper_widget->display_height == 0)
+    return FALSE;
+
   if ((element = g_weak_ref_get (&clapper_widget->element))) {
-    if (GST_IS_NAVIGATION (element)) {
+    if (GST_IS_NAVIGATION (element) && element->current_state > GST_STATE_PAUSED) {
       GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *key_type =
           gdk_event_get_event_type (event) == GDK_BUTTON_PRESS
@@ -449,9 +452,12 @@ gtk_clapper_gl_widget_motion_event (GtkEventControllerMotion * motion_controller
   GtkClapperGLWidget *clapper_widget = GTK_CLAPPER_GL_WIDGET (widget);
   GstElement *element;
 
-  if (x != clapper_widget->last_pos_x && y != clapper_widget->last_pos_y &&
-          (element = g_weak_ref_get (&clapper_widget->element))) {
-    if (GST_IS_NAVIGATION (element)) {
+  if ((x == clapper_widget->last_pos_x && y == clapper_widget->last_pos_y) ||
+      clapper_widget->display_width == 0 || clapper_widget->display_height == 0)
+    return FALSE;
+
+  if ((element = g_weak_ref_get (&clapper_widget->element))) {
+    if (GST_IS_NAVIGATION (element) && element->current_state > GST_STATE_PAUSED) {
       gdouble stream_x, stream_y;
 
       clapper_widget->last_pos_x = x;
