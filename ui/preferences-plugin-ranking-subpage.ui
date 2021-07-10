@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ClapperPrefsPluginRankingSubpage" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <property name="vexpand">True</property>
+    <property name="hexpand">True</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <child>
+          <object class="AdwPreferencesGroup" id="decoders_group">
+            <property name="title" translatable="yes">Decoders</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton">
+        <property name="label" translatable="yes">Return to the preferences</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="margin_top">12</property>
+        <property name="margin_bottom">12</property>
+        <signal name="clicked" handler="_onReturnClicked"/>
+        <style>
+          <class name="suggested-action"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

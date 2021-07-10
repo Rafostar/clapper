@@ -6,35 +6,31 @@
       <default>false</default>
       <summary>Automatically enter fullscreen when first file is loaded</summary>
     </key>
-    <key name="volume-initial" type="s">
-      <default>"restore"</default>
-      <summary>Mode used for startup volume value</summary>
+    <key name="volume-custom" type="b">
+      <default>false</default>
+      <summary>Set custom volume value at startup</summary>
     </key>
     <key name="volume-value" type="i">
       <default>100</default>
       <summary>Custom initial volume value in percentage after startup</summary>
     </key>
-    <key name="keep-last-frame" type="b">
-      <default>false</default>
-      <summary>Keep showing last video frame after playback finishes</summary>
-    </key>
-    <key name="close-auto" type="b">
-      <default>false</default>
-      <summary>Automatically close the app after playback finishes</summary>
+    <key name="after-playback" type="i">
+      <default>0</default>
+      <summary>What to do after playback finishes</summary>
     </key>
 
-    <!-- Behaviour -->
-    <key name="seeking-mode" type="s">
-      <default>"normal"</default>
+    <!-- Behavior -->
+    <key name="seeking-mode" type="i">
+      <default>0</default>
       <summary>Mode used for seeking</summary>
     </key>
     <key name="seeking-value" type="i">
       <default>10</default>
       <summary>Time amount to seek with single press of arrow keys</summary>
     </key>
-    <key name="seeking-unit" type="s">
-      <default>"second"</default>
-      <summary>Unit to use with seeking value</summary>
+    <key name="seeking-unit" type="i">
+      <default>0</default>
+      <summary>Unit ID to use with seeking value</summary>
     </key>
     <key name="resume-enabled" type="b">
       <default>true</default>
@@ -50,13 +46,13 @@
     </key>
 
     <!-- Audio -->
-    <key name="audio-offset" type="d">
+    <key name="audio-offset" type="i">
       <default>0</default>
       <summary>Offset time for audio tracks relative to video (milliseconds)</summary>
     </key>
 
     <!-- Subtitles -->
-    <key name="subtitle-offset" type="d">
+    <key name="subtitle-offset" type="i">
       <default>0</default>
       <summary>Offset time for subtitle tracks relative to video (milliseconds)</summary>
     </key>
@@ -95,7 +91,7 @@
 
     <!-- GStreamer -->
     <key name="plugin-ranking" type="s">
-      <default>'[{"apply":false,"name":"vah264dec","rank":300}]'</default>
+      <default>'{}'</default>
       <summary>Custom values for GStreamer plugin ranking</summary>
     </key>
     <key name="play-flags" type="i">
@@ -108,8 +104,8 @@
       <default>false</default>
       <summary>Enable to use adaptive streaming for YouTube</summary>
     </key>
-    <key name="yt-quality-type" type="s">
-      <default>"hfr"</default>
+    <key name="yt-quality-type" type="i">
+      <default>1</default>
       <summary>Max YouTube video quality type</summary>
     </key>
 

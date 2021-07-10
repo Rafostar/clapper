@@ -469,7 +469,7 @@ class ClapperControls extends Gtk.Box
         scrollController.connect('scroll', clapperWidget._onScroll.bind(clapperWidget));
         this.volumeButton.add_controller(scrollController);
 
-        const initialVolume = (settings.get_string('volume-initial') === 'custom')
+        const initialVolume = (settings.get_boolean('volume-custom'))
             ? settings.get_int('volume-value') / 100
             : settings.get_double('volume-last');
 

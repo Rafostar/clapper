@@ -3,8 +3,6 @@ const System = imports.system;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
 const Misc = imports.src.misc;
-const Prefs = imports.src.prefs;
-const PrefsBase = imports.src.prefsBase;
 
 const { debug } = Debug;
 
@@ -244,88 +242,6 @@ class ClapperResumeDialog extends Gtk.MessageDialog
             player.seek_seconds(this.resumeInfo.time);
 
         this.destroy();
-    }
-});
-
-var PrefsDialog = GObject.registerClass(
-class ClapperPrefsDialog extends Gtk.Dialog
-{
-    _init(window)
-    {
-        super._init({
-            transient_for: window,
-            destroy_with_parent: true,
-            modal: true,
-            title: 'Preferences',
-            default_width: 460,
-            default_height: 400,
-        });
-
-        const pages = [
-            {
-                title: 'Player',
-                pages: [
-                    {
-                        title: 'General',
-                        widget: Prefs.GeneralPage,
-                    },
-                    {
-                        title: 'Behaviour',
-                        widget: Prefs.BehaviourPage,
-                    },
-                    {
-                        title: 'Audio',
-                        widget: Prefs.AudioPage,
-                    },
-                    {
-                        title: 'Subtitles',
-                        widget: Prefs.SubtitlesPage,
-                    },
-                    {
-                        title: 'Network',
-                        widget: Prefs.NetworkPage,
-                    },
-                    {
-                        title: 'YouTube',
-                        widget: Prefs.YouTubePage,
-                    }
-                ]
-            },
-            {
-                title: 'Advanced',
-                pages: [
-                    {
-                        title: 'GStreamer',
-                        widget: Prefs.GStreamerPage,
-                    },
-                    {
-                        title: 'Tweaks',
-                        widget: Prefs.TweaksPage,
-                    }
-                ]
-            }
-        ];
-
-        const prefsNotebook = new PrefsBase.Notebook(pages);
-        prefsNotebook.add_css_class('prefsnotebook');
-
-        const area = this.get_content_area();
-        area.append(prefsNotebook);
-
-        this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
-        this.show();
-    }
-
-    _onCloseRequest(dialog)
-    {
-        debug('closing prefs dialog');
-
-        dialog.disconnect(this.closeSignal);
-        this.closeSignal = null;
-
-        const area = dialog.get_content_area();
-        const notebook = area.get_first_child();
-        notebook._onClose();
     }
 });
 

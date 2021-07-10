@@ -492,7 +492,7 @@ class ClapperWidget extends Gtk.Grid
         if(
             !this.isSeekable
             || this.controls.isPositionDragging
-            || !player.seek_done
+            || !player.seekDone
         )
             return;
 

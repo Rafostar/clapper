@@ -1,3 +1,8 @@
+var QualityType = {
+    0: 'normal',
+    1: 'hfr',
+};
+
 const Itags = {
     video: {
         h264: {

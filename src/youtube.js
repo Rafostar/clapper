@@ -317,7 +317,7 @@ var YouTubeClient = GObject.registerClass({
             width: monitor.geometry.width * monitor.scale_factor,
             height: monitor.geometry.height * monitor.scale_factor,
             codec: 'h264',
-            type: settings.get_string('yt-quality-type'),
+            type: YTItags.QualityType[settings.get_int('yt-quality-type')],
             adaptive: settings.get_boolean('yt-adaptive-enabled'),
         };
 

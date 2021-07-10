@@ -1,5 +1,6 @@
 const { Gtk } = imports.gi;
 const Dialogs = imports.src.dialogs;
+const Prefs = imports.src.prefs;
 const Misc = imports.src.misc;
 
 var actions = {
@@ -42,7 +43,7 @@ function handleAction(action, window)
             new Dialogs.UriDialog(window);
             break;
         case 'prefs':
-            new Dialogs.PrefsDialog(window);
+            new Prefs.PrefsWindow(window);
             break;
         case 'shortcuts':
             if(!window.get_help_overlay()) {

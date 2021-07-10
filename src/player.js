@@ -44,7 +44,7 @@ class ClapperPlayer extends GstClapper.Clapper
         this.ytClient = null;
         this.playlistWidget = new PlaylistWidget();
 
-        this.seek_done = true;
+        this.seekDone = true;
         this.needsFastSeekRestore = false;
         this.customVideoTitle = null;
 
@@ -70,6 +70,7 @@ class ClapperPlayer extends GstClapper.Clapper
     set_and_bind_settings()
     {
         const settingsToSet = [
+            'after-playback',
             'seeking-mode',
             'audio-offset',
             'subtitle-offset',
@@ -81,7 +82,6 @@ class ClapperPlayer extends GstClapper.Clapper
             this._onSettingsKeyChanged(settings, key);
 
         const flag = Gio.SettingsBindFlags.GET;
-        settings.bind('keep-last-frame', this.widget, 'keep-last-frame', flag);
         settings.bind('subtitle-font', this.pipeline, 'subtitle-font-desc', flag);
     }
 
@@ -96,25 +96,23 @@ class ClapperPlayer extends GstClapper.Clapper
 
     set_all_plugins_ranks()
     {
-        let data = [];
+        let data = {};
 
         /* Set empty plugin list if someone messed it externally */
         try {
             data = JSON.parse(settings.get_string('plugin-ranking'));
-            if(!Array.isArray(data))
-                throw new Error('plugin ranking data is not an array!');
+            if(Array.isArray(data)) {
+                data = {};
+                throw new Error('plugin ranking data is not an object');
+            }
         }
         catch(err) {
             debug(err);
-            settings.set_string('plugin-ranking', "[]");
+            settings.set_string('plugin-ranking', "{}");
         }
 
-        for(let plugin of data) {
-            if(!plugin.apply || !plugin.name)
-                continue;
-
-            this.set_plugin_rank(plugin.name, plugin.rank);
-        }
+        for(let plugin of Object.keys(data))
+            this.set_plugin_rank(plugin, data[plugin]);
     }
 
     set_plugin_rank(name, rank)
@@ -284,15 +282,13 @@ class ClapperPlayer extends GstClapper.Clapper
         if(this.needsTocUpdate)
             return;
 
-        this.seek_done = false;
+        this.seekDone = false;
 
         if(this.state === GstClapper.ClapperState.STOPPED)
             this.pause();
 
         if(position < 0)
             position = 0;
-
-        debug(`${this.seekingMode} seeking to position: ${position}`);
 
         super.seek(position);
     }
@@ -304,13 +300,12 @@ class ClapperPlayer extends GstClapper.Clapper
 
     seek_chapter(seconds)
     {
-        if(this.seekingMode !== 'fast') {
+        if(this.seek_mode !== GstClapper.ClapperSeekMode.FAST) {
             this.seek_seconds(seconds);
             return;
         }
 
         this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
-        this.seekingMode = 'normal';
         this.needsFastSeekRestore = true;
 
         this.seek_seconds(seconds);
@@ -318,20 +313,19 @@ class ClapperPlayer extends GstClapper.Clapper
 
     adjust_position(isIncrease)
     {
-        this.seek_done = false;
+        this.seekDone = false;
 
         const { controls } = this.widget.get_ancestor(Gtk.Grid);
         const max = controls.positionAdjustment.get_upper();
-        const seekingUnit = settings.get_string('seeking-unit');
 
         let seekingValue = settings.get_int('seeking-value');
 
-        switch(seekingUnit) {
-            case 'minute':
-                seekingValue *= 60;
+        switch(settings.get_int('seeking-unit')) {
+            case 2: /* Percentage */
+                seekingValue *= max / 100;
                 break;
-            case 'percentage':
-                seekingValue = max * seekingValue / 100;
+            case 1: /* Minute */
+                seekingValue *= 60;
                 break;
             default:
                 break;
@@ -538,16 +532,15 @@ class ClapperPlayer extends GstClapper.Clapper
         const clapperWidget = player.widget.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        if(!this.seek_done && state !== GstClapper.ClapperState.BUFFERING) {
+        if(!this.seekDone && state !== GstClapper.ClapperState.BUFFERING) {
             clapperWidget.updateTime();
 
             if(this.needsFastSeekRestore) {
                 this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
-                this.seekingMode = 'fast';
                 this.needsFastSeekRestore = false;
             }
 
-            this.seek_done = true;
+            this.seekDone = true;
             debug('seeking finished');
 
             clapperWidget._onPlayerPositionUpdated(this, this.position);
@@ -566,7 +559,8 @@ class ClapperPlayer extends GstClapper.Clapper
         if(this.playlistWidget._handleStreamEnded(player))
             return;
 
-        if(settings.get_boolean('close-auto')) {
+        /* After playback equal 2 means close the app */
+        if(settings.get_int('after-playback') === 2) {
             /* Stop will be automatically called soon afterwards */
             this.quitOnStop = true;
             this._performCloseCleanup(this.widget.get_root());
@@ -640,16 +634,18 @@ class ClapperPlayer extends GstClapper.Clapper
         let root, value, action;
 
         switch(key) {
+            case 'after-playback':
+                this.widget.keep_last_frame = (settings.get_int(key) === 1);
+                break;
             case 'seeking-mode':
-                this.seekingMode = settings.get_string('seeking-mode');
-                switch(this.seekingMode) {
-                    case 'fast':
+                switch(settings.get_int(key)) {
+                    case 2: /* Fast */
                         this.set_seek_mode(GstClapper.ClapperSeekMode.FAST);
                         break;
-                    case 'accurate':
+                    case 1: /* Accurate */
                         this.set_seek_mode(GstClapper.ClapperSeekMode.ACCURATE);
                         break;
-                    default:
+                    default: /* Normal */
                         this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
                         break;
                 }
@@ -669,12 +665,12 @@ class ClapperPlayer extends GstClapper.Clapper
                 root[action + '_css_class'](gpuClass);
                 break;
             case 'audio-offset':
-                value = Math.round(settings.get_double(key) * -Gst.MSECOND);
+                value = Math.round(settings.get_int(key) * -Gst.MSECOND);
                 this.set_audio_video_offset(value);
                 debug(`set audio-video offset: ${value}`);
                 break;
             case 'subtitle-offset':
-                value = Math.round(settings.get_double(key) * -Gst.MSECOND);
+                value = Math.round(settings.get_int(key) * -Gst.MSECOND);
                 this.set_subtitle_video_offset(value);
                 debug(`set subtitle-video offset: ${value}`);
                 break;
