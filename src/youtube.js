@@ -975,6 +975,7 @@ function checkYouTubeUri(uri)
     switch(host) {
         case 'www.youtube.com':
         case 'youtube.com':
+        case 'm.youtube.com':
             videoId = gstUri.get_query_value('v');
             if(!videoId) {
                 /* Handle embedded videos */
