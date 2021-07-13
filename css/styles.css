@@ -61,9 +61,6 @@ radio {
 .roundedcorners {
   border-radius: 8px;
 }
-.adwthemedark scale trough highlight {
-  filter: brightness(120%);
-}
 
 .videowidget {
   min-width: 320px;
