@@ -62,6 +62,16 @@ radio {
   border-radius: 8px;
 }
 
+/* Reduce sliders size */
+scale trough slider {
+  min-height: 18px;
+  min-width: 18px;
+}
+.fullscreen.tvmode scale trough slider {
+  min-height: 20px;
+  min-width: 20px;
+}
+
 .videowidget {
   min-width: 320px;
   min-height: 180px;
