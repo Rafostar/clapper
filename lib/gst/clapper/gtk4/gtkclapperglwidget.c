@@ -321,6 +321,22 @@ _gdk_key_to_navigation_string (guint keyval)
 }
 
 static gboolean
+_get_is_navigation_allowed (GstElement * element, GstState min_state)
+{
+  if (GST_IS_NAVIGATION (element)) {
+    GstState nav_state;
+
+    GST_OBJECT_LOCK (element);
+    nav_state = element->current_state;
+    GST_OBJECT_UNLOCK (element);
+
+    return nav_state >= min_state;
+  }
+
+  return FALSE;
+}
+
+static gboolean
 gtk_clapper_gl_widget_key_event (GtkEventControllerKey * key_controller,
     guint keyval, guint keycode, GdkModifierType state)
 {
@@ -330,7 +346,7 @@ gtk_clapper_gl_widget_key_event (GtkEventControllerKey * key_controller,
   GstElement *element;
 
   if ((element = g_weak_ref_get (&clapper_widget->element))) {
-    if (GST_IS_NAVIGATION (element) && element->current_state > GST_STATE_READY) {
+    if (_get_is_navigation_allowed (element, GST_STATE_PAUSED)) {
       GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *str = _gdk_key_to_navigation_string (keyval);
 
@@ -423,7 +439,7 @@ gtk_clapper_gl_widget_button_event (GtkGestureClick * gesture,
     return FALSE;
 
   if ((element = g_weak_ref_get (&clapper_widget->element))) {
-    if (GST_IS_NAVIGATION (element) && element->current_state > GST_STATE_PAUSED) {
+    if (_get_is_navigation_allowed (element, GST_STATE_PLAYING)) {
       GdkEvent *event = gtk_event_controller_get_current_event (controller);
       const gchar *key_type =
           gdk_event_get_event_type (event) == GDK_BUTTON_PRESS
@@ -457,7 +473,7 @@ gtk_clapper_gl_widget_motion_event (GtkEventControllerMotion * motion_controller
     return FALSE;
 
   if ((element = g_weak_ref_get (&clapper_widget->element))) {
-    if (GST_IS_NAVIGATION (element) && element->current_state > GST_STATE_PAUSED) {
+    if (_get_is_navigation_allowed (element, GST_STATE_PLAYING)) {
       gdouble stream_x, stream_y;
 
       clapper_widget->last_pos_x = x;
