@@ -130,16 +130,6 @@ class ClapperAppBase extends Gtk.Application
         }
         else if(hasAdwThemeDark)
             window.remove_css_class('adwthemedark');
-
-        if(!theme.endsWith('-dark'))
-            return;
-
-        /* We need to request a default theme with optional dark variant
-           to make the "gtk_application_prefer_dark_theme" setting work */
-        const parsedTheme = theme.substring(0, theme.lastIndexOf('-'));
-
-        gtkSettings.gtk_theme_name = parsedTheme;
-        debug(`set theme: ${parsedTheme}`);
     }
 
     _onIconThemeChanged(gtkSettings)
