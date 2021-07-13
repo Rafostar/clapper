@@ -183,6 +183,7 @@ scale trough slider {
   background: transparent;
   border-color: transparent;
   box-shadow: none;
+  outline: none;
 }
 .positionscale mark indicator {
   min-height: 6px;
