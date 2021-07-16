@@ -32,6 +32,7 @@ class ClapperWidget extends Gtk.Grid
         this.isDragAllowed = false;
         this.isSwipePerformed = false;
         this.isReleaseKeyEnabled = false;
+        this.isLongPressed = false;
 
         this.isCursorInPlayer = false;
         this.isPopoverOpen = false;
@@ -82,6 +83,11 @@ class ClapperWidget extends Gtk.Grid
         playerWidget.add_controller(clickGesture);
         const clickGestureTop = this._getClickGesture();
         this.revealerTop.add_controller(clickGestureTop);
+
+        const longPressGesture = this._getLongPressGesture();
+        playerWidget.add_controller(longPressGesture);
+        const longPressGestureTop = this._getLongPressGesture();
+        this.revealerTop.add_controller(longPressGestureTop);
 
         const dragGesture = this._getDragGesture();
         playerWidget.add_controller(dragGesture);
@@ -672,12 +678,24 @@ class ClapperWidget extends Gtk.Grid
 
     _getClickGesture()
     {
-        const clickGesture = new Gtk.GestureClick();
-        clickGesture.set_button(0);
+        const clickGesture = new Gtk.GestureClick({
+            button: 0,
+        });
         clickGesture.connect('pressed', this._onPressed.bind(this));
         clickGesture.connect('released', this._onReleased.bind(this));
 
         return clickGesture;
+    }
+
+    _getLongPressGesture()
+    {
+        const longPressGesture = new Gtk.GestureLongPress({
+            touch_only: true,
+            delay_factor: 0.9,
+        });
+        longPressGesture.connect('pressed', this._onLongPressed.bind(this));
+
+        return longPressGesture;
     }
 
     _getDragGesture()
@@ -751,6 +769,7 @@ class ClapperWidget extends Gtk.Grid
         const isDouble = (nPress % 2 == 0);
         this.isDragAllowed = !isDouble;
         this.isSwipePerformed = false;
+        this.isLongPressed = false;
 
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
@@ -767,8 +786,11 @@ class ClapperWidget extends Gtk.Grid
 
     _onReleased(gesture, nPress, x, y)
     {
-        /* Reveal if touch was not a swipe or was already revealed */
-        if(!this.isSwipePerformed || this.revealerBottom.child_revealed) {
+        /* Reveal if touch was not a swipe/long press or was already revealed */
+        if(
+            (!this.isSwipePerformed && !this.isLongPressed)
+            || this.revealerBottom.child_revealed
+        ) {
             const { source } = gesture.get_device();
 
             switch(source) {
@@ -780,6 +802,15 @@ class ClapperWidget extends Gtk.Grid
                     break;
             }
         }
+    }
+
+    _onLongPressed(gesture, x, y)
+    {
+        if(!this.isDragAllowed || !this.isFullscreenMode)
+            return;
+
+        this.isLongPressed = true;
+        this.player.toggle_play();
     }
 
     _onKeyReleased(controller, keyval, keycode, state)
