@@ -901,7 +901,7 @@ gtk_clapper_gl_widget_set_buffer (GtkClapperGLWidget * clapper_widget,
 }
 
 static GstGLAPI
-_get_current_gl_api (GstGLPlatform platform)
+_get_current_gl_api (GstGLDisplay * display, GstGLPlatform platform)
 {
   GstGLAPI gl_api = GST_GL_API_NONE;
   guint gl_major = 0, gl_minor = 0;
@@ -910,8 +910,15 @@ _get_current_gl_api (GstGLPlatform platform)
 
   if (gl_api) {
     const gboolean is_es = gl_api & (GST_GL_API_GLES1 | GST_GL_API_GLES2);
+    gchar *gl_api_str = gst_gl_api_to_string (gl_api);
 
-    GST_INFO ("Using OpenGL%s %d.%d", is_es ? " ES" : "", gl_major, gl_minor);
+    GST_INFO ("Using GL API: %s, ver: %d.%d", gl_api_str, gl_major, gl_minor);
+    g_free (gl_api_str);
+
+    if (is_es && platform == GST_GL_PLATFORM_EGL && !g_getenv ("GST_GL_API")) {
+      GST_DEBUG ("No GST_GL_API env and GTK is using EGL GLES2, enforcing it");
+      gst_gl_display_filter_gl_api (display, GST_GL_API_GLES2);
+    }
   }
 
   return gl_api;
@@ -962,7 +969,7 @@ _get_gl_context (GtkClapperGLWidget * clapper_widget)
   }
 #endif
   if (gl_handle) {
-    gl_api = _get_current_gl_api (platform);
+    gl_api = _get_current_gl_api (priv->display, platform);
     priv->other_context =
         gst_gl_context_new_wrapped (priv->display, gl_handle,
         platform, gl_api);
@@ -971,7 +978,7 @@ _get_gl_context (GtkClapperGLWidget * clapper_widget)
 #if GST_GL_HAVE_WINDOW_WAYLAND && GST_GL_HAVE_PLATFORM_EGL && defined (GDK_WINDOWING_WAYLAND)
   if (GST_IS_GL_DISPLAY_WAYLAND (priv->display)) {
     platform = GST_GL_PLATFORM_EGL;
-    gl_api = _get_current_gl_api (platform);
+    gl_api = _get_current_gl_api (priv->display, platform);
     gl_handle = gst_gl_context_get_current_gl_context (platform);
     if (gl_handle)
       priv->other_context =
