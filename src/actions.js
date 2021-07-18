@@ -21,6 +21,7 @@ var actions = {
     change_repeat: ['<Ctrl>r'],
     reveal_controls: ['Return'],
     toggle_fullscreen: ['F11', 'f'],
+    leave_fullscreen: ['Escape'],
     quit: ['<Ctrl>q', 'q'],
 };
 
@@ -85,6 +86,9 @@ function handleAction(action, window)
             if(clapperWidget.isFullscreenMode)
                 clapperWidget.revealControls();
             break;
+        case 'leave_fullscreen':
+            if(!clapperWidget.isFullscreenMode)
+                break;
         case 'toggle_fullscreen':
             clapperWidget.toggleFullscreen();
             break;

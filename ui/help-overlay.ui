@@ -22,6 +22,12 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Leave fullscreen</property>
+                <property name="accelerator">Escape</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Reveal OSD (fullscreen only)</property>
                 <property name="accelerator">Return</property>
               </object>
