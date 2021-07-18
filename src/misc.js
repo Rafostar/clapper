@@ -219,6 +219,19 @@ function getUriProtocol(uri)
     return (arr.length > 1) ? arr[0] : null;
 }
 
+function getIsTouch(gesture)
+{
+    const { source } = gesture.get_device();
+
+    switch(source) {
+        case Gdk.InputSource.PEN:
+        case Gdk.InputSource.TOUCHSCREEN:
+            return true;
+        default:
+            return false;
+    }
+}
+
 function encodeHTML(text)
 {
     return text.replace(/&/g, '&amp;')
