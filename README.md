@@ -2,8 +2,8 @@
 [![Flatpak](https://github.com/Rafostar/clapper/actions/workflows/flatpak.yml/badge.svg?event=push)](https://github.com/Rafostar/clapper/actions/workflows/flatpak.yml)
 [![Flatpak Testing](https://github.com/Rafostar/clapper/actions/workflows/flatpak-testing.yml/badge.svg?event=schedule)](https://github.com/Rafostar/clapper/actions/workflows/flatpak-testing.yml)
 
-A GNOME media player build using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit.
-The media player is using [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
+A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit.
+The media player uses [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-windowed.png"><br>
@@ -34,14 +34,14 @@ Additionally it also has a few patches, thus some functionalities work better (o
 
 <a href='https://flathub.org/apps/details/com.github.rafostar.Clapper'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
 
-**Important:** If you have been using the flatpak package from my custom 3rd party repo, please remove it and replace your installation with version from Flathub. That repository will not be maintained any longer. Thank you for understanding.
+**Important:** If you have been using the Flatpak package from my custom 3rd party repo, please remove it and replace your installation with version from Flathub. That repository will not be maintained any longer. Thank you for understanding.
 
 ## Packages
 The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
 
 #### Debian, Fedora & openSUSE
 Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).<br>
-Those are automatically build on each git commit, thus are considered unstable.
+Those are automatically built on each git commit, and are thus considered unstable.
 
 #### Arch Linux
 You can get Clapper from the AUR:
@@ -56,14 +56,14 @@ sudo meson install -C builddir
 
 ## Q&A
 **Q:** Does using `GJS` negatively impact video performance?<br>
-**A:** Absolutely not. `GJS` here is used to put together the GUI during startup.
-It has nothing to do with video rendering. All used `GTK4` and `GStreamer` libraries are in C.
-Even the custom video widget that I prepared for this player (based on original `GTK3` implementation) is a compiled C code.
-All these libs are acting "on their own" and no function calls from `GJS` related to video decoding and rendering are performed during playback.
+**A:** Absolutely not. `GJS` is only used to put together the GUI during startup.
+It has nothing to do with video rendering. All `GTK4` and `GStreamer` libraries are in C.
+Even the custom video widget that I prepared for this player (based on original `GTK3` implementation) is compiled C code.
+All of these libs are acting "on their own" and no function calls from `GJS` related to video decoding and rendering are performed during playback.
 
 **Q:** What settings should I set to maximize performance?<br>
 **A:** As of now, player works best on `Wayland` session. `Wayland` users can try enabling highly experimental `vah264dec` plugin for improved performance (this plugin does not work on `Xorg` right now) for standard (8-bit) `H.264` videos.
-It can be enabled from inside player preferences dialog inside `Advanced -> GStreamer` tab using customizable `Plugin Ranking` feature.
+It can be enabled from inside the player preferences dialog inside `Advanced -> GStreamer` tab using the customizable `Plugin Ranking` feature.
 Since the whole app is rendered using your GPU, users of VERY weak GPUs might want to disable the "render window shadows" option to have more GPU power available for non-fullscreen video rendering.
 
 ## Other Questions?
