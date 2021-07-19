@@ -257,10 +257,9 @@ class ClapperRevealerBottom extends CustomRevealer
     {
         const maxWidth = 1720;
 
-        if(layoutWidth <= maxWidth)
-            return;
-
-        const margin = (layoutWidth - maxWidth) / 2;
+        const margin = (layoutWidth > maxWidth)
+            ? (layoutWidth - maxWidth) / 2
+            : 0;
 
         this.margin_start = margin;
         this.margin_end = margin;
