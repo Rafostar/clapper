@@ -70,6 +70,6 @@ Since the whole app is rendered using your GPU, users of VERY weak GPUs might wa
 Feel free to ask me any questions. Come and talk on Matrix: [#clapper-player:matrix.org](https://matrix.to/#/#clapper-player:matrix.org)
 
 ## Special Thanks
-Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
+Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files. Big thanks to [bridadan](https://github.com/bridadan) and [Uniformbuffer3](https://github.com/Uniformbuffer3) for helping with testing V4L2 and NVDEC hardware acceleration methods.
 
 Thanks a lot to all the people who are supporting the development with their anonymous donations through [Liberapay](https://liberapay.com/Clapper/). I :heart: U.
