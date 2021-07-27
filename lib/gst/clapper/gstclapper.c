@@ -36,7 +36,9 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 #include <gst/video/colorbalance.h>
+#include <gst/video/gstvideodecoder.h>
 #include <gst/audio/streamvolume.h>
+#include <gst/audio/gstaudiodecoder.h>
 #include <gst/tag/tag.h>
 #include <gst/pbutils/descriptions.h>
 
@@ -112,6 +114,8 @@ enum
   SIGNAL_VIDEO_DIMENSIONS_CHANGED,
   SIGNAL_MEDIA_INFO_UPDATED,
   SIGNAL_MUTE_CHANGED,
+  SIGNAL_VIDEO_DECODER_CHANGED,
+  SIGNAL_AUDIO_DECODER_CHANGED,
   SIGNAL_LAST
 };
 
@@ -180,6 +184,10 @@ struct _GstClapper
 
   /* If should emit media info updated signal */
   gboolean needs_info_update;
+
+  /* Prevent notify with the same decoders */
+  gchar *last_vdecoder;
+  gchar *last_adecoder;
 
   /* For playbin3 */
   gboolean use_playbin3;
@@ -468,6 +476,16 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("warning", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 1, G_TYPE_ERROR);
+
+  signals[SIGNAL_VIDEO_DECODER_CHANGED] =
+      g_signal_new ("video-decoder-changed", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
+      NULL, NULL, G_TYPE_NONE, 1, G_TYPE_STRING);
+
+  signals[SIGNAL_AUDIO_DECODER_CHANGED] =
+      g_signal_new ("audio-decoder-changed", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
+      NULL, NULL, G_TYPE_NONE, 1, G_TYPE_STRING);
 }
 
 static void
@@ -506,6 +524,8 @@ gst_clapper_finalize (GObject * object)
   g_free (self->uri);
   g_free (self->redirect_uri);
   g_free (self->suburi);
+  g_free (self->last_vdecoder);
+  g_free (self->last_adecoder);
   g_free (self->video_sid);
   g_free (self->audio_sid);
   g_free (self->subtitle_sid);
@@ -2929,6 +2949,79 @@ mute_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
   }
 }
 
+typedef struct
+{
+  GstClapper *clapper;
+  gchar *decoder_name;
+} DecoderChangedSignalData;
+
+static void
+video_decoder_changed_dispatch (gpointer user_data)
+{
+  DecoderChangedSignalData *data = user_data;
+
+  if (data->clapper->inhibit_sigs)
+    return;
+
+  g_signal_emit (data->clapper, signals[SIGNAL_VIDEO_DECODER_CHANGED],
+      0, data->decoder_name);
+}
+
+static void
+audio_decoder_changed_dispatch (gpointer user_data)
+{
+  DecoderChangedSignalData *data = user_data;
+
+  if (data->clapper->inhibit_sigs)
+    return;
+
+  g_signal_emit (data->clapper, signals[SIGNAL_AUDIO_DECODER_CHANGED],
+      0, data->decoder_name);
+}
+
+static void
+decoder_changed_signal_data_free (DecoderChangedSignalData * data)
+{
+  g_object_unref (data->clapper);
+  g_free (data->decoder_name);
+  g_free (data);
+}
+
+static void
+emit_decoder_changed (GstClapper * self, gchar * decoder_name,
+    gboolean is_video)
+{
+  GstClapperSignalDispatcherFunc func = NULL;
+
+  if (is_video) {
+    if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
+        signals[SIGNAL_VIDEO_DECODER_CHANGED], 0, NULL, NULL, NULL) != 0 &&
+        g_strcmp0 (self->last_vdecoder, decoder_name) != 0) {
+      func = video_decoder_changed_dispatch;
+      g_free (self->last_vdecoder);
+      self->last_vdecoder = g_strdup (decoder_name);
+    }
+  } else {
+    if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
+        signals[SIGNAL_AUDIO_DECODER_CHANGED], 0, NULL, NULL, NULL) != 0 &&
+        g_strcmp0 (self->last_adecoder, decoder_name) != 0) {
+      func = audio_decoder_changed_dispatch;
+      g_free (self->last_adecoder);
+      self->last_adecoder = g_strdup (decoder_name);
+    }
+  }
+
+  if (func) {
+    DecoderChangedSignalData *data = g_new (DecoderChangedSignalData, 1);
+
+    data->clapper = g_object_ref (self);
+    data->decoder_name = g_strdup (decoder_name);
+
+    gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
+        func, data, (GDestroyNotify) decoder_changed_signal_data_free);
+  }
+}
+
 static void
 element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
 {
@@ -2940,6 +3033,11 @@ element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
     gchar *plugin_name = gst_object_get_name (GST_OBJECT_CAST (factory));
     if (plugin_name) {
       GST_INFO_OBJECT (self, "Plugin setup: %s", plugin_name);
+
+      if (GST_IS_VIDEO_DECODER (element))
+        emit_decoder_changed (self, plugin_name, TRUE);
+      else if (GST_IS_AUDIO_DECODER (element))
+        emit_decoder_changed (self, plugin_name, FALSE);
 
       /* TODO: Set plugin props */
     }
