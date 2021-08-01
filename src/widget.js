@@ -676,6 +676,26 @@ class ClapperWidget extends Gtk.Grid
         });
     }
 
+    _handleDoublePress(gesture, x, y)
+    {
+        if(!this.isFullscreenMode || !Misc.getIsTouch(gesture))
+            return this.toggleFullscreen();
+
+        const fieldSize = this.layoutWidth / 6;
+
+        if(x < fieldSize) {
+            debug('left side double press');
+            this.player.playlistWidget.prevTrack();
+        }
+        else if(x > this.layoutWidth - fieldSize) {
+            debug('right side double press');
+            this.player.playlistWidget.nextTrack();
+        }
+        else {
+            this.toggleFullscreen();
+        }
+    }
+
     _getClickGesture()
     {
         const clickGesture = new Gtk.GestureClick({
@@ -767,6 +787,7 @@ class ClapperWidget extends Gtk.Grid
     {
         const button = gesture.get_current_button();
         const isDouble = (nPress % 2 == 0);
+
         this.isDragAllowed = !isDouble;
         this.isSwipePerformed = false;
         this.isLongPressed = false;
@@ -774,7 +795,7 @@ class ClapperWidget extends Gtk.Grid
         switch(button) {
             case Gdk.BUTTON_PRIMARY:
                 if(isDouble)
-                    this.toggleFullscreen();
+                    this._handleDoublePress(gesture, x, y);
                 break;
             case Gdk.BUTTON_SECONDARY:
                 this.player.toggle_play();
@@ -788,20 +809,11 @@ class ClapperWidget extends Gtk.Grid
     {
         /* Reveal if touch was not a swipe/long press or was already revealed */
         if(
-            (!this.isSwipePerformed && !this.isLongPressed)
-            || this.revealerBottom.child_revealed
-        ) {
-            const { source } = gesture.get_device();
-
-            switch(source) {
-                case Gdk.InputSource.PEN:
-                case Gdk.InputSource.TOUCHSCREEN:
-                    this.revealControls();
-                    break;
-                default:
-                    break;
-            }
-        }
+            ((!this.isSwipePerformed && !this.isLongPressed)
+            || this.revealerBottom.child_revealed)
+            && Misc.getIsTouch(gesture)
+        )
+            this.revealControls();
     }
 
     _onLongPressed(gesture, x, y)

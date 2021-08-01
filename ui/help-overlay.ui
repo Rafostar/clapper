@@ -17,6 +17,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Toggle fullscreen</property>
+                <property name="subtitle" translatable="yes">Double tap | Double click</property>
                 <property name="accelerator">F11 f</property>
               </object>
             </child>
@@ -29,6 +30,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Reveal OSD (fullscreen only)</property>
+                <property name="subtitle" translatable="yes">Tap</property>
                 <property name="accelerator">Return</property>
               </object>
             </child>
@@ -63,12 +65,14 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Next item</property>
+                <property name="subtitle" translatable="yes">Double tap (right side)</property>
                 <property name="accelerator">&lt;Ctrl&gt;Right</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Previous item</property>
+                <property name="subtitle" translatable="yes">Double tap (left side)</property>
                 <property name="accelerator">&lt;Ctrl&gt;Left</property>
               </object>
             </child>
@@ -92,30 +96,35 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Toggle play</property>
+                <property name="subtitle" translatable="yes">Long press | Right click</property>
                 <property name="accelerator">space</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Volume up</property>
+                <property name="subtitle" translatable="yes">Swipe up | Scroll up</property>
                 <property name="accelerator">Up</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Volume down</property>
+                <property name="subtitle" translatable="yes">Swipe down | Scroll down</property>
                 <property name="accelerator">Down</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Seek forward</property>
+                <property name="subtitle" translatable="yes">Swipe right | Scroll right</property>
                 <property name="accelerator">Right</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Seek backward</property>
+                <property name="subtitle" translatable="yes">Swipe left | Scroll left</property>
                 <property name="accelerator">Left</property>
               </object>
             </child>
