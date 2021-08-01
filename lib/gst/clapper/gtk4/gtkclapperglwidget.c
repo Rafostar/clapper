@@ -900,8 +900,9 @@ gtk_clapper_gl_widget_set_buffer (GtkClapperGLWidget * clapper_widget,
   GTK_CLAPPER_GL_WIDGET_UNLOCK (clapper_widget);
 }
 
-static GstGLAPI
-_get_current_gl_api (GstGLDisplay * display, GstGLPlatform platform)
+static gboolean
+_wrap_current_gl (GstGLDisplay * display, GstGLPlatform platform,
+    GstGLContext ** other_context)
 {
   GstGLAPI gl_api = GST_GL_API_NONE;
   guint gl_major = 0, gl_minor = 0;
@@ -911,6 +912,7 @@ _get_current_gl_api (GstGLDisplay * display, GstGLPlatform platform)
   if (gl_api) {
     const gboolean is_es = gl_api & (GST_GL_API_GLES1 | GST_GL_API_GLES2);
     gchar *gl_api_str = gst_gl_api_to_string (gl_api);
+    guintptr gl_handle = 0;
 
     GST_INFO ("Using GL API: %s, ver: %d.%d", gl_api_str, gl_major, gl_minor);
     g_free (gl_api_str);
@@ -919,9 +921,16 @@ _get_current_gl_api (GstGLDisplay * display, GstGLPlatform platform)
       GST_DEBUG ("No GST_GL_API env and GTK is using EGL GLES2, enforcing it");
       gst_gl_display_filter_gl_api (display, GST_GL_API_GLES2);
     }
+
+    gl_handle = gst_gl_context_get_current_gl_context (platform);
+    if (gl_handle) {
+      if ((*other_context = gst_gl_context_new_wrapped (display,
+          gl_handle, platform, gl_api)))
+        return TRUE;
+    }
   }
 
-  return gl_api;
+  return FALSE;
 }
 
 static void
@@ -929,8 +938,6 @@ _get_gl_context (GtkClapperGLWidget * clapper_widget)
 {
   GtkClapperGLWidgetPrivate *priv = clapper_widget->priv;
   GstGLPlatform platform = GST_GL_PLATFORM_NONE;
-  GstGLAPI gl_api = GST_GL_API_NONE;
-  guintptr gl_handle = 0;
 
   gtk_widget_realize (GTK_WIDGET (clapper_widget));
 
@@ -952,53 +959,45 @@ _get_gl_context (GtkClapperGLWidget * clapper_widget)
   }
 
   g_object_ref (priv->gdk_context);
-
   gdk_gl_context_make_current (priv->gdk_context);
 
+#if GST_GL_HAVE_WINDOW_WAYLAND && GST_GL_HAVE_PLATFORM_EGL && defined (GDK_WINDOWING_WAYLAND)
+  if (GST_IS_GL_DISPLAY_WAYLAND (priv->display)) {
+    platform = GST_GL_PLATFORM_EGL;
+    GST_DEBUG ("Using EGL on Wayland");
+    goto have_platform;
+  }
+#endif
 #if GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11)
 #if GST_GL_HAVE_PLATFORM_EGL
   if (GST_IS_GL_DISPLAY_EGL (priv->display)) {
     platform = GST_GL_PLATFORM_EGL;
-    gl_handle = gst_gl_context_get_current_gl_context (platform);
+    GST_DEBUG ("Using EGL on x11");
+    goto have_platform;
   }
 #endif
 #if GST_GL_HAVE_PLATFORM_GLX
-  if (!gl_handle && GST_IS_GL_DISPLAY_X11 (priv->display)) {
+  if (GST_IS_GL_DISPLAY_X11 (priv->display)) {
     platform = GST_GL_PLATFORM_GLX;
-    gl_handle = gst_gl_context_get_current_gl_context (platform);
+    GST_DEBUG ("Using GLX on x11");
+    goto have_platform;
   }
 #endif
-  if (gl_handle) {
-    gl_api = _get_current_gl_api (priv->display, platform);
-    priv->other_context =
-        gst_gl_context_new_wrapped (priv->display, gl_handle,
-        platform, gl_api);
-  }
-#endif
-#if GST_GL_HAVE_WINDOW_WAYLAND && GST_GL_HAVE_PLATFORM_EGL && defined (GDK_WINDOWING_WAYLAND)
-  if (GST_IS_GL_DISPLAY_WAYLAND (priv->display)) {
-    platform = GST_GL_PLATFORM_EGL;
-    gl_api = _get_current_gl_api (priv->display, platform);
-    gl_handle = gst_gl_context_get_current_gl_context (platform);
-    if (gl_handle)
-      priv->other_context =
-          gst_gl_context_new_wrapped (priv->display, gl_handle,
-          platform, gl_api);
-  }
 #endif
 
-  (void) platform;
-  (void) gl_api;
-  (void) gl_handle;
+  GST_ERROR ("Unknown GL platform");
+  return;
 
-  if (priv->other_context) {
+have_platform:
+
+  if (_wrap_current_gl (priv->display, platform, &priv->other_context)) {
     GError *error = NULL;
 
     GST_INFO ("Retrieved Gdk OpenGL context %" GST_PTR_FORMAT,
         priv->other_context);
     gst_gl_context_activate (priv->other_context, TRUE);
     if (!gst_gl_context_fill_info (priv->other_context, &error)) {
-      GST_ERROR ("failed to retrieve gdk context info: %s", error->message);
+      GST_ERROR ("Failed to retrieve gdk context info: %s", error->message);
       g_clear_error (&error);
       g_object_unref (priv->other_context);
       priv->other_context = NULL;
