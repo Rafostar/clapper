@@ -434,12 +434,9 @@ gst_clapper_gl_sink_query (GstBaseSink * bsink, GstQuery * query)
 
   switch (GST_QUERY_TYPE (query)) {
     case GST_QUERY_CONTEXT:
-    {
-      if (gst_gl_handle_context_query ((GstElement *) clapper_sink, query,
-              clapper_sink->display, clapper_sink->context, clapper_sink->gtk_context))
-        return TRUE;
+      res = gst_gl_handle_context_query ((GstElement *) clapper_sink, query,
+          clapper_sink->display, clapper_sink->context, clapper_sink->gtk_context);
       break;
-    }
     default:
       res = GST_BASE_SINK_CLASS (parent_class)->query (bsink, query);
       break;
