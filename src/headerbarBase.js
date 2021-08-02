@@ -17,7 +17,6 @@ class ClapperHeaderBarBase extends Gtk.Box
             margin_start: 6,
             margin_end: 6,
         });
-        this.add_css_class('osd');
         this.add_css_class('osdheaderbar');
 
         this.isMaximized = false;
@@ -40,11 +39,11 @@ class ClapperHeaderBarBase extends Gtk.Box
             valign: Gtk.Align.CENTER,
             can_focus: false,
         });
+        const menuToggleButton = this.menuButton.get_first_child();
+        menuToggleButton.add_css_class('osd');
         const mainMenuModel = uiBuilder.get_object('mainMenu');
         const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
-        mainMenuPopover.add_css_class('menupopover');
         this.menuButton.set_popover(mainMenuPopover);
-        this.menuButton.add_css_class('osd');
         this.menuButton.add_css_class('circular');
         this.menuWidget.append(this.menuButton);
 

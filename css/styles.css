@@ -6,10 +6,16 @@ radio {
   margin-left: -2px;
 }
 /* Adwaita is missing osd ListBox */
-.osd list {
+.playlistrow {
+  border-radius: 5px;
+}
+.playlistrow {
+  color: @theme_fg_color;
+}
+.osd .playlist {
   background: none;
 }
-.osd list row image {
+.osd .playlist row image {
   -gtk-icon-shadow: none;
 }
 .osdheaderbar {
@@ -28,18 +34,15 @@ radio {
 .linkedright image {
   margin-right: 2px;
 }
-/* Non-osd style for popover menu */
-.menupopover label {
-  color: @theme_text_color;
+
+/* Flat popovers */
+popover arrow,
+popover contents {
+  border-color: transparent;
+  box-shadow: none;
 }
-.menupopover arrow {
-  background: @theme_base_color;
-  border-color: @insensitive_base_color;
-}
-.menupopover contents {
-  background: @theme_base_color;
-  border-color: @insensitive_base_color;
-}
+
+/* Rounded corners */
 .adwrounded.csd {
   border-radius: 8px;
 }
@@ -167,9 +170,6 @@ scale trough slider {
   margin-right: -4px;
 }
 .positionscale trough highlight {
-  min-height: 4px;
-}
-.osd .positionscale trough highlight {
   min-height: 6px;
 }
 .fullscreen.tvmode .positionscale trough slider {
@@ -234,6 +234,9 @@ scale trough slider {
   margin-top: -4px;
   margin-bottom: -6px;
 }
+.volumescale trough highlight {
+  min-width: 4px;
+}
 .fullscreen.tvmode .volumescale trough highlight {
   min-width: 6px;
 }
@@ -250,6 +253,9 @@ scale trough slider {
 }
 .fullscreen.tvmode .elapsedpopoverbox {
   min-width: 360px;
+}
+.speedscale trough highlight {
+  min-height: 4px;
 }
 .fullscreen.tvmode .speedscale trough highlight {
   min-height: 6px;
