@@ -29,9 +29,6 @@ class ClapperAppBase extends Gtk.Application
             title: Misc.appName,
         });
 
-        if(Gtk.MINOR_VERSION > 0 || Gtk.MICRO_VERSION > 1)
-            window.add_css_class('gtk402');
-
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
 

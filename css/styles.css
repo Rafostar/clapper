@@ -12,12 +12,6 @@ radio {
 .osd list row image {
   -gtk-icon-shadow: none;
 }
-.gtk402 trough highlight {
-  border-color: transparent;
-}
-.gtk402 .osd trough highlight {
-  border-color: inherit;
-}
 .osdheaderbar {
   background: transparent;
 }
