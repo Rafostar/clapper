@@ -1013,8 +1013,10 @@ class ClapperWidget extends Gtk.Grid
         for(let index in files)
             files[index] = Gio.File.new_for_uri(files[index]);
 
+        /* TODO: remove GTK < 4.3.2 compat someday */
+        const currentDrop = dropTarget.current_drop || dropTarget.drop;
         const app = this.root.application;
-        app.isFileAppend = Boolean(dropTarget.drop.actions & Gdk.DragAction.COPY);
+        app.isFileAppend = Boolean(currentDrop.actions & Gdk.DragAction.COPY);
         app.open(files, "");
 
         return true;
