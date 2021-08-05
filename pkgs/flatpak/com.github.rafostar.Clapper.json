@@ -42,6 +42,7 @@
         "flathub/gstreamer-1.0/gst-libav.json",
         "flathub/gstreamer-1.0/gstreamer-vaapi.json",
         "flathub/lib/gtk4.json",
+        "testing/libadwaita.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
