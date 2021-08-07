@@ -287,23 +287,6 @@ scale trough slider {
   font-weight: 600;
 }
 
-/* Preferences */
-.prefsnotebook grid {
-  margin: 10px;
-}
-.prefssubpage header {
-  background: none;
-}
-.prefssubpage header tabs tab {
-  box-shadow: none;
-  margin: 0px;
-  margin-right: 1px;
-}
-.prefssubpage header tabs tab:checked {
-  color: initial;
-  background: @theme_selected_bg_color;
-}
-
 /* Open URI Dialog */
 .uridialogbox {
   margin: 12px;
