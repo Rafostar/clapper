@@ -28,6 +28,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         });
         this.activeRowId = -1;
         this.repeatMode = RepeatMode.NONE;
+        this.add_css_class('playlist');
 
         this.connect('row-activated', this._onRowActivated.bind(this));
     }
@@ -254,6 +255,7 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         }
         this.filename = filename || uri;
         this.set_tooltip_text(this.filename);
+        this.add_css_class('playlistrow');
 
         const box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,

@@ -30,16 +30,15 @@ The media player uses [GStreamer](https://gstreamer.freedesktop.org/) as a media
 
 ## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
-Additionally it also has a few patches, thus some functionalities work better (or are only available) in `Flatpak` version (until my changes are accepted upstream). List of patches used in this version can be found [here](https://github.com/Rafostar/clapper/issues/35).
+Additionally it also has a few patches, thus some functionalities work better (or are only available) in `Flatpak` version (until my changes are accepted upstream).
+List of patches used in this version can be found [here](https://github.com/Rafostar/clapper/issues/35).
 
-<a href='https://flathub.org/apps/details/com.github.rafostar.Clapper'><img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/></a>
-
-**Important:** If you have been using the Flatpak package from my custom 3rd party repo, please remove it and replace your installation with version from Flathub. That repository will not be maintained any longer. Thank you for understanding.
+<a href='https://flathub.org/apps/details/com.github.rafostar.Clapper'>
+  <img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/>
+</a>
 
 ## Packages
-The [pkgs folder](https://github.com/Rafostar/clapper/tree/master/pkgs) in this repository contains build scripts for various package formats. You can use them to build package yourself or download one of pre-built packages:
-
-#### Debian, Fedora & openSUSE
+#### Fedora & openSUSE
 Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).<br>
 Those are automatically built on each git commit, and are thus considered unstable.
 
@@ -54,22 +53,12 @@ meson builddir --prefix=/usr/local
 sudo meson install -C builddir
 ```
 
-## Q&A
-**Q:** Does using `GJS` negatively impact video performance?<br>
-**A:** Absolutely not. `GJS` is only used to put together the GUI during startup.
-It has nothing to do with video rendering. All `GTK4` and `GStreamer` libraries are in C.
-Even the custom video widget that I prepared for this player (based on original `GTK3` implementation) is compiled C code.
-All of these libs are acting "on their own" and no function calls from `GJS` related to video decoding and rendering are performed during playback.
-
-**Q:** What settings should I set to maximize performance?<br>
-**A:** As of now, player works best on `Wayland` session. `Wayland` users can try enabling highly experimental `vah264dec` plugin for improved performance (this plugin does not work on `Xorg` right now) for standard (8-bit) `H.264` videos.
-It can be enabled from inside the player preferences dialog inside `Advanced -> GStreamer` tab using the customizable `Plugin Ranking` feature.
-Since the whole app is rendered using your GPU, users of VERY weak GPUs might want to disable the "render window shadows" option to have more GPU power available for non-fullscreen video rendering.
-
-## Other Questions?
+## Questions?
 Feel free to ask me any questions. Come and talk on Matrix: [#clapper-player:matrix.org](https://matrix.to/#/#clapper-player:matrix.org)
 
 ## Special Thanks
-Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files. Big thanks to [bridadan](https://github.com/bridadan) and [Uniformbuffer3](https://github.com/Uniformbuffer3) for helping with testing V4L2 and NVDEC hardware acceleration methods.
+Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
+Big thanks to [bridadan](https://github.com/bridadan) and [Uniformbuffer3](https://github.com/Uniformbuffer3) for helping
+with testing V4L2 and NVDEC hardware acceleration methods.
 
 Thanks a lot to all the people who are supporting the development with their anonymous donations through [Liberapay](https://liberapay.com/Clapper/). I :heart: U.

@@ -435,12 +435,19 @@ class ClapperControls extends Gtk.Box
                 if(isVisible) {
                     const [start, end] = this.positionScale.get_slider_range();
                     const controlsHeight = this.parent.get_height();
-                    const scaleHeight = this.positionScale.parent.get_height();
+                    const scaleBoxHeight = this.positionScale.parent.get_height();
+                    const [isShared, destX, destY] = this.positionScale.translate_coordinates(
+                        this.positionScale.parent, 0, 0
+                    );
+
+                    /* Half of slider width, values are defined in CSS */
+                    const sliderOffset = (this.isFullscreen && !this.isMobile)
+                        ? 10 : 9;
 
                     this.chapterPopover.set_pointing_to(new Gdk.Rectangle({
-                        x: -2,
-                        y: -(controlsHeight - scaleHeight) / 2,
-                        width: 2 * end,
+                        x: destX + end - sliderOffset,
+                        y: -(controlsHeight - scaleBoxHeight) / 2,
+                        width: 0,
                         height: 0,
                     }));
                 }
@@ -469,7 +476,7 @@ class ClapperControls extends Gtk.Box
         scrollController.connect('scroll', clapperWidget._onScroll.bind(clapperWidget));
         this.volumeButton.add_controller(scrollController);
 
-        const initialVolume = (settings.get_string('volume-initial') === 'custom')
+        const initialVolume = (settings.get_boolean('volume-custom'))
             ? settings.get_int('volume-value') / 100
             : settings.get_double('volume-last');
 

@@ -29,9 +29,6 @@ class ClapperAppBase extends Gtk.Application
             title: Misc.appName,
         });
 
-        if(Gtk.MINOR_VERSION > 0 || Gtk.MICRO_VERSION > 1)
-            window.add_css_class('gtk402');
-
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
 
@@ -111,7 +108,6 @@ class ClapperAppBase extends Gtk.Application
     {
         const theme = gtkSettings.gtk_theme_name;
         const window = this.active_window;
-        const hasAdwThemeDark = window.has_css_class('adwthemedark');
 
         debug(`user selected theme: ${theme}`);
 
@@ -119,27 +115,6 @@ class ClapperAppBase extends Gtk.Application
            Having 2/4 corners rounded in floating mode is not good. */
         if(!window.has_css_class('adwrounded'))
             window.add_css_class('adwrounded');
-
-        if(theme.startsWith('Adwaita') || theme.startsWith('Default')) {
-            const isDarkTheme = settings.get_boolean('dark-theme');
-
-            if(isDarkTheme && !hasAdwThemeDark)
-                window.add_css_class('adwthemedark');
-            else if(!isDarkTheme && hasAdwThemeDark)
-                window.remove_css_class('adwthemedark');
-        }
-        else if(hasAdwThemeDark)
-            window.remove_css_class('adwthemedark');
-
-        if(!theme.endsWith('-dark'))
-            return;
-
-        /* We need to request a default theme with optional dark variant
-           to make the "gtk_application_prefer_dark_theme" setting work */
-        const parsedTheme = theme.substring(0, theme.lastIndexOf('-'));
-
-        gtkSettings.gtk_theme_name = parsedTheme;
-        debug(`set theme: ${parsedTheme}`);
     }
 
     _onIconThemeChanged(gtkSettings)

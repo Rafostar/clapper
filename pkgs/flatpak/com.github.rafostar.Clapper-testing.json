@@ -36,6 +36,7 @@
         "testing/gstreamer-1.0/gst-plugins-ugly.json",
         "testing/gstreamer-1.0/gst-libav.json",
         "testing/gstreamer-1.0/gstreamer-vaapi.json",
+        "testing/libadwaita.json",
         {
             "name": "clapper",
             "buildsystem": "meson",

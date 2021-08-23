@@ -17,7 +17,6 @@ class ClapperHeaderBarBase extends Gtk.Box
             margin_start: 6,
             margin_end: 6,
         });
-        this.add_css_class('osd');
         this.add_css_class('osdheaderbar');
 
         this.isMaximized = false;
@@ -40,9 +39,10 @@ class ClapperHeaderBarBase extends Gtk.Box
             valign: Gtk.Align.CENTER,
             can_focus: false,
         });
+        const menuToggleButton = this.menuButton.get_first_child();
+        menuToggleButton.add_css_class('osd');
         const mainMenuModel = uiBuilder.get_object('mainMenu');
         const mainMenuPopover = new HeaderBarPopover(mainMenuModel);
-        mainMenuPopover.add_css_class('menupopover');
         this.menuButton.set_popover(mainMenuPopover);
         this.menuButton.add_css_class('circular');
         this.menuWidget.append(this.menuButton);
@@ -57,6 +57,7 @@ class ClapperHeaderBarBase extends Gtk.Box
             icon_name: 'go-bottom-symbolic',
             can_focus: false,
         });
+        floatButton.add_css_class('osd');
         floatButton.add_css_class('circular');
         floatButton.add_css_class('linkedleft');
         floatButton.connect('clicked',
@@ -74,6 +75,7 @@ class ClapperHeaderBarBase extends Gtk.Box
             icon_name: 'view-fullscreen-symbolic',
             can_focus: false,
         });
+        fullscreenButton.add_css_class('osd');
         fullscreenButton.add_css_class('circular');
         fullscreenButton.add_css_class('linkedright');
         fullscreenButton.connect('clicked',
@@ -202,6 +204,7 @@ class ClapperHeaderBarBase extends Gtk.Box
             valign: Gtk.Align.CENTER,
             can_focus: false,
         });
+        button.add_css_class('osd');
         button.add_css_class('circular');
 
         if(name === 'maximize')
