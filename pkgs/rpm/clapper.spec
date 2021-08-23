@@ -46,6 +46,7 @@ BuildRequires:  hicolor-icon-theme
 
 Requires:       gjs
 Requires:       gtk4 >= %{gtk4_version}
+Requires:       libadwaita
 Requires:       hicolor-icon-theme
 
 %if 0%{?suse_version}
@@ -126,6 +127,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_libdir}/%{appname}/
 
 %changelog
+* Mon Aug 23 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-2
+- Require libadwaita
+
 * Fri Jun 18 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-1
 - New version
 
