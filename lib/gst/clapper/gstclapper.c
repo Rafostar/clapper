@@ -3250,7 +3250,7 @@ gst_clapper_set_feature_rank_versioned (const gchar * name, guint rank,
 
   if (!feature) {
     GST_DEBUG ("Cannot change rank of unavailable feature: %s", name);
-    goto out;
+    return res;
   }
   if (gst_plugin_feature_check_version (feature, min_major, min_minor, min_micro)) {
     guint old_rank = gst_plugin_feature_get_rank (feature);
@@ -3261,7 +3261,6 @@ gst_clapper_set_feature_rank_versioned (const gchar * name, guint rank,
     GST_DEBUG ("Feature %s is at older version then required", name);
   }
 
-out:
   gst_object_unref (feature);
   return res;
 }
