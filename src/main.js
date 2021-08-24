@@ -2,9 +2,9 @@ imports.gi.versions.Gdk = '4.0';
 imports.gi.versions.Gtk = '4.0';
 imports.gi.versions.Soup = '2.4';
 
-const { Gst, Gtk, Adw } = imports.gi;
+const { GstClapper, Gtk, Adw } = imports.gi;
 
-Gst.init(null);
+GstClapper.Clapper.gst_init(null);
 Gtk.init();
 Adw.init();
 

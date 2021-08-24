@@ -65,6 +65,8 @@ GST_DEBUG_CATEGORY_STATIC (gst_clapper_debug);
 #define DEFAULT_SUBTITLE_VIDEO_OFFSET 0
 #define DEFAULT_SEEK_MODE GST_CLAPPER_SEEK_MODE_DEFAULT
 
+static gboolean gst_clapper_gstreamer_prepared = FALSE;
+
 /**
  * gst_clapper_error_quark:
  */
@@ -270,7 +272,6 @@ static void remove_seek_source (GstClapper * self);
 static void
 gst_clapper_init (GstClapper * self)
 {
-  GST_DEBUG_CATEGORY_INIT (gst_clapper_debug, "Clapper", 0, "GstClapper");
   GST_TRACE_OBJECT (self, "Initializing");
 
   self = gst_clapper_get_instance_private (self);
@@ -301,6 +302,8 @@ gst_clapper_class_init (GstClapperClass * klass)
   gobject_class->dispose = gst_clapper_dispose;
   gobject_class->finalize = gst_clapper_finalize;
   gobject_class->constructed = gst_clapper_constructed;
+
+  GST_DEBUG_CATEGORY_INIT (gst_clapper_debug, "Clapper", 0, "GstClapper");
 
   param_specs[PROP_VIDEO_RENDERER] =
       g_param_spec_object ("video-renderer",
@@ -3235,6 +3238,98 @@ gst_clapper_main (gpointer data)
   GST_TRACE_OBJECT (self, "Stopped main thread");
 
   return NULL;
+}
+
+static gboolean
+gst_clapper_set_feature_rank_versioned (const gchar * name, guint rank,
+    guint min_major, guint min_minor, guint min_micro)
+{
+  GstRegistry *registry = gst_registry_get ();
+  GstPluginFeature *feature = gst_registry_lookup_feature (registry, name);
+  gboolean res = FALSE;
+
+  if (!feature) {
+    GST_DEBUG ("Cannot change rank of unavailable feature: %s", name);
+    goto out;
+  }
+  if (gst_plugin_feature_check_version (feature, min_major, min_minor, min_micro)) {
+    guint old_rank = gst_plugin_feature_get_rank (feature);
+    gst_plugin_feature_set_rank (feature, rank);
+    res = TRUE;
+    GST_DEBUG ("Changed rank: %i -> %i for %s", old_rank, rank, name);
+  } else {
+    GST_DEBUG ("Feature %s is at older version then required", name);
+  }
+
+out:
+  gst_object_unref (feature);
+  return res;
+}
+
+static gboolean
+gst_clapper_set_feature_rank (const gchar * name, guint rank)
+{
+  return gst_clapper_set_feature_rank_versioned (name, rank, 0, 0, 0);
+}
+
+static gboolean
+gst_clapper_has_plugin_with_features (const gchar * name)
+{
+  GstRegistry *registry = gst_registry_get ();
+  GList *features = gst_registry_get_feature_list_by_plugin (registry, name);
+
+  gboolean ret = g_list_length (features) > 0;
+
+  gst_plugin_feature_list_free (features);
+  return ret;
+}
+
+static void
+gst_clapper_prepare_gstreamer (void)
+{
+  GstRegistry *registry = gst_registry_get ();
+  const guint rank = GST_RANK_PRIMARY + 24;
+
+  GST_DEBUG ("Preparing GStreamer plugins");
+
+  if (gst_clapper_has_plugin_with_features ("va")) {
+    gst_clapper_set_feature_rank_versioned ("vah264dec", rank, 1, 19, 1);
+    gst_clapper_set_feature_rank_versioned ("vampeg2dec", rank, 1, 19, 1);
+  }
+  if (gst_clapper_has_plugin_with_features ("nvcodec")) {
+    gst_clapper_set_feature_rank ("nvh264dec", rank + 4);
+    gst_clapper_set_feature_rank ("nvh265dec", rank + 4);
+  }
+  if (gst_clapper_has_plugin_with_features ("v4l2codecs")) {
+    if (!gst_clapper_set_feature_rank_versioned ("v4l2slh264dec", rank + 10, 1, 19, 1))
+      gst_clapper_set_feature_rank ("v4l2slh264dec", GST_RANK_NONE);
+    if (!gst_clapper_set_feature_rank_versioned ("v4l2slvp8dec", rank + 10, 1, 19, 2))
+      gst_clapper_set_feature_rank ("v4l2slvp8dec", GST_RANK_NONE);
+  }
+
+  gst_clapper_gstreamer_prepared = TRUE;
+  GST_DEBUG ("GStreamer plugins prepared");
+}
+
+/**
+ * gst_clapper_gst_init:
+ * @argc: (inout) (allow-none): pointer to application's argc
+ * @argv: (inout) (array length=argc) (allow-none): pointer to application's argv
+ *
+ * Automatically initializes GStreamer library if this was not done by the user yet
+ * and tweaks some of its defaults to our liking. It is recommended to use this
+ * function instead of plain gst_init().
+ *
+ * This also allows usage of GstClapper API alone without importing GStreamer
+ * on the implementation side.
+ */
+void
+gst_clapper_gst_init (int * argc, char ** argv[])
+{
+  if (!gst_is_initialized ())
+    gst_init (argc, argv);
+  if (!gst_clapper_gstreamer_prepared)
+    gst_clapper_prepare_gstreamer ();
 }
 
 /**

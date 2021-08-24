@@ -154,6 +154,9 @@ GST_CLAPPER_API
 GType        gst_clapper_get_type                           (void);
 
 GST_CLAPPER_API
+void         gst_clapper_gst_init                           (int *argc, char **argv[]);
+
+GST_CLAPPER_API
 GstClapper * gst_clapper_new                                (GstClapperVideoRenderer *video_renderer, GstClapperSignalDispatcher *signal_dispatcher,
                                                                 GstClapperMpris *mpris);
 
