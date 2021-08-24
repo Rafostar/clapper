@@ -247,7 +247,7 @@
         </child>
         <child>
           <object class="AdwPreferencesGroup">
-            <property name="title" translatable="yes">GStreamer</property>
+            <property name="title" translatable="no">GStreamer</property>
             <child>
               <object class="ClapperPrefsPluginRankingSubpageRow">
                 <property name="title" translatable="yes">Plugin ranking</property>
