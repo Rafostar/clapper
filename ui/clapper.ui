@@ -3,7 +3,7 @@
   <menu id="mainMenu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Open Local...</attribute>
+        <attribute name="label" translatable="yes">Open Files...</attribute>
         <attribute name="action">app.open_local</attribute>
       </item>
       <item>
