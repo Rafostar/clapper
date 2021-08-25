@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-25 14:38+0200\n"
-"PO-Revision-Date: 2021-08-25 12:42\n"
+"POT-Creation-Date: 2021-08-25 17:12+0200\n"
+"PO-Revision-Date: 2021-08-25 15:42\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -319,10 +319,6 @@ msgstr ""
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
-
-#: ui/preferences-window.ui:201
-msgid "YouTube"
 msgstr ""
 
 #: ui/preferences-window.ui:204
