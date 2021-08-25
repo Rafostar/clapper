@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-25 17:12\n"
+"PO-Revision-Date: 2021-08-25 18:08\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -23,7 +23,7 @@ msgstr "Otwórz pliki..."
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr "Open URI..."
+msgstr "Otwórz URI..."
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
@@ -183,7 +183,7 @@ msgstr "Wejdź do trybu pełnoekranowego, gdy lista odtwarzania zostanie zastąp
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr "Poproś o wznowienie ostatnich mediów"
+msgstr "Pytaj o wznowienie ostatnich mediów"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
@@ -267,7 +267,7 @@ msgstr "Wartość"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr "Dźwięk"
+msgstr "Audio"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
@@ -339,7 +339,7 @@ msgstr "Wygląd"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr "Motyw ciemny"
+msgstr "Ciemny motyw"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
@@ -347,7 +347,7 @@ msgstr "Renderuj cienie okna"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr "Wyłącz, aby zwiększyć wydajność na słabszych kartach graficznych"
+msgstr "Wyłącz, aby zwiększyć wydajność w trybie okienkowym"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
