@@ -8,6 +8,7 @@ project('com.github.rafostar.Clapper', 'c', 'cpp',
   ]
 )
 
+i18n = import('i18n')
 python = import('python')
 python_bin = python.find_installation('python3')
 
@@ -22,6 +23,7 @@ endif
 if get_option('clapper-player')
   subdir('bin')
   subdir('data')
+  subdir('po')
 
   installdir = join_paths(get_option('prefix'), 'share', meson.project_name())
   install_subdir('src', install_dir : installdir)

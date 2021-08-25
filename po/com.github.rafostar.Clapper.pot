@@ -1,0 +1,362 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.rafostar.Clapper package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.rafostar.Clapper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-25 11:18+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ui/clapper.ui:6
+msgid "Open Files..."
+msgstr ""
+
+#: ui/clapper.ui:10
+msgid "Open URI..."
+msgstr ""
+
+#: ui/clapper.ui:16 ui/preferences-window.ui:4
+msgid "Preferences"
+msgstr ""
+
+#: ui/clapper.ui:20
+msgid "Shortcuts"
+msgstr ""
+
+#: ui/clapper.ui:26
+msgid "About Clapper"
+msgstr ""
+
+#: ui/help-overlay.ui:10 ui/preferences-window.ui:12
+msgid "General"
+msgstr ""
+
+#: ui/help-overlay.ui:13
+msgid "Show shortcuts"
+msgstr ""
+
+#: ui/help-overlay.ui:19
+msgid "Toggle fullscreen"
+msgstr ""
+
+#: ui/help-overlay.ui:20
+msgid "Double tap | Double click"
+msgstr ""
+
+#: ui/help-overlay.ui:26
+msgid "Leave fullscreen"
+msgstr ""
+
+#: ui/help-overlay.ui:32
+msgid "Reveal OSD (fullscreen only)"
+msgstr ""
+
+#: ui/help-overlay.ui:33
+msgid "Tap"
+msgstr ""
+
+#: ui/help-overlay.ui:39
+msgid "Quit"
+msgstr ""
+
+#: ui/help-overlay.ui:47
+msgid "Media"
+msgstr ""
+
+#: ui/help-overlay.ui:50
+msgid "Open Local"
+msgstr ""
+
+#: ui/help-overlay.ui:56
+msgid "Open URI"
+msgstr ""
+
+#: ui/help-overlay.ui:64
+msgid "Playlist"
+msgstr ""
+
+#: ui/help-overlay.ui:67
+msgid "Next item"
+msgstr ""
+
+#: ui/help-overlay.ui:68
+msgid "Double tap (right side)"
+msgstr ""
+
+#: ui/help-overlay.ui:74
+msgid "Previous item"
+msgstr ""
+
+#: ui/help-overlay.ui:75
+msgid "Double tap (left side)"
+msgstr ""
+
+#: ui/help-overlay.ui:81
+msgid "Change repeat mode"
+msgstr ""
+
+#: ui/help-overlay.ui:87
+msgid "Export to file"
+msgstr ""
+
+#: ui/help-overlay.ui:95 ui/preferences-window.ui:119
+msgid "Playback"
+msgstr ""
+
+#: ui/help-overlay.ui:98
+msgid "Toggle play"
+msgstr ""
+
+#: ui/help-overlay.ui:99
+msgid "Long press | Right click"
+msgstr ""
+
+#: ui/help-overlay.ui:105
+msgid "Volume up"
+msgstr ""
+
+#: ui/help-overlay.ui:106
+msgid "Swipe up | Scroll up"
+msgstr ""
+
+#: ui/help-overlay.ui:112
+msgid "Volume down"
+msgstr ""
+
+#: ui/help-overlay.ui:113
+msgid "Swipe down | Scroll down"
+msgstr ""
+
+#: ui/help-overlay.ui:119
+msgid "Seek forward"
+msgstr ""
+
+#: ui/help-overlay.ui:120
+msgid "Swipe right | Scroll right"
+msgstr ""
+
+#: ui/help-overlay.ui:126
+msgid "Seek backward"
+msgstr ""
+
+#: ui/help-overlay.ui:127
+msgid "Swipe left | Scroll left"
+msgstr ""
+
+#: ui/help-overlay.ui:133
+msgid "Next chapter"
+msgstr ""
+
+#: ui/help-overlay.ui:139
+msgid "Previous chapter"
+msgstr ""
+
+#: ui/preferences-plugin-ranking-subpage.ui:11
+msgid "Decoders"
+msgstr ""
+
+#: ui/preferences-plugin-ranking-subpage.ui:18
+msgid "Return to the preferences"
+msgstr ""
+
+#: ui/preferences-window.ui:16
+msgid "Behavior"
+msgstr ""
+
+#: ui/preferences-window.ui:19
+msgid "Auto fullscreen"
+msgstr ""
+
+#: ui/preferences-window.ui:20
+msgid "Enter fullscreen when playlist is replaced except floating mode"
+msgstr ""
+
+#: ui/preferences-window.ui:26
+msgid "Ask to resume recent media"
+msgstr ""
+
+#: ui/preferences-window.ui:32
+msgid "Float on all workspaces"
+msgstr ""
+
+#: ui/preferences-window.ui:33
+msgid "This option only works on GNOME"
+msgstr ""
+
+#: ui/preferences-window.ui:39
+msgid "After playback"
+msgstr ""
+
+#: ui/preferences-window.ui:44
+msgid "Do nothing"
+msgstr ""
+
+#: ui/preferences-window.ui:45
+msgid "Freeze last frame"
+msgstr ""
+
+#: ui/preferences-window.ui:46
+msgid "Close the app"
+msgstr ""
+
+#: ui/preferences-window.ui:56
+msgid "Volume"
+msgstr ""
+
+#: ui/preferences-window.ui:59
+msgid "Custom initial value"
+msgstr ""
+
+#: ui/preferences-window.ui:60
+msgid "Set custom volume at startup instead of restoring it"
+msgstr ""
+
+#: ui/preferences-window.ui:64
+msgid "Volume percentage"
+msgstr ""
+
+#: ui/preferences-window.ui:75
+msgid "Seeking"
+msgstr ""
+
+#: ui/preferences-window.ui:78
+msgid "Mode"
+msgstr ""
+
+#: ui/preferences-window.ui:83 ui/preferences-window.ui:215
+msgid "Normal"
+msgstr ""
+
+#: ui/preferences-window.ui:84
+msgid "Accurate"
+msgstr ""
+
+#: ui/preferences-window.ui:85
+msgid "Fast"
+msgstr ""
+
+#: ui/preferences-window.ui:93
+msgid "Unit"
+msgstr ""
+
+#: ui/preferences-window.ui:98
+msgid "Second"
+msgstr ""
+
+#: ui/preferences-window.ui:99
+msgid "Minute"
+msgstr ""
+
+#: ui/preferences-window.ui:100
+msgid "Percentage"
+msgstr ""
+
+#: ui/preferences-window.ui:108
+msgid "Value"
+msgstr ""
+
+#: ui/preferences-window.ui:123
+msgid "Audio"
+msgstr ""
+
+#: ui/preferences-window.ui:126
+msgid "Offset in milliseconds"
+msgstr ""
+
+#: ui/preferences-window.ui:133
+msgid "Only native audio formats"
+msgstr ""
+
+#: ui/preferences-window.ui:141
+msgid "Subtitles"
+msgstr ""
+
+#: ui/preferences-window.ui:144
+msgid "Default font"
+msgstr ""
+
+#: ui/preferences-window.ui:154
+msgid "Network"
+msgstr ""
+
+#: ui/preferences-window.ui:158
+msgid "Client"
+msgstr ""
+
+#: ui/preferences-window.ui:161
+msgid "Progressive download buffering"
+msgstr ""
+
+#: ui/preferences-window.ui:169
+msgid "Server"
+msgstr ""
+
+#: ui/preferences-window.ui:172
+msgid "Control player remotely"
+msgstr ""
+
+#: ui/preferences-window.ui:176
+msgid "Listening port"
+msgstr ""
+
+#: ui/preferences-window.ui:183
+msgid "Run web application in background"
+msgstr ""
+
+#: ui/preferences-window.ui:184
+msgid "Requires GTK compiled with Broadway backend"
+msgstr ""
+
+#: ui/preferences-window.ui:190
+msgid "Web application port"
+msgstr ""
+
+#: ui/preferences-window.ui:201
+msgid "YouTube"
+msgstr ""
+
+#: ui/preferences-window.ui:204
+msgid "Prefer adaptive streaming"
+msgstr ""
+
+#: ui/preferences-window.ui:210
+msgid "Max quality"
+msgstr ""
+
+#: ui/preferences-window.ui:228
+msgid "Tweaks"
+msgstr ""
+
+#: ui/preferences-window.ui:232
+msgid "Appearance"
+msgstr ""
+
+#: ui/preferences-window.ui:235
+msgid "Dark theme"
+msgstr ""
+
+#: ui/preferences-window.ui:241
+msgid "Render window shadows"
+msgstr ""
+
+#: ui/preferences-window.ui:242
+msgid "Disable to increase performance when windowed"
+msgstr ""
+
+#: ui/preferences-window.ui:253
+msgid "Plugin ranking"
+msgstr ""
+
+#: ui/preferences-window.ui:254
+msgid "Alter default ranks of GStreamer plugins"
+msgstr ""
