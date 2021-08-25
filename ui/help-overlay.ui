@@ -47,7 +47,7 @@
             <property name="title" translatable="yes">Media</property>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes">Open Local</property>
+                <property name="title" translatable="yes">Open Files</property>
                 <property name="accelerator">&lt;Ctrl&gt;O</property>
               </object>
             </child>
