@@ -57,6 +57,13 @@ sudo meson install -C builddir
 ## Questions?
 Feel free to ask me any questions. Come and talk on Matrix: [#clapper-player:matrix.org](https://matrix.to/#/#clapper-player:matrix.org)
 
+## Translations
+Preferred translation method is to use [Clapper Crowdin](https://crowdin.com/project/clapper) web page.
+
+Crowdin does not require any additional tools and translating can be done through web browser.
+You can login using GitHub account or create a new one. Only I can add new languages to this project,
+so if your language is not available, please contact me first.
+
 ## Special Thanks
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
 Big thanks to [bridadan](https://github.com/bridadan) and [Uniformbuffer3](https://github.com/Uniformbuffer3) for helping
