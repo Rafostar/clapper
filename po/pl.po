@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 14:38+0200\n"
-"PO-Revision-Date: 2021-08-25 12:42\n"
+"PO-Revision-Date: 2021-08-25 14:36\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -19,183 +19,183 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr ""
+msgstr "Otwórz pliki..."
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr ""
+msgstr "Open URI..."
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Preferencje"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Skróty"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "O programie"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "Główne"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Pokaż skróty"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Przełącz tryb pełnoekranowy"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Podwójne dotknięcie | Podwójne kliknięcie"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Opuść pełny ekran"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Pokaż OSD (tylko w trybie pełnoekranowym)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Stuknij"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Zamknij"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Otwórz pliki"
 
 #: ui/help-overlay.ui:56
 msgid "Open URI"
-msgstr ""
+msgstr "Otwórz URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Playlista"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Następna pozycja"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Dwukrotne dotknięcie (po prawej)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Poprzednia pozycja"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Podwójne dotknięcie (po lewej stronie)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Zmień tryb powtarzania"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Eksportuj do pliku"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "Odtwarzanie"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Przełącz odtwarzanie"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Długie naciśnięcie | Prawy przycisk"
 
 #: ui/help-overlay.ui:105
 msgid "Volume up"
-msgstr ""
+msgstr "Zwiększ głośność"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Przesuń w górę | Przewiń w górę"
 
 #: ui/help-overlay.ui:112
 msgid "Volume down"
-msgstr ""
+msgstr "Zmniejsz głośność"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Przesuń w dół | Przewiń w dół"
 
 #: ui/help-overlay.ui:119
 msgid "Seek forward"
-msgstr ""
+msgstr "Przewiń do przodu"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Przesuń w prawo | Przewiń w prawo"
 
 #: ui/help-overlay.ui:126
 msgid "Seek backward"
-msgstr ""
+msgstr "Przewiń do tyłu"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Przesuń w lewo | Przewiń w lewo"
 
 #: ui/help-overlay.ui:133
 msgid "Next chapter"
-msgstr ""
+msgstr "Następny rozdział"
 
 #: ui/help-overlay.ui:139
 msgid "Previous chapter"
-msgstr ""
+msgstr "Poprzedni rozdział"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Dekodery"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Wróć do preferencji"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "Zachowanie"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Automatyczny tryb pełnoekranowy"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Wejdź do trybu pełnoekranowego, gdy lista odtwarzania zostanie zastąpiona z wyjątkiem trybu pływającego"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Poproś o wznowienie ostatnich mediów"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Pływaj na wszystkich obszarach roboczych"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Ta opcja działa tylko na GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "Po odtwarzaniu"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
