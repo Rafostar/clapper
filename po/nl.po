@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-26 14:55\n"
+"PO-Revision-Date: 2021-08-26 15:52\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -51,309 +51,309 @@ msgstr "Beeldvullende modus aan/uit"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Dubbeltikken/Dubbelklikken"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Beeldvullende modus verlaten"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "OSD tonen (alleen in beeldvullende modus)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Tikken"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Afsluiten"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Bestanden openen"
 
 #: ui/help-overlay.ui:56
 msgid "Open URI"
-msgstr ""
+msgstr "URI openen"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Afspeellijst"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Volgend item"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Dubbeltikken (rechterkant)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Vorig item"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Dubbeltikken (linkerkant)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Herhaalmodus wijzigen"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Exporteren naar bestand"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "Afspelen"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Afspelen/Pauzeren"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Lang ingedrukt houden/Rechtsklikken"
 
 #: ui/help-overlay.ui:105
 msgid "Volume up"
-msgstr ""
+msgstr "Volume omhoog"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Omhoog vegen/scrollen"
 
 #: ui/help-overlay.ui:112
 msgid "Volume down"
-msgstr ""
+msgstr "Volume omlaag"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Omlaag vegen/scrollen"
 
 #: ui/help-overlay.ui:119
 msgid "Seek forward"
-msgstr ""
+msgstr "Vooruitspoelen"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Naar rechts vegen/scrollen"
 
 #: ui/help-overlay.ui:126
 msgid "Seek backward"
-msgstr ""
+msgstr "Terugspoelen"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Naar links vegen/scrollen"
 
 #: ui/help-overlay.ui:133
 msgid "Next chapter"
-msgstr ""
+msgstr "Volgend hoofdstuk"
 
 #: ui/help-overlay.ui:139
 msgid "Previous chapter"
-msgstr ""
+msgstr "Vorig hoofdstuk"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Decodering"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Terug naar voorkeuren"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "Gedrag"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Beeldvullende modus automatisch inschakelen"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Schakel de beeldvullende modus automatisch in als de afspeellijst wordt vervangen (behalve in de zwevende modus)"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Vragen om onlangs afgespeelde media te hervatten"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Zweven op alle werkbladen"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Deze optie werkt alleen op GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "Actie na het afspelen:"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "Niets doen"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Laatste frame bevriezen"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "Toepassing afsluiten"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Aangepaste initiële waarde"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Stel een aangepast volumeniveau in bij het opstarten in plaats van het vorige te herstellen"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "Volumeniveau"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Spoelen"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "Modus"
 
 #: ui/preferences-window.ui:83 ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "Normaal"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr ""
+msgstr "Nauwkeurig"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr ""
+msgstr "Snel"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr ""
+msgstr "Eenheid"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr ""
+msgstr "Seconde"
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr ""
+msgstr "Minuut"
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr ""
+msgstr "Percentage"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "Waarde"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Verschuiving (in milliseconden)"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Alleen ingebouwde audioformaten"
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr ""
+msgstr "Ondertiteling"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "Standaardlettertype"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr ""
+msgstr "Netwerk"
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Progressieve downloadbuffering"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "Speler op afstand bedienen"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "Luisteren op poort:"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Webtoepassing op achtergrond uitvoeren"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Vereist GTK met het Broadway-backend"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Webtoepassingspoort"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Adaptief streamen"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "Maximumkwaliteit"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Aanpassingen"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "Vormgeving"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "Donker thema"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "Vensterschaduwen tonen"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Schakel uit om de prestaties te verbeteren in de zwevende modus"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Plug-involgorde"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Pas de standaardvolgorde van GStreamer-plug-ins aan"
 
