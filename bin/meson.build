@@ -23,7 +23,7 @@ foreach id_postfix : clapper_apps
   )
 endforeach
 
-clapper_symlink_cmd = 'ln -fs @0@ @1@'.format(
+clapper_symlink_cmd = 'ln -fs @0@ $DESTDIR@1@'.format(
   'com.github.rafostar.Clapper',
   join_paths(get_option('prefix'), get_option('bindir'), 'clapper')
 )
