@@ -1,366 +1,359 @@
-# Catalan translation for Clapper.
-# Copyright (C) 2021
-# This file is distributed under the same license as the com.github.rafostar.Clapper package.
-# Ícar Nin Solana <icar.nin@protonmail.com>, 2021.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-26 10:48+0200\n"
-"Last-Translator: Ícar N. S. <icar.nin@protonmail.com>\n"
+"PO-Revision-Date: 2021-08-26 19:01\n"
+"Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
-"X-Crowdin-File-ID: 31\n"
-"X-Crowdin-Language: ca\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Generator: Poedit 3.0\n"
+"X-Crowdin-Language: ca\n"
+"X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
+"X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr "Obre fitxers..."
+msgstr ""
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr "Obre l'URI..."
+msgstr ""
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr "Preferències"
+msgstr ""
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr "Dreceres"
+msgstr ""
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr "Quant al Clapper"
+msgstr ""
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr "General"
+msgstr ""
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr "Mostra les dreceres"
+msgstr ""
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr "Commuta la pantalla completa"
+msgstr ""
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr "Prem dues vegades | Doble clic"
+msgstr ""
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr "Surt de la pantalla completa"
+msgstr ""
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr "Mostra l'OSD (només pantalla completa)"
+msgstr ""
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr "Toca"
+msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr "Surt"
+msgstr ""
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr "Mèdia"
+msgstr ""
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "Obre fitxers"
+msgstr ""
 
 #: ui/help-overlay.ui:56
 msgid "Open URI"
-msgstr "Obre l'URI"
+msgstr ""
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr "Llista de reproducció"
+msgstr ""
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr "Element següent"
+msgstr ""
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr "Prem dues vegades (part dreta)"
+msgstr ""
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr "Element anterior"
+msgstr ""
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr "Prem dues vegades (part esquerra)"
+msgstr ""
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "Canvia el mode de repetició"
+msgstr ""
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr "Exporta a un fitxer"
+msgstr ""
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr "Reproducció"
+msgstr ""
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr "Commuta la reproducció"
+msgstr ""
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr "Prem llarga | Clic dret"
+msgstr ""
 
 #: ui/help-overlay.ui:105
 msgid "Volume up"
-msgstr "Apuja el volum"
+msgstr ""
 
 #: ui/help-overlay.ui:106
 msgid "Swipe up | Scroll up"
-msgstr "Llisca el dit cap amunt | Desplaça amunt"
+msgstr ""
 
 #: ui/help-overlay.ui:112
 msgid "Volume down"
-msgstr "Baixa el volum"
+msgstr ""
 
 #: ui/help-overlay.ui:113
 msgid "Swipe down | Scroll down"
-msgstr "Llisca el dit cap avall | Desplaça cap avall"
+msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Seek forward"
-msgstr "Avança"
+msgstr ""
 
 #: ui/help-overlay.ui:120
 msgid "Swipe right | Scroll right"
-msgstr "Llisca el dit a la dreta | Desplaça a la dreta"
+msgstr ""
 
 #: ui/help-overlay.ui:126
 msgid "Seek backward"
-msgstr "Retrocedeix"
+msgstr ""
 
 #: ui/help-overlay.ui:127
 msgid "Swipe left | Scroll left"
-msgstr "Llisca el dit a l'esquerra | Desplaça a l'esquerra"
+msgstr ""
 
 #: ui/help-overlay.ui:133
 msgid "Next chapter"
-msgstr "Capítol següent"
+msgstr ""
 
 #: ui/help-overlay.ui:139
 msgid "Previous chapter"
-msgstr "Capítol anterior"
+msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr "Descodificadors"
+msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr "Torna a les preferències"
+msgstr ""
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr "Comportament"
+msgstr ""
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr "Pantalla completa automàtica"
+msgstr ""
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
 msgstr ""
-"Entra a pantalla completa quan se substitueix la llista de reproducció "
-"excepte el mode flotant"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr "Pregunta per reprendre  recents"
+msgstr ""
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr "Flota en tots els espais de treball"
+msgstr ""
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr "Aquesta opció només funciona amb el GNOME"
+msgstr ""
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr "Després de la reproducció"
+msgstr ""
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr "No facis res"
+msgstr ""
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr "Congela l'últim fotograma"
+msgstr ""
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr "Surt de l'aplicació"
+msgstr ""
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr "Volum"
+msgstr ""
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr "Valor inicial personalitzat"
+msgstr ""
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr "Estableix el volum personalitzat a l'inici en lloc de restaurar-lo"
+msgstr ""
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr "Percentatge de volum"
+msgstr ""
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr "Cerca"
+msgstr ""
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr "Mode"
+msgstr ""
 
 #: ui/preferences-window.ui:83 ui/preferences-window.ui:215
 msgid "Normal"
-msgstr "Normal"
+msgstr ""
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr "Acurat"
+msgstr ""
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr "Ràpid"
+msgstr ""
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr "Unitat"
+msgstr ""
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr "Segon"
+msgstr ""
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr "Minut"
+msgstr ""
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr "Percentatge"
+msgstr ""
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr "Valor"
+msgstr ""
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr "Àudio"
+msgstr ""
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr "Desplaçament en mil·lisegons"
+msgstr ""
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr "Només formats d'àudio natius"
+msgstr ""
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr "Subtítols"
+msgstr ""
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr "Tipus de lletra per defecte"
+msgstr ""
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr "Xarxa"
+msgstr ""
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr "Client"
+msgstr ""
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr "Memòria intermèdia de baixada progressiva"
+msgstr ""
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr "Servidor"
+msgstr ""
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr "Controla el reproductor remotament"
+msgstr ""
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr "Port d'escolta"
+msgstr ""
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr "Executa l'aplicació web en segon pla"
+msgstr ""
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr "Requereix el GTK compilat amb el backend Broadway"
+msgstr ""
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr "Port de l'aplicació web"
+msgstr ""
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr "Prefereix la transmissió adaptativa"
+msgstr ""
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr "Qualitat màxima"
+msgstr ""
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr "Ajustaments"
+msgstr ""
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr "Aparença"
+msgstr ""
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr "Tema fosc"
+msgstr ""
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr "Renderitza les ombres de la finestra"
+msgstr ""
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr "Inhabilita per augmentar el rendiment en mode finestra"
+msgstr ""
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr "Classificació dels connectors"
+msgstr ""
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "Altera els rangs predeterminats dels connectors del GStreamer"
+msgstr ""
+
