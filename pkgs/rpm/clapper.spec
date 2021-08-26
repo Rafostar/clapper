@@ -125,9 +125,13 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/*.metainfo.xml
 %{_datadir}/gir-1.0/GstClapper-1.0.gir
+%{_datadir}/locale/*/LC_MESSAGES/%{appname}.mo
 %{_libdir}/%{appname}/
 
 %changelog
+* Thu Aug 26 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-4
+- Install translations
+
 * Thu Aug 26 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-3
 - Install clapper symlink
 
