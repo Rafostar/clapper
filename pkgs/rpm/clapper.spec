@@ -139,7 +139,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 * Tue Apr 13 2021 Rafostar <rafostar.github@gmail.com> - 0.2.0-1
 - New version
 
-* Fri Feb 25 2021 Rafostar <rafostar.github@gmail.com> - 0.1.0-1
+* Fri Feb 26 2021 Rafostar <rafostar.github@gmail.com> - 0.1.0-1
 - New version
 
 * Sun Feb 7 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-10
