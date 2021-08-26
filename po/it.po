@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-25 15:42\n"
+"PO-Revision-Date: 2021-08-26 11:47\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -27,11 +27,11 @@ msgstr ""
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Preferenze"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Scorciatoie"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
@@ -39,11 +39,11 @@ msgstr ""
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "Generale"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Mostra scorciatoie"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
@@ -67,7 +67,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Esci"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
@@ -87,7 +87,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Elemento successivo"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
@@ -95,7 +95,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Elemento precedente"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
@@ -123,7 +123,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:105
 msgid "Volume up"
-msgstr ""
+msgstr "Aumenta volume"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe up | Scroll up"
