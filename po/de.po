@@ -1,359 +1,369 @@
+# GNU gettext po file for the German translation of Clapper
+# Copyright (C) 2021 Florian "sp1rit" <sp1ritCS@protonmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: clapper\n"
+"Project-Id-Version: com.github.rafostar.Clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-25 15:42\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2021-08-26 12:02+0200\n"
+"Last-Translator: Florian \"sp1rit\" <sp1ritCS@protonmail.com>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: clapper\n"
-"X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: de\n"
-"X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
-"X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr ""
+msgstr "Dateien öffnen..."
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr ""
+msgstr "Webquelle öffnen..."
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Einstellungen"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Tastenkombinationen"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Über Clapper"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "Allgemein"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Tastenkombinationen zeigen"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "In Vollbildmodus wechseln"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Doppelt tippen bzw. klicken"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Vollbildmodus beenden"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "OSD zeigen (nur im Vollbildmodus)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Tippen"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Clapper beenden"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Medien"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Dateien öffnen"
 
 #: ui/help-overlay.ui:56
 msgid "Open URI"
-msgstr ""
+msgstr "Webquelle öffnen"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Wiedergabeliste"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Nächster Titel"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Doppelt auf der rechten Seite tippen"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Vorheriger Titel"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Doppelt auf der linken Seite tippen"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Wiederholmodus ändern"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Als Datei exportieren"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "Wiedergabe"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Wiedergabe umschalten"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Lange Bildschirm berühren oder Rechtsklick"
 
 #: ui/help-overlay.ui:105
 msgid "Volume up"
-msgstr ""
+msgstr "Lautstärke amplifizieren"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Nach oben wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:112
 msgid "Volume down"
-msgstr ""
+msgstr "Lautstärke vermindern"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Nach unten wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:119
 msgid "Seek forward"
-msgstr ""
+msgstr "Vorwärts springen"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Nach rechts wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:126
 msgid "Seek backward"
-msgstr ""
+msgstr "Rückwärts springen"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Nach links wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:133
 msgid "Next chapter"
-msgstr ""
+msgstr "Nächstes Kapitel"
 
 #: ui/help-overlay.ui:139
 msgid "Previous chapter"
-msgstr ""
+msgstr "Vorheriges Kapitel"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Decodierer"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Zurück zu den Einstellungen"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "Verhalten"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Automatischer Vollbildmodus"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Vollbildmodus betreten, wenn Wiedergabeliste ersetzt wird. (Außer Clapper befindet sich im Schwebemodus)"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Nachfragen ob kürzlich wiedergegebene Medien weitergespielt werden sollen"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Schwebemodus auf allen Arbeitsflächen"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Diese Option funktioniert nur auf GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "Nach Wiedergabe"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "Nichts tun"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Letztes Bild einfrieren"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "Anwendung beenden"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "Lautstärke"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Benutzerdefinierter Anfangswert"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Lautstärke auf einen fixierten Wert beim Start setzen, anstelle ihn wiederherzustellen."
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "Lautstärke (in Prozent)"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Springen"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "Modus"
 
 #: ui/preferences-window.ui:83 ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr ""
+msgstr "Genau"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr ""
+msgstr "Schnell"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr ""
+msgstr "Einheit"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr ""
+msgstr "Sekunden"
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr ""
+msgstr "Minuten"
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr ""
+msgstr "Prozentsatz"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "Wert"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Verschiebung in Millisekunden"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Nur systemeigene Audioformate"
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr ""
+msgstr "Untertitel"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "Standartschriftart"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr ""
+msgstr "Netzwerk"
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Fortschreitender Download-Puffer"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "Clapper fernsteuern"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "Empfangsport"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Webanwendung im Hintergrund starten"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Benötigt, dass GTK mit Broadway Unterstützung kompiliert wurde"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Webanwendungsport"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Bevorzuge adaptives Streaming"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "Höchste Qualität"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Optimierungen"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "Erscheinungsbild"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "Dunkler Modus"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "Fensterschatten darstellen"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Deaktivieren, um Performance im Fenstermodus zu verbessern"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Plugin-Reihenfolge"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
-
+msgstr "Standard GStreamer Reihenfolge verändern"
