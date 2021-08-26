@@ -117,6 +117,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %license COPYING
 %doc README.md
 %{_bindir}/%{appname}*
+%{_bindir}/clapper
 %{_datadir}/%{appname}/
 %{_datadir}/icons/hicolor/*/apps/*.svg
 %{_datadir}/glib-2.0/schemas/%{appname}.gschema.xml
@@ -127,6 +128,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_libdir}/%{appname}/
 
 %changelog
+* Thu Aug 26 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-3
+- Install clapper symlink
+
 * Mon Aug 23 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-2
 - Require libadwaita
 
@@ -139,7 +143,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 * Tue Apr 13 2021 Rafostar <rafostar.github@gmail.com> - 0.2.0-1
 - New version
 
-* Fri Feb 25 2021 Rafostar <rafostar.github@gmail.com> - 0.1.0-1
+* Fri Feb 26 2021 Rafostar <rafostar.github@gmail.com> - 0.1.0-1
 - New version
 
 * Sun Feb 7 2021 Rafostar <rafostar.github@gmail.com> - 0.0.0-10

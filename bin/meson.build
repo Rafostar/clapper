@@ -22,3 +22,9 @@ foreach id_postfix : clapper_apps
     install_mode: 'rwxr-xr-x'
   )
 endforeach
+
+clapper_symlink_cmd = 'ln -fs @0@ $DESTDIR@1@'.format(
+  'com.github.rafostar.Clapper',
+  join_paths(get_option('prefix'), get_option('bindir'), 'clapper')
+)
+meson.add_install_script('sh', '-c', clapper_symlink_cmd)
