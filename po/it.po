@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-26 12:56\n"
+"PO-Revision-Date: 2021-08-26 13:54\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr ""
+msgstr "Apri i File..."
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr ""
+msgstr "Apri URI..."
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
@@ -35,7 +35,7 @@ msgstr "Scorciatoie"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Informazioni su Clapper"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
@@ -75,15 +75,15 @@ msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Apri i file"
 
 #: ui/help-overlay.ui:56
 msgid "Open URI"
-msgstr ""
+msgstr "Apri URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Playlist"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
@@ -115,11 +115,11 @@ msgstr "Riproduzione"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Attiva/Disattiva riproduzione"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Tocco prolungato | Click destro"
 
 #: ui/help-overlay.ui:105
 msgid "Volume up"
@@ -219,7 +219,7 @@ msgstr "Valore iniziale personalizato"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Imposta un volume all'avvio personalizzato invece di ripristinarlo"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
@@ -271,7 +271,7 @@ msgstr "Audio"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Ritardo/Anticipo in millisecondi"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
@@ -283,7 +283,7 @@ msgstr "Sottotitoli"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "Carattere predefinito"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
@@ -351,9 +351,9 @@ msgstr "Disabilita per aumentare le prestazioni in modalità finestra"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Ordine dei plugin"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Altera l'ordine predefinito dei plugin di GStreamer"
 
