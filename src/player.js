@@ -97,18 +97,24 @@ class ClapperPlayer extends GstClapper.Clapper
     set_all_plugins_ranks()
     {
         let data = {};
+        let hadErr = false;
 
         /* Set empty plugin list if someone messed it externally */
         try {
             data = JSON.parse(settings.get_string('plugin-ranking'));
             if(Array.isArray(data)) {
                 data = {};
-                throw new Error('plugin ranking data is not an object');
+                hadErr = true;
             }
         }
         catch(err) {
             debug(err);
+            hadErr = true;
+        }
+
+        if(hadErr) {
             settings.set_string('plugin-ranking', "{}");
+            debug('restored plugin ranking to defaults');
         }
 
         for(let plugin of Object.keys(data))
