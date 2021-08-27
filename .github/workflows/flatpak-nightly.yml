@@ -9,6 +9,9 @@ jobs:
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-nightly
       options: --privileged
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -19,3 +22,4 @@ jobs:
         bundle: com.github.rafostar.Clapper.flatpak
         manifest-path: pkgs/flatpak/com.github.rafostar.Clapper-testing.json
         cache-key: flatpak-builder-${{ github.sha }}-testing-${{ github.run_number }}
+        arch: ${{ matrix.arch }}
