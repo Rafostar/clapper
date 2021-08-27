@@ -13,13 +13,26 @@ jobs:
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-40
       options: --privileged
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+      fail-fast: false
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v3
+    - name: Install Docker
+      run: |
+        dnf -y install docker
+    - name: Setup QEMU
+      id: qemu
+      uses: docker/setup-qemu-action@v1
+      with:
+        platforms: arm64
+    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
       name: "Build"
       with:
         bundle: com.github.rafostar.Clapper.flatpak
         manifest-path: pkgs/flatpak/com.github.rafostar.Clapper.json
         cache-key: flatpak-builder-${{ github.sha }}
+        arch: ${{ matrix.arch }}
