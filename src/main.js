@@ -5,14 +5,13 @@ imports.gi.versions.Soup = '2.4';
 pkg.initGettext();
 
 const { GstClapper, Gtk, Adw } = imports.gi;
-
-GstClapper.Clapper.gst_init(null);
-Gtk.init();
-Adw.init();
-
 const { App } = imports.src.app;
 
 function main(argv)
 {
+    GstClapper.Clapper.gst_init(null);
+    Gtk.init();
+    Adw.init();
+
     new App().run(argv);
 }

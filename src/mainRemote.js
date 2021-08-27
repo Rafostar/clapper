@@ -5,10 +5,6 @@ imports.gi.versions.Soup = '2.4';
 pkg.initGettext();
 
 const { Gtk, Adw } = imports.gi;
-
-Gtk.init();
-Adw.init();
-
 const { AppRemote } = imports.src.appRemote;
 const Misc = imports.src.misc;
 
@@ -19,5 +15,8 @@ Misc.appId += '.' + ID_POSTFIX;
 
 function main(argv)
 {
+    Gtk.init();
+    Adw.init();
+
     new AppRemote().run(argv);
 }
