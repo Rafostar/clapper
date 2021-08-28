@@ -3286,7 +3286,6 @@ gst_clapper_has_plugin_with_features (const gchar * name)
 static void
 gst_clapper_prepare_gstreamer (void)
 {
-  GstRegistry *registry = gst_registry_get ();
   const guint rank = GST_RANK_PRIMARY + 24;
 
   GST_DEBUG ("Preparing GStreamer plugins");
