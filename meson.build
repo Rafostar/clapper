@@ -1,7 +1,7 @@
 project('com.github.rafostar.Clapper', 'c', 'cpp',
   version: '0.3.0',
   meson_version: '>= 0.50.0',
-  license: 'GPL3',
+  license: 'GPL-3.0-or-later',
   default_options: [
     'warning_level=1',
     'buildtype=debugoptimized'
