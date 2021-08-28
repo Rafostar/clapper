@@ -1,6 +1,6 @@
 # Clapper
 [![Flatpak](https://github.com/Rafostar/clapper/actions/workflows/flatpak.yml/badge.svg?event=push)](https://github.com/Rafostar/clapper/actions/workflows/flatpak.yml)
-[![Flatpak Testing](https://github.com/Rafostar/clapper/actions/workflows/flatpak-testing.yml/badge.svg?event=schedule)](https://github.com/Rafostar/clapper/actions/workflows/flatpak-testing.yml)
+[![Flatpak Nightly](https://github.com/Rafostar/clapper/actions/workflows/flatpak-nightly.yml/badge.svg?event=schedule)](https://github.com/Rafostar/clapper/actions/workflows/flatpak-nightly.yml)
 [![Crowdin](https://badges.crowdin.net/clapper/localized.svg)](https://crowdin.com/project/clapper)
 
 A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit.
