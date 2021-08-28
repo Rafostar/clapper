@@ -256,14 +256,6 @@ cdata.set('DISABLE_ORC', 1)
 cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))
 cdata.set_quoted('GST_PACKAGE_RELEASE_DATETIME', 'Unknown')
 
-message('GStreamer debug system is disabled')
-if cc.has_argument('-Wno-unused')
-  add_project_arguments('-Wno-unused', language: 'c')
-endif
-if cxx.has_argument ('-Wno-unused')
-  add_project_arguments('-Wno-unused', language: 'cpp')
-endif
-
 configinc = include_directories('.')
 libsinc = include_directories('gst')
 
