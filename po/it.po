@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-26 13:54\n"
+"PO-Revision-Date: 2021-08-28 06:11\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -127,7 +127,7 @@ msgstr "Aumenta volume"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Scorri in alto"
 
 #: ui/help-overlay.ui:112
 msgid "Volume down"
@@ -135,7 +135,7 @@ msgstr "Abbassa volume"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Scorri in basso"
 
 #: ui/help-overlay.ui:119
 msgid "Seek forward"
@@ -143,7 +143,7 @@ msgstr "Scorri avanti"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Scorri a destra"
 
 #: ui/help-overlay.ui:126
 msgid "Seek backward"
@@ -151,7 +151,7 @@ msgstr "Scorri indietro"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Scorri a sinistra"
 
 #: ui/help-overlay.ui:133
 msgid "Next chapter"
@@ -179,7 +179,7 @@ msgstr "Schermo intero automatico"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Attiva schermo intero quando la playlist viene sostituita, tranne in modalità fluttuante"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
@@ -187,7 +187,7 @@ msgstr "Chiedi di riprendere i media recenti"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Fluttuante su tutti i workspace"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
@@ -295,7 +295,7 @@ msgstr "Client"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Download buffering progressivo"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
@@ -311,11 +311,11 @@ msgstr "Porta in ascolto"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Lancia l'applicazione web in sottofondo"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Richiede GTK compilato con il supporto a Broadway"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
@@ -331,7 +331,7 @@ msgstr "Qualità massima"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Aggiustamenti"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
