@@ -29,6 +29,6 @@ jobs:
       name: "Build"
       with:
         bundle: com.github.rafostar.Clapper.flatpak
-        manifest-path: pkgs/flatpak/com.github.rafostar.Clapper-testing.json
+        manifest-path: pkgs/flatpak/com.github.rafostar.Clapper-nightly.json
         cache-key: flatpak-builder-${{ github.sha }}-testing-${{ github.run_number }}
         arch: ${{ matrix.arch }}
