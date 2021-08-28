@@ -1,7 +1,7 @@
 #
 # spec file for package clapper
 #
-# Copyright (C) 2020    sp1rit
+# Copyright (C) 2020/21 Florian "sp1rit"
 # Copyright (C) 2020-21 Rafostar
 #
 # This program is free software: you can redistribute it and/or modify
@@ -17,9 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-%define debug_package %{nil}
-
 %global appname com.github.rafostar.Clapper
+%global gstlib GstClapper
+%global gstlibver 1.0
+
 %global gst_version 1.18.0
 %global gtk4_version 4.0.0
 %global meson_version 0.50
@@ -33,7 +34,7 @@ Summary:        Simple and modern GNOME media player
 License:        GPL-3.0
 URL:            https://github.com/Rafostar/clapper
 BuildRoot:      %{_builddir}/%{name}-%{version}-build
-Source0:        _service
+Source0:        %{name}-%{version}.tar.xz
 
 BuildRequires:  meson >= %{meson_version}
 BuildRequires:  gtk4-devel >= %{gtk4_version}
@@ -46,8 +47,10 @@ BuildRequires:  hicolor-icon-theme
 
 Requires:       gjs
 Requires:       gtk4 >= %{gtk4_version}
-Requires:       libadwaita
 Requires:       hicolor-icon-theme
+
+%define altgstlibver %(sed s/[.]/_/g <<< %{gstlibver})
+%define altgstlib %{gstlib}-%{altgstlibver}
 
 %if 0%{?suse_version}
 # SUSE recommends group tag, while Fedora discourages their use
@@ -58,6 +61,8 @@ BuildRequires:  gstreamer-devel >= %{gst_version}
 BuildRequires:  gstreamer-plugins-base-devel >= %{gst_version}
 BuildRequires:  Mesa-libGLESv2-devel
 BuildRequires:  Mesa-libGLESv3-devel
+
+Requires:       typelib(Adw)
 
 Requires:       gstreamer >= %{gst_version}
 Requires:       gstreamer-plugins-base >= %{gst_version}
@@ -71,6 +76,21 @@ Recommends:     gstreamer-plugins-libav >= %{gst_version}
 Suggests:       gstreamer-plugins-ugly
 # Intel/AMD video acceleration
 Suggests:       gstreamer-plugins-vaapi
+
+Requires:       typelib-1_0-%{altgstlib} = %{version}
+
+# GObject Introspection Bindings are in a seperate subpackage in openSUSE
+# https://en.opensuse.org/openSUSE:Packaging_guidelines#GObject_Introspection_Bindings_.28.typelibs.29
+%package -n typelib-1_0-%{altgstlib}
+Summary:        Introspection bindings for %{name}
+Group:          System/Libraries
+
+%description -n typelib-1_0-%{altgstlib}
+A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering.
+
+This subpackage provides the GObject Introspection bindings for %{name}.
+
+%lang_package
 %else
 BuildRequires:  glibc-all-langpacks
 BuildRequires:  gstreamer1-devel >= %{gst_version}
@@ -79,6 +99,8 @@ BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLES-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  mesa-libEGL-devel
+
+Requires:       libadwaita
 
 Requires:       gstreamer1 >= %{gst_version}
 Requires:       gstreamer1-plugins-base >= %{gst_version}
@@ -92,13 +114,34 @@ Recommends:     gstreamer1-plugins-bad-free-extras >= %{gst_version}
 Suggests:       gstreamer1-plugins-ugly-free
 # Intel/AMD video acceleration
 Suggests:       gstreamer1-vaapi
+
+# expaneded suse's %lang_package macro
+%package lang
+Summary: Translations for package %{name}
+Group: System/Localization
+
+Requires: %{name} = %{version}
+
+Provides: %{name}-lang-all = %{version}
+BuildArch: noarch
+%description lang
+Provides translations for the "%{name}" package.
 %endif
+
+%package devel
+Summary: Development files for %{name}
+Requires: %{name} = %{version}
 
 %description
 A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering.
 
+%description devel
+A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer with OpenGL rendering.
+
+This subpackage holds the required files to compile against GstClapper
+
 %prep
-%setup -q -n %{_sourcedir}/%{name}-%{version} -T -D
+%autosetup -p1
 
 %build
 %meson
@@ -113,22 +156,41 @@ A GNOME media player built using GJS with GTK4 toolkit and powered by GStreamer 
 %check
 desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
+%find_lang %{appname}
+
+%files lang -f %{appname}.lang
+
 %files
 %license COPYING
 %doc README.md
 %{_bindir}/%{appname}*
-%{_bindir}/clapper
+%{_bindir}/%{name}
 %{_datadir}/%{appname}/
 %{_datadir}/icons/hicolor/*/apps/*.svg
 %{_datadir}/glib-2.0/schemas/%{appname}.gschema.xml
 %{_datadir}/mime/packages/%{appname}.xml
 %{_datadir}/applications/*.desktop
 %{_datadir}/metainfo/*.metainfo.xml
-%{_datadir}/gir-1.0/GstClapper-1.0.gir
-%{_datadir}/locale/*/LC_MESSAGES/%{appname}.mo
-%{_libdir}/%{appname}/
+%dir %{_libdir}/%{appname}/
+%{_libdir}/%{appname}/libgstclapper-%{gstlibver}.so.*
+
+%if 0%{?suse_version}
+%files -n typelib-1_0-%{altgstlib}
+%endif
+%{_libdir}/%{appname}/girepository*
+
+%files devel
+%{_libdir}/%{appname}/libgstclapper-%{gstlibver}.so
+%{_datadir}/gir-1.0/%{gstlib}-%{gstlibver}.gir
 
 %changelog
+* Sat Aug 28 18:43:33 UTC 2021 - Florian "spirit" <packaging@sp1rit.anonaddy.me>
+- RPM specfile improvements
+  + split lang files into seperate clapper-lang subpackage
+  + split devel files into seperate clapper-devel subpackage
+  + split typelib into seperate typelib-1_0-GstClapper-1_0 package on openSUSE
+  + moved from %setup source dir hack to %autosetup with archive
+
 * Thu Aug 26 2021 Rafostar <rafostar.github@gmail.com> - 0.3.0-4
 - Install translations
 
