@@ -30,5 +30,7 @@ jobs:
       with:
         bundle: com.github.rafostar.Clapper.flatpak
         manifest-path: pkgs/flatpak/com.github.rafostar.Clapper-nightly.json
+        repository-name: gnome-nightly
+        repository-url: https://nightly.gnome.org/gnome-nightly.flatpakrepo
         cache-key: flatpak-builder-${{ github.sha }}-testing-${{ github.run_number }}
         arch: ${{ matrix.arch }}
