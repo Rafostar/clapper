@@ -1,4 +1,5 @@
 const { GObject, Gtk } = imports.gi;
+const Misc = imports.src.misc;
 
 /* Negative values from CSS */
 const PopoverOffset = {
@@ -220,27 +221,36 @@ class ClapperElapsedPopoverButton extends LabelPopoverButton
 
     addSeparator(text)
     {
-        const box = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            hexpand: true,
-        });
-        const label = new Gtk.Label({
+        this.popoverBox.append(new PopoverSeparator({
             label: text,
-            halign: Gtk.Align.CENTER,
-        });
-        const leftSeparator = new Gtk.Separator({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-        });
-        const rightSeparator = new Gtk.Separator({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-        });
-        box.append(leftSeparator);
-        box.append(label);
-        box.append(rightSeparator);
-        this.popoverBox.append(box);
+        }));
+    }
+});
+
+var PopoverSeparator = GObject.registerClass({
+    GTypeName: 'ClapperPopoverSeparator',
+    Template: `file://${Misc.getClapperPath()}/ui/popover-separator.ui`,
+    InternalChildren: ['middle_label'],
+    Properties: {
+        'label': GObject.ParamSpec.string(
+            'label',
+            'Middle label',
+            'Text to set in the middle',
+            GObject.ParamFlags.WRITABLE,
+            null
+        ),
+    }
+},
+class ClapperPopoverSeparator extends Gtk.Box
+{
+    _init(opts)
+    {
+        super._init();
+        this.label = opts.label;
+    }
+
+    set label(value)
+    {
+        this._middle_label.label = value || "";
     }
 });
