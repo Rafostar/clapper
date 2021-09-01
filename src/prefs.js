@@ -251,7 +251,7 @@ class PrefsPluginFeature extends Adw.ActionRow
 
         if(enableSwitch.active)
             settingsData[this.title] = this.currentRank;
-        else if(settingsData[this.title])
+        else if(settingsData[this.title] != null)
             delete settingsData[this.title];
 
         this._updateRanking(settingsData);
