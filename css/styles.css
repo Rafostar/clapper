@@ -266,6 +266,9 @@ scale trough slider {
 .fullscreen.tvmode .elapsedpopover {
   min-width: 448px;
 }
+.elapsedpopover contents {
+  padding-bottom: 0px;
+}
 .speedscale trough highlight {
   min-height: 4px;
 }
