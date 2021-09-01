@@ -36,9 +36,7 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 #include <gst/video/colorbalance.h>
-#include <gst/video/gstvideodecoder.h>
 #include <gst/audio/streamvolume.h>
-#include <gst/audio/gstaudiodecoder.h>
 #include <gst/tag/tag.h>
 #include <gst/pbutils/descriptions.h>
 
@@ -3037,9 +3035,11 @@ element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
     if (plugin_name) {
       GST_INFO_OBJECT (self, "Plugin setup: %s", plugin_name);
 
-      if (GST_IS_VIDEO_DECODER (element))
+      if (gst_element_factory_list_is_type (factory,
+          GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO))
         emit_decoder_changed (self, plugin_name, TRUE);
-      else if (GST_IS_AUDIO_DECODER (element))
+      else if (gst_element_factory_list_is_type (factory,
+          GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO))
         emit_decoder_changed (self, plugin_name, FALSE);
 
       /* TODO: Set plugin props */
