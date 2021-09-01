@@ -3,6 +3,9 @@
   <template class="ClapperPopoverSeparator" parent="GtkBox">
     <property name="orientation">horizontal</property>
     <property name="hexpand">True</property>
+    <style>
+      <class name="popoverseparator"/>
+    </style>
     <child>
       <object class="GtkSeparator">
         <property name="orientation">horizontal</property>

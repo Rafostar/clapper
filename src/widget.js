@@ -65,12 +65,16 @@ class ClapperWidget extends Gtk.Grid
 
         this.controls.elapsedButton.scrolledWindow.set_child(this.player.playlistWidget);
 
-        this.controls.speedAdjustment.bind_property(
+        const speedAdjustment = this.controls.elapsedButton.speedScale.get_adjustment();
+        speedAdjustment.bind_property(
             'value', this.player, 'rate', GObject.BindingFlags.BIDIRECTIONAL
         );
-        this.controls.volumeAdjustment.bind_property(
+
+        const volumeAdjustment = this.controls.volumeButton.volumeScale.get_adjustment();
+        volumeAdjustment.bind_property(
             'value', this.player, 'volume', GObject.BindingFlags.BIDIRECTIONAL
         );
+
         this.player.connect('position-updated', this._onPlayerPositionUpdated.bind(this));
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this.player.connect('media-info-updated', this._onMediaInfoUpdated.bind(this));
@@ -155,7 +159,7 @@ class ClapperWidget extends Gtk.Grid
         this.revealerBottom.revealerBox.visible = isFullscreen;
 
         this._changeControlsPlacement(isFullscreen);
-        this.controls.setFullscreenMode(isFullscreen);
+        this.controls.setFullscreenMode(isFullscreen, this.isMobileMonitor);
 
         if(this.revealerTop.child_revealed)
             this._checkSetUpdateTimeInterval();
