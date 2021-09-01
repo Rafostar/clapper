@@ -3,6 +3,7 @@ imports.gi.versions.Gtk = '4.0';
 imports.gi.versions.Soup = '2.4';
 
 pkg.initGettext();
+pkg.initFormat();
 
 const { GstClapper, Gtk, Adw } = imports.gi;
 const { App } = imports.src.app;

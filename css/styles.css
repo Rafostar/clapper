@@ -5,17 +5,33 @@ scale marks {
 radio {
   margin-left: -2px;
 }
+scrolledwindow scrollbar.vertical slider {
+  min-height: 16px;
+}
+
 /* Adwaita is missing osd ListBox */
-.playlistrow {
+.clapperplaylist row {
   border-radius: 5px;
 }
-.playlistrow {
+.clapperplaylist row {
   color: @theme_fg_color;
 }
-.osd .playlist {
+.clapperplaylist row button {
+  margin: 0px;
+  padding: 0px;
+  min-width: 28px;
+  min-height: 28px;
+}
+.fullscreen.tvmode .clapperplaylist row button {
+  min-width: 36px;
+  min-height: 36px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.osd .clapperplaylist {
   background: none;
 }
-.osd .playlist row image {
+.osd .clapperplaylist row image {
   -gtk-icon-shadow: none;
 }
 .osdheaderbar {
@@ -40,6 +56,9 @@ popover arrow,
 popover contents {
   border-color: transparent;
   box-shadow: none;
+}
+.popoverseparator separator {
+  background-color: @insensitive_fg_color;
 }
 
 /* Rounded corners */
@@ -79,24 +98,28 @@ scale trough slider {
   font-size: 21px;
   font-weight: 500;
 }
-.adwicons .playercontrols {
+.adwicons .clappercontrols {
   margin-bottom: -1px;
 }
-.playercontrols {
+.clappercontrols {
   margin-left: 2px;
   margin-right: 2px;
 }
-.playercontrols button {
+.clappercontrolsbutton {
   margin: 3px;
   margin-left: 1px;
   margin-right: 1px;
 }
-.fullscreen.tvmode .playercontrols button {
+.fullscreen.tvmode .clappercontrolsbutton {
   min-width: 32px;
   min-height: 32px;
   margin: 5px;
   margin-left: 3px;
   margin-right: 3px;
+}
+.clappercontrolsbutton.text-button {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 .fullscreen.tvmode button image {
   -gtk-icon-shadow: none;
@@ -109,7 +132,8 @@ scale trough slider {
   min-height: 17px;
 }
 
-.fullscreen.tvmode .playercontrols button image {
+/* Also affects popover buttons */
+.fullscreen.tvmode .clappercontrols button image {
   -gtk-icon-size: 24px;
 }
 .adwicons .playbackicon {
@@ -118,15 +142,12 @@ scale trough slider {
 .adwicons.fullscreen.tvmode .playbackicon {
   -gtk-icon-size: 28px;
 }
-.labelbuttonlabel {
-  margin-left: -4px;
-  margin-right: -4px;
-  min-width: 8px;
+.clappercontrolsbutton.text-button label {
   font-family: 'Cantarell', sans-serif;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
-.fullscreen.tvmode .labelbuttonlabel {
+.fullscreen.tvmode .clappercontrolsbutton.text-button label {
   font-size: 22px;
   text-shadow: none;
 }
@@ -155,12 +176,6 @@ scale trough slider {
   font-size: 24px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-
-/* Button Inside Popover */
-.popoverbutton {
-  min-width: 24px;
-  min-height: 24px;
 }
 
 /* Position Scale */
@@ -245,14 +260,14 @@ scale trough slider {
 }
 
 /* Elapsed Popover */
-.elapsedpopoverbox {
-  min-width: 260px;
+.elapsedpopover {
+  min-width: 326px;
 }
-.elapsedpopoverbox box separator {
-  background: @insensitive_fg_color;
+.fullscreen.tvmode .elapsedpopover {
+  min-width: 448px;
 }
-.fullscreen.tvmode .elapsedpopoverbox {
-  min-width: 360px;
+.elapsedpopover contents {
+  padding-bottom: 0px;
 }
 .speedscale trough highlight {
   min-height: 4px;

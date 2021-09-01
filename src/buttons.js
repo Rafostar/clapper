@@ -1,10 +1,5 @@
 const { GObject, Gtk } = imports.gi;
-
-/* Negative values from CSS */
-const PopoverOffset = {
-  DEFAULT: -3,
-  TVMODE: -5,
-};
+const Misc = imports.src.misc;
 
 var CustomButton = GObject.registerClass(
 class ClapperCustomButton extends Gtk.Button
@@ -22,29 +17,16 @@ class ClapperCustomButton extends Gtk.Button
 
         super._init(opts);
 
-        this.isFullscreen = false;
         this.add_css_class('flat');
-    }
-
-    setFullscreenMode(isFullscreen)
-    {
-        if(this.isFullscreen === isFullscreen)
-            return;
-
-        /* Redraw icon after style class change */
-        if(this.icon_name)
-            this.set_icon_name(this.icon_name);
-
-        this.isFullscreen = isFullscreen;
+        this.add_css_class('clappercontrolsbutton');
     }
 
     vfunc_clicked()
     {
-        if(!this.isFullscreen)
-            return;
-
         const clapperWidget = this.get_ancestor(Gtk.Grid);
-        clapperWidget.revealControls();
+
+        if(clapperWidget.isFullscreenMode)
+            clapperWidget.revealControls();
     }
 });
 
@@ -72,79 +54,73 @@ class ClapperIconToggleButton extends CustomButton
     }
 });
 
-var PopoverButtonBase = GObject.registerClass(
-class ClapperPopoverButtonBase extends Gtk.ToggleButton
+var PopoverSeparator = GObject.registerClass({
+    GTypeName: 'ClapperPopoverSeparator',
+    Template: `file://${Misc.getClapperPath()}/ui/popover-separator.ui`,
+    InternalChildren: ['middle_label'],
+    Properties: {
+        'label': GObject.ParamSpec.string(
+            'label',
+            'Middle label',
+            'Text to set in the middle',
+            GObject.ParamFlags.WRITABLE,
+            null
+        ),
+    }
+},
+class ClapperPopoverSeparator extends Gtk.Box
 {
-    _init()
+    _init(opts)
     {
-        super._init({
-            halign: Gtk.Align.CENTER,
-            valign: Gtk.Align.CENTER,
-            can_focus: false,
-        });
+        super._init();
 
-        this.isFullscreen = false;
-        this.add_css_class('flat');
+        if(!opts.label)
+            this.visible = false;
 
-        this.popover = new Gtk.Popover({
-            position: Gtk.PositionType.TOP,
-        });
-        this.popoverBox = new Gtk.Box({
-            orientation: Gtk.Orientation.VERTICAL,
-        });
-
-        this.popover.set_child(this.popoverBox);
-        this.popover.set_offset(0, PopoverOffset.DEFAULT);
-
-        if(this.isFullscreen)
-            this.popover.add_css_class('osd');
-
-        this.popover.connect('closed', this._onClosed.bind(this));
-        this.popover.set_parent(this);
+        this.label = opts.label;
     }
 
-    setFullscreenMode(isFullscreen)
+    set label(value)
     {
-        if(this.isFullscreen === isFullscreen)
-            return;
+        this._middle_label.label = value || "";
 
-        /* Redraw icon after style class change */
-        if(this.icon_name)
-            this.set_icon_name(this.icon_name);
+        if(value)
+            this.visible = true;
+    }
+});
 
-        this.isFullscreen = isFullscreen;
+var PopoverButtonBase = GObject.registerClass({
+    GTypeName: 'ClapperPopoverButtonBase',
+},
+class ClapperPopoverButtonBase extends Gtk.MenuButton
+{
+    _init(opts = {})
+    {
+        super._init(opts);
 
-        /* TODO: Fullscreen non-tv mode */
-        const offset = (isFullscreen)
-            ? PopoverOffset.TVMODE
-            : PopoverOffset.DEFAULT;
+        if(opts.icon_name)
+            this.icon_name = opts.icon_name;
+        else if(opts.label)
+            this.label = opts.label;
 
-        this.popover.set_offset(0, offset);
+        this.toggleButton = this.get_first_child();
+        this.toggleButton.add_css_class('clappercontrolsbutton');
 
-        const cssClass = 'osd';
-        if(isFullscreen === this.popover.has_css_class(cssClass))
-            return;
-
-        const action = (isFullscreen) ? 'add' : 'remove';
-        this.popover[action + '_css_class'](cssClass);
+        this.set_create_popup_func(this._onPopoverOpened);
+        this.popover.connect('closed', this._onPopoverClosed.bind(this));
     }
 
-    vfunc_toggled()
+    _onPopoverOpened(self)
     {
-        if(!this.active)
-            return;
+        const clapperWidget = self.get_ancestor(Gtk.Grid);
 
-        const clapperWidget = this.get_ancestor(Gtk.Grid);
-
-        if(this.isFullscreen) {
+        if(clapperWidget.isFullscreenMode) {
             clapperWidget.revealControls();
             clapperWidget.isPopoverOpen = true;
         }
-
-        this.popover.popup();
     }
 
-    _onClosed()
+    _onPopoverClosed(popover)
     {
         const clapperWidget = this.get_ancestor(Gtk.Grid);
 
@@ -153,94 +129,107 @@ class ClapperPopoverButtonBase extends Gtk.ToggleButton
             clapperWidget.revealControls();
 
         clapperWidget.isPopoverOpen = false;
-        this.active = false;
-    }
-
-    _onCloseRequest()
-    {
-        this.popover.unparent();
     }
 });
 
-var IconPopoverButton = GObject.registerClass(
-class ClapperIconPopoverButton extends PopoverButtonBase
+var ElapsedTimeButton = GObject.registerClass({
+    GTypeName: 'ClapperElapsedTimeButton',
+    Template: `file://${Misc.getClapperPath()}/ui/elapsed-time-button.ui`,
+    Children: ['scrolledWindow', 'speedScale'],
+},
+class ClapperElapsedTimeButton extends PopoverButtonBase
 {
-    _init(icon)
+    _init(opts)
     {
-        super._init();
+        super._init(opts);
 
-        this.icon_name = icon;
-    }
-});
+        this.setInitialState();
+        this.popover.add_css_class('elapsedpopover');
 
-var LabelPopoverButton = GObject.registerClass(
-class ClapperLabelPopoverButton extends PopoverButtonBase
-{
-    _init(text)
-    {
-        super._init();
-
-        this.customLabel = new Gtk.Label({
-            label: text,
-            single_line_mode: true,
-        });
-        this.customLabel.add_css_class('labelbuttonlabel');
-        this.set_child(this.customLabel);
+        this.scrolledWindow.max_content_height = 150;
     }
 
-    set_label(text)
+    set label(value)
     {
-        this.customLabel.set_text(text);
-    }
-});
-
-var ElapsedPopoverButton = GObject.registerClass(
-class ClapperElapsedPopoverButton extends LabelPopoverButton
-{
-    _init(text)
-    {
-        super._init(text);
-
-        this.popoverBox.add_css_class('elapsedpopoverbox');
-
-        this.scrolledWindow = new Gtk.ScrolledWindow({
-            max_content_height: 150,
-            propagate_natural_height: true,
-        });
-        this.popoverBox.append(this.scrolledWindow);
+        this.toggleButton.label = value;
     }
 
-    setFullscreenMode(isFullscreen)
+    get label()
     {
-        super.setFullscreenMode(isFullscreen);
+        return this.toggleButton.label;
+    }
 
-        this.scrolledWindow.max_content_height = (isFullscreen)
+    setInitialState()
+    {
+        this.label = '00:00/00:00';
+    }
+
+    setFullscreenMode(isFullscreen, isMobileMonitor)
+    {
+        this.scrolledWindow.max_content_height = (isFullscreen && !isMobileMonitor)
             ? 190 : 150;
     }
+});
 
-    addSeparator(text)
+var TrackSelectButton = GObject.registerClass({
+    GTypeName: 'ClapperTrackSelectButton',
+    Template: `file://${Misc.getClapperPath()}/ui/track-select-button.ui`,
+    Children: ['popoverBox'],
+    InternalChildren: ['scrolled_window', 'decoder_separator'],
+},
+class ClapperTrackSelectButton extends PopoverButtonBase
+{
+    _init(opts)
     {
-        const box = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            hexpand: true,
-        });
-        const label = new Gtk.Label({
-            label: text,
-            halign: Gtk.Align.CENTER,
-        });
-        const leftSeparator = new Gtk.Separator({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-        });
-        const rightSeparator = new Gtk.Separator({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            hexpand: true,
-            valign: Gtk.Align.CENTER,
-        });
-        box.append(leftSeparator);
-        box.append(label);
-        box.append(rightSeparator);
-        this.popoverBox.append(box);
+        super._init(opts);
+
+        this._scrolled_window.max_content_height = 220;
+    }
+
+    setFullscreenMode(isFullscreen, isMobileMonitor)
+    {
+        this._scrolled_window.max_content_height = (isFullscreen && !isMobileMonitor)
+            ? 290 : 220;
+    }
+
+    setDecoder(decoder)
+    {
+        this._decoder_separator.label = _('Decoder: %s').format(decoder);
+    }
+});
+
+var VolumeButton = GObject.registerClass({
+    GTypeName: 'ClapperVolumeButton',
+    Template: `file://${Misc.getClapperPath()}/ui/volume-button.ui`,
+    Children: ['volumeScale'],
+},
+class ClapperVolumeButton extends PopoverButtonBase
+{
+    _onVolumeScaleValueChanged(scale)
+    {
+        const volume = scale.get_value();
+        const cssClass = 'overamp';
+        const hasOveramp = (scale.has_css_class(cssClass));
+
+        if(volume > 1) {
+            if(!hasOveramp)
+                scale.add_css_class(cssClass);
+        }
+        else {
+            if(hasOveramp)
+                scale.remove_css_class(cssClass);
+        }
+
+        const icon = (volume <= 0)
+            ? 'muted'
+            : (volume <= 0.3)
+            ? 'low'
+            : (volume <= 0.7)
+            ? 'medium'
+            : (volume <= 1)
+            ? 'high'
+            : 'overamplified';
+
+        this.icon_name = `audio-volume-${icon}-symbolic`;
     }
 });

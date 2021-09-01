@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ClapperTrackSelectButton" parent="ClapperPopoverButtonBase">
+    <property name="popover">popover</property>
+    <property name="direction">up</property>
+    <property name="valign">center</property>
+    <property name="halign">center</property>
+    <property name="can_focus">False</property>
+    <style>
+      <class name="flat"/>
+    </style>
+  </template>
+  <object class="GtkPopover" id="popover">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <child>
+          <object class="ClapperPopoverSeparator" id="decoder_separator">
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled_window">
+            <property name="propagate_natural_width">True</property>
+            <property name="propagate_natural_height">True</property>
+            <child>
+              <object class="GtkBox" id="popoverBox">
+                <property name="orientation">vertical</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -354,9 +354,9 @@ class ClapperPlayer extends GstClapper.Clapper
 
         const { controls } = this.widget.get_ancestor(Gtk.Grid);
         const value = (isIncrease) ? offset : -offset;
-        const volume = controls.volumeScale.get_value() + value;
+        const scale = controls.volumeButton.volumeScale;
 
-        controls.volumeScale.set_value(volume);
+        scale.set_value(scale.get_value() + value);
     }
 
     next_chapter()

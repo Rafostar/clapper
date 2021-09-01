@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ClapperVolumeButton" parent="ClapperPopoverButtonBase">
+    <property name="icon_name">audio-volume-muted-symbolic</property>
+    <property name="popover">popover</property>
+    <property name="direction">up</property>
+    <property name="valign">center</property>
+    <property name="halign">center</property>
+    <property name="can_focus">False</property>
+    <style>
+      <class name="flat"/>
+    </style>
+  </template>
+  <object class="GtkPopover" id="popover">
+    <child>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <child>
+          <object class="GtkScale" id="volumeScale">
+            <property name="orientation">vertical</property>
+            <property name="inverted">True</property>
+            <property name="value_pos">top</property>
+            <property name="draw_value">False</property>
+            <property name="vexpand">True</property>
+            <property name="adjustment">volume_adjustment</property>
+            <signal name="value-changed" handler="_onVolumeScaleValueChanged"/>
+            <marks>
+              <mark value="0" position="left">0%</mark>
+              <mark value="1" position="left">100%</mark>
+              <mark value="1.5" position="left">150%</mark>
+            </marks>
+            <style>
+              <class name="volumescale"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="volume_adjustment">
+    <property name="lower">0</property>
+    <property name="upper">1.5</property>
+    <property name="step-increment">0.05</property>
+    <property name="page-increment">0.05</property>
+  </object>
+</interface>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="ClapperPopoverSeparator" parent="GtkBox">
+    <property name="orientation">horizontal</property>
+    <property name="hexpand">True</property>
+    <style>
+      <class name="popoverseparator"/>
+    </style>
+    <child>
+      <object class="GtkSeparator">
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">True</property>
+        <property name="valign">center</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="middle_label">
+        <property name="halign">center</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparator">
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">True</property>
+        <property name="valign">center</property>
+      </object>
+    </child>
+  </template>
+</interface>

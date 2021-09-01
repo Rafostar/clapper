@@ -28,7 +28,7 @@ class ClapperPlaylistWidget extends Gtk.ListBox
         });
         this.activeRowId = -1;
         this.repeatMode = RepeatMode.NONE;
-        this.add_css_class('playlist');
+        this.add_css_class('clapperplaylist');
 
         this.connect('row-activated', this._onRowActivated.bind(this));
     }
@@ -255,7 +255,6 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         }
         this.filename = filename || uri;
         this.set_tooltip_text(this.filename);
-        this.add_css_class('playlistrow');
 
         const box = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,
@@ -270,7 +269,6 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         });
         repeatButton.add_css_class('flat');
         repeatButton.add_css_class('circular');
-        repeatButton.add_css_class('popoverbutton');
         repeatButton.connect('clicked', this._onRepeatClicked.bind(this));
         const label = new Gtk.Label({
             label: this.filename,
@@ -285,7 +283,6 @@ class ClapperPlaylistItem extends Gtk.ListBoxRow
         });
         removeButton.add_css_class('flat');
         removeButton.add_css_class('circular');
-        removeButton.add_css_class('popoverbutton');
         removeButton.connect('clicked', this._onRemoveClicked.bind(this));
 
         box.append(repeatButton);
