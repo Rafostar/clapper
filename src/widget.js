@@ -79,6 +79,9 @@ class ClapperWidget extends Gtk.Grid
         this.player.connect('duration-changed', this._onPlayerDurationChanged.bind(this));
         this.player.connect('media-info-updated', this._onMediaInfoUpdated.bind(this));
 
+        this.player.connect('video-decoder-changed', this._onPlayerVideoDecoderChanged.bind(this));
+        this.player.connect('audio-decoder-changed', this._onPlayerAudioDecoderChanged.bind(this));
+
         this.overlay.set_child(playerWidget);
         this.overlay.add_overlay(this.revealerTop);
         this.overlay.add_overlay(this.revealerBottom);
@@ -505,6 +508,16 @@ class ClapperWidget extends Gtk.Grid
             return;
 
         this.controls.positionScale.set_value(positionSeconds);
+    }
+
+    _onPlayerVideoDecoderChanged(player, decoder)
+    {
+        this.controls.videoTracksButton.setDecoder(decoder);
+    }
+
+    _onPlayerAudioDecoderChanged(player, decoder)
+    {
+        this.controls.audioTracksButton.setDecoder(decoder);
     }
 
     _onStateNotify(toplevel)

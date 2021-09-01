@@ -191,6 +191,11 @@ class ClapperTrackSelectButton extends PopoverButtonBase
         this._scrolled_window.max_content_height = (isFullscreen && !isMobileMonitor)
             ? 290 : 220;
     }
+
+    setDecoder(decoder)
+    {
+        this._decoder_separator.label = _('Decoder: %s').format(decoder);
+    }
 });
 
 var VolumeButton = GObject.registerClass({
