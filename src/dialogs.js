@@ -1,4 +1,4 @@
-const { Gio, GObject, Gtk, Gst } = imports.gi;
+const { Gdk, Gio, GObject, Gst, Gtk } = imports.gi;
 const System = imports.system;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
@@ -131,7 +131,7 @@ class ClapperUriDialog extends Gtk.Dialog
             modal: true,
             use_header_bar: true,
             title: _('Open URI'),
-            default_width: 400,
+            default_width: 420,
         });
 
         const contentBox = this.get_content_area();
@@ -156,6 +156,12 @@ class ClapperUriDialog extends Gtk.Dialog
         this.set_default_response(Gtk.ResponseType.OK);
         this.set_response_sensitive(Gtk.ResponseType.OK, false);
 
+        const display = Gdk.Display.get_default();
+        const clipboard = (display) ? display.get_clipboard() : null;
+
+        if(clipboard)
+            clipboard.read_text_async(null, this._readTextAsyncCb.bind(this));
+
         this.show();
     }
 
@@ -179,6 +185,18 @@ class ClapperUriDialog extends Gtk.Dialog
             : false;
 
         this.set_response_sensitive(Gtk.ResponseType.OK, isUriValid);
+    }
+
+    _readTextAsyncCb(clipboard, result)
+    {
+        const uri = clipboard.read_text_finish(result);
+        if(!uri || !Gst.uri_is_valid(uri)) return;
+
+        const contentBox = this.get_content_area();
+        const linkEntry = contentBox.get_last_child();
+
+        linkEntry.set_text(uri);
+        linkEntry.select_region(0, -1);
     }
 });
 
