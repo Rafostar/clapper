@@ -132,51 +132,48 @@ class ClapperUriDialog extends Gtk.Dialog
     {
         super._init({
             transient_for: window,
-            destroy_with_parent: true,
             modal: true,
+            use_header_bar: true,
             title: _('Open URI'),
-            default_width: 460,
+            default_width: 400,
         });
 
-        const box = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            valign: Gtk.Align.CENTER,
-            spacing: 6,
-        });
-        box.add_css_class('uridialogbox');
+        const contentBox = this.get_content_area();
+        contentBox.vexpand = true;
+        contentBox.add_css_class('uridialogbox');
 
         const linkEntry = new Gtk.Entry({
             activates_default: true,
             truncate_multiline: true,
-            width_request: 220,
-            height_request: 36,
+            height_request: 38,
             hexpand: true,
+            valign: Gtk.Align.CENTER,
+            input_purpose: Gtk.InputPurpose.URL,
+            placeholder_text: _('Enter or drop URI here'),
         });
-        linkEntry.set_placeholder_text(_('Enter or drop URI here'));
         linkEntry.connect('notify::text', this._onTextNotify.bind(this));
-        box.append(linkEntry);
+        contentBox.append(linkEntry);
 
-        const openButton = new Gtk.Button({
-            label: _('Open'),
-            halign: Gtk.Align.END,
-            sensitive: false,
-        });
-        openButton.connect('clicked', this._onOpenButtonClicked.bind(this));
-        box.append(openButton);
+        this.add_button(_('Cancel'), Gtk.ResponseType.CANCEL);
+        this.add_button(_('Open'), Gtk.ResponseType.OK);
 
-        const area = this.get_content_area();
-        area.append(box);
+        this.set_default_response(Gtk.ResponseType.OK);
+        this.set_response_sensitive(Gtk.ResponseType.OK, false);
 
-        this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
         this.show();
     }
 
-    openUri(uri)
+    vfunc_response(respId)
     {
-        const { player } = this.get_transient_for().get_child();
-        player.set_playlist([uri]);
+        if(respId === Gtk.ResponseType.OK) {
+            const contentBox = this.get_content_area();
+            const linkEntry = contentBox.get_last_child();
+            const { player } = this.transient_for.child;
 
-        this.close();
+            player.set_playlist([linkEntry.text]);
+        }
+
+        this.destroy();
     }
 
     _onTextNotify(entry)
@@ -185,22 +182,7 @@ class ClapperUriDialog extends Gtk.Dialog
             ? Gst.uri_is_valid(entry.text)
             : false;
 
-        const button = entry.get_next_sibling();
-        button.set_sensitive(isUriValid);
-    }
-
-    _onOpenButtonClicked(button)
-    {
-        const entry = button.get_prev_sibling();
-        this.openUri(entry.text);
-    }
-
-    _onCloseRequest(dialog)
-    {
-        debug('closing URI dialog');
-
-        dialog.disconnect(this.closeSignal);
-        this.closeSignal = null;
+        this.set_response_sensitive(Gtk.ResponseType.OK, isUriValid);
     }
 });
 
