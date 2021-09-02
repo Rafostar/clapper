@@ -134,7 +134,7 @@ class ClapperUriDialog extends Gtk.Dialog
             transient_for: window,
             destroy_with_parent: true,
             modal: true,
-            title: 'Open URI',
+            title: _('Open URI'),
             default_width: 460,
         });
 
@@ -152,12 +152,12 @@ class ClapperUriDialog extends Gtk.Dialog
             height_request: 36,
             hexpand: true,
         });
-        linkEntry.set_placeholder_text("Enter or drop URI here");
+        linkEntry.set_placeholder_text(_('Enter or drop URI here'));
         linkEntry.connect('notify::text', this._onTextNotify.bind(this));
         box.append(linkEntry);
 
         const openButton = new Gtk.Button({
-            label: "Open",
+            label: _('Open'),
             halign: Gtk.Align.END,
             sensitive: false,
         });
@@ -212,8 +212,8 @@ class ClapperResumeDialog extends Gtk.MessageDialog
         const percentage = Math.round((resumeInfo.time / resumeInfo.duration) * 100);
 
         const msg = [
-            `<b>Title:</b> ${resumeInfo.title}`,
-            `<b>Completed:</b> ${percentage}%`
+            '<b>' + _('Title') + `:</b> ${resumeInfo.title}`,
+            '<b>' + _('Completed') + `:</b> ${percentage}%`
         ].join('\n');
 
         super._init({
@@ -221,7 +221,7 @@ class ClapperResumeDialog extends Gtk.MessageDialog
             modal: true,
             message_type: Gtk.MessageType.QUESTION,
             buttons: Gtk.ButtonsType.YES_NO,
-            text: 'Resume playback?',
+            text: _('Resume playback?'),
             secondary_use_markup: true,
             secondary_text: msg,
         });
@@ -268,9 +268,9 @@ class ClapperAboutDialog extends Gtk.AboutDialog
         gjsVer += gjsVerStr.charAt(4);
 
         const osInfo = [
-            'GTK ' + 'version' + ': ' + gtkVer,
-            'GStreamer ' + 'version' + ': ' + gstVer,
-            'GJS ' + 'version' + ': ' + gjsVer
+            _('GTK version: %s').format(gtkVer),
+            _('GStreamer version: %s').format(gstVer),
+            _('GJS version: %s').format(gjsVer)
         ].join('\n');
 
         super._init({
@@ -278,7 +278,7 @@ class ClapperAboutDialog extends Gtk.AboutDialog
             destroy_with_parent: true,
             modal: true,
             program_name: Misc.appName,
-            comments: 'A GNOME media player powered by GStreamer',
+            comments: _('A GNOME media player powered by GStreamer'),
             version: Misc.getClapperVersion(),
             authors: ['Rafał Dzięgiel'],
             artists: ['Rafał Dzięgiel'],
