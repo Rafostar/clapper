@@ -6,7 +6,9 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-var FileChooser = GObject.registerClass(
+var FileChooser = GObject.registerClass({
+    GTypeName: 'ClapperFileChooser',
+},
 class ClapperFileChooser extends Gtk.FileChooserNative
 {
     _init(window, purpose)
@@ -121,7 +123,9 @@ class ClapperFileChooser extends Gtk.FileChooserNative
     }
 });
 
-var UriDialog = GObject.registerClass(
+var UriDialog = GObject.registerClass({
+    GTypeName: 'ClapperUriDialog',
+},
 class ClapperUriDialog extends Gtk.Dialog
 {
     _init(window)
@@ -200,7 +204,9 @@ class ClapperUriDialog extends Gtk.Dialog
     }
 });
 
-var ResumeDialog = GObject.registerClass(
+var ResumeDialog = GObject.registerClass({
+    GTypeName: 'ClapperResumeDialog',
+},
 class ClapperResumeDialog extends Gtk.MessageDialog
 {
     _init(window, resumeInfo)
@@ -239,7 +245,9 @@ class ClapperResumeDialog extends Gtk.MessageDialog
     }
 });
 
-var AboutDialog = GObject.registerClass(
+var AboutDialog = GObject.registerClass({
+    GTypeName: 'ClapperAboutDialog',
+},
 class ClapperAboutDialog extends Gtk.AboutDialog
 {
     _init(window)

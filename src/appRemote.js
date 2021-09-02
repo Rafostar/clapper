@@ -3,7 +3,9 @@ const { AppBase } = imports.src.appBase;
 const { HeaderBarRemote } = imports.src.headerbarRemote;
 const { WidgetRemote } = imports.src.widgetRemote;
 
-var AppRemote = GObject.registerClass(
+var AppRemote = GObject.registerClass({
+    GTypeName: 'ClapperAppRemote',
+},
 class ClapperAppRemote extends AppBase
 {
     vfunc_startup()

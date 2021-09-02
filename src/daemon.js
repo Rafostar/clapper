@@ -3,7 +3,9 @@ const Debug = imports.src.debug;
 
 const { debug } = Debug;
 
-var Daemon = GObject.registerClass(
+var Daemon = GObject.registerClass({
+    GTypeName: 'ClapperDaemon',
+},
 class ClapperDaemon extends Gio.SubprocessLauncher
 {
     _init()

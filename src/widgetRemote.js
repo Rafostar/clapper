@@ -3,7 +3,9 @@ const Buttons = imports.src.buttons;
 const Misc = imports.src.misc;
 const { PlayerRemote, ClapperState } = imports.src.playerRemote;
 
-var WidgetRemote = GObject.registerClass(
+var WidgetRemote = GObject.registerClass({
+    GTypeName: 'ClapperWidgetRemote',
+},
 class ClapperWidgetRemote extends Gtk.Grid
 {
     _init(opts)

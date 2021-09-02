@@ -4,7 +4,9 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-var HeaderBarBase = GObject.registerClass(
+var HeaderBarBase = GObject.registerClass({
+    GTypeName: 'ClapperHeaderBarBase',
+},
 class ClapperHeaderBarBase extends Gtk.Box
 {
     _init()
@@ -259,7 +261,9 @@ class ClapperHeaderBarBase extends Gtk.Box
     }
 });
 
-var HeaderBarPopover = GObject.registerClass(
+var HeaderBarPopover = GObject.registerClass({
+    GTypeName: 'ClapperHeaderBarPopover',
+},
 class ClapperHeaderBarPopover extends Gtk.PopoverMenu
 {
     _init(model)

@@ -6,7 +6,9 @@ const WebHelpers = imports.src.webHelpers;
 const { debug } = Debug;
 const { settings } = Misc;
 
-var WebClient = GObject.registerClass(
+var WebClient = GObject.registerClass({
+    GTypeName: 'ClapperWebClient',
+},
 class ClapperWebClient extends Soup.Session
 {
     _init(port)

@@ -7,7 +7,9 @@ const Misc = imports.src.misc;
 const { debug } = Debug;
 const { settings } = Misc;
 
-var CustomRevealer = GObject.registerClass(
+var CustomRevealer = GObject.registerClass({
+    GTypeName: 'ClapperCustomRevealer',
+},
 class ClapperCustomRevealer extends Gtk.Revealer
 {
     _init(opts)
@@ -41,7 +43,9 @@ class ClapperCustomRevealer extends Gtk.Revealer
     }
 });
 
-var RevealerTop = GObject.registerClass(
+var RevealerTop = GObject.registerClass({
+    GTypeName: 'ClapperRevealerTop',
+},
 class ClapperRevealerTop extends CustomRevealer
 {
     _init()
@@ -215,7 +219,9 @@ class ClapperRevealerTop extends CustomRevealer
     }
 });
 
-var RevealerBottom = GObject.registerClass(
+var RevealerBottom = GObject.registerClass({
+    GTypeName: 'ClapperRevealerBottom',
+},
 class ClapperRevealerBottom extends CustomRevealer
 {
     _init()
@@ -272,7 +278,9 @@ class ClapperRevealerBottom extends CustomRevealer
     }
 });
 
-var ControlsRevealer = GObject.registerClass(
+var ControlsRevealer = GObject.registerClass({
+    GTypeName: 'ClapperControlsRevealer',
+},
 class ClapperControlsRevealer extends Gtk.Revealer
 {
     _init()
@@ -342,7 +350,9 @@ class ClapperControlsRevealer extends Gtk.Revealer
     }
 });
 
-var ButtonsRevealer = GObject.registerClass(
+var ButtonsRevealer = GObject.registerClass({
+    GTypeName: 'ClapperButtonsRevealer',
+},
 class ClapperButtonsRevealer extends Gtk.Revealer
 {
     _init(trType, toggleButton)

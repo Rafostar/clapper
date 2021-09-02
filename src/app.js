@@ -5,7 +5,9 @@ const Debug = imports.src.debug;
 
 const { debug } = Debug;
 
-var App = GObject.registerClass(
+var App = GObject.registerClass({
+    GTypeName: 'ClapperApp',
+},
 class ClapperApp extends AppBase
 {
     _init()

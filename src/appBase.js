@@ -7,7 +7,9 @@ const Actions = imports.src.actions;
 const { debug } = Debug;
 const { settings } = Misc;
 
-var AppBase = GObject.registerClass(
+var AppBase = GObject.registerClass({
+    GTypeName: 'ClapperAppBase',
+},
 class ClapperAppBase extends Gtk.Application
 {
     _init()

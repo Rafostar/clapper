@@ -1,7 +1,9 @@
 const { GObject } = imports.gi;
 const { HeaderBarBase } = imports.src.headerbarBase;
 
-var HeaderBar = GObject.registerClass(
+var HeaderBar = GObject.registerClass({
+    GTypeName: 'ClapperHeaderBar',
+},
 class ClapperHeaderBar extends HeaderBarBase
 {
     _onWindowButtonActivate(action)

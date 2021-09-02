@@ -4,7 +4,9 @@ const WebHelpers = imports.src.webHelpers;
 
 const { debug } = Debug;
 
-var WebServer = GObject.registerClass(
+var WebServer = GObject.registerClass({
+    GTypeName: 'ClapperWebServer',
+},
 class ClapperWebServer extends Soup.Server
 {
     _init(port)

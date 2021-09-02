@@ -11,7 +11,9 @@ const { settings } = Misc;
 
 let WebServer;
 
-var Player = GObject.registerClass(
+var Player = GObject.registerClass({
+    GTypeName: 'ClapperPlayer',
+},
 class ClapperPlayer extends GstClapper.Clapper
 {
     _init()

@@ -4,7 +4,9 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-var WebApp = GObject.registerClass(
+var WebApp = GObject.registerClass({
+    GTypeName: 'ClapperWebApp',
+},
 class ClapperWebApp extends Gio.SubprocessLauncher
 {
     _init()

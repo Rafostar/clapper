@@ -210,8 +210,10 @@ class ClapperPrefsSpin extends PrefsActionRow
     }
 });
 
-let PrefsPluginFeature = GObject.registerClass(
-class PrefsPluginFeature extends Adw.ActionRow
+let PrefsPluginFeature = GObject.registerClass({
+    GTypeName: 'ClapperPrefsPluginFeature',
+},
+class ClapperPrefsPluginFeature extends Adw.ActionRow
 {
     _init(featureObj)
     {
@@ -344,7 +346,9 @@ class ClapperPrefsPluginRankingSubpageRow extends PrefsSubpageRow
     }
 });
 
-let PrefsPluginExpander = GObject.registerClass(
+let PrefsPluginExpander = GObject.registerClass({
+    GTypeName: 'ClapperPrefsPluginExpander',
+},
 class ClapperPrefsPluginExpander extends Adw.ExpanderRow
 {
     _init(plugin)

@@ -18,7 +18,9 @@ const repeatIcons = [
     'media-playlist-shuffle-symbolic',
 ];
 
-var PlaylistWidget = GObject.registerClass(
+var PlaylistWidget = GObject.registerClass({
+    GTypeName: 'ClapperPlaylistWidget',
+},
 class ClapperPlaylistWidget extends Gtk.ListBox
 {
     _init()
@@ -234,7 +236,9 @@ class ClapperPlaylistWidget extends Gtk.ListBox
     }
 });
 
-let PlaylistItem = GObject.registerClass(
+let PlaylistItem = GObject.registerClass({
+    GTypeName: 'ClapperPlaylistItem',
+},
 class ClapperPlaylistItem extends Gtk.ListBoxRow
 {
     _init(uri)

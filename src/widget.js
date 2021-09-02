@@ -10,7 +10,9 @@ const Revealers = imports.src.revealers;
 const { debug } = Debug;
 const { settings } = Misc;
 
-var Widget = GObject.registerClass(
+var Widget = GObject.registerClass({
+    GTypeName: 'ClapperWidget',
+},
 class ClapperWidget extends Gtk.Grid
 {
     _init()

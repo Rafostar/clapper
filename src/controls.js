@@ -9,7 +9,9 @@ const { settings } = Misc;
 
 const INITIAL_ELAPSED = '00:00/00:00';
 
-var Controls = GObject.registerClass(
+var Controls = GObject.registerClass({
+    GTypeName: 'ClapperControls',
+},
 class ClapperControls extends Gtk.Box
 {
     _init()

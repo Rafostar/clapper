@@ -1,7 +1,9 @@
 const { GObject, Gtk } = imports.gi;
 const Misc = imports.src.misc;
 
-var CustomButton = GObject.registerClass(
+var CustomButton = GObject.registerClass({
+    GTypeName: 'ClapperCustomButton',
+},
 class ClapperCustomButton extends Gtk.Button
 {
     _init(opts)
@@ -30,7 +32,9 @@ class ClapperCustomButton extends Gtk.Button
     }
 });
 
-var IconToggleButton = GObject.registerClass(
+var IconToggleButton = GObject.registerClass({
+    GTypeName: 'ClapperIconToggleButton',
+},
 class ClapperIconToggleButton extends CustomButton
 {
     _init(primaryIcon, secondaryIcon)

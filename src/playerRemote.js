@@ -8,7 +8,9 @@ var ClapperState = {
     PLAYING: 3,
 };
 
-var PlayerRemote = GObject.registerClass(
+var PlayerRemote = GObject.registerClass({
+    GTypeName: 'ClapperPlayerRemote',
+},
 class ClapperPlayerRemote extends GObject.Object
 {
     _init()
