@@ -29,7 +29,6 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         }
 
         this.chooserPurpose = purpose;
-        this.responseSignal = this.connect('response', this._onResponse.bind(this));
 
         /* File chooser closes itself when nobody is holding its ref */
         this.ref();
@@ -62,14 +61,11 @@ class ClapperFileChooser extends Gtk.FileChooserNative
         this.add_filter(filter);
     }
 
-    _onResponse(filechooser, response)
+    vfunc_response(respId)
     {
         debug('closing file chooser dialog');
 
-        this.disconnect(this.responseSignal);
-        this.responseSignal = null;
-
-        if(response === Gtk.ResponseType.ACCEPT) {
+        if(respId === Gtk.ResponseType.ACCEPT) {
             switch(this.chooserPurpose) {
                 case 'open_local':
                     this._handleOpenLocal();
@@ -209,14 +205,12 @@ class ClapperResumeDialog extends Gtk.MessageDialog
         });
 
         this.resumeInfo = resumeInfo;
-
         this.set_default_response(Gtk.ResponseType.YES);
-        this.connect('response', this._onResponse.bind(this));
 
         this.show();
     }
 
-    _onResponse(dialog, respId)
+    vfunc_response(respId)
     {
         const { player } = this.transient_for.child;
 
