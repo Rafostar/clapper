@@ -1,4 +1,4 @@
-const { Gdk, Gio, GObject, Gst, Gtk } = imports.gi;
+const { Adw, Gdk, Gio, GObject, Gst, Gtk } = imports.gi;
 const System = imports.system;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
@@ -252,6 +252,13 @@ class ClapperAboutDialog extends Gtk.AboutDialog
             Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
         ].join('.');
 
+        /* TODO: This is as of Alpha2 still broken, requires:
+         * https://gitlab.gnome.org/GNOME/libadwaita/-/merge_requests/230
+         * can be simplified later in future */
+        const adwVer = Adw.MAJOR_VERSION ? [
+            Adw.MAJOR_VERSION, Adw.MINOR_VERSION, Adw.MICRO_VERSION
+        ].join('.') : '1.0.0';
+
         const gjsVerStr = String(System.version);
         let gjsVer = '';
 
@@ -263,6 +270,7 @@ class ClapperAboutDialog extends Gtk.AboutDialog
 
         const osInfo = [
             _('GTK version: %s').format(gtkVer),
+            _('Adwaita version: %s').format(adwVer),
             _('GStreamer version: %s').format(gstVer),
             _('GJS version: %s').format(gjsVer)
         ].join('\n');
