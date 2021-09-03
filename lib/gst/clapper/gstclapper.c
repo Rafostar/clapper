@@ -3162,10 +3162,12 @@ gst_clapper_main (gpointer data)
 
       g_warning ("GstClapper: pipewiresink element not available");
       fakesink = gst_element_factory_make ("fakesink", "fakeaudiosink");
-      if (fakesink)
+      if (fakesink) {
+        g_object_set (fakesink, "sync", TRUE, NULL);
         g_object_set (self->playbin, "audio-sink", fakesink, NULL);
-      else
+      } else {
         g_warning ("GstClapper: default audio sink will be used instead");
+      }
     }
   }
 
