@@ -51,6 +51,7 @@
 GST_DEBUG_CATEGORY_STATIC (gst_clapper_debug);
 #define GST_CAT_DEFAULT gst_clapper_debug
 
+#define DEFAULT_USE_PLAYBIN3 FALSE
 #define DEFAULT_STATE GST_CLAPPER_STATE_STOPPED
 #define DEFAULT_URI NULL
 #define DEFAULT_POSITION GST_CLOCK_TIME_NONE
@@ -80,6 +81,7 @@ enum
   PROP_VIDEO_RENDERER,
   PROP_SIGNAL_DISPATCHER,
   PROP_MPRIS,
+  PROP_USE_PLAYBIN3,
   PROP_STATE,
   PROP_URI,
   PROP_SUBURI,
@@ -322,6 +324,11 @@ gst_clapper_class_init (GstClapperClass * klass)
       "MPRIS", "Clapper MPRIS for playback control over DBus",
       GST_TYPE_CLAPPER_MPRIS,
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
+      G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  param_specs[PROP_USE_PLAYBIN3] =
+      g_param_spec_boolean ("use-playbin3", "Use playbin3", "Use playbin3",
+      DEFAULT_USE_PLAYBIN3, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_STATE] =
@@ -684,6 +691,9 @@ gst_clapper_set_property (GObject * object, guint prop_id,
       break;
     case PROP_MPRIS:
       self->mpris = g_value_dup_object (value);
+      break;
+    case PROP_USE_PLAYBIN3:
+      self->use_playbin3 = g_value_get_boolean (value);
       break;
     case PROP_URI:{
       g_mutex_lock (&self->lock);
@@ -3057,6 +3067,19 @@ element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
   }
 }
 
+static void
+_update_from_env (gboolean * enabled, const gchar * env_name)
+{
+  const gchar *env = g_getenv (env_name);
+
+  if (env) {
+    if (g_str_has_prefix (env, "1"))
+      *enabled = TRUE;
+    else if (g_str_has_prefix (env, "0"))
+      *enabled = FALSE;
+  }
+}
+
 static gpointer
 gst_clapper_main (gpointer data)
 {
@@ -3064,7 +3087,7 @@ gst_clapper_main (gpointer data)
   GstBus *bus;
   GSource *source;
   GstElement *scaletempo, *pipewiresink;
-  const gchar *pb_env, *pw_env;
+  const gchar *pw_env;
 
   GST_TRACE_OBJECT (self, "Starting main thread");
 
@@ -3076,9 +3099,7 @@ gst_clapper_main (gpointer data)
   g_source_attach (source, self->context);
   g_source_unref (source);
 
-  pb_env = g_getenv ("GST_CLAPPER_USE_PLAYBIN3");
-  if (pb_env && g_str_has_prefix (pb_env, "1"))
-    self->use_playbin3 = TRUE;
+  _update_from_env (&self->use_playbin3, "GST_CLAPPER_USE_PLAYBIN3");
 
   if (self->use_playbin3) {
     GST_DEBUG_OBJECT (self, "playbin3 enabled");
