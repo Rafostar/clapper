@@ -3158,8 +3158,14 @@ gst_clapper_main (gpointer data)
     if (pipewiresink) {
       g_object_set (self->playbin, "audio-sink", pipewiresink, NULL);
     } else {
-      g_warning ("GstClapper: pipewiresink element not available. "
-          "Default audio sink will be used instead.");
+      GstElement *fakesink;
+
+      g_warning ("GstClapper: pipewiresink element not available");
+      fakesink = gst_element_factory_make ("fakesink", "fakeaudiosink");
+      if (fakesink)
+        g_object_set (self->playbin, "audio-sink", fakesink, NULL);
+      else
+        g_warning ("GstClapper: default audio sink will be used instead");
     }
   }
 
