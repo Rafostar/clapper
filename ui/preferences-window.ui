@@ -257,14 +257,18 @@
             <child>
               <object class="ClapperPrefsSwitch">
                 <property name="title" translatable="yes">Use playbin3</property>
-                <property name="subtitle" translatable="yes">Use experimental playbin3 element (requires player restart)</property>
+                <property name="subtitle" translatable="yes">Requires player restart</property>
+                <property name="custom-icon-name">dialog-warning-symbolic</property>
+                <property name="custom-icon-subtitle" translatable="yes">Experimental</property>
                 <property name="schema-name">use-playbin3</property>
               </object>
             </child>
             <child>
               <object class="ClapperPrefsSwitch">
-                <property name="title" translatable="yes">Use PipeWire</property>
-                <property name="subtitle" translatable="yes">Use PipeWire for audio output (requires player restart)</property>
+                <property name="title" translatable="yes">Use PipeWire for audio</property>
+                <property name="subtitle" translatable="yes">Requires player restart</property>
+                <property name="custom-icon-name">dialog-warning-symbolic</property>
+                <property name="custom-icon-subtitle" translatable="yes">Experimental</property>
                 <property name="schema-name">use-pipewire</property>
               </object>
             </child>

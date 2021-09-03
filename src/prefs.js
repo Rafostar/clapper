@@ -55,8 +55,10 @@ class ClapperPrefsActionRow extends Adw.ActionRow
         this._schemaName = null;
         this._bindProp = null;
 
-        this.add_suffix(widget);
-        this.set_activatable_widget(widget);
+        if(widget) {
+            this.add_suffix(widget);
+            this.set_activatable_widget(widget);
+        }
     }
 
     set schema_name(value)
@@ -117,13 +119,53 @@ class ClapperPrefsSubpageRow extends Adw.ActionRow
 
 GObject.registerClass({
     GTypeName: 'ClapperPrefsSwitch',
+    Properties: {
+        'custom-icon-name': GObject.ParamSpec.string(
+            'custom-icon-name',
+            'Icon name',
+            'Name of the icon',
+            GObject.ParamFlags.WRITABLE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            null
+        ),
+        'custom-icon-subtitle': GObject.ParamSpec.string(
+            'custom-icon-subtitle',
+            'Icon subtitle',
+            'Text below the icon',
+            GObject.ParamFlags.WRITABLE | GObject.ParamFlags.CONSTRUCT_ONLY,
+            null
+        ),
+    }
 },
 class ClapperPrefsSwitch extends PrefsActionRow
 {
-    _init()
+    _init(opts)
     {
-        super._init(new Gtk.Switch(widgetOpts));
+        super._init(null);
         this._bindProp = 'active';
+
+        if(opts.custom_icon_name || opts.custom_icon_subtitle) {
+            const box = new Gtk.Box({
+                margin_top: 2,
+                orientation: Gtk.Orientation.VERTICAL,
+                valign: Gtk.Align.CENTER,
+            });
+            const customIcon = new Gtk.Image({
+                icon_name: opts.custom_icon_name || null,
+            });
+            box.append(customIcon);
+
+            const customLabel = new Gtk.Label({
+                label: opts.custom_icon_subtitle || '',
+            });
+            customLabel.add_css_class('subtitle');
+            box.append(customLabel);
+
+            this.add_suffix(box);
+        }
+
+        const sw = new Gtk.Switch(widgetOpts);
+        this.add_suffix(sw);
+        this.set_activatable_widget(sw);
     }
 });
 
