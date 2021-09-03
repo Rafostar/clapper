@@ -34,6 +34,8 @@ class ClapperPlayer extends GstClapper.Clapper
                 desktop_entry: Misc.appId,
                 default_art_url: Misc.getClapperThemeIconUri(),
             }),
+            use_playbin3: settings.get_boolean('use-playbin3'),
+            use_pipewire: settings.get_boolean('use-pipewire'),
         });
 
         this.widget = gtk4plugin.video_sink.widget;

@@ -94,6 +94,14 @@
       <default>'{}'</default>
       <summary>Custom values for GStreamer plugin ranking</summary>
     </key>
+    <key name="use-playbin3" type="b">
+      <default>false</default>
+      <summary>Use playbin3 element instead of playbin2</summary>
+    </key>
+    <key name="use-pipewire" type="b">
+      <default>false</default>
+      <summary>Use PipeWire for audio output</summary>
+    </key>
     <key name="play-flags" type="i">
       <default>1687</default>
       <summary>Set PlayFlags for playbin</summary>
