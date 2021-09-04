@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-28 06:11\n"
+"PO-Revision-Date: 2021-09-04 21:43\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -183,7 +183,8 @@ msgstr "Entra a pantalla completa quan se substitueix la llista de reproducció 
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr "Pregunta per reprendre  recents"
+msgstr "Pregunta per reprendre \n"
+"recents"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
