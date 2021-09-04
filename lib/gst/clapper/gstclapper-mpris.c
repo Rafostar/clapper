@@ -147,31 +147,31 @@ gst_clapper_mpris_class_init (GstClapperMprisClass * klass)
   param_specs[PROP_OWN_NAME] =
       g_param_spec_string ("own-name", "DBus own name",
       "DBus name to own on connection",
-      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_ID_PATH] =
       g_param_spec_string ("id-path", "DBus id path",
       "A valid D-Bus path describing this player",
-      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_IDENTITY] =
       g_param_spec_string ("identity", "Player name",
       "A friendly name to identify the media player",
-      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_DESKTOP_ENTRY] =
       g_param_spec_string ("desktop-entry", "Desktop entry filename",
       "The basename of an installed .desktop file",
-      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_DEFAULT_ART_URL] =
       g_param_spec_string ("default-art-url", "Default Art URL",
       "Default art to show when media does not provide one",
-      NULL, G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
+      NULL, G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
       G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   param_specs[PROP_VOLUME] =
@@ -220,6 +220,21 @@ gst_clapper_mpris_get_property (GObject * object, guint prop_id,
   GstClapperMpris *self = GST_CLAPPER_MPRIS (object);
 
   switch (prop_id) {
+    case PROP_OWN_NAME:
+      g_value_set_string (value, self->own_name);
+      break;
+    case PROP_ID_PATH:
+      g_value_set_string (value, self->id_path);
+      break;
+    case PROP_IDENTITY:
+      g_value_set_string (value, self->identity);
+      break;
+    case PROP_DESKTOP_ENTRY:
+      g_value_set_string (value, self->desktop_entry);
+      break;
+    case PROP_DEFAULT_ART_URL:
+      g_value_set_string (value, self->default_art_url);
+      break;
     case PROP_VOLUME:
       g_object_get_property (G_OBJECT (self->player_skeleton), "volume", value);
       break;
