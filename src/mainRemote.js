@@ -4,14 +4,11 @@ imports.gi.versions.Soup = '2.4';
 
 pkg.initGettext();
 
+const Misc = imports.src.misc;
+Misc.appId += '.Remote';
+
 const { Gtk, Adw } = imports.gi;
 const { AppRemote } = imports.src.appRemote;
-const Misc = imports.src.misc;
-
-const ID_POSTFIX = 'Remote';
-
-Misc.clapperPath = `${pkg.datadir}/${Misc.appId}`;
-Misc.appId += '.' + ID_POSTFIX;
 
 function main(argv)
 {

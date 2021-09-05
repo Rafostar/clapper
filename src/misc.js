@@ -10,8 +10,6 @@ var subsMimes = [
     'text/x-ssa',
 ];
 
-var clapperPath = null;
-
 var settings = new Gio.Settings({
     schema_id: appId,
 });
@@ -30,13 +28,41 @@ const subsKeys = Object.keys(subsTitles);
 
 let inhibitCookie;
 
-function getClapperPath()
+function getResourceUri(path)
 {
-    return (clapperPath)
-        ? clapperPath
-        : (pkg)
-        ? `${pkg.datadir}/${pkg.name}`
-        : '.';
+    /* TODO: support gresources */
+    let res = `file://${pkg.pkgdatadir}/${path}`;
+
+    debug(`importing ${res}`);
+
+    return res;
+}
+
+function getBuilderForName(name)
+{
+    const uri = getResourceUri(`ui/${name}`);
+
+    if(uri.startsWith('resource'))
+        return Gtk.Builder.new_from_resource(uri.substring(11));
+
+    return Gtk.Builder.new_from_file(uri.substring(7));
+}
+
+function loadCustomCss()
+{
+    const uri = getResourceUri(`css/styles.css`);
+    const cssProvider = new Gtk.CssProvider();
+
+    if(uri.startsWith('resource'))
+        cssProvider.load_from_resource(uri);
+    else
+        cssProvider.load_from_path(uri.substring(7));
+
+    Gtk.StyleContext.add_provider_for_display(
+        Gdk.Display.get_default(),
+        cssProvider,
+        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+    );
 }
 
 function getClapperThemeIconUri()
@@ -99,19 +125,6 @@ function getSubsTitle(infoTitle)
     const found = subsKeys.find(key => key === searchName);
 
     return (found) ? subsTitles[found] : null;
-}
-
-function loadCustomCss()
-{
-    const clapperPath = getClapperPath();
-    const cssProvider = new Gtk.CssProvider();
-
-    cssProvider.load_from_path(`${clapperPath}/css/styles.css`);
-    Gtk.StyleContext.add_provider_for_display(
-        Gdk.Display.get_default(),
-        cssProvider,
-        Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-    );
 }
 
 function setAppInhibit(isInhibit, window)

@@ -428,7 +428,7 @@ class ClapperPrefsPluginExpander extends Adw.ExpanderRow
 
 let PrefsPluginRankingSubpage = GObject.registerClass({
     GTypeName: 'ClapperPrefsPluginRankingSubpage',
-    Template: `file://${Misc.getClapperPath()}/ui/preferences-plugin-ranking-subpage.ui`,
+    Template: Misc.getResourceUri('ui/preferences-plugin-ranking-subpage.ui'),
     InternalChildren: ['decoders_group'],
 },
 class ClapperPrefsPluginRankingSubpage extends Gtk.Box
@@ -506,7 +506,7 @@ class ClapperPrefsPluginRankingSubpage extends Gtk.Box
 
 var PrefsWindow = GObject.registerClass({
     GTypeName: 'ClapperPrefsWindow',
-    Template: `file://${Misc.getClapperPath()}/ui/preferences-window.ui`,
+    Template: Misc.getResourceUri('ui/preferences-window.ui'),
 },
 class ClapperPrefsWindow extends Adw.PreferencesWindow
 {

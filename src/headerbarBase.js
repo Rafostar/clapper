@@ -25,10 +25,7 @@ class ClapperHeaderBarBase extends Gtk.Box
         this.isMenuOnLeft = true;
         this.hasPipIcons = false;
 
-        const clapperPath = Misc.getClapperPath();
-        const uiBuilder = Gtk.Builder.new_from_file(
-            `${clapperPath}/ui/clapper.ui`
-        );
+        const uiBuilder = Misc.getBuilderForName('clapper.ui');
 
         this.menuWidget = new Gtk.Box({
             orientation: Gtk.Orientation.HORIZONTAL,

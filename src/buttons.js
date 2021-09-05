@@ -60,7 +60,7 @@ class ClapperIconToggleButton extends CustomButton
 
 var PopoverSeparator = GObject.registerClass({
     GTypeName: 'ClapperPopoverSeparator',
-    Template: `file://${Misc.getClapperPath()}/ui/popover-separator.ui`,
+    Template: Misc.getResourceUri('ui/popover-separator.ui'),
     InternalChildren: ['middle_label'],
     Properties: {
         'label': GObject.ParamSpec.string(
@@ -138,7 +138,7 @@ class ClapperPopoverButtonBase extends Gtk.MenuButton
 
 var ElapsedTimeButton = GObject.registerClass({
     GTypeName: 'ClapperElapsedTimeButton',
-    Template: `file://${Misc.getClapperPath()}/ui/elapsed-time-button.ui`,
+    Template: Misc.getResourceUri('ui/elapsed-time-button.ui'),
     Children: ['scrolledWindow', 'speedScale'],
 },
 class ClapperElapsedTimeButton extends PopoverButtonBase
@@ -177,7 +177,7 @@ class ClapperElapsedTimeButton extends PopoverButtonBase
 
 var TrackSelectButton = GObject.registerClass({
     GTypeName: 'ClapperTrackSelectButton',
-    Template: `file://${Misc.getClapperPath()}/ui/track-select-button.ui`,
+    Template: Misc.getResourceUri('ui/track-select-button.ui'),
     Children: ['popoverBox'],
     InternalChildren: ['scrolled_window', 'decoder_separator'],
 },
@@ -204,7 +204,7 @@ class ClapperTrackSelectButton extends PopoverButtonBase
 
 var VolumeButton = GObject.registerClass({
     GTypeName: 'ClapperVolumeButton',
-    Template: `file://${Misc.getClapperPath()}/ui/volume-button.ui`,
+    Template: Misc.getResourceUri('ui/volume-button.ui'),
     Children: ['volumeScale'],
 },
 class ClapperVolumeButton extends PopoverButtonBase

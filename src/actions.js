@@ -47,10 +47,7 @@ function handleAction(action, window)
             break;
         case 'shortcuts':
             if(!window.get_help_overlay()) {
-                const clapperPath = Misc.getClapperPath();
-                const helpBuilder = Gtk.Builder.new_from_file(
-                    `${clapperPath}/ui/help-overlay.ui`
-                );
+                const helpBuilder = Misc.getBuilderForName('help-overlay.ui');
                 window.set_help_overlay(helpBuilder.get_object('help_overlay'));
             }
             clapperWidget.activate_action('win.show-help-overlay', null);
