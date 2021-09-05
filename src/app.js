@@ -48,6 +48,8 @@ class ClapperApp extends AppBase
         window.disconnect(this.mapSignal);
         this.mapSignal = null;
 
+        debug('window mapped');
+
         window.child._onWindowMap(window);
     }
 });
