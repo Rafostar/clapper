@@ -77,7 +77,6 @@ class ClapperPlayer extends GstClapper.Clapper
             'after-playback',
             'seeking-mode',
             'audio-offset',
-            'subtitle-offset',
             'play-flags',
             'webserver-enabled'
         ];
