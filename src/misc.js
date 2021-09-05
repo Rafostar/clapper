@@ -11,7 +11,6 @@ var subsMimes = [
 ];
 
 var clapperPath = null;
-var clapperVersion = null;
 
 var settings = new Gio.Settings({
     schema_id: appId,
@@ -38,15 +37,6 @@ function getClapperPath()
         : (pkg)
         ? `${pkg.datadir}/${pkg.name}`
         : '.';
-}
-
-function getClapperVersion()
-{
-    return (clapperVersion)
-        ? clapperVersion
-        : (pkg)
-        ? pkg.version
-        : '';
 }
 
 function getClapperThemeIconUri()

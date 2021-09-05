@@ -289,7 +289,7 @@ class ClapperAboutDialog extends Gtk.AboutDialog
             modal: true,
             program_name: Misc.appName,
             comments: _('A GNOME media player powered by GStreamer'),
-            version: Misc.getClapperVersion(),
+            version: pkg.version,
             authors: ['Rafał Dzięgiel'],
             artists: ['Rafał Dzięgiel'],
             license_type: Gtk.License.GPL_3_0,
