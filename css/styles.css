@@ -187,6 +187,14 @@ scale trough slider {
 .positionscale trough highlight {
   min-height: 6px;
 }
+.fullscreen.tvmode .positionscale {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.fullscreen.tvmode .positionscale.fine-tune {
+  padding-left: 12px;
+  padding-right: 12px;
+}
 .fullscreen.tvmode .positionscale trough slider {
   color: transparent;
   background: transparent;

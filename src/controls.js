@@ -27,7 +27,6 @@ class ClapperControls extends Gtk.Box
         this.currentPosition = 0;
         this.isPositionDragging = false;
         this.isMobile = false;
-        this.isFullscreen = false;
 
         this.showHours = false;
         this.durationFormatted = '00:00';
@@ -120,7 +119,6 @@ class ClapperControls extends Gtk.Box
         this.subtitleTracksButton.setFullscreenMode(isFullscreen, isMobileMonitor);
 
         this.unfullscreenButton.visible = isFullscreen;
-        this.isFullscreen = isFullscreen;
     }
 
     setLiveMode(isLive, isSeekable)
@@ -348,10 +346,12 @@ class ClapperControls extends Gtk.Box
                     const [isShared, destX, destY] = this.positionScale.translate_coordinates(
                         this.positionScale.parent, 0, 0
                     );
+                    const clapperWidget = this.get_ancestor(Gtk.Grid);
 
                     /* Half of slider width, values are defined in CSS */
-                    const sliderOffset = (this.isFullscreen && !this.isMobile)
-                        ? 10 : 9;
+                    const sliderOffset = (
+                        clapperWidget.isFullscreenMode && !clapperWidget.isMobileMonitor
+                    ) ? 10 : 9;
 
                     this.chapterPopover.set_pointing_to(new Gdk.Rectangle({
                         x: destX + end - sliderOffset,
@@ -466,22 +466,13 @@ class ClapperControls extends Gtk.Box
     {
         const isPositionDragging = scale.has_css_class('dragging');
 
-        /* When scale enters "fine-tune", slider changes position a little.
-         * We do not want that to cause seek time change on TV mode */
-        if(
-            this.isFullscreen
-            && !this.isMobile
-            && scale.has_css_class('fine-tune')
-        )
-            scale.remove_css_class('fine-tune');
-
         if(this.isPositionDragging === isPositionDragging)
             return;
 
         const clapperWidget = this.get_ancestor(Gtk.Grid);
         if(!clapperWidget) return;
 
-        if(this.isFullscreen) {
+        if(clapperWidget.isFullscreenMode) {
             clapperWidget.revealControls();
 
             if(isPositionDragging)
