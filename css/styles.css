@@ -277,6 +277,10 @@ scale trough slider {
 .elapsedpopover contents {
   padding-bottom: 0px;
 }
+.speedscale {
+  margin-left: 4px;
+  margin-right: 4px;
+}
 .speedscale trough highlight {
   min-height: 4px;
 }
