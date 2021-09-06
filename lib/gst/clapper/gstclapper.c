@@ -117,7 +117,6 @@ enum
   SIGNAL_WARNING,
   SIGNAL_VIDEO_DIMENSIONS_CHANGED,
   SIGNAL_MEDIA_INFO_UPDATED,
-  SIGNAL_MUTE_CHANGED,
   SIGNAL_VIDEO_DECODER_CHANGED,
   SIGNAL_AUDIO_DECODER_CHANGED,
   SIGNAL_LAST
@@ -160,6 +159,7 @@ struct _GstClapper
 
   /* Prevent unnecessary signals emissions */
   gdouble last_volume;
+  gboolean last_mute;
 
   GstClapperState app_state;
   gint buffering;
@@ -483,11 +483,6 @@ gst_clapper_class_init (GstClapperClass * klass)
       g_signal_new ("video-dimensions-changed", G_TYPE_FROM_CLASS (klass),
       G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
       NULL, NULL, G_TYPE_NONE, 2, G_TYPE_INT, G_TYPE_INT);
-
-  signals[SIGNAL_MUTE_CHANGED] =
-      g_signal_new ("mute-changed", G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS, 0, NULL,
-      NULL, NULL, G_TYPE_NONE, 0, G_TYPE_INVALID);
 
   signals[SIGNAL_WARNING] =
       g_signal_new ("warning", G_TYPE_FROM_CLASS (klass),
@@ -2950,24 +2945,26 @@ volume_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
 }
 
 static void
-mute_changed_dispatch (gpointer user_data)
+mute_notify_dispatch (gpointer user_data)
 {
   GstClapper *clapper = user_data;
 
   if (clapper->inhibit_sigs)
     return;
 
-  g_signal_emit (clapper, signals[SIGNAL_MUTE_CHANGED], 0);
+  g_object_notify_by_pspec (G_OBJECT (clapper), param_specs[PROP_MUTE]);
 }
 
 static void
 mute_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
     GstClapper * self)
 {
-  if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
-          signals[SIGNAL_MUTE_CHANGED], 0, NULL, NULL, NULL) != 0) {
+  gboolean mute = gst_clapper_get_mute (self);
+
+  if (self->last_mute != mute) {
+    self->last_mute = mute;
     gst_clapper_signal_dispatcher_dispatch (self->signal_dispatcher, self,
-        mute_changed_dispatch, g_object_ref (self),
+        mute_notify_dispatch, g_object_ref (self),
         (GDestroyNotify) g_object_unref);
   }
 }
