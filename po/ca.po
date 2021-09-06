@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-06 18:31\n"
+"PO-Revision-Date: 2021-09-06 19:35\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -39,7 +39,7 @@ msgstr "Quant al Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Velocitat"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
@@ -164,7 +164,7 @@ msgstr "Llisca el dit cap avall | Desplaça cap avall"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Commuta el silenci"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
@@ -368,24 +368,24 @@ msgstr "Altera els rangs predeterminats dels connectors del GStreamer"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "Usa playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "Requereix reiniciar el reproductor"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "Experimental"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Usa PipeWire per la sortida d'àudio"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Descodificador: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
