@@ -222,10 +222,8 @@ class ClapperWidget extends Gtk.Grid
             switch(info.constructor) {
                 case GstClapper.ClapperVideoInfo:
                     type = 'video';
-                    codec = info.get_codec() || 'Undetermined';
-                    text = codec + ', ' +
-                        + info.get_width() + 'x'
-                        + info.get_height();
+                    codec = info.get_codec() || _('Undetermined');
+                    text = `${codec}, ${info.get_width()}x${info.get_height()}`;
                     let fps = info.get_framerate();
                     fps = Number((fps[0] / fps[1]).toFixed(2));
                     if(fps)
@@ -233,24 +231,22 @@ class ClapperWidget extends Gtk.Grid
                     break;
                 case GstClapper.ClapperAudioInfo:
                     type = 'audio';
-                    codec = info.get_codec() || 'Undetermined';
+                    codec = info.get_codec() || _('Undetermined');
                     if(codec.includes('(')) {
                         codec = codec.substring(
-                            codec.indexOf('(') + 1,
-                            codec.indexOf(')')
+                            codec.indexOf('(') + 1, codec.indexOf(')')
                         );
                     }
-                    text = info.get_language() || 'Undetermined';
-                    text += ', ' + codec + ', '
-                        + info.get_channels() + ' Channels';
+                    text = info.get_language() || _('Undetermined');
+                    text += `, ${codec}, ${info.get_channels()} ` + _('Channels');
                     break;
                 case GstClapper.ClapperSubtitleInfo:
                     type = 'subtitle';
                     const subsLang = info.get_language();
-                    text = (subsLang) ? subsLang.split(',')[0] : 'Undetermined';
+                    text = (subsLang) ? subsLang.split(',')[0] : _('Undetermined');
                     const subsTitle = Misc.getSubsTitle(info.get_title());
                     if(subsTitle)
-                        text += ', ' + subsTitle;
+                        text += `, ${subsTitle}`;
                     break;
                 default:
                     debug(`unrecognized media info type: ${info.constructor}`);
@@ -260,7 +256,7 @@ class ClapperWidget extends Gtk.Grid
             if(!tracksArr.length)
             {
                 tracksArr[0] = {
-                    label: 'Disabled',
+                    label: _('Disabled'),
                     type: type,
                     activeId: -1
                 };
