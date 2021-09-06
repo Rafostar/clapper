@@ -214,20 +214,6 @@ class ClapperControls extends Gtk.Box
     {
         const clapperWidget = this.get_ancestor(Gtk.Grid);
 
-        /* Reenabling audio is slow (as expected),
-         * so it is better to toggle mute instead */
-        if(checkButton.type === 'audio') {
-            if(checkButton.activeId < 0)
-                return clapperWidget.player.set_mute(true);
-
-            if(clapperWidget.player.get_mute())
-                clapperWidget.player.set_mute(false);
-
-            return clapperWidget.player[
-                `set_${checkButton.type}_track`
-            ](checkButton.activeId);
-        }
-
         if(checkButton.activeId < 0) {
             return clapperWidget.player[
                 `set_${checkButton.type}_track_enabled`
