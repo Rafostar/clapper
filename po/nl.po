@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-06 18:31\n"
+"PO-Revision-Date: 2021-09-06 19:35\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Language: nl_NL\n"
@@ -438,7 +438,7 @@ msgstr ""
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Eindigt op: %s"
 
 #: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
 msgid "Undetermined"
