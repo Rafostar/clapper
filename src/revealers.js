@@ -167,7 +167,7 @@ class ClapperRevealerTop extends CustomRevealer
             ? endTime.format(this.timeFormat)
             : 'unknown';
 
-        this.endTime.label = `Ends at: ${end}`;
+        this.endTime.label = _('Ends at: %s').format(end);
 
         /* Make sure that next timeout is always run after clock changes,
          * by delaying it for additional few milliseconds */

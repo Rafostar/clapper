@@ -6,4 +6,5 @@ ui/preferences-window.ui
 
 src/buttons.js
 src/dialogs.js
+src/revealers.js
 src/widget.js
