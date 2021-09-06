@@ -102,6 +102,20 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Seek forward</property>
+                <property name="subtitle" translatable="yes">Swipe right | Scroll right</property>
+                <property name="accelerator">Right</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Seek backward</property>
+                <property name="subtitle" translatable="yes">Swipe left | Scroll left</property>
+                <property name="accelerator">Left</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Volume up</property>
                 <property name="subtitle" translatable="yes">Swipe up | Scroll up</property>
                 <property name="accelerator">Up</property>
@@ -116,16 +130,8 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes">Seek forward</property>
-                <property name="subtitle" translatable="yes">Swipe right | Scroll right</property>
-                <property name="accelerator">Right</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes">Seek backward</property>
-                <property name="subtitle" translatable="yes">Swipe left | Scroll left</property>
-                <property name="accelerator">Left</property>
+                <property name="title" translatable="yes">Mute volume</property>
+                <property name="accelerator">&lt;Ctrl&gt;M</property>
               </object>
             </child>
             <child>

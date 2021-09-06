@@ -376,6 +376,9 @@ class ClapperControls extends Gtk.Box
             : settings.get_double('volume-last');
 
         clapperWidget.player.volume = initialVolume;
+        clapperWidget.player.bind_property('mute', this.volumeButton, 'muted',
+            GObject.BindingFlags.DEFAULT
+        );
     }
 
     _onPlayerResize(width, height)

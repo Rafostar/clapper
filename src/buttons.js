@@ -206,9 +206,30 @@ var VolumeButton = GObject.registerClass({
     GTypeName: 'ClapperVolumeButton',
     Template: Misc.getResourceUri('ui/volume-button.ui'),
     Children: ['volumeScale'],
+    Properties: {
+        'muted': GObject.ParamSpec.boolean(
+            'muted',
+            'Set muted',
+            'Mark scale as muted',
+            GObject.ParamFlags.WRITABLE,
+            false
+        ),
+    }
 },
 class ClapperVolumeButton extends PopoverButtonBase
 {
+    _init(opts)
+    {
+        super._init(opts);
+        this._isMuted = false;
+    }
+
+    set muted(isMuted)
+    {
+        this._isMuted = isMuted;
+        this._onVolumeScaleValueChanged(this.volumeScale);
+    }
+
     _onVolumeScaleValueChanged(scale)
     {
         const volume = scale.get_value();
@@ -224,7 +245,7 @@ class ClapperVolumeButton extends PopoverButtonBase
                 scale.remove_css_class(cssClass);
         }
 
-        const icon = (volume <= 0)
+        const icon = (volume <= 0 || this._isMuted)
             ? 'muted'
             : (volume <= 0.3)
             ? 'low'

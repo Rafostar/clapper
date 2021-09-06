@@ -18,6 +18,7 @@ var actions = {
     prev_track: ['<Ctrl>Left'],
     volume_up: ['Up'],
     volume_down: ['Down'],
+    mute: ['<Ctrl>m'],
     toggle_play: ['space'],
     change_repeat: ['<Ctrl>r'],
     reveal_controls: ['Return'],
@@ -73,6 +74,9 @@ function handleAction(action, window)
             bool = true;
         case 'volume_down':
             player.adjust_volume(bool);
+            break;
+        case 'mute':
+            player.mute ^= true;
             break;
         case 'next_track':
             player.playlistWidget.nextTrack();
