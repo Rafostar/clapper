@@ -678,11 +678,6 @@ class ClapperPlayer extends GstClapper.Clapper
                 this.set_audio_video_offset(value);
                 debug(`set audio-video offset: ${value}`);
                 break;
-            case 'subtitle-offset':
-                value = Math.round(settings.get_int(key) * -Gst.MSECOND);
-                this.set_subtitle_video_offset(value);
-                debug(`set subtitle-video offset: ${value}`);
-                break;
             case 'dark-theme':
                 root = this.widget.get_root();
                 if(!root) break;
