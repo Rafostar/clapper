@@ -1,12 +1,10 @@
 #!@GJS@
 
-const Package = imports.package;
-
-Package.init({
+imports.package.init({
   name: '@PACKAGE_NAME@',
   version: '@PACKAGE_VERSION@',
   prefix: '@prefix@',
   libdir: '@libdir@',
   datadir: '@datadir@',
 });
-Package.run(imports.src.main);
+imports.package.run(imports.src.main@ID_POSTFIX@);

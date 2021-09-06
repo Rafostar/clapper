@@ -2,7 +2,6 @@ clapper_apps = ['', 'Remote', 'Daemon']
 
 foreach id_postfix : clapper_apps
   app_postfix = (id_postfix != '') ? '.' + id_postfix : ''
-  template_type = (id_postfix != '') ? '.Subprocess' : ''
 
   bin_conf = configuration_data()
   bin_conf.set('GJS', find_program('gjs').path())
@@ -14,7 +13,7 @@ foreach id_postfix : clapper_apps
   bin_conf.set('datadir', join_paths(get_option('prefix'), get_option('datadir')))
 
   configure_file(
-    input: 'com.github.rafostar.Clapper' + template_type + '.in',
+    input: 'com.github.rafostar.Clapper.in',
     output: 'com.github.rafostar.Clapper' + app_postfix,
     configuration: bin_conf,
     install: true,
