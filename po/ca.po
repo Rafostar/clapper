@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-06 19:35\n"
+"PO-Revision-Date: 2021-09-06 20:37\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -389,66 +389,66 @@ msgstr "Descodificador: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Escriu o deixa anar una URI aquí"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·la"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Obre"
 
 #: src/dialogs.js:217
 msgid "Title"
-msgstr ""
+msgstr "Títol"
 
 #: src/dialogs.js:218
 msgid "Completed"
-msgstr ""
+msgstr "Completat"
 
 #: src/dialogs.js:226
 msgid "Resume playback?"
-msgstr ""
+msgstr "Reprèn la reproducció?"
 
 #: src/dialogs.js:280
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "Versió del GTK: %s"
 
 #: src/dialogs.js:281
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Versió del Adwaita: %s"
 
 #: src/dialogs.js:282
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "Versió del GStreamer: %s"
 
 #: src/dialogs.js:283
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "Versió del GJS: %s"
 
 #: src/dialogs.js:291
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Un reproductor multimèdia del GNOME que usa GStreamer"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Acaba a la/les %s"
 
 #: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
 msgid "Undetermined"
-msgstr ""
+msgstr "Sense determinar"
 
 #: src/widget.js:241
 msgid "Channels"
-msgstr ""
+msgstr "Canals"
 
 #: src/widget.js:259
 msgid "Disabled"
-msgstr ""
+msgstr "Deshabilitat"
 
