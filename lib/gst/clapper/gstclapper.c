@@ -3123,6 +3123,9 @@ gst_clapper_main (gpointer data)
 
   gst_object_ref_sink (self->playbin);
 
+  /* Do not start muted and make it sync with last_mute value */
+  g_object_set (self->playbin, "mute", FALSE, NULL);
+
   if (self->video_renderer) {
     GstElement *video_sink =
         gst_clapper_video_renderer_create_video_sink (self->video_renderer, self);

@@ -90,8 +90,6 @@ class ClapperPlayer extends GstClapper.Clapper
 
     set_initial_config()
     {
-        this.set_mute(false);
-
         /* FIXME: change into option in preferences */
         const pipeline = this.get_pipeline();
         pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
