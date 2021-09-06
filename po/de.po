@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-28 06:11\n"
+"POT-Creation-Date: 2021-09-06 20:22+0200\n"
+"PO-Revision-Date: 2021-09-06 18:31\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -36,6 +36,15 @@ msgstr "Tastenkombinationen"
 #: ui/clapper.ui:26
 msgid "About Clapper"
 msgstr "Über Clapper"
+
+#: ui/elapsed-time-button.ui:27
+msgid "Speed"
+msgstr ""
+
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
+#: ui/preferences-window.ui:215
+msgid "Normal"
+msgstr "Normal"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
@@ -77,7 +86,7 @@ msgstr "Medien"
 msgid "Open files"
 msgstr "Dateien öffnen"
 
-#: ui/help-overlay.ui:56
+#: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
 msgstr "Webquelle öffnen"
 
@@ -122,42 +131,46 @@ msgid "Long press | Right click"
 msgstr "Lange Bildschirm berühren oder Rechtsklick"
 
 #: ui/help-overlay.ui:105
-msgid "Volume up"
-msgstr "Lautstärke amplifizieren"
-
-#: ui/help-overlay.ui:106
-msgid "Swipe up | Scroll up"
-msgstr "Nach oben wischen bzw. scrollen"
-
-#: ui/help-overlay.ui:112
-msgid "Volume down"
-msgstr "Lautstärke vermindern"
-
-#: ui/help-overlay.ui:113
-msgid "Swipe down | Scroll down"
-msgstr "Nach unten wischen bzw. scrollen"
-
-#: ui/help-overlay.ui:119
 msgid "Seek forward"
 msgstr "Vorwärts springen"
 
-#: ui/help-overlay.ui:120
+#: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
 msgstr "Nach rechts wischen bzw. scrollen"
 
-#: ui/help-overlay.ui:126
+#: ui/help-overlay.ui:112
 msgid "Seek backward"
 msgstr "Rückwärts springen"
 
-#: ui/help-overlay.ui:127
+#: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
 msgstr "Nach links wischen bzw. scrollen"
 
+#: ui/help-overlay.ui:119
+msgid "Volume up"
+msgstr "Lautstärke amplifizieren"
+
+#: ui/help-overlay.ui:120
+msgid "Swipe up | Scroll up"
+msgstr "Nach oben wischen bzw. scrollen"
+
+#: ui/help-overlay.ui:126
+msgid "Volume down"
+msgstr "Lautstärke vermindern"
+
+#: ui/help-overlay.ui:127
+msgid "Swipe down | Scroll down"
+msgstr "Nach unten wischen bzw. scrollen"
+
 #: ui/help-overlay.ui:133
+msgid "Toggle mute"
+msgstr ""
+
+#: ui/help-overlay.ui:139
 msgid "Next chapter"
 msgstr "Nächstes Kapitel"
 
-#: ui/help-overlay.ui:139
+#: ui/help-overlay.ui:145
 msgid "Previous chapter"
 msgstr "Vorheriges Kapitel"
 
@@ -232,10 +245,6 @@ msgstr "Springen"
 #: ui/preferences-window.ui:78
 msgid "Mode"
 msgstr "Modus"
-
-#: ui/preferences-window.ui:83 ui/preferences-window.ui:215
-msgid "Normal"
-msgstr "Normal"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
@@ -356,4 +365,90 @@ msgstr "Plugin-Reihenfolge"
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
 msgstr "Standard GStreamer Reihenfolge verändern"
+
+#: ui/preferences-window.ui:259
+msgid "Use playbin3"
+msgstr ""
+
+#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+msgid "Requires player restart"
+msgstr ""
+
+#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+msgid "Experimental"
+msgstr ""
+
+#: ui/preferences-window.ui:268
+msgid "Use PipeWire for audio output"
+msgstr ""
+
+#: src/buttons.js:201
+#, javascript-format
+msgid "Decoder: %s"
+msgstr ""
+
+#: src/dialogs.js:152
+msgid "Enter or drop URI here"
+msgstr ""
+
+#: src/dialogs.js:157
+msgid "Cancel"
+msgstr ""
+
+#: src/dialogs.js:158
+msgid "Open"
+msgstr ""
+
+#: src/dialogs.js:217
+msgid "Title"
+msgstr ""
+
+#: src/dialogs.js:218
+msgid "Completed"
+msgstr ""
+
+#: src/dialogs.js:226
+msgid "Resume playback?"
+msgstr ""
+
+#: src/dialogs.js:280
+#, javascript-format
+msgid "GTK version: %s"
+msgstr ""
+
+#: src/dialogs.js:281
+#, javascript-format
+msgid "Adwaita version: %s"
+msgstr ""
+
+#: src/dialogs.js:282
+#, javascript-format
+msgid "GStreamer version: %s"
+msgstr ""
+
+#: src/dialogs.js:283
+#, javascript-format
+msgid "GJS version: %s"
+msgstr ""
+
+#: src/dialogs.js:291
+msgid "A GNOME media player powered by GStreamer"
+msgstr ""
+
+#: src/revealers.js:170
+#, javascript-format
+msgid "Ends at: %s"
+msgstr ""
+
+#: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
+msgid "Undetermined"
+msgstr ""
+
+#: src/widget.js:241
+msgid "Channels"
+msgstr ""
+
+#: src/widget.js:259
+msgid "Disabled"
+msgstr ""
 
