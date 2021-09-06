@@ -245,16 +245,11 @@ class ClapperHeaderBarBase extends Gtk.Box
 
     _onIconThemeChanged(iconTheme)
     {
-        /* Those icons are relatively new,
-         * so check if theme has them */
+        /* Those icons are new, so check if theme has them */
         this.hasPipIcons = (
             iconTheme.has_icon('pip-in-symbolic')
             && iconTheme.has_icon('pip-out-symbolic')
         );
-
-        const { controlsRevealer } = this.root.child;
-
-        this._updateFloatIcon(!controlsRevealer.reveal_child);
     }
 });
 
