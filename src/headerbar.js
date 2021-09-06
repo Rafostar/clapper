@@ -28,4 +28,12 @@ class ClapperHeaderBar extends HeaderBarBase
     {
         this.root.fullscreen();
     }
+
+    _onIconThemeChanged(iconTheme)
+    {
+        super._onIconThemeChanged(iconTheme);
+
+        const { controlsRevealer } = this.root.child;
+        this._updateFloatIcon(!controlsRevealer.reveal_child);
+    }
 });
