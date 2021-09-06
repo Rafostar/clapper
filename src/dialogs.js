@@ -298,15 +298,6 @@ class ClapperAboutDialog extends Gtk.AboutDialog
             system_information: osInfo,
         });
 
-        this.closeSignal = this.connect('close-request', this._onCloseRequest.bind(this));
         this.show();
-    }
-
-    _onCloseRequest(dialog)
-    {
-        debug('closing about dialog');
-
-        dialog.disconnect(this.closeSignal);
-        this.closeSignal = null;
     }
 });
