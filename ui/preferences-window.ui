@@ -265,7 +265,7 @@
             </child>
             <child>
               <object class="ClapperPrefsSwitch">
-                <property name="title" translatable="yes">Use PipeWire for audio</property>
+                <property name="title" translatable="yes">Use PipeWire for audio output</property>
                 <property name="subtitle" translatable="yes">Requires player restart</property>
                 <property name="custom-icon-name">dialog-warning-symbolic</property>
                 <property name="custom-icon-subtitle" translatable="yes">Experimental</property>
