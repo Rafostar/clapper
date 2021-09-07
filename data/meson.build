@@ -19,3 +19,9 @@ install_data('com.github.rafostar.Clapper.desktop',
 install_data('com.github.rafostar.Clapper.metainfo.xml',
   install_dir: join_paths(sharedir, 'metainfo')
 )
+gnome.compile_resources('com.github.rafostar.Clapper.data',
+  'com.github.rafostar.Clapper.data.gresource.xml',
+  gresource_bundle: true,
+  install: true,
+  install_dir: pkgdatadir,
+)

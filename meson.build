@@ -8,9 +8,12 @@ project('com.github.rafostar.Clapper', 'c', 'cpp',
   ]
 )
 
+gnome = import('gnome')
 i18n = import('i18n')
 python = import('python')
 python_bin = python.find_installation('python3')
+
+pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
 
 if not python_bin.found()
   error('No valid python3 binary found')

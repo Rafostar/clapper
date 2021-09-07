@@ -1,5 +1,3 @@
-gnome = import('gnome')
-
 gstclapper_sources = [
   'gstclapper.c',
   'gstclapper-signal-dispatcher.c',

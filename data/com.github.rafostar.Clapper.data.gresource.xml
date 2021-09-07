@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/rafostar/Clapper">
+    <file preprocess="xml-stripblanks" alias="icons/scalable/actions/play-symbolic.svg">icons/play-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="icons/scalable/actions/pause-symbolic.svg">icons/pause-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="icons/scalable/actions/pip-in-symbolic.svg">icons/pip-in-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="icons/scalable/actions/pip-out-symbolic.svg">icons/pip-out-symbolic.svg</file>
+  </gresource>
+</gresources>

@@ -43,22 +43,6 @@ class ClapperApp extends AppBase
         this._openFilesAsync(files).then(() => this.activate()).catch(debug);
     }
 
-    _onIconThemeChanged(gtkSettings)
-    {
-        super._onIconThemeChanged(gtkSettings);
-
-        const display = Gdk.Display.get_default();
-        if(!display) return;
-
-        const iconTheme = Gtk.IconTheme.get_for_display(display);
-        if(!iconTheme) return;
-
-        const { headerBar } = this.active_window.child.revealerTop;
-        if(!headerBar) return;
-
-        headerBar._onIconThemeChanged(iconTheme);
-    }
-
     _onWindowMap(window)
     {
         window.disconnect(this.mapSignal);

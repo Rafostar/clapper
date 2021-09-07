@@ -23,11 +23,10 @@ class ClapperWidgetRemote extends Gtk.Grid
         /* FIXME: create better way to add buttons for
          * remote app without duplicating too much code */
         this.togglePlayButton = new Buttons.IconToggleButton(
-            'media-playback-start-symbolic',
-            'media-playback-pause-symbolic'
+            'play-symbolic',
+            'pause-symbolic'
         );
         this.togglePlayButton.remove_css_class('flat');
-        this.togglePlayButton.child.add_css_class('playbackicon');
         this.togglePlayButton.connect(
             'clicked', () => this.sendWs('toggle_play')
         );

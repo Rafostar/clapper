@@ -98,9 +98,6 @@ scale trough slider {
   font-size: 21px;
   font-weight: 500;
 }
-.adwicons .clappercontrols {
-  margin-bottom: -1px;
-}
 .clappercontrols {
   margin-left: 2px;
   margin-right: 2px;
@@ -135,12 +132,6 @@ scale trough slider {
 /* Also affects popover buttons */
 .fullscreen.tvmode .clappercontrols button image {
   -gtk-icon-size: 24px;
-}
-.adwicons .playbackicon {
-  -gtk-icon-size: 20px;
-}
-.adwicons.fullscreen.tvmode .playbackicon {
-  -gtk-icon-size: 28px;
 }
 .clappercontrolsbutton.text-button label {
   font-family: 'Cantarell', sans-serif;

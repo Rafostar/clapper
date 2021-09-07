@@ -23,7 +23,6 @@ class ClapperHeaderBarBase extends Gtk.Box
 
         this.isMaximized = false;
         this.isMenuOnLeft = true;
-        this.hasPipIcons = false;
 
         const uiBuilder = Misc.getBuilderForName('clapper.ui');
 
@@ -53,7 +52,7 @@ class ClapperHeaderBarBase extends Gtk.Box
         this.extraButtonsBox.add_css_class('linked');
 
         const floatButton = new Gtk.Button({
-            icon_name: 'go-bottom-symbolic',
+            icon_name: 'pip-in-symbolic',
             can_focus: false,
         });
         floatButton.add_css_class('osd');
@@ -221,9 +220,7 @@ class ClapperHeaderBarBase extends Gtk.Box
         const floatButton = this.extraButtonsBox.get_first_child();
         if(!floatButton) return;
 
-        const iconName = (!this.hasPipIcons)
-            ? 'go-bottom-symbolic'
-            : (isFloating)
+        const iconName = (isFloating)
             ? 'pip-out-symbolic'
             : 'pip-in-symbolic';
 
@@ -241,15 +238,6 @@ class ClapperHeaderBarBase extends Gtk.Box
 
     _onFullscreenButtonClicked(button)
     {
-    }
-
-    _onIconThemeChanged(iconTheme)
-    {
-        /* Those icons are new, so check if theme has them */
-        this.hasPipIcons = (
-            iconTheme.has_icon('pip-in-symbolic')
-            && iconTheme.has_icon('pip-out-symbolic')
-        );
     }
 });
 

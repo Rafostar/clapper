@@ -31,6 +31,10 @@ class ClapperAppBase extends Gtk.Application
             title: Misc.appName,
         });
 
+        /* FIXME: AFAIK there is no way to detect theme rounded corners.
+         * Having 2/4 corners rounded in floating mode is not good. */
+        window.add_css_class('adwrounded');
+
         if(!settings.get_boolean('render-shadows'))
             window.add_css_class('gpufriendly');
 
@@ -99,37 +103,6 @@ class ClapperAppBase extends Gtk.Application
             'gtk-application-prefer-dark-theme',
             Gio.SettingsBindFlags.GET
         );
-        this._onThemeChanged(gtkSettings);
-        this._onIconThemeChanged(gtkSettings);
-        gtkSettings.connect('notify::gtk-theme-name', this._onThemeChanged.bind(this));
-        gtkSettings.connect('notify::gtk-icon-theme-name', this._onIconThemeChanged.bind(this));
         this.doneFirstActivate = true;
-    }
-
-    _onThemeChanged(gtkSettings)
-    {
-        const theme = gtkSettings.gtk_theme_name;
-        const window = this.active_window;
-
-        debug(`user selected theme: ${theme}`);
-
-        /* FIXME: AFAIK there is no way to detect theme rounded corners.
-           Having 2/4 corners rounded in floating mode is not good. */
-        if(!window.has_css_class('adwrounded'))
-            window.add_css_class('adwrounded');
-    }
-
-    _onIconThemeChanged(gtkSettings)
-    {
-        const iconThemeName = gtkSettings.gtk_icon_theme_name;
-        const window = this.active_window;
-        const hasAdwIcons = window.has_css_class('adwicons');
-
-        if(iconThemeName === 'Adwaita' || iconThemeName === 'Default') {
-            if(!hasAdwIcons)
-                window.add_css_class('adwicons');
-        }
-        else if(hasAdwIcons)
-            window.remove_css_class('adwicons');
     }
 });

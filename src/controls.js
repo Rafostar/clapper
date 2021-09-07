@@ -37,10 +37,9 @@ class ClapperControls extends Gtk.Box
         this.chapterHideId = null;
 
         this.togglePlayButton = new Buttons.IconToggleButton(
-            'media-playback-start-symbolic',
-            'media-playback-pause-symbolic'
+            'play-symbolic',
+            'pause-symbolic'
         );
-        this.togglePlayButton.child.add_css_class('playbackicon');
         this.togglePlayButton.connect(
             'clicked', this._onTogglePlayClicked.bind(this)
         );

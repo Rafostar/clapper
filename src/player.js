@@ -676,12 +676,6 @@ class ClapperPlayer extends GstClapper.Clapper
                 this.set_audio_video_offset(value);
                 debug(`set audio-video offset: ${value}`);
                 break;
-            case 'dark-theme':
-                root = this.widget.get_root();
-                if(!root) break;
-
-                root.application._onThemeChanged(Gtk.Settings.get_default());
-                break;
             case 'play-flags':
                 const initialFlags = this.pipeline.flags;
                 const settingsFlags = settings.get_int(key);
