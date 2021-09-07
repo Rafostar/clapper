@@ -1,6 +1,14 @@
 sharedir = join_paths(get_option('prefix'), 'share')
 iconsdir = join_paths(sharedir, 'icons', 'hicolor')
 
+appstream_util = find_program('appstream-util', required: false)
+if appstream_util.found()
+  test('Validate appstream file', appstream_util, args: [
+    'validate-relax',
+    join_paths(meson.current_source_dir(), 'com.github.rafostar.Clapper.metainfo.xml')
+  ])
+endif
+
 install_data('com.github.rafostar.Clapper.svg',
   install_dir: join_paths(iconsdir, 'scalable', 'apps')
 )
