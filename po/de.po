@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-07 19:13\n"
+"PO-Revision-Date: 2021-09-07 20:54\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -368,7 +368,7 @@ msgstr "Standard GStreamer Reihenfolge verändern"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr "playbin3 benutzen"
+msgstr "Playbin3 benutzen"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
