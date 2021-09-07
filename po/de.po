@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-06 18:31\n"
+"PO-Revision-Date: 2021-09-07 19:13\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -39,7 +39,7 @@ msgstr "Über Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Wiedergabegeschwindigkeit"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
@@ -148,7 +148,7 @@ msgstr "Nach links wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr "Lautstärke amplifizieren"
+msgstr "Lautstärke erhöhen"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
@@ -156,7 +156,7 @@ msgstr "Nach oben wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr "Lautstärke vermindern"
+msgstr "Lautstärke verringern"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
@@ -164,7 +164,7 @@ msgstr "Nach unten wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "In Vollbildmodus wechseln"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
@@ -368,87 +368,87 @@ msgstr "Standard GStreamer Reihenfolge verändern"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "playbin3 benutzen"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "Benötigt Neustart von Clapper"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentell"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "PipeWire für Audioausgabe verwenden"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Decodierer: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "URI hier einfügen"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Öffnen"
 
 #: src/dialogs.js:217
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: src/dialogs.js:218
 msgid "Completed"
-msgstr ""
+msgstr "Abgespielt"
 
 #: src/dialogs.js:226
 msgid "Resume playback?"
-msgstr ""
+msgstr "Wiedergabe fortfahren?"
 
 #: src/dialogs.js:280
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK Version: %s"
 
 #: src/dialogs.js:281
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita Version: %s"
 
 #: src/dialogs.js:282
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer Version: %s"
 
 #: src/dialogs.js:283
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS Version: %s"
 
 #: src/dialogs.js:291
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Ein von GStreamer betriebener GNOME Multimedia-Player"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Ended um %s"
 
 #: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
 msgid "Undetermined"
-msgstr ""
+msgstr "Unbestimmet"
 
 #: src/widget.js:241
 msgid "Channels"
-msgstr ""
+msgstr "Audio-Kanäle"
 
 #: src/widget.js:259
 msgid "Disabled"
-msgstr ""
+msgstr "Deaktiviert"
 
