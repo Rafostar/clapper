@@ -102,6 +102,10 @@ scale trough slider {
   margin-left: 2px;
   margin-right: 2px;
 }
+.fullscreen.tvmode .clappercontrols {
+  margin-left: 1px;
+  margin-right: 1px;
+}
 .clappercontrolsbutton {
   margin: 3px;
   margin-left: 1px;
@@ -111,8 +115,8 @@ scale trough slider {
   min-width: 32px;
   min-height: 32px;
   margin: 5px;
-  margin-left: 3px;
-  margin-right: 3px;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 .clappercontrolsbutton.text-button {
   padding-left: 4px;
@@ -131,7 +135,7 @@ scale trough slider {
 
 /* Also affects popover buttons */
 .fullscreen.tvmode .clappercontrols button image {
-  -gtk-icon-size: 24px;
+  -gtk-icon-size: 26px;
 }
 .clappercontrolsbutton.text-button label {
   font-family: 'Cantarell', sans-serif;
