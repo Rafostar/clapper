@@ -10,7 +10,6 @@ foreach id_postfix : clapper_apps
   bin_conf.set('ID_POSTFIX', id_postfix)
   bin_conf.set('prefix', get_option('prefix'))
   bin_conf.set('libdir', libdir)
-  bin_conf.set('datadir', datadir)
 
   configure_file(
     input: 'com.github.rafostar.Clapper.in',

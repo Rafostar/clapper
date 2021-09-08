@@ -5,6 +5,5 @@ imports.package.init({
   version: '@PACKAGE_VERSION@',
   prefix: '@prefix@',
   libdir: '@libdir@',
-  datadir: '@datadir@',
 });
 imports.package.run(imports.src.main@ID_POSTFIX@);
