@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-08 07:15\n"
+"PO-Revision-Date: 2021-09-08 09:12\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -380,7 +380,7 @@ msgstr "Eksperyment"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr "Użyj PipeWire do wyprowadzenia audio"
+msgstr "Użyj PipeWire do wyprowadzenia dźwięku"
 
 #: src/buttons.js:201
 #, javascript-format
