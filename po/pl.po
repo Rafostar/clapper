@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-06 18:31\n"
+"PO-Revision-Date: 2021-09-08 07:15\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -39,7 +39,7 @@ msgstr "O programie"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Prędkość"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
@@ -164,7 +164,7 @@ msgstr "Przesuń w dół | Przewiń w dół"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Przełącz wyciszenie"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
@@ -368,87 +368,87 @@ msgstr "Zmień domyślne rangi pluginów GStreamera"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "Użyj playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "Wymaga restartu odtwarzacza"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "Eksperyment"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Użyj PipeWire do wyprowadzenia audio"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Dekoder: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Wprowadź lub upuść URI tutaj"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Anuluj"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Otwórz"
 
 #: src/dialogs.js:217
 msgid "Title"
-msgstr ""
+msgstr "Tytuł"
 
 #: src/dialogs.js:218
 msgid "Completed"
-msgstr ""
+msgstr "Ukończono"
 
 #: src/dialogs.js:226
 msgid "Resume playback?"
-msgstr ""
+msgstr "Wznowić odtwarzanie?"
 
 #: src/dialogs.js:280
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "Wersja GTK: %s"
 
 #: src/dialogs.js:281
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Wersja Adwaity: %s"
 
 #: src/dialogs.js:282
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "Wersja GStreamera: %s"
 
 #: src/dialogs.js:283
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "Wersja GJS: %s"
 
 #: src/dialogs.js:291
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Odtwarzacz multimedialny dla GNOME zasilany przez GStreamer"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Koniec o: %s"
 
 #: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
 msgid "Undetermined"
-msgstr ""
+msgstr "Nieokreślony"
 
 #: src/widget.js:241
 msgid "Channels"
-msgstr ""
+msgstr "Kanały"
 
 #: src/widget.js:259
 msgid "Disabled"
-msgstr ""
+msgstr "Wyłączony"
 
