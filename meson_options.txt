@@ -1,12 +1,12 @@
-option('clapper-player',
+option('player',
   type: 'boolean',
   value: true,
   description: 'Build Clapper player'
 )
-option('clapper-lib',
+option('lib',
   type: 'boolean',
   value: true,
-  description: 'Build Clapper libs (including API)'
+  description: 'Build GstClapper lib'
 )
 option('devel-checks',
   type: 'boolean',

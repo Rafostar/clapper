@@ -19,11 +19,11 @@ datadir = join_paths(get_option('prefix'), get_option('datadir'))
 pkglibdir = join_paths(libdir, meson.project_name())
 pkgdatadir = join_paths(datadir, meson.project_name())
 
-if get_option('clapper-lib')
+if get_option('lib')
   subdir('lib')
 endif
 
-if get_option('clapper-player')
+if get_option('player')
   subdir('bin')
   subdir('data')
   subdir('po')
