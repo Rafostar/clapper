@@ -30,8 +30,7 @@ let inhibitCookie;
 
 function getResourceUri(path)
 {
-    /* TODO: support gresources */
-    let res = `file://${pkg.pkgdatadir}/${path}`;
+    const res = `file://${pkg.pkgdatadir}/${path}`;
 
     debug(`importing ${res}`);
 
@@ -40,23 +39,14 @@ function getResourceUri(path)
 
 function getBuilderForName(name)
 {
-    const uri = getResourceUri(`ui/${name}`);
-
-    if(uri.startsWith('resource'))
-        return Gtk.Builder.new_from_resource(uri.substring(11));
-
-    return Gtk.Builder.new_from_file(uri.substring(7));
+    return Gtk.Builder.new_from_file(`${pkg.pkgdatadir}/ui/${name}`);
 }
 
 function loadCustomCss()
 {
-    const uri = getResourceUri(`css/styles.css`);
     const cssProvider = new Gtk.CssProvider();
 
-    if(uri.startsWith('resource'))
-        cssProvider.load_from_resource(uri);
-    else
-        cssProvider.load_from_path(uri.substring(7));
+    cssProvider.load_from_path(`${pkg.pkgdatadir}/css/styles.css`);
 
     Gtk.StyleContext.add_provider_for_display(
         Gdk.Display.get_default(),
