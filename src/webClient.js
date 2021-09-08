@@ -1,7 +1,7 @@
 const { Gio, GObject, Soup } = imports.gi;
-const Debug = imports.src.debug;
-const Misc = imports.src.misc;
-const WebHelpers = imports.src.webHelpers;
+const Debug = imports.debug;
+const Misc = imports.misc;
+const WebHelpers = imports.webHelpers;
 
 const { debug } = Debug;
 const { settings } = Misc;

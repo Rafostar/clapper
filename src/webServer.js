@@ -1,6 +1,6 @@
 const { Soup, GObject } = imports.gi;
-const Debug = imports.src.debug;
-const WebHelpers = imports.src.webHelpers;
+const Debug = imports.debug;
+const WebHelpers = imports.webHelpers;
 
 const { debug } = Debug;
 

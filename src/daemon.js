@@ -1,5 +1,5 @@
 const { Gio, GLib, GObject } = imports.gi;
-const Debug = imports.src.debug;
+const Debug = imports.debug;
 
 const { debug } = Debug;
 

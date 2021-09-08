@@ -1,5 +1,4 @@
-sharedir = join_paths(get_option('prefix'), 'share')
-iconsdir = join_paths(sharedir, 'icons', 'hicolor')
+iconsdir = join_paths(datadir, 'icons', 'hicolor')
 
 appstream_util = find_program('appstream-util', required: false)
 if appstream_util.found()
@@ -16,16 +15,16 @@ install_data('com.github.rafostar.Clapper-symbolic.svg',
   install_dir: join_paths(iconsdir, 'symbolic', 'apps')
 )
 install_data('com.github.rafostar.Clapper.gschema.xml',
-  install_dir: join_paths(sharedir, 'glib-2.0', 'schemas')
+  install_dir: join_paths(datadir, 'glib-2.0', 'schemas')
 )
 install_data('com.github.rafostar.Clapper.xml',
-  install_dir: join_paths(sharedir, 'mime', 'packages')
+  install_dir: join_paths(datadir, 'mime', 'packages')
 )
 install_data('com.github.rafostar.Clapper.desktop',
-  install_dir: join_paths(sharedir, 'applications')
+  install_dir: join_paths(datadir, 'applications')
 )
 install_data('com.github.rafostar.Clapper.metainfo.xml',
-  install_dir: join_paths(sharedir, 'metainfo')
+  install_dir: join_paths(datadir, 'metainfo')
 )
 gnome.compile_resources('com.github.rafostar.Clapper.data',
   'com.github.rafostar.Clapper.data.gresource.xml',

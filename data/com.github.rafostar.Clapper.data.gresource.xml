@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/com/github/rafostar/Clapper">
+    <file compressed="true">style.css</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/clapper.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/elapsed-time-button.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/help-overlay.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/popover-separator.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-plugin-ranking-subpage.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/preferences-window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/track-select-button.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/volume-button.ui</file>
     <file preprocess="xml-stripblanks" alias="icons/scalable/actions/play-symbolic.svg">icons/play-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="icons/scalable/actions/pause-symbolic.svg">icons/pause-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="icons/scalable/actions/pip-in-symbolic.svg">icons/pip-in-symbolic.svg</file>

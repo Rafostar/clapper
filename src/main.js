@@ -5,11 +5,11 @@ imports.gi.versions.Soup = '2.4';
 pkg.initGettext();
 pkg.initFormat();
 
-const Debug = imports.src.debug;
+const Debug = imports.debug;
 Debug.debug('imports');
 
 const { GstClapper, Gtk, Adw } = imports.gi;
-const { App } = imports.src.app;
+const { App } = imports.app;
 
 function main(argv)
 {

@@ -1,6 +1,6 @@
 const { Adw, GObject, Gio, Gst, Gtk } = imports.gi;
-const Debug = imports.src.debug;
-const Misc = imports.src.misc;
+const Debug = imports.debug;
+const Misc = imports.misc;
 
 const { debug } = Debug;
 const { settings } = Misc;

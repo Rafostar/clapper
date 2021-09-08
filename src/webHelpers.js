@@ -1,6 +1,6 @@
 const { Soup } = imports.gi;
 const ByteArray = imports.byteArray;
-const Debug = imports.src.debug;
+const Debug = imports.debug;
 
 const { debug } = Debug;
 

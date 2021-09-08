@@ -1,8 +1,8 @@
 const { GLib, GObject, Gtk, Pango } = imports.gi;
-const { HeaderBar } = imports.src.headerbar;
-const Debug = imports.src.debug;
-const DBus = imports.src.dbus;
-const Misc = imports.src.misc;
+const { HeaderBar } = imports.headerbar;
+const Debug = imports.debug;
+const DBus = imports.dbus;
+const Misc = imports.misc;
 
 const { debug } = Debug;
 const { settings } = Misc;

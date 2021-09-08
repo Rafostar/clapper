@@ -7,4 +7,4 @@ imports.package.init({
   libdir: '@libdir@',
   datadir: '@datadir@',
 });
-imports.package.run(imports.src.main@ID_POSTFIX@);
+imports.package.run(imports.main@ID_POSTFIX@);

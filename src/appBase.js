@@ -1,8 +1,8 @@
 const { Gio, GLib, GObject, Gtk } = imports.gi;
-const Debug = imports.src.debug;
-const FileOps = imports.src.fileOps;
-const Misc = imports.src.misc;
-const Actions = imports.src.actions;
+const Debug = imports.debug;
+const FileOps = imports.fileOps;
+const Misc = imports.misc;
+const Actions = imports.actions;
 
 const { debug } = Debug;
 const { settings } = Misc;

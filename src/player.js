@@ -1,10 +1,10 @@
 const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
-const Debug = imports.src.debug;
-const Misc = imports.src.misc;
-const YouTube = imports.src.youtube;
-const { PlaylistWidget } = imports.src.playlist;
-const { WebApp } = imports.src.webApp;
+const Debug = imports.debug;
+const Misc = imports.misc;
+const YouTube = imports.youtube;
+const { PlaylistWidget } = imports.playlist;
+const { WebApp } = imports.webApp;
 
 const { debug, warn } = Debug;
 const { settings } = Misc;
@@ -29,7 +29,7 @@ class ClapperPlayer extends GstClapper.Clapper
             }),
             mpris: new GstClapper.ClapperMpris({
                 own_name: `org.mpris.MediaPlayer2.${Misc.appName}`,
-                id_path: '/' + Misc.appId.replace(/\./g, '/'),
+                id_path: Misc.appIdPath,
                 identity: Misc.appName,
                 desktop_entry: Misc.appId,
                 default_art_url: Misc.getClapperThemeIconUri(),
@@ -694,7 +694,7 @@ class ClapperPlayer extends GstClapper.Clapper
                     if(!WebServer) {
                         /* Probably most users will not use this,
                          * so conditional import for faster startup */
-                        WebServer = imports.src.webServer.WebServer;
+                        WebServer = imports.webServer.WebServer;
                     }
 
                     if(!this.webserver) {

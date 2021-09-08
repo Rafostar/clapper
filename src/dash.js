@@ -1,6 +1,6 @@
-const Debug = imports.src.debug;
-const FileOps = imports.src.fileOps;
-const Misc = imports.src.misc;
+const Debug = imports.debug;
+const FileOps = imports.fileOps;
+const Misc = imports.misc;
 
 const { debug } = Debug;
 

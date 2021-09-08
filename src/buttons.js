@@ -1,5 +1,5 @@
 const { GObject, Gtk } = imports.gi;
-const Misc = imports.src.misc;
+const Misc = imports.misc;
 
 var CustomButton = GObject.registerClass({
     GTypeName: 'ClapperCustomButton',

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/rafostar/Clapper/js">
+    <file>actions.js</file>
+    <file>appBase.js</file>
+    <file>app.js</file>
+    <file>appRemote.js</file>
+    <file>buttons.js</file>
+    <file>controls.js</file>
+    <file>daemon.js</file>
+    <file>dash.js</file>
+    <file>dbus.js</file>
+    <file>debug.js</file>
+    <file>dialogs.js</file>
+    <file>fileOps.js</file>
+    <file>headerbarBase.js</file>
+    <file>headerbar.js</file>
+    <file>headerbarRemote.js</file>
+    <file>mainDaemon.js</file>
+    <file>main.js</file>
+    <file>mainRemote.js</file>
+    <file>misc.js</file>
+    <file>player.js</file>
+    <file>playerRemote.js</file>
+    <file>playlist.js</file>
+    <file>prefs.js</file>
+    <file>revealers.js</file>
+    <file>webApp.js</file>
+    <file>webClient.js</file>
+    <file>webHelpers.js</file>
+    <file>webServer.js</file>
+    <file>widget.js</file>
+    <file>widgetRemote.js</file>
+    <file>youtubeItags.js</file>
+    <file>youtube.js</file>
+    <!-- assets -->
+    <file>assets/node-ytdl-core/sig.js</file>
+    <!-- extras -->
+    <file>extras/debug/Debug.js</file>
+    <file>extras/ink/Ink.js</file>
+  </gresource>
+</gresources>

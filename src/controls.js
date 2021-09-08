@@ -1,8 +1,8 @@
 const { GLib, GObject, Gdk, Gtk } = imports.gi;
-const Buttons = imports.src.buttons;
-const Debug = imports.src.debug;
-const Misc = imports.src.misc;
-const Revealers = imports.src.revealers;
+const Buttons = imports.buttons;
+const Debug = imports.debug;
+const Misc = imports.misc;
+const Revealers = imports.revealers;
 
 const { debug } = Debug;
 const { settings } = Misc;

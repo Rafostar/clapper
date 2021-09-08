@@ -4,11 +4,11 @@ imports.gi.versions.Soup = '2.4';
 
 pkg.initGettext();
 
-const Misc = imports.src.misc;
+const Misc = imports.misc;
 Misc.appId += '.Remote';
 
 const { Gtk, Adw } = imports.gi;
-const { AppRemote } = imports.src.appRemote;
+const { AppRemote } = imports.appRemote;
 
 function main(argv)
 {

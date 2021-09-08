@@ -1,4 +1,4 @@
-const { Daemon } = imports.src.daemon;
+const { Daemon } = imports.daemon;
 
 function main()
 {

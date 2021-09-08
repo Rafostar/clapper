@@ -1,7 +1,7 @@
 const { Gtk } = imports.gi;
-const Dialogs = imports.src.dialogs;
-const Prefs = imports.src.prefs;
-const Misc = imports.src.misc;
+const Dialogs = imports.dialogs;
+const Prefs = imports.prefs;
+const Misc = imports.misc;
 
 var actions = {
     open_local: ['<Ctrl>O'],

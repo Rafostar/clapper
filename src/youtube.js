@@ -1,10 +1,10 @@
 const { GObject, Gst, Soup } = imports.gi;
-const Dash = imports.src.dash;
-const Debug = imports.src.debug;
-const FileOps = imports.src.fileOps;
-const Misc = imports.src.misc;
-const YTItags = imports.src.youtubeItags;
-const YTDL = imports.src.assets['node-ytdl-core'];
+const Dash = imports.dash;
+const Debug = imports.debug;
+const FileOps = imports.fileOps;
+const Misc = imports.misc;
+const YTItags = imports.youtubeItags;
+const YTDL = imports.assets['node-ytdl-core'];
 
 const debug = Debug.ytDebug;
 const { settings } = Misc;

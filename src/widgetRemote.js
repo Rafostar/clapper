@@ -1,7 +1,7 @@
 const { GObject, Gtk } = imports.gi;
-const Buttons = imports.src.buttons;
-const Misc = imports.src.misc;
-const { PlayerRemote, ClapperState } = imports.src.playerRemote;
+const Buttons = imports.buttons;
+const Misc = imports.misc;
+const { PlayerRemote, ClapperState } = imports.playerRemote;
 
 var WidgetRemote = GObject.registerClass({
     GTypeName: 'ClapperWidgetRemote',

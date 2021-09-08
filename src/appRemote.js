@@ -1,7 +1,7 @@
 const { GObject } = imports.gi;
-const { AppBase } = imports.src.appBase;
-const { HeaderBarRemote } = imports.src.headerbarRemote;
-const { WidgetRemote } = imports.src.widgetRemote;
+const { AppBase } = imports.appBase;
+const { HeaderBarRemote } = imports.headerbarRemote;
+const { WidgetRemote } = imports.widgetRemote;
 
 var AppRemote = GObject.registerClass({
     GTypeName: 'ClapperAppRemote',

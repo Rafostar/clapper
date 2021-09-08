@@ -1,5 +1,5 @@
 const { GObject } = imports.gi;
-const { HeaderBarBase } = imports.src.headerbarBase;
+const { HeaderBarBase } = imports.headerbarBase;
 
 var HeaderBarRemote = GObject.registerClass({
     GTypeName: 'ClapperHeaderBarRemote',

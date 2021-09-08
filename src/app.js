@@ -1,7 +1,7 @@
 const { Gio, GObject, Gdk, Gtk } = imports.gi;
-const { AppBase } = imports.src.appBase;
-const { Widget } = imports.src.widget;
-const Debug = imports.src.debug;
+const { AppBase } = imports.appBase;
+const { Widget } = imports.widget;
+const Debug = imports.debug;
 
 const { debug } = Debug;
 

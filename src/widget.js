@@ -1,11 +1,11 @@
 const { Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
-const { Controls } = imports.src.controls;
-const Debug = imports.src.debug;
-const Dialogs = imports.src.dialogs;
-const Misc = imports.src.misc;
-const { Player } = imports.src.player;
-const YouTube = imports.src.youtube;
-const Revealers = imports.src.revealers;
+const { Controls } = imports.controls;
+const Debug = imports.debug;
+const Dialogs = imports.dialogs;
+const Misc = imports.misc;
+const { Player } = imports.player;
+const YouTube = imports.youtube;
+const Revealers = imports.revealers;
 
 const { debug } = Debug;
 const { settings } = Misc;

@@ -1,5 +1,5 @@
 const { GObject } = imports.gi;
-const { WebClient } = imports.src.webClient;
+const { WebClient } = imports.webClient;
 
 var ClapperState = {
     STOPPED: 0,

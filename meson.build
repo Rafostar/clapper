@@ -11,28 +11,26 @@ project('com.github.rafostar.Clapper', 'c', 'cpp',
 gnome = import('gnome')
 i18n = import('i18n')
 python = import('python')
-python_bin = python.find_installation('python3')
 
-pkgdatadir = join_paths(get_option('datadir'), meson.project_name())
+bindir = join_paths(get_option('prefix'), get_option('bindir'))
+libdir = join_paths(get_option('prefix'), get_option('libdir'))
+datadir = join_paths(get_option('prefix'), get_option('datadir'))
 
-if not python_bin.found()
-  error('No valid python3 binary found')
-endif
+pkglibdir = join_paths(libdir, meson.project_name())
+pkgdatadir = join_paths(datadir, meson.project_name())
 
 if get_option('clapper-lib')
   subdir('lib')
 endif
 
 if get_option('clapper-player')
+  python_bin = python.find_installation('python3')
+  if not python_bin.found()
+    error('No valid python3 binary found')
+  endif
   subdir('bin')
   subdir('data')
+  subdir('src')
   subdir('po')
-
-  installdir = join_paths(get_option('prefix'), 'share', meson.project_name())
-  install_subdir('src', install_dir : installdir)
-  install_subdir('extras', install_dir : installdir)
-  install_subdir('css', install_dir : installdir)
-  install_subdir('ui', install_dir : installdir)
-
   meson.add_install_script('build-aux/meson/postinstall.py')
 endif

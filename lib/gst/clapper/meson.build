@@ -37,14 +37,14 @@ gstclapper_defines = [
 gtk_deps = [gstgl_dep, gstglproto_dep]
 have_gtk_gl_windowing = false
 
-gtk4_dep = dependency('gtk4', required : true)
+gtk4_dep = dependency('gtk4', required: true)
 
 if not gtk4_dep.version().version_compare('>=4.0.0')
   error('GTK4 version on this system is too old')
 endif
 
 if gst_gl_have_window_x11 and (gst_gl_have_platform_egl or gst_gl_have_platform_glx)
-  gtk_x11_dep = dependency('gtk4-x11', required : false)
+  gtk_x11_dep = dependency('gtk4-x11', required: false)
   if gtk_x11_dep.found()
     gtk_deps += gtk_x11_dep
     if gst_gl_have_platform_glx
@@ -55,7 +55,7 @@ if gst_gl_have_window_x11 and (gst_gl_have_platform_egl or gst_gl_have_platform_
 endif
 
 if gst_gl_have_window_wayland and gst_gl_have_platform_egl
-  gtk_wayland_dep = dependency('gtk4-wayland', required : false)
+  gtk_wayland_dep = dependency('gtk4-wayland', required: false)
   if gtk_wayland_dep.found()
     gtk_deps += [gtk_wayland_dep, gstglwayland_dep]
     have_gtk_gl_windowing = true
@@ -78,29 +78,29 @@ gstclapper_mpris_gdbus = gnome.gdbus_codegen('gstclapper-mpris-gdbus',
 
 gstclapper = library('gstclapper-' + api_version,
   gstclapper_sources + gstclapper_mpris_gdbus,
-  c_args : gstclapper_defines,
-  link_args : noseh_link_args,
-  include_directories : [configinc, libsinc],
-  version : libversion,
-  install : true,
-  install_dir : clapper_libdir,
-  dependencies : [gtk4_dep, glib_dep, gio_dep,
+  c_args: gstclapper_defines,
+  link_args: noseh_link_args,
+  include_directories: [configinc, libsinc],
+  version: libversion,
+  install: true,
+  install_dir: pkglibdir,
+  dependencies: [gtk4_dep, glib_dep, gio_dep,
     gstbase_dep, gstvideo_dep, gstaudio_dep,
     gsttag_dep, gstpbutils_dep, libm] + gtk_deps,
 )
 
 clapper_gir = gnome.generate_gir(gstclapper,
-  sources : gstclapper_sources + gstclapper_headers,
-  namespace : 'GstClapper',
-  nsversion : api_version,
-  identifier_prefix : 'Gst',
-  symbol_prefix : 'gst',
-  export_packages : 'gstreamer-clapper-1.0',
-  includes : ['Gst-1.0', 'GstPbutils-1.0', 'GstBase-1.0', 'GstVideo-1.0',
+  sources: gstclapper_sources + gstclapper_headers,
+  namespace: 'GstClapper',
+  nsversion: api_version,
+  identifier_prefix: 'Gst',
+  symbol_prefix: 'gst',
+  export_packages: 'gstreamer-clapper-1.0',
+  includes: ['Gst-1.0', 'GstPbutils-1.0', 'GstBase-1.0', 'GstVideo-1.0',
     'GstAudio-1.0', 'GstTag-1.0'],
-  install : true,
-  install_dir_typelib : join_paths(clapper_libdir, 'girepository-1.0'),
-  extra_args : gir_init_section + ['-DGST_USE_UNSTABLE_API'],
-  dependencies : [gstbase_dep, gstvideo_dep, gstaudio_dep,
+  install: true,
+  install_dir_typelib: join_paths(pkglibdir, 'girepository-1.0'),
+  extra_args: gir_init_section + ['-DGST_USE_UNSTABLE_API'],
+  dependencies: [gstbase_dep, gstvideo_dep, gstaudio_dep,
     gsttag_dep, gstpbutils_dep]
 )
