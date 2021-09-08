@@ -1,4 +1,4 @@
-iconsdir = join_paths(sharedir, 'icons', 'hicolor')
+iconsdir = join_paths(datadir, 'icons', 'hicolor')
 
 appstream_util = find_program('appstream-util', required: false)
 if appstream_util.found()
