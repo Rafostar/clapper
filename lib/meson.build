@@ -7,10 +7,6 @@ libversion = meson.project_version()
 cc = meson.get_compiler('c')
 cxx = meson.get_compiler('cpp')
 
-clapper_libdir = join_paths(
-  get_option('prefix'), get_option('libdir'), meson.project_name()
-)
-
 cdata = configuration_data()
 
 if cc.get_id() == 'msvc'
@@ -40,7 +36,7 @@ else
 endif
 
 if cc.has_link_argument('-Wl,-Bsymbolic-functions')
-  add_project_link_arguments('-Wl,-Bsymbolic-functions', language : 'c')
+  add_project_link_arguments('-Wl,-Bsymbolic-functions', language: 'c')
 endif
 
 # Symbol visibility
@@ -142,7 +138,7 @@ cdata.set_quoted('PACKAGE_BUGREPORT', 'https://github.com/Rafostar/clapper/issue
 cdata.set_quoted('PACKAGE_NAME', 'GStreamer Clapper Libs')
 cdata.set_quoted('GST_API_VERSION', api_version)
 cdata.set_quoted('GST_LICENSE', 'LGPL')
-cdata.set_quoted('LIBDIR', clapper_libdir)
+cdata.set_quoted('LIBDIR', pkglibdir)
 cdata.set_quoted('LOCALEDIR', join_paths(get_option('prefix'), get_option('localedir')))
 
 warning_flags = [
@@ -192,25 +188,25 @@ cdata.set_quoted('GST_PACKAGE_NAME', 'GStreamer Plugins Clapper')
 cdata.set_quoted('GST_PACKAGE_ORIGIN', 'https://github.com/Rafostar/clapper')
 
 # Mandatory GST deps
-gst_dep = dependency('gstreamer-1.0', version : gst_req,
-  fallback : ['gstreamer', 'gst_dep'])
-gstbase_dep = dependency('gstreamer-base-1.0', version : gst_req,
-  fallback : ['gstreamer', 'gst_base_dep'])
-gstpbutils_dep = dependency('gstreamer-pbutils-1.0', version : gst_req,
-  fallback : ['gst-plugins-base', 'pbutils_dep'])
-gstaudio_dep = dependency('gstreamer-audio-1.0', version : gst_req,
-  fallback : ['gst-plugins-base', 'audio_dep'])
-gsttag_dep = dependency('gstreamer-tag-1.0', version : gst_req,
-  fallback : ['gst-plugins-base', 'tag_dep'])
-gstvideo_dep = dependency('gstreamer-video-1.0', version : gst_req,
-  fallback : ['gst-plugins-base', 'video_dep'])
+gst_dep = dependency('gstreamer-1.0', version: gst_req,
+  fallback: ['gstreamer', 'gst_dep'])
+gstbase_dep = dependency('gstreamer-base-1.0', version: gst_req,
+  fallback: ['gstreamer', 'gst_base_dep'])
+gstpbutils_dep = dependency('gstreamer-pbutils-1.0', version: gst_req,
+  fallback: ['gst-plugins-base', 'pbutils_dep'])
+gstaudio_dep = dependency('gstreamer-audio-1.0', version: gst_req,
+  fallback: ['gst-plugins-base', 'audio_dep'])
+gsttag_dep = dependency('gstreamer-tag-1.0', version: gst_req,
+  fallback: ['gst-plugins-base', 'tag_dep'])
+gstvideo_dep = dependency('gstreamer-video-1.0', version: gst_req,
+  fallback: ['gst-plugins-base', 'video_dep'])
 
 # GStreamer OpenGL
-gstgl_dep = dependency('gstreamer-gl-1.0', version : gst_req,
-  fallback : ['gst-plugins-base', 'gstgl_dep'], required: true)
-gstglx11_dep = dependency('', required : false)
-gstglwayland_dep = dependency('', required : false)
-gstglegl_dep = dependency('', required : false)
+gstgl_dep = dependency('gstreamer-gl-1.0', version: gst_req,
+  fallback: ['gst-plugins-base', 'gstgl_dep'], required: true)
+gstglx11_dep = dependency('', required: false)
+gstglwayland_dep = dependency('', required: false)
+gstglegl_dep = dependency('', required: false)
 
 gst_gl_apis = gstgl_dep.get_pkgconfig_variable('gl_apis')
 gst_gl_winsys = gstgl_dep.get_pkgconfig_variable('gl_winsys')
@@ -232,23 +228,23 @@ foreach api : ['gl', 'gles2']
   set_variable('gst_gl_have_api_@0@'.format(api), gst_gl_apis.contains(api))
 endforeach
 
-gstglproto_dep = dependency('gstreamer-gl-prototypes-1.0', version : gst_req,
-  fallback : ['gst-plugins-base', 'gstglproto_dep'], required: true)
+gstglproto_dep = dependency('gstreamer-gl-prototypes-1.0', version: gst_req,
+  fallback: ['gst-plugins-base', 'gstglproto_dep'], required: true)
 if gst_gl_have_window_x11
-  gstglx11_dep = dependency('gstreamer-gl-x11-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'gstglx11_dep'], required: true)
+  gstglx11_dep = dependency('gstreamer-gl-x11-1.0', version: gst_req,
+    fallback: ['gst-plugins-base', 'gstglx11_dep'], required: true)
 endif
 if gst_gl_have_window_wayland
-  gstglwayland_dep = dependency('gstreamer-gl-wayland-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'gstglwayland_dep'], required: true)
+  gstglwayland_dep = dependency('gstreamer-gl-wayland-1.0', version: gst_req,
+    fallback: ['gst-plugins-base', 'gstglwayland_dep'], required: true)
 endif
 if gst_gl_have_platform_egl
-  gstglegl_dep = dependency('gstreamer-gl-egl-1.0', version : gst_req,
-    fallback : ['gst-plugins-base', 'gstglegl_dep'], required: true)
+  gstglegl_dep = dependency('gstreamer-gl-egl-1.0', version: gst_req,
+    fallback: ['gst-plugins-base', 'gstglegl_dep'], required: true)
 endif
 
-libm = cc.find_library('m', required : false)
-glib_dep = dependency('glib-2.0', version : glib_req, fallback: ['glib', 'libglib_dep'])
+libm = cc.find_library('m', required: false)
+glib_dep = dependency('glib-2.0', version: glib_req, fallback: ['glib', 'libglib_dep'])
 gmodule_dep = dependency('gmodule-2.0', fallback: ['glib', 'libgmodule_dep'])
 gio_dep = dependency('gio-2.0', fallback: ['glib', 'libgio_dep'])
 
@@ -259,9 +255,7 @@ cdata.set_quoted('GST_PACKAGE_RELEASE_DATETIME', 'Unknown')
 configinc = include_directories('.')
 libsinc = include_directories('gst')
 
-gnome = import('gnome')
-gir = find_program('g-ir-scanner', required : true)
-
+gir = find_program('g-ir-scanner', required: true)
 if not gir.found()
   error('Clapper requires GI bindings to be compiled')
 endif
@@ -273,4 +267,4 @@ gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + 
     'gst_init(NULL,NULL);', '--quiet'
 ]
 subdir('gst')
-configure_file(output : 'config.h', configuration : cdata)
+configure_file(output: 'config.h', configuration: cdata)
