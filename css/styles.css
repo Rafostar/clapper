@@ -176,8 +176,6 @@ scale trough slider {
 /* Position Scale */
 .positionscale {
   margin: -2px;
-  margin-left: -4px;
-  margin-right: -4px;
 }
 .positionscale trough highlight {
   min-height: 6px;
