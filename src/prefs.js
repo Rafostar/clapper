@@ -292,11 +292,16 @@ class ClapperPrefsPluginFeature extends Adw.ActionRow
     _onSwitchActivate(enableSwitch)
     {
         const { settingsData } = this.get_ancestor(PrefsPluginRankingSubpage);
+        const pluginExp = this.get_ancestor(PrefsPluginExpander);
 
-        if(enableSwitch.active)
+        if(enableSwitch.active) {
             settingsData[this.title] = this.currentRank;
-        else if(settingsData[this.title] != null)
+            pluginExp.modCount++;
+        }
+        else if(settingsData[this.title] != null) {
             delete settingsData[this.title];
+            pluginExp.modCount--;
+        }
 
         this._updateRanking(settingsData);
     }
@@ -393,16 +398,30 @@ let PrefsPluginExpander = GObject.registerClass({
 },
 class ClapperPrefsPluginExpander extends Adw.ExpanderRow
 {
-    _init(plugin)
+    _init(plugin, modCount)
     {
         super._init({
             title: plugin,
             show_enable_switch: false,
         });
+        this.modCount = modCount;
 
         this.expandSignal = this.connect(
             'notify::expanded', this._onExpandedNotify.bind(this)
         );
+    }
+
+    set modCount(value)
+    {
+        this._modCount = value;
+        this.icon_name = (value > 0) ? 'dialog-information-symbolic' : null;
+
+        debug(`Plugin ${this.title} has ${value} modified features`);
+    }
+
+    get modCount()
+    {
+        return this._modCount;
     }
 
     _onExpandedNotify()
@@ -444,6 +463,7 @@ class ClapperPrefsPluginRankingSubpage extends Gtk.Box
         const decoders = gstRegistry.feature_filter(this._decodersFilterCb, false);
 
         const plugins = {};
+        const mods = {};
         this.settingsData = {};
 
         /* In case someone messed up gsettings values */
@@ -470,12 +490,20 @@ class ClapperPrefsPluginRankingSubpage extends Gtk.Box
                 plugins[pluginName] = [];
 
             const decName = decoder.get_name();
+            const isModified = (this.settingsData[decName] != null);
 
             plugins[pluginName].push({
                 name: decName,
                 rank: decoder.get_rank(),
-                enabled: this.settingsData[decName] != null,
+                enabled: isModified,
             });
+
+            if(isModified) {
+                if(!mods[pluginName])
+                    mods[pluginName] = 0;
+
+                mods[pluginName]++;
+            }
         }
 
         const pluginsNames = Object.keys(plugins);
@@ -485,8 +513,10 @@ class ClapperPrefsPluginRankingSubpage extends Gtk.Box
             (res[key] = plugins[key], res), {}
         );
 
-        for(let plugin in this.pluginsData)
-            this._decoders_group.add(new PrefsPluginExpander(plugin));
+        for(let plugin in this.pluginsData) {
+            const modCount = mods[plugin] || 0;
+            this._decoders_group.add(new PrefsPluginExpander(plugin, modCount));
+        }
     }
 
     _decodersFilterCb(feature)
