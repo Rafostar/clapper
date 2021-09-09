@@ -161,9 +161,10 @@ class ClapperControls extends Gtk.Box
 
         while(child || i < array.length) {
             if(i >= array.length) {
-                debug(`hiding unused ${child.type} checkButton nr: ${i}`);
-                child.visible = false;
-
+                if(child.visible) {
+                    debug(`hiding unused ${child.type} checkButton nr: ${i}`);
+                    child.visible = false;
+                }
                 i++;
                 child = child.get_next_sibling();
                 continue;
