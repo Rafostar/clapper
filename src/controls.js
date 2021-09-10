@@ -285,21 +285,22 @@ class ClapperControls extends Gtk.Box
         this.positionAdjustment.set_page_increment(0);
         this.positionAdjustment.set_step_increment(8);
 
+        const chapterLabel = new Gtk.Label();
+        chapterLabel.add_css_class('chapterlabel');
+
+        this.chapterPopover = new Gtk.Popover({
+            position: Gtk.PositionType.TOP,
+            autohide: false,
+            child: chapterLabel,
+        });
         const box = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
+            orientation: Gtk.Orientation.VERTICAL,
             hexpand: true,
             valign: Gtk.Align.CENTER,
             can_focus: false,
         });
-        this.chapterPopover = new Gtk.Popover({
-            position: Gtk.PositionType.TOP,
-            autohide: false,
-        });
-        const chapterLabel = new Gtk.Label();
-        chapterLabel.add_css_class('chapterlabel');
-        this.chapterPopover.set_child(chapterLabel);
-        this.chapterPopover.set_parent(box);
 
+        box.append(this.chapterPopover);
         box.append(this.positionScale);
         this.append(box);
     }
@@ -490,7 +491,5 @@ class ClapperControls extends Gtk.Box
 
         this.positionScale.disconnect(this.positionScaleValueSignal);
         this.positionScale.disconnect(this.positionScaleDragSignal);
-
-        this.chapterPopover.unparent();
     }
 });
