@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-10 18:43\n"
+"PO-Revision-Date: 2021-09-10 19:43\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -438,17 +438,17 @@ msgstr "Un riproduttore multimediale per GNOME basato su GStreamer"
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Termina alle: %s"
 
 #: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
 msgid "Undetermined"
-msgstr ""
+msgstr "Indeterminato"
 
 #: src/widget.js:241
 msgid "Channels"
-msgstr ""
+msgstr "Canali"
 
 #: src/widget.js:259
 msgid "Disabled"
-msgstr ""
+msgstr "Disabilitato"
 
