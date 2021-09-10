@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-25 18:08\n"
+"POT-Creation-Date: 2021-09-06 20:22+0200\n"
+"PO-Revision-Date: 2021-09-08 09:12\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -36,6 +36,15 @@ msgstr "Skróty"
 #: ui/clapper.ui:26
 msgid "About Clapper"
 msgstr "O programie"
+
+#: ui/elapsed-time-button.ui:27
+msgid "Speed"
+msgstr "Prędkość"
+
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
+#: ui/preferences-window.ui:215
+msgid "Normal"
+msgstr "Normalny"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
@@ -77,7 +86,7 @@ msgstr "Media"
 msgid "Open files"
 msgstr "Otwórz pliki"
 
-#: ui/help-overlay.ui:56
+#: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
 msgstr "Otwórz URI"
 
@@ -122,42 +131,46 @@ msgid "Long press | Right click"
 msgstr "Długie naciśnięcie | Prawy przycisk"
 
 #: ui/help-overlay.ui:105
-msgid "Volume up"
-msgstr "Zwiększ głośność"
-
-#: ui/help-overlay.ui:106
-msgid "Swipe up | Scroll up"
-msgstr "Przesuń w górę | Przewiń w górę"
-
-#: ui/help-overlay.ui:112
-msgid "Volume down"
-msgstr "Zmniejsz głośność"
-
-#: ui/help-overlay.ui:113
-msgid "Swipe down | Scroll down"
-msgstr "Przesuń w dół | Przewiń w dół"
-
-#: ui/help-overlay.ui:119
 msgid "Seek forward"
 msgstr "Przewiń do przodu"
 
-#: ui/help-overlay.ui:120
+#: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
 msgstr "Przesuń w prawo | Przewiń w prawo"
 
-#: ui/help-overlay.ui:126
+#: ui/help-overlay.ui:112
 msgid "Seek backward"
 msgstr "Przewiń do tyłu"
 
-#: ui/help-overlay.ui:127
+#: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
 msgstr "Przesuń w lewo | Przewiń w lewo"
 
+#: ui/help-overlay.ui:119
+msgid "Volume up"
+msgstr "Zwiększ głośność"
+
+#: ui/help-overlay.ui:120
+msgid "Swipe up | Scroll up"
+msgstr "Przesuń w górę | Przewiń w górę"
+
+#: ui/help-overlay.ui:126
+msgid "Volume down"
+msgstr "Zmniejsz głośność"
+
+#: ui/help-overlay.ui:127
+msgid "Swipe down | Scroll down"
+msgstr "Przesuń w dół | Przewiń w dół"
+
 #: ui/help-overlay.ui:133
+msgid "Toggle mute"
+msgstr "Przełącz wyciszenie"
+
+#: ui/help-overlay.ui:139
 msgid "Next chapter"
 msgstr "Następny rozdział"
 
-#: ui/help-overlay.ui:139
+#: ui/help-overlay.ui:145
 msgid "Previous chapter"
 msgstr "Poprzedni rozdział"
 
@@ -233,17 +246,13 @@ msgstr "Przewijanie"
 msgid "Mode"
 msgstr "Tryb"
 
-#: ui/preferences-window.ui:83 ui/preferences-window.ui:215
-msgid "Normal"
-msgstr "Normalne"
-
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr "Dokładne"
+msgstr "Dokładny"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr "Szybkie"
+msgstr "Szybki"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
@@ -356,4 +365,90 @@ msgstr "Ranking pluginów"
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
 msgstr "Zmień domyślne rangi pluginów GStreamera"
+
+#: ui/preferences-window.ui:259
+msgid "Use playbin3"
+msgstr "Użyj playbin3"
+
+#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+msgid "Requires player restart"
+msgstr "Wymaga restartu odtwarzacza"
+
+#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+msgid "Experimental"
+msgstr "Eksperyment"
+
+#: ui/preferences-window.ui:268
+msgid "Use PipeWire for audio output"
+msgstr "Użyj PipeWire do wyprowadzenia dźwięku"
+
+#: src/buttons.js:201
+#, javascript-format
+msgid "Decoder: %s"
+msgstr "Dekoder: %s"
+
+#: src/dialogs.js:152
+msgid "Enter or drop URI here"
+msgstr "Wprowadź lub upuść URI tutaj"
+
+#: src/dialogs.js:157
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: src/dialogs.js:158
+msgid "Open"
+msgstr "Otwórz"
+
+#: src/dialogs.js:217
+msgid "Title"
+msgstr "Tytuł"
+
+#: src/dialogs.js:218
+msgid "Completed"
+msgstr "Ukończono"
+
+#: src/dialogs.js:226
+msgid "Resume playback?"
+msgstr "Wznowić odtwarzanie?"
+
+#: src/dialogs.js:280
+#, javascript-format
+msgid "GTK version: %s"
+msgstr "Wersja GTK: %s"
+
+#: src/dialogs.js:281
+#, javascript-format
+msgid "Adwaita version: %s"
+msgstr "Wersja Adwaity: %s"
+
+#: src/dialogs.js:282
+#, javascript-format
+msgid "GStreamer version: %s"
+msgstr "Wersja GStreamera: %s"
+
+#: src/dialogs.js:283
+#, javascript-format
+msgid "GJS version: %s"
+msgstr "Wersja GJS: %s"
+
+#: src/dialogs.js:291
+msgid "A GNOME media player powered by GStreamer"
+msgstr "Odtwarzacz multimedialny dla GNOME zasilany przez GStreamer"
+
+#: src/revealers.js:170
+#, javascript-format
+msgid "Ends at: %s"
+msgstr "Koniec o: %s"
+
+#: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
+msgid "Undetermined"
+msgstr "Nieokreślony"
+
+#: src/widget.js:241
+msgid "Channels"
+msgstr "Kanały"
+
+#: src/widget.js:259
+msgid "Disabled"
+msgstr "Wyłączony"
 

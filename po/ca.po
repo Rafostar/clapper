@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-25 17:12+0200\n"
-"PO-Revision-Date: 2021-08-28 06:11\n"
+"POT-Creation-Date: 2021-09-06 20:22+0200\n"
+"PO-Revision-Date: 2021-09-06 20:37\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -36,6 +36,15 @@ msgstr "Dreceres"
 #: ui/clapper.ui:26
 msgid "About Clapper"
 msgstr "Quant al Clapper"
+
+#: ui/elapsed-time-button.ui:27
+msgid "Speed"
+msgstr "Velocitat"
+
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
+#: ui/preferences-window.ui:215
+msgid "Normal"
+msgstr "Normal"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
@@ -77,7 +86,7 @@ msgstr "Mèdia"
 msgid "Open files"
 msgstr "Obre fitxers"
 
-#: ui/help-overlay.ui:56
+#: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
 msgstr "Obre l'URI"
 
@@ -122,42 +131,46 @@ msgid "Long press | Right click"
 msgstr "Prem llarga | Clic dret"
 
 #: ui/help-overlay.ui:105
-msgid "Volume up"
-msgstr "Apuja el volum"
-
-#: ui/help-overlay.ui:106
-msgid "Swipe up | Scroll up"
-msgstr "Llisca el dit cap amunt | Desplaça amunt"
-
-#: ui/help-overlay.ui:112
-msgid "Volume down"
-msgstr "Baixa el volum"
-
-#: ui/help-overlay.ui:113
-msgid "Swipe down | Scroll down"
-msgstr "Llisca el dit cap avall | Desplaça cap avall"
-
-#: ui/help-overlay.ui:119
 msgid "Seek forward"
 msgstr "Avança"
 
-#: ui/help-overlay.ui:120
+#: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
 msgstr "Llisca el dit a la dreta | Desplaça a la dreta"
 
-#: ui/help-overlay.ui:126
+#: ui/help-overlay.ui:112
 msgid "Seek backward"
 msgstr "Retrocedeix"
 
-#: ui/help-overlay.ui:127
+#: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
 msgstr "Llisca el dit a l'esquerra | Desplaça a l'esquerra"
 
+#: ui/help-overlay.ui:119
+msgid "Volume up"
+msgstr "Apuja el volum"
+
+#: ui/help-overlay.ui:120
+msgid "Swipe up | Scroll up"
+msgstr "Llisca el dit cap amunt | Desplaça amunt"
+
+#: ui/help-overlay.ui:126
+msgid "Volume down"
+msgstr "Baixa el volum"
+
+#: ui/help-overlay.ui:127
+msgid "Swipe down | Scroll down"
+msgstr "Llisca el dit cap avall | Desplaça cap avall"
+
 #: ui/help-overlay.ui:133
+msgid "Toggle mute"
+msgstr "Commuta el silenci"
+
+#: ui/help-overlay.ui:139
 msgid "Next chapter"
 msgstr "Capítol següent"
 
-#: ui/help-overlay.ui:139
+#: ui/help-overlay.ui:145
 msgid "Previous chapter"
 msgstr "Capítol anterior"
 
@@ -183,7 +196,7 @@ msgstr "Entra a pantalla completa quan se substitueix la llista de reproducció 
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr "Pregunta per reprendre  recents"
+msgstr "Pregunta per reprendre recents"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
@@ -232,10 +245,6 @@ msgstr "Cerca"
 #: ui/preferences-window.ui:78
 msgid "Mode"
 msgstr "Mode"
-
-#: ui/preferences-window.ui:83 ui/preferences-window.ui:215
-msgid "Normal"
-msgstr "Normal"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
@@ -356,4 +365,90 @@ msgstr "Classificació dels connectors"
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
 msgstr "Altera els rangs predeterminats dels connectors del GStreamer"
+
+#: ui/preferences-window.ui:259
+msgid "Use playbin3"
+msgstr "Usa playbin3"
+
+#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+msgid "Requires player restart"
+msgstr "Requereix reiniciar el reproductor"
+
+#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+msgid "Experimental"
+msgstr "Experimental"
+
+#: ui/preferences-window.ui:268
+msgid "Use PipeWire for audio output"
+msgstr "Usa PipeWire per la sortida d'àudio"
+
+#: src/buttons.js:201
+#, javascript-format
+msgid "Decoder: %s"
+msgstr "Descodificador: %s"
+
+#: src/dialogs.js:152
+msgid "Enter or drop URI here"
+msgstr "Escriu o deixa anar una URI aquí"
+
+#: src/dialogs.js:157
+msgid "Cancel"
+msgstr "Cancel·la"
+
+#: src/dialogs.js:158
+msgid "Open"
+msgstr "Obre"
+
+#: src/dialogs.js:217
+msgid "Title"
+msgstr "Títol"
+
+#: src/dialogs.js:218
+msgid "Completed"
+msgstr "Completat"
+
+#: src/dialogs.js:226
+msgid "Resume playback?"
+msgstr "Reprèn la reproducció?"
+
+#: src/dialogs.js:280
+#, javascript-format
+msgid "GTK version: %s"
+msgstr "Versió del GTK: %s"
+
+#: src/dialogs.js:281
+#, javascript-format
+msgid "Adwaita version: %s"
+msgstr "Versió del Adwaita: %s"
+
+#: src/dialogs.js:282
+#, javascript-format
+msgid "GStreamer version: %s"
+msgstr "Versió del GStreamer: %s"
+
+#: src/dialogs.js:283
+#, javascript-format
+msgid "GJS version: %s"
+msgstr "Versió del GJS: %s"
+
+#: src/dialogs.js:291
+msgid "A GNOME media player powered by GStreamer"
+msgstr "Un reproductor multimèdia del GNOME que usa GStreamer"
+
+#: src/revealers.js:170
+#, javascript-format
+msgid "Ends at: %s"
+msgstr "Acaba a la/les %s"
+
+#: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
+msgid "Undetermined"
+msgstr "Sense determinar"
+
+#: src/widget.js:241
+msgid "Channels"
+msgstr "Canals"
+
+#: src/widget.js:259
+msgid "Disabled"
+msgstr "Deshabilitat"
 
