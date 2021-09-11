@@ -10,6 +10,8 @@ const Revealers = imports.src.revealers;
 const { debug } = Debug;
 const { settings } = Misc;
 
+let lastTvScaling = null;
+
 var Widget = GObject.registerClass({
     GTypeName: 'ClapperWidget',
 },
@@ -28,9 +30,9 @@ class ClapperWidget extends Gtk.Grid
         this.layoutWidth = 0;
 
         this.isFullscreenMode = false;
-        this.isSeekable = false;
         this.isMobileMonitor = false;
 
+        this.isSeekable = false;
         this.isDragAllowed = false;
         this.isSwipePerformed = false;
         this.isReleaseKeyEnabled = false;
@@ -614,6 +616,27 @@ class ClapperWidget extends Gtk.Grid
             const action = (this.isMobileMonitor) ? 'remove' : 'add';
             this.root[action + '_css_class']('tvmode');
         }
+
+        /* Mobile does not have TV mode, so we do not care about removing scaling */
+        if(!this.isMobileMonitor) {
+            const pixWidth = monitorWidth * monitor.scale_factor;
+            const tvScaling = (pixWidth <= 1280)
+                ? 'lowres'
+                : (pixWidth > 1920)
+                ? 'hires'
+                : null;
+
+            if(lastTvScaling !== tvScaling) {
+                if(lastTvScaling)
+                    this.root.remove_css_class(lastTvScaling);
+                if(tvScaling)
+                    this.root.add_css_class(tvScaling);
+
+                lastTvScaling = tvScaling;
+            }
+            debug(`using scaling mode: ${tvScaling || 'normal'}`);
+        }
+
         /* Update top revealer display mode */
         this.revealerTop.setFullscreenMode(this.isFullscreenMode, this.isMobileMonitor);
     }

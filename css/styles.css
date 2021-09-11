@@ -333,3 +333,52 @@ scale trough slider {
 .blackbackground {
   background: black;
 }
+
+/** SCALING LOW-RES **/
+.fullscreen.tvmode.lowres .clappercontrols button image {
+  -gtk-icon-size: 22px;
+}
+.fullscreen.tvmode.lowres .clappercontrolsbutton {
+  min-width: 28px;
+  min-height: 28px;
+}
+.fullscreen.tvmode.lowres .clappercontrolsbutton.text-button label {
+  font-size: 21px;
+}
+.fullscreen.tvmode.lowres .positionscale trough highlight {
+  min-height: 18px;
+}
+.fullscreen.tvmode.lowres .positionscale.fine-tune trough highlight {
+  min-height: 18px;
+}
+.fullscreen.tvmode.lowres popover box {
+  font-size: 19px;
+}
+.fullscreen.tvmode.lowres radio {
+  min-width: 15px;
+  min-height: 15px;
+}
+.fullscreen.tvmode.lowres .clapperplaylist row button {
+  min-width: 32px;
+  min-height: 32px;
+}
+.fullscreen.tvmode.lowres .tvtitle {
+  font-size: 26px;
+}
+.fullscreen.tvmode.lowres .tvtime {
+  font-size: 34px;
+}
+.fullscreen.tvmode.lowres .tvendtime {
+  font-size: 21px;
+}
+.fullscreen.tvmode.lowres .elapsedpopover {
+  min-width: 410px;
+}
+.fullscreen.tvmode.lowres .chapterlabel {
+  font-size: 21px;
+}
+
+/** SCALING HI-RES **/
+.fullscreen.tvmode.hires .clappercontrols button image {
+  -gtk-icon-size: 24px; /* Sharpest on 2160p with scaling 2x */
+}
