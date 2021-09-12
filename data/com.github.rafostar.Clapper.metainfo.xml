@@ -48,6 +48,43 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.4.0" date="2021-09-12">
+      <description>
+        <p>Changes:</p>
+        <ul>
+          <li>Now uses libadwaita</li>
+          <li>New and adaptive preferences window</li>
+          <li>Improved open URI dialog</li>
+          <li>Few small tweaks to fullscreen UI design</li>
+          <li>Show current video and audio decoders in popovers (easy way to check if HW accel is used)</li>
+          <li>Enabled NVDEC hardware acceleration by default (requires Nvidia proprietary drivers)</li>
+          <li>Added option to use PipeWire for audio output (experimental)</li>
+          <li>Added option to use playbin3 element (experimental)</li>
+          <li>New PiP icon from icon development kit</li>
+          <li>Improved performance on devices running OpenGL ES</li>
+          <li>Translations support</li>
+          <li>Various bug fixes</li>
+        </ul>
+        <p>New keyboard shortcuts:</p>
+        <ul>
+          <li>Leave fullscreen with Escape key</li>
+          <li>Toggle mute with Ctrl+M</li>
+        </ul>
+        <p>More touchscreen gestures:</p>
+        <ul>
+          <li>Toggle playback with a long press</li>
+          <li>Switch playlist items via double tap on screen side</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Catalan</li>
+          <li>Dutch</li>
+          <li>German</li>
+          <li>Italian</li>
+          <li>Polish</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.3.0" date="2021-06-18">
       <description>
         <p>Changes:</p>
