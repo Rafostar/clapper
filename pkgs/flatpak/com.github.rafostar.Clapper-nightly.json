@@ -23,6 +23,7 @@
         "flathub/shared-modules/gudev/gudev.json",
         "flathub/lib/libsass.json",
         "flathub/lib/sassc.json",
+        "flathub/lib/libadwaita.json",
         "flathub/lib/liba52.json",
         "flathub/lib/libmpeg2.json",
         "flathub/lib/libdv.json",
@@ -38,7 +39,6 @@
         "testing/gstreamer-1.0/gst-plugins-ugly.json",
         "testing/gstreamer-1.0/gst-libav.json",
         "testing/gstreamer-1.0/gstreamer-vaapi.json",
-        "testing/libadwaita.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
