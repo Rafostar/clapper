@@ -193,8 +193,17 @@ class ClapperUriDialog extends Gtk.Dialog
 
     _readTextAsyncCb(clipboard, result)
     {
-        const uri = clipboard.read_text_finish(result);
-        if(!uri || !Gst.uri_is_valid(uri)) return;
+        let uri = null;
+
+        try {
+            uri = clipboard.read_text_finish(result);
+        }
+        catch(err) {
+            debug(`could not read clipboard: ${err.message}`);
+        }
+
+        if(!uri || !Gst.uri_is_valid(uri))
+            return;
 
         const contentBox = this.get_content_area();
         const linkEntry = contentBox.get_last_child();
