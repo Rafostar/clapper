@@ -18,13 +18,13 @@ var actions = {
     prev_track: ['<Ctrl>Left'],
     volume_up: ['Up'],
     volume_down: ['Down'],
-    mute: ['<Ctrl>m'],
+    mute: ['<Ctrl>M'],
     toggle_play: ['space'],
-    change_repeat: ['<Ctrl>r'],
+    change_repeat: ['<Ctrl>R'],
     reveal_controls: ['Return'],
-    toggle_fullscreen: ['F11', 'f'],
+    toggle_fullscreen: ['F11', 'F'],
     leave_fullscreen: ['Escape'],
-    quit: ['<Ctrl>q', 'q'],
+    quit: ['<Ctrl>Q', 'Q'],
 };
 
 function handleAction(action, window)
