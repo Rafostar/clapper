@@ -247,6 +247,7 @@ libm = cc.find_library('m', required: false)
 glib_dep = dependency('glib-2.0', version: glib_req, fallback: ['glib', 'libglib_dep'])
 gmodule_dep = dependency('gmodule-2.0', fallback: ['glib', 'libgmodule_dep'])
 gio_dep = dependency('gio-2.0', fallback: ['glib', 'libgio_dep'])
+giounix_dep = dependency('gio-unix-2.0', version: glib_req, fallback: ['glib', 'libgiounix_dep'])
 
 cdata.set('DISABLE_ORC', 1)
 cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))

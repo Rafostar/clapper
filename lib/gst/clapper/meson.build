@@ -84,7 +84,7 @@ gstclapper = library('gstclapper-' + api_version,
   version: libversion,
   install: true,
   install_dir: pkglibdir,
-  dependencies: [gtk4_dep, glib_dep, gio_dep,
+  dependencies: [gtk4_dep, glib_dep, gio_dep, giounix_dep,
     gstbase_dep, gstvideo_dep, gstaudio_dep,
     gsttag_dep, gstpbutils_dep, libm] + gtk_deps,
 )
