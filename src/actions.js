@@ -18,7 +18,7 @@ var actions = {
     prev_track: ['<Ctrl>Left'],
     volume_up: ['Up'],
     volume_down: ['Down'],
-    mute: ['<Ctrl>M'],
+    mute: ['<Ctrl>M', 'M'],
     toggle_play: ['space'],
     change_repeat: ['<Ctrl>R'],
     reveal_controls: ['Return'],

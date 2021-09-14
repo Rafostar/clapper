@@ -131,7 +131,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Toggle mute</property>
-                <property name="accelerator">&lt;Ctrl&gt;M</property>
+                <property name="accelerator">&lt;Ctrl&gt;M M</property>
               </object>
             </child>
             <child>
