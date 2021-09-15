@@ -372,8 +372,10 @@ gst_clapper_gl_sink_propose_allocation (GstBaseSink * bsink, GstQuery * query)
     gst_buffer_pool_config_add_option (config,
         GST_BUFFER_POOL_OPTION_GL_SYNC_META);
 
-    if (!gst_buffer_pool_set_config (pool, config))
+    if (!gst_buffer_pool_set_config (pool, config)) {
+      gst_object_unref (pool);
       goto config_failed;
+    }
   }
 
   /* we need at least 2 buffer because we hold on to the last one */
