@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-06 20:22+0200\n"
-"PO-Revision-Date: 2021-09-06 20:37\n"
+"POT-Creation-Date: 2021-09-14 16:35+0200\n"
+"PO-Revision-Date: 2021-09-14 16:21\n"
 "Last-Translator: \n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -399,56 +399,61 @@ msgstr "Cancel·la"
 msgid "Open"
 msgstr "Obre"
 
-#: src/dialogs.js:217
+#: src/dialogs.js:226
 msgid "Title"
 msgstr "Títol"
 
-#: src/dialogs.js:218
+#: src/dialogs.js:227
 msgid "Completed"
 msgstr "Completat"
 
-#: src/dialogs.js:226
+#: src/dialogs.js:235
 msgid "Resume playback?"
 msgstr "Reprèn la reproducció?"
 
-#: src/dialogs.js:280
+#: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
 msgstr "Versió del GTK: %s"
 
-#: src/dialogs.js:281
+#: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
 msgstr "Versió del Adwaita: %s"
 
-#: src/dialogs.js:282
+#: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
 msgstr "Versió del GStreamer: %s"
 
-#: src/dialogs.js:283
+#: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
 msgstr "Versió del GJS: %s"
 
-#: src/dialogs.js:291
+#: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
 msgstr "Un reproductor multimèdia del GNOME que usa GStreamer"
+
+#. TRANSLATORS: Put your name(s) here for credits or leave untranslated
+#: src/dialogs.js:305
+msgid "translator-credits"
+msgstr "Ícar Nin Solana <icar.nin@protonmail.com>, 2021"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
 msgstr "Acaba a la/les %s"
 
-#: src/widget.js:225 src/widget.js:234 src/widget.js:240 src/widget.js:246
+#: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
 msgstr "Sense determinar"
 
-#: src/widget.js:241
+#: src/widget.js:243
 msgid "Channels"
 msgstr "Canals"
 
-#: src/widget.js:259
+#: src/widget.js:261
 msgid "Disabled"
 msgstr "Deshabilitat"
 
