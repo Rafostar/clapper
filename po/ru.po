@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 15:25\n"
+"PO-Revision-Date: 2021-09-17 08:56\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -19,441 +19,441 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr ""
+msgstr "Открыть файлы ..."
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr ""
+msgstr "Открыть URI..."
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Параметры"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Комбинации клавиш"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "О приложении"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Скорость"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "Обычная"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "Общие"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Комбинации клавиш"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Включить полноэкранный режим"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Двойное нажатие | Двойной клик"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Выйти из полноэкранного режима"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Показывать OSD (только в полноэкранном режиме)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Нажатие"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Выйти из приложения"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Медиа"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Открыть файлы"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Открыть URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Плейлист"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Следующий элемент"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Двойное нажатие (правая сторона)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Предыдущий элемент"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Двойное нажатие (левая сторона)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Изменить режим повторения"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Экспорт в файл"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "Воспроизведение"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Управление воспроизведением"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Длительное нажатие | Щелкните правой кнопкой мыши"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Перемотка вперед"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Проведите вправо | Прокрутите вправо"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Перемотка назад"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Проведите влево | Прокрутите влево"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Увеличить громкость"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Проведите вверх | Прокрутите вверх"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Уменьшить громкость"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Проведите вниз | Прокрутить вниз"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Отключить звук"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Следующая глава"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Предыдущая глава"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Декодеры"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Вернуться к настройкам"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "Поведение"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Автоматический полноэкранный режим"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Переход в полноэкранный режим при замене списка воспроизведения, кроме плавающего режима"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Спрашивать о возобновление недавние медиа"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Показывать «плавающий режим» на всех рабочих столах"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Эта опция работает только в GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "После воспроизведения"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "Ничего не делать"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Заморозить последний кадр"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "Закрыть приложение"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "Громкость"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Пользовательское начальное значение"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Установите настраиваемую громкость при запуске вместо ее восстановления"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "Процент громкости"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Перемотка"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "Режим"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr ""
+msgstr "Точный"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr ""
+msgstr "Быстрый"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr ""
+msgstr "Ед. изм"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr ""
+msgstr "Секунды"
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr ""
+msgstr "Минуты"
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr ""
+msgstr "Проценты"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr ""
+msgstr "Аудио"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Смещение в миллисекундах"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Только нативные аудиоформаты"
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr ""
+msgstr "Субтитры"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "Шрифт по умолчанию"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr ""
+msgstr "Сеть"
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr ""
+msgstr "Клиент"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Прогрессивная буферизация загрузки"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "Сервер"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "Удаленное управление плеером"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "Порт прослушивания"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Запустить веб-приложение в фоновом режиме"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Требуется GTK, скомпилированный с бэкэндом Broadway"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Порт веб-приложения"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Предпочитайте адаптивную потоковую передачу"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "Максимальное качество"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Твики"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "Внешний вид"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "Тёмная тема"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "Рендеринг оконных теней"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Отключить, чтобы повысить производительность в оконном режиме"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Рейтинг плагинов"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Изменить ранги плагинов GStreamer по умолчанию"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "Использовать playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "Требуется перезапуск плеера"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "Экспериментально"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Использовать PipeWire для вывода звука"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Декодер: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Введите URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Открыть"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Завершенный"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Возобновить воспроизведение?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "Версия GTK: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Версия Adwaita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "Версия GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "Версия GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Медиаплеер для GNOME на базе GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Игорь Дятлов"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Окончание: %s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
-msgstr ""
+msgstr "Неопределенный"
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr ""
+msgstr "Каналы"
 
 #: src/widget.js:261
 msgid "Disabled"
-msgstr ""
+msgstr "Отключено"
 
