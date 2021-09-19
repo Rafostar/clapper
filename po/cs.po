@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-19 13:05\n"
+"PO-Revision-Date: 2021-09-19 20:57\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -447,7 +447,7 @@ msgstr "Končí v: %s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
-msgstr "neurčeno"
+msgstr "Neurčeno"
 
 #: src/widget.js:243
 msgid "Channels"
