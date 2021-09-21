@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-21 06:30\n"
+"PO-Revision-Date: 2021-09-21 07:28\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -68,7 +68,7 @@ msgstr "Teljes képernyő be/ki"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Képernyőn megjelenő kijelző (OSD) mutatása (csak teljes képernyős módban)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
@@ -192,7 +192,7 @@ msgstr "Automatikus teljes képernyős mód"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Teljes képernyős módra váltás a lejátszólista megváltoztatásakor (kivétel ha lebegőablakos módban vagyunk)"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
@@ -200,7 +200,7 @@ msgstr "Rákérdezés a legutóbbi média folytatására"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Lebegő ablak az összes munkaasztalon"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
@@ -280,7 +280,7 @@ msgstr "Hang"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Eltolás miliszekundumban"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
@@ -320,19 +320,19 @@ msgstr "Port figyelése"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Web alkalmazás háttérben való futtatása"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Broadway backenddel fordított GTK -t igényel"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Web alkalmazás portja"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Adaptív streaming előnyben részesítése"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
@@ -380,7 +380,7 @@ msgstr "Kísérleti funkció"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "A PipeWire használata hang kimenetként"
 
 #: src/buttons.js:201
 #, javascript-format
@@ -389,7 +389,7 @@ msgstr "Dekóder: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Adjon meg egy URI -t itt, vagy húzza és ejtse ide"
 
 #: src/dialogs.js:157
 msgid "Cancel"
