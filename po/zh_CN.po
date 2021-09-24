@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-24 12:33\n"
+"PO-Revision-Date: 2021-09-24 14:11\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -27,7 +27,7 @@ msgstr "打开 URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "选项"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
@@ -44,7 +44,7 @@ msgstr ""
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "一般"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
@@ -64,11 +64,11 @@ msgstr ""
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "离开全屏"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "显示 OSD（仅全屏）"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
@@ -76,27 +76,27 @@ msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "退出"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "媒体"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "打开文件"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "打开 URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "播放列表"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "下一项"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
@@ -104,7 +104,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "上一项"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
@@ -132,7 +132,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "快进"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "快退"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "解码器"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
@@ -184,11 +184,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "行为"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "自动全屏"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
@@ -224,11 +224,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "音量"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "自定义初始值"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
@@ -236,7 +236,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "音量百分比"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
@@ -244,39 +244,39 @@ msgstr ""
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "模式"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr ""
+msgstr "精确"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr ""
+msgstr "快速"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr ""
+msgstr "单位"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr ""
+msgstr "秒钟"
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr ""
+msgstr "分钟"
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr ""
+msgstr "百分比"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "值"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr ""
+msgstr "音频"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
@@ -288,7 +288,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr ""
+msgstr "字幕"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
@@ -296,11 +296,11 @@ msgstr "默认字体"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr ""
+msgstr "网络"
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr ""
+msgstr "客户端"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
@@ -312,11 +312,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "远程控制播放器"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "监听端口"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
@@ -340,11 +340,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "微调"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "界面"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
@@ -368,11 +368,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "使用 playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "需要重启播放器"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
@@ -380,12 +380,12 @@ msgstr "实验性功能"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "使用 PipeWire 输出音频"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "解码器：%s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
@@ -393,23 +393,23 @@ msgstr ""
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "打开"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "已播放"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "继续播放？"
 
 #: src/dialogs.js:289
 #, javascript-format
@@ -451,7 +451,7 @@ msgstr ""
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr ""
+msgstr "声道"
 
 #: src/widget.js:261
 msgid "Disabled"
