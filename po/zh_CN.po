@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 15:24\n"
+"PO-Revision-Date: 2021-09-24 12:33\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr ""
+msgstr "打开文件…"
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr ""
+msgstr "打开 URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
@@ -31,11 +31,11 @@ msgstr ""
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "快捷键"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "关于 Claper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
@@ -204,7 +204,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "此选项仅适用于 GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
@@ -292,7 +292,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "默认字体"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
@@ -348,11 +348,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "暗色主题"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "渲染窗口阴影"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
@@ -376,7 +376,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "实验性功能"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
@@ -414,22 +414,22 @@ msgstr ""
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK 版本：%s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita 版本：%s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer 版本：%s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS 版本：%s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
