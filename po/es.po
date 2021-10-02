@@ -56,7 +56,7 @@ msgstr "Mostrar atajos"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr "fijar a Pantalla completa"
+msgstr "Fijar a pantalla completa"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
