@@ -56,7 +56,7 @@ msgstr "Mostrar atajos"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr " fijar a Pantalla completa "
+msgstr "fijar a Pantalla completa"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
@@ -112,7 +112,7 @@ msgstr "Tocar doble (lado izquierdo)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "Cambiar a modo repetición "
+msgstr "Cambiar a modo repetición"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
@@ -438,7 +438,7 @@ msgstr "Un reproductor multimedia de GNOME impulsado por GStreamer"
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr "Créditos a traductores"
+msgstr "carlosgonz"
 
 #: src/revealers.js:170
 #, javascript-format
