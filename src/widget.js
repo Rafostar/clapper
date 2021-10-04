@@ -738,6 +738,7 @@ class ClapperWidget extends Gtk.Grid
     {
         const clickGesture = new Gtk.GestureClick({
             button: 0,
+            propagation_phase: Gtk.PropagationPhase.CAPTURE,
         });
         clickGesture.connect('pressed', this._onPressed.bind(this));
         clickGesture.connect('released', this._onReleased.bind(this));
@@ -750,6 +751,7 @@ class ClapperWidget extends Gtk.Grid
         const longPressGesture = new Gtk.GestureLongPress({
             touch_only: true,
             delay_factor: 0.9,
+            propagation_phase: Gtk.PropagationPhase.CAPTURE,
         });
         longPressGesture.connect('pressed', this._onLongPressed.bind(this));
 
@@ -758,7 +760,9 @@ class ClapperWidget extends Gtk.Grid
 
     _getDragGesture()
     {
-        const dragGesture = new Gtk.GestureDrag();
+        const dragGesture = new Gtk.GestureDrag({
+            propagation_phase: Gtk.PropagationPhase.CAPTURE,
+        });
         dragGesture.connect('drag-update', this._onDragUpdate.bind(this));
 
         return dragGesture;
@@ -768,6 +772,7 @@ class ClapperWidget extends Gtk.Grid
     {
         const swipeGesture = new Gtk.GestureSwipe({
             touch_only: true,
+            propagation_phase: Gtk.PropagationPhase.CAPTURE,
         });
         swipeGesture.connect('swipe', this._onSwipe.bind(this));
         swipeGesture.connect('update', this._onSwipeUpdate.bind(this));
