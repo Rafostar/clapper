@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-26 14:24\n"
+"PO-Revision-Date: 2021-10-04 08:30\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -438,7 +438,7 @@ msgstr "Un riproduttore multimediale per GNOME basato su GStreamer"
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr "albano battistella"
+msgstr ""
 
 #: src/revealers.js:170
 #, javascript-format
