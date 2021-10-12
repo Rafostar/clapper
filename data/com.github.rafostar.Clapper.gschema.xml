@@ -103,14 +103,14 @@
       <summary>Set PlayFlags for playbin</summary>
     </key>
 
-    <!-- YouTube -->
+    <!-- Gtuber -->
     <key name="yt-adaptive-enabled" type="b">
       <default>false</default>
-      <summary>Enable to use adaptive streaming for YouTube</summary>
+      <summary>Enable to use adaptive streaming</summary>
     </key>
     <key name="yt-quality-type" type="i">
       <default>1</default>
-      <summary>Max YouTube video quality type</summary>
+      <summary>Max online video quality type</summary>
     </key>
 
     <!-- Other -->

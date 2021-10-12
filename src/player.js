@@ -2,7 +2,7 @@ const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
-const YouTube = imports.src.youtube;
+const Gtuber = imports.src.gtuber;
 const { PlaylistWidget } = imports.src.playlist;
 const { WebApp } = imports.src.webApp;
 
@@ -45,7 +45,6 @@ class ClapperPlayer extends GstClapper.Clapper
 
         this.webserver = null;
         this.webapp = null;
-        this.ytClient = null;
         this.playlistWidget = new PlaylistWidget();
 
         this.seekDone = true;
@@ -142,24 +141,13 @@ class ClapperPlayer extends GstClapper.Clapper
     set_uri(uri)
     {
         this.customVideoTitle = null;
+        Gtuber.cancelFetching();
 
-        if(Misc.getUriProtocol(uri) !== 'file') {
-            const [isYouTubeUri, videoId] = YouTube.checkYouTubeUri(uri);
-
-            if(!isYouTubeUri)
-                return super.set_uri(uri);
-
-            if(!this.ytClient)
-                this.ytClient = new YouTube.YouTubeClient();
-
-            const { root } = this.widget;
-            const surface = root.get_surface();
-            const monitor = root.display.get_monitor_at_surface(surface);
-
-            this.ytClient.getPlaybackDataAsync(videoId, monitor)
-                .then(data => {
-                    this.customVideoTitle = data.title;
-                    super.set_uri(data.uri);
+        if(Gtuber.mightHandleUri(uri)) {
+            Gtuber.parseUriPromise(uri, this)
+                .then(res => {
+                    this.customVideoTitle = res.title;
+                    super.set_uri(res.uri);
                 })
                 .catch(debug);
 

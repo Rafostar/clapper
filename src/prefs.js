@@ -1,6 +1,7 @@
 const { Adw, GObject, Gio, Gst, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
+const Gtuber = imports.src.gtuber;
 
 const { debug } = Debug;
 const { settings } = Misc;
@@ -537,6 +538,7 @@ class ClapperPrefsPluginRankingSubpage extends Gtk.Box
 var PrefsWindow = GObject.registerClass({
     GTypeName: 'ClapperPrefsWindow',
     Template: Misc.getResourceUri('ui/preferences-window.ui'),
+    InternalChildren: ['gtuber_group'],
 },
 class ClapperPrefsWindow extends Adw.PreferencesWindow
 {
@@ -546,6 +548,7 @@ class ClapperPrefsWindow extends Adw.PreferencesWindow
             transient_for: window,
         });
 
+        this._gtuber_group.visible = Gtuber.isAvailable;
         this.show();
     }
 });

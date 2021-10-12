@@ -1,6 +1,7 @@
 imports.gi.versions.Gdk = '4.0';
 imports.gi.versions.Gtk = '4.0';
 imports.gi.versions.Soup = '2.4';
+imports.gi.versions.Gtuber = '0.0';
 
 pkg.initGettext();
 pkg.initFormat();

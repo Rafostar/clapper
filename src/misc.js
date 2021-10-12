@@ -1,7 +1,8 @@
 const { Gio, GLib, Gdk, Gtk } = imports.gi;
 const Debug = imports.src.debug;
 
-const { debug } = Debug;
+const { debug, message } = Debug;
+const failedImports = [];
 
 var appName = 'Clapper';
 var appId = 'com.github.rafostar.Clapper';
@@ -27,6 +28,23 @@ const subsTitles = {
 const subsKeys = Object.keys(subsTitles);
 
 let inhibitCookie;
+
+function tryImport(libName)
+{
+    let lib = null;
+
+    try {
+        lib = imports.gi[libName];
+    }
+    catch(err) {
+        if(!failedImports.includes(libName)) {
+            failedImports.push(libName);
+            message(err.message);
+        }
+    }
+
+    return lib;
+}
 
 function getResourceUri(path)
 {
@@ -223,23 +241,4 @@ function getIsTouch(gesture)
         default:
             return false;
     }
-}
-
-function encodeHTML(text)
-{
-    return text.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
-}
-
-function decodeURIPlus(uri)
-{
-    return decodeURI(uri.replace(/\+/g, ' '));
-}
-
-function isHex(num)
-{
-    return Boolean(num.match(/[0-9a-f]+$/i));
 }

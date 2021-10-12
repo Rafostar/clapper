@@ -197,8 +197,8 @@
           </object>
         </child>
         <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="no">YouTube</property>
+          <object class="AdwPreferencesGroup" id="gtuber_group">
+            <property name="title" translatable="no">Gtuber</property>
             <child>
               <object class="ClapperPrefsSwitch">
                 <property name="title" translatable="yes">Prefer adaptive streaming</property>
