@@ -1,0 +1,18 @@
+{
+    "name": "gtuber",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dvapi=disabled"
+    ],
+    "cleanup": [
+        "/include",
+        "/lib/pkgconfig"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://github.com/Rafostar/gtuber.git",
+            "branch": "main"
+        }
+    ]
+}
