@@ -23,6 +23,7 @@
         "-Dintrospection=enabled",
         "-Ddoc=disabled",
         "-Dgtk_doc=disabled",
+        "-Dgpl=enabled",
 
         "-Dgstreamer:benchmarks=disabled",
         "-Dgstreamer:gobject-cast-checks=disabled",
