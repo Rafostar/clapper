@@ -3324,6 +3324,103 @@ gst_clapper_has_plugin_with_features (const gchar * name)
   return ret;
 }
 
+static gboolean
+parse_feature_name (gchar * str, const gchar ** feature)
+{
+  if (!str)
+    return FALSE;
+
+  g_strstrip (str);
+
+  if (str[0] != '\0') {
+    *feature = str;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static gboolean
+parse_feature_rank (gchar * str, GstRank * rank)
+{
+  if (!str)
+    return FALSE;
+
+  g_strstrip (str);
+
+  if (g_ascii_isdigit (str[0])) {
+    unsigned long l;
+    char *endptr;
+    l = strtoul (str, &endptr, 10);
+    if (endptr > str && endptr[0] == 0) {
+      *rank = (GstRank) l;
+    } else {
+      return FALSE;
+    }
+  } else if (g_ascii_strcasecmp (str, "NONE") == 0) {
+    *rank = GST_RANK_NONE;
+  } else if (g_ascii_strcasecmp (str, "MARGINAL") == 0) {
+    *rank = GST_RANK_MARGINAL;
+  } else if (g_ascii_strcasecmp (str, "SECONDARY") == 0) {
+    *rank = GST_RANK_SECONDARY;
+  } else if (g_ascii_strcasecmp (str, "PRIMARY") == 0) {
+    *rank = GST_RANK_PRIMARY;
+  } else if (g_ascii_strcasecmp (str, "MAX") == 0) {
+    *rank = (GstRank) G_MAXINT;
+  } else {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+static void
+_env_feature_rank_update (void)
+{
+  const gchar *env;
+  gchar **split, **walk;
+
+  env = g_getenv ("GST_PLUGIN_FEATURE_RANK");
+
+  if (!env)
+    return;
+
+  split = g_strsplit (env, ",", 0);
+
+  for (walk = split; *walk; walk++) {
+    if (strchr (*walk, ':')) {
+      gchar **values;
+
+      values = g_strsplit (*walk, ":", 2);
+      if (values[0] && values[1]) {
+        GstRank rank;
+        const gchar *name;
+
+        if (parse_feature_name (values[0], &name)
+            && parse_feature_rank (values[1], &rank)) {
+          GstPluginFeature *feature;
+
+          feature = gst_registry_find_feature (gst_registry_get (), name,
+              GST_TYPE_ELEMENT_FACTORY);
+          if (feature) {
+            GstRank old_rank;
+
+            old_rank = gst_plugin_feature_get_rank (feature);
+            if (old_rank != rank) {
+              gst_plugin_feature_set_rank (feature, rank);
+              GST_DEBUG ("Updated rank from env: %i -> %i for %s", old_rank, rank, name);
+            }
+          }
+        }
+      }
+
+      g_strfreev (values);
+    }
+  }
+
+  g_strfreev (split);
+}
+
 static void
 gst_clapper_prepare_gstreamer (void)
 {
@@ -3345,6 +3442,9 @@ gst_clapper_prepare_gstreamer (void)
     if (!gst_clapper_set_feature_rank_versioned ("v4l2slvp8dec", rank + 10, 1, 19, 2))
       gst_clapper_set_feature_rank ("v4l2slvp8dec", GST_RANK_NONE);
   }
+
+  /* After setting defaults, update them from ENV */
+  _env_feature_rank_update ();
 
   gst_clapper_gstreamer_prepared = TRUE;
   GST_DEBUG ("GStreamer plugins prepared");
