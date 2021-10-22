@@ -253,6 +253,9 @@ static void gst_clapper_audio_info_update (GstClapper * self,
 static void gst_clapper_subtitle_info_update (GstClapper * self,
     GstClapperStreamInfo * stream_info);
 
+static gboolean find_active_decoder_with_stream_id (GstClapper * self,
+    GstElementFactoryListType type, const gchar * stream_id);
+
 /* For playbin3 */
 static void gst_clapper_streams_info_create_from_collection (GstClapper * self,
     GstClapperMediaInfo * media_info, GstStreamCollection * collection);
@@ -2050,6 +2053,7 @@ streams_selected_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 {
   GstClapper *self = GST_CLAPPER (user_data);
   GstStreamCollection *collection = NULL;
+  gchar *video_sid, *audio_sid;
   guint i, len;
 
   gst_message_parse_streams_selected (msg, &collection);
@@ -2098,7 +2102,22 @@ streams_selected_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg,
 
     *current_sid = g_strdup (stream_id);
   }
+
+  video_sid = g_strdup (self->video_sid);
+  audio_sid = g_strdup (self->audio_sid);
+
   g_mutex_unlock (&self->lock);
+
+  if (video_sid) {
+    find_active_decoder_with_stream_id (self, GST_ELEMENT_FACTORY_TYPE_DECODER
+        | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, video_sid);
+    g_free (video_sid);
+  }
+  if (audio_sid) {
+    find_active_decoder_with_stream_id (self, GST_ELEMENT_FACTORY_TYPE_DECODER
+        | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, audio_sid);
+    g_free (audio_sid);
+  }
 }
 
 static gboolean
@@ -3009,11 +3028,12 @@ decoder_changed_signal_data_free (DecoderChangedSignalData * data)
 
 static void
 emit_decoder_changed (GstClapper * self, gchar * decoder_name,
-    gboolean is_video)
+    GstElementFactoryListType type)
 {
   GstClapperSignalDispatcherFunc func = NULL;
 
-  if (is_video) {
+  if ((type & GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO) ==
+      GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO) {
     if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
         signals[SIGNAL_VIDEO_DECODER_CHANGED], 0, NULL, NULL, NULL) != 0 &&
         g_strcmp0 (self->last_vdecoder, decoder_name) != 0) {
@@ -3021,7 +3041,8 @@ emit_decoder_changed (GstClapper * self, gchar * decoder_name,
       g_free (self->last_vdecoder);
       self->last_vdecoder = g_strdup (decoder_name);
     }
-  } else {
+  } else if ((type & GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO) ==
+      GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO) {
     if (g_signal_handler_find (self, G_SIGNAL_MATCH_ID,
         signals[SIGNAL_AUDIO_DECODER_CHANGED], 0, NULL, NULL, NULL) != 0 &&
         g_strcmp0 (self->last_adecoder, decoder_name) != 0) {
@@ -3042,6 +3063,137 @@ emit_decoder_changed (GstClapper * self, gchar * decoder_name,
   }
 }
 
+static gboolean
+iterate_decoder_pads (GstClapper * self, GstElement * element,
+    const gchar * stream_id, GstElementFactoryListType type)
+{
+  GstIterator *iter;
+  GValue value = { 0, };
+  gboolean found = FALSE;
+
+  iter = gst_element_iterate_src_pads (element);
+
+  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+    GstPad *decoder_pad = g_value_get_object (&value);
+    gchar *decoder_stream_id = gst_pad_get_stream_id (decoder_pad);
+
+    GST_DEBUG_OBJECT (self, "Decoder stream: %s", decoder_stream_id);
+
+    /* In case of playbin3, pad may not be active yet */
+    if ((found = (g_strcmp0 (decoder_stream_id, stream_id) == 0
+        || (!decoder_stream_id && self->use_playbin3)))) {
+      GstElementFactory *factory;
+      gchar *plugin_name;
+
+      factory = gst_element_get_factory (element);
+      plugin_name = gst_object_get_name (GST_OBJECT_CAST (factory));
+
+      if (plugin_name) {
+        GST_DEBUG_OBJECT (self, "Found decoder: %s", plugin_name);
+        emit_decoder_changed (self, plugin_name, type);
+      }
+
+      g_free (plugin_name);
+    }
+
+    g_value_unset (&value);
+
+    if (found)
+      break;
+  }
+
+  gst_iterator_free (iter);
+
+  return found;
+}
+
+static gboolean
+find_active_decoder_with_stream_id (GstClapper * self, GstElementFactoryListType type,
+    const gchar * stream_id)
+{
+  GstIterator *iter;
+  GValue value = { 0, };
+  gboolean found = FALSE;
+
+  GST_DEBUG_OBJECT (self, "Searching for decoder with stream: %s", stream_id);
+
+  iter = gst_bin_iterate_recurse (GST_BIN (self->playbin));
+
+  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+    GstElement *element = g_value_get_object (&value);
+    GstElementFactory *factory = gst_element_get_factory (element);
+
+    if (factory && gst_element_factory_list_is_type (factory, type))
+      found = iterate_decoder_pads (self, element, stream_id, type);
+
+    g_value_unset (&value);
+
+    if (found)
+      break;
+  }
+
+  gst_iterator_free (iter);
+
+  return found;
+}
+
+static void
+update_current_decoder (GstClapper *self, GstElementFactoryListType type)
+{
+  GstIterator *iter;
+  GValue value = { 0, };
+
+  iter = gst_bin_iterate_all_by_element_factory_name (
+      GST_BIN (self->playbin), "input-selector");
+
+  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+    GstElement *element = g_value_get_object (&value);
+    GstPad *active_pad;
+    gboolean found = FALSE;
+
+    g_object_get (G_OBJECT (element), "active-pad", &active_pad, NULL);
+
+    if (active_pad) {
+      gchar *stream_id;
+
+      stream_id = gst_pad_get_stream_id (active_pad);
+      gst_object_unref (active_pad);
+
+      if (stream_id) {
+        found = find_active_decoder_with_stream_id (self, type, stream_id);
+        g_free (stream_id);
+      }
+    }
+
+    g_value_unset (&value);
+
+    if (found)
+      break;
+  }
+
+  gst_iterator_free (iter);
+}
+
+static void
+current_video_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
+    GstClapper * self)
+{
+  GstElementFactoryListType type = GST_ELEMENT_FACTORY_TYPE_DECODER
+      | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO;
+
+  update_current_decoder (self, type);
+}
+
+static void
+current_audio_notify_cb (G_GNUC_UNUSED GObject * obj, G_GNUC_UNUSED GParamSpec * pspec,
+    GstClapper * self)
+{
+  GstElementFactoryListType type = GST_ELEMENT_FACTORY_TYPE_DECODER
+      | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO;
+
+  update_current_decoder (self, type);
+}
+
 static void
 element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
 {
@@ -3053,13 +3205,6 @@ element_setup_cb (GstElement * playbin, GstElement * element, GstClapper * self)
     gchar *plugin_name = gst_object_get_name (GST_OBJECT_CAST (factory));
     if (plugin_name) {
       GST_INFO_OBJECT (self, "Plugin setup: %s", plugin_name);
-
-      if (gst_element_factory_list_is_type (factory,
-          GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO))
-        emit_decoder_changed (self, plugin_name, TRUE);
-      else if (gst_element_factory_list_is_type (factory,
-          GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO))
-        emit_decoder_changed (self, plugin_name, FALSE);
 
       /* TODO: Set plugin props */
     }
@@ -3229,6 +3374,11 @@ gst_clapper_main (gpointer data)
         G_CALLBACK (audio_tags_changed_cb), self);
     g_signal_connect (self->playbin, "text-tags-changed",
         G_CALLBACK (subtitle_tags_changed_cb), self);
+
+    g_signal_connect (self->playbin, "notify::current-video",
+        G_CALLBACK (current_video_notify_cb), self);
+    g_signal_connect (self->playbin, "notify::current-audio",
+        G_CALLBACK (current_audio_notify_cb), self);
   }
 
   g_signal_connect (self->playbin, "notify::volume",
