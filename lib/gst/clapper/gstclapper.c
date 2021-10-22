@@ -3091,11 +3091,12 @@ iterate_decoder_pads (GstClapper * self, GstElement * element,
       if (plugin_name) {
         GST_DEBUG_OBJECT (self, "Found decoder: %s", plugin_name);
         emit_decoder_changed (self, plugin_name, type);
-      }
 
-      g_free (plugin_name);
+        g_free (plugin_name);
+      }
     }
 
+    g_free (decoder_stream_id);
     g_value_unset (&value);
 
     if (found)
