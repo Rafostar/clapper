@@ -3,457 +3,452 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 15:25\n"
+"PO-Revision-Date: 2021-10-01 23:50\n"
 "Last-Translator: \n"
-"Language-Team: Norwegian\n"
-"Language: no_NO\n"
+"Language-Team: Liberium\n"
+"Language: nb_NO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: clapper\n"
-"X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: no\n"
-"X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
-"X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr ""
+msgstr "Åpne filer …"
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr ""
+msgstr "Åpne URI …"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Innstillinger"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Snarveier"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Om"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Hastighet"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "Generelt"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Vis snarveier"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Veksle fullskjermsvisning"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Dobbelttrykk | Dobbeltklikk"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Forlat fullskjermsvisning"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Vis overlagspanel (kun i fullskjermsvisning)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Trykk"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Avslutt"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Åpne filer"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Åpne URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Spilleliste"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Neste element"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Dobbelttrykk (høyre side)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Forrige element"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Dobbelttrykk (venstre side)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Endre gjentagelsesmodus"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Eksporter til fil"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "Avspilling"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Veksle avspilling"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Lang-trykk | Høyreklikk"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Blafre forover"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Dra til høyre | Rull til høyre"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Blafre bakover"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Dra til venstre | Rull til venstre"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Øk lydstyrken"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Dra oppover | Rull oppover"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Senk lydstyrken"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Dra nedover | Rull nedover"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Veksle forstumming"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Neste kapittel"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Forrige kapittel"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Dekodere"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Tilbake til innstillingene"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "Oppførsel"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Auto-fullskjerm"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Fullskjermsvisning når spilleliste erstattet, unntatt i flytende modus"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Spør om å gjenoppta nylig media"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Flytende på alle arbeidsområder"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Dette valget fungerer kun på GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "Etter avspilling"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "Ikke gjør noe"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Frys siste ramme"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "Lukker programmet"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "Lydstyrke"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Egendefinert startverdi"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Sett egendefinert lydstyrke ved oppstart istedenfor gjenopprettelse"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "Lydstyrkeprosent"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Blafring"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "Modus"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr ""
+msgstr "Nøyaktig"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr ""
+msgstr "Raskt"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr ""
+msgstr "Enhet"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr ""
+msgstr "Sekund"
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr ""
+msgstr "Minutt"
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr ""
+msgstr "Prosentsats"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "Verdi"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr ""
+msgstr "Lyd"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Forskyvning i millisekunder"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Kun systemspesifikke lydformater"
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr ""
+msgstr "Undertekster"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "Forvalgt skrift"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr ""
+msgstr "Nettverk"
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr ""
+msgstr "Klient"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Proressiv nedlastingshurtiglagring"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "Tjener"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "Kontroller avspiller annensteds fra"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "Lytteport"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Kjør vev-program i bakgrunnen"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Krever GTK kompilert med Broadway-bakende"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Vev-programport"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Foretrekk adaptiv strømming"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "Maks. kvalitet"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Justeringer"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "Utseende"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "Mørk drakt"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "Tegn vindusskygger"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Skru av for økt ytelse i vindusmodus"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Programtilleggsrang"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Endre forvalgt rang for GStreamer-programtillegg"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "Bruk paybin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "Krever omstart av avspilleren"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "Eksperimentelt"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Bruk PipeWire for lydstøtte"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Dekoder: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Skriv inn eller slipp URI her"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Åpne"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Navn"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Fullført"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Gjenoppta avspilling?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK-versjon: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita-versjon: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer-versjon: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS-versjon: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "En GNOME-multimediaspiller drevet av GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Allan Nordhøy"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Slutter: %s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
-msgstr ""
+msgstr "Underminert"
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr ""
+msgstr "Kanaler"
 
 #: src/widget.js:261
 msgid "Disabled"
-msgstr ""
+msgstr "Avskrudd"
 
