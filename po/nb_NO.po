@@ -363,7 +363,7 @@ msgstr "Endre forvalgt rang for GStreamer-programtillegg"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr "Bruk paybin3"
+msgstr "Bruk playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
@@ -442,7 +442,7 @@ msgstr "Slutter: %s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
-msgstr "Underminert"
+msgstr "Ubesluttet"
 
 #: src/widget.js:243
 msgid "Channels"
