@@ -96,13 +96,6 @@ class ClapperAppBase extends Gtk.Application
             if(accels)
                 this.set_accels_for_action(`app.${name}`, accels);
         }
-
-        const gtkSettings = Gtk.Settings.get_default();
-        settings.bind(
-            'dark-theme', gtkSettings,
-            'gtk-application-prefer-dark-theme',
-            Gio.SettingsBindFlags.GET
-        );
         this.doneFirstActivate = true;
     }
 });

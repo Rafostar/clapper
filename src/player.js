@@ -1,4 +1,4 @@
-const { Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
+const { Adw, Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
@@ -74,6 +74,7 @@ class ClapperPlayer extends GstClapper.Clapper
     set_and_bind_settings()
     {
         const settingsToSet = [
+            'dark-theme',
             'after-playback',
             'seeking-mode',
             'audio-offset',
@@ -655,6 +656,19 @@ class ClapperPlayer extends GstClapper.Clapper
                     default: /* Normal */
                         this.set_seek_mode(GstClapper.ClapperSeekMode.DEFAULT);
                         break;
+                }
+                break;
+            case 'dark-theme':
+                /* TODO: Remove libadwaita alpha2 compat someday */
+                if (Adw.StyleManager != null) {
+                    const styleManager = Adw.StyleManager.get_default();
+                    styleManager.color_scheme = (settings.get_boolean(key))
+                        ? Adw.ColorScheme.FORCE_DARK
+                        : Adw.ColorScheme.FORCE_LIGHT;
+                }
+                else {
+                    const gtkSettings = Gtk.Settings.get_default();
+                    gtkSettings.gtk_application_prefer_dark_theme = settings.get_boolean(key);
                 }
                 break;
             case 'render-shadows':
