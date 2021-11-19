@@ -440,8 +440,15 @@ class ClapperPrefsPluginExpander extends Adw.ExpanderRow
         const featuresNames = Object.keys(pluginsData[this.title]);
         debug(`Adding ${featuresNames.length} features to the list of plugin: ${this.title}`);
 
-        for(let featureObj of pluginsData[this.title])
-            this.add(new PrefsPluginFeature(featureObj));
+        for(let featureObj of pluginsData[this.title]) {
+            const prefsPluginFeature = new PrefsPluginFeature(featureObj);
+
+            /* TODO: Remove old libadwaita compat */
+            if(this.add_row)
+                this.add_row(prefsPluginFeature);
+            else
+                this.add(prefsPluginFeature);
+        }
     }
 });
 
