@@ -10,6 +10,9 @@ scrolledwindow scrollbar.vertical slider {
 }
 
 /* Adwaita is missing osd ListBox */
+.clapperplaylist {
+  background: none;
+}
 .clapperplaylist row {
   border-radius: 5px;
 }
@@ -27,9 +30,6 @@ scrolledwindow scrollbar.vertical slider {
   min-height: 36px;
   margin-left: 2px;
   margin-right: 2px;
-}
-.osd .clapperplaylist {
-  background: none;
 }
 .osd .clapperplaylist row image {
   -gtk-icon-shadow: none;
@@ -222,6 +222,9 @@ scale trough slider {
 }
 .fullscreen.tvmode .positionscale marks.bottom {
   margin-top: 2px;
+}
+.fullscreen.tvmode .positionscale trough {
+  border-radius: 3px;
 }
 .fullscreen.tvmode .positionscale trough highlight {
   border-radius: 3px;
