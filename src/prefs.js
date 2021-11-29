@@ -553,6 +553,11 @@ class ClapperPrefsWindow extends Adw.PreferencesWindow
             transient_for: window,
         });
 
+        /* FIXME: old libadwaita compat, should be
+         * normally in prefs UI file */
+        this.can_swipe_back = true;
+        this.can_navigate_back = true;
+
         this.show();
     }
 });
