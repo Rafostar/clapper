@@ -969,6 +969,11 @@ function checkYouTubeUri(uri)
     const originalHost = gstUri.get_host();
     gstUri.normalize();
 
+    /* TODO: Remove all this YT code */
+    const scheme = gstUri.get_scheme();
+    if (scheme && scheme === 'gtuber')
+        return [false, null];
+
     const host = gstUri.get_host();
     let videoId = null;
 
@@ -988,7 +993,6 @@ function checkYouTubeUri(uri)
             videoId = gstUri.get_path_segments()[1];
             break;
         default:
-            const scheme = gstUri.get_scheme();
             if(scheme === 'yt' || scheme === 'youtube') {
                 /* ID is case sensitive */
                 videoId = originalHost;
