@@ -33,6 +33,7 @@
         "flathub/lib/libass.json",
         "flathub/lib/ffmpeg.json",
         "testing/gstreamer.json",
+        "testing/gtuber.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
