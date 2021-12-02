@@ -1866,6 +1866,15 @@ media_info_update (GstClapper * self, GstClapperMediaInfo * info)
 }
 
 static void
+merge_tags (GstTagList **my_tags, GstTagList *tags)
+{
+  if (*my_tags)
+    gst_tag_list_insert (*my_tags, tags, GST_TAG_MERGE_REPLACE);
+  else
+    *my_tags = gst_tag_list_ref (tags);
+}
+
+static void
 tags_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
 {
   GstClapper *self = GST_CLAPPER (user_data);
@@ -1880,17 +1889,12 @@ tags_cb (G_GNUC_UNUSED GstBus * bus, GstMessage * msg, gpointer user_data)
   if (gst_tag_list_get_scope (tags) == GST_TAG_SCOPE_GLOBAL) {
     g_mutex_lock (&self->lock);
     if (self->media_info) {
-      if (self->media_info->tags)
-        gst_tag_list_unref (self->media_info->tags);
-      self->media_info->tags = gst_tag_list_ref (tags);
+      merge_tags (&self->media_info->tags, tags);
       media_info_update (self, self->media_info);
-      g_mutex_unlock (&self->lock);
     } else {
-      if (self->global_tags)
-        gst_tag_list_unref (self->global_tags);
-      self->global_tags = gst_tag_list_ref (tags);
-      g_mutex_unlock (&self->lock);
+      merge_tags (&self->global_tags, tags);
     }
+    g_mutex_unlock (&self->lock);
   }
 
   gst_tag_list_unref (tags);
