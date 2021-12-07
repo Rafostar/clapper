@@ -8,3 +8,6 @@ src/buttons.js
 src/dialogs.js
 src/revealers.js
 src/widget.js
+
+data/com.github.rafostar.Clapper.desktop
+data/com.github.rafostar.Clapper.metainfo.xml
