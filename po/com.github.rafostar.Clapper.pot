@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.rafostar.Clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-14 16:35+0200\n"
+"POT-Creation-Date: 2021-12-11 16:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,12 +41,12 @@ msgstr ""
 msgid "Speed"
 msgstr ""
 
-#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
-#: ui/preferences-window.ui:215
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
+#: ui/preferences-window.ui:214
 msgid "Normal"
 msgstr ""
 
-#: ui/help-overlay.ui:10 ui/preferences-window.ui:12
+#: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
 msgstr ""
 
@@ -118,7 +118,7 @@ msgstr ""
 msgid "Export to file"
 msgstr ""
 
-#: ui/help-overlay.ui:95 ui/preferences-window.ui:119
+#: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
 msgstr ""
 
@@ -182,203 +182,203 @@ msgstr ""
 msgid "Return to the preferences"
 msgstr ""
 
-#: ui/preferences-window.ui:16
+#: ui/preferences-window.ui:15
 msgid "Behavior"
 msgstr ""
 
-#: ui/preferences-window.ui:19
+#: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
 msgstr ""
 
-#: ui/preferences-window.ui:20
+#: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
 msgstr ""
 
-#: ui/preferences-window.ui:26
+#: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
 msgstr ""
 
-#: ui/preferences-window.ui:32
+#: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
 msgstr ""
 
-#: ui/preferences-window.ui:33
+#: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
 msgstr ""
 
-#: ui/preferences-window.ui:39
+#: ui/preferences-window.ui:38
 msgid "After playback"
 msgstr ""
 
-#: ui/preferences-window.ui:44
+#: ui/preferences-window.ui:43
 msgid "Do nothing"
 msgstr ""
 
-#: ui/preferences-window.ui:45
+#: ui/preferences-window.ui:44
 msgid "Freeze last frame"
 msgstr ""
 
-#: ui/preferences-window.ui:46
+#: ui/preferences-window.ui:45
 msgid "Close the app"
 msgstr ""
 
-#: ui/preferences-window.ui:56
+#: ui/preferences-window.ui:55
 msgid "Volume"
 msgstr ""
 
-#: ui/preferences-window.ui:59
+#: ui/preferences-window.ui:58
 msgid "Custom initial value"
 msgstr ""
 
-#: ui/preferences-window.ui:60
+#: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
 msgstr ""
 
-#: ui/preferences-window.ui:64
+#: ui/preferences-window.ui:63
 msgid "Volume percentage"
 msgstr ""
 
-#: ui/preferences-window.ui:75
+#: ui/preferences-window.ui:74
 msgid "Seeking"
 msgstr ""
 
-#: ui/preferences-window.ui:78
+#: ui/preferences-window.ui:77
 msgid "Mode"
 msgstr ""
 
-#: ui/preferences-window.ui:84
+#: ui/preferences-window.ui:83
 msgid "Accurate"
 msgstr ""
 
-#: ui/preferences-window.ui:85
+#: ui/preferences-window.ui:84
 msgid "Fast"
 msgstr ""
 
-#: ui/preferences-window.ui:93
+#: ui/preferences-window.ui:92
 msgid "Unit"
 msgstr ""
 
-#: ui/preferences-window.ui:98
+#: ui/preferences-window.ui:97
 msgid "Second"
 msgstr ""
 
-#: ui/preferences-window.ui:99
+#: ui/preferences-window.ui:98
 msgid "Minute"
 msgstr ""
 
-#: ui/preferences-window.ui:100
+#: ui/preferences-window.ui:99
 msgid "Percentage"
 msgstr ""
 
-#: ui/preferences-window.ui:108
+#: ui/preferences-window.ui:107
 msgid "Value"
 msgstr ""
 
-#: ui/preferences-window.ui:123
+#: ui/preferences-window.ui:122
 msgid "Audio"
 msgstr ""
 
-#: ui/preferences-window.ui:126
+#: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
 msgstr ""
 
-#: ui/preferences-window.ui:133
+#: ui/preferences-window.ui:132
 msgid "Only native audio formats"
 msgstr ""
 
-#: ui/preferences-window.ui:141
+#: ui/preferences-window.ui:140
 msgid "Subtitles"
 msgstr ""
 
-#: ui/preferences-window.ui:144
+#: ui/preferences-window.ui:143
 msgid "Default font"
 msgstr ""
 
-#: ui/preferences-window.ui:154
+#: ui/preferences-window.ui:153
 msgid "Network"
 msgstr ""
 
-#: ui/preferences-window.ui:158
+#: ui/preferences-window.ui:157
 msgid "Client"
 msgstr ""
 
-#: ui/preferences-window.ui:161
+#: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
 msgstr ""
 
-#: ui/preferences-window.ui:169
+#: ui/preferences-window.ui:168
 msgid "Server"
 msgstr ""
 
-#: ui/preferences-window.ui:172
+#: ui/preferences-window.ui:171
 msgid "Control player remotely"
 msgstr ""
 
-#: ui/preferences-window.ui:176
+#: ui/preferences-window.ui:175
 msgid "Listening port"
 msgstr ""
 
-#: ui/preferences-window.ui:183
+#: ui/preferences-window.ui:182
 msgid "Run web application in background"
 msgstr ""
 
-#: ui/preferences-window.ui:184
+#: ui/preferences-window.ui:183
 msgid "Requires GTK compiled with Broadway backend"
 msgstr ""
 
-#: ui/preferences-window.ui:190
+#: ui/preferences-window.ui:189
 msgid "Web application port"
 msgstr ""
 
-#: ui/preferences-window.ui:204
+#: ui/preferences-window.ui:203
 msgid "Prefer adaptive streaming"
 msgstr ""
 
-#: ui/preferences-window.ui:210
+#: ui/preferences-window.ui:209
 msgid "Max quality"
 msgstr ""
 
-#: ui/preferences-window.ui:228
+#: ui/preferences-window.ui:227
 msgid "Tweaks"
 msgstr ""
 
-#: ui/preferences-window.ui:232
+#: ui/preferences-window.ui:231
 msgid "Appearance"
 msgstr ""
 
-#: ui/preferences-window.ui:235
+#: ui/preferences-window.ui:234
 msgid "Dark theme"
 msgstr ""
 
-#: ui/preferences-window.ui:241
+#: ui/preferences-window.ui:240
 msgid "Render window shadows"
 msgstr ""
 
-#: ui/preferences-window.ui:242
+#: ui/preferences-window.ui:241
 msgid "Disable to increase performance when windowed"
 msgstr ""
 
-#: ui/preferences-window.ui:253
+#: ui/preferences-window.ui:252
 msgid "Plugin ranking"
 msgstr ""
 
-#: ui/preferences-window.ui:254
+#: ui/preferences-window.ui:253
 msgid "Alter default ranks of GStreamer plugins"
 msgstr ""
 
-#: ui/preferences-window.ui:259
+#: ui/preferences-window.ui:258
 msgid "Use playbin3"
 msgstr ""
 
-#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+#: ui/preferences-window.ui:259 ui/preferences-window.ui:268
 msgid "Requires player restart"
 msgstr ""
 
-#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+#: ui/preferences-window.ui:261 ui/preferences-window.ui:270
 msgid "Experimental"
 msgstr ""
 
-#: ui/preferences-window.ui:268
+#: ui/preferences-window.ui:267
 msgid "Use PipeWire for audio output"
 msgstr ""
 
@@ -455,4 +455,301 @@ msgstr ""
 
 #: src/widget.js:261
 msgid "Disabled"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.desktop:3
+msgid "Clapper"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.desktop:4
+msgid "Multimedia Player"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.desktop:5
+msgid "Play videos and music"
+msgstr ""
+
+#. Translators: Search terms to find this application. Do NOT translate the semicolons!
+#: data/com.github.rafostar.Clapper.desktop:13
+msgid ""
+"Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;"
+"Clapper;"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:7
+msgid "Simple and modern GNOME media player"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:11
+msgid ""
+"Clapper is a GNOME media player built using GJS with GTK4 toolkit. The media "
+"player is using GStreamer as a media backend and renders everything via "
+"OpenGL. Player works natively on both Xorg and Wayland. It also supports "
+"hardware acceleration through VA-API on AMD/Intel GPUs, NVDEC on Nvidia and "
+"V4L2 on mobile devices."
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:18
+msgid ""
+"The media player has an adaptive GUI. When viewing videos in \"Windowed Mode"
+"\", Clapper will use mostly unmodified GTK widgets to match your OS look "
+"nicely. When player enters \"Fullscreen Mode\" all GUI elements will become "
+"darker, bigger and semi-transparent for your viewing comfort. It also has a "
+"\"Floating Mode\" which displays only video on top of all other windows for "
+"a PiP-like viewing experience. Mobile friendly transitions are also "
+"supported."
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:53
+#: data/com.github.rafostar.Clapper.metainfo.xml:90
+#: data/com.github.rafostar.Clapper.metainfo.xml:133
+msgid "Changes:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:55
+msgid "Now uses libadwaita"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:56
+msgid "New and adaptive preferences window"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:57
+msgid "Improved open URI dialog"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:58
+msgid "Few small tweaks to fullscreen UI design"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:59
+msgid ""
+"Show current video and audio decoders in popovers (easy way to check if HW "
+"accel is used)"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:60
+msgid ""
+"Enabled NVDEC hardware acceleration by default (requires Nvidia proprietary "
+"drivers)"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:61
+msgid "Added option to use PipeWire for audio output (experimental)"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:62
+msgid "Added option to use playbin3 element (experimental)"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:63
+msgid "New PiP icon from icon development kit"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:64
+msgid "Improved performance on devices running OpenGL ES"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:65
+msgid "Translations support"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:66
+msgid "Various bug fixes"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:68
+msgid "New keyboard shortcuts:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:70
+msgid "Leave fullscreen with Escape key"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:71
+msgid "Toggle mute with Ctrl+M"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:73
+msgid "More touchscreen gestures:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:75
+msgid "Toggle playback with a long press"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:76
+msgid "Switch playlist items via double tap on screen side"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:78
+msgid "New translations:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:80
+msgid "Catalan"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:81
+msgid "Dutch"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:82
+msgid "German"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:83
+msgid "Italian"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:84
+msgid "Polish"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:92
+msgid "Added MPRIS support"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:93
+msgid "Added repeat modes: single video, whole playlist and shuffle"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:94
+msgid "Support opening folders with media files"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:95
+msgid "Append playlist items by holding Ctrl while doing Drag and Drop"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:96
+msgid "Improved handling of keyboard shortcuts"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:97
+msgid "Added more keyboard shortcuts"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:98
+msgid "Added window that shows available keyboard shortcuts"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:99
+msgid ""
+"Show black screen by default after playback (make showing last frame "
+"optional instead)"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:100
+msgid "Added ability to export playlist to file"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:101
+msgid "Improve handling of changing displays with different resolutions"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:102
+msgid "Added support for EGL under x11 with GTK 4.3.1 or later"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:103
+msgid "Added missing symbolic app icon"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:104
+msgid "Some misc bug fixes and code cleanups"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:110
+msgid "Player:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:112
+msgid "Fix missing top left menu buttons on some system configurations"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:113
+msgid "Fix potential video sink deadlock"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:114
+msgid "Do not show mobile controls transition on launch"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:115
+msgid "Show tooltip with full playlist item text on hover"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:117
+msgid "YouTube:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:119
+msgid "Auto select best matching resolution for used monitor"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:120
+msgid "Added some YouTube related preferences"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:121
+msgid "Added support for live HLS videos"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:122
+msgid "Added support for non-adaptive live HLS streaming"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:128
+msgid "New features:"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:130
+msgid ""
+"YouTube support - drag and drop videos from youtube or use open URI dialog "
+"to play them"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:131
+msgid "Added convenient ways of opening external subtitles"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:135
+msgid "Few GUI layout improvements"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:136
+msgid "Simplified video sink code"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:137
+msgid "Fixed missing Ctrl+O common keybinding"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:138
+msgid "Fixed error when playback finishes during controls reveal animation"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:139
+msgid "Fixed startup window size on Xorg"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:140
+msgid "Fixed top time not showing up on fullscreen startup"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:141
+msgid "Fixed missing file extensions in online URIs"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:142
+msgid "Fixed some error messages not being displayed"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:148
+msgid "First stable release"
+msgstr ""
+
+#: data/com.github.rafostar.Clapper.metainfo.xml:153
+msgid "GitHub version"
 msgstr ""
