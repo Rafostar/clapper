@@ -3,7 +3,7 @@
   <id>com.github.rafostar.Clapper</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  <name>Clapper</name>
+  <name translatable="no">Clapper</name>
   <summary>Simple and modern GNOME media player</summary>
   <translation type="gettext">com.github.rafostar.Clapper</translation>
   <launchable type="desktop-id">com.github.rafostar.Clapper.desktop</launchable>
@@ -24,7 +24,7 @@
       Mobile friendly transitions are also supported.
     </p>
   </description>
-  <developer_name>Rafał Dzięgiel</developer_name>
+  <developer_name translatable="no">Rafał Dzięgiel</developer_name>
   <url type="homepage">https://rafostar.github.io/clapper</url>
   <url type="bugtracker">https://github.com/Rafostar/clapper/issues</url>
   <url type="donation">https://liberapay.com/Clapper</url>
