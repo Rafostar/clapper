@@ -974,6 +974,12 @@ function checkYouTubeUri(uri)
     if (scheme && scheme === 'gtuber')
         return [false, null];
 
+    const gstRegistry = Gst.Registry.get();
+    const feature = gstRegistry.lookup_feature('gtubersrc');
+
+    if (feature && feature.get_rank() >= Gst.Rank.PRIMARY)
+        return [false, null];
+
     const host = gstUri.get_host();
     let videoId = null;
 
