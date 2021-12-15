@@ -326,7 +326,7 @@ class ClapperWidget extends Gtk.Grid
 
     refreshWindowTitle(title)
     {
-        const isFloating = !this.controlsRevealer.child_revealed;
+        const isFloating = !this.controlsRevealer.reveal_child;
         const pipSuffix = ' - PiP';
         const hasPipSuffix = title.endsWith(pipSuffix);
 

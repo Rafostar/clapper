@@ -321,21 +321,21 @@ class ClapperControlsRevealer extends Gtk.Revealer
 
         const isStick = (isFloating && settings.get_boolean('floating-stick'));
         DBus.shellWindowEval('stick', isStick);
+
+        this.root.child.refreshWindowTitle(this.root.title);
     }
 
     _onControlsRevealed()
     {
-        const clapperWidget = this.root.child;
-        if(!clapperWidget) return;
-
         if(this.child_revealed) {
+            const clapperWidget = this.root.child;
+            if(!clapperWidget) return;
+
             const [width, height] = this.root.get_default_size();
 
             clapperWidget.player.widget.height_request = -1;
             this.root.set_default_size(width, height);
         }
-
-        clapperWidget.refreshWindowTitle(this.root.title);
     }
 
     _onUnrevealTick(playerWidget, width, height)
