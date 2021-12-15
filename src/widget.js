@@ -319,9 +319,22 @@ class ClapperWidget extends Gtk.Grid
             title = item.filename;
         }
 
-        this.root.title = title;
+        this.refreshWindowTitle(title);
         this.revealerTop.title = title;
         this.revealerTop.showTitle = true;
+    }
+
+    refreshWindowTitle(title)
+    {
+        const isFloating = !this.controlsRevealer.child_revealed;
+        const pipSuffix = ' - PiP';
+        const hasPipSuffix = title.endsWith(pipSuffix);
+
+        this.root.title = (isFloating && !hasPipSuffix)
+            ? title + pipSuffix
+            : (!isFloating && hasPipSuffix)
+            ? title.substring(0, title.length - pipSuffix.length)
+            : title;
     }
 
     updateTime()

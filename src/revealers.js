@@ -325,15 +325,17 @@ class ClapperControlsRevealer extends Gtk.Revealer
 
     _onControlsRevealed()
     {
-        if(this.child_revealed) {
-            const clapperWidget = this.root.child;
-            if(!clapperWidget) return;
+        const clapperWidget = this.root.child;
+        if(!clapperWidget) return;
 
+        if(this.child_revealed) {
             const [width, height] = this.root.get_default_size();
 
             clapperWidget.player.widget.height_request = -1;
             this.root.set_default_size(width, height);
         }
+
+        clapperWidget.refreshWindowTitle(this.root.title);
     }
 
     _onUnrevealTick(playerWidget, width, height)
