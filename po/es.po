@@ -6,14 +6,14 @@ msgstr ""
 "PO-Revision-Date: 2021-09-14 15:25\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
-"Language: es_ES\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: es-ES\n"
+"X-Crowdin-Language: es\n"
 "X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
 "X-Crowdin-File-ID: 31\n"
 
@@ -84,7 +84,7 @@ msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "Abrir archivos"
+msgstr "Abrir archivo"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
@@ -96,7 +96,7 @@ msgstr "Lista de reproducción"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr "Artículo siguiente"
+msgstr "Elemento siguiente"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
@@ -104,7 +104,7 @@ msgstr "Tocar doble (lado derecho)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr "Artículo anterior"
+msgstr "Elemento anterior"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
@@ -216,7 +216,7 @@ msgstr "Nada por hacer"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr "Congelar el último fotograma"
+msgstr "Detener último fotograma"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
