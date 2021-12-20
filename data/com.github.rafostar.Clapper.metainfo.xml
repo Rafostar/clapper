@@ -48,6 +48,34 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.4.1" date="2021-12-20">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Compatibility with more recent libadwaita versions</li>
+          <li>Toggle mute with M button alone</li>
+          <li>Allow handling YouTube with external GStreamer plugins</li>
+          <li>Fix catching errors when reading clipboard</li>
+          <li>Fix missing translator-credits</li>
+          <li>Fix missing gio-unix-2.0 dep</li>
+          <li>Fix playback pausing when entering fullscreen with touchscreen</li>
+          <li>Fix GST_PLUGIN_FEATURE_RANK env usage</li>
+          <li>Fix video/audio decoder change detection</li>
+          <li>Merge global video tags instead replacing them</li>
+          <li>Few other misc bug fixes</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Chinese Simplified</li>
+          <li>Czech</li>
+          <li>Hungarian</li>
+          <li>Portuguese</li>
+          <li>Portuguese, Brazilian</li>
+          <li>Russian</li>
+          <li>Spanish</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.4.0" date="2021-09-12">
       <description>
         <p>Changes:</p>

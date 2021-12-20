@@ -1,5 +1,5 @@
 project('com.github.rafostar.Clapper', 'c', 'cpp',
-  version: '0.4.0',
+  version: '0.4.1',
   meson_version: '>= 0.50.0',
   license: 'GPL-3.0-or-later',
   default_options: [
