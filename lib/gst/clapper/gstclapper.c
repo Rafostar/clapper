@@ -1868,10 +1868,12 @@ media_info_update (GstClapper * self, GstClapperMediaInfo * info)
 static void
 merge_tags (GstTagList **my_tags, GstTagList *tags)
 {
-  if (*my_tags)
+  if (*my_tags) {
+    *my_tags = gst_tag_list_make_writable (*my_tags);
     gst_tag_list_insert (*my_tags, tags, GST_TAG_MERGE_REPLACE);
-  else
+  } else {
     *my_tags = gst_tag_list_ref (tags);
+  }
 }
 
 static void
