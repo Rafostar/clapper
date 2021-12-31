@@ -389,7 +389,7 @@ msgstr "Decodificador: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr "Intoducir la URI"
+msgstr "Introducir la URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
