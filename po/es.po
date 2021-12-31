@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: es\n"
+"X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
 "X-Crowdin-File-ID: 31\n"
 
