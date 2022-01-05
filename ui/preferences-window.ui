@@ -195,31 +195,6 @@
             </child>
           </object>
         </child>
-        <child>
-          <object class="AdwPreferencesGroup">
-            <property name="title" translatable="no">YouTube</property>
-            <child>
-              <object class="ClapperPrefsSwitch">
-                <property name="title" translatable="yes">Prefer adaptive streaming</property>
-                <property name="schema-name">yt-adaptive-enabled</property>
-              </object>
-            </child>
-            <child>
-              <object class="ClapperPrefsCombo">
-                <property name="title" translatable="yes">Max quality</property>
-                <property name="schema-name">yt-quality-type</property>
-                <property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item translatable="yes">Normal</item>
-                      <item translatable="no">HFR</item>
-                    </items>
-                  </object>
-                </property>
-              </object>
-            </child>
-          </object>
-        </child>
       </object>
     </child>
     <child>

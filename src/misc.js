@@ -224,22 +224,3 @@ function getIsTouch(gesture)
             return false;
     }
 }
-
-function encodeHTML(text)
-{
-    return text.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
-}
-
-function decodeURIPlus(uri)
-{
-    return decodeURI(uri.replace(/\+/g, ' '));
-}
-
-function isHex(num)
-{
-    return Boolean(num.match(/[0-9a-f]+$/i));
-}
