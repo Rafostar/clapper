@@ -18,12 +18,12 @@ msgstr ""
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
-msgid "Open Files..."
-msgstr "Apri i File..."
+msgid "Open Files…"
+msgstr "Apri i File…"
 
 #: ui/clapper.ui:10
-msgid "Open URI..."
-msgstr "Apri URI..."
+msgid "Open URI…"
+msgstr "Apri URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
