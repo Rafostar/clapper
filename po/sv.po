@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-01-08 13:50\n"
+"PO-Revision-Date: 2022-01-08 15:10\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -132,7 +132,7 @@ msgstr "Långtryck | Högerklicka"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr "Gå framåt"
+msgstr "Spola framåt"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
@@ -140,7 +140,7 @@ msgstr "Svep höger | Skrolla höger"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr "Gå bakåt"
+msgstr "Spola bakåt"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
@@ -240,7 +240,7 @@ msgstr "Volymprocent"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Spolning"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
