@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-24 14:11\n"
+"PO-Revision-Date: 2022-01-08 20:24\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -39,7 +39,7 @@ msgstr "关于 Claper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "速度"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
@@ -48,7 +48,7 @@ msgstr "一般"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "常规​​​​​"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "更改循环模式"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
@@ -128,7 +128,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "长按 | 右键点击"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
@@ -148,19 +148,19 @@ msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "提高音量"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "向上滑动 | 向上滚动"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "降低音量"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "向下滑动 | 向下滚动"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
@@ -208,19 +208,19 @@ msgstr "此选项仅适用于 GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "播放结束后"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "不执行任何操作"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "停留在最后一帧"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "关闭应用程序"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
@@ -240,7 +240,7 @@ msgstr "音量百分比"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "定位播放"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
@@ -308,7 +308,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "服务器"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
@@ -328,7 +328,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Web 应用程序端口"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
@@ -443,7 +443,7 @@ msgstr ""
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "结束于：%s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
