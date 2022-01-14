@@ -3527,6 +3527,7 @@ _env_feature_rank_update (void)
               gst_plugin_feature_set_rank (feature, rank);
               GST_DEBUG ("Updated rank from env: %i -> %i for %s", old_rank, rank, name);
             }
+            gst_object_unref (feature);
           }
         }
       }
