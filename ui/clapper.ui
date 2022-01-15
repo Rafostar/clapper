@@ -3,11 +3,11 @@
   <menu id="mainMenu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Open Files...</attribute>
+        <attribute name="label" translatable="yes">Open Files…</attribute>
         <attribute name="action">app.open_local</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Open URI...</attribute>
+        <attribute name="label" translatable="yes">Open URI…</attribute>
         <attribute name="action">app.open_uri</attribute>
       </item>
     </section>
