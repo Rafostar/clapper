@@ -19,11 +19,11 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files..."
-msgstr "Abrir archivo"
+msgstr "Abrir archivo…"
 
 #: ui/clapper.ui:10
 msgid "Open URI..."
-msgstr "Abrir URI"
+msgstr "Abrir URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
