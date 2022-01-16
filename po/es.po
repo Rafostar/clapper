@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-01-16 16:22\n"
+"PO-Revision-Date: 2022-01-16 16:58\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr "Abrir archivo…"
+msgstr "Abrir archivos…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
@@ -84,7 +84,7 @@ msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "Abrir archivo"
+msgstr "Abrir archivos"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
