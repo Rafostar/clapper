@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 15:25\n"
+"PO-Revision-Date: 2022-01-16 13:17\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -18,11 +18,11 @@ msgstr ""
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
-msgid "Open Files..."
+msgid "Open Files…"
 msgstr ""
 
 #: ui/clapper.ui:10
-msgid "Open URI..."
+msgid "Open URI…"
 msgstr ""
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
