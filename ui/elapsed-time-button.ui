@@ -37,9 +37,9 @@
             <property name="valign">center</property>
             <property name="adjustment">speed_adjustment</property>
             <marks>
-              <mark value="0.25" position="bottom">0.25x</mark>
+              <mark value="0.25" position="bottom">0.25×</mark>
               <mark value="1" position="bottom" translatable="yes">Normal</mark>
-              <mark value="2" position="bottom">2x</mark>
+              <mark value="2" position="bottom">2×</mark>
             </marks>
             <style>
               <class name="speedscale"/>
