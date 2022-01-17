@@ -165,7 +165,7 @@ class ClapperElapsedTimeButton extends PopoverButtonBase
 
     setInitialState()
     {
-        this.label = '00:00/00:00';
+        this.label = '00∶00/00∶00';
     }
 
     setFullscreenMode(isFullscreen, isMobileMonitor)
