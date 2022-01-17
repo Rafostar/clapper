@@ -3,52 +3,52 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-01-16 14:15\n"
+"PO-Revision-Date: 2022-01-16 16:58\n"
 "Last-Translator: \n"
-"Language-Team: Chinese Simplified\n"
-"Language: zh_CN\n"
+"Language-Team: Basque\n"
+"Language: eu_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: zh-CN\n"
+"X-Crowdin-Language: eu\n"
 "X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr "打开文件…"
+msgstr ""
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr "打开 URI…"
+msgstr ""
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr "选项"
+msgstr ""
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr "快捷键"
+msgstr ""
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr "关于 Claper"
+msgstr ""
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr "速度"
+msgstr ""
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr "一般"
+msgstr ""
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr "常规​​​​​"
+msgstr ""
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
@@ -64,11 +64,11 @@ msgstr ""
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr "离开全屏"
+msgstr ""
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr "显示 OSD（仅全屏）"
+msgstr ""
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
@@ -76,27 +76,27 @@ msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr "退出"
+msgstr ""
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr "媒体"
+msgstr ""
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "打开文件"
+msgstr ""
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr "打开 URI"
+msgstr ""
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr "播放列表"
+msgstr ""
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr "下一项"
+msgstr ""
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
@@ -104,7 +104,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr "上一项"
+msgstr ""
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "更改循环模式"
+msgstr ""
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
@@ -128,11 +128,11 @@ msgstr ""
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr "长按 | 右键点击"
+msgstr ""
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr "快进"
+msgstr ""
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
@@ -140,7 +140,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr "快退"
+msgstr ""
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
@@ -148,19 +148,19 @@ msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr "提高音量"
+msgstr ""
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr "向上滑动 | 向上滚动"
+msgstr ""
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr "降低音量"
+msgstr ""
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr "向下滑动 | 向下滚动"
+msgstr ""
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
@@ -176,7 +176,7 @@ msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr "解码器"
+msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
@@ -184,11 +184,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr "行为"
+msgstr ""
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr "自动全屏"
+msgstr ""
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
@@ -204,31 +204,31 @@ msgstr ""
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr "此选项仅适用于 GNOME"
+msgstr ""
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr "播放结束后"
+msgstr ""
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr "不执行任何操作"
+msgstr ""
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr "停留在最后一帧"
+msgstr ""
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr "关闭应用程序"
+msgstr ""
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr "音量"
+msgstr ""
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr "自定义初始值"
+msgstr ""
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
@@ -236,47 +236,47 @@ msgstr ""
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr "音量百分比"
+msgstr ""
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr "定位播放"
+msgstr ""
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr "模式"
+msgstr ""
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr "精确"
+msgstr ""
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr "快速"
+msgstr ""
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr "单位"
+msgstr ""
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr "秒钟"
+msgstr ""
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr "分钟"
+msgstr ""
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr "百分比"
+msgstr ""
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr "值"
+msgstr ""
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr "音频"
+msgstr ""
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
@@ -288,19 +288,19 @@ msgstr ""
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr "字幕"
+msgstr ""
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr "默认字体"
+msgstr ""
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr "网络"
+msgstr ""
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr "客户端"
+msgstr ""
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
@@ -308,15 +308,15 @@ msgstr ""
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr "服务器"
+msgstr ""
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr "远程控制播放器"
+msgstr ""
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr "监听端口"
+msgstr ""
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
@@ -328,7 +328,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr "Web 应用程序端口"
+msgstr ""
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
@@ -340,19 +340,19 @@ msgstr ""
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr "微调"
+msgstr ""
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr "界面"
+msgstr ""
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr "暗色主题"
+msgstr ""
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr "渲染窗口阴影"
+msgstr ""
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
@@ -368,24 +368,24 @@ msgstr ""
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr "使用 playbin3"
+msgstr ""
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr "需要重启播放器"
+msgstr ""
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr "实验性功能"
+msgstr ""
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr "使用 PipeWire 输出音频"
+msgstr ""
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr "解码器：%s"
+msgstr ""
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
@@ -393,43 +393,43 @@ msgstr ""
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr "取消"
+msgstr ""
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr "打开"
+msgstr ""
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr "标题"
+msgstr ""
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr "已播放"
+msgstr ""
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr "继续播放？"
+msgstr ""
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr "GTK 版本：%s"
+msgstr ""
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr "Adwaita 版本：%s"
+msgstr ""
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr "GStreamer 版本：%s"
+msgstr ""
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr "GJS 版本：%s"
+msgstr ""
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
@@ -443,7 +443,7 @@ msgstr ""
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr "结束于：%s"
+msgstr ""
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
@@ -451,9 +451,9 @@ msgstr ""
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr "声道"
+msgstr ""
 
 #: src/widget.js:261
 msgid "Disabled"
-msgstr "禁用"
+msgstr ""
 
