@@ -146,7 +146,7 @@ class ClapperControls extends Gtk.Box
         value = value || 0;
 
         const elapsed = Misc.getFormattedTime(value, this.showHours)
-            + '/' + this.durationFormatted;
+            + '∕' + this.durationFormatted;
 
         this.elapsedButton.label = elapsed;
     }
