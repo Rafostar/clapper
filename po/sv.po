@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 15:24\n"
+"PO-Revision-Date: 2022-01-16 14:15\n"
 "Last-Translator: \n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -18,229 +18,229 @@ msgstr ""
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
-msgid "Open Files..."
-msgstr ""
+msgid "Open Files…"
+msgstr "Öppna filer…"
 
 #: ui/clapper.ui:10
-msgid "Open URI..."
-msgstr ""
+msgid "Open URI…"
+msgstr "Öppna URL…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Inställningar"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Tangentbordsgenvägar"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Om Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Hastighet"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "Allmänt"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Visa tangentbordsgenvägar"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Växla helskärmsläge"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Dubbeltryck | Dubbelklicka"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Lämna helskärmsläge"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Visa OSD (endast helskärmsläge)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Tryck"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Avsluta"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Öppna filer"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Öppna URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Spellista"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Nästa föremål"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Dubbeltryck (höger sida)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Föregående föremål"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Dubbeltryck (vänster sida)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Ändra upprepningsläge"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Exportera till fil"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "Uppspelning"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Spela/pausa"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Långtryck | Högerklicka"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Spola framåt"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Svep höger | Skrolla höger"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Spola bakåt"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Svep vänster | Skrolla vänster"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Höj volymen"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Svep uppåt | Skrolla uppåt"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Sänk volymen"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Svep nedåt | Skrolla nedåt"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Växla ljudet på/av"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Nästa kapitel"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Föregående kapitel"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Avkodare"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Återgå till inställningarna"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "Beteende"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Automatiskt helskärmsläge"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Växla till fullskärmsläge när en spellista ersätts, förutom i flytande läge"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Be att återuppta senaste media"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Flyt på alla arbetsytor"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Det här alternativet fungerar endast i GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "Efter uppspelning"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "Gör ingenting"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Frys sista bildruta"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "Stäng appen"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "Volym"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Anpassat startvärde"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Ställ in anpassad volym vid start istället för att återställa den"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "Volymprocent"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Spolning"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"

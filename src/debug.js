@@ -20,17 +20,6 @@ clapperDebugger.enabled = (
     && G_DEBUG_ENV.includes('Clapper')
 );
 
-const ytDebugger = new Debug.Debugger('YouTube', {
-    name_printer: new Ink.Printer({
-        font: Ink.Font.BOLD,
-        color: Ink.Color.RED
-    }),
-    time_printer: new Ink.Printer({
-        color: Ink.Color.LIGHT_BLUE
-    }),
-    high_precision: true,
-});
-
 function _logStructured(debuggerName, msg, level)
 {
     GLib.log_structured(
@@ -52,24 +41,12 @@ function _debug(debuggerName, msg)
         return;
     }
 
-    switch(debuggerName) {
-        case 'Clapper':
-            clapperDebugger.debug(msg);
-            break;
-        case 'YouTube':
-            ytDebugger.debug(msg);
-            break;
-    }
+    clapperDebugger.debug(msg);
 }
 
 function debug(msg)
 {
     _debug('Clapper', msg);
-}
-
-function ytDebug(msg)
-{
-    _debug('YouTube', msg);
 }
 
 function warn(msg)

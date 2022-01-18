@@ -161,8 +161,8 @@ function getFormattedTime(time, showHours)
     time -= minutes * 60;
     const seconds = ('0' + Math.floor(time)).slice(-2);
 
-    const parsed = (hours) ? `${hours}:` : '';
-    return parsed + `${minutes}:${seconds}`;
+    const parsed = (hours) ? `${hours}∶` : '';
+    return parsed + `${minutes}∶${seconds}`;
 }
 
 function parsePlaylistFiles(filesArray)
@@ -223,23 +223,4 @@ function getIsTouch(gesture)
         default:
             return false;
     }
-}
-
-function encodeHTML(text)
-{
-    return text.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
-}
-
-function decodeURIPlus(uri)
-{
-    return decodeURI(uri.replace(/\+/g, ' '));
-}
-
-function isHex(num)
-{
-    return Boolean(num.match(/[0-9a-f]+$/i));
 }

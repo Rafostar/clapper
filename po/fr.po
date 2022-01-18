@@ -22,6 +22,7 @@ msgstr ""
 "X-Generator: Gtranslator 40.0\n"
 
 #: ui/clapper.ui:6
+
 msgid "Open Files..."
 msgstr "Ouvrir un fichier..."
 

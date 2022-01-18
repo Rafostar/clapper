@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 15:25\n"
+"PO-Revision-Date: 2022-01-16 16:58\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
-msgid "Open Files..."
-msgstr "Abrir archivos"
+msgid "Open Files…"
+msgstr "Abrir archivos…"
 
 #: ui/clapper.ui:10
-msgid "Open URI..."
-msgstr "Abrir URI"
+msgid "Open URI…"
+msgstr "Abrir URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
@@ -76,7 +76,7 @@ msgstr "Tocar"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr "Abandonar"
+msgstr "Renunciar"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
@@ -96,7 +96,7 @@ msgstr "Lista de reproducción"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr "Artículo siguiente"
+msgstr "Elemento siguiente"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
@@ -104,7 +104,7 @@ msgstr "Tocar doble (lado derecho)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr "Artículo anterior"
+msgstr "Elemento anterior"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
@@ -112,7 +112,7 @@ msgstr "Tocar doble (lado izquierdo)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "Cambiar a modo repetición"
+msgstr "Cambiar a modo repetir"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
@@ -132,7 +132,7 @@ msgstr "Pulsación larga | Clic derecho"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr "Buscar adelante "
+msgstr "Buscar siguiente"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
@@ -140,7 +140,7 @@ msgstr "Deslizar a derecha | Desplazar a derecha"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr "Buscar a atrás"
+msgstr "Buscar anterior"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
@@ -168,11 +168,11 @@ msgstr "Fijar a mudo"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr "Siguiente capítulo"
+msgstr "Capítulo siguiente"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr "Anterior capítulo"
+msgstr "Capítulo anterior"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
@@ -184,7 +184,7 @@ msgstr "Regresar a preferencias"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr "Comportamiento"
+msgstr "Configuraciones"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
@@ -192,7 +192,7 @@ msgstr "Pantalla completa automática"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr "Fijar a pantalla completa cuando se reemplaza la lista de reproducción, excepto el modo flotante"
+msgstr "Entra a pantalla completa cuando se reemplaza la lista de reproducción, excepto en modo flotante"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
@@ -216,7 +216,7 @@ msgstr "Nada por hacer"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr "Congelar el último fotograma"
+msgstr "Detener último fotograma"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
@@ -232,7 +232,7 @@ msgstr "Valor inicial personalizado"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr "Establecer un volumen personalizado al inicio en lugar de restaurarlo"
+msgstr "Establece un volumen personalizado al inicio en lugar de restaurarlo"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
@@ -292,7 +292,7 @@ msgstr "Subtítulos"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr "Fuente predeterminada"
+msgstr "Fuente por defecto"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
@@ -356,7 +356,7 @@ msgstr "Renderizar sombras de ventana"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr "Desactivar para aumentar el rendimiento cuando se abre en ventana"
+msgstr "Deshabilitado aumenta el rendimiento cuando se abre en ventana"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
@@ -364,7 +364,7 @@ msgstr "Rango de enchufes"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "Alterar los rangos predeterminados de los enchufes de GStreamer"
+msgstr "Altera los rangos predeterminados de los enchufes de GStreamer"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
@@ -380,7 +380,7 @@ msgstr "Experimental"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr "Usar PipeWire para la salida de audio"
+msgstr "Usar PipeWire"
 
 #: src/buttons.js:201
 #, javascript-format
@@ -389,7 +389,7 @@ msgstr "Decodificador: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr "Intoducir la URI aquí"
+msgstr "Introducir la URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
@@ -455,5 +455,5 @@ msgstr "Canales"
 
 #: src/widget.js:261
 msgid "Disabled"
-msgstr "Deshabilitado"
+msgstr "Deshabilitar"
 

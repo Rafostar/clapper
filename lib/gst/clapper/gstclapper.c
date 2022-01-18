@@ -152,7 +152,7 @@ struct _GstClapper
   GstBus *bus;
   GstState target_state, current_state;
   gboolean is_live;
-  GSource *tick_source, *ready_timeout_source;
+  GSource *tick_source;
   GstClockTime cached_duration;
 
   gdouble rate;
@@ -1138,44 +1138,6 @@ remove_tick_source (GstClapper * self)
   self->tick_source = NULL;
 }
 
-static gboolean
-ready_timeout_cb (gpointer user_data)
-{
-  GstClapper *self = user_data;
-
-  if (self->target_state <= GST_STATE_READY) {
-    GST_DEBUG_OBJECT (self, "Setting pipeline to NULL state");
-    self->target_state = GST_STATE_NULL;
-    self->current_state = GST_STATE_NULL;
-    gst_element_set_state (self->playbin, GST_STATE_NULL);
-  }
-
-  return G_SOURCE_REMOVE;
-}
-
-static void
-add_ready_timeout_source (GstClapper * self)
-{
-  if (self->ready_timeout_source)
-    return;
-
-  self->ready_timeout_source = g_timeout_source_new_seconds (60);
-  g_source_set_callback (self->ready_timeout_source,
-      (GSourceFunc) ready_timeout_cb, self, NULL);
-  g_source_attach (self->ready_timeout_source, self->context);
-}
-
-static void
-remove_ready_timeout_source (GstClapper * self)
-{
-  if (!self->ready_timeout_source)
-    return;
-
-  g_source_destroy (self->ready_timeout_source);
-  g_source_unref (self->ready_timeout_source);
-  self->ready_timeout_source = NULL;
-}
-
 typedef struct
 {
   GstClapper *clapper;
@@ -1220,7 +1182,6 @@ emit_error (GstClapper * self, GError * err)
   g_error_free (err);
 
   remove_tick_source (self);
-  remove_ready_timeout_source (self);
 
   self->target_state = GST_STATE_NULL;
   self->current_state = GST_STATE_NULL;
@@ -1868,10 +1829,12 @@ media_info_update (GstClapper * self, GstClapperMediaInfo * info)
 static void
 merge_tags (GstTagList **my_tags, GstTagList *tags)
 {
-  if (*my_tags)
+  if (*my_tags) {
+    *my_tags = gst_tag_list_make_writable (*my_tags);
     gst_tag_list_insert (*my_tags, tags, GST_TAG_MERGE_REPLACE);
-  else
+  } else {
     *my_tags = gst_tag_list_ref (tags);
+  }
 }
 
 static void
@@ -3410,7 +3373,6 @@ gst_clapper_main (gpointer data)
   gst_object_unref (bus);
 
   remove_tick_source (self);
-  remove_ready_timeout_source (self);
 
   g_mutex_lock (&self->lock);
   if (self->media_info) {
@@ -3565,6 +3527,7 @@ _env_feature_rank_update (void)
               gst_plugin_feature_set_rank (feature, rank);
               GST_DEBUG ("Updated rank from env: %i -> %i for %s", old_rank, rank, name);
             }
+            gst_object_unref (feature);
           }
         }
       }
@@ -3677,7 +3640,6 @@ gst_clapper_play_internal (gpointer user_data)
   }
   g_mutex_unlock (&self->lock);
 
-  remove_ready_timeout_source (self);
   self->target_state = GST_STATE_PLAYING;
 
   if (self->current_state < GST_STATE_PAUSED)
@@ -3745,7 +3707,6 @@ gst_clapper_pause_internal (gpointer user_data)
 
   tick_cb (self);
   remove_tick_source (self);
-  remove_ready_timeout_source (self);
 
   self->target_state = GST_STATE_PAUSED;
 
@@ -3825,13 +3786,11 @@ gst_clapper_stop_internal (GstClapper * self, gboolean transient)
   tick_cb (self);
   remove_tick_source (self);
 
-  add_ready_timeout_source (self);
-
   self->target_state = GST_STATE_NULL;
-  self->current_state = GST_STATE_READY;
+  self->current_state = GST_STATE_NULL;
   self->is_live = FALSE;
   gst_bus_set_flushing (self->bus, TRUE);
-  gst_element_set_state (self->playbin, GST_STATE_READY);
+  gst_element_set_state (self->playbin, GST_STATE_NULL);
   gst_bus_set_flushing (self->bus, FALSE);
   change_state (self, transient && self->app_state != GST_CLAPPER_STATE_STOPPED
       ? GST_CLAPPER_STATE_BUFFERING : GST_CLAPPER_STATE_STOPPED);

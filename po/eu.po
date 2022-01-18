@@ -3,39 +3,39 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-09-14 16:21\n"
+"PO-Revision-Date: 2022-01-16 16:58\n"
 "Last-Translator: \n"
-"Language-Team: Dutch\n"
-"Language: nl_NL\n"
+"Language-Team: Basque\n"
+"Language: eu_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: nl\n"
+"X-Crowdin-Language: eu\n"
 "X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr "Bestanden openen…"
+msgstr ""
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr "URI openen…"
+msgstr ""
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr "Voorkeuren"
+msgstr ""
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr "Sneltoetsen"
+msgstr ""
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr "Over Clapper"
+msgstr ""
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
@@ -44,123 +44,123 @@ msgstr ""
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr "Normaal"
+msgstr ""
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr "Algemeen"
+msgstr ""
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr "Sneltoetsen tonen"
+msgstr ""
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr "Beeldvullende modus aan/uit"
+msgstr ""
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr "Dubbeltikken/Dubbelklikken"
+msgstr ""
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr "Beeldvullende modus verlaten"
+msgstr ""
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr "OSD tonen (alleen in beeldvullende modus)"
+msgstr ""
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr "Tikken"
+msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr "Afsluiten"
+msgstr ""
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr "Media"
+msgstr ""
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "Bestanden openen"
+msgstr ""
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr "URI openen"
+msgstr ""
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr "Afspeellijst"
+msgstr ""
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr "Volgend item"
+msgstr ""
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr "Dubbeltikken (rechterkant)"
+msgstr ""
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr "Vorig item"
+msgstr ""
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr "Dubbeltikken (linkerkant)"
+msgstr ""
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "Herhaalmodus wijzigen"
+msgstr ""
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr "Exporteren naar bestand"
+msgstr ""
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr "Afspelen"
+msgstr ""
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr "Afspelen/Pauzeren"
+msgstr ""
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr "Lang ingedrukt houden/Rechtsklikken"
+msgstr ""
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr "Vooruitspoelen"
+msgstr ""
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr "Naar rechts vegen/scrollen"
+msgstr ""
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr "Terugspoelen"
+msgstr ""
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr "Naar links vegen/scrollen"
+msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr "Volume omhoog"
+msgstr ""
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr "Omhoog vegen/scrollen"
+msgstr ""
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr "Volume omlaag"
+msgstr ""
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr "Omlaag vegen/scrollen"
+msgstr ""
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
@@ -168,203 +168,203 @@ msgstr ""
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr "Volgend hoofdstuk"
+msgstr ""
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr "Vorig hoofdstuk"
+msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr "Decodering"
+msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr "Terug naar voorkeuren"
+msgstr ""
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr "Gedrag"
+msgstr ""
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr "Beeldvullende modus automatisch inschakelen"
+msgstr ""
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr "Schakel de beeldvullende modus automatisch in als de afspeellijst wordt vervangen (behalve in de zwevende modus)"
+msgstr ""
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr "Vragen om onlangs afgespeelde media te hervatten"
+msgstr ""
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr "Zweven op alle werkbladen"
+msgstr ""
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr "Deze optie werkt alleen op GNOME"
+msgstr ""
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr "Actie na het afspelen:"
+msgstr ""
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr "Niets doen"
+msgstr ""
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr "Laatste frame bevriezen"
+msgstr ""
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr "Toepassing afsluiten"
+msgstr ""
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr "Volume"
+msgstr ""
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr "Aangepaste initiële waarde"
+msgstr ""
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr "Stel een aangepast volumeniveau in bij het opstarten in plaats van het vorige te herstellen"
+msgstr ""
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr "Volumeniveau"
+msgstr ""
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr "Spoelen"
+msgstr ""
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr "Modus"
+msgstr ""
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr "Nauwkeurig"
+msgstr ""
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr "Snel"
+msgstr ""
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr "Eenheid"
+msgstr ""
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr "Seconde"
+msgstr ""
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr "Minuut"
+msgstr ""
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr "Percentage"
+msgstr ""
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr "Waarde"
+msgstr ""
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr "Audio"
+msgstr ""
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr "Verschuiving (in milliseconden)"
+msgstr ""
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr "Alleen ingebouwde audioformaten"
+msgstr ""
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr "Ondertiteling"
+msgstr ""
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr "Standaardlettertype"
+msgstr ""
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr "Netwerk"
+msgstr ""
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr "Client"
+msgstr ""
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr "Progressieve downloadbuffering"
+msgstr ""
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr "Server"
+msgstr ""
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr "Speler op afstand bedienen"
+msgstr ""
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr "Luisteren op poort:"
+msgstr ""
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr "Webtoepassing op achtergrond uitvoeren"
+msgstr ""
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr "Vereist GTK met het Broadway-backend"
+msgstr ""
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr "Webtoepassingspoort"
+msgstr ""
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr "Adaptief streamen"
+msgstr ""
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr "Maximumkwaliteit"
+msgstr ""
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr "Aanpassingen"
+msgstr ""
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr "Vormgeving"
+msgstr ""
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr "Donker thema"
+msgstr ""
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr "Vensterschaduwen tonen"
+msgstr ""
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr "Schakel uit om de prestaties te verbeteren in de zwevende modus"
+msgstr ""
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr "Plug-involgorde"
+msgstr ""
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "Pas de standaardvolgorde van GStreamer-plug-ins aan"
+msgstr ""
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
@@ -438,12 +438,12 @@ msgstr ""
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr "Heimen Stoffels <vistausss@fastmail.com>"
+msgstr ""
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr "Eindigt op: %s"
+msgstr ""
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
