@@ -1,15 +1,15 @@
 #
-# Robin Verdenal-Tallieux <allomix302@gmail.com>, 2021.
+# Robin Verdenal-Tallieux <allomix302@gmail.com>, 2021-2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2021-12-15 21:34+0100\n"
+"PO-Revision-Date: 2022-01-18 20:02+0100\n"
 "Last-Translator: Robin Verdenal-Tallieux <allomix302@gmail.com>\n"
-"Language-Team: French - France <>\n"
-"Language: fr_FR\n"
+"Language-Team: French <allomix302@gmail.com>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,7 +56,7 @@ msgstr "Général"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Montrer les raccourcis"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
@@ -64,7 +64,7 @@ msgstr "Basculer en plein écran"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr "Double tap | Double clic"
+msgstr "Tapoter/cliquer deux fois"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
@@ -72,11 +72,11 @@ msgstr "Sortir du plein écran"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Afficher les commandes de lecture (seulement en plein écran)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Taper"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
@@ -96,27 +96,27 @@ msgstr "Ouvrir une URL"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Playlist"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Prochain média"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Tapoter deux fois (côté droit)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Média précédent"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Tapoter deux fois (côté gauche)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Changer le mode de répétition"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
@@ -128,27 +128,27 @@ msgstr "Lecture"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Relancer/stopper la lecture"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Longue pression | Clic droit"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Avancer dans la lecture"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Glisser/Faire défiler vers la droite"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Reculer dans la lecture"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Glisser/Faire défiler vers la gauche"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
@@ -156,7 +156,7 @@ msgstr "Augmenter le volume"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr "Glisser/défiler vers le haut"
+msgstr "Glisser/Défiler vers le haut"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
@@ -164,7 +164,7 @@ msgstr "Baisser le volume"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr "Glisser/défiler vers le bas"
+msgstr "Glisser/Défiler vers le bas"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
@@ -172,15 +172,15 @@ msgstr "Basculer le mode silencieux"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Prochain chapitre"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Chapitre précédent"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Décodeurs"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
@@ -197,6 +197,8 @@ msgstr "Lecture automatique en plein écran"
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
 msgstr ""
+"Basculer en plein écran quand la playlisyt est remplacée sauf si le mode "
+"flottant est activé"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
@@ -204,7 +206,7 @@ msgstr "Demander pour reprendre à la position des médias récents"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Flotter sur tous les bureaux virtuels"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
@@ -232,11 +234,13 @@ msgstr "Volume"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Valeur initiale personnalisée"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
 msgstr ""
+"Régler une valeur personnalisée du volume au démarrage au lien de restorer "
+"la valeur précédente"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
@@ -244,11 +248,11 @@ msgstr "Pourcentage du volume"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Avancement"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "Comportement"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
@@ -260,7 +264,7 @@ msgstr "Rapide"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr "Unité"
+msgstr "Unité des sauts"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
@@ -276,7 +280,7 @@ msgstr "Pourcentage"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "Longueur du saut"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
@@ -288,7 +292,7 @@ msgstr "Décalage en millisecondes"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Seulement des formats audios natifs"
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
@@ -308,11 +312,11 @@ msgstr "Client"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Téléchargement progressif dans le tampon"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "Serveur"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
@@ -324,23 +328,23 @@ msgstr "Écouter sur le port"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Lancer l'application web en arrière plan"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Requiert GTK compilé avec l'interface Broadway"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Port de l'application web"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Préférer le streaming adaptatif"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "Qualité maximale"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
@@ -360,15 +364,15 @@ msgstr "Afficher les ombres de la fenêtre"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Désactiver pour améliorer les performances quand fenêtré"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Liste des plugins"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Changer les options par défaut de plugins GStreamer"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
@@ -455,7 +459,7 @@ msgstr "Indéterminé"
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr ""
+msgstr "Chaines"
 
 #: src/widget.js:261
 msgid "Disabled"
