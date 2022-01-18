@@ -161,8 +161,8 @@ function getFormattedTime(time, showHours)
     time -= minutes * 60;
     const seconds = ('0' + Math.floor(time)).slice(-2);
 
-    const parsed = (hours) ? `${hours}:` : '';
-    return parsed + `${minutes}:${seconds}`;
+    const parsed = (hours) ? `${hours}∶` : '';
+    return parsed + `${minutes}∶${seconds}`;
 }
 
 function parsePlaylistFiles(filesArray)

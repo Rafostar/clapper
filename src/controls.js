@@ -7,8 +7,6 @@ const Revealers = imports.src.revealers;
 const { debug } = Debug;
 const { settings } = Misc;
 
-const INITIAL_ELAPSED = '00:00/00:00';
-
 var Controls = GObject.registerClass({
     GTypeName: 'ClapperControls',
 },
@@ -29,7 +27,7 @@ class ClapperControls extends Gtk.Box
         this.isMobile = false;
 
         this.showHours = false;
-        this.durationFormatted = '00:00';
+        this.durationFormatted = '00∶00';
         this.revealersArr = [];
         this.chapters = null;
 
@@ -148,7 +146,7 @@ class ClapperControls extends Gtk.Box
         value = value || 0;
 
         const elapsed = Misc.getFormattedTime(value, this.showHours)
-            + '/' + this.durationFormatted;
+            + '∕' + this.durationFormatted;
 
         this.elapsedButton.label = elapsed;
     }
