@@ -316,23 +316,23 @@ msgstr "Fjärrstyra spelaren"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "Lyssningsport"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "Kör webbprogram i bakgrunden"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "Kräver GTK kompilerad med Broadway backend"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Port för webbprogram"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Föredra adaptiv streaming"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
@@ -340,7 +340,7 @@ msgstr "Max kvalitet"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Tweaks"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
@@ -372,7 +372,7 @@ msgstr "Använd playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "Kräver omstart av spelaren"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
@@ -414,22 +414,22 @@ msgstr "Återuppta uppspelningen?"
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK version: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita version: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer version: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS version: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
