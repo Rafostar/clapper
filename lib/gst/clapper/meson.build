@@ -34,36 +34,13 @@ gstclapper_defines = [
   '-DGST_USE_UNSTABLE_API',
   '-DHAVE_GTK_GL',
 ]
-gtk_deps = [gstgl_dep, gstglproto_dep]
-have_gtk_gl_windowing = false
 
-gtk4_dep = dependency('gtk4', required: true)
-
-if not gtk4_dep.version().version_compare('>=4.0.0')
-  error('GTK4 version on this system is too old')
+if not get_option('lib')
+  subdir_done()
 endif
 
-if gst_gl_have_window_x11 and (gst_gl_have_platform_egl or gst_gl_have_platform_glx)
-  gtk_x11_dep = dependency('gtk4-x11', required: false)
-  if gtk_x11_dep.found()
-    gtk_deps += gtk_x11_dep
-    if gst_gl_have_platform_glx
-      gtk_deps += gstglx11_dep
-    endif
-    have_gtk_gl_windowing = true
-  endif
-endif
-
-if gst_gl_have_window_wayland and gst_gl_have_platform_egl
-  gtk_wayland_dep = dependency('gtk4-wayland', required: false)
-  if gtk_wayland_dep.found()
-    gtk_deps += [gtk_wayland_dep, gstglwayland_dep]
-    have_gtk_gl_windowing = true
-  endif
-endif
-
-if gst_gl_have_platform_egl
-  gtk_deps += gstglegl_dep
+if not gir.found()
+  error('Clapper lib requires GI bindings to be compiled')
 endif
 
 if not have_gtk_gl_windowing
