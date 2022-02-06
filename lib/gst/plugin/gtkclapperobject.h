@@ -26,6 +26,8 @@
 #include <gst/video/video.h>
 #include <gst/gl/gl.h>
 
+#include <gst/gl/gstglfuncs.h>
+
 G_BEGIN_DECLS
 
 #define GTK_TYPE_CLAPPER_OBJECT            (gtk_clapper_object_get_type ())
@@ -52,6 +54,7 @@ struct _GtkClapperObject
   GstGLDisplay *display;
   GdkGLContext *gdk_context;
   GstGLContext *wrapped_context;
+  GstGLContext *gst_context;
 
   /* properties */
   gboolean force_aspect_ratio;
@@ -79,7 +82,7 @@ struct _GtkClapperObject
   GstVideoInfo pending_v_info;
   GstVideoInfo v_info;
 
-  guint texture_id;
+  guint texture_id, oes_texture_id, next_texture_id;
 
   /* resize */
   gboolean pending_resize;
@@ -97,6 +100,25 @@ struct _GtkClapperObject
 
   /* Pending draw idles callback */
   guint draw_id;
+
+
+
+
+  GstGLTextureTarget texture_target;
+  //guint gl_target;
+
+
+  GstGLShader *shader;
+
+  GLuint vao;
+  GLuint vertex_buffer;
+  GLint attr_position;
+  GLint attr_texture;
+
+  gboolean initiated;
+
+
+  guint frame_buffer;
 };
 
 struct _GtkClapperObjectClass

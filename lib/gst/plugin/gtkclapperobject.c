@@ -50,6 +50,24 @@ GST_DEBUG_CATEGORY (gst_debug_clapper_object);
 static void gtk_clapper_object_paintable_iface_init (GdkPaintableInterface *iface);
 static void gtk_clapper_object_finalize (GObject *object);
 
+static const GLfloat vertices[] = {
+  1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+  -1.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+  -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+  1.0f, -1.0f, 0.0f, 1.0f, 1.0f
+};
+static const GLushort indices[] = {
+  0, 1, 2, 0, 2, 3
+};
+
+/* GTK4 renders things upside down ¯\_(ツ)_/¯ */
+static const gfloat vertical_flip_matrix[] = {
+  1.0f, 0.0f, 0.0f, 0.0f,
+  0.0f, -1.0f, 0.0f, 0.0f,
+  0.0f, 0.0f, 1.0f, 0.0f,
+  0.0f, 0.0f, 0.0f, 1.0f,
+};
+
 #define gtk_clapper_object_parent_class parent_class
 G_DEFINE_TYPE_WITH_CODE (GtkClapperObject, gtk_clapper_object, G_TYPE_OBJECT,
     G_IMPLEMENT_INTERFACE (GDK_TYPE_PAINTABLE,
@@ -72,6 +90,14 @@ gtk_clapper_object_init (GtkClapperObject *self)
   self->last_pos_y = 0;
 
   self->picture = (GtkPicture *) gtk_picture_new ();
+
+  /* We cannot do textures of 0x0px size */
+  gtk_widget_set_size_request (GTK_WIDGET (self->picture), 1, 1);
+
+  /* Center instead of fill to not draw empty space into framebuffer */
+  gtk_widget_set_halign (GTK_WIDGET (self->picture), GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (GTK_WIDGET (self->picture), GTK_ALIGN_CENTER);
+
   gtk_picture_set_paintable (self->picture, GDK_PAINTABLE (self));
 
   gst_video_info_init (&self->v_info);
@@ -79,6 +105,8 @@ gtk_clapper_object_init (GtkClapperObject *self)
 
   g_weak_ref_init (&self->element, NULL);
   g_mutex_init (&self->lock);
+
+  self->texture_target = GST_GL_TEXTURE_TARGET_2D;
 }
 
 static void
@@ -132,15 +160,119 @@ video_format_to_gdk_memory_format (GstVideoFormat format)
       return GDK_MEMORY_B8G8R8A8_PREMULTIPLIED;
     case GST_VIDEO_FORMAT_RGBx:
       return GDK_MEMORY_R8G8B8A8_PREMULTIPLIED;
+/*
     case GST_VIDEO_FORMAT_RGBA64_LE:
     case GST_VIDEO_FORMAT_RGBA64_BE:
       return GDK_MEMORY_R16G16B16A16_PREMULTIPLIED;
+*/
     default:
       g_assert_not_reached ();
   }
 
   /* Number not belonging to any format */
   return GDK_MEMORY_N_FORMATS;
+}
+
+static void
+gtk_clapper_object_bind_buffer (GtkClapperObject *self)
+{
+  const GstGLFuncs *gl = self->wrapped_context->gl_vtable;
+
+  gl->BindBuffer (GL_ARRAY_BUFFER, self->vertex_buffer);
+
+  /* Load the vertex position */
+  gl->VertexAttribPointer (self->attr_position, 3, GL_FLOAT, GL_FALSE,
+      5 * sizeof (GLfloat), (void *) 0);
+
+  /* Load the texture coordinate */
+  gl->VertexAttribPointer (self->attr_texture, 2, GL_FLOAT, GL_FALSE,
+      5 * sizeof (GLfloat), (void *) (3 * sizeof (GLfloat)));
+
+  gl->EnableVertexAttribArray (self->attr_position);
+  gl->EnableVertexAttribArray (self->attr_texture);
+}
+
+static void
+gtk_clapper_object_unbind_buffer (GtkClapperObject *self)
+{
+  const GstGLFuncs *gl = self->wrapped_context->gl_vtable;
+
+  gl->BindBuffer (GL_ARRAY_BUFFER, 0);
+  gl->DisableVertexAttribArray (self->attr_position);
+  gl->DisableVertexAttribArray (self->attr_texture);
+}
+
+static void
+gtk_clapper_object_init_redisplay (GtkClapperObject *self)
+{
+  GstGLSLStage *frag_stage, *vert_stage;
+  GError *error = NULL;
+  gchar *frag_str;
+  const GstGLFuncs *gl;
+
+  //if (self->texture_target != GST_GL_TEXTURE_TARGET_EXTERNAL_OES)
+  //  return;
+
+  if (!((vert_stage = gst_glsl_stage_new_with_string (self->wrapped_context,
+      GL_VERTEX_SHADER, GST_GLSL_VERSION_NONE,
+      GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY,
+      gst_gl_shader_string_vertex_mat4_vertex_transform)))) {
+    GST_ERROR ("Failed to retrieve vertex shader for texture target");
+    return;
+  }
+
+  if (self->texture_target == GST_GL_TEXTURE_TARGET_EXTERNAL_OES) {
+    frag_str =
+        gst_gl_shader_string_fragment_external_oes_get_default (self->wrapped_context,
+        GST_GLSL_VERSION_NONE, GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY);
+    frag_stage = gst_glsl_stage_new_with_string (self->wrapped_context,
+        GL_FRAGMENT_SHADER, GST_GLSL_VERSION_NONE,
+        GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY, frag_str);
+
+    g_free (frag_str);
+  } else {
+    frag_stage = gst_glsl_stage_new_default_fragment (self->wrapped_context);
+  }
+
+  if (!frag_stage) {
+    GST_ERROR ("Failed to retrieve fragment shader for texture target");
+    return;
+  }
+
+  if (!((self->shader = gst_gl_shader_new_link_with_stages (self->wrapped_context,
+      &error, vert_stage, frag_stage, NULL)))) {
+    GST_ERROR ("Failed to initialize shader: %s", error->message);
+
+    g_clear_error (&error);
+    gst_object_unref (vert_stage);
+    gst_object_unref (frag_stage);
+
+    return;
+  }
+
+  self->attr_position =
+      gst_gl_shader_get_attribute_location (self->shader, "a_position");
+  self->attr_texture =
+      gst_gl_shader_get_attribute_location (self->shader, "a_texcoord");
+
+  gl = self->wrapped_context->gl_vtable;
+
+  if (gl->GenVertexArrays) {
+    gl->GenVertexArrays (1, &self->vao);
+    gl->BindVertexArray (self->vao);
+  }
+
+  gl->GenBuffers (1, &self->vertex_buffer);
+  gl->BindBuffer (GL_ARRAY_BUFFER, self->vertex_buffer);
+  gl->BufferData (GL_ARRAY_BUFFER, 4 * 5 * sizeof (GLfloat), vertices, GL_STATIC_DRAW);
+
+  if (gl->GenVertexArrays) {
+    gtk_clapper_object_bind_buffer (self);
+    gl->BindVertexArray (0);
+  }
+
+  gl->BindBuffer (GL_ARRAY_BUFFER, 0);
+  self->initiated = TRUE;
 }
 
 static GdkTexture *
@@ -152,6 +284,9 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
   const GstGLFuncs *gl;
 
   _gdk_gl_context_set_active (self, TRUE);
+
+  if (!self->initiated)
+    gtk_clapper_object_init_redisplay (self);
 
   image = gst_egl_image_from_dmabuf_direct_target (self->wrapped_context,
       fds, offsets, &self->v_info, GST_GL_TEXTURE_TARGET_2D);
@@ -173,10 +308,11 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
 
   gl = self->wrapped_context->gl_vtable;
 
-  if (!self->texture_id)
-    gl->GenTextures (1, &self->texture_id);
+  if (!self->next_texture_id)
+    gl->GenTextures (1, &self->next_texture_id);
 
-  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
+  gl->ActiveTexture (GL_TEXTURE1);
+  gl->BindTexture (GL_TEXTURE_2D, self->next_texture_id);
 
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -186,10 +322,72 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
 
   gl->EGLImageTargetTexture2D (GL_TEXTURE_2D, gst_egl_image_get_image (image));
 
+  gl->BindTexture (GL_TEXTURE_2D, 0);
+
+
+
+
+  if (!self->frame_buffer)
+    gl->GenFramebuffers (1, &self->frame_buffer);
+
+  gl->BindFramebuffer (GL_FRAMEBUFFER, self->frame_buffer);
+
+  if (!self->texture_id)
+    gl->GenTextures (1, &self->texture_id);
+
+  gl->ActiveTexture (GL_TEXTURE0);
+  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
+
+  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  gl->TexImage2D (GL_TEXTURE_2D, 0, GL_RGBA8, gtk_widget_get_width (GTK_WIDGET (self->picture)),
+      gtk_widget_get_height (GTK_WIDGET (self->picture)), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+  gl->FramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, self->texture_id, 0);
+
+  if (gl->CheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    GST_ERROR ("Wrong framebuffer status!");
+
+  gl->Viewport (0, 0, gtk_widget_get_width (GTK_WIDGET (self->picture)), gtk_widget_get_height (GTK_WIDGET (self->picture)));
+
+  gst_gl_shader_use (self->shader);
+
+  if (gl->BindVertexArray)
+    gl->BindVertexArray (self->vao);
+
+  gtk_clapper_object_bind_buffer (self);
+
+  gl->ActiveTexture (GL_TEXTURE0);
+  gl->BindTexture (GL_TEXTURE_2D, self->next_texture_id);
+
+  gst_gl_shader_set_uniform_1i (self->shader, "tex", 0);
+  gst_gl_shader_set_uniform_matrix_4fv (self->shader,
+      "u_transformation", 1, FALSE, vertical_flip_matrix);
+
+  gl->DrawElements (GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+
+  if (gl->BindVertexArray)
+    gl->BindVertexArray (0);
+  else
+    gtk_clapper_object_unbind_buffer (self);
+
+  //gl->BindTexture (GL_TEXTURE_EXTERNAL_OES, 0);
+  gl->BindTexture (GL_TEXTURE_2D, 0);
+
+  // unbind the framebuffer so that you don't accidentally render to it
+  gl->BindFramebuffer (GL_FRAMEBUFFER, 0);
+
   texture = gdk_gl_texture_new (self->gdk_context, self->texture_id,
-      GST_VIDEO_INFO_WIDTH (&self->v_info),
-      GST_VIDEO_INFO_HEIGHT (&self->v_info),
+      gtk_widget_get_width (GTK_WIDGET (self->picture)),
+      gtk_widget_get_height (GTK_WIDGET (self->picture)),
       NULL, NULL);
+
+  if (gl->GetError () != GL_NO_ERROR)
+    GST_ERROR ("SOME ERROR!!!");
 
   gst_egl_image_unref (image);
   _gdk_gl_context_set_active (self, FALSE);
@@ -654,6 +852,8 @@ have_platform:
 gboolean
 gtk_clapper_object_init_winsys (GtkClapperObject *self)
 {
+  GError *error = NULL;
+
   GTK_CLAPPER_OBJECT_LOCK (self);
 
   if (self->display && self->gdk_context && self->wrapped_context) {
