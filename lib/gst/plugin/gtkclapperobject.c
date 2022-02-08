@@ -160,11 +160,9 @@ video_format_to_gdk_memory_format (GstVideoFormat format)
       return GDK_MEMORY_B8G8R8A8_PREMULTIPLIED;
     case GST_VIDEO_FORMAT_RGBx:
       return GDK_MEMORY_R8G8B8A8_PREMULTIPLIED;
-/*
     case GST_VIDEO_FORMAT_RGBA64_LE:
     case GST_VIDEO_FORMAT_RGBA64_BE:
       return GDK_MEMORY_R16G16B16A16_PREMULTIPLIED;
-*/
     default:
       g_assert_not_reached ();
   }
@@ -275,44 +273,31 @@ gtk_clapper_object_init_redisplay (GtkClapperObject *self)
   self->initiated = TRUE;
 }
 
-static GdkTexture *
-import_dmabuf (GtkClapperObject *self, guint n_planes,
-    gint *fds, gsize *offsets)
+static gboolean
+_dmabuf_into_texture (GtkClapperObject *self, gint *fds, gsize *offsets)
 {
-  GdkTexture *texture;
   GstEGLImage *image;
   const GstGLFuncs *gl;
 
-  _gdk_gl_context_set_active (self, TRUE);
-
-  if (!self->initiated)
-    gtk_clapper_object_init_redisplay (self);
-
   image = gst_egl_image_from_dmabuf_direct_target (self->wrapped_context,
-      fds, offsets, &self->v_info, GST_GL_TEXTURE_TARGET_2D);
-
-  /* FIXME: Can we handle `GST_GL_TEXTURE_TARGET_EXTERNAL_OES`
-   * without reinventing GLArea sink all over again? */
+      fds, offsets, &self->v_info, self->texture_target);
 
   /* If HW colorspace conversion failed and there is only one
    * plane, we can just make it into single EGLImage as is */
-  if (!image && n_planes == 1)
+  if (!image && GST_VIDEO_INFO_N_PLANES (&self->v_info) == 1)
     image = gst_egl_image_from_dmabuf (self->wrapped_context,
         fds[0], &self->v_info, 0, offsets[0]);
 
   /* Still no image? Give up then */
-  if (!image) {
-    _gdk_gl_context_set_active (self, FALSE);
-    return NULL;
-  }
+  if (!image)
+    return FALSE;
 
   gl = self->wrapped_context->gl_vtable;
 
-  if (!self->next_texture_id)
-    gl->GenTextures (1, &self->next_texture_id);
+  if (!self->texture_id)
+    gl->GenTextures (1, &self->texture_id);
 
-  gl->ActiveTexture (GL_TEXTURE1);
-  gl->BindTexture (GL_TEXTURE_2D, self->next_texture_id);
+  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
 
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -323,20 +308,30 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
   gl->EGLImageTargetTexture2D (GL_TEXTURE_2D, gst_egl_image_get_image (image));
 
   gl->BindTexture (GL_TEXTURE_2D, 0);
+  gst_egl_image_unref (image);
 
+  return TRUE;
+}
 
+static gboolean
+_ext_texture_into_2d (GtkClapperObject *self, guint tex_width, guint tex_height)
+{
+  GLuint framebuffer, new_texture_id;
+  GLenum status;
+  const GstGLFuncs *gl;
 
+  if (!self->initiated)
+    gtk_clapper_object_init_redisplay (self);
 
-  if (!self->frame_buffer)
-    gl->GenFramebuffers (1, &self->frame_buffer);
+  gl = self->wrapped_context->gl_vtable;
 
-  gl->BindFramebuffer (GL_FRAMEBUFFER, self->frame_buffer);
+  gl->GenFramebuffers (1, &framebuffer);
+  gl->BindFramebuffer (GL_FRAMEBUFFER, framebuffer);
 
-  if (!self->texture_id)
-    gl->GenTextures (1, &self->texture_id);
+  gl->GenTextures (1, &new_texture_id);
 
   gl->ActiveTexture (GL_TEXTURE0);
-  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
+  gl->BindTexture (GL_TEXTURE_2D, new_texture_id);
 
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -344,15 +339,26 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  gl->TexImage2D (GL_TEXTURE_2D, 0, GL_RGBA8, gtk_widget_get_width (GTK_WIDGET (self->picture)),
-      gtk_widget_get_height (GTK_WIDGET (self->picture)), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  gl->TexImage2D (GL_TEXTURE_2D, 0, GL_RGBA8, tex_width, tex_height, 0,
+      GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-  gl->FramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, self->texture_id, 0);
+  gl->FramebufferTexture2D (GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+      GL_TEXTURE_2D, new_texture_id, 0);
 
-  if (gl->CheckFramebufferStatus (GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-    GST_ERROR ("Wrong framebuffer status!");
+  status = gl->CheckFramebufferStatus (GL_FRAMEBUFFER);
+  if (G_UNLIKELY (status != GL_FRAMEBUFFER_COMPLETE)) {
+    GST_ERROR ("Invalid framebuffer status: %u", status);
 
-  gl->Viewport (0, 0, gtk_widget_get_width (GTK_WIDGET (self->picture)), gtk_widget_get_height (GTK_WIDGET (self->picture)));
+    gl->BindTexture (GL_TEXTURE_2D, 0);
+    gl->DeleteTextures (1, &new_texture_id);
+
+    gl->BindFramebuffer (GL_FRAMEBUFFER, 0);
+    gl->DeleteFramebuffers (1, &framebuffer);
+
+    return FALSE;
+  }
+
+  gl->Viewport (0, 0, tex_width, tex_height);
 
   gst_gl_shader_use (self->shader);
 
@@ -362,7 +368,7 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
   gtk_clapper_object_bind_buffer (self);
 
   gl->ActiveTexture (GL_TEXTURE0);
-  gl->BindTexture (GL_TEXTURE_2D, self->next_texture_id);
+  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
 
   gst_gl_shader_set_uniform_1i (self->shader, "tex", 0);
   gst_gl_shader_set_uniform_matrix_4fv (self->shader,
@@ -375,21 +381,57 @@ import_dmabuf (GtkClapperObject *self, guint n_planes,
   else
     gtk_clapper_object_unbind_buffer (self);
 
-  //gl->BindTexture (GL_TEXTURE_EXTERNAL_OES, 0);
   gl->BindTexture (GL_TEXTURE_2D, 0);
 
-  // unbind the framebuffer so that you don't accidentally render to it
+  /* Replace external OES texture with new 2D one */
+  gl->DeleteTextures (1, &self->texture_id);
+  self->texture_id = new_texture_id;
+
   gl->BindFramebuffer (GL_FRAMEBUFFER, 0);
+  gl->DeleteFramebuffers (1, &framebuffer);
 
-  texture = gdk_gl_texture_new (self->gdk_context, self->texture_id,
-      gtk_widget_get_width (GTK_WIDGET (self->picture)),
-      gtk_widget_get_height (GTK_WIDGET (self->picture)),
-      NULL, NULL);
+  return TRUE;
+}
 
-  if (gl->GetError () != GL_NO_ERROR)
-    GST_ERROR ("SOME ERROR!!!");
+static GdkTexture *
+gtk_clapper_object_import_dmabuf (GtkClapperObject *self, gint *fds, gsize *offsets)
+{
+  GdkTexture *texture;
+  guint tex_width, tex_height;
 
-  gst_egl_image_unref (image);
+  _gdk_gl_context_set_active (self, TRUE);
+
+  if (!_dmabuf_into_texture (self, fds, offsets)) {
+    _gdk_gl_context_set_active (self, FALSE);
+    return NULL;
+  }
+
+  switch (self->texture_target) {
+    case GST_GL_TEXTURE_TARGET_2D:
+      tex_width = GST_VIDEO_INFO_WIDTH (&self->v_info);
+      tex_height = GST_VIDEO_INFO_HEIGHT (&self->v_info);
+      break;
+    case GST_GL_TEXTURE_TARGET_EXTERNAL_OES:{
+      GtkWidget *widget = (GtkWidget *) self->picture;
+      gint scale;
+
+      scale = gtk_widget_get_scale_factor (widget);
+      tex_width = gtk_widget_get_width (widget) * scale;
+      tex_height = gtk_widget_get_height (widget) * scale;
+
+      if (G_LIKELY (_ext_texture_into_2d (self, tex_width, tex_height)))
+        break;
+
+      return NULL;
+    }
+    default:
+      g_assert_not_reached ();
+      return NULL;
+  }
+
+  texture = gdk_gl_texture_new (self->gdk_context,
+      self->texture_id, tex_width, tex_height, NULL, NULL);
+
   _gdk_gl_context_set_active (self, FALSE);
 
   return texture;
@@ -467,7 +509,7 @@ obtain_texture_from_current_buffer (GtkClapperObject *self)
       return NULL;
     }
 
-    if (!((texture = import_dmabuf (self, n_planes, fds, offsets))))
+    if (!((texture = gtk_clapper_object_import_dmabuf (self, fds, offsets))))
       GST_ERROR ("Could not create texture from DMABuf");
 
     return texture;
@@ -712,23 +754,6 @@ gtk_clapper_object_get_widget (GtkClapperObject *self)
 {
   return (GtkWidget *) self->picture;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static gboolean
 wrap_current_gl (GstGLDisplay *display, GstGLPlatform platform, GstGLContext **context)

@@ -35,7 +35,7 @@
 
 #define GST_CLAPPER_GL_SINK_CAPS \
     "video/x-raw(" GST_CAPS_FEATURE_MEMORY_GL_MEMORY "), "              \
-    "format = (string) RGBA, "                                          \
+    "format = (string)" SINK_FORMATS ", "                               \
     "width = " GST_VIDEO_SIZE_RANGE ", "                                \
     "height = " GST_VIDEO_SIZE_RANGE ", "                               \
     "framerate = " GST_VIDEO_FPS_RANGE ", "                             \
@@ -43,7 +43,7 @@
     " ; "                                                               \
     "video/x-raw(" GST_CAPS_FEATURE_MEMORY_GL_MEMORY ","                \
     GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION "), "           \
-    "format = (string) RGBA, "                                          \
+    "format = (string)" SINK_FORMATS ", "                               \
     "width = " GST_VIDEO_SIZE_RANGE ", "                                \
     "height = " GST_VIDEO_SIZE_RANGE ", "                               \
     "framerate = " GST_VIDEO_FPS_RANGE ", "                             \
