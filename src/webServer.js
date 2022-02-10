@@ -107,7 +107,7 @@ class ClapperWebServer extends Soup.Server
         this.remove_handler('/');
     }
 
-    _onWsConnection(server, connection)
+    _onWsConnection(server, msg, path, connection)
     {
         debug('new WebSocket connection');
 
