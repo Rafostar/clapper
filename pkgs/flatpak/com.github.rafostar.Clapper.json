@@ -33,6 +33,7 @@
         "flathub/lib/libass.json",
         "flathub/lib/ffmpeg.json",
         "flathub/lib/uchardet.json",
+        "testing/libsoup3.json",
         "flathub/gstreamer-1.0/gstreamer.json",
         "flathub/lib/gtk4.json",
         "flathub/lib/libadwaita.json",
