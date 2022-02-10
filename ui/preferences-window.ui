@@ -177,20 +177,6 @@
                     <property name="spin-adjustment">web_server_adjustment</property>
                   </object>
                 </child>
-                <child>
-                  <object class="ClapperPrefsSwitch">
-                    <property name="title" translatable="yes">Run web application in background</property>
-                    <property name="subtitle" translatable="yes">Requires GTK compiled with Broadway backend</property>
-                    <property name="schema-name">webapp-enabled</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="ClapperPrefsSpin">
-                    <property name="title" translatable="yes">Web application port</property>
-                    <property name="schema-name">webapp-port</property>
-                    <property name="spin-adjustment">web_app_adjustment</property>
-                  </object>
-                </child>
               </object>
             </child>
           </object>

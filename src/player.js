@@ -3,7 +3,6 @@ const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
 const { PlaylistWidget } = imports.src.playlist;
-const { WebApp } = imports.src.webApp;
 
 const { debug, warn } = Debug;
 const { settings } = Misc;
@@ -43,7 +42,6 @@ class ClapperPlayer extends GstClapper.Clapper
         this.visualization_enabled = false;
 
         this.webserver = null;
-        this.webapp = null;
         this.playlistWidget = new PlaylistWidget();
 
         this.seekDone = true;
@@ -675,7 +673,6 @@ class ClapperPlayer extends GstClapper.Clapper
                 debug(`changed play flags: ${initialFlags} -> ${settingsFlags}`);
                 break;
             case 'webserver-enabled':
-            case 'webapp-enabled':
                 const webserverEnabled = settings.get_boolean('webserver-enabled');
 
                 if(webserverEnabled) {
@@ -690,22 +687,8 @@ class ClapperPlayer extends GstClapper.Clapper
                         this.webserver.passMsgData = this.receiveWs.bind(this);
                     }
                     this.webserver.startListening();
-
-                    const webappEnabled = settings.get_boolean('webapp-enabled');
-
-                    if(!this.webapp && !webappEnabled)
-                        break;
-
-                    if(webappEnabled) {
-                        if(!this.webapp)
-                            this.webapp = new WebApp();
-
-                        this.webapp.startDaemonApp(settings.get_int('webapp-port'));
-                    }
                 }
                 else if(this.webserver) {
-                    /* remote app will close when connection is lost
-                     * which will cause the daemon to close too */
                     this.webserver.stopListening();
                 }
                 break;
