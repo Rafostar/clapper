@@ -104,8 +104,8 @@ struct _GtkClapperObject
 
 
 
-  GstGLTextureTarget texture_target;
-  //guint gl_target;
+  GstGLTextureTarget gst_tex_target;
+  guint gl_tex_target;
 
 
   GstGLShader *shader;

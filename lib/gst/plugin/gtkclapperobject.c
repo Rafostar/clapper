@@ -106,7 +106,8 @@ gtk_clapper_object_init (GtkClapperObject *self)
   g_weak_ref_init (&self->element, NULL);
   g_mutex_init (&self->lock);
 
-  self->texture_target = GST_GL_TEXTURE_TARGET_2D;
+  self->gst_tex_target = GST_GL_TEXTURE_TARGET_EXTERNAL_OES;
+  self->gl_tex_target = gst_gl_texture_target_to_gl (self->gst_tex_target);
 }
 
 static void
@@ -208,8 +209,8 @@ gtk_clapper_object_init_redisplay (GtkClapperObject *self)
   gchar *frag_str;
   const GstGLFuncs *gl;
 
-  //if (self->texture_target != GST_GL_TEXTURE_TARGET_EXTERNAL_OES)
-  //  return;
+  if (self->gst_tex_target != GST_GL_TEXTURE_TARGET_EXTERNAL_OES)
+    return;
 
   if (!((vert_stage = gst_glsl_stage_new_with_string (self->wrapped_context,
       GL_VERTEX_SHADER, GST_GLSL_VERSION_NONE,
@@ -219,18 +220,14 @@ gtk_clapper_object_init_redisplay (GtkClapperObject *self)
     return;
   }
 
-  if (self->texture_target == GST_GL_TEXTURE_TARGET_EXTERNAL_OES) {
-    frag_str =
-        gst_gl_shader_string_fragment_external_oes_get_default (self->wrapped_context,
-        GST_GLSL_VERSION_NONE, GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY);
-    frag_stage = gst_glsl_stage_new_with_string (self->wrapped_context,
-        GL_FRAGMENT_SHADER, GST_GLSL_VERSION_NONE,
-        GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY, frag_str);
+  frag_str = gst_gl_shader_string_fragment_external_oes_get_default (
+      self->wrapped_context, GST_GLSL_VERSION_NONE,
+      GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY);
+  frag_stage = gst_glsl_stage_new_with_string (self->wrapped_context,
+      GL_FRAGMENT_SHADER, GST_GLSL_VERSION_NONE,
+      GST_GLSL_PROFILE_ES | GST_GLSL_PROFILE_COMPATIBILITY, frag_str);
 
-    g_free (frag_str);
-  } else {
-    frag_stage = gst_glsl_stage_new_default_fragment (self->wrapped_context);
-  }
+  g_free (frag_str);
 
   if (!frag_stage) {
     GST_ERROR ("Failed to retrieve fragment shader for texture target");
@@ -280,7 +277,7 @@ _dmabuf_into_texture (GtkClapperObject *self, gint *fds, gsize *offsets)
   const GstGLFuncs *gl;
 
   image = gst_egl_image_from_dmabuf_direct_target (self->wrapped_context,
-      fds, offsets, &self->v_info, self->texture_target);
+      fds, offsets, &self->v_info, self->gst_tex_target);
 
   /* If HW colorspace conversion failed and there is only one
    * plane, we can just make it into single EGLImage as is */
@@ -297,15 +294,15 @@ _dmabuf_into_texture (GtkClapperObject *self, gint *fds, gsize *offsets)
   if (!self->texture_id)
     gl->GenTextures (1, &self->texture_id);
 
-  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
+  gl->BindTexture (self->gl_tex_target, self->texture_id);
 
-  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl->TexParameteri (self->gl_tex_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl->TexParameteri (self->gl_tex_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl->TexParameteri (self->gl_tex_target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl->TexParameteri (self->gl_tex_target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  gl->EGLImageTargetTexture2D (GL_TEXTURE_2D, gst_egl_image_get_image (image));
+  gl->EGLImageTargetTexture2D (self->gl_tex_target, gst_egl_image_get_image (image));
 
   gl->BindTexture (GL_TEXTURE_2D, 0);
   gst_egl_image_unref (image);
@@ -329,8 +326,6 @@ _ext_texture_into_2d (GtkClapperObject *self, guint tex_width, guint tex_height)
   gl->BindFramebuffer (GL_FRAMEBUFFER, framebuffer);
 
   gl->GenTextures (1, &new_texture_id);
-
-  gl->ActiveTexture (GL_TEXTURE0);
   gl->BindTexture (GL_TEXTURE_2D, new_texture_id);
 
   gl->TexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -368,7 +363,7 @@ _ext_texture_into_2d (GtkClapperObject *self, guint tex_width, guint tex_height)
   gtk_clapper_object_bind_buffer (self);
 
   gl->ActiveTexture (GL_TEXTURE0);
-  gl->BindTexture (GL_TEXTURE_2D, self->texture_id);
+  gl->BindTexture (self->gl_tex_target, self->texture_id);
 
   gst_gl_shader_set_uniform_1i (self->shader, "tex", 0);
   gst_gl_shader_set_uniform_matrix_4fv (self->shader,
@@ -381,7 +376,7 @@ _ext_texture_into_2d (GtkClapperObject *self, guint tex_width, guint tex_height)
   else
     gtk_clapper_object_unbind_buffer (self);
 
-  gl->BindTexture (GL_TEXTURE_2D, 0);
+  gl->BindTexture (self->gl_tex_target, 0);
 
   /* Replace external OES texture with new 2D one */
   gl->DeleteTextures (1, &self->texture_id);
@@ -406,7 +401,7 @@ gtk_clapper_object_import_dmabuf (GtkClapperObject *self, gint *fds, gsize *offs
     return NULL;
   }
 
-  switch (self->texture_target) {
+  switch (self->gst_tex_target) {
     case GST_GL_TEXTURE_TARGET_2D:
       tex_width = GST_VIDEO_INFO_WIDTH (&self->v_info);
       tex_height = GST_VIDEO_INFO_HEIGHT (&self->v_info);
@@ -805,6 +800,9 @@ retrieve_gl_context_on_main (GtkClapperObject *self)
     g_clear_error (&error);
     return;
   }
+
+  //gdk_gl_context_set_use_es (self->gdk_context, TRUE);
+  //gdk_gl_context_realize (self->gdk_context, &error);
 
   gdk_display = gdk_gl_context_get_display (self->gdk_context);
 

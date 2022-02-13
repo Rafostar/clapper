@@ -31,7 +31,7 @@
 #define DEFAULT_PAR_D               1
 
 #define SINK_FORMATS \
-  "{ BGR, RGB, BGRA, RGBA, ABGR, ARGB, RGBx, BGRx, RGBA64_LE, RGBA64_BE }"
+  "{ BGR, RGB, BGRA, RGBA, ABGR, ARGB, RGBx, BGRx, RGBA64_LE, RGBA64_BE, NV12 }"
 
 #define GST_CLAPPER_GL_SINK_CAPS \
     "video/x-raw(" GST_CAPS_FEATURE_MEMORY_GL_MEMORY "), "              \
