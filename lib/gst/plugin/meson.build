@@ -38,6 +38,14 @@ if not have_gtk_gl_windowing
   endif
 endif
 
+if not gtk4_dep.version().version_compare('>=4.6.0')
+  if gst_clapper_plugin_option.enabled()
+    error('GTK4 version on this system is too old, plugin needs 4.6.0+')
+  else
+    subdir_done()
+  endif
+endif
+
 gst_clapper_plugin_sources = [
   'gstclappersink.c',
   'gtkclapperobject.c',
