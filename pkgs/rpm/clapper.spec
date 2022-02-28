@@ -24,6 +24,7 @@
 %global gtk4_version 4.0.0
 %global meson_version 0.50
 %global glib2_version 2.56.0
+%global soup_version 3.0.0
 
 Name:           clapper
 Version:        0.4.1
@@ -59,6 +60,7 @@ BuildRequires:  gstreamer-plugins-base-devel >= %{gst_version}
 BuildRequires:  Mesa-libGLESv2-devel
 BuildRequires:  Mesa-libGLESv3-devel
 
+Requires:       libsoup-devel >= %{soup_version}
 Requires:       gstreamer >= %{gst_version}
 Requires:       gstreamer-plugins-base >= %{gst_version}
 Requires:       gstreamer-plugins-good >= %{gst_version}
@@ -80,6 +82,7 @@ BuildRequires:  mesa-libGLES-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  mesa-libEGL-devel
 
+Requires:       libsoup3-devel
 Requires:       gstreamer1 >= %{gst_version}
 Requires:       gstreamer1-plugins-base >= %{gst_version}
 Requires:       gstreamer1-plugins-good >= %{gst_version}
@@ -129,6 +132,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %{_libdir}/%{appname}/
 
 %changelog
+* Thu Feb 17 2022 Rafostar <rafostar.github@gmail.com> - 0.4.1-2
+- Require libsoup3
+
 * Mon Dec 20 2021 Rafostar <rafostar.github@gmail.com> - 0.4.1-1
 - New version
 

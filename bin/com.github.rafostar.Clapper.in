@@ -6,4 +6,4 @@ imports.package.init({
   prefix: '@prefix@',
   libdir: '@libdir@',
 });
-imports.package.run(imports.src.main@ID_POSTFIX@);
+imports.package.run(imports.src.main);

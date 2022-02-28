@@ -1,0 +1,24 @@
+{
+    "name": "libsoup3",
+    "buildsystem": "meson",
+    "config-opts": [
+        "-Dintrospection=enabled",
+        "-Dvapi=disabled",
+        "-Dtests=false",
+        "-Dsysprof=disabled",
+        "-Dhttp2_tests=disabled",
+        "-Dpkcs11_tests=disabled"
+    ],
+    "cleanup": [
+        "/include",
+        "/lib/pkgconfig"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.gnome.org/GNOME/libsoup.git",
+            "tag": "3.0.4",
+            "commit": "25a728020c4b53b5db4c4c675070e92f947fbd4d"
+        }
+    ]
+}
