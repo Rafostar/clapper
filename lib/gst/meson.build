@@ -1,1 +1,2 @@
 subdir('clapper')
+subdir('plugin')

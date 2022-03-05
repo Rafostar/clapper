@@ -1,5 +1,5 @@
 glib_req = '>= 2.56.0'
-gst_req = '>= 1.18.0'
+gst_req = '>= 1.20.0'
 
 api_version = '1.0'
 libversion = meson.project_version()
@@ -132,7 +132,7 @@ cdata.set('SIZEOF_SHORT', cc.sizeof('short'))
 cdata.set('SIZEOF_VOIDP', cc.sizeof('void*'))
 
 cdata.set_quoted('VERSION', libversion)
-cdata.set_quoted('PACKAGE', 'gst-plugins-clapper')
+cdata.set_quoted('PACKAGE', 'clapper')
 cdata.set_quoted('PACKAGE_VERSION', libversion)
 cdata.set_quoted('PACKAGE_BUGREPORT', 'https://github.com/Rafostar/clapper/issues/new')
 cdata.set_quoted('PACKAGE_NAME', 'GStreamer Clapper Libs')
@@ -184,7 +184,7 @@ foreach extra_arg : warning_flags
   endif
 endforeach
 
-cdata.set_quoted('GST_PACKAGE_NAME', 'GStreamer Plugins Clapper')
+cdata.set_quoted('GST_PACKAGE_NAME', 'gst-plugin-clapper')
 cdata.set_quoted('GST_PACKAGE_ORIGIN', 'https://github.com/Rafostar/clapper')
 
 # Mandatory GST deps
@@ -200,6 +200,8 @@ gsttag_dep = dependency('gstreamer-tag-1.0', version: gst_req,
   fallback: ['gst-plugins-base', 'tag_dep'])
 gstvideo_dep = dependency('gstreamer-video-1.0', version: gst_req,
   fallback: ['gst-plugins-base', 'video_dep'])
+gstallocators_dep = dependency('gstreamer-allocators-1.0', version: gst_req,
+  fallback : ['gst-plugins-base', 'allocators_dep'])
 
 # GStreamer OpenGL
 gstgl_dep = dependency('gstreamer-gl-1.0', version: gst_req,
@@ -251,21 +253,49 @@ giounix_dep = dependency('gio-unix-2.0', version: glib_req, fallback: ['glib', '
 
 cdata.set('DISABLE_ORC', 1)
 cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))
-cdata.set_quoted('GST_PACKAGE_RELEASE_DATETIME', 'Unknown')
 
 configinc = include_directories('.')
 libsinc = include_directories('gst')
 
-gir = find_program('g-ir-scanner', required: true)
-if not gir.found()
-  error('Clapper requires GI bindings to be compiled')
-endif
-
+gir = find_program('g-ir-scanner')
 gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + \
     'g_setenv("GST_REGISTRY_1.0", "@0@", TRUE);'.format(meson.current_build_dir() + '/gir_empty_registry.reg') + \
     'g_setenv("GST_PLUGIN_PATH_1_0", "", TRUE);' + \
     'g_setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", TRUE);' + \
     'gst_init(NULL,NULL);', '--quiet'
 ]
+
+gtk_deps = [gstgl_dep, gstglproto_dep]
+have_gtk_gl_windowing = false
+
+gtk4_dep = dependency('gtk4', required: true)
+
+if not gtk4_dep.version().version_compare('>=4.0.0')
+  error('GTK4 version on this system is too old')
+endif
+
+if gst_gl_have_window_x11 and (gst_gl_have_platform_egl or gst_gl_have_platform_glx)
+  gtk_x11_dep = dependency('gtk4-x11', required: false)
+  if gtk_x11_dep.found()
+    gtk_deps += gtk_x11_dep
+    if gst_gl_have_platform_glx
+      gtk_deps += gstglx11_dep
+    endif
+    have_gtk_gl_windowing = true
+  endif
+endif
+
+if gst_gl_have_window_wayland and gst_gl_have_platform_egl
+  gtk_wayland_dep = dependency('gtk4-wayland', required: false)
+  if gtk_wayland_dep.found()
+    gtk_deps += [gtk_wayland_dep, gstglwayland_dep]
+    have_gtk_gl_windowing = true
+  endif
+endif
+
+if gst_gl_have_platform_egl
+  gtk_deps += gstglegl_dep
+endif
+
 subdir('gst')
 configure_file(output: 'config.h', configuration: cdata)
