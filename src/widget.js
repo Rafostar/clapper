@@ -345,7 +345,8 @@ class ClapperWidget extends Gtk.Grid
 
         const currTime = GLib.DateTime.new_now_local();
         const endTime = currTime.add_seconds(
-            this.controls.positionAdjustment.get_upper() - this.controls.currentPosition
+            (this.controls.positionAdjustment.get_upper() - this.controls.currentPosition)
+                / this.controls.elapsedButton.speedScale.get_value()
         );
         const nextUpdate = this.revealerTop.setTimes(currTime, endTime, this.isSeekable);
 
