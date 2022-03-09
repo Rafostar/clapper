@@ -3,6 +3,10 @@
     "runtime": "org.gnome.Platform",
     "runtime-version": "master",
     "sdk": "org.gnome.Sdk",
+    "sdk-extensions": [
+        "org.freedesktop.Sdk.Extension.rust-nightly",
+        "org.freedesktop.Sdk.Extension.llvm13"
+    ],
     "command": "com.github.rafostar.Clapper",
     "finish-args": [
         "--share=ipc",
@@ -19,6 +23,10 @@
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
         "--env=GST_VAAPI_ALL_DRIVERS=1"
     ],
+    "build-options": {
+        "append-path": "/usr/lib/sdk/rust-nightly/bin:/usr/lib/sdk/llvm13/bin",
+        "prepend-ld-library-path": "/usr/lib/sdk/llvm13/lib"
+    },
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
         "flathub/lib/libsass.json",
@@ -34,6 +42,7 @@
         "flathub/lib/ffmpeg.json",
         "testing/libsoup3.json",
         "testing/gstreamer.json",
+        "testing/gst-plugins-rs.json",
         "testing/gtuber.json",
         {
             "name": "clapper",

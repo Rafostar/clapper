@@ -1,0 +1,23 @@
+{
+    "name": "gst-plugins-rs",
+    "buildsystem": "simple",
+    "build-options": {
+        "build-args": [
+            "--share=network"
+        ],
+        "env": {
+            "CARGO_HOME": "/run/build/gst-plugins-rs/cargo"
+        }
+    },
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs.git",
+            "branch": "main"
+        }
+    ],
+    "build-commands": [
+        "cargo install cargo-c",
+        "cargo cinstall --prefix=/app -p gst-plugin-dav1d"
+    ]
+}
