@@ -2,7 +2,7 @@
     "name": "gstreamer",
     "buildsystem": "meson",
     "config-opts": [
-        "--wrap-mode=nofallback",
+        "--wrap-mode=nodownload",
 
         "-Dbase=enabled",
         "-Dgood=enabled",
