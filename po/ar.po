@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-03-25 19:58\n"
+"PO-Revision-Date: 2022-03-25 21:09\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -23,7 +23,7 @@ msgstr "فتح الملفات…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "فتح عنوان URL…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
@@ -31,104 +31,104 @@ msgstr "الإعدادات"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "الاختصارات"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "حول Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "السرعة"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
 #: ui/preferences-window.ui:215
 msgid "Normal"
-msgstr ""
+msgstr "عادي"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:12
 msgid "General"
-msgstr ""
+msgstr "عام"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "إظهار الاختصارات"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "تبديل ملء الشاشة"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "نقرة مزدوجة"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "مغادرة ملء الشاشة"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "إظهار المعلومات (ملء الشاشة فقط)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "نقرة"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "خروج"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "الوسائط"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "افتح ملفًا"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "فتح عنوان URL"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "قوائم التشغيل"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "المحتوى التالي"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "نقر مزدوج (الجانب الأيمن)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "المحتوى السابق"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "نقر مزدوج (الجانب الأيسر)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "تغيير وضع التكرار"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "التصدير إلى مِلَفّ"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "المشغل"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "بَدْءّ / إيقاف"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "اضغط مطولاً | انقر بزر الفائرة الأيمن"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
@@ -336,27 +336,27 @@ msgstr ""
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "الأعلى جودة"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "تعديلات"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "إعدادات المظهر"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "المظهر الداكن"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "عرض ظلال النافذة"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "تعطيل لزيادة الأداء عند وضع النافذة"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
@@ -368,40 +368,40 @@ msgstr ""
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "استخدام playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
-msgstr ""
+msgstr "يتطلب إعادة التشغيل"
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "تجريبية"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "استخدام PipeWire لإخراج الصوت"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "فك التشفير:"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "أدخل أو الصق URI هنا"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "إلغاء"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "فتح"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "العنوان"
 
 #: src/dialogs.js:227
 msgid "Completed"
@@ -455,5 +455,5 @@ msgstr ""
 
 #: src/widget.js:261
 msgid "Disabled"
-msgstr ""
+msgstr "مُعطّل"
 
