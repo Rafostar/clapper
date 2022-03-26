@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-03-25 21:09\n"
+"PO-Revision-Date: 2022-03-26 11:42\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -332,7 +332,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "تفضيل البث التكيفي"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
