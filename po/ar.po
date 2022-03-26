@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-03-26 11:42\n"
+"PO-Revision-Date: 2022-03-26 12:39\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -132,111 +132,111 @@ msgstr "اضغط مطولاً | انقر بزر الفائرة الأيمن"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "التقدم للأمام"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "مرر لليمين"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "الرجوع للوراء"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "مرر لليسار"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "رفع مستوى الصوت"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "مرر لأعلى"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "خفض مستوى الصوت"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "مرر لأسفل"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "كتم الصوت"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "الفصل التالي"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "الفصل السابق"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "برامج فك التشفير"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "العودة إلى الإعدادات"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
-msgstr ""
+msgstr "السلوك"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "ملء الشاشة تلقائياً"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "أدخل ملء الشاشة عند استبدال قائمة التشغيل باستثناء الوضع العائم"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "اطلب استئناف الوسائط السابقة"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "عائم في جميع مساحات العمل"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "هذا الخِيار يعمل فقط على GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "بعد انتهاء"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
-msgstr ""
+msgstr "لا تفعل شيئًا"
 
 #: ui/preferences-window.ui:45
 msgid "Freeze last frame"
-msgstr ""
+msgstr "تجميد الأخر لقطة"
 
 #: ui/preferences-window.ui:46
 msgid "Close the app"
-msgstr ""
+msgstr "أغلق التطبيق"
 
 #: ui/preferences-window.ui:56
 msgid "Volume"
-msgstr ""
+msgstr "الصوت"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "قيمة الافتراضية مخصصة"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "تعيين مستوى صوت مخصص عند بَدْء التشغيل بدلاً من إعادته"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "حجم الصوت"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
@@ -244,91 +244,91 @@ msgstr ""
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
-msgstr ""
+msgstr "النمط"
 
 #: ui/preferences-window.ui:84
 msgid "Accurate"
-msgstr ""
+msgstr "دَقيق"
 
 #: ui/preferences-window.ui:85
 msgid "Fast"
-msgstr ""
+msgstr "سريع"
 
 #: ui/preferences-window.ui:93
 msgid "Unit"
-msgstr ""
+msgstr "الوحدة"
 
 #: ui/preferences-window.ui:98
 msgid "Second"
-msgstr ""
+msgstr "ثواني"
 
 #: ui/preferences-window.ui:99
 msgid "Minute"
-msgstr ""
+msgstr "دقائق"
 
 #: ui/preferences-window.ui:100
 msgid "Percentage"
-msgstr ""
+msgstr "النسبة المئوية"
 
 #: ui/preferences-window.ui:108
 msgid "Value"
-msgstr ""
+msgstr "القيمة"
 
 #: ui/preferences-window.ui:123
 msgid "Audio"
-msgstr ""
+msgstr "الصوت"
 
 #: ui/preferences-window.ui:126
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "إزاحة بالمللي ثانية"
 
 #: ui/preferences-window.ui:133
 msgid "Only native audio formats"
-msgstr ""
+msgstr "تنسيقات الصوت الأصلية فقط"
 
 #: ui/preferences-window.ui:141
 msgid "Subtitles"
-msgstr ""
+msgstr "التَّرْجَمَةً"
 
 #: ui/preferences-window.ui:144
 msgid "Default font"
-msgstr ""
+msgstr "الخط الافتراضي"
 
 #: ui/preferences-window.ui:154
 msgid "Network"
-msgstr ""
+msgstr "الشبكة"
 
 #: ui/preferences-window.ui:158
 msgid "Client"
-msgstr ""
+msgstr "العميل"
 
 #: ui/preferences-window.ui:161
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "التخزين المؤقت للتنزيل بالتدريج"
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "الخادم"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "التحكم بالوسائط عن بعد"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
-msgstr ""
+msgstr "منفذ الاستماع"
 
 #: ui/preferences-window.ui:183
 msgid "Run web application in background"
-msgstr ""
+msgstr "تشغيل تطبيق الويب في الخلفية"
 
 #: ui/preferences-window.ui:184
 msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
+msgstr "يتطلب GTK مجمعة مع Broadway backend"
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "منفذ تطبيق الويب"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
@@ -360,11 +360,11 @@ msgstr "تعطيل لزيادة الأداء عند وضع النافذة"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "أعدادات الإضافات"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "تغيير الأعدادات الافتراضية للأضافات GStreamer"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
@@ -385,7 +385,7 @@ msgstr "استخدام PipeWire لإخراج الصوت"
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr "فك التشفير:"
+msgstr "فك التشفير: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
@@ -405,53 +405,53 @@ msgstr "العنوان"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "تم مشاهدة"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "استئناف التشغيل؟"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "إصدار GTK: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "إصدار Adwaita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "إصدار GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "إصدار GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "مشغل وسائط GNOME مدعوم من GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Yousef Fawaz"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "ينتهي في: %s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
-msgstr ""
+msgstr "غير محدّد"
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr ""
+msgstr "قنوات"
 
 #: src/widget.js:261
 msgid "Disabled"
