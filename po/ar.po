@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-03-26 12:39\n"
+"PO-Revision-Date: 2022-03-26 13:37\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -240,7 +240,7 @@ msgstr "حجم الصوت"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "الوضع"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
