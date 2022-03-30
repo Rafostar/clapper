@@ -2,6 +2,8 @@
 [![Flatpak](https://github.com/Rafostar/clapper/actions/workflows/flatpak.yml/badge.svg?event=push)](https://github.com/Rafostar/clapper/actions/workflows/flatpak.yml)
 [![Flatpak Nightly](https://github.com/Rafostar/clapper/actions/workflows/flatpak-nightly.yml/badge.svg?event=schedule)](https://github.com/Rafostar/clapper/actions/workflows/flatpak-nightly.yml)
 [![Crowdin](https://badges.crowdin.net/clapper/localized.svg)](https://crowdin.com/project/clapper)
+[![Matrix](https://img.shields.io/matrix/clapper-player:matrix.org?label=matrix)](https://matrix.to/#/#clapper-player:matrix.org)
+[![Donate](https://img.shields.io/liberapay/receives/Clapper.svg?logo=liberapay)](https://liberapay.com/Clapper)
 
 A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit.
 The media player uses [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
@@ -38,17 +40,10 @@ List of patches used in this version can be found [here](https://github.com/Rafo
   <img width='240' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.png'/>
 </a>
 
-## Packages
-#### Fedora & openSUSE
-Pre-built packages are available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).<br>
-Those are automatically built on each git commit, and are thus considered unstable.
+## Packages in Linux Distributions
+[![Packaging status](https://repology.org/badge/vertical-allrepos/clapper.svg)](https://repology.org/project/clapper/versions)
 
-#### Arch Linux
-You can get Clapper from the AUR:
-* [clapper](https://aur.archlinux.org/packages/clapper) (stable version)
-* [clapper-git](https://aur.archlinux.org/packages/clapper-git)
-
-## Installation from source code
+## Installation from Source Code
 ```sh
 meson builddir --prefix=/usr/local
 sudo meson install -C builddir
