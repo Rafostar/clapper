@@ -1,9 +1,13 @@
 {
     "name": "gtk",
     "buildsystem": "meson",
+    "build-options": {
+        "build-args": [
+            "--share=network"
+        ]
+    },
     "config-opts": [
         "--buildtype=release",
-        "--wrap-mode=nofallback",
 
         "-Dwin32-backend=false",
         "-Dmacos-backend=false",
