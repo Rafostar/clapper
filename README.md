@@ -43,6 +43,9 @@ List of patches used in this version can be found [here](https://github.com/Rafo
 ## Packages in Linux Distributions
 [![Packaging status](https://repology.org/badge/vertical-allrepos/clapper.svg)](https://repology.org/project/clapper/versions)
 
+Pre-built RPM packages are also available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).<br>
+Those are automatically built on each git commit, thus are considered unstable.
+
 ## Installation from Source Code
 ```sh
 meson builddir --prefix=/usr/local
