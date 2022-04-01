@@ -1,7 +1,7 @@
 {
     "app-id": "com.github.rafostar.Clapper",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "41",
+    "runtime-version": "42",
     "sdk": "org.gnome.Sdk",
     "command": "com.github.rafostar.Clapper",
     "finish-args": [
@@ -33,9 +33,8 @@
         "flathub/lib/libass.json",
         "flathub/lib/ffmpeg.json",
         "flathub/lib/uchardet.json",
-        "testing/libsoup3.json",
         "flathub/gstreamer-1.0/gstreamer.json",
-        "flathub/lib/gtk4.json",
+        "testing/gtk4.json",
         "flathub/lib/libadwaita.json",
         "testing/gtuber.json",
         {

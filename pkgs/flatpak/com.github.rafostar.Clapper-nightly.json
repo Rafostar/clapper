@@ -40,7 +40,6 @@
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
         "flathub/lib/ffmpeg.json",
-        "testing/libsoup3.json",
         "testing/gstreamer.json",
         "testing/gst-plugins-rs.json",
         "testing/gtuber.json",

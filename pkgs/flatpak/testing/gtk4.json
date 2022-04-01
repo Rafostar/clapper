@@ -1,0 +1,37 @@
+{
+    "name": "gtk",
+    "buildsystem": "meson",
+    "build-options": {
+        "build-args": [
+            "--share=network"
+        ]
+    },
+    "config-opts": [
+        "--buildtype=release",
+
+        "-Dwin32-backend=false",
+        "-Dmacos-backend=false",
+        "-Dmedia-ffmpeg=disabled",
+        "-Dprint-cups=disabled",
+        "-Dintrospection=enabled",
+        "-Ddemos=false",
+        "-Dbuild-examples=false",
+        "-Dbuild-tests=false"
+    ],
+    "cleanup": [
+        "/bin/gtk4-builder-tool",
+        "/bin/gtk4-encode-symbolic-svg"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.gnome.org/GNOME/gtk.git",
+            "tag": "4.6.2",
+            "commit": "aec7ca82007dbe07faee6be084d20758ebac2b91"
+        },
+        {
+            "type": "patch",
+            "path": "gtk4-popover-unrealize.patch"
+        }
+    ]
+}
