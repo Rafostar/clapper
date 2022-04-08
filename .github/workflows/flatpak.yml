@@ -11,6 +11,7 @@ jobs:
   flatpak:
     name: "Flatpak"
     runs-on: ubuntu-latest
+    timeout-minutes: 600
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-42
       options: --privileged
