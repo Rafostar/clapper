@@ -9,6 +9,41 @@ scrolledwindow scrollbar.vertical slider {
   min-height: 16px;
 }
 
+/* Consistent scales color */
+scale trough highlight {
+  color: @accent_fg_color;
+  background-color: @accent_bg_color;
+}
+/* Consistent radio buttons color */
+.osd radio {
+  color: @accent_fg_color;
+  background-color: transparent;
+  background-image: none;
+}
+.osd radio:hover,
+.osd radio:checked {
+  background-image: image(rgba(255,255,255,0.1));
+}
+.osd radio:active {
+  background-image: image(rgba(255,255,255,0.3));
+}
+
+/* Adwaita OSD background color is unacceptable:
+ * https://gitlab.gnome.org/GNOME/libadwaita/-/issues/454 */
+box.osd,
+.osd popover contents,
+.osd popover arrow,
+.osdheaderbar button {
+  background-color: rgba(38,38,38,0.78);
+}
+.osdheaderbar button:hover,
+.osdheaderbar button:checked {
+  background-color: rgba(63,63,63,0.78);
+}
+.osdheaderbar button:active {
+  background-color: rgba(82,82,82,0.78);
+}
+
 /* Adwaita is missing osd ListBox */
 .clapperplaylist {
   background: none;
@@ -59,6 +94,8 @@ popover contents {
 }
 .popoverseparator separator {
   background-color: @insensitive_fg_color;
+  margin-left: 3px;
+  margin-right: 3px;
 }
 
 /* Rounded corners */
@@ -129,8 +166,9 @@ scale trough slider {
   margin-left: 0px;
   margin-right: 4px;
   border: 2px solid;
-  min-width: 17px;
-  min-height: 17px;
+  min-width: 16px;
+  min-height: 16px;
+  box-shadow: none;
 }
 
 /* Also affects popover buttons */
@@ -260,7 +298,8 @@ scale trough slider {
   min-width: 6px;
 }
 .overamp trough highlight {
-  background: @error_color;
+  color: @error_fg_color;
+  background-color: @error_bg_color;
 }
 
 /* Elapsed Popover */
@@ -323,7 +362,7 @@ scale trough slider {
   border: none;
 }
 .controlsbox {
-  background: @theme_bg_color;
+  background: @popover_bg_color;
 }
 .gpufriendly {
   box-shadow: -8px -8px transparent, 8px 8px transparent;
