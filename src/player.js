@@ -1,4 +1,4 @@
-const { Adw, Gdk, Gio, GObject, Gst, GstClapper, Gtk } = imports.gi;
+const { Adw, Gdk, Gio, GLib, GObject, Gst, GstClapper, Gtk } = imports.gi;
 const ByteArray = imports.byteArray;
 const Debug = imports.src.debug;
 const Misc = imports.src.misc;
@@ -16,14 +16,31 @@ class ClapperPlayer extends GstClapper.Clapper
 {
     _init()
     {
-        const gtk4plugin = new GstClapper.ClapperGtk4Plugin();
-        const glsinkbin = Gst.ElementFactory.make('glsinkbin', null);
-        glsinkbin.sink = gtk4plugin.video_sink;
+        let vsink = null;
+        const use_legacy_sink = GLib.getenv('CLAPPER_USE_LEGACY_SINK');
+
+        if(!use_legacy_sink || use_legacy_sink != '1') {
+            vsink = Gst.parse_bin_from_description('glupload ! glcolorconvert'
+                + ' ! clapperglimport ! clappersink name=clappersink', true);
+
+            if(vsink)
+                this.clappersink = vsink.get_by_name('clappersink');
+        }
+
+        if(!vsink) {
+            vsink = Gst.ElementFactory.make('glsinkbin', null);
+            const gtk4plugin = new GstClapper.ClapperGtk4Plugin();
+
+            warn('using legacy video sink');
+
+            this.clappersink = gtk4plugin.video_sink;
+            vsink.sink = this.clappersink;
+        }
 
         super._init({
             signal_dispatcher: new GstClapper.ClapperGMainContextSignalDispatcher(),
             video_renderer: new GstClapper.ClapperVideoOverlayVideoRenderer({
-                video_sink: glsinkbin,
+                video_sink: vsink,
             }),
             mpris: new GstClapper.ClapperMpris({
                 own_name: `org.mpris.MediaPlayer2.${Misc.appName}`,
@@ -36,7 +53,7 @@ class ClapperPlayer extends GstClapper.Clapper
             use_pipewire: settings.get_boolean('use-pipewire'),
         });
 
-        this.widget = gtk4plugin.video_sink.widget;
+        this.widget = this.clappersink.widget;
         this.widget.add_css_class('videowidget');
 
         this.visualization_enabled = false;
@@ -615,7 +632,7 @@ class ClapperPlayer extends GstClapper.Clapper
 
         switch(key) {
             case 'after-playback':
-                this.widget.keep_last_frame = (settings.get_int(key) === 1);
+                this.clappersink.keep_last_frame = (settings.get_int(key) === 1);
                 break;
             case 'seeking-mode':
                 switch(settings.get_int(key)) {
