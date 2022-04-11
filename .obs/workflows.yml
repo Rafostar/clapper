@@ -1,0 +1,10 @@
+rebuild_master:
+  steps:
+    - rebuild_package:
+        project: home:Rafostar
+        package: clapper
+  filters:
+    event: push
+    branches:
+      only:
+        - master
