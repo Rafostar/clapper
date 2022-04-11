@@ -3222,6 +3222,10 @@ gst_clapper_main (gpointer data)
 
   _update_from_env (&self->use_playbin3, "GST_CLAPPER_USE_PLAYBIN3");
 
+  /* Takes precedence over `GST_CLAPPER_USE_PLAYBIN3` as it
+   * influences element factory behavior */
+  _update_from_env (&self->use_playbin3, "USE_PLAYBIN3");
+
   if (self->use_playbin3) {
     GST_DEBUG_OBJECT (self, "playbin3 enabled");
     self->playbin = gst_element_factory_make ("playbin3", "playbin3");
