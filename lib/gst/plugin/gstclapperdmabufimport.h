@@ -17,32 +17,22 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#pragma once
 
-#include "gstclapperimport.h"
-#include "gstclapperglimport.h"
-#include "gstclapperdmabufimport.h"
-#include "gstclappersink.h"
-#include "gstclappergdkmemory.h"
+#include "gstclapperdmabufbaseimport.h"
 
-static gboolean
-plugin_init (GstPlugin *plugin)
+G_BEGIN_DECLS
+
+#define GST_TYPE_CLAPPER_DMABUF_IMPORT (gst_clapper_dmabuf_import_get_type())
+G_DECLARE_FINAL_TYPE (GstClapperDmabufImport, gst_clapper_dmabuf_import, GST, CLAPPER_DMABUF_IMPORT, GstClapperDmabufBaseImport)
+
+#define GST_CLAPPER_DMABUF_IMPORT_CAST(obj)        ((GstClapperDmabufImport *)(obj))
+
+struct _GstClapperDmabufImport
 {
-  gboolean res = FALSE;
+  GstClapperDmabufBaseImport parent;
+};
 
-  res |= GST_ELEMENT_REGISTER (clapperimport, plugin);
-  res |= GST_ELEMENT_REGISTER (clapperglimport, plugin);
-  res |= GST_ELEMENT_REGISTER (clapperdmabufimport, plugin);
-  res |= GST_ELEMENT_REGISTER (clappersink, plugin);
+GST_ELEMENT_REGISTER_DECLARE (clapperdmabufimport);
 
-  if (res)
-    gst_clapper_gdk_memory_init_once ();
-
-  return res;
-}
-
-GST_PLUGIN_DEFINE (GST_VERSION_MAJOR, GST_VERSION_MINOR,
-    clapper, "Clapper elements", plugin_init, VERSION, "LGPL",
-    GST_PACKAGE_NAME, GST_PACKAGE_ORIGIN)
+G_END_DECLS

@@ -52,11 +52,11 @@ static GstStaticPadTemplate gst_clapper_sink_template =
     GST_PAD_ALWAYS,
     GST_STATIC_CAPS (
         GST_VIDEO_CAPS_MAKE_WITH_FEATURES (GST_CAPS_FEATURE_CLAPPER_GDK_MEMORY,
-            "{ " GST_CLAPPER_GDK_MEMORY_FORMATS " }")
+            "{ " GST_CLAPPER_GDK_MEMORY_FORMATS ", NV12 }")
         "; "
         GST_VIDEO_CAPS_MAKE_WITH_FEATURES (GST_CAPS_FEATURE_CLAPPER_GDK_MEMORY ", "
             GST_CAPS_FEATURE_META_GST_VIDEO_OVERLAY_COMPOSITION,
-            "{ " GST_CLAPPER_GDK_MEMORY_FORMATS " }")));
+            "{ " GST_CLAPPER_GDK_MEMORY_FORMATS ", NV12 }")));
 
 static void gst_clapper_sink_navigation_interface_init (
     GstNavigationInterface *iface);
