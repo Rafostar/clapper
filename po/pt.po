@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-04-16 17:22\n"
+"PO-Revision-Date: 2022-04-16 18:18\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -128,51 +128,51 @@ msgstr "Alternar reprodução"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Toque longo | Clique com o botão direito"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Procurar para a frente"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Deslizar para a direita | Deslocar para direita"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Procurar para trás"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Deslizar para a esquerda | Deslocar para a esquerda"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Aumentar o volume"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Deslizar para cima | Deslocar para cima"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Diminuir o volume"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Deslizar para baixo | Deslocar para baixo"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Ativar/Desativar Som"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Capítulo seguinte"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Capítulo anterior"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
@@ -393,19 +393,19 @@ msgstr ""
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Concluído"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
@@ -419,41 +419,41 @@ msgstr "Versão do GTK: %s"
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Versão do Adwaita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "Versão do GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "Versão do GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Um reprodutor multimédia GNOME desenvolvido por GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Termina às: %s"
 
 #: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
 msgid "Undetermined"
-msgstr ""
+msgstr "Indeterminado"
 
 #: src/widget.js:243
 msgid "Channels"
-msgstr ""
+msgstr "Canais"
 
 #: src/widget.js:261
 msgid "Disabled"
-msgstr ""
+msgstr "Desativado"
 
