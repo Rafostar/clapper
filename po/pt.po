@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-04-23 20:47\n"
+"PO-Revision-Date: 2022-04-23 21:52\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -188,27 +188,27 @@ msgstr "Comportamento"
 
 #: ui/preferences-window.ui:19
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Ecrã inteiro automático"
 
 #: ui/preferences-window.ui:20
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Entrar em ecrã inteiro quando a lista de reprodução é substituída, excepto no modo flutuante"
 
 #: ui/preferences-window.ui:26
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Pedir para retomar o ficheiro recente"
 
 #: ui/preferences-window.ui:32
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Flutuar em todas as áreas de trabalho"
 
 #: ui/preferences-window.ui:33
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Esta opção apenas funciona no GNOME"
 
 #: ui/preferences-window.ui:39
 msgid "After playback"
-msgstr ""
+msgstr "Após reprodução"
 
 #: ui/preferences-window.ui:44
 msgid "Do nothing"
@@ -228,19 +228,19 @@ msgstr "Volume"
 
 #: ui/preferences-window.ui:59
 msgid "Custom initial value"
-msgstr ""
+msgstr "Valor inicial personalizado"
 
 #: ui/preferences-window.ui:60
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Definir volume personalizado no arranque ao invés de restaurá-lo"
 
 #: ui/preferences-window.ui:64
 msgid "Volume percentage"
-msgstr ""
+msgstr "Percentagem de volume"
 
 #: ui/preferences-window.ui:75
 msgid "Seeking"
-msgstr ""
+msgstr "Procurando"
 
 #: ui/preferences-window.ui:78
 msgid "Mode"
@@ -308,11 +308,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:169
 msgid "Server"
-msgstr ""
+msgstr "Servidor"
 
 #: ui/preferences-window.ui:172
 msgid "Control player remotely"
-msgstr ""
+msgstr "Controlar reprodutor remotamente"
 
 #: ui/preferences-window.ui:176
 msgid "Listening port"
@@ -336,19 +336,19 @@ msgstr ""
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
-msgstr ""
+msgstr "Qualidade máxima"
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr ""
+msgstr "Ajustes"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
-msgstr ""
+msgstr "Aparência"
 
 #: ui/preferences-window.ui:235
 msgid "Dark theme"
-msgstr ""
+msgstr "Tema escuro"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
@@ -368,7 +368,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
-msgstr ""
+msgstr "Usar playbin3"
 
 #: ui/preferences-window.ui:260 ui/preferences-window.ui:269
 msgid "Requires player restart"
@@ -376,7 +376,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:262 ui/preferences-window.ui:271
 msgid "Experimental"
-msgstr ""
+msgstr "Experimental"
 
 #: ui/preferences-window.ui:268
 msgid "Use PipeWire for audio output"
@@ -385,7 +385,7 @@ msgstr ""
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Descodificador: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
