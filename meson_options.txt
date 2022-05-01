@@ -24,6 +24,11 @@ option('glimporter',
   value: 'auto',
   description: 'Build GL memory importer for clappersink'
 )
+option('gluploader',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build GL uploader for clappersink'
+)
 
 option('devel-checks',
   type: 'boolean',
