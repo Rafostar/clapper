@@ -1,5 +1,5 @@
-glib_req = '>= 2.56.0'
-gst_req = '>= 1.18.0'
+glib_req = '>= 2.68.0'
+gst_req = '>= 1.20.0'
 
 api_version = '1.0'
 libversion = meson.project_version()
@@ -42,10 +42,6 @@ endif
 # Symbol visibility
 if cc.get_id() == 'msvc'
   export_define = '__declspec(dllexport) extern'
-elif cc.has_argument('-fvisibility=hidden')
-  add_project_arguments('-fvisibility=hidden', language: 'c')
-  add_project_arguments('-fvisibility=hidden', language: 'cpp')
-  export_define = 'extern __attribute__ ((visibility ("default")))'
 else
   export_define = 'extern'
 endif
@@ -132,7 +128,7 @@ cdata.set('SIZEOF_SHORT', cc.sizeof('short'))
 cdata.set('SIZEOF_VOIDP', cc.sizeof('void*'))
 
 cdata.set_quoted('VERSION', libversion)
-cdata.set_quoted('PACKAGE', 'gst-plugins-clapper')
+cdata.set_quoted('PACKAGE', 'clapper')
 cdata.set_quoted('PACKAGE_VERSION', libversion)
 cdata.set_quoted('PACKAGE_BUGREPORT', 'https://github.com/Rafostar/clapper/issues/new')
 cdata.set_quoted('PACKAGE_NAME', 'GStreamer Clapper Libs')
@@ -184,7 +180,7 @@ foreach extra_arg : warning_flags
   endif
 endforeach
 
-cdata.set_quoted('GST_PACKAGE_NAME', 'GStreamer Plugins Clapper')
+cdata.set_quoted('GST_PACKAGE_NAME', 'gst-plugin-clapper')
 cdata.set_quoted('GST_PACKAGE_ORIGIN', 'https://github.com/Rafostar/clapper')
 
 # Mandatory GST deps
@@ -251,21 +247,21 @@ giounix_dep = dependency('gio-unix-2.0', version: glib_req, fallback: ['glib', '
 
 cdata.set('DISABLE_ORC', 1)
 cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))
-cdata.set_quoted('GST_PACKAGE_RELEASE_DATETIME', 'Unknown')
 
 configinc = include_directories('.')
 libsinc = include_directories('gst')
 
-gir = find_program('g-ir-scanner', required: true)
-if not gir.found()
-  error('Clapper requires GI bindings to be compiled')
-endif
-
+gir = find_program('g-ir-scanner')
 gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + \
     'g_setenv("GST_REGISTRY_1.0", "@0@", TRUE);'.format(meson.current_build_dir() + '/gir_empty_registry.reg') + \
     'g_setenv("GST_PLUGIN_PATH_1_0", "", TRUE);' + \
     'g_setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", TRUE);' + \
     'gst_init(NULL,NULL);', '--quiet'
 ]
+
+gst_clapper_plugin_libdir = join_paths(get_option('prefix'), libdir, 'clapper-0.0', 'gst', 'plugin')
+gst_clapper_importers_libdir = join_paths(gst_clapper_plugin_libdir, 'importers')
+cdata.set_quoted('CLAPPER_SINK_IMPORTER_PATH', gst_clapper_importers_libdir)
+
 subdir('gst')
 configure_file(output: 'config.h', configuration: cdata)

@@ -8,6 +8,12 @@ option('lib',
   value: true,
   description: 'Build GstClapper lib'
 )
+option('gst-plugin',
+  type: 'feature',
+  value: 'enabled',
+  description: 'Build GStreamer plugin (includes GTK video sink element)'
+)
+
 option('devel-checks',
   type: 'boolean',
   value: false,
