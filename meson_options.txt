@@ -14,6 +14,12 @@ option('gst-plugin',
   description: 'Build GStreamer plugin (includes GTK video sink element)'
 )
 
+option('rawimporter',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build RAW system memory importer for clappersink'
+)
+
 option('devel-checks',
   type: 'boolean',
   value: false,

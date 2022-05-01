@@ -68,3 +68,5 @@ gst_clapper_sink_dep = declare_dependency(
   include_directories: configinc,
   dependencies: gst_clapper_plugin_deps,
 )
+
+subdir('importers')
