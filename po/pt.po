@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-04-23 21:52\n"
+"PO-Revision-Date: 2022-05-01 17:37\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -328,11 +328,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:190
 msgid "Web application port"
-msgstr ""
+msgstr "Porta de aplicação Web"
 
 #: ui/preferences-window.ui:204
 msgid "Prefer adaptive streaming"
-msgstr ""
+msgstr "Preferir transmissão adaptável"
 
 #: ui/preferences-window.ui:210
 msgid "Max quality"
@@ -352,19 +352,19 @@ msgstr "Tema escuro"
 
 #: ui/preferences-window.ui:241
 msgid "Render window shadows"
-msgstr ""
+msgstr "Renderizar sombras das janelas"
 
 #: ui/preferences-window.ui:242
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Desativar para aumentar o desempenho quando em janela"
 
 #: ui/preferences-window.ui:253
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Classificação do plugin"
 
 #: ui/preferences-window.ui:254
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Altera as classificações predefinidas dos plugins GStreamer"
 
 #: ui/preferences-window.ui:259
 msgid "Use playbin3"
