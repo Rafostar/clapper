@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-01-16 14:15\n"
+"PO-Revision-Date: 2022-04-20 18:10\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -52,11 +52,11 @@ msgstr "常规​​​​​"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "显示快捷键"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "切换全屏"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
@@ -116,11 +116,11 @@ msgstr "更改循环模式"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "导出至文件"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:119
 msgid "Playback"
-msgstr ""
+msgstr "播放"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
@@ -164,7 +164,7 @@ msgstr "向下滑动 | 向下滚动"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "切换静音"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
@@ -180,7 +180,7 @@ msgstr "解码器"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "返回首选项"
 
 #: ui/preferences-window.ui:16
 msgid "Behavior"
@@ -340,7 +340,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:228
 msgid "Tweaks"
-msgstr "微调"
+msgstr "调整"
 
 #: ui/preferences-window.ui:232
 msgid "Appearance"
@@ -438,7 +438,7 @@ msgstr ""
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "刘韬"
 
 #: src/revealers.js:170
 #, javascript-format
