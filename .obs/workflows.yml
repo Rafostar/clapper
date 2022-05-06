@@ -1,6 +1,6 @@
 rebuild_master:
   steps:
-    - rebuild_package:
+    - trigger_services:
         project: home:Rafostar
         package: clapper
   filters:
