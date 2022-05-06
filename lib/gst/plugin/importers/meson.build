@@ -1,20 +1,12 @@
 gst_clapper_gl_base_importer_dep = dependency('', required: false)
 
-if not get_option('rawimporter').disabled()
-  library(
-    'gstclapperrawimporter',
-    'gstclapperrawimporter.c',
-    dependencies: gst_clapper_sink_dep,
-    include_directories: configinc,
-    c_args: gst_clapper_plugin_args,
-    install: true,
-    install_dir: gst_clapper_importers_libdir,
-  )
-endif
-
 plugin_needs_gl_base = (
   not get_option('glimporter').disabled()
   or not get_option('gluploader').disabled()
+)
+plugin_gl_support_required = (
+  get_option('glimporter').enabled()
+  or get_option('gluploader').enabled()
 )
 
 gst_plugin_gl_deps = [gstgl_dep, gstglproto_dep]
@@ -39,6 +31,10 @@ if gst_gl_have_window_wayland and gst_gl_have_platform_egl
   endif
 endif
 
+if plugin_gl_support_required and not have_gtk_gl_windowing
+  error('GL-based importer was enabled, but support for current GL windowing is missing')
+endif
+
 if gst_gl_have_platform_egl
   gst_plugin_gl_deps += gstglegl_dep
 endif
@@ -48,11 +44,9 @@ gst_clapper_gl_base_importer_deps = [
 ] + gst_plugin_gl_deps
 
 foreach dep : gst_clapper_gl_base_importer_deps
-  if not dep.found() or not have_gtk_gl_windowing
-    if get_option('glimporter').enabled()
-      error('GL importer was enabled, but required dependencies were not found')
-    elif get_option('gluploader').enabled()
-      error('GL uploader was enabled, but required dependencies were not found')
+  if not dep.found()
+    if plugin_gl_support_required
+      error('GL-based importer was enabled, but required dependencies were not found')
     endif
     plugin_needs_gl_base = false
   endif
@@ -73,7 +67,12 @@ if plugin_needs_gl_base
   )
 endif
 
-if not get_option('glimporter').disabled() and gst_clapper_gl_base_importer_dep.found()
+build_glimporter = (
+  not get_option('glimporter').disabled()
+  and gst_clapper_gl_base_importer_dep.found()
+)
+
+if build_glimporter
   library(
     'gstclapperglimporter',
     'gstclapperglimporter.c',
@@ -85,11 +84,34 @@ if not get_option('glimporter').disabled() and gst_clapper_gl_base_importer_dep.
   )
 endif
 
-if not get_option('gluploader').disabled() and gst_clapper_gl_base_importer_dep.found()
+build_gluploader = (
+  not get_option('gluploader').disabled()
+  and gst_clapper_gl_base_importer_dep.found()
+)
+
+if build_gluploader
   library(
     'gstclappergluploader',
     'gstclappergluploader.c',
     dependencies: gst_clapper_gl_base_importer_dep,
+    include_directories: configinc,
+    c_args: gst_clapper_plugin_args,
+    install: true,
+    install_dir: gst_clapper_importers_libdir,
+  )
+endif
+
+# No need to auto build rawimporter if we are building gluploader
+build_rawimporter = (
+  not get_option('rawimporter').disabled()
+  and (not build_gluploader or get_option('rawimporter').enabled())
+)
+
+if build_rawimporter
+  library(
+    'gstclapperrawimporter',
+    'gstclapperrawimporter.c',
+    dependencies: gst_clapper_sink_dep,
     include_directories: configinc,
     c_args: gst_clapper_plugin_args,
     install: true,
