@@ -22,7 +22,7 @@ gst_clapper_plugin_deps = [
 
 foreach dep : gst_clapper_plugin_deps
   if not dep.found()
-    if gst_clapper_plugin_option.enabled()
+    if get_option('gst-plugin').enabled()
       error('GStreamer plugin was enabled, but required dependencies were not found')
     endif
     subdir_done()
@@ -32,20 +32,6 @@ endforeach
 if get_option('default_library') == 'static'
   gst_clapper_plugin_args += ['-DGST_STATIC_COMPILATION']
 endif
-
-gst_clapper_plugin_option = get_option('gst-plugin')
-if gst_clapper_plugin_option.disabled()
-  subdir_done()
-endif
-
-foreach dep : gst_clapper_plugin_deps
-  if not dep.found()
-    if gst_clapper_plugin_option.enabled()
-      error('GStreamer plugin was enabled, but required dependencies were not found')
-    endif
-    subdir_done()
-  endif
-endforeach
 
 gst_clapper_plugin_sources = [
   'gstclappersink.c',
