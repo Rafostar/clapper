@@ -212,10 +212,11 @@ _obtain_available_importers (G_GNUC_UNUSED gpointer data)
       GST_INFO ("Found importer: %s, caps: %" GST_PTR_FORMAT, module_name, data->caps);
       g_ptr_array_add (importers, data);
     }
+
+    g_object_unref (dir_enum);
   }
 
   g_object_unref (dir);
-  g_object_unref (dir_enum);
 
   if (error) {
     GST_ERROR ("Could not load importer, reason: %s",
