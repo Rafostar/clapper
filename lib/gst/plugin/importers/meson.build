@@ -3,10 +3,12 @@ gst_clapper_gl_base_importer_dep = dependency('', required: false)
 plugin_needs_gl_base = (
   not get_option('glimporter').disabled()
   or not get_option('gluploader').disabled()
+  or not get_option('vaglimporter').disabled()
 )
 plugin_gl_support_required = (
   get_option('glimporter').enabled()
   or get_option('gluploader').enabled()
+  or get_option('vaglimporter').enabled()
 )
 
 gst_plugin_gl_deps = [gstgl_dep, gstglproto_dep]
@@ -112,6 +114,41 @@ if build_rawimporter
     'gstclapperrawimporter',
     'gstclapperrawimporter.c',
     dependencies: gst_clapper_sink_dep,
+    include_directories: configinc,
+    c_args: gst_clapper_plugin_args,
+    install: true,
+    install_dir: gst_clapper_importers_libdir,
+  )
+endif
+
+gst_va_dep = dependency('gstreamer-va-1.0',
+  version: gst_req,
+  required: false,
+)
+
+gst_clapper_va_gl_importer_deps = [
+  gst_clapper_gl_base_importer_dep,
+  gst_va_dep,
+]
+
+foreach dep : gst_clapper_va_gl_importer_deps
+  if not dep.found()
+    if get_option('vaglimporter').enabled()
+      error('VA GL-based importer was enabled, but required dependencies were not found')
+    endif
+  endif
+endforeach
+
+build_vaglimporter = (
+  not get_option('vaglimporter').disabled()
+  and gst_clapper_gl_base_importer_dep.found()
+)
+
+if build_vaglimporter
+  library(
+    'gstclappervaglimporter',
+    'gstclappervaglimporter.c',
+    dependencies: gst_clapper_va_gl_importer_deps,
     include_directories: configinc,
     c_args: gst_clapper_plugin_args,
     install: true,
