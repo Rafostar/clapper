@@ -259,7 +259,7 @@ gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + 
     'gst_init(NULL,NULL);', '--quiet'
 ]
 
-gst_clapper_plugin_libdir = join_paths(get_option('prefix'), libdir, 'clapper-0.0', 'gst', 'plugin')
+gst_clapper_plugin_libdir = join_paths(get_option('prefix'), libdir, 'clapper-@0@'.format(api_version), 'gst', 'plugin')
 gst_clapper_importers_libdir = join_paths(gst_clapper_plugin_libdir, 'importers')
 cdata.set_quoted('CLAPPER_SINK_IMPORTER_PATH', gst_clapper_importers_libdir)
 
