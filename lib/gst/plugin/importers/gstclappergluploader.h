@@ -21,6 +21,8 @@
 
 #include "gstclapperglbaseimporter.h"
 
+#include <gst/gl/gstglfuncs.h>
+
 G_BEGIN_DECLS
 
 #define GST_TYPE_CLAPPER_GL_UPLOADER (gst_clapper_gl_uploader_get_type())
@@ -37,6 +39,17 @@ struct _GstClapperGLUploader
 
   GstVideoInfo pending_v_info, v_info;
   gboolean has_pending_v_info;
+
+  /* DMABuf fast-path */
+  GstGLTextureTarget gst_tex_target;
+  guint gl_tex_target;
+
+  GstGLShader *shader;
+
+  GLuint vao;
+  GLuint vertex_buffer;
+  GLint attr_position;
+  GLint attr_texture;
 };
 
 G_END_DECLS

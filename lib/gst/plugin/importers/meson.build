@@ -100,11 +100,25 @@ build_gluploader = (
   and gst_clapper_gl_base_importer_dep.found()
 )
 
+gluploader_deps = [
+  gst_clapper_gl_base_importer_dep,
+  gstallocators_dep,
+]
+
+foreach dep : gluploader_deps
+  if not dep.found()
+    if get_option('gluploader').enabled()
+      error('GL uploader was enabled, but required dependencies were not found')
+    endif
+    build_gluploader = false
+  endif
+endforeach
+
 if build_gluploader
   library(
     'gstclappergluploader',
     'gstclappergluploader.c',
-    dependencies: gst_clapper_gl_base_importer_dep,
+    dependencies: gluploader_deps,
     include_directories: configinc,
     c_args: gst_clapper_plugin_args,
     install: true,

@@ -196,6 +196,8 @@ gsttag_dep = dependency('gstreamer-tag-1.0', version: gst_req,
   fallback: ['gst-plugins-base', 'tag_dep'])
 gstvideo_dep = dependency('gstreamer-video-1.0', version: gst_req,
   fallback: ['gst-plugins-base', 'video_dep'])
+gstallocators_dep = dependency('gstreamer-allocators-1.0', version: gst_req,
+  fallback : ['gst-plugins-base', 'allocators_dep'])
 
 # GStreamer OpenGL
 gstgl_dep = dependency('gstreamer-gl-1.0', version: gst_req,
