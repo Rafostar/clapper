@@ -10,7 +10,7 @@ option('lib',
 )
 option('gst-plugin',
   type: 'feature',
-  value: 'enabled',
+  value: 'auto',
   description: 'Build GStreamer plugin (includes GTK video sink element)'
 )
 
