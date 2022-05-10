@@ -91,7 +91,7 @@
       <summary>Use PipeWire for audio output</summary>
     </key>
     <key name="play-flags" type="i">
-      <default>1687</default>
+      <default>1559</default>
       <summary>Set PlayFlags for playbin</summary>
     </key>
 
