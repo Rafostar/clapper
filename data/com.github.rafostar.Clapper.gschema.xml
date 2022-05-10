@@ -66,14 +66,6 @@
       <default>6446</default>
       <summary>Listening port to use for incoming WebSocket connections</summary>
     </key>
-    <key name="webapp-enabled" type="b">
-      <default>false</default>
-      <summary>Run built-in broadway based web application</summary>
-    </key>
-    <key name="webapp-port" type="i">
-      <default>8086</default>
-      <summary>Port for running broadwayd service</summary>
-    </key>
 
     <!-- Tweaks -->
     <key name="dark-theme" type="b">
