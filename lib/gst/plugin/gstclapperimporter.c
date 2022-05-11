@@ -119,6 +119,8 @@ gst_clapper_importer_finalize (GObject *object)
 
   GST_TRACE ("Finalize");
 
+  gst_clear_caps (&self->pending_caps);
+
   gst_clear_buffer (&self->pending_buffer);
   gst_clear_buffer (&self->buffer);
 
@@ -320,7 +322,7 @@ gst_clapper_importer_set_caps (GstClapperImporter *self, GstCaps *caps)
   GstClapperImporterClass *importer_class = GST_CLAPPER_IMPORTER_GET_CLASS (self);
 
   GST_OBJECT_LOCK (self);
-  self->has_pending_v_info = gst_video_info_from_caps (&self->pending_v_info, caps);
+  gst_caps_replace (&self->pending_caps, caps);
   GST_OBJECT_UNLOCK (self);
 
   if (importer_class->set_caps)
@@ -330,10 +332,14 @@ gst_clapper_importer_set_caps (GstClapperImporter *self, GstCaps *caps)
 void
 gst_clapper_importer_set_buffer (GstClapperImporter *self, GstBuffer *buffer)
 {
-  /* Both overlays and pending buffer must be
-   * set within a single importer locking */
   GST_OBJECT_LOCK (self);
 
+  /* Pending v_info, buffer and overlays must be
+   * set within a single importer locking */
+  if (self->pending_caps) {
+    self->has_pending_v_info = gst_video_info_from_caps (&self->pending_v_info, self->pending_caps);
+    gst_clear_caps (&self->pending_caps);
+  }
   gst_buffer_replace (&self->pending_buffer, buffer);
   gst_clapper_importer_prepare_overlays_locked (self);
 
@@ -380,14 +386,12 @@ gst_clapper_importer_snapshot (GstClapperImporter *self, GdkSnapshot *snapshot,
    * lock ourselves to make sure everything matches */
   GST_OBJECT_LOCK (self);
 
-  buffer_changed = gst_buffer_replace (&self->buffer, self->pending_buffer);
-
-  /* Only replace v_info when buffer changed, this way
-   * we still use old (correct) v_info when resizing */
-  if (buffer_changed && self->has_pending_v_info) {
+  if (self->has_pending_v_info) {
     self->v_info = self->pending_v_info;
     self->has_pending_v_info = FALSE;
   }
+
+  buffer_changed = gst_buffer_replace (&self->buffer, self->pending_buffer);
 
   /* Ref overlays associated with current buffer */
   for (i = 0; i < self->pending_overlays->len; i++) {

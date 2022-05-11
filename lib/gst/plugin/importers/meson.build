@@ -46,8 +46,11 @@ if gst_gl_have_window_wayland and gst_gl_have_platform_egl
   endif
 endif
 
-if gl_support_required and not have_gtk_gl_windowing
-  error('GL-based importer was enabled, but support for current GL windowing is missing')
+if not have_gtk_gl_windowing
+  if gl_support_required
+    error('GL-based importer was enabled, but support for current GL windowing is missing')
+  endif
+  build_glbase = false
 endif
 
 if gst_gl_have_platform_egl

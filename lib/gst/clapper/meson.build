@@ -43,6 +43,10 @@ if not gtk4_dep.version().version_compare('>=4.0.0')
   error('GTK4 version on this system is too old')
 endif
 
+if not gir.found()
+  error('Cannot build lib without GIR support')
+endif
+
 if gst_gl_have_window_x11 and (gst_gl_have_platform_egl or gst_gl_have_platform_glx)
   gtk_x11_dep = dependency('gtk4-x11', required: false)
   if gtk_x11_dep.found()
@@ -76,6 +80,18 @@ gstclapper_mpris_gdbus = gnome.gdbus_codegen('gstclapper-mpris-gdbus',
   namespace: 'GstClapperMpris'
 )
 
+gstclapper_deps = [
+  gtk4_dep, glib_dep, gio_dep,
+  gstbase_dep, gstvideo_dep, gstaudio_dep,
+  gsttag_dep, gstpbutils_dep, libm
+] + gtk_deps
+
+if os_unix
+  gstclapper_deps += giounix_dep
+else
+  gstclapper_deps += giowin_dep
+endif
+
 gstclapper = library('gstclapper-' + api_version,
   gstclapper_sources + gstclapper_mpris_gdbus,
   c_args: gstclapper_defines,
@@ -84,9 +100,7 @@ gstclapper = library('gstclapper-' + api_version,
   version: libversion,
   install: true,
   install_dir: pkglibdir,
-  dependencies: [gtk4_dep, glib_dep, gio_dep, giounix_dep,
-    gstbase_dep, gstvideo_dep, gstaudio_dep,
-    gsttag_dep, gstpbutils_dep, libm] + gtk_deps,
+  dependencies: gstclapper_deps,
 )
 
 clapper_gir = gnome.generate_gir(gstclapper,

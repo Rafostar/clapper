@@ -49,6 +49,7 @@ struct _GstClapperImporter
 {
   GstObject parent;
 
+  GstCaps *pending_caps;
   GstBuffer *pending_buffer, *buffer;
   GPtrArray *pending_overlays, *overlays;
   GstVideoInfo pending_v_info, v_info;

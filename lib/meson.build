@@ -9,6 +9,8 @@ cxx = meson.get_compiler('cpp')
 
 cdata = configuration_data()
 
+os_unix = host_machine.system() != 'windows'
+
 if cc.get_id() == 'msvc'
   msvc_args = [
     # Ignore several spurious warnings for things gstreamer does very commonly
@@ -243,7 +245,12 @@ libm = cc.find_library('m', required: false)
 glib_dep = dependency('glib-2.0', version: glib_req, fallback: ['glib', 'libglib_dep'])
 gmodule_dep = dependency('gmodule-2.0', fallback: ['glib', 'libgmodule_dep'])
 gio_dep = dependency('gio-2.0', fallback: ['glib', 'libgio_dep'])
-giounix_dep = dependency('gio-unix-2.0', version: glib_req, fallback: ['glib', 'libgiounix_dep'])
+
+if os_unix
+  giounix_dep = dependency('gio-unix-2.0', version: glib_req, fallback: ['glib', 'libgio_dep'])
+else
+  giowin_dep = dependency('gio-windows-2.0', version: glib_req, fallback : ['glib', 'libgio_dep'])
+endif
 
 cdata.set('DISABLE_ORC', 1)
 cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))
@@ -251,7 +258,7 @@ cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))
 configinc = include_directories('.')
 libsinc = include_directories('gst')
 
-gir = find_program('g-ir-scanner')
+gir = find_program('g-ir-scanner', required: false)
 gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + \
     'g_setenv("GST_REGISTRY_1.0", "@0@", TRUE);'.format(meson.current_build_dir() + '/gir_empty_registry.reg') + \
     'g_setenv("GST_PLUGIN_PATH_1_0", "", TRUE);' + \
