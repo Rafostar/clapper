@@ -3550,19 +3550,23 @@ gst_clapper_prepare_gstreamer (void)
 
   GST_DEBUG ("Preparing GStreamer plugins");
 
+  /* Too many problems with VAAPI decodebin, meanwhile VA works
+   * fine and there is already a pending MR on GStreamer to enable
+   * it by default, so we do that a little early */
   if (gst_clapper_has_plugin_with_features ("va")) {
-    gst_clapper_set_feature_rank_versioned ("vah264dec", rank, 1, 19, 1);
-    gst_clapper_set_feature_rank_versioned ("vampeg2dec", rank, 1, 19, 1);
+    gst_clapper_set_feature_rank ("vampeg2dec", rank);
+    gst_clapper_set_feature_rank ("vah264dec", rank);
+    gst_clapper_set_feature_rank ("vah265dec", rank);
+    gst_clapper_set_feature_rank ("vavp8dec", rank);
+    gst_clapper_set_feature_rank ("vavp9dec", rank);
+    gst_clapper_set_feature_rank ("vaav1dec", rank);
   }
+  /* We do promise working HW accel out of box, so enable NVDEC too */
   if (gst_clapper_has_plugin_with_features ("nvcodec")) {
     gst_clapper_set_feature_rank ("nvh264dec", rank + 4);
     gst_clapper_set_feature_rank ("nvh265dec", rank + 4);
-  }
-  if (gst_clapper_has_plugin_with_features ("v4l2codecs")) {
-    if (!gst_clapper_set_feature_rank_versioned ("v4l2slh264dec", rank + 10, 1, 19, 1))
-      gst_clapper_set_feature_rank ("v4l2slh264dec", GST_RANK_NONE);
-    if (!gst_clapper_set_feature_rank_versioned ("v4l2slvp8dec", rank + 10, 1, 19, 2))
-      gst_clapper_set_feature_rank ("v4l2slvp8dec", GST_RANK_NONE);
+    gst_clapper_set_feature_rank ("nvvp8dec", rank + 4);
+    gst_clapper_set_feature_rank ("nvvp9dec", rank + 4);
   }
 
   /* After setting defaults, update them from ENV */
