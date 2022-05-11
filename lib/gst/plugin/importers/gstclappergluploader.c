@@ -67,9 +67,9 @@ gst_clapper_gl_uploader_set_caps (GstClapperImporter *importer, GstCaps *caps)
 {
   GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
   _update_elements_caps_locked (self, caps);
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 }
 
 static void
@@ -96,14 +96,14 @@ gst_clapper_gl_uploader_prepare (GstClapperImporter *importer)
     GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
     GstClapperGLBaseImporter *gl_bi = GST_CLAPPER_GL_BASE_IMPORTER_CAST (importer);
 
-    GST_OBJECT_LOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
 
     if (!self->upload)
       self->upload = gst_gl_upload_new (gl_bi->gst_context);
     if (!self->color_convert)
       self->color_convert = gst_gl_color_convert_new (gl_bi->gst_context);
 
-    GST_OBJECT_UNLOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
   }
 
   return res;
@@ -147,13 +147,13 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
 
   GST_LOG_OBJECT (self, "Uploading %" GST_PTR_FORMAT, buffer);
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
 
   upload_buf = _upload_perform_locked (self, buffer);
 
   if (G_UNLIKELY (!upload_buf)) {
     GST_ERROR_OBJECT (self, "Could not perform upload on input buffer");
-    GST_OBJECT_UNLOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
     return NULL;
   }
@@ -168,7 +168,7 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
     self->has_pending_v_info = FALSE;
   }
 
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   if (G_UNLIKELY (!color_buf)) {
     GST_ERROR_OBJECT (self, "Could not perform color conversion on input buffer");

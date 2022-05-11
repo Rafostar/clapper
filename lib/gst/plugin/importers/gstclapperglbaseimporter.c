@@ -118,7 +118,7 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
   }
   gdk_gl_api = gdk_gl_context_get_api (gdk_context);
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
 
   self->gdk_context = gdk_context;
 
@@ -182,7 +182,7 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
   g_clear_object (&self->gdk_context);
   gst_clear_object (&self->gst_display);
 
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   GST_ERROR_OBJECT (self, "Unsupported GL platform");
   return FALSE;
@@ -198,7 +198,7 @@ have_display:
     g_clear_object (&self->gdk_context);
     gst_clear_object (&self->gst_display);
 
-    GST_OBJECT_UNLOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
     return FALSE;
   }
@@ -216,7 +216,7 @@ have_display:
     g_clear_object (&self->gdk_context);
     gst_clear_object (&self->gst_display);
 
-    GST_OBJECT_UNLOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
     return FALSE;
   }
@@ -229,7 +229,7 @@ have_display:
   gst_gl_context_activate (self->wrapped_context, FALSE);
   gdk_gl_context_clear_current ();
 
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   return TRUE;
 }
@@ -241,7 +241,7 @@ retrieve_gst_context (GstClapperGLBaseImporter *self)
   GstGLContext *gst_context = NULL;
   GError *error = NULL;
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
 
   gst_display = gst_object_ref (self->gst_display);
 
@@ -258,7 +258,7 @@ retrieve_gst_context (GstClapperGLBaseImporter *self)
       g_clear_error (&error);
 
       GST_OBJECT_UNLOCK (gst_display);
-      GST_OBJECT_UNLOCK (self);
+      GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
       return FALSE;
     }
@@ -266,7 +266,7 @@ retrieve_gst_context (GstClapperGLBaseImporter *self)
 
   gst_context = gst_object_ref (self->gst_context);
 
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   gst_gl_display_add_context (gst_display, gst_context);
 
@@ -284,9 +284,9 @@ gst_clapper_gl_base_importer_prepare (GstClapperImporter *importer)
   GstClapperGLBaseImporter *self = GST_CLAPPER_GL_BASE_IMPORTER_CAST (importer);
   gboolean need_invoke;
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
   need_invoke = (!self->gdk_context || !self->gst_display || !self->wrapped_context);
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   if (need_invoke) {
     if (!(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
@@ -311,8 +311,8 @@ gst_clapper_gl_base_importer_share_data (GstClapperImporter *importer, GstClappe
   if (GST_IS_CLAPPER_GL_BASE_IMPORTER (dest_importer)) {
     GstClapperGLBaseImporter *dest = GST_CLAPPER_GL_BASE_IMPORTER (dest_importer);
 
-    GST_OBJECT_LOCK (self);
-    GST_OBJECT_LOCK (dest);
+    GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_LOCK (dest);
 
     /* Successfully prepared GL importer should have all three */
     if (self->gdk_context && self->gst_display && self->wrapped_context) {
@@ -333,8 +333,8 @@ gst_clapper_gl_base_importer_share_data (GstClapperImporter *importer, GstClappe
       dest->gst_context = gst_object_ref (self->gst_context);
     }
 
-    GST_OBJECT_UNLOCK (dest);
-    GST_OBJECT_UNLOCK (self);
+    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (dest);
+    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
   }
 
   if (GST_CLAPPER_IMPORTER_CLASS (parent_class)->share_data)
@@ -348,10 +348,10 @@ gst_clapper_gl_base_importer_handle_context_query (GstClapperImporter *importer,
   GstClapperGLBaseImporter *self = GST_CLAPPER_GL_BASE_IMPORTER_CAST (importer);
   gboolean res;
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
   res = gst_gl_handle_context_query (GST_ELEMENT_CAST (bsink), query,
       self->gst_display, self->gst_context, self->wrapped_context);
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   return res;
 }
@@ -364,9 +364,9 @@ gst_clapper_gl_base_importer_create_pool (GstClapperImporter *importer, GstStruc
 
   GST_DEBUG_OBJECT (self, "Creating new GL buffer pool");
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
   pool = gst_gl_buffer_pool_new (self->gst_context);
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   *config = gst_buffer_pool_get_config (pool);
 
@@ -384,10 +384,10 @@ gst_clapper_gl_base_importer_add_allocation_metas (GstClapperImporter *importer,
   gst_query_add_allocation_meta (query, GST_VIDEO_OVERLAY_COMPOSITION_META_API_TYPE, NULL);
   gst_query_add_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL);
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
   if (self->gst_context->gl_vtable->FenceSync)
     gst_query_add_allocation_meta (query, GST_GL_SYNC_META_API_TYPE, NULL);
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 }
 
 static gboolean
@@ -428,6 +428,7 @@ gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self
 static void
 gst_clapper_gl_base_importer_init (GstClapperGLBaseImporter *self)
 {
+  g_mutex_init (&self->lock);
 }
 
 static void
@@ -440,6 +441,8 @@ gst_clapper_gl_base_importer_finalize (GObject *object)
   gst_clear_object (&self->gst_display);
   gst_clear_object (&self->wrapped_context);
   gst_clear_object (&self->gst_context);
+
+  g_mutex_clear (&self->lock);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -514,7 +517,7 @@ gst_clapper_gl_base_importer_make_gl_texture (GstClapperGLBaseImporter *self,
     return NULL;
   }
 
-  GST_OBJECT_LOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
 
   /* Must have context active here for both sync meta
    * and Gdk texture format auto-detection to work */
@@ -541,7 +544,7 @@ gst_clapper_gl_base_importer_make_gl_texture (GstClapperGLBaseImporter *self,
   gst_gl_context_activate (self->wrapped_context, FALSE);
   gdk_gl_context_clear_current ();
 
-  GST_OBJECT_UNLOCK (self);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
 
   gst_video_frame_unmap (&frame);
 

@@ -33,6 +33,10 @@ G_BEGIN_DECLS
 #define GST_CLAPPER_GL_BASE_IMPORTER_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_CLAPPER_GL_BASE_IMPORTER, GstClapperGLBaseImporterClass))
 #define GST_CLAPPER_GL_BASE_IMPORTER_CAST(obj)          ((GstClapperGLBaseImporter *)(obj))
 
+#define GST_CLAPPER_GL_BASE_IMPORTER_GET_LOCK(obj)      (&GST_CLAPPER_GL_BASE_IMPORTER_CAST(obj)->lock)
+#define GST_CLAPPER_GL_BASE_IMPORTER_LOCK(obj)          g_mutex_lock (GST_CLAPPER_GL_BASE_IMPORTER_GET_LOCK(obj))
+#define GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK(obj)        g_mutex_unlock (GST_CLAPPER_GL_BASE_IMPORTER_GET_LOCK(obj))
+
 #define GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WAYLAND       (GST_GL_HAVE_WINDOW_WAYLAND && defined (GDK_WINDOWING_WAYLAND))
 #define GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11           (GST_GL_HAVE_WINDOW_X11 && defined (GDK_WINDOWING_X11))
 #define GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX       (GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11 && GST_GL_HAVE_PLATFORM_GLX)
@@ -48,6 +52,8 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC (GstClapperGLBaseImporter, gst_object_unref)
 struct _GstClapperGLBaseImporter
 {
   GstClapperImporter parent;
+
+  GMutex lock;
 
   GdkGLContext *gdk_context;
 
