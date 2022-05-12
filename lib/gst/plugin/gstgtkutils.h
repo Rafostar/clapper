@@ -30,8 +30,6 @@ G_BEGIN_DECLS
 
 gpointer        gst_gtk_invoke_on_main                (GThreadFunc func, gpointer data);
 
-GdkMemoryFormat gst_video_format_to_gdk_memory_format (GstVideoFormat format);
-
 GdkTexture *    gst_video_frame_into_gdk_texture      (GstVideoFrame *frame);
 
 G_END_DECLS

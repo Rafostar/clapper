@@ -248,6 +248,9 @@ gst_clapper_importer_prepare_overlays_locked (GstClapperImporter *self)
     if ((v_meta = gst_buffer_get_video_meta (comp_buffer))) {
       gst_video_info_set_format (&v_info, v_meta->format, v_meta->width, v_meta->height);
       v_info.stride[0] = v_meta->stride[0];
+
+      if (alpha_flags & GST_VIDEO_OVERLAY_FORMAT_FLAG_PREMULTIPLIED_ALPHA)
+        v_info.flags |= GST_VIDEO_FLAG_PREMULTIPLIED_ALPHA;
     }
 
     if (G_UNLIKELY (!gst_video_frame_map (&comp_frame, &v_info, comp_buffer, GST_MAP_READ)))

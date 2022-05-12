@@ -22,6 +22,8 @@
 
 #include "gstgtkutils.h"
 
+#define _IS_FRAME_PREMULTIPLIED(f) (GST_VIDEO_INFO_FLAG_IS_SET (&(f)->info, GST_VIDEO_FLAG_PREMULTIPLIED_ALPHA))
+
 struct invoke_context
 {
   GThreadFunc func;
@@ -71,21 +73,29 @@ gst_gtk_invoke_on_main (GThreadFunc func, gpointer data)
   return info.res;
 }
 
-/* For use with `GdkMemoryTexture` only! */
-GdkMemoryFormat
-gst_video_format_to_gdk_memory_format (GstVideoFormat format)
+static GdkMemoryFormat
+gst_gdk_memory_format_from_frame (GstVideoFrame *frame)
 {
-  switch (format) {
+  switch (GST_VIDEO_FRAME_FORMAT (frame)) {
     case GST_VIDEO_FORMAT_RGBA64_LE:
     case GST_VIDEO_FORMAT_RGBA64_BE:
-      return GDK_MEMORY_R16G16B16A16_PREMULTIPLIED;
+      return (_IS_FRAME_PREMULTIPLIED (frame))
+          ? GDK_MEMORY_R16G16B16A16_PREMULTIPLIED
+          : GDK_MEMORY_R16G16B16A16;
     case GST_VIDEO_FORMAT_RGBA:
-      return GDK_MEMORY_R8G8B8A8;
+      return (_IS_FRAME_PREMULTIPLIED (frame))
+          ? GDK_MEMORY_R8G8B8A8_PREMULTIPLIED
+          : GDK_MEMORY_R8G8B8A8;
     case GST_VIDEO_FORMAT_BGRA:
-      return GDK_MEMORY_B8G8R8A8;
+      return (_IS_FRAME_PREMULTIPLIED (frame))
+          ? GDK_MEMORY_B8G8R8A8_PREMULTIPLIED
+          : GDK_MEMORY_B8G8R8A8;
     case GST_VIDEO_FORMAT_ARGB:
-      return GDK_MEMORY_A8R8G8B8;
+      return (_IS_FRAME_PREMULTIPLIED (frame))
+          ? GDK_MEMORY_A8R8G8B8_PREMULTIPLIED
+          : GDK_MEMORY_A8R8G8B8;
     case GST_VIDEO_FORMAT_ABGR:
+      /* GTK is missing premultiplied ABGR support */
       return GDK_MEMORY_A8B8G8R8;
     case GST_VIDEO_FORMAT_RGBx:
       return GDK_MEMORY_R8G8B8A8_PREMULTIPLIED;
@@ -122,7 +132,7 @@ gst_video_frame_into_gdk_texture (GstVideoFrame *frame)
   texture = gdk_memory_texture_new (
       GST_VIDEO_FRAME_WIDTH (frame),
       GST_VIDEO_FRAME_HEIGHT (frame),
-      gst_video_format_to_gdk_memory_format (GST_VIDEO_FRAME_FORMAT (frame)),
+      gst_gdk_memory_format_from_frame (frame),
       bytes,
       GST_VIDEO_FRAME_PLANE_STRIDE (frame, 0));
 
