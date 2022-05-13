@@ -46,6 +46,14 @@ if gst_gl_have_window_wayland and gst_gl_have_platform_egl
   endif
 endif
 
+if gst_gl_have_window_win32 and (gst_gl_have_platform_egl or gst_gl_have_platform_wgl)
+  gtk_win32_dep = dependency('gtk4-win32', required: false)
+  if gtk_win32_dep.found()
+    gst_plugin_gl_base_deps += gtk_win32_dep
+    have_gtk_gl_windowing = true
+  endif
+endif
+
 if gst_gl_have_window_cocoa and gst_gl_have_platform_cgl
   gtk_macos_dep = dependency('gtk4-macos', required: false)
   if gtk_macos_dep.found()
