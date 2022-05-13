@@ -42,6 +42,10 @@
 #include <gst/gl/egl/gstgldisplay_egl.h>
 #endif
 
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
+#include <gdk/macos/gdkmacos.h>
+#endif
+
 #define GST_CAT_DEFAULT gst_clapper_gl_base_importer_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -151,6 +155,13 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
 #endif
 #endif
 
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
+  if (GDK_IS_MACOS_DISPLAY (gdk_display)) {
+    self->gst_display =
+        gst_gl_display_new_with_type (GST_GL_DISPLAY_TYPE_COCOA);
+  }
+#endif
+
   /* Fallback to generic display */
   if (G_UNLIKELY (!self->gst_display)) {
     GST_WARNING_OBJECT (self, "Unknown Gdk display!");
@@ -175,6 +186,13 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
   if (GST_IS_GL_DISPLAY_X11 (self->gst_display)) {
     platform = GST_GL_PLATFORM_GLX;
     GST_INFO_OBJECT (self, "Using GLX on x11");
+    goto have_display;
+  }
+#endif
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
+  if (gst_gl_display_get_handle_type (self->gst_display) == GST_GL_DISPLAY_TYPE_COCOA) {
+    platform = GST_GL_PLATFORM_CGL;
+    GST_INFO_OBJECT (self, "Using CGL on macOS");
     goto have_display;
   }
 #endif
