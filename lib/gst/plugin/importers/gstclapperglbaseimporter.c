@@ -38,8 +38,12 @@
 #if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
 #include <gst/gl/x11/gstgldisplay_x11.h>
 #endif
-#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL || GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32_EGL
 #include <gst/gl/egl/gstgldisplay_egl.h>
+#endif
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32
+#include <gdk/win32/gdkwin32.h>
 #endif
 
 #if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
@@ -155,6 +159,24 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
 #endif
 #endif
 
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32
+  if (GDK_IS_WIN32_DISPLAY (gdk_display)) {
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32_EGL
+    gpointer display_ptr = gdk_win32_display_get_egl_display (gdk_display);
+    if (display_ptr) {
+      self->gst_display = (GstGLDisplay *)
+          gst_gl_display_egl_new_with_egl_display (display_ptr);
+    }
+#endif
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32_WGL
+    if (!self->gst_display) {
+      self->gst_display =
+          gst_gl_display_new_with_type (GST_GL_DISPLAY_TYPE_WIN32);
+    }
+  }
+#endif
+#endif
+
 #if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
   if (GDK_IS_MACOS_DISPLAY (gdk_display)) {
     self->gst_display =
@@ -176,7 +198,8 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
   }
 #endif
 #if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
-  if (GST_IS_GL_DISPLAY_EGL (self->gst_display)) {
+  if (GST_IS_GL_DISPLAY_EGL (self->gst_display)
+      && GDK_IS_X11_DISPLAY (gdk_display)) {
     platform = GST_GL_PLATFORM_EGL;
     GST_INFO_OBJECT (self, "Using EGL on x11");
     goto have_display;
@@ -186,6 +209,21 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
   if (GST_IS_GL_DISPLAY_X11 (self->gst_display)) {
     platform = GST_GL_PLATFORM_GLX;
     GST_INFO_OBJECT (self, "Using GLX on x11");
+    goto have_display;
+  }
+#endif
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32_EGL
+  if (GST_IS_GL_DISPLAY_EGL (self->gst_display)
+      && GDK_IS_WIN32_DISPLAY (gdk_display)) {
+    platform = GST_GL_PLATFORM_EGL;
+    GST_INFO_OBJECT (self, "Using EGL on Win32");
+    goto have_display;
+  }
+#endif
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32_WGL
+  if (gst_gl_display_get_handle_type (self->gst_display) == GST_GL_DISPLAY_TYPE_WIN32) {
+    platform = GST_GL_PLATFORM_WGL;
+    GST_INFO_OBJECT (self, "Using WGL on Win32");
     goto have_display;
   }
 #endif
