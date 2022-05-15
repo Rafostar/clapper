@@ -53,6 +53,10 @@ gst_clapper_paintable_class_init (GstClapperPaintableClass *klass)
 static void
 gst_clapper_paintable_init (GstClapperPaintable *self)
 {
+  self->display_width = 1;
+  self->display_height = 1;
+  self->display_aspect_ratio = 1.0;
+
   self->par_n = DEFAULT_PAR_N;
   self->par_d = DEFAULT_PAR_D;
   self->pixel_aspect = ((gdouble) self->par_d / self->par_n);
