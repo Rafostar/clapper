@@ -2189,7 +2189,7 @@ gst_clapper_subtitle_info_update (GstClapper * self,
       g_object_get (G_OBJECT (self->playbin), "current-suburi", &suburi, NULL);
       if (suburi) {
         if (self->use_playbin3) {
-          if (g_str_equal (self->subtitle_sid, stream_info->stream_id))
+          if (!g_strcmp0 (self->subtitle_sid, stream_info->stream_id))
             info->language = g_path_get_basename (suburi);
         } else {
           g_object_get (G_OBJECT (self->playbin), "current-text", &text_index,
@@ -2387,7 +2387,7 @@ gst_clapper_stream_info_find_from_stream_id (GstClapperMediaInfo * media_info,
   list = gst_clapper_media_info_get_stream_list (media_info);
   for (l = list; l != NULL; l = l->next) {
     info = (GstClapperStreamInfo *) l->data;
-    if (g_str_equal (info->stream_id, stream_id)) {
+    if (!g_strcmp0 (info->stream_id, stream_id)) {
       return info;
     }
   }
