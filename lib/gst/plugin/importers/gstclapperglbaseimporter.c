@@ -447,35 +447,58 @@ gst_clapper_gl_base_importer_add_allocation_metas (GstClapperImporter *importer,
 }
 
 static gboolean
+_realize_gdk_context_with_api (GdkGLContext *gdk_context, GdkGLAPI api)
+{
+  GError *error = NULL;
+  gboolean success;
+
+  gdk_gl_context_set_allowed_apis (gdk_context, api);
+  if (!(success = gdk_gl_context_realize (gdk_context, &error))) {
+    GST_WARNING ("Could not realize Gdk context with %s: %s",
+        (api & GDK_GL_API_GL) ? "GL" : "GLES", error->message);
+    g_clear_error (&error);
+  }
+
+  return success;
+}
+
+static gboolean
 gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self, GdkGLContext *gdk_context)
 {
-  GdkGLAPI allowed_apis;
-  GError *error = NULL;
+  GdkGLAPI preferred_api;
   const gchar *gl_env;
   gboolean success;
 
   GST_DEBUG_OBJECT (self, "Realizing GdkGLContext with default implementation");
 
   /* Use single "GST_GL_API" env to also influence Gdk GL selection */
-  gl_env = g_getenv ("GST_GL_API");
-  allowed_apis = (!gl_env || g_str_has_prefix (gl_env, "gles"))
-      ? GDK_GL_API_GLES
-      : (g_str_has_prefix (gl_env, "opengl"))
-      ? GDK_GL_API_GL
-      : GDK_GL_API_GL | GDK_GL_API_GLES;
+  if ((gl_env = g_getenv ("GST_GL_API"))) {
+    preferred_api = (g_str_has_prefix (gl_env, "gles"))
+        ? GDK_GL_API_GLES
+        : g_str_has_prefix (gl_env, "opengl")
+        ? GDK_GL_API_GL
+        : GDK_GL_API_GL | GDK_GL_API_GLES;
 
-  gdk_gl_context_set_allowed_apis (gdk_context, allowed_apis);
-  if (!(success = gdk_gl_context_realize (gdk_context, &error))) {
-    GST_WARNING_OBJECT (self, "Could not realize Gdk context with %s: %s",
-        (allowed_apis & GDK_GL_API_GL) ? "GL" : "GLES", error->message);
-    g_clear_error (&error);
+    /* With requested by user API, we either use it or give up */
+    return _realize_gdk_context_with_api (gdk_context, preferred_api);
   }
-  if (!success && !gl_env) {
-    gdk_gl_context_set_allowed_apis (gdk_context, GDK_GL_API_GL);
-    if (!(success = gdk_gl_context_realize (gdk_context, &error))) {
-      GST_WARNING_OBJECT (self, "Could not realize Gdk context with GL: %s", error->message);
-      g_clear_error (&error);
-    }
+
+  /* Apple decoder uses rectangle texture-target, which GLES does not support.
+   * For Linux we prefer GLES in order to get HW colorspace conversion.
+   * Windows will try EGL + GLES setup first and auto fallback to WGL. */
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
+  preferred_api = GDK_GL_API_GL;
+#else
+  preferred_api = GDK_GL_API_GLES;
+#endif
+
+  if (!(success = _realize_gdk_context_with_api (gdk_context, preferred_api))) {
+    GdkGLAPI fallback_api;
+
+    fallback_api = (GDK_GL_API_GL | GDK_GL_API_GLES);
+    fallback_api &= ~preferred_api;
+
+    success = _realize_gdk_context_with_api (gdk_context, fallback_api);
   }
 
   return success;
