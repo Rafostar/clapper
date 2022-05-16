@@ -33,7 +33,7 @@
       <summary>Unit ID to use with seeking value</summary>
     </key>
     <key name="resume-enabled" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Ask to resume unfinished video</summary>
     </key>
     <key name="resume-database" type="s">
