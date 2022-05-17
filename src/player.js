@@ -66,7 +66,6 @@ class ClapperPlayer extends GstClapper.Clapper
         this.needsTocUpdate = true;
 
         this.set_all_plugins_ranks();
-        this.set_initial_config();
         this.set_and_bind_settings();
 
         this.connect('state-changed', this._onStateChanged.bind(this));
@@ -96,13 +95,6 @@ class ClapperPlayer extends GstClapper.Clapper
 
         const flag = Gio.SettingsBindFlags.GET;
         settings.bind('subtitle-font', this.pipeline, 'subtitle-font-desc', flag);
-    }
-
-    set_initial_config()
-    {
-        /* FIXME: change into option in preferences */
-        const pipeline = this.get_pipeline();
-        pipeline.ring_buffer_max_size = 8 * 1024 * 1024;
     }
 
     set_all_plugins_ranks()
