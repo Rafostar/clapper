@@ -34,7 +34,7 @@
         "flathub/lib/uchardet.json",
         "flathub/gstreamer-1.0/gstreamer.json",
         "testing/gtk4.json",
-        "flathub/lib/libadwaita.json",
+        "testing/libadwaita.json",
         "testing/gtuber.json",
         {
             "name": "clapper",
