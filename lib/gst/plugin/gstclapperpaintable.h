@@ -46,7 +46,8 @@ struct _GstClapperPaintable
 
   GdkRGBA bg;
 
-  GWeakRef widget, importer;
+  GWeakRef widget;
+  GstClapperImporter *importer;
 
   /* Sink properties */
   gint par_n, par_d;

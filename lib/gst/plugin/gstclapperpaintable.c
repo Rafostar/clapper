@@ -64,7 +64,6 @@ gst_clapper_paintable_init (GstClapperPaintable *self)
   g_mutex_init (&self->lock);
   gst_video_info_init (&self->v_info);
   g_weak_ref_init (&self->widget, NULL);
-  g_weak_ref_init (&self->importer, NULL);
 
   gdk_rgba_parse (&self->bg, "black");
 }
@@ -94,7 +93,7 @@ gst_clapper_paintable_finalize (GObject *object)
   GST_TRACE ("Finalize");
 
   g_weak_ref_clear (&self->widget);
-  g_weak_ref_clear (&self->importer);
+  gst_clear_object (&self->importer);
   g_mutex_clear (&self->lock);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
@@ -236,7 +235,9 @@ gst_clapper_paintable_set_widget (GstClapperPaintable *self, GtkWidget *widget)
 void
 gst_clapper_paintable_set_importer (GstClapperPaintable *self, GstClapperImporter *importer)
 {
-  g_weak_ref_set (&self->importer, importer);
+  GST_CLAPPER_PAINTABLE_LOCK (self);
+  gst_object_replace ((GstObject **) &self->importer, GST_OBJECT_CAST (importer));
+  GST_CLAPPER_PAINTABLE_UNLOCK (self);
 }
 
 void
@@ -325,7 +326,7 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
     GdkSnapshot *snapshot, gdouble width, gdouble height,
     gint widget_width, gint widget_height)
 {
-  GstClapperImporter *importer;
+  GstClapperImporter *importer = NULL;
   gfloat scale_x, scale_y;
 
   GST_LOG_OBJECT (self, "Snapshot");
@@ -351,10 +352,15 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
     }
   }
 
-  if ((importer = g_weak_ref_get (&self->importer))) {
+  GST_CLAPPER_PAINTABLE_LOCK (self);
+  if (self->importer)
+    importer = gst_object_ref (self->importer);
+  GST_CLAPPER_PAINTABLE_UNLOCK (self);
+
+  if (importer) {
     gst_clapper_importer_snapshot (importer, snapshot, width, height,
         scale_x * self->pixel_aspect, scale_y);
-    g_object_unref (importer);
+    gst_object_unref (importer);
   } else {
     GST_LOG_OBJECT (self, "No texture importer, drawing black");
     gtk_snapshot_append_color (snapshot, &self->bg, &GRAPHENE_RECT_INIT (0, 0, width, height));
