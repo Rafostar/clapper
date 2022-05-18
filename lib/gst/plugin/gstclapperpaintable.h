@@ -36,11 +36,16 @@ G_DECLARE_FINAL_TYPE (GstClapperPaintable, gst_clapper_paintable, GST, CLAPPER_P
 #define GST_CLAPPER_PAINTABLE_LOCK(obj)          g_mutex_lock (GST_CLAPPER_PAINTABLE_GET_LOCK(obj))
 #define GST_CLAPPER_PAINTABLE_UNLOCK(obj)        g_mutex_unlock (GST_CLAPPER_PAINTABLE_GET_LOCK(obj))
 
+#define GST_CLAPPER_PAINTABLE_IMPORTER_GET_LOCK(obj)      (&GST_CLAPPER_PAINTABLE_CAST(obj)->importer_lock)
+#define GST_CLAPPER_PAINTABLE_IMPORTER_LOCK(obj)          g_mutex_lock (GST_CLAPPER_PAINTABLE_IMPORTER_GET_LOCK(obj))
+#define GST_CLAPPER_PAINTABLE_IMPORTER_UNLOCK(obj)        g_mutex_unlock (GST_CLAPPER_PAINTABLE_IMPORTER_GET_LOCK(obj))
+
 struct _GstClapperPaintable
 {
   GObject parent;
 
   GMutex lock;
+  GMutex importer_lock;
 
   GstVideoInfo v_info;
 

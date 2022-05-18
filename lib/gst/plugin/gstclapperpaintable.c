@@ -62,6 +62,8 @@ gst_clapper_paintable_init (GstClapperPaintable *self)
   self->pixel_aspect = ((gdouble) self->par_d / self->par_n);
 
   g_mutex_init (&self->lock);
+  g_mutex_init (&self->importer_lock);
+
   gst_video_info_init (&self->v_info);
   g_weak_ref_init (&self->widget, NULL);
 
@@ -94,7 +96,9 @@ gst_clapper_paintable_finalize (GObject *object)
 
   g_weak_ref_clear (&self->widget);
   gst_clear_object (&self->importer);
+
   g_mutex_clear (&self->lock);
+  g_mutex_clear (&self->importer_lock);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -235,9 +239,9 @@ gst_clapper_paintable_set_widget (GstClapperPaintable *self, GtkWidget *widget)
 void
 gst_clapper_paintable_set_importer (GstClapperPaintable *self, GstClapperImporter *importer)
 {
-  GST_CLAPPER_PAINTABLE_LOCK (self);
+  GST_CLAPPER_PAINTABLE_IMPORTER_LOCK (self);
   gst_object_replace ((GstObject **) &self->importer, GST_OBJECT_CAST (importer));
-  GST_CLAPPER_PAINTABLE_UNLOCK (self);
+  GST_CLAPPER_PAINTABLE_IMPORTER_UNLOCK (self);
 }
 
 void
@@ -326,7 +330,6 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
     GdkSnapshot *snapshot, gdouble width, gdouble height,
     gint widget_width, gint widget_height)
 {
-  GstClapperImporter *importer = NULL;
   gfloat scale_x, scale_y;
 
   GST_LOG_OBJECT (self, "Snapshot");
@@ -352,19 +355,17 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
     }
   }
 
-  GST_CLAPPER_PAINTABLE_LOCK (self);
-  if (self->importer)
-    importer = gst_object_ref (self->importer);
-  GST_CLAPPER_PAINTABLE_UNLOCK (self);
+  GST_CLAPPER_PAINTABLE_IMPORTER_LOCK (self);
 
-  if (importer) {
-    gst_clapper_importer_snapshot (importer, snapshot, width, height,
+  if (self->importer) {
+    gst_clapper_importer_snapshot (self->importer, snapshot, width, height,
         scale_x * self->pixel_aspect, scale_y);
-    gst_object_unref (importer);
   } else {
     GST_LOG_OBJECT (self, "No texture importer, drawing black");
     gtk_snapshot_append_color (snapshot, &self->bg, &GRAPHENE_RECT_INIT (0, 0, width, height));
   }
+
+  GST_CLAPPER_PAINTABLE_IMPORTER_UNLOCK (self);
 }
 
 static void
