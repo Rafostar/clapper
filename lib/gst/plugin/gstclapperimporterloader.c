@@ -29,13 +29,15 @@
 #define GST_CAT_DEFAULT gst_clapper_importer_loader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
+#define parent_class gst_clapper_importer_loader_parent_class
+G_DEFINE_TYPE (GstClapperImporterLoader, gst_clapper_importer_loader, GST_TYPE_OBJECT);
+
 typedef GstClapperImporter* (* MakeImporter) (void);
 typedef GstCaps* (* MakeCaps) (GstRank *rank, GStrv *context_types);
 
 typedef struct
 {
-  gchar *module_path;
-  GModule *open_module;
+  GModule *module;
   GstCaps *caps;
   GstRank rank;
   GStrv context_types;
@@ -44,142 +46,74 @@ typedef struct
 static void
 gst_clapper_importer_data_free (GstClapperImporterData *data)
 {
-  g_free (data->module_path);
-
-  if (data->open_module)
-    g_module_close (data->open_module);
+  GST_TRACE ("Freeing importer data: %" GST_PTR_FORMAT, data);
 
   gst_clear_caps (&data->caps);
   g_strfreev (data->context_types);
   g_free (data);
 }
 
-static gboolean
-_open_importer (GstClapperImporterData *data)
-{
-  g_return_val_if_fail (data && data->module_path, FALSE);
-
-  /* Already open */
-  if (data->open_module)
-    return TRUE;
-
-  GST_DEBUG ("Opening module: %s", data->module_path);
-  data->open_module = g_module_open (data->module_path, G_MODULE_BIND_LAZY);
-
-  if (!data->open_module) {
-    GST_WARNING ("Could not load importer: %s, reason: %s",
-        data->module_path, g_module_error ());
-    return FALSE;
-  }
-  GST_DEBUG ("Opened importer module");
-
-  /* Make sure module stays loaded. Seems to be needed for
-   * reusing exported symbols from the same module again */
-  g_module_make_resident (data->open_module);
-
-  return TRUE;
-}
-
-static void
-_close_importer (GstClapperImporterData *data)
-{
-  if (!data || !data->open_module)
-    return;
-
-  if (G_LIKELY (g_module_close (data->open_module)))
-    GST_DEBUG ("Closed module: %s", data->module_path);
-  else
-    GST_WARNING ("Could not close importer module");
-
-  data->open_module = NULL;
-}
-
-static GstClapperImporter *
-_obtain_importer_internal (GstClapperImporterData *data)
-{
-  MakeImporter make_importer;
-  GstClapperImporter *importer = NULL;
-
-  if (!_open_importer (data))
-    goto finish;
-
-  if (!g_module_symbol (data->open_module, "make_importer", (gpointer *) &make_importer)
-      || make_importer == NULL) {
-    GST_WARNING ("Make function missing in importer");
-    goto fail;
-  }
-
-  /* Do not close the module, we are gonna continue using it */
-  if ((importer = make_importer ()))
-    goto finish;
-
-fail:
-  _close_importer (data);
-
-finish:
-  return importer;
-}
-
 static GstClapperImporterData *
-_fill_importer_data (const gchar *module_path)
+_obtain_importer_data (GModule *module)
 {
   MakeCaps make_caps;
   GstClapperImporterData *data;
 
-  data = g_new0 (GstClapperImporterData, 1);
-  data->module_path = g_strdup (module_path);
-  data->open_module = g_module_open (data->module_path, G_MODULE_BIND_LAZY);
-
-  if (!data->open_module)
-    goto fail;
-
-  if (!g_module_symbol (data->open_module, "make_caps", (gpointer *) &make_caps)
+  if (!g_module_symbol (module, "make_caps", (gpointer *) &make_caps)
       || make_caps == NULL) {
     GST_WARNING ("Make caps function missing in importer");
-    goto fail;
+    return NULL;
   }
 
+  data = g_new0 (GstClapperImporterData, 1);
+  data->module = module;
   data->caps = make_caps (&data->rank, &data->context_types);
-  GST_DEBUG ("Caps reading %ssuccessful", data->caps ? "" : "un");
 
-  if (!data->caps)
-    goto fail;
+  GST_TRACE ("Created importer data: %" GST_PTR_FORMAT, data);
 
-  /* Once we obtain importer data, close module afterwards */
-  _close_importer (data);
+  if (G_UNLIKELY (!data->caps)) {
+    GST_ERROR ("Invalid importer without caps: %s",
+        g_module_name (data->module));
+    gst_clapper_importer_data_free (data);
+
+    return NULL;
+  }
+
+  GST_DEBUG ("Found importer: %s, caps: %" GST_PTR_FORMAT,
+      g_module_name (data->module), data->caps);
 
   return data;
-
-fail:
-  gst_clapper_importer_data_free (data);
-
-  return NULL;
 }
 
-static gint
-_sort_importers_cb (gconstpointer a, gconstpointer b)
+static GstClapperImporter *
+_obtain_importer_internal (GModule *module)
 {
-  GstClapperImporterData *data_a, *data_b;
+  MakeImporter make_importer;
+  GstClapperImporter *importer;
 
-  data_a = *((GstClapperImporterData **) a);
-  data_b = *((GstClapperImporterData **) b);
+  if (!g_module_symbol (module, "make_importer", (gpointer *) &make_importer)
+      || make_importer == NULL) {
+    GST_WARNING ("Make function missing in importer");
+    return NULL;
+  }
 
-  return (data_b->rank - data_a->rank);
+  importer = make_importer ();
+  GST_TRACE ("Created importer: %" GST_PTR_FORMAT, importer);
+
+  return importer;
 }
 
 static gpointer
-_obtain_available_importers (G_GNUC_UNUSED gpointer data)
+_obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
 {
-  GPtrArray *importers;
+  GPtrArray *modules;
   GFile *dir;
   GFileEnumerator *dir_enum;
   GError *error = NULL;
 
-  importers = g_ptr_array_new_with_free_func (
-      (GDestroyNotify) gst_clapper_importer_data_free);
+  GST_INFO ("Preparing modules");
 
-  GST_INFO ("Checking available clapper sink importers");
-
+  modules = g_ptr_array_new ();
   dir = g_file_new_for_path (CLAPPER_SINK_IMPORTER_PATH);
 
   if ((dir_enum = g_file_enumerate_children (dir,
@@ -187,7 +121,7 @@ _obtain_available_importers (G_GNUC_UNUSED gpointer data)
       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error))) {
     while (TRUE) {
       GFileInfo *info = NULL;
-      GstClapperImporterData *data;
+      GModule *module;
       gchar *module_path;
       const gchar *module_name;
 
@@ -201,16 +135,17 @@ _obtain_available_importers (G_GNUC_UNUSED gpointer data)
         continue;
 
       module_path = g_module_build_path (CLAPPER_SINK_IMPORTER_PATH, module_name);
-      data = _fill_importer_data (module_path);
+      module = g_module_open (module_path, G_MODULE_BIND_LAZY);
       g_free (module_path);
 
-      if (!data) {
-        GST_WARNING ("Could not read importer data: %s", module_name);
+      if (!module) {
+        GST_WARNING ("Could not read module: %s, reason: %s",
+            module_name, g_module_error ());
         continue;
       }
 
-      GST_INFO ("Found importer: %s, caps: %" GST_PTR_FORMAT, module_name, data->caps);
-      g_ptr_array_add (importers, data);
+      GST_INFO ("Found module: %s", module_name);
+      g_ptr_array_add (modules, module);
     }
 
     g_object_unref (dir_enum);
@@ -219,41 +154,105 @@ _obtain_available_importers (G_GNUC_UNUSED gpointer data)
   g_object_unref (dir);
 
   if (error) {
-    GST_ERROR ("Could not load importer, reason: %s",
+    GST_ERROR ("Could not load module, reason: %s",
         (error->message) ? error->message : "unknown");
     g_error_free (error);
   }
 
+  return modules;
+}
+
+static const GPtrArray *
+gst_clapper_importer_loader_get_available_modules (void)
+{
+  static GOnce once = G_ONCE_INIT;
+
+  g_once (&once, _obtain_available_modules_once, NULL);
+  return (const GPtrArray *) once.retval;
+}
+
+static gint
+_sort_importers_cb (gconstpointer a, gconstpointer b)
+{
+  GstClapperImporterData *data_a, *data_b;
+
+  data_a = *((GstClapperImporterData **) a);
+  data_b = *((GstClapperImporterData **) b);
+
+  return (data_b->rank - data_a->rank);
+}
+
+static GPtrArray *
+gst_clapper_importer_loader_obtain_available_importers (void)
+{
+  const GPtrArray *modules;
+  GPtrArray *importers;
+  guint i;
+
+  GST_DEBUG ("Checking available importers");
+
+  modules = gst_clapper_importer_loader_get_available_modules ();
+  importers = g_ptr_array_new_with_free_func (
+      (GDestroyNotify) gst_clapper_importer_data_free);
+
+  for (i = 0; i < modules->len; i++) {
+    GModule *module = g_ptr_array_index (modules, i);
+    GstClapperImporterData *data;
+
+    if ((data = _obtain_importer_data (module)))
+      g_ptr_array_add (importers, data);
+  }
+
   g_ptr_array_sort (importers, (GCompareFunc) _sort_importers_cb);
+
+  GST_DEBUG ("Found %i available importers", importers->len);
 
   return importers;
 }
 
-static const GPtrArray *
-gst_clapper_importer_loader_get_available_importers (void)
+GstPadTemplate *
+gst_clapper_importer_loader_make_sink_pad_template (void)
 {
-  static GOnce once = G_ONCE_INIT;
-
-  g_once (&once, _obtain_available_importers, NULL);
-  return (const GPtrArray *) once.retval;
-}
-
-static GstClapperImporterData *
-_find_open_importer_data (const GPtrArray *importers)
-{
+  GPtrArray *importers;
+  GstCaps *sink_caps;
+  GstPadTemplate *templ;
   guint i;
+
+  /* This is only called once from sink class init function */
+  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperimporterloader", 0,
+      "Clapper Importer Loader");
+
+  GST_DEBUG ("Making sink pad template");
+
+  importers = gst_clapper_importer_loader_obtain_available_importers ();
+  sink_caps = gst_caps_new_empty ();
 
   for (i = 0; i < importers->len; i++) {
     GstClapperImporterData *data = g_ptr_array_index (importers, i);
 
-    if (data->open_module)
-      return data;
+    gst_caps_append (sink_caps, gst_caps_ref (data->caps));
   }
 
-  return NULL;
+  g_ptr_array_unref (importers);
+
+  if (G_UNLIKELY (gst_caps_is_empty (sink_caps)))
+    gst_caps_append (sink_caps, gst_caps_new_any ());
+
+  templ = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, sink_caps);
+  gst_caps_unref (sink_caps);
+
+  GST_TRACE ("Created sink pad template");
+
+  return templ;
 }
 
-static GstClapperImporterData *
+GstClapperImporterLoader *
+gst_clapper_importer_loader_new (void)
+{
+  return g_object_new (GST_TYPE_CLAPPER_IMPORTER_LOADER, NULL);
+}
+
+static const GstClapperImporterData *
 _get_importer_data_for_caps (const GPtrArray *importers, const GstCaps *caps)
 {
   guint i;
@@ -270,7 +269,7 @@ _get_importer_data_for_caps (const GPtrArray *importers, const GstCaps *caps)
   return NULL;
 }
 
-static GstClapperImporterData *
+static const GstClapperImporterData *
 _get_importer_data_for_context_type (const GPtrArray *importers, const gchar *context_type)
 {
   guint i;
@@ -293,125 +292,125 @@ _get_importer_data_for_context_type (const GPtrArray *importers, const gchar *co
   return NULL;
 }
 
-void
-gst_clapper_importer_loader_unload_all (void)
-{
-  const GPtrArray *importers;
-  guint i;
-
-  importers = gst_clapper_importer_loader_get_available_importers ();
-  GST_TRACE ("Unloading all open modules");
-
-  for (i = 0; i < importers->len; i++) {
-    GstClapperImporterData *data = g_ptr_array_index (importers, i);
-
-    _close_importer (data);
-  }
-}
-
-GstPadTemplate *
-gst_clapper_importer_loader_make_sink_pad_template (void)
-{
-  const GPtrArray *importers;
-  GstCaps *sink_caps;
-  GstPadTemplate *templ;
-  guint i;
-
-  /* This is only called once from sink class init function */
-  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperimporterloader", 0,
-      "Clapper Importer Loader");
-
-  importers = gst_clapper_importer_loader_get_available_importers ();
-  sink_caps = gst_caps_new_empty ();
-
-  for (i = 0; i < importers->len; i++) {
-    GstClapperImporterData *data = g_ptr_array_index (importers, i);
-    GstCaps *copied_caps;
-
-    copied_caps = gst_caps_copy (data->caps);
-    gst_caps_append (sink_caps, copied_caps);
-  }
-
-  if (G_UNLIKELY (gst_caps_is_empty (sink_caps)))
-    gst_caps_append (sink_caps, gst_caps_new_any ());
-
-  templ = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, sink_caps);
-  gst_caps_unref (sink_caps);
-
-  return templ;
-}
-
 static gboolean
-_find_importer_internal (GstCaps *caps, GstQuery *query, GstClapperImporter **importer)
+_find_importer_internal (GstClapperImporterLoader *self,
+    GstCaps *caps, GstQuery *query, GstClapperImporter **importer)
 {
-  const GPtrArray *importers;
-  GstClapperImporterData *old_data = NULL, *new_data = NULL;
+  const GstClapperImporterData *data = NULL;
   GstClapperImporter *found_importer = NULL;
 
-  importers = gst_clapper_importer_loader_get_available_importers ();
-  old_data = _find_open_importer_data (importers);
+  GST_OBJECT_LOCK (self);
 
   if (caps) {
-    GST_DEBUG ("Requested importer for caps: %" GST_PTR_FORMAT, caps);
-    new_data = _get_importer_data_for_caps (importers, caps);
+    GST_DEBUG_OBJECT (self, "Requested importer for caps: %" GST_PTR_FORMAT, caps);
+    data = _get_importer_data_for_caps (self->importers, caps);
   } else if (query) {
     const gchar *context_type;
 
     gst_query_parse_context_type (query, &context_type);
 
-    GST_DEBUG ("Requested importer for context: %s", context_type);
-    new_data = _get_importer_data_for_context_type (importers, context_type);
-
-    /* In case missing importer for context query, leave the old one.
-     * We should allow some queries to go through unresponded */
-    if (!new_data)
-      new_data = old_data;
+    GST_DEBUG_OBJECT (self, "Requested importer for context: %s", context_type);
+    data = _get_importer_data_for_context_type (self->importers, context_type);
   }
-  GST_LOG ("Old importer path: %s, new path: %s",
-      (old_data != NULL) ? old_data->module_path : NULL,
-      (new_data != NULL) ? new_data->module_path : NULL);
 
-  if (old_data == new_data) {
-    GST_DEBUG ("No importer change");
+  GST_LOG_OBJECT (self, "Old importer path: %s, new path: %s",
+      (self->last_module) ? g_module_name (self->last_module) : NULL,
+      (data) ? g_module_name (data->module) : NULL);
 
-    if (*importer && caps)
+  if (!data) {
+    /* In case of missing importer for context query, leave the old one.
+     * We should allow some queries to go through unresponded */
+    if (query)
+      GST_DEBUG_OBJECT (self, "No importer for query, leaving old one");
+    else
+      gst_clear_object (importer);
+
+    goto finish;
+  }
+
+  if (*importer && (self->last_module == data->module)) {
+    GST_DEBUG_OBJECT (self, "No importer change");
+
+    if (caps)
       gst_clapper_importer_set_caps (*importer, caps);
 
-    return (*importer != NULL);
+    goto finish;
   }
 
-  if (new_data) {
-    found_importer = _obtain_importer_internal (new_data);
+  found_importer = _obtain_importer_internal (data->module);
 
-    if (*importer && found_importer)
-      gst_clapper_importer_share_data (*importer, found_importer);
-  }
+  if (*importer && found_importer)
+    gst_clapper_importer_share_data (*importer, found_importer);
 
   gst_clear_object (importer);
-  _close_importer (old_data);
 
-  if (found_importer && gst_clapper_importer_prepare (found_importer)) {
-    if (caps)
-      gst_clapper_importer_set_caps (found_importer, caps);
+  if (!found_importer || !gst_clapper_importer_prepare (found_importer)) {
+    gst_clear_object (&found_importer);
 
-    *importer = found_importer;
-    return TRUE;
+    goto finish;
   }
 
-  gst_clear_object (&found_importer);
-  _close_importer (new_data);
+  if (caps)
+    gst_clapper_importer_set_caps (found_importer, caps);
 
-  return FALSE;
+  *importer = found_importer;
+
+finish:
+  self->last_module = (*importer && data)
+      ? data->module
+      : NULL;
+
+  GST_OBJECT_UNLOCK (self);
+
+  return (*importer != NULL);
 }
 
 gboolean
-gst_clapper_importer_loader_find_importer_for_caps (GstCaps *caps, GstClapperImporter **importer)
+gst_clapper_importer_loader_find_importer_for_caps (GstClapperImporterLoader *self,
+    GstCaps *caps, GstClapperImporter **importer)
 {
-  return _find_importer_internal (caps, NULL, importer);
+  return _find_importer_internal (self, caps, NULL, importer);
 }
 
 gboolean
-gst_clapper_importer_loader_find_importer_for_context_query (GstQuery *query, GstClapperImporter **importer)
+gst_clapper_importer_loader_find_importer_for_context_query (GstClapperImporterLoader *self,
+    GstQuery *query, GstClapperImporter **importer)
 {
-  return _find_importer_internal (NULL, query, importer);
+  return _find_importer_internal (self, NULL, query, importer);
+}
+
+static void
+gst_clapper_importer_loader_init (GstClapperImporterLoader *self)
+{
+}
+
+static void
+gst_clapper_importer_loader_constructed (GObject *object)
+{
+  GstClapperImporterLoader *self = GST_CLAPPER_IMPORTER_LOADER_CAST (object);
+
+  self->importers = gst_clapper_importer_loader_obtain_available_importers ();
+
+  GST_CALL_PARENT (G_OBJECT_CLASS, constructed, (object));
+}
+
+static void
+gst_clapper_importer_loader_finalize (GObject *object)
+{
+  GstClapperImporterLoader *self = GST_CLAPPER_IMPORTER_LOADER_CAST (object);
+
+  GST_TRACE ("Finalize");
+
+  g_ptr_array_unref (self->importers);
+
+  GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
+static void
+gst_clapper_importer_loader_class_init (GstClapperImporterLoaderClass *klass)
+{
+  GObjectClass *gobject_class = (GObjectClass *) klass;
+
+  gobject_class->constructed = gst_clapper_importer_loader_constructed;
+  gobject_class->finalize = gst_clapper_importer_loader_finalize;
 }

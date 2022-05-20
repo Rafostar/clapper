@@ -25,12 +25,25 @@
 
 G_BEGIN_DECLS
 
-GstPadTemplate * gst_clapper_importer_loader_make_sink_pad_template          (void);
+#define GST_TYPE_CLAPPER_IMPORTER_LOADER (gst_clapper_importer_loader_get_type())
+G_DECLARE_FINAL_TYPE (GstClapperImporterLoader, gst_clapper_importer_loader, GST, CLAPPER_IMPORTER_LOADER, GstObject)
 
-gboolean         gst_clapper_importer_loader_find_importer_for_caps          (GstCaps *caps, GstClapperImporter **importer);
+#define GST_CLAPPER_IMPORTER_LOADER_CAST(obj)        ((GstClapperImporterLoader *)(obj))
 
-gboolean         gst_clapper_importer_loader_find_importer_for_context_query (GstQuery *query, GstClapperImporter **importer);
+struct _GstClapperImporterLoader
+{
+  GstObject parent;
 
-void             gst_clapper_importer_loader_unload_all                      (void);
+  GModule *last_module;
+  GPtrArray *importers;
+};
+
+GstClapperImporterLoader * gst_clapper_importer_loader_new                             (void);
+
+GstPadTemplate *           gst_clapper_importer_loader_make_sink_pad_template          (void);
+
+gboolean                   gst_clapper_importer_loader_find_importer_for_caps          (GstClapperImporterLoader *loader, GstCaps *caps, GstClapperImporter **importer);
+
+gboolean                   gst_clapper_importer_loader_find_importer_for_context_query (GstClapperImporterLoader *loader, GstQuery *query, GstClapperImporter **importer);
 
 G_END_DECLS

@@ -22,7 +22,6 @@
 #endif
 
 #include "gstclappersink.h"
-#include "gstclapperimporterloader.h"
 #include "gstgtkutils.h"
 
 #define DEFAULT_FORCE_ASPECT_RATIO  TRUE
@@ -494,7 +493,7 @@ gst_clapper_sink_query (GstBaseSink *bsink, GstQuery *query)
     /* Some random context query in the middle of playback
      * should not trigger importer replacement */
     if (is_inactive)
-      gst_clapper_importer_loader_find_importer_for_context_query (query, &self->importer);
+      gst_clapper_importer_loader_find_importer_for_context_query (self->loader, query, &self->importer);
     if (self->importer)
       res = gst_clapper_importer_handle_context_query (self->importer, bsink, query);
   }
@@ -728,7 +727,7 @@ gst_clapper_sink_set_caps (GstBaseSink *bsink, GstCaps *caps)
     return FALSE;
   }
 
-  if (!gst_clapper_importer_loader_find_importer_for_caps (caps, &self->importer)) {
+  if (!gst_clapper_importer_loader_find_importer_for_caps (self->loader, caps, &self->importer)) {
     GST_CLAPPER_SINK_UNLOCK (self);
     GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND,
         ("No importer for given caps found"), (NULL));
@@ -808,6 +807,7 @@ gst_clapper_sink_init (GstClapperSink *self)
   gst_video_info_init (&self->v_info);
 
   self->paintable = gst_clapper_paintable_new ();
+  self->loader = gst_clapper_importer_loader_new ();
 }
 
 static void
@@ -835,7 +835,7 @@ gst_clapper_sink_finalize (GObject *object)
 
   GST_TRACE ("Finalize");
 
-  gst_clapper_importer_loader_unload_all ();
+  gst_clear_object (&self->loader);
   g_mutex_clear (&self->lock);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));

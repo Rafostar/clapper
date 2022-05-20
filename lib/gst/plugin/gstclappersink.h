@@ -25,6 +25,7 @@
 #include <gst/video/video.h>
 
 #include "gstclapperpaintable.h"
+#include "gstclapperimporterloader.h"
 #include "gstclapperimporter.h"
 
 G_BEGIN_DECLS
@@ -46,6 +47,7 @@ struct _GstClapperSink
   GMutex lock;
 
   GstClapperPaintable *paintable;
+  GstClapperImporterLoader *loader;
   GstClapperImporter *importer;
   GstVideoInfo v_info;
 
