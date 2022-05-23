@@ -29,7 +29,8 @@ class ClapperApp extends Gtk.Application
     {
         super.vfunc_open(files, hint);
 
-        this._openFilesAsync(files).then(() => this.activate()).catch(debug);
+        this.activate();
+        this._openFilesAsync(files).catch(debug);
     }
 
     vfunc_activate()
