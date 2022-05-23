@@ -32,3 +32,15 @@ gnome.compile_resources('com.github.rafostar.Clapper.data',
   install: true,
   install_dir: pkgdatadir,
 )
+
+dbus_conf = configuration_data()
+dbus_conf.set('app_id', meson.project_name())
+dbus_conf.set('bindir', bindir)
+
+configure_file(
+  input: 'com.github.rafostar.Clapper.service.in',
+  output: 'com.github.rafostar.Clapper.service',
+  configuration: dbus_conf,
+  install: true,
+  install_dir: join_paths(datadir, 'dbus-1', 'services'),
+)
