@@ -465,7 +465,8 @@ _realize_gdk_context_with_api (GdkGLContext *gdk_context, GdkGLAPI api)
 static gboolean
 gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self, GdkGLContext *gdk_context)
 {
-  GdkGLAPI preferred_api;
+  GdkGLAPI preferred_api = GDK_GL_API_GL;
+  GdkDisplay *gdk_display;
   const gchar *gl_env;
   gboolean success;
 
@@ -483,13 +484,24 @@ gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self
     return _realize_gdk_context_with_api (gdk_context, preferred_api);
   }
 
+  gdk_display = gdk_gl_context_get_display (gdk_context);
+  GST_DEBUG_OBJECT (self, "Auto selecting GL API for display: %s",
+      gdk_display_get_name (gdk_display));
+
   /* Apple decoder uses rectangle texture-target, which GLES does not support.
-   * For Linux we prefer GLES in order to get HW colorspace conversion.
+   * For Linux we prefer EGL + GLES in order to get direct HW colorspace conversion.
    * Windows will try EGL + GLES setup first and auto fallback to WGL. */
-#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_MACOS
-  preferred_api = GDK_GL_API_GL;
-#else
-  preferred_api = GDK_GL_API_GLES;
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WAYLAND
+  if (GDK_IS_WAYLAND_DISPLAY (gdk_display))
+    preferred_api = GDK_GL_API_GLES;
+#endif
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
+  if (GDK_IS_X11_DISPLAY (gdk_display) && gdk_x11_display_get_egl_display (gdk_display))
+    preferred_api = GDK_GL_API_GLES;
+#endif
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WIN32_EGL
+  if (GDK_IS_WIN32_DISPLAY (gdk_display) && gdk_win32_display_get_egl_display (gdk_display))
+    preferred_api = GDK_GL_API_GLES;
 #endif
 
   if (!(success = _realize_gdk_context_with_api (gdk_context, preferred_api))) {
