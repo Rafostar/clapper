@@ -504,6 +504,16 @@ gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self
     preferred_api = GDK_GL_API_GLES;
 #endif
 
+  /* FIXME: Remove once GStreamer can handle DRM modifiers. This tries to avoid
+   * "scrambled" image on Linux with Intel GPUs that are mostly used together with
+   * x86 CPUs at the expense of using slightly slower non-direct DMABuf import.
+   * See: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1236 */
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_WAYLAND || GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
+#if !defined(HAVE_GST_PATCHES) && (defined(__i386__) || defined(_M_IX86) || defined(__x86_64__) || defined(_M_X64))
+  preferred_api = GDK_GL_API_GL;
+#endif
+#endif
+
   if (!(success = _realize_gdk_context_with_api (gdk_context, preferred_api))) {
     GdkGLAPI fallback_api;
 
