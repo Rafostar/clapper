@@ -1,4 +1,4 @@
-const { Gio, GLib, GObject, Gtk } = imports.gi;
+const { Gio, GObject, Gtk } = imports.gi;
 const { Widget } = imports.src.widget;
 const Debug = imports.src.debug;
 const FileOps = imports.src.fileOps;
@@ -40,9 +40,7 @@ class ClapperApp extends Gtk.Application
         if(!this.doneFirstActivate)
             this._onFirstActivate();
 
-        this.active_window.present_with_time(
-            Math.floor(GLib.get_monotonic_time() / 1000)
-        );
+        this.active_window.present();
     }
 
     async _openFilesAsync(files)
