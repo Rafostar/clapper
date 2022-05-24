@@ -109,6 +109,11 @@ retrieve_gl_context_on_main (GstClapperGLBaseImporter *self)
 
   gdk_display = gdk_display_get_default ();
 
+  if (G_UNLIKELY (!gdk_display)) {
+    GST_ERROR_OBJECT (self, "Could not retrieve Gdk display");
+    return FALSE;
+  }
+
   if (!(gdk_context = gdk_display_create_gl_context (gdk_display, &error))) {
     GST_ERROR_OBJECT (self, "Error creating Gdk GL context: %s",
         error ? error->message : "No error set by Gdk");
