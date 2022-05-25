@@ -84,6 +84,10 @@ gst_clapper_paintable_dispose (GObject *object)
 
   GST_CLAPPER_PAINTABLE_UNLOCK (self);
 
+  GST_CLAPPER_PAINTABLE_IMPORTER_LOCK (self);
+  gst_clear_object (&self->importer);
+  GST_CLAPPER_PAINTABLE_IMPORTER_UNLOCK (self);
+
   GST_CALL_PARENT (G_OBJECT_CLASS, dispose, (object));
 }
 
@@ -95,7 +99,6 @@ gst_clapper_paintable_finalize (GObject *object)
   GST_TRACE ("Finalize");
 
   g_weak_ref_clear (&self->widget);
-  gst_clear_object (&self->importer);
 
   g_mutex_clear (&self->lock);
   g_mutex_clear (&self->importer_lock);
