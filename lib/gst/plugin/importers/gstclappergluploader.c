@@ -265,12 +265,12 @@ _update_glx_caps_on_main (GstCaps *caps)
 #endif
 
 GstCaps *
-make_caps (GstRank *rank, GStrv *context_types)
+make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
 {
   GstCaps *caps = gst_gl_upload_get_input_template_caps ();
 
 #if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
-  if (!(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
+  if (!is_template && !(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
       _update_glx_caps_on_main, caps)))
     gst_clear_caps (&caps);
 #endif

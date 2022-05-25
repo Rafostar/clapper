@@ -97,7 +97,7 @@ make_importer (void)
 }
 
 GstCaps *
-make_caps (GstRank *rank, GStrv *context_types)
+make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
 {
   *rank = GST_RANK_MARGINAL;
 

@@ -42,6 +42,8 @@ GstClapperImporterLoader * gst_clapper_importer_loader_new                      
 
 GstPadTemplate *           gst_clapper_importer_loader_make_sink_pad_template          (void);
 
+GstCaps *                  gst_clapper_importer_loader_make_actual_caps                (GstClapperImporterLoader *loader);
+
 gboolean                   gst_clapper_importer_loader_find_importer_for_caps          (GstClapperImporterLoader *loader, GstCaps *caps, GstClapperImporter **importer);
 
 gboolean                   gst_clapper_importer_loader_find_importer_for_context_query (GstClapperImporterLoader *loader, GstQuery *query, GstClapperImporter **importer);

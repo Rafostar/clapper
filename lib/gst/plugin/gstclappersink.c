@@ -695,9 +695,10 @@ gst_clapper_sink_get_times (GstBaseSink *bsink, GstBuffer *buffer,
 static GstCaps *
 gst_clapper_sink_get_caps (GstBaseSink *bsink, GstCaps *filter)
 {
+  GstClapperSink *self = GST_CLAPPER_SINK_CAST (bsink);
   GstCaps *result, *tmp;
 
-  tmp = gst_pad_get_pad_template_caps (GST_BASE_SINK_PAD (bsink));
+  tmp = gst_clapper_importer_loader_make_actual_caps (self->loader);
 
   if (filter) {
     GST_DEBUG ("Intersecting with filter caps: %" GST_PTR_FORMAT, filter);

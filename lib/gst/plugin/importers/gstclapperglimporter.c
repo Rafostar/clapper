@@ -61,7 +61,7 @@ make_importer (void)
 }
 
 GstCaps *
-make_caps (GstRank *rank, GStrv *context_types)
+make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
 {
   *rank = GST_RANK_SECONDARY;
   *context_types = gst_clapper_gl_base_importer_make_gl_context_types ();
