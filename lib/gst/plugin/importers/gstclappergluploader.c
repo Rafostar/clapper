@@ -22,6 +22,11 @@
 #endif
 
 #include "gstclappergluploader.h"
+#include "gst/plugin/gstgtkutils.h"
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11
+#include <gdk/x11/gdkx.h>
+#endif
 
 #define GST_CAT_DEFAULT gst_clapper_gl_uploader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -222,11 +227,59 @@ make_importer (void)
   return g_object_new (GST_TYPE_CLAPPER_GL_UPLOADER, NULL);
 }
 
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
+static gboolean
+_filter_glx_caps_cb (GstCapsFeatures *features,
+    GstStructure *structure, gpointer user_data)
+{
+  return !gst_caps_features_contains (features, "memory:DMABuf");
+}
+
+static gboolean
+_update_glx_caps_on_main (GstCaps *caps)
+{
+  GdkDisplay *gdk_display;
+
+  if (!gtk_init_check ())
+    return FALSE;
+
+  gdk_display = gdk_display_get_default ();
+  if (G_UNLIKELY (!gdk_display))
+    return FALSE;
+
+  if (GDK_IS_X11_DISPLAY (gdk_display)) {
+    gboolean using_glx = TRUE;
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
+    using_glx = (gdk_x11_display_get_egl_display (gdk_display) == NULL);
+#endif
+
+    if (using_glx) {
+      gst_caps_filter_and_map_in_place (caps,
+          (GstCapsFilterMapFunc) _filter_glx_caps_cb, NULL);
+    }
+  }
+
+  return TRUE;
+}
+#endif
+
 GstCaps *
 make_caps (GstRank *rank, GStrv *context_types)
 {
+  GstCaps *caps = gst_gl_upload_get_input_template_caps ();
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
+  if (!(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
+      _update_glx_caps_on_main, caps)))
+    gst_clear_caps (&caps);
+#endif
+
+  if (G_UNLIKELY (!caps))
+    return NULL;
+
   *rank = GST_RANK_MARGINAL + 1;
   *context_types = gst_clapper_gl_base_importer_make_gl_context_types ();
 
-  return gst_gl_upload_get_input_template_caps ();
+  return caps;
 }
