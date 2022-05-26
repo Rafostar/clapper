@@ -36,7 +36,8 @@ G_BEGIN_DECLS
 #define GST_CLAPPER_IMPORTER_DEFINE(camel,lower,type)                     \
 G_DEFINE_TYPE (camel, lower, type)                                        \
 G_MODULE_EXPORT GstClapperImporter *make_importer (void);                 \
-G_MODULE_EXPORT GstCaps *make_caps (GstRank *rank, GStrv *context_types);
+G_MODULE_EXPORT GstCaps *make_caps (gboolean is_template,                 \
+    GstRank *rank, GStrv *context_types);
 
 typedef struct _GstClapperImporter GstClapperImporter;
 typedef struct _GstClapperImporterClass GstClapperImporterClass;

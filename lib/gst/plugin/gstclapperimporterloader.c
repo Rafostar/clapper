@@ -33,7 +33,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 G_DEFINE_TYPE (GstClapperImporterLoader, gst_clapper_importer_loader, GST_TYPE_OBJECT);
 
 typedef GstClapperImporter* (* MakeImporter) (void);
-typedef GstCaps* (* MakeCaps) (GstRank *rank, GStrv *context_types);
+typedef GstCaps* (* MakeCaps) (gboolean is_template, GstRank *rank, GStrv *context_types);
 
 typedef struct
 {
@@ -54,7 +54,7 @@ gst_clapper_importer_data_free (GstClapperImporterData *data)
 }
 
 static GstClapperImporterData *
-_obtain_importer_data (GModule *module)
+_obtain_importer_data (GModule *module, gboolean is_template)
 {
   MakeCaps make_caps;
   GstClapperImporterData *data;
@@ -67,7 +67,7 @@ _obtain_importer_data (GModule *module)
 
   data = g_new0 (GstClapperImporterData, 1);
   data->module = module;
-  data->caps = make_caps (&data->rank, &data->context_types);
+  data->caps = make_caps (is_template, &data->rank, &data->context_types);
 
   GST_TRACE ("Created importer data: %" GST_PTR_FORMAT, data);
 
@@ -183,7 +183,7 @@ _sort_importers_cb (gconstpointer a, gconstpointer b)
 }
 
 static GPtrArray *
-gst_clapper_importer_loader_obtain_available_importers (void)
+_obtain_available_importers (gboolean is_template)
 {
   const GPtrArray *modules;
   GPtrArray *importers;
@@ -199,7 +199,7 @@ gst_clapper_importer_loader_obtain_available_importers (void)
     GModule *module = g_ptr_array_index (modules, i);
     GstClapperImporterData *data;
 
-    if ((data = _obtain_importer_data (module)))
+    if ((data = _obtain_importer_data (module, is_template)))
       g_ptr_array_add (importers, data);
   }
 
@@ -210,13 +210,33 @@ gst_clapper_importer_loader_obtain_available_importers (void)
   return importers;
 }
 
+GstClapperImporterLoader *
+gst_clapper_importer_loader_new (void)
+{
+  return g_object_new (GST_TYPE_CLAPPER_IMPORTER_LOADER, NULL);
+}
+
+static GstCaps *
+_make_caps_for_importers (const GPtrArray *importers)
+{
+  GstCaps *caps = gst_caps_new_empty ();
+  guint i;
+
+  for (i = 0; i < importers->len; i++) {
+    GstClapperImporterData *data = g_ptr_array_index (importers, i);
+
+    gst_caps_append (caps, gst_caps_ref (data->caps));
+  }
+
+  return caps;
+}
+
 GstPadTemplate *
 gst_clapper_importer_loader_make_sink_pad_template (void)
 {
   GPtrArray *importers;
-  GstCaps *sink_caps;
+  GstCaps *caps;
   GstPadTemplate *templ;
-  guint i;
 
   /* This is only called once from sink class init function */
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperimporterloader", 0,
@@ -224,32 +244,25 @@ gst_clapper_importer_loader_make_sink_pad_template (void)
 
   GST_DEBUG ("Making sink pad template");
 
-  importers = gst_clapper_importer_loader_obtain_available_importers ();
-  sink_caps = gst_caps_new_empty ();
-
-  for (i = 0; i < importers->len; i++) {
-    GstClapperImporterData *data = g_ptr_array_index (importers, i);
-
-    gst_caps_append (sink_caps, gst_caps_ref (data->caps));
-  }
-
+  importers = _obtain_available_importers (TRUE);
+  caps = _make_caps_for_importers (importers);
   g_ptr_array_unref (importers);
 
-  if (G_UNLIKELY (gst_caps_is_empty (sink_caps)))
-    gst_caps_append (sink_caps, gst_caps_new_any ());
+  if (G_UNLIKELY (gst_caps_is_empty (caps)))
+    gst_caps_append (caps, gst_caps_new_any ());
 
-  templ = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, sink_caps);
-  gst_caps_unref (sink_caps);
+  templ = gst_pad_template_new ("sink", GST_PAD_SINK, GST_PAD_ALWAYS, caps);
+  gst_caps_unref (caps);
 
   GST_TRACE ("Created sink pad template");
 
   return templ;
 }
 
-GstClapperImporterLoader *
-gst_clapper_importer_loader_new (void)
+GstCaps *
+gst_clapper_importer_loader_make_actual_caps (GstClapperImporterLoader *self)
 {
-  return g_object_new (GST_TYPE_CLAPPER_IMPORTER_LOADER, NULL);
+  return _make_caps_for_importers (self->importers);
 }
 
 static const GstClapperImporterData *
@@ -389,7 +402,7 @@ gst_clapper_importer_loader_constructed (GObject *object)
 {
   GstClapperImporterLoader *self = GST_CLAPPER_IMPORTER_LOADER_CAST (object);
 
-  self->importers = gst_clapper_importer_loader_obtain_available_importers ();
+  self->importers = _obtain_available_importers (FALSE);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, constructed, (object));
 }

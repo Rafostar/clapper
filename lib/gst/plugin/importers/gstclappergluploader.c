@@ -22,6 +22,11 @@
 #endif
 
 #include "gstclappergluploader.h"
+#include "gst/plugin/gstgtkutils.h"
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11
+#include <gdk/x11/gdkx.h>
+#endif
 
 #define GST_CAT_DEFAULT gst_clapper_gl_uploader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -132,6 +137,31 @@ _upload_perform_locked (GstClapperGLUploader *self, GstBuffer *buffer)
   return upload_buf;
 }
 
+static GstBufferPool *
+gst_clapper_gl_uploader_create_pool (GstClapperImporter *importer, GstStructure **config)
+{
+  /* Since GLUpload API provides a ready to use propose_allocation method,
+   * we will use it with our query in add_allocation_metas instead of
+   * making pool here ourselves */
+  return NULL;
+}
+
+static void
+gst_clapper_gl_uploader_add_allocation_metas (GstClapperImporter *importer, GstQuery *query)
+{
+  GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
+  GstGLUpload *upload;
+
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
+  upload = gst_object_ref (self->upload);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
+
+  gst_gl_upload_propose_allocation (upload, NULL, query);
+  gst_object_unref (upload);
+
+  GST_CLAPPER_IMPORTER_CLASS (parent_class)->add_allocation_metas (importer, query);
+}
+
 static GdkTexture *
 gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
     GstBuffer *buffer, GstVideoInfo *v_info)
@@ -213,6 +243,8 @@ gst_clapper_gl_uploader_class_init (GstClapperGLUploaderClass *klass)
 
   importer_class->prepare = gst_clapper_gl_uploader_prepare;
   importer_class->set_caps = gst_clapper_gl_uploader_set_caps;
+  importer_class->create_pool = gst_clapper_gl_uploader_create_pool;
+  importer_class->add_allocation_metas = gst_clapper_gl_uploader_add_allocation_metas;
   importer_class->generate_texture = gst_clapper_gl_uploader_generate_texture;
 }
 
@@ -222,11 +254,59 @@ make_importer (void)
   return g_object_new (GST_TYPE_CLAPPER_GL_UPLOADER, NULL);
 }
 
-GstCaps *
-make_caps (GstRank *rank, GStrv *context_types)
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
+static gboolean
+_filter_glx_caps_cb (GstCapsFeatures *features,
+    GstStructure *structure, gpointer user_data)
 {
+  return !gst_caps_features_contains (features, "memory:DMABuf");
+}
+
+static gboolean
+_update_glx_caps_on_main (GstCaps *caps)
+{
+  GdkDisplay *gdk_display;
+
+  if (!gtk_init_check ())
+    return FALSE;
+
+  gdk_display = gdk_display_get_default ();
+  if (G_UNLIKELY (!gdk_display))
+    return FALSE;
+
+  if (GDK_IS_X11_DISPLAY (gdk_display)) {
+    gboolean using_glx = TRUE;
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
+    using_glx = (gdk_x11_display_get_egl_display (gdk_display) == NULL);
+#endif
+
+    if (using_glx) {
+      gst_caps_filter_and_map_in_place (caps,
+          (GstCapsFilterMapFunc) _filter_glx_caps_cb, NULL);
+    }
+  }
+
+  return TRUE;
+}
+#endif
+
+GstCaps *
+make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
+{
+  GstCaps *caps = gst_gl_upload_get_input_template_caps ();
+
+#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
+  if (!is_template && !(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
+      _update_glx_caps_on_main, caps)))
+    gst_clear_caps (&caps);
+#endif
+
+  if (G_UNLIKELY (!caps))
+    return NULL;
+
   *rank = GST_RANK_MARGINAL + 1;
   *context_types = gst_clapper_gl_base_importer_make_gl_context_types ();
 
-  return gst_gl_upload_get_input_template_caps ();
+  return caps;
 }
