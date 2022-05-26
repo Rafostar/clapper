@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-01-18 20:57\n"
+"POT-Creation-Date: 2022-05-26 18:41+0200\n"
+"PO-Revision-Date: 2022-05-26 16:50\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -41,12 +41,11 @@ msgstr "Á propos de Clapper"
 msgid "Speed"
 msgstr "Vitesse"
 
-#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
-#: ui/preferences-window.ui:215
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
 msgstr "Normal"
 
-#: ui/help-overlay.ui:10 ui/preferences-window.ui:12
+#: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
 msgstr "Général"
 
@@ -118,7 +117,7 @@ msgstr "Changer le mode de répétition"
 msgid "Export to file"
 msgstr "Exporter vers un fichier"
 
-#: ui/help-overlay.ui:95 ui/preferences-window.ui:119
+#: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
 msgstr "Lecture"
 
@@ -182,203 +181,183 @@ msgstr "Décodeurs"
 msgid "Return to the preferences"
 msgstr "Retourner aux préférences"
 
-#: ui/preferences-window.ui:16
+#: ui/preferences-window.ui:15
 msgid "Behavior"
 msgstr "Comportement"
 
-#: ui/preferences-window.ui:19
+#: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
 msgstr "Lecture automatique en plein écran"
 
-#: ui/preferences-window.ui:20
+#: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
 msgstr "Basculer en plein écran quand la playlisyt est remplacée sauf si le mode flottant est activé"
 
-#: ui/preferences-window.ui:26
+#: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
 msgstr "Demander pour reprendre à la position des médias récents"
 
-#: ui/preferences-window.ui:32
+#: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
 msgstr "Flotter sur tous les bureaux virtuels"
 
-#: ui/preferences-window.ui:33
+#: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
 msgstr "Cette option ne marche qu'avec GNOME"
 
-#: ui/preferences-window.ui:39
+#: ui/preferences-window.ui:38
 msgid "After playback"
 msgstr "Après la lecture"
 
-#: ui/preferences-window.ui:44
+#: ui/preferences-window.ui:43
 msgid "Do nothing"
 msgstr "Ne rien faire"
 
-#: ui/preferences-window.ui:45
+#: ui/preferences-window.ui:44
 msgid "Freeze last frame"
 msgstr "Geler la dernière image"
 
-#: ui/preferences-window.ui:46
+#: ui/preferences-window.ui:45
 msgid "Close the app"
 msgstr "Fermer l'application"
 
-#: ui/preferences-window.ui:56
+#: ui/preferences-window.ui:55
 msgid "Volume"
 msgstr "Volume"
 
-#: ui/preferences-window.ui:59
+#: ui/preferences-window.ui:58
 msgid "Custom initial value"
 msgstr "Valeur initiale personnalisée"
 
-#: ui/preferences-window.ui:60
+#: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
 msgstr "Régler une valeur personnalisée du volume au démarrage au lien de restorer la valeur précédente"
 
-#: ui/preferences-window.ui:64
+#: ui/preferences-window.ui:63
 msgid "Volume percentage"
 msgstr "Pourcentage du volume"
 
-#: ui/preferences-window.ui:75
+#: ui/preferences-window.ui:74
 msgid "Seeking"
 msgstr "Avancement"
 
-#: ui/preferences-window.ui:78
+#: ui/preferences-window.ui:77
 msgid "Mode"
 msgstr "Comportement"
 
-#: ui/preferences-window.ui:84
+#: ui/preferences-window.ui:83
 msgid "Accurate"
 msgstr "Précis"
 
-#: ui/preferences-window.ui:85
+#: ui/preferences-window.ui:84
 msgid "Fast"
 msgstr "Rapide"
 
-#: ui/preferences-window.ui:93
+#: ui/preferences-window.ui:92
 msgid "Unit"
 msgstr "Unité des sauts"
 
-#: ui/preferences-window.ui:98
+#: ui/preferences-window.ui:97
 msgid "Second"
 msgstr "Seconde"
 
-#: ui/preferences-window.ui:99
+#: ui/preferences-window.ui:98
 msgid "Minute"
 msgstr "Minute"
 
-#: ui/preferences-window.ui:100
+#: ui/preferences-window.ui:99
 msgid "Percentage"
 msgstr "Pourcentage"
 
-#: ui/preferences-window.ui:108
+#: ui/preferences-window.ui:107
 msgid "Value"
 msgstr "Longueur du saut"
 
-#: ui/preferences-window.ui:123
+#: ui/preferences-window.ui:122
 msgid "Audio"
 msgstr "Audio"
 
-#: ui/preferences-window.ui:126
+#: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
 msgstr "Décalage en millisecondes"
 
-#: ui/preferences-window.ui:133
+#: ui/preferences-window.ui:132
 msgid "Only native audio formats"
 msgstr "Seulement des formats audios natifs"
 
-#: ui/preferences-window.ui:141
+#: ui/preferences-window.ui:140
 msgid "Subtitles"
 msgstr "Sous-titres"
 
-#: ui/preferences-window.ui:144
+#: ui/preferences-window.ui:143
 msgid "Default font"
 msgstr "Police par défaut"
 
-#: ui/preferences-window.ui:154
+#: ui/preferences-window.ui:153
 msgid "Network"
 msgstr "Réseau"
 
-#: ui/preferences-window.ui:158
+#: ui/preferences-window.ui:157
 msgid "Client"
 msgstr "Client"
 
-#: ui/preferences-window.ui:161
+#: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
 msgstr "Téléchargement progressif dans le tampon"
 
-#: ui/preferences-window.ui:169
+#: ui/preferences-window.ui:168
 msgid "Server"
 msgstr "Serveur"
 
-#: ui/preferences-window.ui:172
+#: ui/preferences-window.ui:171
 msgid "Control player remotely"
 msgstr "Controler le lecteur à distance"
 
-#: ui/preferences-window.ui:176
+#: ui/preferences-window.ui:175
 msgid "Listening port"
 msgstr "Écouter sur le port"
 
-#: ui/preferences-window.ui:183
-msgid "Run web application in background"
-msgstr "Lancer l'application web en arrière plan"
-
-#: ui/preferences-window.ui:184
-msgid "Requires GTK compiled with Broadway backend"
-msgstr "Requiert GTK compilé avec l'interface Broadway"
-
-#: ui/preferences-window.ui:190
-msgid "Web application port"
-msgstr "Port de l'application web"
-
-#: ui/preferences-window.ui:204
-msgid "Prefer adaptive streaming"
-msgstr "Préférer le streaming adaptatif"
-
-#: ui/preferences-window.ui:210
-msgid "Max quality"
-msgstr "Qualité maximale"
-
-#: ui/preferences-window.ui:228
+#: ui/preferences-window.ui:188
 msgid "Tweaks"
 msgstr "Réglages"
 
-#: ui/preferences-window.ui:232
+#: ui/preferences-window.ui:192
 msgid "Appearance"
 msgstr "Apparence"
 
-#: ui/preferences-window.ui:235
+#: ui/preferences-window.ui:195
 msgid "Dark theme"
 msgstr "Thème sombre"
 
-#: ui/preferences-window.ui:241
+#: ui/preferences-window.ui:201
 msgid "Render window shadows"
 msgstr "Afficher les ombres de la fenêtre"
 
-#: ui/preferences-window.ui:242
+#: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
 msgstr "Désactiver pour améliorer les performances quand fenêtré"
 
-#: ui/preferences-window.ui:253
+#: ui/preferences-window.ui:213
 msgid "Plugin ranking"
 msgstr "Liste des plugins"
 
-#: ui/preferences-window.ui:254
+#: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
 msgstr "Changer les options par défaut de plugins GStreamer"
 
-#: ui/preferences-window.ui:259
+#: ui/preferences-window.ui:219
 msgid "Use playbin3"
 msgstr "Utiliser playbin3"
 
-#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+#: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
 msgstr "Requiert le redémarrage du lecteur"
 
-#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+#: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
 msgstr "Expérimental"
 
-#: ui/preferences-window.ui:268
+#: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
 msgstr "Utiliser PipeWire pour la sortie audio"
 
@@ -445,15 +424,15 @@ msgstr "Robin Verdenal-Tallieux"
 msgid "Ends at: %s"
 msgstr "Finit à: %s"
 
-#: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
+#: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
 msgstr "Indéterminé"
 
-#: src/widget.js:243
+#: src/widget.js:242
 msgid "Channels"
 msgstr "Chaines"
 
-#: src/widget.js:261
+#: src/widget.js:260
 msgid "Disabled"
 msgstr "Désactivé"
 
