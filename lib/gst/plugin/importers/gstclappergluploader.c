@@ -137,6 +137,31 @@ _upload_perform_locked (GstClapperGLUploader *self, GstBuffer *buffer)
   return upload_buf;
 }
 
+static GstBufferPool *
+gst_clapper_gl_uploader_create_pool (GstClapperImporter *importer, GstStructure **config)
+{
+  /* Since GLUpload API provides a ready to use propose_allocation method,
+   * we will use it with our query in add_allocation_metas instead of
+   * making pool here ourselves */
+  return NULL;
+}
+
+static void
+gst_clapper_gl_uploader_add_allocation_metas (GstClapperImporter *importer, GstQuery *query)
+{
+  GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
+  GstGLUpload *upload;
+
+  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
+  upload = gst_object_ref (self->upload);
+  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
+
+  gst_gl_upload_propose_allocation (upload, NULL, query);
+  gst_object_unref (upload);
+
+  GST_CLAPPER_IMPORTER_CLASS (parent_class)->add_allocation_metas (importer, query);
+}
+
 static GdkTexture *
 gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
     GstBuffer *buffer, GstVideoInfo *v_info)
@@ -218,6 +243,8 @@ gst_clapper_gl_uploader_class_init (GstClapperGLUploaderClass *klass)
 
   importer_class->prepare = gst_clapper_gl_uploader_prepare;
   importer_class->set_caps = gst_clapper_gl_uploader_set_caps;
+  importer_class->create_pool = gst_clapper_gl_uploader_create_pool;
+  importer_class->add_allocation_metas = gst_clapper_gl_uploader_add_allocation_metas;
   importer_class->generate_texture = gst_clapper_gl_uploader_generate_texture;
 }
 
