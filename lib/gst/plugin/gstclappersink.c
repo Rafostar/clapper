@@ -412,7 +412,6 @@ static gboolean
 gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
 {
   GstClapperSink *self = GST_CLAPPER_SINK_CAST (bsink);
-  GstBufferPool *pool = NULL;
   GstCaps *caps;
   GstVideoInfo info;
   guint size, min_buffers;
@@ -437,6 +436,7 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
   min_buffers = 3;
 
   if (need_pool) {
+    GstBufferPool *pool;
     GstStructure *config = NULL;
 
     GST_DEBUG_OBJECT (self, "Need to create buffer pool");
@@ -458,15 +458,14 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
         GST_ERROR_OBJECT (self, "Failed to set config");
         return FALSE;
       }
+
+      gst_query_add_allocation_pool (query, pool, size, min_buffers, 0);
+      gst_object_unref (pool);
     } else if (config) {
       GST_WARNING_OBJECT (self, "Got config without a pool to apply it");
       gst_structure_free (config);
     }
   }
-
-  gst_query_add_allocation_pool (query, pool, size, min_buffers, 0);
-  if (pool)
-    gst_object_unref (pool);
 
   GST_CLAPPER_SINK_LOCK (self);
   gst_clapper_importer_add_allocation_metas (self->importer, query);
