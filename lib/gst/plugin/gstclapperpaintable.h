@@ -57,9 +57,6 @@ struct _GstClapperPaintable
   /* Sink properties */
   gint par_n, par_d;
 
-  /* For drawing overlays */
-  gdouble pixel_aspect;
-
   /* Resize */
   gboolean pending_resize;
   guint display_ratio_num;
