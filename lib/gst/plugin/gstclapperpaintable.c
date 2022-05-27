@@ -59,7 +59,6 @@ gst_clapper_paintable_init (GstClapperPaintable *self)
 
   self->par_n = DEFAULT_PAR_N;
   self->par_d = DEFAULT_PAR_D;
-  self->pixel_aspect = ((gdouble) self->par_d / self->par_n);
 
   g_mutex_init (&self->lock);
   g_mutex_init (&self->importer_lock);
@@ -158,8 +157,6 @@ invalidate_paintable_size_internal (GstClapperPaintable *self)
 
   display_ratio_num = self->display_ratio_num;
   display_ratio_den = self->display_ratio_den;
-
-  self->pixel_aspect = ((gdouble) self->par_d / self->par_n);
 
   GST_CLAPPER_PAINTABLE_UNLOCK (self);
 
@@ -361,8 +358,7 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
   GST_CLAPPER_PAINTABLE_IMPORTER_LOCK (self);
 
   if (self->importer) {
-    gst_clapper_importer_snapshot (self->importer, snapshot, width, height,
-        scale_x * self->pixel_aspect, scale_y);
+    gst_clapper_importer_snapshot (self->importer, snapshot, width, height);
   } else {
     GST_LOG_OBJECT (self, "No texture importer, drawing black");
     gtk_snapshot_append_color (snapshot, &self->bg, &GRAPHENE_RECT_INIT (0, 0, width, height));

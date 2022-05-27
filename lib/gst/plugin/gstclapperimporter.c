@@ -380,7 +380,7 @@ gst_clapper_importer_handle_context_query (GstClapperImporter *self,
 
 void
 gst_clapper_importer_snapshot (GstClapperImporter *self, GdkSnapshot *snapshot,
-    gdouble width, gdouble height, gfloat scale_x, gfloat scale_y)
+    gdouble width, gdouble height)
 {
   guint i;
   gboolean buffer_changed;
@@ -424,12 +424,21 @@ gst_clapper_importer_snapshot (GstClapperImporter *self, GdkSnapshot *snapshot,
     if (G_LIKELY (self->texture)) {
       gtk_snapshot_append_texture (snapshot, self->texture, &GRAPHENE_RECT_INIT (0, 0, width, height));
 
-      for (i = 0; i < self->overlays->len; i++) {
-        GstClapperGdkOverlay *overlay = g_ptr_array_index (self->overlays, i);
+      if (self->overlays->len > 0) {
+        gfloat scale_x, scale_y;
 
-        gtk_snapshot_append_texture (snapshot, overlay->texture,
-            &GRAPHENE_RECT_INIT (overlay->x * scale_x, overlay->y * scale_y,
-                overlay->width * scale_x, overlay->height * scale_y));
+        /* FIXME: GStreamer scales subtitles without considering pixel aspect ratio.
+         * See: https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/20 */
+        scale_x = (gfloat) width / GST_VIDEO_INFO_WIDTH (&self->v_info);
+        scale_y = (gfloat) height / GST_VIDEO_INFO_HEIGHT (&self->v_info);
+
+        for (i = 0; i < self->overlays->len; i++) {
+          GstClapperGdkOverlay *overlay = g_ptr_array_index (self->overlays, i);
+
+          gtk_snapshot_append_texture (snapshot, overlay->texture,
+              &GRAPHENE_RECT_INIT (overlay->x * scale_x, overlay->y * scale_y,
+                  overlay->width * scale_x, overlay->height * scale_y));
+        }
       }
     } else {
       GST_ERROR_OBJECT (self, "Failed import of %" GST_PTR_FORMAT, self->buffer);

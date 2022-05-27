@@ -99,6 +99,6 @@ void            gst_clapper_importer_add_allocation_metas    (GstClapperImporter
 void            gst_clapper_importer_set_caps                (GstClapperImporter *importer, GstCaps *caps);
 void            gst_clapper_importer_set_buffer              (GstClapperImporter *importer, GstBuffer *buffer);
 
-void            gst_clapper_importer_snapshot                (GstClapperImporter *importer, GdkSnapshot *snapshot, gdouble width, gdouble height, gfloat scale_x, gfloat scale_y);
+void            gst_clapper_importer_snapshot                (GstClapperImporter *importer, GdkSnapshot *snapshot, gdouble width, gdouble height);
 
 G_END_DECLS
