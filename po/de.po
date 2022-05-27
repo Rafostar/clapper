@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-26 16:50\n"
+"PO-Revision-Date: 2022-05-27 16:27\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -417,7 +417,7 @@ msgstr "Ein von GStreamer betriebener GNOME Multimedia-Player"
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Florian \"sp1rit\" <sp1rit@disroot.org>"
 
 #: src/revealers.js:170
 #, javascript-format
