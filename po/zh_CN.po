@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-04-20 18:10\n"
+"POT-Creation-Date: 2022-05-26 18:41+0200\n"
+"PO-Revision-Date: 2022-05-26 16:50\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -41,12 +41,11 @@ msgstr "关于 Claper"
 msgid "Speed"
 msgstr "速度"
 
-#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
-#: ui/preferences-window.ui:215
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
 msgstr "一般"
 
-#: ui/help-overlay.ui:10 ui/preferences-window.ui:12
+#: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
 msgstr "常规​​​​​"
 
@@ -118,7 +117,7 @@ msgstr "更改循环模式"
 msgid "Export to file"
 msgstr "导出至文件"
 
-#: ui/help-overlay.ui:95 ui/preferences-window.ui:119
+#: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
 msgstr "播放"
 
@@ -182,203 +181,183 @@ msgstr "解码器"
 msgid "Return to the preferences"
 msgstr "返回首选项"
 
-#: ui/preferences-window.ui:16
+#: ui/preferences-window.ui:15
 msgid "Behavior"
 msgstr "行为"
 
-#: ui/preferences-window.ui:19
+#: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
 msgstr "自动全屏"
 
-#: ui/preferences-window.ui:20
+#: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
 msgstr ""
 
-#: ui/preferences-window.ui:26
+#: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
 msgstr ""
 
-#: ui/preferences-window.ui:32
+#: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
 msgstr ""
 
-#: ui/preferences-window.ui:33
+#: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
 msgstr "此选项仅适用于 GNOME"
 
-#: ui/preferences-window.ui:39
+#: ui/preferences-window.ui:38
 msgid "After playback"
 msgstr "播放结束后"
 
-#: ui/preferences-window.ui:44
+#: ui/preferences-window.ui:43
 msgid "Do nothing"
 msgstr "不执行任何操作"
 
-#: ui/preferences-window.ui:45
+#: ui/preferences-window.ui:44
 msgid "Freeze last frame"
 msgstr "停留在最后一帧"
 
-#: ui/preferences-window.ui:46
+#: ui/preferences-window.ui:45
 msgid "Close the app"
 msgstr "关闭应用程序"
 
-#: ui/preferences-window.ui:56
+#: ui/preferences-window.ui:55
 msgid "Volume"
 msgstr "音量"
 
-#: ui/preferences-window.ui:59
+#: ui/preferences-window.ui:58
 msgid "Custom initial value"
 msgstr "自定义初始值"
 
-#: ui/preferences-window.ui:60
+#: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
 msgstr ""
 
-#: ui/preferences-window.ui:64
+#: ui/preferences-window.ui:63
 msgid "Volume percentage"
 msgstr "音量百分比"
 
-#: ui/preferences-window.ui:75
+#: ui/preferences-window.ui:74
 msgid "Seeking"
 msgstr "定位播放"
 
-#: ui/preferences-window.ui:78
+#: ui/preferences-window.ui:77
 msgid "Mode"
 msgstr "模式"
 
-#: ui/preferences-window.ui:84
+#: ui/preferences-window.ui:83
 msgid "Accurate"
 msgstr "精确"
 
-#: ui/preferences-window.ui:85
+#: ui/preferences-window.ui:84
 msgid "Fast"
 msgstr "快速"
 
-#: ui/preferences-window.ui:93
+#: ui/preferences-window.ui:92
 msgid "Unit"
 msgstr "单位"
 
-#: ui/preferences-window.ui:98
+#: ui/preferences-window.ui:97
 msgid "Second"
 msgstr "秒钟"
 
-#: ui/preferences-window.ui:99
+#: ui/preferences-window.ui:98
 msgid "Minute"
 msgstr "分钟"
 
-#: ui/preferences-window.ui:100
+#: ui/preferences-window.ui:99
 msgid "Percentage"
 msgstr "百分比"
 
-#: ui/preferences-window.ui:108
+#: ui/preferences-window.ui:107
 msgid "Value"
 msgstr "值"
 
-#: ui/preferences-window.ui:123
+#: ui/preferences-window.ui:122
 msgid "Audio"
 msgstr "音频"
 
-#: ui/preferences-window.ui:126
+#: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
 msgstr ""
 
-#: ui/preferences-window.ui:133
+#: ui/preferences-window.ui:132
 msgid "Only native audio formats"
 msgstr ""
 
-#: ui/preferences-window.ui:141
+#: ui/preferences-window.ui:140
 msgid "Subtitles"
 msgstr "字幕"
 
-#: ui/preferences-window.ui:144
+#: ui/preferences-window.ui:143
 msgid "Default font"
 msgstr "默认字体"
 
-#: ui/preferences-window.ui:154
+#: ui/preferences-window.ui:153
 msgid "Network"
 msgstr "网络"
 
-#: ui/preferences-window.ui:158
+#: ui/preferences-window.ui:157
 msgid "Client"
 msgstr "客户端"
 
-#: ui/preferences-window.ui:161
+#: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
 msgstr ""
 
-#: ui/preferences-window.ui:169
+#: ui/preferences-window.ui:168
 msgid "Server"
 msgstr "服务器"
 
-#: ui/preferences-window.ui:172
+#: ui/preferences-window.ui:171
 msgid "Control player remotely"
 msgstr "远程控制播放器"
 
-#: ui/preferences-window.ui:176
+#: ui/preferences-window.ui:175
 msgid "Listening port"
 msgstr "监听端口"
 
-#: ui/preferences-window.ui:183
-msgid "Run web application in background"
-msgstr ""
-
-#: ui/preferences-window.ui:184
-msgid "Requires GTK compiled with Broadway backend"
-msgstr ""
-
-#: ui/preferences-window.ui:190
-msgid "Web application port"
-msgstr "Web 应用程序端口"
-
-#: ui/preferences-window.ui:204
-msgid "Prefer adaptive streaming"
-msgstr ""
-
-#: ui/preferences-window.ui:210
-msgid "Max quality"
-msgstr ""
-
-#: ui/preferences-window.ui:228
+#: ui/preferences-window.ui:188
 msgid "Tweaks"
 msgstr "调整"
 
-#: ui/preferences-window.ui:232
+#: ui/preferences-window.ui:192
 msgid "Appearance"
 msgstr "界面"
 
-#: ui/preferences-window.ui:235
+#: ui/preferences-window.ui:195
 msgid "Dark theme"
 msgstr "暗色主题"
 
-#: ui/preferences-window.ui:241
+#: ui/preferences-window.ui:201
 msgid "Render window shadows"
 msgstr "渲染窗口阴影"
 
-#: ui/preferences-window.ui:242
+#: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
 msgstr ""
 
-#: ui/preferences-window.ui:253
+#: ui/preferences-window.ui:213
 msgid "Plugin ranking"
 msgstr ""
 
-#: ui/preferences-window.ui:254
+#: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
 msgstr ""
 
-#: ui/preferences-window.ui:259
+#: ui/preferences-window.ui:219
 msgid "Use playbin3"
 msgstr "使用 playbin3"
 
-#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+#: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
 msgstr "需要重启播放器"
 
-#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+#: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
 msgstr "实验性功能"
 
-#: ui/preferences-window.ui:268
+#: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
 msgstr "使用 PipeWire 输出音频"
 
@@ -445,15 +424,15 @@ msgstr "刘韬"
 msgid "Ends at: %s"
 msgstr "结束于：%s"
 
-#: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
+#: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
 msgstr ""
 
-#: src/widget.js:243
+#: src/widget.js:242
 msgid "Channels"
 msgstr "声道"
 
-#: src/widget.js:261
+#: src/widget.js:260
 msgid "Disabled"
 msgstr "禁用"
 

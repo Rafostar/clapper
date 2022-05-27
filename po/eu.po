@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-14 16:35+0200\n"
-"PO-Revision-Date: 2022-03-25 16:45\n"
+"POT-Creation-Date: 2022-05-26 18:41+0200\n"
+"PO-Revision-Date: 2022-05-26 16:50\n"
 "Last-Translator: \n"
 "Language-Team: Basque\n"
 "Language: eu_ES\n"
@@ -41,12 +41,11 @@ msgstr "Clapperi buruz"
 msgid "Speed"
 msgstr "Abiadura"
 
-#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:83
-#: ui/preferences-window.ui:215
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
 msgstr "Normala"
 
-#: ui/help-overlay.ui:10 ui/preferences-window.ui:12
+#: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
 msgstr "Orokorra"
 
@@ -118,7 +117,7 @@ msgstr "Errepikapen modua aldatu"
 msgid "Export to file"
 msgstr "Esportatu fitxategira"
 
-#: ui/help-overlay.ui:95 ui/preferences-window.ui:119
+#: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
 msgstr "Erreprodukzioa"
 
@@ -182,203 +181,183 @@ msgstr "Deskodetzaileak"
 msgid "Return to the preferences"
 msgstr "Itzuli ezarpenetara"
 
-#: ui/preferences-window.ui:16
+#: ui/preferences-window.ui:15
 msgid "Behavior"
 msgstr "Portaera"
 
-#: ui/preferences-window.ui:19
+#: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
 msgstr "Pantaila osoa automatikoa"
 
-#: ui/preferences-window.ui:20
+#: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
 msgstr "Pantaila osoan sartu erreprodukzio-zerrenda ordezten denean, flotatzeko modua izan ezik"
 
-#: ui/preferences-window.ui:26
+#: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
 msgstr "Azkenaldiko media berriro ekiteko eskatzea"
 
-#: ui/preferences-window.ui:32
+#: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
 msgstr "Laneko espazio guztietan flotatzea"
 
-#: ui/preferences-window.ui:33
+#: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
 msgstr "Aukera honek GNOMEn bakarrik funtzionatzen du"
 
-#: ui/preferences-window.ui:39
+#: ui/preferences-window.ui:38
 msgid "After playback"
 msgstr "Erreprodukzioaren ondoren"
 
-#: ui/preferences-window.ui:44
+#: ui/preferences-window.ui:43
 msgid "Do nothing"
 msgstr "Ez egin ezer"
 
-#: ui/preferences-window.ui:45
+#: ui/preferences-window.ui:44
 msgid "Freeze last frame"
 msgstr "Izoztu azken fotograma"
 
-#: ui/preferences-window.ui:46
+#: ui/preferences-window.ui:45
 msgid "Close the app"
 msgstr "Aplikazioa itxi"
 
-#: ui/preferences-window.ui:56
+#: ui/preferences-window.ui:55
 msgid "Volume"
 msgstr "Bolumena"
 
-#: ui/preferences-window.ui:59
+#: ui/preferences-window.ui:58
 msgid "Custom initial value"
 msgstr "Hasierako balio pertsonalizatua"
 
-#: ui/preferences-window.ui:60
+#: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
 msgstr "Hasieran bolumen pertsonalizatua ezartzea, lehengoratu beharrean"
 
-#: ui/preferences-window.ui:64
+#: ui/preferences-window.ui:63
 msgid "Volume percentage"
 msgstr "Bolumenaren ehunekoa"
 
-#: ui/preferences-window.ui:75
+#: ui/preferences-window.ui:74
 msgid "Seeking"
 msgstr "Bilaketa"
 
-#: ui/preferences-window.ui:78
+#: ui/preferences-window.ui:77
 msgid "Mode"
 msgstr "Modua"
 
-#: ui/preferences-window.ui:84
+#: ui/preferences-window.ui:83
 msgid "Accurate"
 msgstr "Zehatza"
 
-#: ui/preferences-window.ui:85
+#: ui/preferences-window.ui:84
 msgid "Fast"
 msgstr "Azkarra"
 
-#: ui/preferences-window.ui:93
+#: ui/preferences-window.ui:92
 msgid "Unit"
 msgstr "Unitatea"
 
-#: ui/preferences-window.ui:98
+#: ui/preferences-window.ui:97
 msgid "Second"
 msgstr "Segundu"
 
-#: ui/preferences-window.ui:99
+#: ui/preferences-window.ui:98
 msgid "Minute"
 msgstr "Minutu"
 
-#: ui/preferences-window.ui:100
+#: ui/preferences-window.ui:99
 msgid "Percentage"
 msgstr "Ehunekoa"
 
-#: ui/preferences-window.ui:108
+#: ui/preferences-window.ui:107
 msgid "Value"
 msgstr "Balioa"
 
-#: ui/preferences-window.ui:123
+#: ui/preferences-window.ui:122
 msgid "Audio"
 msgstr "Audioa"
 
-#: ui/preferences-window.ui:126
+#: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
 msgstr "Desplazamendua milisegundotan"
 
-#: ui/preferences-window.ui:133
+#: ui/preferences-window.ui:132
 msgid "Only native audio formats"
 msgstr "Jatorrizko audio-formatuak bakarrik"
 
-#: ui/preferences-window.ui:141
+#: ui/preferences-window.ui:140
 msgid "Subtitles"
 msgstr "Azpitituluak"
 
-#: ui/preferences-window.ui:144
+#: ui/preferences-window.ui:143
 msgid "Default font"
 msgstr "Hizki lehenetsia"
 
-#: ui/preferences-window.ui:154
+#: ui/preferences-window.ui:153
 msgid "Network"
 msgstr "Sarea"
 
-#: ui/preferences-window.ui:158
+#: ui/preferences-window.ui:157
 msgid "Client"
 msgstr "Bezeroa"
 
-#: ui/preferences-window.ui:161
+#: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
 msgstr "Deskargak pixkanaka bufferizatzea"
 
-#: ui/preferences-window.ui:169
+#: ui/preferences-window.ui:168
 msgid "Server"
 msgstr "Zerbitzaria"
 
-#: ui/preferences-window.ui:172
+#: ui/preferences-window.ui:171
 msgid "Control player remotely"
 msgstr "Urrutiko erreproduzitzailea kontrolatzea"
 
-#: ui/preferences-window.ui:176
+#: ui/preferences-window.ui:175
 msgid "Listening port"
 msgstr "Entzuteko ataka"
 
-#: ui/preferences-window.ui:183
-msgid "Run web application in background"
-msgstr "Web-aplikazioa bigarren planoan exekutatzea"
-
-#: ui/preferences-window.ui:184
-msgid "Requires GTK compiled with Broadway backend"
-msgstr "GTK Broadwayko backend-arekin konpilatzea eskatzen du"
-
-#: ui/preferences-window.ui:190
-msgid "Web application port"
-msgstr "Web aplikazioaren ataka"
-
-#: ui/preferences-window.ui:204
-msgid "Prefer adaptive streaming"
-msgstr "Transmisio moldagarria lehenestea"
-
-#: ui/preferences-window.ui:210
-msgid "Max quality"
-msgstr "Gehieneko kalitatea"
-
-#: ui/preferences-window.ui:228
+#: ui/preferences-window.ui:188
 msgid "Tweaks"
 msgstr "Ukituak"
 
-#: ui/preferences-window.ui:232
+#: ui/preferences-window.ui:192
 msgid "Appearance"
 msgstr "Itxura"
 
-#: ui/preferences-window.ui:235
+#: ui/preferences-window.ui:195
 msgid "Dark theme"
 msgstr "Gai iluna"
 
-#: ui/preferences-window.ui:241
+#: ui/preferences-window.ui:201
 msgid "Render window shadows"
 msgstr "Leihoetako itzalak errenderizatzea"
 
-#: ui/preferences-window.ui:242
+#: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
 msgstr "Desaktibatu leihoa erabiltzen denean errendimendua handitzeko"
 
-#: ui/preferences-window.ui:253
+#: ui/preferences-window.ui:213
 msgid "Plugin ranking"
 msgstr "Pluginen sailkapena"
 
-#: ui/preferences-window.ui:254
+#: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
 msgstr "Aldatu GStreamer-en pluginen lehenetsitako mailak"
 
-#: ui/preferences-window.ui:259
+#: ui/preferences-window.ui:219
 msgid "Use playbin3"
 msgstr "Playbin3 erabili"
 
-#: ui/preferences-window.ui:260 ui/preferences-window.ui:269
+#: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
 msgstr "Berrabiaraztea eskatzen du"
 
-#: ui/preferences-window.ui:262 ui/preferences-window.ui:271
+#: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
 msgstr "Esperimentala"
 
-#: ui/preferences-window.ui:268
+#: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
 msgstr "Erabili PipeWire audio-irteerarako"
 
@@ -445,15 +424,15 @@ msgstr "Sergio Varela (@IngrownMink4)"
 msgid "Ends at: %s"
 msgstr "Amaiera: %s"
 
-#: src/widget.js:227 src/widget.js:236 src/widget.js:242 src/widget.js:248
+#: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
 msgstr "Zehaztugabea"
 
-#: src/widget.js:243
+#: src/widget.js:242
 msgid "Channels"
 msgstr "Kanalak"
 
-#: src/widget.js:261
+#: src/widget.js:260
 msgid "Disabled"
 msgstr "Desgaituta"
 
