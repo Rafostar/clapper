@@ -376,11 +376,8 @@ gst_clapper_paintable_snapshot (GdkPaintable *paintable,
   gint widget_width = 0, widget_height = 0;
 
   if ((widget = g_weak_ref_get (&self->widget))) {
-    gint scale_factor;
-
-    scale_factor = gtk_widget_get_scale_factor (widget);
-    widget_width = gtk_widget_get_width (widget) * scale_factor;
-    widget_height = gtk_widget_get_height (widget) * scale_factor;
+    widget_width = gtk_widget_get_width (widget);
+    widget_height = gtk_widget_get_height (widget);
 
     g_object_unref (widget);
   }
