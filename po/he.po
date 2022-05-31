@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-31 21:41\n"
+"PO-Revision-Date: 2022-05-31 22:41\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Language: he_IL\n"
@@ -23,283 +23,283 @@ msgstr "פתיחת קבצים…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "פתיחת כתובת…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "העדפות"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "צירופי מקשים"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "על אודות Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "מהירות"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr ""
+msgstr "רגילה"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "כללי"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "הצגת צירופי מקשים"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "שינוי מצב מסך מלא"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "נגיעה כפולה | לחיצה כפולה"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "יציאה ממסך מלא"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "הצגת מידע וכפתורים (מסך מלא בלבד)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "נגיעה"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "יציאה"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "מדיה"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "פתיחת קבצים"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "פתיחת כתובת"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "רשימת השמעה"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "פריט הבא"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "נגיעה כפולה (צד ימין)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "פריט קודם"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "נגיעה כפולה (צד שמאל)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "שינוי מצב חזרה"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "ייצוא לקובץ"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr ""
+msgstr "השמעה"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "הפעלה/השהיה"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "לחיצה ארוכה | לחצן ימני"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "דילוג קדימה"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "החלקה ימינה | גלילה ימינה"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "דילוג לאחור"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "החלקה שמאלה | גלילה שמאלה"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "הגברת עצמת השמע"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "החלקה למעלה | גלילה למעלה"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "הנמכת עצמת השמע"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "החלקה למעלה | גלילה למעלה"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "השתקה/ביטול השתקה"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "פרק הבא"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "פרק קודם"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "מפענחים"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "חזרה להגדרות"
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
-msgstr ""
+msgstr "התנהגות"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "מסך מלא אוטומטי"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "כניסה למצב מסך מלא עם החלפת רשימת השמעה מלבד במצב ציפה"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "לשאול אם להפעיל מחדש את המדיה האחרונה"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "ציפה בכל מרחבי העבודה"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "אפשרות זו פועלת רק ב־GNOME"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr ""
+msgstr "בסיום צפייה"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr ""
+msgstr "לא לעשות דבר"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr ""
+msgstr "הקפאת התמונה האחרונה"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "סגירת היישום"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "עצמת שמע"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr ""
+msgstr "התאמת ערך התחלתי"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "הגדרת עצמת השמע עם ההפעלה במקום שחזור"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "עצמת שמע באחוזים"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr ""
+msgstr "דילוג"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "מצב"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr ""
+msgstr "מדויק"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr ""
+msgstr "מהיר"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "יחידה"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "שניה"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "דקה"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "אחוז"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "ערך"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "שמע"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "היסט במילי־שניות"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "תבניות שמע רגילות בלבד"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "כתוביות"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "גופן ברירת מחדל"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "רשת"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "לקוח"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
@@ -307,11 +307,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "שרת"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr ""
+msgstr "שליטה בנגן מרחוק"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
@@ -426,13 +426,13 @@ msgstr ""
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "לא מוגדר"
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr ""
+msgstr "ערוצים"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr ""
+msgstr "מושבת"
 
