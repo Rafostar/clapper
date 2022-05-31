@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-26 16:50\n"
+"PO-Revision-Date: 2022-05-31 21:41\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Language: he_IL\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr ""
+msgstr "פתיחת קבצים…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
