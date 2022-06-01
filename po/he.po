@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-01 07:52\n"
+"PO-Revision-Date: 2022-06-01 08:42\n"
 "Last-Translator: \n"
 "Language-Team: Hebrew\n"
 "Language: he_IL\n"
@@ -359,7 +359,7 @@ msgstr "ניסיוני"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr "שימוש ב־ PipeWire לפלט השמע"
+msgstr "שימוש ב־PipeWire לפלט השמע"
 
 #: src/buttons.js:201
 #, javascript-format
@@ -412,7 +412,7 @@ msgstr "גרסת GJS: ‏%s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr "נגן מדיה עבור GNOME מופעל על ידי GStreamer"
+msgstr "נגן מדיה עבור GNOME המופעל על ידי GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
@@ -422,7 +422,7 @@ msgstr "יוסף אור בוצ׳קו <yoseforb@gnome.org>"
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr "מסתיים בשעה: ‏%s"
+msgstr "שעת סיום: ‏%s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
