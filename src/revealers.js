@@ -59,8 +59,8 @@ class ClapperRevealerTop extends CustomRevealer
 
         const initTime = GLib.DateTime.new_now_local().format('%X');
         this.timeFormat = (initTime.length > 8)
-            ? '%I∶%M %p'
-            : '%H∶%M';
+            ? `%I${Misc.timeColon}%M %p`
+            : `%H${Misc.timeColon}%M`;
 
         this.mediaTitle = new Gtk.Label({
             ellipsize: Pango.EllipsizeMode.END,

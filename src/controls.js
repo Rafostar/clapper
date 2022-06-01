@@ -27,7 +27,7 @@ class ClapperControls extends Gtk.Box
         this.isMobile = false;
 
         this.showHours = false;
-        this.durationFormatted = '00∶00';
+        this.durationFormatted = `00${Misc.timeColon}00`;
         this.revealersArr = [];
         this.chapters = null;
 
