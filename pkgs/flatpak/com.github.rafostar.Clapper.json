@@ -16,8 +16,7 @@
         "--filesystem=xdg-videos",
         "--own-name=org.mpris.MediaPlayer2.Clapper",
         "--talk-name=org.gnome.Shell",
-        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
-        "--env=GST_VAAPI_ALL_DRIVERS=1"
+        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
@@ -33,12 +32,15 @@
         "flathub/lib/ffmpeg.json",
         "flathub/lib/uchardet.json",
         "flathub/gstreamer-1.0/gstreamer.json",
-        "testing/gtk4.json",
-        "testing/libadwaita.json",
+        "flathub/lib/gtk4.json",
+        "flathub/lib/libadwaita.json",
         "testing/gtuber.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
+            "config-opts": [
+                "-Dc_args=\"-DHAVE_GST_PATCHES=1\""
+            ],
             "sources": [
                 {
                     "type": "dir",

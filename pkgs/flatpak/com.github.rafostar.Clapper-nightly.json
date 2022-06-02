@@ -20,8 +20,7 @@
         "--filesystem=xdg-videos",
         "--own-name=org.mpris.MediaPlayer2.Clapper",
         "--talk-name=org.gnome.Shell",
-        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
-        "--env=GST_VAAPI_ALL_DRIVERS=1"
+        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-nightly/bin:/usr/lib/sdk/llvm13/bin",
