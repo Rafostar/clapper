@@ -10,6 +10,7 @@ Debug.debug('imports');
 
 const { GstClapper, Gtk, Adw } = imports.gi;
 const { App } = imports.src.app;
+const Misc = imports.src.misc;
 
 function main(argv)
 {
@@ -18,6 +19,10 @@ function main(argv)
     GstClapper.Clapper.gst_init(null);
     Gtk.init();
     Adw.init();
+
+    /* U+2236 seems to break RTL languages, use U+003A instead */
+    if(Gtk.Widget.get_default_direction() === Gtk.TextDirection.RTL)
+        Misc.timeColon = ':';
 
     Debug.debug('initialized');
 

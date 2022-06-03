@@ -9,6 +9,7 @@ var subsMimes = [
     'application/x-subrip',
     'text/x-ssa',
 ];
+var timeColon = '∶';
 
 var settings = new Gio.Settings({
     schema_id: appId,
@@ -161,8 +162,8 @@ function getFormattedTime(time, showHours)
     time -= minutes * 60;
     const seconds = ('0' + Math.floor(time)).slice(-2);
 
-    const parsed = (hours) ? `${hours}∶` : '';
-    return parsed + `${minutes}∶${seconds}`;
+    const parsed = (hours) ? `${hours}${timeColon}` : '';
+    return parsed + `${minutes}${timeColon}${seconds}`;
 }
 
 function parsePlaylistFiles(filesArray)
