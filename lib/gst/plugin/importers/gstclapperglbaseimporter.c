@@ -452,14 +452,19 @@ gst_clapper_gl_base_importer_add_allocation_metas (GstClapperImporter *importer,
 }
 
 static gboolean
-_realize_gdk_context_with_api (GdkGLContext *gdk_context, GdkGLAPI api)
+_realize_gdk_context_with_api (GdkGLContext *gdk_context, GdkGLAPI api, gint maj, gint min)
 {
   GError *error = NULL;
   gboolean success;
 
   gdk_gl_context_set_allowed_apis (gdk_context, api);
+  gdk_gl_context_set_required_version (gdk_context, maj, min);
+
+  GST_DEBUG ("Trying to realize %s context, min ver: %i.%i",
+      (api & GDK_GL_API_GL) ? "GL" : "GLES", maj, min);
+
   if (!(success = gdk_gl_context_realize (gdk_context, &error))) {
-    GST_WARNING ("Could not realize Gdk context with %s: %s",
+    GST_DEBUG ("Could not realize Gdk context with %s: %s",
         (api & GDK_GL_API_GL) ? "GL" : "GLES", error->message);
     g_clear_error (&error);
   }
@@ -486,7 +491,7 @@ gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self
         : GDK_GL_API_GL | GDK_GL_API_GLES;
 
     /* With requested by user API, we either use it or give up */
-    return _realize_gdk_context_with_api (gdk_context, preferred_api);
+    return _realize_gdk_context_with_api (gdk_context, preferred_api, 0, 0);
   }
 
   gdk_display = gdk_gl_context_get_display (gdk_context);
@@ -519,13 +524,24 @@ gst_clapper_gl_base_importer_gdk_context_realize (GstClapperGLBaseImporter *self
 #endif
 #endif
 
-  if (!(success = _realize_gdk_context_with_api (gdk_context, preferred_api))) {
+  /* Continue with GLES only if it should have "GL_EXT_texture_norm16"
+   * extension, as we need it to handle P010_10LE, etc. */
+  if ((preferred_api == GDK_GL_API_GLES)
+      && _realize_gdk_context_with_api (gdk_context, GDK_GL_API_GLES, 3, 1))
+    return TRUE;
+
+  /* If not using GLES 3.1, try with core GL 3.2 that GTK4 defaults to */
+  if (_realize_gdk_context_with_api (gdk_context, GDK_GL_API_GL, 3, 2))
+    return TRUE;
+
+  /* Try with what we normally prefer first, otherwise use fallback */
+  if (!(success = _realize_gdk_context_with_api (gdk_context, preferred_api, 0, 0))) {
     GdkGLAPI fallback_api;
 
     fallback_api = (GDK_GL_API_GL | GDK_GL_API_GLES);
     fallback_api &= ~preferred_api;
 
-    success = _realize_gdk_context_with_api (gdk_context, fallback_api);
+    success = _realize_gdk_context_with_api (gdk_context, fallback_api, 0, 0);
   }
 
   return success;
