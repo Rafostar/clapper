@@ -890,7 +890,7 @@ gst_clapper_sink_class_init (GstClapperSinkClass *klass)
   gstvideosink_class->set_info = gst_clapper_sink_set_info;
   gstvideosink_class->show_frame = gst_clapper_sink_show_frame;
 
-  gst_element_class_set_metadata (gstelement_class,
+  gst_element_class_set_static_metadata (gstelement_class,
       "Clapper video sink",
       "Sink/Video", "A GTK4 video sink used by Clapper media player",
       "Rafał Dzięgiel <rafostar.github@gmail.com>");
