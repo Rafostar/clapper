@@ -14,7 +14,9 @@
         "--device=all",
         "--filesystem=xdg-run/pipewire-0:ro",
         "--filesystem=xdg-videos",
+        "--filesystem=xdg-run/gvfsd",
         "--own-name=org.mpris.MediaPlayer2.Clapper",
+        "--talk-name=org.gtk.vfs.*",
         "--talk-name=org.gnome.Shell",
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
