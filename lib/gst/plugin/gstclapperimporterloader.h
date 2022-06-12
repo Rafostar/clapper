@@ -20,6 +20,7 @@
 #pragma once
 
 #include <gst/gst.h>
+#include <gst/base/gstbasesink.h>
 
 #include "gstclapperimporter.h"
 
@@ -35,7 +36,9 @@ struct _GstClapperImporterLoader
   GstObject parent;
 
   GModule *last_module;
+
   GPtrArray *importers;
+  GPtrArray *context_handlers;
 };
 
 GstClapperImporterLoader * gst_clapper_importer_loader_new                             (void);
@@ -44,8 +47,8 @@ GstPadTemplate *           gst_clapper_importer_loader_make_sink_pad_template   
 
 GstCaps *                  gst_clapper_importer_loader_make_actual_caps                (GstClapperImporterLoader *loader);
 
-gboolean                   gst_clapper_importer_loader_find_importer_for_caps          (GstClapperImporterLoader *loader, GstCaps *caps, GstClapperImporter **importer);
+gboolean                   gst_clapper_importer_loader_handle_context_query            (GstClapperImporterLoader *loader, GstBaseSink *bsink, GstQuery *query);
 
-gboolean                   gst_clapper_importer_loader_find_importer_for_context_query (GstClapperImporterLoader *loader, GstQuery *query, GstClapperImporter **importer);
+gboolean                   gst_clapper_importer_loader_find_importer_for_caps          (GstClapperImporterLoader *loader, GstCaps *caps, GstClapperImporter **importer);
 
 G_END_DECLS

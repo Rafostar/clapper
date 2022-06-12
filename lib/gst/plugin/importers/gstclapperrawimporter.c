@@ -47,13 +47,6 @@ gst_clapper_raw_importer_create_pool (GstClapperImporter *importer, GstStructure
   return pool;
 }
 
-static void
-gst_clapper_raw_importer_add_allocation_metas (GstClapperImporter *importer, GstQuery *query)
-{
-  gst_query_add_allocation_meta (query, GST_VIDEO_OVERLAY_COMPOSITION_META_API_TYPE, NULL);
-  gst_query_add_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL);
-}
-
 static GdkTexture *
 gst_clapper_raw_importer_generate_texture (GstClapperImporter *importer,
     GstBuffer *buffer, GstVideoInfo *v_info)
@@ -86,18 +79,17 @@ gst_clapper_raw_importer_class_init (GstClapperRawImporterClass *klass)
       "Clapper RAW Importer");
 
   importer_class->create_pool = gst_clapper_raw_importer_create_pool;
-  importer_class->add_allocation_metas = gst_clapper_raw_importer_add_allocation_metas;
   importer_class->generate_texture = gst_clapper_raw_importer_generate_texture;
 }
 
 GstClapperImporter *
-make_importer (void)
+make_importer (GPtrArray *context_handlers)
 {
   return g_object_new (GST_TYPE_CLAPPER_RAW_IMPORTER, NULL);
 }
 
 GstCaps *
-make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
+make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
   *rank = GST_RANK_MARGINAL;
 

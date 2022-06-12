@@ -33,11 +33,11 @@ G_BEGIN_DECLS
 #define GST_CLAPPER_IMPORTER_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), GST_TYPE_CLAPPER_IMPORTER, GstClapperImporterClass))
 #define GST_CLAPPER_IMPORTER_CAST(obj)          ((GstClapperImporter *)(obj))
 
-#define GST_CLAPPER_IMPORTER_DEFINE(camel,lower,type)                     \
-G_DEFINE_TYPE (camel, lower, type)                                        \
-G_MODULE_EXPORT GstClapperImporter *make_importer (void);                 \
-G_MODULE_EXPORT GstCaps *make_caps (gboolean is_template,                 \
-    GstRank *rank, GStrv *context_types);
+#define GST_CLAPPER_IMPORTER_DEFINE(camel,lower,type)                            \
+G_DEFINE_TYPE (camel, lower, type)                                               \
+G_MODULE_EXPORT GstClapperImporter *make_importer (GPtrArray *context_handlers); \
+G_MODULE_EXPORT GstCaps *make_caps (gboolean is_template,                        \
+    GstRank *rank, GPtrArray *context_handlers);
 
 typedef struct _GstClapperImporter GstClapperImporter;
 typedef struct _GstClapperImporterClass GstClapperImporterClass;
@@ -65,17 +65,8 @@ struct _GstClapperImporterClass
 {
   GstObjectClass parent_class;
 
-  gboolean (* prepare) (GstClapperImporter *importer);
-
-  void (* share_data) (GstClapperImporter *src,
-                       GstClapperImporter *dest);
-
   void (* set_caps) (GstClapperImporter *importer,
                      GstCaps            *caps);
-
-  gboolean (* handle_context_query) (GstClapperImporter *importer,
-                                     GstBaseSink        *bsink,
-                                     GstQuery           *query);
 
   GstBufferPool * (* create_pool) (GstClapperImporter *importer,
                                    GstStructure      **config);
@@ -90,9 +81,6 @@ struct _GstClapperImporterClass
 
 GType           gst_clapper_importer_get_type                (void);
 
-gboolean        gst_clapper_importer_prepare                 (GstClapperImporter *importer);
-void            gst_clapper_importer_share_data              (GstClapperImporter *importer, GstClapperImporter *dest);
-gboolean        gst_clapper_importer_handle_context_query    (GstClapperImporter *importer, GstBaseSink *bsink, GstQuery *query);
 GstBufferPool * gst_clapper_importer_create_pool             (GstClapperImporter *importer, GstStructure **config);
 void            gst_clapper_importer_add_allocation_metas    (GstClapperImporter *importer, GstQuery *query);
 

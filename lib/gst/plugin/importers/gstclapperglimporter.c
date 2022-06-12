@@ -27,15 +27,45 @@
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 #define parent_class gst_clapper_gl_importer_parent_class
-GST_CLAPPER_IMPORTER_DEFINE (GstClapperGLImporter, gst_clapper_gl_importer, GST_TYPE_CLAPPER_GL_BASE_IMPORTER);
+GST_CLAPPER_IMPORTER_DEFINE (GstClapperGLImporter, gst_clapper_gl_importer, GST_TYPE_CLAPPER_IMPORTER);
+
+static GstBufferPool *
+gst_clapper_gl_importer_create_pool (GstClapperImporter *importer, GstStructure **config)
+{
+  GstClapperGLImporter *self = GST_CLAPPER_GL_IMPORTER_CAST (importer);
+  GstBufferPool *pool;
+
+  GST_DEBUG_OBJECT (self, "Creating new GL buffer pool");
+
+  pool = gst_gl_buffer_pool_new (self->gl_handler->gst_context);
+  *config = gst_buffer_pool_get_config (pool);
+
+  gst_buffer_pool_config_add_option (*config, GST_BUFFER_POOL_OPTION_VIDEO_META);
+  gst_buffer_pool_config_add_option (*config, GST_BUFFER_POOL_OPTION_GL_SYNC_META);
+
+  return pool;
+}
+
+static void
+gst_clapper_gl_importer_add_allocation_metas (GstClapperImporter *importer, GstQuery *query)
+{
+  GstClapperGLImporter *self = GST_CLAPPER_GL_IMPORTER_CAST (importer);
+
+  /* We can support GL sync meta */
+  if (self->gl_handler->gst_context->gl_vtable->FenceSync)
+    gst_query_add_allocation_meta (query, GST_GL_SYNC_META_API_TYPE, NULL);
+
+  /* Also add base importer class supported meta */
+  GST_CLAPPER_IMPORTER_CLASS (parent_class)->add_allocation_metas (importer, query);
+}
 
 static GdkTexture *
 gst_clapper_gl_importer_generate_texture (GstClapperImporter *importer,
     GstBuffer *buffer, GstVideoInfo *v_info)
 {
-  GstClapperGLBaseImporter *gl_bi = GST_CLAPPER_GL_BASE_IMPORTER_CAST (importer);
+  GstClapperGLImporter *self = GST_CLAPPER_GL_IMPORTER_CAST (importer);
 
-  return gst_clapper_gl_base_importer_make_gl_texture (gl_bi, buffer, v_info);
+  return gst_clapper_gl_context_handler_make_gl_texture (self->gl_handler, buffer, v_info);
 }
 
 static void
@@ -44,27 +74,57 @@ gst_clapper_gl_importer_init (GstClapperGLImporter *self)
 }
 
 static void
+gst_clapper_gl_importer_finalize (GObject *object)
+{
+  GstClapperGLImporter *self = GST_CLAPPER_GL_IMPORTER_CAST (object);
+
+  gst_clear_object (&self->gl_handler);
+
+  GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
+}
+
+static void
 gst_clapper_gl_importer_class_init (GstClapperGLImporterClass *klass)
 {
+  GObjectClass *gobject_class = (GObjectClass *) klass;
   GstClapperImporterClass *importer_class = (GstClapperImporterClass *) klass;
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperglimporter", 0,
       "Clapper GL Importer");
 
+  gobject_class->finalize = gst_clapper_gl_importer_finalize;
+
+  importer_class->create_pool = gst_clapper_gl_importer_create_pool;
+  importer_class->add_allocation_metas = gst_clapper_gl_importer_add_allocation_metas;
   importer_class->generate_texture = gst_clapper_gl_importer_generate_texture;
 }
 
 GstClapperImporter *
-make_importer (void)
+make_importer (GPtrArray *context_handlers)
 {
-  return g_object_new (GST_TYPE_CLAPPER_GL_IMPORTER, NULL);
+  GstClapperGLImporter *self;
+  GstClapperContextHandler *handler;
+
+  handler = gst_clapper_context_handler_obtain_with_type (context_handlers,
+      GST_TYPE_CLAPPER_GL_CONTEXT_HANDLER);
+
+  if (G_UNLIKELY (!handler))
+    return NULL;
+
+  self = g_object_new (GST_TYPE_CLAPPER_GL_IMPORTER, NULL);
+  self->gl_handler = GST_CLAPPER_GL_CONTEXT_HANDLER_CAST (handler);
+
+  return GST_CLAPPER_IMPORTER_CAST (self);
 }
 
 GstCaps *
-make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
+make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
   *rank = GST_RANK_SECONDARY;
-  *context_types = gst_clapper_gl_base_importer_make_gl_context_types ();
 
-  return gst_clapper_gl_base_importer_make_supported_gdk_gl_caps ();
+  if (!is_template && context_handlers)
+    gst_clapper_gl_context_handler_add_handler (context_handlers);
+
+  return gst_clapper_gl_context_handler_make_gdk_gl_caps (
+      GST_CAPS_FEATURE_MEMORY_GL_MEMORY, TRUE);
 }

@@ -19,18 +19,21 @@
 
 #pragma once
 
-#include "gstclapperglbaseimporter.h"
+#include "gst/plugin/gstclapperimporter.h"
+#include "gst/plugin/handlers/gl/gstclapperglcontexthandler.h"
 
 G_BEGIN_DECLS
 
 #define GST_TYPE_CLAPPER_GL_IMPORTER (gst_clapper_gl_importer_get_type())
-G_DECLARE_FINAL_TYPE (GstClapperGLImporter, gst_clapper_gl_importer, GST, CLAPPER_GL_IMPORTER, GstClapperGLBaseImporter)
+G_DECLARE_FINAL_TYPE (GstClapperGLImporter, gst_clapper_gl_importer, GST, CLAPPER_GL_IMPORTER, GstClapperImporter)
 
 #define GST_CLAPPER_GL_IMPORTER_CAST(obj)        ((GstClapperGLImporter *)(obj))
 
 struct _GstClapperGLImporter
 {
-  GstClapperGLBaseImporter parent;
+  GstClapperImporter parent;
+
+  GstClapperGLContextHandler *gl_handler;
 };
 
 G_END_DECLS

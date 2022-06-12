@@ -61,4 +61,5 @@ if build_gst_plugin
   )
 endif
 
+subdir('handlers')
 subdir('importers')

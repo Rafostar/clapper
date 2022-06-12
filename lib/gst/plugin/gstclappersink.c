@@ -480,24 +480,11 @@ gst_clapper_sink_query (GstBaseSink *bsink, GstQuery *query)
   GstClapperSink *self = GST_CLAPPER_SINK_CAST (bsink);
   gboolean res = FALSE;
 
-  GST_CLAPPER_SINK_LOCK (self);
-
   if (GST_QUERY_TYPE (query) == GST_QUERY_CONTEXT) {
-    gboolean is_inactive;
-
-    GST_OBJECT_LOCK (self);
-    is_inactive = (GST_STATE (self) < GST_STATE_PAUSED);
-    GST_OBJECT_UNLOCK (self);
-
-    /* Some random context query in the middle of playback
-     * should not trigger importer replacement */
-    if (is_inactive)
-      gst_clapper_importer_loader_find_importer_for_context_query (self->loader, query, &self->importer);
-    if (self->importer)
-      res = gst_clapper_importer_handle_context_query (self->importer, bsink, query);
+    GST_CLAPPER_SINK_LOCK (self);
+    res = gst_clapper_importer_loader_handle_context_query (self->loader, bsink, query);
+    GST_CLAPPER_SINK_UNLOCK (self);
   }
-
-  GST_CLAPPER_SINK_UNLOCK (self);
 
   if (res)
     return TRUE;

@@ -24,7 +24,7 @@
 #include "gstclappergluploader.h"
 #include "gst/plugin/gstgtkutils.h"
 
-#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11
+#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11
 #include <gdk/x11/gdkx.h>
 #endif
 
@@ -32,30 +32,33 @@
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 #define parent_class gst_clapper_gl_uploader_parent_class
-GST_CLAPPER_IMPORTER_DEFINE (GstClapperGLUploader, gst_clapper_gl_uploader, GST_TYPE_CLAPPER_GL_BASE_IMPORTER);
+GST_CLAPPER_IMPORTER_DEFINE (GstClapperGLUploader, gst_clapper_gl_uploader, GST_TYPE_CLAPPER_IMPORTER);
 
 static void
 _update_elements_caps_locked (GstClapperGLUploader *self, GstCaps *upload_sink_caps)
 {
-  GstClapperGLBaseImporter *gl_bi = GST_CLAPPER_GL_BASE_IMPORTER_CAST (self);
+  GstGLContext *gst_context;
   GstCaps *upload_src_caps, *color_sink_caps, *color_src_caps, *gdk_sink_caps;
+
+  gst_context = self->gl_handler->gst_context;
 
   GST_INFO_OBJECT (self, "Input caps: %" GST_PTR_FORMAT, upload_sink_caps);
 
-  upload_src_caps = gst_gl_upload_transform_caps (self->upload, gl_bi->gst_context,
+  upload_src_caps = gst_gl_upload_transform_caps (self->upload, gst_context,
       GST_PAD_SINK, upload_sink_caps, NULL);
   upload_src_caps = gst_caps_fixate (upload_src_caps);
 
   GST_INFO_OBJECT (self, "GLUpload caps: %" GST_PTR_FORMAT, upload_src_caps);
   gst_gl_upload_set_caps (self->upload, upload_sink_caps, upload_src_caps);
 
-  gdk_sink_caps = gst_clapper_gl_base_importer_make_supported_gdk_gl_caps ();
-  color_sink_caps = gst_gl_color_convert_transform_caps (gl_bi->gst_context,
+  gdk_sink_caps = gst_clapper_gl_context_handler_make_gdk_gl_caps (
+      GST_CAPS_FEATURE_MEMORY_GL_MEMORY, TRUE);
+  color_sink_caps = gst_gl_color_convert_transform_caps (gst_context,
       GST_PAD_SRC, upload_src_caps, gdk_sink_caps);
   gst_caps_unref (gdk_sink_caps);
 
   /* Second caps arg is transfer-full */
-  color_src_caps = gst_gl_color_convert_fixate_caps (gl_bi->gst_context,
+  color_src_caps = gst_gl_color_convert_fixate_caps (gst_context,
       GST_PAD_SINK, upload_src_caps, color_sink_caps);
 
   GST_INFO_OBJECT (self, "GLColorConvert caps: %" GST_PTR_FORMAT, color_src_caps);
@@ -72,9 +75,9 @@ gst_clapper_gl_uploader_set_caps (GstClapperImporter *importer, GstCaps *caps)
 {
   GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
 
-  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
+  GST_CLAPPER_GL_UPLOADER_LOCK (self);
   _update_elements_caps_locked (self, caps);
-  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
+  GST_CLAPPER_GL_UPLOADER_UNLOCK (self);
 }
 
 static void
@@ -90,28 +93,6 @@ _uploader_reconfigure_locked (GstClapperGLUploader *self)
     _update_elements_caps_locked (self, in_caps);
     gst_caps_unref (in_caps);
   }
-}
-
-static gboolean
-gst_clapper_gl_uploader_prepare (GstClapperImporter *importer)
-{
-  gboolean res = GST_CLAPPER_IMPORTER_CLASS (parent_class)->prepare (importer);
-
-  if (res) {
-    GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
-    GstClapperGLBaseImporter *gl_bi = GST_CLAPPER_GL_BASE_IMPORTER_CAST (importer);
-
-    GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
-
-    if (!self->upload)
-      self->upload = gst_gl_upload_new (gl_bi->gst_context);
-    if (!self->color_convert)
-      self->color_convert = gst_gl_color_convert_new (gl_bi->gst_context);
-
-    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
-  }
-
-  return res;
 }
 
 static GstBuffer *
@@ -152,13 +133,19 @@ gst_clapper_gl_uploader_add_allocation_metas (GstClapperImporter *importer, GstQ
   GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
   GstGLUpload *upload;
 
-  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
+  GST_CLAPPER_GL_UPLOADER_LOCK (self);
   upload = gst_object_ref (self->upload);
-  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
+  GST_CLAPPER_GL_UPLOADER_UNLOCK (self);
 
+  /* Add glupload supported meta */
   gst_gl_upload_propose_allocation (upload, NULL, query);
   gst_object_unref (upload);
 
+  /* We can support GL sync meta */
+  if (self->gl_handler->gst_context->gl_vtable->FenceSync)
+    gst_query_add_allocation_meta (query, GST_GL_SYNC_META_API_TYPE, NULL);
+
+  /* Also add base importer class supported meta */
   GST_CLAPPER_IMPORTER_CLASS (parent_class)->add_allocation_metas (importer, query);
 }
 
@@ -167,7 +154,6 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
     GstBuffer *buffer, GstVideoInfo *v_info)
 {
   GstClapperGLUploader *self = GST_CLAPPER_GL_UPLOADER_CAST (importer);
-  GstClapperGLBaseImporter *gl_bi = GST_CLAPPER_GL_BASE_IMPORTER_CAST (importer);
   GstBuffer *upload_buf, *color_buf;
   GdkTexture *texture;
 
@@ -177,13 +163,13 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
 
   GST_LOG_OBJECT (self, "Uploading %" GST_PTR_FORMAT, buffer);
 
-  GST_CLAPPER_GL_BASE_IMPORTER_LOCK (self);
+  GST_CLAPPER_GL_UPLOADER_LOCK (self);
 
   upload_buf = _upload_perform_locked (self, buffer);
 
   if (G_UNLIKELY (!upload_buf)) {
     GST_ERROR_OBJECT (self, "Could not perform upload on input buffer");
-    GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
+    GST_CLAPPER_GL_UPLOADER_UNLOCK (self);
 
     return NULL;
   }
@@ -198,7 +184,7 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
     self->has_pending_v_info = FALSE;
   }
 
-  GST_CLAPPER_GL_BASE_IMPORTER_UNLOCK (self);
+  GST_CLAPPER_GL_UPLOADER_UNLOCK (self);
 
   if (G_UNLIKELY (!color_buf)) {
     GST_ERROR_OBJECT (self, "Could not perform color conversion on input buffer");
@@ -206,7 +192,7 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
   }
   GST_LOG_OBJECT (self, "Color converted into %" GST_PTR_FORMAT, color_buf);
 
-  texture = gst_clapper_gl_base_importer_make_gl_texture (gl_bi, color_buf, &self->v_info);
+  texture = gst_clapper_gl_context_handler_make_gl_texture (self->gl_handler, color_buf, &self->v_info);
   gst_buffer_unref (color_buf);
 
   return texture;
@@ -215,6 +201,8 @@ gst_clapper_gl_uploader_generate_texture (GstClapperImporter *importer,
 static void
 gst_clapper_gl_uploader_init (GstClapperGLUploader *self)
 {
+  g_mutex_init (&self->lock);
+
   gst_video_info_init (&self->pending_v_info);
   gst_video_info_init (&self->v_info);
 }
@@ -226,6 +214,10 @@ gst_clapper_gl_uploader_finalize (GObject *object)
 
   gst_clear_object (&self->upload);
   gst_clear_object (&self->color_convert);
+
+  gst_clear_object (&self->gl_handler);
+
+  g_mutex_clear (&self->lock);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
@@ -241,7 +233,6 @@ gst_clapper_gl_uploader_class_init (GstClapperGLUploaderClass *klass)
 
   gobject_class->finalize = gst_clapper_gl_uploader_finalize;
 
-  importer_class->prepare = gst_clapper_gl_uploader_prepare;
   importer_class->set_caps = gst_clapper_gl_uploader_set_caps;
   importer_class->create_pool = gst_clapper_gl_uploader_create_pool;
   importer_class->add_allocation_metas = gst_clapper_gl_uploader_add_allocation_metas;
@@ -249,12 +240,26 @@ gst_clapper_gl_uploader_class_init (GstClapperGLUploaderClass *klass)
 }
 
 GstClapperImporter *
-make_importer (void)
+make_importer (GPtrArray *context_handlers)
 {
-  return g_object_new (GST_TYPE_CLAPPER_GL_UPLOADER, NULL);
+  GstClapperGLUploader *self;
+  GstClapperContextHandler *handler;
+
+  handler = gst_clapper_context_handler_obtain_with_type (context_handlers,
+      GST_TYPE_CLAPPER_GL_CONTEXT_HANDLER);
+
+  if (G_UNLIKELY (!handler))
+    return NULL;
+
+  self = g_object_new (GST_TYPE_CLAPPER_GL_UPLOADER, NULL);
+  self->gl_handler = GST_CLAPPER_GL_CONTEXT_HANDLER_CAST (handler);
+  self->upload = gst_gl_upload_new (self->gl_handler->gst_context);
+  self->color_convert = gst_gl_color_convert_new (self->gl_handler->gst_context);
+
+  return GST_CLAPPER_IMPORTER_CAST (self);
 }
 
-#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
+#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11
 static gboolean
 _filter_glx_caps_cb (GstCapsFeatures *features,
     GstStructure *structure, gpointer user_data)
@@ -277,7 +282,7 @@ _update_glx_caps_on_main (GstCaps *caps)
   if (GDK_IS_X11_DISPLAY (gdk_display)) {
     gboolean using_glx = TRUE;
 
-#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_EGL
+#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11_EGL
     using_glx = (gdk_x11_display_get_egl_display (gdk_display) == NULL);
 #endif
 
@@ -292,11 +297,11 @@ _update_glx_caps_on_main (GstCaps *caps)
 #endif
 
 GstCaps *
-make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
+make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
   GstCaps *caps = gst_gl_upload_get_input_template_caps ();
 
-#if GST_CLAPPER_GL_BASE_IMPORTER_HAVE_X11_GLX
+#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11_GLX
   if (!is_template && !(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
       _update_glx_caps_on_main, caps)))
     gst_clear_caps (&caps);
@@ -306,7 +311,9 @@ make_caps (gboolean is_template, GstRank *rank, GStrv *context_types)
     return NULL;
 
   *rank = GST_RANK_MARGINAL + 1;
-  *context_types = gst_clapper_gl_base_importer_make_gl_context_types ();
+
+  if (!is_template && context_handlers)
+    gst_clapper_gl_context_handler_add_handler (context_handlers);
 
   return caps;
 }
