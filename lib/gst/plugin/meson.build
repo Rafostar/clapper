@@ -41,6 +41,7 @@ gst_clapper_plugin_sources = [
   'gstclapperpaintable.c',
   'gstgtkutils.c',
   'gstplugin.c',
+  'gstclappercontexthandler.c',
   'gstclapperimporter.c',
   'gstclapperimporterloader.c',
 ]
