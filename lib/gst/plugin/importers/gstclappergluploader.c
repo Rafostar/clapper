@@ -22,11 +22,6 @@
 #endif
 
 #include "gstclappergluploader.h"
-#include "gst/plugin/gstgtkutils.h"
-
-#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11
-#include <gdk/x11/gdkx.h>
-#endif
 
 #define GST_CAT_DEFAULT gst_clapper_gl_uploader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -259,61 +254,75 @@ make_importer (GPtrArray *context_handlers)
   return GST_CLAPPER_IMPORTER_CAST (self);
 }
 
-#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11
-static gboolean
-_filter_glx_caps_cb (GstCapsFeatures *features,
-    GstStructure *structure, gpointer user_data)
+static GstCaps *
+_make_actual_caps (GstClapperGLContextHandler *gl_handler)
 {
-  return !gst_caps_features_contains (features, "memory:DMABuf");
-}
+  GstGLUpload *upload;
+  GstCaps *gdk_sink_caps, *color_sink_caps, *upload_sink_caps, *actual;
+  guint i;
 
-static gboolean
-_update_glx_caps_on_main (GstCaps *caps)
-{
-  GdkDisplay *gdk_display;
+  /* Having "gst_context" means we also have all other contexts and
+   * display as they are used to create it, so no need to check */
+  if (!gl_handler->gst_context)
+    return NULL;
 
-  if (!gtk_init_check ())
-    return FALSE;
+  gdk_sink_caps = gst_clapper_gl_context_handler_make_gdk_gl_caps (
+      GST_CAPS_FEATURE_MEMORY_GL_MEMORY, TRUE);
 
-  gdk_display = gdk_display_get_default ();
-  if (G_UNLIKELY (!gdk_display))
-    return FALSE;
+  color_sink_caps = gst_gl_color_convert_transform_caps (gl_handler->gst_context,
+      GST_PAD_SRC, gdk_sink_caps, NULL);
+  gst_caps_unref (gdk_sink_caps);
 
-  if (GDK_IS_X11_DISPLAY (gdk_display)) {
-    gboolean using_glx = TRUE;
+  upload = gst_gl_upload_new (NULL);
 
-#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11_EGL
-    using_glx = (gdk_x11_display_get_egl_display (gdk_display) == NULL);
-#endif
+  upload_sink_caps = gst_gl_upload_transform_caps (upload, gl_handler->gst_context,
+      GST_PAD_SRC, color_sink_caps, NULL);
+  gst_caps_unref (color_sink_caps);
 
-    if (using_glx) {
-      gst_caps_filter_and_map_in_place (caps,
-          (GstCapsFilterMapFunc) _filter_glx_caps_cb, NULL);
-    }
+  gst_object_unref (upload);
+
+  /* Check for existence and remove duplicated structures,
+   * they may contain unsupported by our GL context formats */
+  actual = gst_caps_new_empty ();
+  for (i = 0; i < gst_caps_get_size (upload_sink_caps); i++) {
+    GstCaps *tmp = gst_caps_copy_nth (upload_sink_caps, i);
+
+    if (!gst_caps_can_intersect (actual, tmp))
+      gst_caps_append (actual, tmp);
+    else
+      gst_caps_unref (tmp);
   }
+  gst_caps_unref (upload_sink_caps);
 
-  return TRUE;
+  if (G_UNLIKELY (gst_caps_is_empty (actual)))
+    gst_clear_caps (&actual);
+
+  return actual;
 }
-#endif
 
 GstCaps *
 make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
-  GstCaps *caps = gst_gl_upload_get_input_template_caps ();
+  GstCaps *caps = NULL;
 
-#if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11_GLX
-  if (!is_template && !(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
-      _update_glx_caps_on_main, caps)))
-    gst_clear_caps (&caps);
-#endif
+  if (is_template) {
+    caps = gst_gl_upload_get_input_template_caps ();
+  } else if (context_handlers) {
+    GstClapperGLContextHandler *gl_handler;
 
-  if (G_UNLIKELY (!caps))
-    return NULL;
-
-  *rank = GST_RANK_MARGINAL + 1;
-
-  if (!is_template && context_handlers)
+    /* Add GL context handler if not already present */
     gst_clapper_gl_context_handler_add_handler (context_handlers);
+
+    if ((gl_handler = GST_CLAPPER_GL_CONTEXT_HANDLER_CAST (
+        gst_clapper_context_handler_obtain_with_type (context_handlers,
+            GST_TYPE_CLAPPER_GL_CONTEXT_HANDLER)))) {
+      caps = _make_actual_caps (gl_handler);
+      gst_object_unref (gl_handler);
+    }
+  }
+
+  if (caps)
+    *rank = GST_RANK_MARGINAL + 1;
 
   return caps;
 }
