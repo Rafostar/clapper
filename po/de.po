@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-27 16:27\n"
+"PO-Revision-Date: 2022-06-24 18:28+0200\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -163,7 +163,7 @@ msgstr "Nach unten wischen bzw. scrollen"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr "In Vollbildmodus wechseln"
+msgstr "Stummschaltung umschalten"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
