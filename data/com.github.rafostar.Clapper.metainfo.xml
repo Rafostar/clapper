@@ -48,6 +48,19 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.5.2" date="2022-06-24">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Fix time labels display on RTL languages</li>
+          <li>Improved GL/GLES context automatic selection</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Hebrew</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.5.1" date="2022-05-29">
       <description>
         <p>
