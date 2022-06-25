@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-25 07:47\n"
+"PO-Revision-Date: 2022-06-25 08:49\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -19,43 +19,43 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr ""
+msgstr "گشودن پرونده‌ها…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "گشودن از URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "تنظیمات"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "میانبرها"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "در رابطه با Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "سرعت"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr ""
+msgstr "معمولی"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "عمومی"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "نمایش میانبرها"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "تغییر به تمام صفحه"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "خروج از تمام‌صفحه"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
@@ -75,27 +75,27 @@ msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "خروج"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "رسانه"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "گشودن پرونده‌ها"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "گشودن از URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "لیست پخش"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "مورد بعدی"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
@@ -103,7 +103,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "مورد قبل"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
@@ -115,11 +115,11 @@ msgstr ""
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "خروجی گرفتن در فایل"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr ""
+msgstr "بازپخش"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
@@ -167,7 +167,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "فصل بعدی"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
@@ -175,7 +175,7 @@ msgstr ""
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "کد گشاها"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
@@ -183,7 +183,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
-msgstr ""
+msgstr "رفتار"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
@@ -211,7 +211,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr ""
+msgstr "کاری انجام نشود"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
@@ -327,7 +327,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "پوسته تیره"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
@@ -372,15 +372,15 @@ msgstr ""
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "لغو"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "گشودن"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "عنوان"
 
 #: src/dialogs.js:227
 msgid "Completed"
@@ -430,9 +430,9 @@ msgstr ""
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr ""
+msgstr "کانال‌ها"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr ""
+msgstr "غیرفعال"
 
