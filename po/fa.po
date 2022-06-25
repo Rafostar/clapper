@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-25 09:46\n"
+"PO-Revision-Date: 2022-06-25 10:46\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -67,7 +67,7 @@ msgstr "خروج از تمام‌صفحه"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "نمایش OSD (فقط تمام صفحه)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
@@ -135,7 +135,7 @@ msgstr "پیمایش به جلو"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "کشیدن به راست | اسکرول به راست"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
@@ -143,7 +143,7 @@ msgstr "پیمایش به عقب"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "کشیدن به چپ | اسکرول به چپ"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
@@ -151,7 +151,7 @@ msgstr "افزایش صدا"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "کشیدن به بالا | اسکرول به بالا"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
@@ -159,7 +159,7 @@ msgstr "کاهش صدا"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "کشیدن به پایین | اسکرول به پایین"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
@@ -191,7 +191,7 @@ msgstr "تمام صفحه خودکار"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "ورود به تمام صفحه وقتی لیست پخش جایگزین شود به جز حالت شناور"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
@@ -231,7 +231,7 @@ msgstr "مقدار اولیه سفارشی"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "تنظیم صدای سفارشی در هنگام راه اندازی به جای بازیابی آن"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
@@ -303,7 +303,7 @@ msgstr "مشتری"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "بافرینگ دانلود مترقی"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
@@ -311,7 +311,7 @@ msgstr "سرور"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr ""
+msgstr "کنترل پخش‌کننده از راه دور"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
@@ -335,7 +335,7 @@ msgstr "رندر سایه‌ پنجره‌ها"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "غیر فعال سازی برای افزایش کارایی در حالت پنجره ای"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
@@ -343,7 +343,7 @@ msgstr "پیکربندی پلاگین"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "تغییر پیکربندی پیش فرض پلاگین های GStreamer"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
