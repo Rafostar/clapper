@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-25 08:49\n"
+"PO-Revision-Date: 2022-06-25 09:46\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -59,7 +59,7 @@ msgstr "تغییر به تمام صفحه"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "ضربه دوتایی | کلید دوتایی"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
@@ -71,7 +71,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "ضربه"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
@@ -99,7 +99,7 @@ msgstr "مورد بعدی"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "ضربه دوتایی (سمت راست)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
@@ -107,11 +107,11 @@ msgstr "مورد قبل"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "ضربه دوتایی (سمت چپ)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "تغییر حالت تکرار"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
@@ -123,15 +123,15 @@ msgstr "بازپخش"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "تغییر پخش"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "فشار طولانی | کلیک راست"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "پیمایش به جلو"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
@@ -139,7 +139,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "پیمایش به عقب"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
@@ -147,7 +147,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "افزایش صدا"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
@@ -155,7 +155,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "کاهش صدا"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
@@ -163,7 +163,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "تغییر وضعیت بیصدا"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
@@ -171,7 +171,7 @@ msgstr "فصل بعدی"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "بخش قبلی"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
@@ -179,7 +179,7 @@ msgstr "کد گشاها"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "بازگشت به تنظیمات"
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
@@ -187,7 +187,7 @@ msgstr "رفتار"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "تمام صفحه خودکار"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
@@ -195,19 +195,19 @@ msgstr ""
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "پرسش برای ادامه پخش مدیا"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "حالت شناور روی همه‌ی صفحات‌کاری"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "این مورد تنها بر روی GNOME کار می‌کند"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr ""
+msgstr "پس از بازپخش"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
@@ -215,19 +215,19 @@ msgstr "کاری انجام نشود"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr ""
+msgstr "بی‌حرکت کردن ةخرین قاب"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "بستن برنامه"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "درجه صدا"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr ""
+msgstr "مقدار اولیه سفارشی"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
@@ -235,71 +235,71 @@ msgstr ""
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "درصد صدا"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr ""
+msgstr "پوییدن"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "حالت"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr ""
+msgstr "دقت"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr ""
+msgstr "تند"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "واحد"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "ثانیه"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "دقیقه"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "درصد"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "مقدار"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "صوتی"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "جابجایی بر اساس میلی‌ثانیه"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "فقط فرمت‌های صوتی بومی"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "زیرنویس‌ها"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "قلم پیش فرض"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "شبکه"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "مشتری"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
@@ -307,7 +307,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "سرور"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
@@ -315,15 +315,15 @@ msgstr ""
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
-msgstr ""
+msgstr "شنود پورت"
 
 #: ui/preferences-window.ui:188
 msgid "Tweaks"
-msgstr ""
+msgstr "دستكاري"
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr ""
+msgstr "ظاهر"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
@@ -331,7 +331,7 @@ msgstr "پوسته تیره"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
-msgstr ""
+msgstr "رندر سایه‌ پنجره‌ها"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
@@ -339,7 +339,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr ""
+msgstr "پیکربندی پلاگین"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
@@ -347,28 +347,28 @@ msgstr ""
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
-msgstr ""
+msgstr "استفاده از playbin3"
 
 #: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
-msgstr ""
+msgstr "نیازمند به بازشروع برنامه"
 
 #: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
-msgstr ""
+msgstr "آزمایشی"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "استفاده از PipeWire برای خروجی صدا"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "کدگشا: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "رها کردن یا واردکردن URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
@@ -384,49 +384,49 @@ msgstr "عنوان"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "کامل شده"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "ادامه بازپخش?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "نسخه GTK: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "نسخه Adwita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "نسخه GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "نسخه GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "یک پخش‌کننده رسانه GNOME  قدرت گرفته از GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "سجاد موسوی نژاد <ssmns@outlook.com>"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "پایان در: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "نامشخص"
 
 #: src/widget.js:242
 msgid "Channels"
