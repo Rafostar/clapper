@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-26 16:50\n"
+"PO-Revision-Date: 2022-06-25 12:42\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr "Dosya Aç…"
+msgstr "Dosyaları Aç…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
@@ -55,7 +55,7 @@ msgstr "Kısayolları göster"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr "Tam ekran"
+msgstr "Tam ekranı aç/kapat"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
@@ -83,7 +83,7 @@ msgstr "Ortam"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "Dosyaları Aç"
+msgstr "Dosyaları aç"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
@@ -111,11 +111,11 @@ msgstr "Çift tıkla (sol tarafa)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "Tekrarlı oynatma modunu değiştir"
+msgstr "Yineleme kipini değiştir"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr "Dosyaya aktar"
+msgstr "Dosyaya dışa aktar"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
@@ -123,7 +123,7 @@ msgstr "Oynatma"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr "Oynatmayı başlat"
+msgstr "Oynatmayı başlat/durdur"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
@@ -163,7 +163,7 @@ msgstr "Aşağı sürükle | Aşağı kaydır"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr "Sesi kapat"
+msgstr "Sesi kapat/aç"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
@@ -191,248 +191,248 @@ msgstr "Otomatik tam ekran"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Yüzen kip dışında oynatma listesi değiştirildiğinde tam ekrana geç"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Son ortamı devam ettirmeyi sor"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Tüm çalışma alanlarının üstünde yüz"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Bu seçenek sadece GNOME'da çalışır"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr ""
+msgstr "Oynatma sonrası"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr ""
+msgstr "Hiçbir şey yapma"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Son kareyi dondur"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "Uygulamayı kapat"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "Ses"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr ""
+msgstr "Özel başlangıç değeri"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Başlangıçta sesi geri yüklemek yerine özel ses ayarla"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "Ses yüzdesi"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr ""
+msgstr "Sarma"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "Kip"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr ""
+msgstr "Hatasız"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr ""
+msgstr "Hızlı"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "Birim"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "Saniye"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "Dakika"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "Yüzde"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "Değer"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "Ses"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Milisaniye cinsinden solma süresi"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Yalnızca yerel ses biçimleri"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "Altyazılar"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "Öntanımlı yazı tipi"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "Ağ"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "İstemci"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Aşamalı indirme arabelleğe alma"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "Sunucu"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr ""
+msgstr "Oynatıcıyı uzaktan denetle"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
-msgstr ""
+msgstr "Dinleme portu"
 
 #: ui/preferences-window.ui:188
 msgid "Tweaks"
-msgstr ""
+msgstr "İnce Ayarlar"
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr ""
+msgstr "Görünüm"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "Koyu tema"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
-msgstr ""
+msgstr "Pencere gölgelerini işle"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Pencere açıldığında performansı artırmak için devre dışı bırak"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Eklenti puanı"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "GStreamer eklentilerinin öntanımlı sıralarını değiştir"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
-msgstr ""
+msgstr "Playbin3 kullan"
 
 #: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
-msgstr ""
+msgstr "Çalıcının yeniden başlatılmasını gerektirir"
 
 #: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
-msgstr ""
+msgstr "Deneysel"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Ses çıktısı için PipeWire kullan"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Çözücü: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Bağlantıyı buraya gir veya sürükle"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "İptal Et"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Aç"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Başlık"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Tamamlandı"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Oynatmaya devam edilsin mi?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK sürümü: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita sürümü: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer sürümü: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS sürümü: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "GStreamer'dan gücünü alan bir GNOME ortam oynatıcısı"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Clapper Çevirilerine Katkıda Bulunan Herkese Çok Teşekkür Ederiz"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Bitiş: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "Belirsiz"
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr ""
+msgstr "Kanallar"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr ""
+msgstr "Devre dışı"
 
