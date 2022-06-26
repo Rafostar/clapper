@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-26 21:23\n"
+"PO-Revision-Date: 2022-06-26 22:43\n"
 "Last-Translator: \n"
 "Language-Team: Asturian\n"
 "Language: ast_ES\n"
@@ -75,7 +75,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Colar"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
@@ -91,7 +91,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Llista de reproducción"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
@@ -203,7 +203,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Esta opción namái funciona en GNOME"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
@@ -219,11 +219,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "Zarrar l’aplicación"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "Volume"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
@@ -235,7 +235,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "Porcentaxe de volume"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
@@ -243,7 +243,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "Mou"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
@@ -259,15 +259,15 @@ msgstr ""
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "Segundu"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "Minutu"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "Porcentaxe"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
@@ -275,7 +275,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
@@ -287,7 +287,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "Sotítulos"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
@@ -295,11 +295,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "Rede"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "Veceru"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
@@ -307,7 +307,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "Sirvidor"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
@@ -327,7 +327,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "Tema escuru"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
@@ -372,43 +372,43 @@ msgstr ""
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Encaboxar"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Títulu"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Completáu al"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "¿Quies siguir cola reproducción?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "Versión de GTK: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Versión d’Adwaita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "Versión de GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "Versión de GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
@@ -417,7 +417,7 @@ msgstr ""
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2022"
 
 #: src/revealers.js:170
 #, javascript-format
