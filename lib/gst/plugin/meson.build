@@ -41,6 +41,7 @@ gst_clapper_plugin_sources = [
   'gstclapperpaintable.c',
   'gstgtkutils.c',
   'gstplugin.c',
+  'gstclappercontexthandler.c',
   'gstclapperimporter.c',
   'gstclapperimporterloader.c',
 ]
@@ -60,4 +61,5 @@ if build_gst_plugin
   )
 endif
 
+subdir('handlers')
 subdir('importers')

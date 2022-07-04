@@ -89,6 +89,14 @@ _default_create_pool (GstClapperImporter *self, GstStructure **config)
   return NULL;
 }
 
+static void
+_default_add_allocation_metas (GstClapperImporter *importer, GstQuery *query)
+{
+  /* Importer base class handles GstVideoOverlayCompositionMeta */
+  gst_query_add_allocation_meta (query, GST_VIDEO_OVERLAY_COMPOSITION_META_API_TYPE, NULL);
+  gst_query_add_allocation_meta (query, GST_VIDEO_META_API_TYPE, NULL);
+}
+
 static GdkTexture *
 _default_generate_texture (GstClapperImporter *self,
     GstBuffer *buffer, GstVideoInfo *v_info)
@@ -144,6 +152,7 @@ gst_clapper_importer_class_init (GstClapperImporterClass *klass)
   gobject_class->finalize = gst_clapper_importer_finalize;
 
   importer_class->create_pool = _default_create_pool;
+  importer_class->add_allocation_metas = _default_add_allocation_metas;
   importer_class->generate_texture = _default_generate_texture;
 }
 
@@ -295,30 +304,6 @@ gst_clapper_importer_prepare_overlays_locked (GstClapperImporter *self)
   GST_LOG_OBJECT (self, "Prepared overlays: %u", self->pending_overlays->len);
 }
 
-gboolean
-gst_clapper_importer_prepare (GstClapperImporter *self)
-{
-  GstClapperImporterClass *importer_class = GST_CLAPPER_IMPORTER_GET_CLASS (self);
-
-  if (importer_class->prepare) {
-    if (!importer_class->prepare (self))
-      return FALSE;
-  }
-
-  GST_DEBUG_OBJECT (self, "Importer prepared");
-
-  return TRUE;
-}
-
-void
-gst_clapper_importer_share_data (GstClapperImporter *self, GstClapperImporter *dest)
-{
-  GstClapperImporterClass *importer_class = GST_CLAPPER_IMPORTER_GET_CLASS (self);
-
-  if (importer_class->share_data)
-    importer_class->share_data (self, dest);
-}
-
 void
 gst_clapper_importer_set_caps (GstClapperImporter *self, GstCaps *caps)
 {
@@ -362,20 +347,7 @@ gst_clapper_importer_add_allocation_metas (GstClapperImporter *self, GstQuery *q
 {
   GstClapperImporterClass *importer_class = GST_CLAPPER_IMPORTER_GET_CLASS (self);
 
-  if (importer_class->add_allocation_metas)
-    importer_class->add_allocation_metas (self, query);
-}
-
-gboolean
-gst_clapper_importer_handle_context_query (GstClapperImporter *self,
-    GstBaseSink *bsink, GstQuery *query)
-{
-  GstClapperImporterClass *importer_class = GST_CLAPPER_IMPORTER_GET_CLASS (self);
-
-  if (!importer_class->handle_context_query)
-    return FALSE;
-
-  return importer_class->handle_context_query (self, bsink, query);
+  importer_class->add_allocation_metas (self, query);
 }
 
 void
