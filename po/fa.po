@@ -3,436 +3,436 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-25 12:42\n"
+"PO-Revision-Date: 2022-06-25 10:46\n"
 "Last-Translator: \n"
-"Language-Team: Turkish\n"
-"Language: tr_TR\n"
+"Language-Team: Persian\n"
+"Language: fa_IR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: tr\n"
+"X-Crowdin-Language: fa\n"
 "X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
 "X-Crowdin-File-ID: 31\n"
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr "Dosyaları Aç…"
+msgstr "گشودن پرونده‌ها…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr "URL Aç…"
+msgstr "گشودن از URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr "Tercihler"
+msgstr "تنظیمات"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr "Kısayollar"
+msgstr "میانبرها"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr "Clapper Hakkında"
+msgstr "در رابطه با Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr "Hız"
+msgstr "سرعت"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr "Normal"
+msgstr "معمولی"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr "Genel"
+msgstr "عمومی"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr "Kısayolları göster"
+msgstr "نمایش میانبرها"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr "Tam ekranı aç/kapat"
+msgstr "تغییر به تمام صفحه"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr "Çift dokun | Çift tıkla"
+msgstr "ضربه دوتایی | کلید دوتایی"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr "Tam ekrandan çık"
+msgstr "خروج از تمام‌صفحه"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr "Pencere Düğmelerini Göster (yalnızca tam ekran)"
+msgstr "نمایش OSD (فقط تمام صفحه)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr "Dokun"
+msgstr "ضربه"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr "Çık"
+msgstr "خروج"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr "Ortam"
+msgstr "رسانه"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr "Dosyaları aç"
+msgstr "گشودن پرونده‌ها"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr "URL Aç"
+msgstr "گشودن از URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr "Oynatma listesi"
+msgstr "لیست پخش"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr "Sonraki öğe"
+msgstr "مورد بعدی"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr "Çift tıkla (sağ tarafa)"
+msgstr "ضربه دوتایی (سمت راست)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr "Önceki öğe"
+msgstr "مورد قبل"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr "Çift tıkla (sol tarafa)"
+msgstr "ضربه دوتایی (سمت چپ)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr "Yineleme kipini değiştir"
+msgstr "تغییر حالت تکرار"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr "Dosyaya dışa aktar"
+msgstr "خروجی گرفتن در فایل"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr "Oynatma"
+msgstr "بازپخش"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr "Oynatmayı başlat/durdur"
+msgstr "تغییر پخش"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr "Uzun bas | Sağ tıkla"
+msgstr "فشار طولانی | کلیک راست"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr "İleri sar"
+msgstr "پیمایش به جلو"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr "Sağa sürükle | Sağa kaydır"
+msgstr "کشیدن به راست | اسکرول به راست"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr "Geri sar"
+msgstr "پیمایش به عقب"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr "Sola sürükle | Sola kaydır"
+msgstr "کشیدن به چپ | اسکرول به چپ"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr "Sesi artır"
+msgstr "افزایش صدا"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr "Yukarı sürükle | Yukarı kaydır"
+msgstr "کشیدن به بالا | اسکرول به بالا"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr "Sesi kıs"
+msgstr "کاهش صدا"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr "Aşağı sürükle | Aşağı kaydır"
+msgstr "کشیدن به پایین | اسکرول به پایین"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr "Sesi kapat/aç"
+msgstr "تغییر وضعیت بیصدا"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr "Sonraki parça"
+msgstr "فصل بعدی"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr "Önceki parça"
+msgstr "بخش قبلی"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr "Çözücüler"
+msgstr "کد گشاها"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr "Tercihlere geri dön"
+msgstr "بازگشت به تنظیمات"
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
-msgstr "Davranış"
+msgstr "رفتار"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
-msgstr "Otomatik tam ekran"
+msgstr "تمام صفحه خودکار"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr "Yüzen kip dışında oynatma listesi değiştirildiğinde tam ekrana geç"
+msgstr "ورود به تمام صفحه وقتی لیست پخش جایگزین شود به جز حالت شناور"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr "Son ortamı devam ettirmeyi sor"
+msgstr "پرسش برای ادامه پخش مدیا"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr "Tüm çalışma alanlarının üstünde yüz"
+msgstr "حالت شناور روی همه‌ی صفحات‌کاری"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr "Bu seçenek sadece GNOME'da çalışır"
+msgstr "این مورد تنها بر روی GNOME کار می‌کند"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr "Oynatma sonrası"
+msgstr "پس از بازپخش"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr "Hiçbir şey yapma"
+msgstr "کاری انجام نشود"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr "Son kareyi dondur"
+msgstr "بی‌حرکت کردن ةخرین قاب"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr "Uygulamayı kapat"
+msgstr "بستن برنامه"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr "Ses"
+msgstr "درجه صدا"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr "Özel başlangıç değeri"
+msgstr "مقدار اولیه سفارشی"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr "Başlangıçta sesi geri yüklemek yerine özel ses ayarla"
+msgstr "تنظیم صدای سفارشی در هنگام راه اندازی به جای بازیابی آن"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr "Ses yüzdesi"
+msgstr "درصد صدا"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr "Sarma"
+msgstr "پوییدن"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr "Kip"
+msgstr "حالت"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr "Hatasız"
+msgstr "دقت"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr "Hızlı"
+msgstr "تند"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr "Birim"
+msgstr "واحد"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr "Saniye"
+msgstr "ثانیه"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr "Dakika"
+msgstr "دقیقه"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr "Yüzde"
+msgstr "درصد"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr "Değer"
+msgstr "مقدار"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr "Ses"
+msgstr "صوتی"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr "Milisaniye cinsinden solma süresi"
+msgstr "جابجایی بر اساس میلی‌ثانیه"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr "Yalnızca yerel ses biçimleri"
+msgstr "فقط فرمت‌های صوتی بومی"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr "Altyazılar"
+msgstr "زیرنویس‌ها"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr "Öntanımlı yazı tipi"
+msgstr "قلم پیش فرض"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr "Ağ"
+msgstr "شبکه"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr "İstemci"
+msgstr "مشتری"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr "Aşamalı indirme arabelleğe alma"
+msgstr "بافرینگ دانلود مترقی"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr "Sunucu"
+msgstr "سرور"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr "Oynatıcıyı uzaktan denetle"
+msgstr "کنترل پخش‌کننده از راه دور"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
-msgstr "Dinleme portu"
+msgstr "شنود پورت"
 
 #: ui/preferences-window.ui:188
 msgid "Tweaks"
-msgstr "İnce Ayarlar"
+msgstr "دستكاري"
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr "Görünüm"
+msgstr "ظاهر"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr "Koyu tema"
+msgstr "پوسته تیره"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
-msgstr "Pencere gölgelerini işle"
+msgstr "رندر سایه‌ پنجره‌ها"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr "Pencere açıldığında performansı artırmak için devre dışı bırak"
+msgstr "غیر فعال سازی برای افزایش کارایی در حالت پنجره ای"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr "Eklenti puanı"
+msgstr "پیکربندی پلاگین"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "GStreamer eklentilerinin öntanımlı sıralarını değiştir"
+msgstr "تغییر پیکربندی پیش فرض پلاگین های GStreamer"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
-msgstr "Playbin3 kullan"
+msgstr "استفاده از playbin3"
 
 #: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
-msgstr "Çalıcının yeniden başlatılmasını gerektirir"
+msgstr "نیازمند به بازشروع برنامه"
 
 #: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
-msgstr "Deneysel"
+msgstr "آزمایشی"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr "Ses çıktısı için PipeWire kullan"
+msgstr "استفاده از PipeWire برای خروجی صدا"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr "Çözücü: %s"
+msgstr "کدگشا: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr "Bağlantıyı buraya gir veya sürükle"
+msgstr "رها کردن یا واردکردن URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr "İptal Et"
+msgstr "لغو"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr "Aç"
+msgstr "گشودن"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr "Başlık"
+msgstr "عنوان"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr "Tamamlandı"
+msgstr "کامل شده"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr "Oynatmaya devam edilsin mi?"
+msgstr "ادامه بازپخش?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr "GTK sürümü: %s"
+msgstr "نسخه GTK: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr "Adwaita sürümü: %s"
+msgstr "نسخه Adwita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr "GStreamer sürümü: %s"
+msgstr "نسخه GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr "GJS sürümü: %s"
+msgstr "نسخه GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr "GStreamer'dan gücünü alan bir GNOME ortam oynatıcısı"
+msgstr "یک پخش‌کننده رسانه GNOME  قدرت گرفته از GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr "Clapper Çevirilerine Katkıda Bulunan Herkese Çok Teşekkür Ederiz"
+msgstr "سجاد موسوی نژاد <ssmns@outlook.com>"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr "Bitiş: %s"
+msgstr "پایان در: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr "Belirsiz"
+msgstr "نامشخص"
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr "Kanallar"
+msgstr "کانال‌ها"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr "Devre dışı"
+msgstr "غیرفعال"
 
