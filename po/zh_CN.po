@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-26 16:50\n"
+"PO-Revision-Date: 2022-07-18 08:48\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -27,7 +27,7 @@ msgstr "打开 URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr "选项"
+msgstr "首选项"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
@@ -59,7 +59,7 @@ msgstr "切换全屏"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "轻击两次 | 双击"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
@@ -71,7 +71,7 @@ msgstr "显示 OSD（仅全屏）"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "轻击"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
@@ -99,7 +99,7 @@ msgstr "下一项"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "双击(右侧)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
@@ -107,7 +107,7 @@ msgstr "上一项"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "双击(左侧)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
@@ -123,7 +123,7 @@ msgstr "播放"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "切换播放"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
@@ -135,7 +135,7 @@ msgstr "快进"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "向右滑动 | 向右滚动"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
@@ -143,7 +143,7 @@ msgstr "快退"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "向左滑动 | 向左滚动"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
@@ -167,11 +167,11 @@ msgstr "切换静音"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "下一章节"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "上一章节"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
@@ -191,15 +191,15 @@ msgstr "自动全屏"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "在播放列表被替换时进入全屏模式，除非悬浮模式"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "询问恢复播放最近的媒体"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "悬浮于所有工作区"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
@@ -231,7 +231,7 @@ msgstr "自定义初始值"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "设置启动时的自定义音量而非恢复先前"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
@@ -279,11 +279,11 @@ msgstr "音频"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "以毫秒为单位的偏移"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "仅原生音频格式"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
@@ -303,7 +303,7 @@ msgstr "客户端"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "渐进式下载缓存"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
@@ -335,15 +335,15 @@ msgstr "渲染窗口阴影"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "禁用以提升窗口模式时的性能"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr ""
+msgstr "插件等级"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "更改 GStreamer 插件的默认等级"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
@@ -368,7 +368,7 @@ msgstr "解码器：%s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "输入或拖放 URI 到这里"
 
 #: src/dialogs.js:157
 msgid "Cancel"
@@ -412,12 +412,13 @@ msgstr "GJS 版本：%s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "一款基于 GStreamer 的 GNOME 媒体播放器"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr "刘韬"
+msgstr "刘韬\n"
+"Tommy He"
 
 #: src/revealers.js:170
 #, javascript-format
@@ -426,7 +427,7 @@ msgstr "结束于：%s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "未确定"
 
 #: src/widget.js:242
 msgid "Channels"
