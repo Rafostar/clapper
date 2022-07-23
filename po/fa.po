@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-06-25 10:46\n"
+"PO-Revision-Date: 2022-07-23 14:14\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -23,19 +23,19 @@ msgstr "گشودن پرونده‌ها…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr "گشودن از URI…"
+msgstr "گشودن نشانی…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr "تنظیمات"
+msgstr "ترجیحات"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr "میانبرها"
+msgstr "میان‌برها"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr "در رابطه با Clapper"
+msgstr "دربارهٔ کلَپِر"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
@@ -51,15 +51,15 @@ msgstr "عمومی"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr "نمایش میانبرها"
+msgstr "نمایش میان‌برها"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr "تغییر به تمام صفحه"
+msgstr "تغییر حالت تمام‌صفحه"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr "ضربه دوتایی | کلید دوتایی"
+msgstr "دو بار ضربه | دو بار کلیک"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
@@ -67,7 +67,7 @@ msgstr "خروج از تمام‌صفحه"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr "نمایش OSD (فقط تمام صفحه)"
+msgstr "نمایش OSD (فقط تمام‌صفحه)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
@@ -87,11 +87,11 @@ msgstr "گشودن پرونده‌ها"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr "گشودن از URI"
+msgstr "گشودن نشانی"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr "لیست پخش"
+msgstr "سیاههٔ پخش"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
