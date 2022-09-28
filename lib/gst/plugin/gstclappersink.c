@@ -279,8 +279,15 @@ gst_clapper_sink_get_widget (GstClapperSink *self)
     gst_clapper_paintable_set_widget (self->paintable, self->widget);
 
     /* Set earlier remembered property */
+#if GTK_CHECK_VERSION(4,8,0)
+    if (self->force_aspect_ratio)
+      gtk_picture_set_content_fit (GTK_PICTURE (self->widget), GTK_CONTENT_FIT_CONTAIN);
+    else
+      gtk_picture_set_content_fit (GTK_PICTURE (self->widget), GTK_CONTENT_FIT_FILL);
+#else
     gtk_picture_set_keep_aspect_ratio (GTK_PICTURE (self->widget),
         self->force_aspect_ratio);
+#endif
 
     gtk_picture_set_paintable (GTK_PICTURE (self->widget), GDK_PAINTABLE (self->paintable));
 
@@ -358,8 +365,15 @@ gst_clapper_sink_set_property (GObject *object, guint prop_id,
       self->force_aspect_ratio = g_value_get_boolean (value);
 
       if (self->widget) {
+#if GTK_CHECK_VERSION(4,8,0)
+        if (self->force_aspect_ratio)
+          gtk_picture_set_content_fit (GTK_PICTURE (self->widget), GTK_CONTENT_FIT_CONTAIN);
+        else
+          gtk_picture_set_content_fit (GTK_PICTURE (self->widget), GTK_CONTENT_FIT_FILL);
+#else
         gtk_picture_set_keep_aspect_ratio (GTK_PICTURE (self->widget),
             self->force_aspect_ratio);
+#endif
       }
       break;
     case PROP_PIXEL_ASPECT_RATIO:
