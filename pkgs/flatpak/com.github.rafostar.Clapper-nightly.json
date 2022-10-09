@@ -5,7 +5,7 @@
     "sdk": "org.gnome.Sdk",
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-nightly",
-        "org.freedesktop.Sdk.Extension.llvm13"
+        "org.freedesktop.Sdk.Extension.llvm14"
     ],
     "command": "com.github.rafostar.Clapper",
     "finish-args": [
@@ -25,8 +25,8 @@
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
     "build-options": {
-        "append-path": "/usr/lib/sdk/rust-nightly/bin:/usr/lib/sdk/llvm13/bin",
-        "prepend-ld-library-path": "/usr/lib/sdk/llvm13/lib"
+        "append-path": "/usr/lib/sdk/rust-nightly/bin:/usr/lib/sdk/llvm14/bin",
+        "prepend-ld-library-path": "/usr/lib/sdk/llvm14/lib"
     },
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
