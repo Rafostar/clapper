@@ -29,8 +29,8 @@ jobs:
         platforms: arm64
     - name: Prepare Runtime
       run: |
-        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.rust-nightly/${{ matrix.arch }}/21.08
-        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.llvm13/${{ matrix.arch }}/21.08
+        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.rust-nightly/${{ matrix.arch }}/22.08
+        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.llvm14/${{ matrix.arch }}/22.08
     - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
       name: Build
       with:

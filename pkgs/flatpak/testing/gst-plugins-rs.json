@@ -1,6 +1,9 @@
 {
     "name": "gst-plugins-rs",
     "buildsystem": "simple",
+    "only-arches": [
+        "x86_64"
+    ],
     "build-options": {
         "build-args": [
             "--share=network"
