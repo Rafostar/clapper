@@ -203,6 +203,15 @@
                 <property name="schema-name">render-shadows</property>
               </object>
             </child>
+            <child>
+              <object class="ClapperPrefsSwitch">
+                <property name="title" translatable="yes">Single window</property>
+                <property name="subtitle" translatable="yes">Required for Flatpak and MPRIS. Requires player restart.</property>
+                <property name="custom-icon-name">dialog-warning-symbolic</property>
+                <property name="custom-icon-subtitle" translatable="yes">Experimental</property>
+                <property name="schema-name">single-window</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>

@@ -15,9 +15,12 @@ class ClapperApp extends Gtk.Application
 {
     _init()
     {
+        let flags = Gio.ApplicationFlags.HANDLES_OPEN;
+        if(!settings.get_boolean('single-window'))
+            flags |= Gio.ApplicationFlags.NON_UNIQUE;
         super._init({
             application_id: Misc.appId,
-            flags: Gio.ApplicationFlags.HANDLES_OPEN,
+            flags: flags,
         });
 
         this.doneFirstActivate = false;

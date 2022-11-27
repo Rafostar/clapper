@@ -76,6 +76,10 @@
       <default>true</default>
       <summary>Enable rendering window shadows (only if theme has them)</summary>
     </key>
+    <key name="single-window" type="b">
+      <default>true</default>
+      <summary>Prevent more than one instance of clapper running at the same time. Required for Flatpak and MPRIS.</summary>
+    </key>
 
     <!-- GStreamer -->
     <key name="plugin-ranking" type="s">
