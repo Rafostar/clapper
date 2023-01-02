@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-12-29 19:58\n"
+"PO-Revision-Date: 2023-01-02 20:43\n"
 "Last-Translator: \n"
 "Language-Team: Slovak\n"
 "Language: sk_SK\n"
@@ -19,19 +19,19 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr ""
+msgstr "Otvoriť súbor…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "Otvoriť URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Nastavenia"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Skratky"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
