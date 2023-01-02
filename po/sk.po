@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-01-02 20:43\n"
+"PO-Revision-Date: 2023-01-02 23:20\n"
 "Last-Translator: \n"
 "Language-Team: Slovak\n"
 "Language: sk_SK\n"
@@ -31,408 +31,408 @@ msgstr "Nastavenia"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr "Skratky"
+msgstr "Klávesové skratky"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "O programe Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Rýchlosť"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr ""
+msgstr "Normálne"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "Všeobecné"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Zobraziť klávesové skratky"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Na celú obrazovku"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Dvojité ťuknutie | Dvojité kliknutie"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Opustiť režim celej obrazovky"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Zobraziť OSD (iba v režime na celú obrazovku)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Ťuknutie"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Ukončiť"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Médiá"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Otvoriť súbory"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Otvoriť URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Zoznam skladieb"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Ďalšia položka"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Dvojité ťuknutie (pravá strana)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Predchádzajúca položka"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Dvojité ťuknutie (ľavá strana)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Zmeniť režim opakovania"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Exportovať do súboru"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr ""
+msgstr "Prehrávanie"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Vypnúť/zapnúť prehrávanie"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Dlhé ťuknutie | Klik pravým tlačidlom"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Pretočiť dopredu"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Potiahnutie doprava | Scrollovanie vpravo"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Pretočiť späť"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Potiahnutie doľava | Scrollovanie vľavo"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Zvýšiť hlasitosť"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Potiahnutie hore | Scrollovanie hore"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Znížiť hlasitosť"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Potiahnutie dole | Scrollovanie dole"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Vypnúť/zapnúť zvuk"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Ďalšia kapitola"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Predchádzajúca kapitola"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Dekodéry"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Späť do nastavení"
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
-msgstr ""
+msgstr "Správanie"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Automaticky na celú obrazovku"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Pri nahradení zoznamu skladieb prejsť do režimu na celú obrazovku (okrem plávajúceho módu)"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Spýtať sa na obnovenie prehrávania nedávnych médií"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Plávajúci režim na všetkých pracovných plochách"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Táto možnosť funguje iba v prostredí GNOME"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr ""
+msgstr "Po skončení prehrávania"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr ""
+msgstr "Nevykonať nič"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Zostať na poslednom snímku"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "Zatvoriť aplikáciu"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "Hlasitosť"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr ""
+msgstr "Vlastná počiatočná hodnota"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Nastaviť vlastnú hlasitosť pri spustení namiesto obnovenia predchádzajúcej hodnoty"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "Percento hlasitosti"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr ""
+msgstr "Pretáčanie"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "Režim"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr ""
+msgstr "Presné"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr ""
+msgstr "Rýchle"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "Jednotka"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "Sekunda"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "Minúta"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "Percento"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "Hodnota"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "Zvuk"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Posun v milisekundách"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Iba natívne formáty zvuku"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "Titulky"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "Predvolené písmo"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "Sieť"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "Klient"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Postupné sťahovanie do vyrovnávacej pamäte"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "Server"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr ""
+msgstr "Ovládanie prehrávača na diaľku"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
-msgstr ""
+msgstr "Použiť port"
 
 #: ui/preferences-window.ui:188
 msgid "Tweaks"
-msgstr ""
+msgstr "Vyladenia"
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr ""
+msgstr "Vzhľad"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "Tmavý motív"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
-msgstr ""
+msgstr "Vykresliť tiene okna"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Pre zvýšenie výkonu v režime okna vypnite túto možnosť"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Radenie zásuvných modulov"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Zmeniť predvolené radenie zásuvných modulov GStreameru"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
-msgstr ""
+msgstr "Použiť playbin3"
 
 #: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
-msgstr ""
+msgstr "Vyžaduje sa reštart prehrávača"
 
 #: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
-msgstr ""
+msgstr "Experimentálne"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Použiť PipeWire pre zvukový výstup"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Dekodér: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Sem zadajte alebo potiahnite URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Zrušiť"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Otvoriť"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Názov"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Dokončené"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Pokračovať v prehrávaní?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "Verzia GTK: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Verzia Adwaita: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "Verzia GStreamer: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "Verzia GJS: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Prehrávač médií pre prostredie GNOME postavený na GStreameri"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "tj314 <po-ca-hon-tas@tutanota.com>"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Končí o: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "Neurčené"
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr ""
+msgstr "Kanály"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr ""
+msgstr "Vypnuté"
 
