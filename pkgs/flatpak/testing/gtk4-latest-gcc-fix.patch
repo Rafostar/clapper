@@ -1,0 +1,114 @@
+From 4dcd02e85315f487310e2e01fe9412706a77dc35 Mon Sep 17 00:00:00 2001
+From: Emmanuele Bassi <ebassi@gnome.org>
+Date: Tue, 19 Apr 2022 15:33:21 +0100
+Subject: [PATCH] Quench the anger of GCC
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Direct access of the fields of the union trips compiler warnings with
+GCC 12, such as:
+
+  ../gtk/gtkimagedefinition.c:135:13: error: array subscript
+  ‘GtkImageDefinition {aka union _GtkImageDefinition}[0]’ is partly
+  outside array bounds of ‘GtkImageDefinitionEmpty[1]’ {aka
+  ‘struct _GtkImageDefinitionEmpty[1]’} [-Werror=array-bounds]
+---
+ gtk/gtkimagedefinition.c | 38 ++++++++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
+
+diff --git a/gtk/gtkimagedefinition.c b/gtk/gtkimagedefinition.c
+index 1b7c9e51d9..3cf785b01c 100644
+--- a/gtk/gtkimagedefinition.c
++++ b/gtk/gtkimagedefinition.c
+@@ -132,7 +132,9 @@ gtk_image_definition_new_paintable (GdkPaintable *paintable)
+ GtkImageDefinition *
+ gtk_image_definition_ref (GtkImageDefinition *def)
+ {
+-  def->empty.ref_count++;
++  GtkImageDefinitionEmpty *empty = (GtkImageDefinitionEmpty *) def;
++
++  empty->ref_count++;
+ 
+   return def;
+ }
+@@ -140,9 +142,11 @@ gtk_image_definition_ref (GtkImageDefinition *def)
+ void
+ gtk_image_definition_unref (GtkImageDefinition *def)
+ {
+-  def->empty.ref_count--;
++  GtkImageDefinitionEmpty *empty = (GtkImageDefinitionEmpty *) def;
++
++  empty->ref_count--;
+ 
+-  if (def->empty.ref_count > 0)
++  if (empty->ref_count > 0)
+     return;
+ 
+   switch (def->type)
+@@ -152,13 +156,22 @@ gtk_image_definition_unref (GtkImageDefinition *def)
+       g_assert_not_reached ();
+       break;
+     case GTK_IMAGE_PAINTABLE:
+-      g_object_unref (def->paintable.paintable);
++      {
++        GtkImageDefinitionPaintable *paintable = (GtkImageDefinitionPaintable *) def;
++        g_object_unref (paintable->paintable);
++      }
+       break;
+     case GTK_IMAGE_ICON_NAME:
+-      g_free (def->icon_name.icon_name);
++      {
++        GtkImageDefinitionIconName *icon_name = (GtkImageDefinitionIconName *) def;
++        g_free (icon_name->icon_name);
++      }
+       break;
+     case GTK_IMAGE_GICON:
+-      g_object_unref (def->gicon.gicon);
++      {
++        GtkImageDefinitionGIcon *gicon = (GtkImageDefinitionGIcon *) def;
++        g_object_unref (gicon->gicon);
++      }
+       break;
+     }
+ 
+@@ -189,27 +202,32 @@ gtk_image_definition_get_scale (const GtkImageDefinition *def)
+ const char *
+ gtk_image_definition_get_icon_name (const GtkImageDefinition *def)
+ {
++  const GtkImageDefinitionIconName *icon_name = (const GtkImageDefinitionIconName *) def;
++
+   if (def->type != GTK_IMAGE_ICON_NAME)
+     return NULL;
+ 
+-  return def->icon_name.icon_name;
++  return icon_name->icon_name;
+ }
+ 
+ GIcon *
+ gtk_image_definition_get_gicon (const GtkImageDefinition *def)
+ {
++  const GtkImageDefinitionGIcon *gicon = (const GtkImageDefinitionGIcon *) def;
++
+   if (def->type != GTK_IMAGE_GICON)
+     return NULL;
+ 
+-  return def->gicon.gicon;
++  return gicon->gicon;
+ }
+ 
+ GdkPaintable *
+ gtk_image_definition_get_paintable (const GtkImageDefinition *def)
+ {
++  const GtkImageDefinitionPaintable *paintable = (const GtkImageDefinitionPaintable *) def;
++
+   if (def->type != GTK_IMAGE_PAINTABLE)
+     return NULL;
+ 
+-  return def->paintable.paintable;
++  return paintable->paintable;
+ }
+-
+-- 
+GitLab
+

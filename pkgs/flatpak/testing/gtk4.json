@@ -1,0 +1,41 @@
+{
+    "name": "gtk",
+    "buildsystem": "meson",
+    "config-opts": [
+        "--buildtype=release",
+        "--wrap-mode=nodownload",
+
+        "-Dbroadway-backend=true",
+        "-Dwin32-backend=false",
+        "-Dmacos-backend=false",
+        "-Dmedia-ffmpeg=disabled",
+        "-Dprint-cups=disabled",
+        "-Dintrospection=enabled",
+        "-Ddemos=false",
+        "-Dbuild-examples=false",
+        "-Dbuild-tests=false"
+    ],
+    "cleanup": [
+        "/bin/gtk4-builder-tool",
+        "/bin/gtk4-encode-symbolic-svg"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://gitlab.gnome.org/GNOME/gtk.git",
+            "branch": "gtk-4-4"
+        },
+        {
+            "type": "patch",
+            "path": "gtk4-popover-unrealize.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gtk4-disable-meson-gnome-post-install.patch"
+        },
+        {
+            "type": "patch",
+            "path": "gtk4-latest-gcc-fix.patch"
+        }
+    ]
+}
