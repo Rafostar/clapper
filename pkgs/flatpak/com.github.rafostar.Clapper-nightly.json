@@ -8,6 +8,7 @@
         "org.freedesktop.Sdk.Extension.llvm14"
     ],
     "command": "com.github.rafostar.Clapper",
+    "separate-locales": false,
     "finish-args": [
         "--share=ipc",
         "--socket=fallback-x11",
