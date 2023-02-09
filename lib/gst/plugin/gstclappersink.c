@@ -431,6 +431,11 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
   guint size, min_buffers;
   gboolean need_pool;
 
+  if (!self->importer) {
+    GST_DEBUG_OBJECT (self, "No importer to propose allocation");
+    return FALSE;
+  }
+
   gst_query_parse_allocation (query, &caps, &need_pool);
 
   if (!caps) {
