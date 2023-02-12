@@ -67,7 +67,6 @@ window_clear_no_lock (GstClapperSink *self)
     self->window_destroy_id = 0;
   }
   self->window = NULL;
-  self->presented_window = FALSE;
 }
 
 static void
@@ -568,20 +567,14 @@ gst_clapper_sink_start_on_main (GstClapperSink *self)
 
     self->window_destroy_id = g_signal_connect (self->window,
         "destroy", G_CALLBACK (window_destroy_cb), self);
+
+    GST_INFO_OBJECT (self, "Presenting window");
+    gtk_window_present (self->window);
   }
 
   GST_CLAPPER_SINK_UNLOCK (self);
 
   return TRUE;
-}
-
-static gboolean
-window_present_on_main_idle (GtkWindow *window)
-{
-  GST_INFO ("Presenting window");
-  gtk_window_present (window);
-
-  return G_SOURCE_REMOVE;
 }
 
 static gboolean
@@ -655,16 +648,6 @@ gst_clapper_sink_change_state (GstElement *element, GstStateChange transition)
       if (!self->keep_last_frame && self->importer) {
         gst_clapper_importer_set_buffer (self->importer, NULL);
         gst_clapper_paintable_queue_draw (self->paintable);
-      }
-      GST_CLAPPER_SINK_UNLOCK (self);
-      break;
-    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
-      GST_CLAPPER_SINK_LOCK (self);
-      if (G_UNLIKELY (self->window && !self->presented_window)) {
-        g_idle_add_full (G_PRIORITY_DEFAULT,
-            (GSourceFunc) window_present_on_main_idle,
-            g_object_ref (self->window), (GDestroyNotify) g_object_unref);
-        self->presented_window = TRUE;
       }
       GST_CLAPPER_SINK_UNLOCK (self);
       break;

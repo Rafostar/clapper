@@ -54,8 +54,6 @@ struct _GstClapperSink
   GtkWidget *widget;
   GtkWindow *window;
 
-  gboolean presented_window;
-
   /* Properties */
   gboolean force_aspect_ratio;
   gint par_n, par_d;
