@@ -426,15 +426,11 @@ static gboolean
 gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
 {
   GstClapperSink *self = GST_CLAPPER_SINK_CAST (bsink);
+  GstClapperImporter *importer = NULL;
   GstCaps *caps;
   GstVideoInfo info;
   guint size, min_buffers;
   gboolean need_pool;
-
-  if (!self->importer) {
-    GST_DEBUG_OBJECT (self, "No importer to propose allocation");
-    return FALSE;
-  }
 
   gst_query_parse_allocation (query, &caps, &need_pool);
 
@@ -445,6 +441,16 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
 
   if (!gst_video_info_from_caps (&info, caps)) {
     GST_DEBUG_OBJECT (self, "Invalid caps specified");
+    return FALSE;
+  }
+
+  GST_CLAPPER_SINK_LOCK (self);
+  if (self->importer)
+    importer = gst_object_ref (self->importer);
+  GST_CLAPPER_SINK_UNLOCK (self);
+
+  if (!importer) {
+    GST_DEBUG_OBJECT (self, "No importer to propose allocation");
     return FALSE;
   }
 
@@ -459,10 +465,7 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
     GstStructure *config = NULL;
 
     GST_DEBUG_OBJECT (self, "Need to create buffer pool");
-
-    GST_CLAPPER_SINK_LOCK (self);
-    pool = gst_clapper_importer_create_pool (self->importer, &config);
-    GST_CLAPPER_SINK_UNLOCK (self);
+    pool = gst_clapper_importer_create_pool (importer, &config);
 
     if (pool) {
       /* If we did not get config, use default one */
@@ -473,6 +476,7 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
 
       if (!gst_buffer_pool_set_config (pool, config)) {
         gst_object_unref (pool);
+        gst_object_unref (importer);
 
         GST_ERROR_OBJECT (self, "Failed to set config");
         return FALSE;
@@ -486,9 +490,8 @@ gst_clapper_sink_propose_allocation (GstBaseSink *bsink, GstQuery *query)
     }
   }
 
-  GST_CLAPPER_SINK_LOCK (self);
-  gst_clapper_importer_add_allocation_metas (self->importer, query);
-  GST_CLAPPER_SINK_UNLOCK (self);
+  gst_clapper_importer_add_allocation_metas (importer, query);
+  gst_object_unref (importer);
 
   return TRUE;
 }
