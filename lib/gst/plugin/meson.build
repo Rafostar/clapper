@@ -47,15 +47,16 @@ gst_clapper_plugin_sources = [
 ]
 
 if build_gst_plugin
+  clapper_plugin = library('gstclapper',
+    gst_clapper_plugin_sources,
+    c_args: gst_clapper_plugin_args,
+    include_directories: configinc,
+    dependencies: gst_clapper_plugin_deps,
+    install: true,
+    install_dir: gst_plugins_libdir,
+  )
   gst_clapper_sink_dep = declare_dependency(
-    link_with: library('gstclapper',
-      gst_clapper_plugin_sources,
-      c_args: gst_clapper_plugin_args,
-      include_directories: configinc,
-      dependencies: gst_clapper_plugin_deps,
-      install: true,
-      install_dir: gst_plugins_libdir,
-    ),
+    link_with: clapper_plugin,
     include_directories: configinc,
     dependencies: gst_clapper_plugin_deps,
   )
