@@ -254,61 +254,51 @@ class ClapperResumeDialog extends Gtk.MessageDialog
     }
 });
 
-var AboutDialog = GObject.registerClass({
-    GTypeName: 'ClapperAboutDialog',
-},
-class ClapperAboutDialog extends Gtk.AboutDialog
+function showAboutDialog(window)
 {
-    _init(window)
-    {
-        const gstVer = [
-            Gst.VERSION_MAJOR, Gst.VERSION_MINOR, Gst.VERSION_MICRO
-        ].join('.');
+    const gstVer = [
+        Gst.VERSION_MAJOR, Gst.VERSION_MINOR, Gst.VERSION_MICRO
+    ].join('.');
 
-        const gtkVer = [
-            Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
-        ].join('.');
+    const gtkVer = [
+        Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
+    ].join('.');
 
-        /* TODO: This is as of Alpha2 still broken, requires:
-         * https://gitlab.gnome.org/GNOME/libadwaita/-/merge_requests/230
-         * can be simplified later in future */
-        const adwVer = Adw.MAJOR_VERSION ? [
-            Adw.MAJOR_VERSION, Adw.MINOR_VERSION, Adw.MICRO_VERSION
-        ].join('.') : '1.0.0';
+    const adwVer = [
+        Adw.MAJOR_VERSION, Adw.MINOR_VERSION, Adw.MICRO_VERSION
+    ].join('.');
 
-        const gjsVerStr = String(System.version);
-        let gjsVer = '';
+    const gjsVerStr = String(System.version);
+    let gjsVer = '';
 
-        gjsVer += gjsVerStr.charAt(0) + '.';
-        gjsVer += gjsVerStr.charAt(1) + gjsVerStr.charAt(2) + '.';
-        if(gjsVerStr.charAt(3) !== '0')
-            gjsVer += gjsVerStr.charAt(3);
-        gjsVer += gjsVerStr.charAt(4);
+    gjsVer += gjsVerStr.charAt(0) + '.';
+    gjsVer += gjsVerStr.charAt(1) + gjsVerStr.charAt(2) + '.';
+    if(gjsVerStr.charAt(3) !== '0')
+        gjsVer += gjsVerStr.charAt(3);
+    gjsVer += gjsVerStr.charAt(4);
 
-        const osInfo = [
-            _('GTK version: %s').format(gtkVer),
-            _('Adwaita version: %s').format(adwVer),
-            _('GStreamer version: %s').format(gstVer),
-            _('GJS version: %s').format(gjsVer)
-        ].join('\n');
+    const osInfo = [
+        _('GTK version: %s').format(gtkVer),
+        _('Adwaita version: %s').format(adwVer),
+        _('GStreamer version: %s').format(gstVer),
+        _('GJS version: %s').format(gjsVer)
+    ].join('\n');
 
-        super._init({
-            transient_for: window,
-            destroy_with_parent: true,
-            modal: true,
-            program_name: Misc.appName,
-            comments: _('A GNOME media player powered by GStreamer'),
-            version: pkg.version,
-            authors: ['Rafał Dzięgiel'],
-            artists: ['Rafał Dzięgiel'],
-            /* TRANSLATORS: Put your name(s) here for credits or leave untranslated */
-            translator_credits: _('translator-credits'),
-            license_type: Gtk.License.GPL_3_0,
-            logo_icon_name: 'com.github.rafostar.Clapper',
-            website: 'https://rafostar.github.io/clapper',
-            system_information: osInfo,
-        });
+    const aboutWindow = new Adw.AboutWindow({
+        transient_for: window,
+        application_name: Misc.appName,
+        version: pkg.version,
+        developer_name: 'Rafał Dzięgiel',
+        developers: ['Rafał Dzięgiel'],
+        artists: ['Rafał Dzięgiel'],
+        /* TRANSLATORS: Put your name(s) here for credits or leave untranslated */
+        translator_credits: _('translator-credits'),
+        license_type: Gtk.License.GPL_3_0,
+        application_icon: 'com.github.rafostar.Clapper',
+        website: 'https://rafostar.github.io/clapper',
+        issue_url: 'https://github.com/Rafostar/clapper/issues/new',
+        debug_info: osInfo,
+    });
 
-        this.show();
-    }
-});
+    aboutWindow.show();
+}

@@ -54,7 +54,7 @@ function handleAction(action, window)
             clapperWidget.activate_action('win.show-help-overlay', null);
             break;
         case 'about':
-            new Dialogs.AboutDialog(window);
+            Dialogs.showAboutDialog(window);
             break;
         case 'progress_forward':
             bool = true;
