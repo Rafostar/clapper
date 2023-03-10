@@ -247,8 +247,8 @@ _retrieve_gl_context_on_main (GstClapperGLContextHandler *self)
       self->gst_display = (GstGLDisplay *)
           gst_gl_display_x11_new_with_display (display_ptr);
     }
-  }
 #endif
+  }
 #endif
 
 #if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_WIN32
