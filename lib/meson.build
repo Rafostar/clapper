@@ -48,9 +48,6 @@ else
   export_define = 'extern'
 endif
 
-# Passing this through the command line would be too messy
-cdata.set('GST_API_EXPORT', export_define)
-
 # Disable strict aliasing
 if cc.has_argument('-fno-strict-aliasing')
   add_project_arguments('-fno-strict-aliasing', language: 'c')
