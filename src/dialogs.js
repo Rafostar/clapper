@@ -216,7 +216,7 @@ class ClapperUriDialog extends Gtk.Dialog
 var ResumeDialog = GObject.registerClass({
     GTypeName: 'ClapperResumeDialog',
 },
-class ClapperResumeDialog extends Gtk.MessageDialog
+class ClapperResumeDialog extends Adw.MessageDialog
 {
     _init(window, resumeInfo)
     {
@@ -230,15 +230,18 @@ class ClapperResumeDialog extends Gtk.MessageDialog
         super._init({
             transient_for: window,
             modal: true,
-            message_type: Gtk.MessageType.QUESTION,
-            buttons: Gtk.ButtonsType.YES_NO,
-            text: _('Resume playback?'),
-            secondary_use_markup: true,
-            secondary_text: msg,
+            heading: _('Resume Playback?'),
+            body_use_markup: true,
+            body: msg,
         });
 
+        this.add_response('cancel', _('Cancel'));
+        this.add_response('resume', _('Resume'));
+        this.set_close_response('cancel');
+        this.set_default_response('resume');
+        this.set_response_appearance('resume', Adw.ResponseAppearance.SUGGESTED);
+
         this.resumeInfo = resumeInfo;
-        this.set_default_response(Gtk.ResponseType.YES);
 
         this.show();
     }
@@ -247,7 +250,7 @@ class ClapperResumeDialog extends Gtk.MessageDialog
     {
         const { player } = this.transient_for.child;
 
-        if(respId === Gtk.ResponseType.YES)
+        if(respId === 'resume')
             player.seek_seconds(this.resumeInfo.time);
 
         this.destroy();
