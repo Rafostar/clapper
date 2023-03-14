@@ -253,7 +253,7 @@ cdata.set('DISABLE_ORC', 1)
 cdata.set('GST_ENABLE_EXTRA_CHECKS', get_option('devel-checks'))
 
 configinc = include_directories('.')
-libsinc = include_directories('gst')
+libsinc = include_directories('gst/clapper')
 
 gir = find_program('g-ir-scanner', required: false)
 gir_init_section = ['--add-init-section=extern void gst_init(gint*,gchar**);' + \

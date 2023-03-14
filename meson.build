@@ -1,4 +1,4 @@
-project('com.github.rafostar.Clapper', 'c', 'cpp',
+project('clapper', 'c', 'cpp',
   version: '0.5.2',
   meson_version: '>= 0.50.0',
   license: 'GPL-3.0-or-later',
