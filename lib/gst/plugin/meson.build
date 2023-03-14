@@ -46,6 +46,16 @@ gst_clapper_plugin_sources = [
   'gstclapperimporterloader.c',
 ]
 
+gst_clapper_plugin_headers = [
+  'gstclappercontexthandler.h',
+  'gstclapperimporter.h',
+  'gstclapperimporterloader.h',
+  'gstclapperpaintable.h',
+  'gstclappersink.h',
+  'gstgdkformats.h',
+  'gstgtkutils.h',
+]
+
 if build_gst_plugin
   clapper_plugin = library('gstclapper',
     gst_clapper_plugin_sources,
@@ -60,6 +70,9 @@ if build_gst_plugin
     include_directories: configinc,
     dependencies: gst_clapper_plugin_deps,
   )
+  install_headers(gst_clapper_plugin_headers, subdir: 'gst/plugin')
+  pkg = import('pkgconfig')
+  pkg.generate(clapper_plugin, install_dir: libdir + '/pkgconfig')
 endif
 
 subdir('handlers')
