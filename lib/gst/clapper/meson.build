@@ -107,7 +107,7 @@ gstclapper = library('gstclapper-' + api_version,
   include_directories: [configinc, libsinc],
   version: libversion,
   install: true,
-  install_dir: pkglibdir,
+  install_dir: libdir,
   dependencies: gstclapper_deps,
 )
 install_headers(gstclapper_headers, subdir: 'gst/clapper')
