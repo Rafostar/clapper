@@ -558,6 +558,6 @@ class ClapperPrefsWindow extends Adw.PreferencesWindow
         this.can_swipe_back = true;
         this.can_navigate_back = true;
 
-        this.show();
+        this.present();
     }
 });

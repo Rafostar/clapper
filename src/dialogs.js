@@ -166,7 +166,7 @@ class ClapperUriDialog extends Gtk.Dialog
         if(clipboard)
             clipboard.read_text_async(null, this._readTextAsyncCb.bind(this));
 
-        this.show();
+        this.present();
     }
 
     vfunc_response(respId)
@@ -243,7 +243,7 @@ class ClapperResumeDialog extends Adw.MessageDialog
 
         this.resumeInfo = resumeInfo;
 
-        this.show();
+        this.present();
     }
 
     vfunc_response(respId)
@@ -303,5 +303,5 @@ function showAboutDialog(window)
         debug_info: osInfo,
     });
 
-    aboutWindow.show();
+    aboutWindow.present();
 }

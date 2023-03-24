@@ -435,8 +435,7 @@ class ClapperWidget extends Gtk.Grid
         if(this.controls.visualizationsButton.visible === isShow)
             return;
 
-        const action = (isShow) ? 'show' : 'hide';
-        this.controls.visualizationsButton[action]();
+        this.controls.visualizationsButton.set_visible(isShow);
         debug(`show visualizations button: ${isShow}`);
     }
 
