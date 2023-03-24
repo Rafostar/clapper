@@ -37,8 +37,10 @@ function handleAction(action, window)
 
     switch(action.name) {
         case 'open_local':
+            Dialogs.showOpenLocalDialog(window);
+            break;
         case 'export_playlist':
-            new Dialogs.FileChooser(window, action.name);
+            Dialogs.showExportPlaylistDialog(window);
             break;
         case 'open_uri':
             new Dialogs.UriDialog(window);

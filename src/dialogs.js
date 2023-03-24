@@ -6,123 +6,6 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-var FileChooser = GObject.registerClass({
-    GTypeName: 'ClapperFileChooser',
-},
-class ClapperFileChooser extends Gtk.FileChooserNative
-{
-    _init(window, purpose)
-    {
-        super._init({
-            transient_for: window,
-            modal: true,
-        });
-
-        switch(purpose) {
-            case 'open_local':
-                this._prepareOpenLocal();
-                break;
-            case 'export_playlist':
-                this._prepareExportPlaylist();
-                break;
-            default:
-                debug(new Error(`unknown file chooser purpose: ${purpose}`));
-                break;
-        }
-
-        this.chooserPurpose = purpose;
-
-        /* File chooser closes itself when nobody is holding its ref */
-        this.ref();
-        this.show();
-    }
-
-    _prepareOpenLocal()
-    {
-        this.select_multiple = true;
-
-        const filter = new Gtk.FileFilter({
-            name: 'Media Files',
-        });
-        filter.add_mime_type('video/*');
-        filter.add_mime_type('audio/*');
-        filter.add_mime_type('application/claps');
-        Misc.subsMimes.forEach(mime => filter.add_mime_type(mime));
-        this.add_filter(filter);
-    }
-
-    _prepareExportPlaylist()
-    {
-        this.action = Gtk.FileChooserAction.SAVE;
-        this.set_current_name('playlist.claps');
-
-        const filter = new Gtk.FileFilter({
-            name: 'Playlist Files',
-        });
-        filter.add_mime_type('application/claps');
-        this.add_filter(filter);
-    }
-
-    vfunc_response(respId)
-    {
-        debug('closing file chooser dialog');
-
-        if(respId === Gtk.ResponseType.ACCEPT) {
-            switch(this.chooserPurpose) {
-                case 'open_local':
-                    this._handleOpenLocal();
-                    break;
-                case 'export_playlist':
-                    this._handleExportPlaylist();
-                    break;
-            }
-        }
-
-        this.unref();
-        this.destroy();
-    }
-
-    _handleOpenLocal()
-    {
-        const files = this.get_files();
-        const filesArray = [];
-
-        let index = 0;
-        let file;
-
-        while((file = files.get_item(index))) {
-            filesArray.push(file);
-            index++;
-        }
-
-        const { application } = this.transient_for;
-        const isHandlesOpen = Boolean(
-            application.flags & Gio.ApplicationFlags.HANDLES_OPEN
-        );
-
-        /* Remote app does not handle open */
-        if(isHandlesOpen)
-           application.open(filesArray, "");
-        else
-           application._openFilesAsync(filesArray);
-    }
-
-    _handleExportPlaylist()
-    {
-        const file = this.get_file();
-        const { playlistWidget } = this.transient_for.child.player;
-        const playlist = playlistWidget.getPlaylist(true);
-
-        FileOps.saveFileSimplePromise(file, playlist.join('\n'))
-            .then(() => {
-                debug(`exported playlist to file: ${file.get_path()}`);
-            })
-            .catch(err => {
-                debug(err);
-            });
-    }
-});
-
 var UriDialog = GObject.registerClass({
     GTypeName: 'ClapperUriDialog',
 },
@@ -256,6 +139,88 @@ class ClapperResumeDialog extends Adw.MessageDialog
         this.destroy();
     }
 });
+
+function showOpenLocalDialog(window)
+{
+    const filters = new Gio.ListStore();
+    const filter = new Gtk.FileFilter({
+        name: 'Media Files',
+    });
+    filter.add_mime_type('video/*');
+    filter.add_mime_type('audio/*');
+    filter.add_mime_type('application/claps');
+    Misc.subsMimes.forEach(mime => filter.add_mime_type(mime));
+    filters.append(filter);
+
+    const fileDialog = new Gtk.FileDialog({modal: true});
+    fileDialog.set_filters(filters);
+    fileDialog.open_multiple(window, null, _handleOpenLocal.bind(window.application));
+}
+
+function _handleOpenLocal(fileDialog, res)
+{
+    try {
+        const files = fileDialog.open_multiple_finish(res);
+        const filesArray = [];
+
+        let index = 0;
+        let file;
+
+        while((file = files.get_item(index))) {
+            filesArray.push(file);
+            index++;
+        }
+
+        const isHandlesOpen = Boolean(
+            this.flags & Gio.ApplicationFlags.HANDLES_OPEN
+        );
+
+        /* Remote app does not handle open */
+        if(isHandlesOpen)
+            this.open(filesArray, "");
+        else
+            this._openFilesAsync(filesArray);
+    }
+    catch(e) {
+        if(!e.matches(Gtk.DialogError.quark(), Gtk.DialogError.DISMISSED))
+            throw e;
+    }
+}
+
+function showExportPlaylistDialog(window)
+{
+    const filters = new Gio.ListStore();
+    const filter = new Gtk.FileFilter({
+        name: 'Playlist Files',
+    });
+    filter.add_mime_type('application/claps');
+    filters.append(filter);
+
+    const fileDialog = new Gtk.FileDialog({modal: true});
+    fileDialog.set_filters(filters);
+    fileDialog.set_initial_name('playlist.claps');
+    fileDialog.save(window, null, _handleExportPlaylist.bind(window.child.player.playlistWidget));
+}
+
+function _handleExportPlaylist(fileDialog, res)
+{
+    try {
+        const file = fileDialog.save_finish(res);
+        const playlist = this.getPlaylist(true);
+
+        FileOps.saveFileSimplePromise(file, playlist.join('\n'))
+            .then(() => {
+                debug(`exported playlist to file: ${file.get_path()}`);
+            })
+            .catch(err => {
+                debug(err);
+            });
+    }
+    catch(e) {
+        if(!e.matches(Gtk.DialogError.quark(), Gtk.DialogError.DISMISSED))
+            throw e;
+    }
+}
 
 function showAboutDialog(window)
 {
