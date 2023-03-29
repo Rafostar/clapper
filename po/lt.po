@@ -1,0 +1,438 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: clapper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-26 18:41+0200\n"
+"PO-Revision-Date: 2023-03-29 05:54\n"
+"Last-Translator: \n"
+"Language-Team: Lithuanian\n"
+"Language: lt_LT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && (n%100>19 || n%100<11) ? 0 : (n%10>=2 && n%10<=9) && (n%100>19 || n%100<11) ? 1 : n%1!=0 ? 2: 3);\n"
+"X-Crowdin-Project: clapper\n"
+"X-Crowdin-Project-ID: 473374\n"
+"X-Crowdin-Language: lt\n"
+"X-Crowdin-File: /master/po/com.github.rafostar.Clapper.pot\n"
+"X-Crowdin-File-ID: 31\n"
+
+#: ui/clapper.ui:6
+msgid "Open Files…"
+msgstr ""
+
+#: ui/clapper.ui:10
+msgid "Open URI…"
+msgstr ""
+
+#: ui/clapper.ui:16 ui/preferences-window.ui:4
+msgid "Preferences"
+msgstr ""
+
+#: ui/clapper.ui:20
+msgid "Shortcuts"
+msgstr ""
+
+#: ui/clapper.ui:26
+msgid "About Clapper"
+msgstr ""
+
+#: ui/elapsed-time-button.ui:27
+msgid "Speed"
+msgstr ""
+
+#: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
+msgid "Normal"
+msgstr ""
+
+#: ui/help-overlay.ui:10 ui/preferences-window.ui:11
+msgid "General"
+msgstr ""
+
+#: ui/help-overlay.ui:13
+msgid "Show shortcuts"
+msgstr ""
+
+#: ui/help-overlay.ui:19
+msgid "Toggle fullscreen"
+msgstr ""
+
+#: ui/help-overlay.ui:20
+msgid "Double tap | Double click"
+msgstr ""
+
+#: ui/help-overlay.ui:26
+msgid "Leave fullscreen"
+msgstr ""
+
+#: ui/help-overlay.ui:32
+msgid "Reveal OSD (fullscreen only)"
+msgstr ""
+
+#: ui/help-overlay.ui:33
+msgid "Tap"
+msgstr ""
+
+#: ui/help-overlay.ui:39
+msgid "Quit"
+msgstr ""
+
+#: ui/help-overlay.ui:47
+msgid "Media"
+msgstr ""
+
+#: ui/help-overlay.ui:50
+msgid "Open files"
+msgstr ""
+
+#: ui/help-overlay.ui:56 src/dialogs.js:137
+msgid "Open URI"
+msgstr ""
+
+#: ui/help-overlay.ui:64
+msgid "Playlist"
+msgstr ""
+
+#: ui/help-overlay.ui:67
+msgid "Next item"
+msgstr ""
+
+#: ui/help-overlay.ui:68
+msgid "Double tap (right side)"
+msgstr ""
+
+#: ui/help-overlay.ui:74
+msgid "Previous item"
+msgstr ""
+
+#: ui/help-overlay.ui:75
+msgid "Double tap (left side)"
+msgstr ""
+
+#: ui/help-overlay.ui:81
+msgid "Change repeat mode"
+msgstr ""
+
+#: ui/help-overlay.ui:87
+msgid "Export to file"
+msgstr ""
+
+#: ui/help-overlay.ui:95 ui/preferences-window.ui:118
+msgid "Playback"
+msgstr ""
+
+#: ui/help-overlay.ui:98
+msgid "Toggle play"
+msgstr ""
+
+#: ui/help-overlay.ui:99
+msgid "Long press | Right click"
+msgstr ""
+
+#: ui/help-overlay.ui:105
+msgid "Seek forward"
+msgstr ""
+
+#: ui/help-overlay.ui:106
+msgid "Swipe right | Scroll right"
+msgstr ""
+
+#: ui/help-overlay.ui:112
+msgid "Seek backward"
+msgstr ""
+
+#: ui/help-overlay.ui:113
+msgid "Swipe left | Scroll left"
+msgstr ""
+
+#: ui/help-overlay.ui:119
+msgid "Volume up"
+msgstr ""
+
+#: ui/help-overlay.ui:120
+msgid "Swipe up | Scroll up"
+msgstr ""
+
+#: ui/help-overlay.ui:126
+msgid "Volume down"
+msgstr ""
+
+#: ui/help-overlay.ui:127
+msgid "Swipe down | Scroll down"
+msgstr ""
+
+#: ui/help-overlay.ui:133
+msgid "Toggle mute"
+msgstr ""
+
+#: ui/help-overlay.ui:139
+msgid "Next chapter"
+msgstr ""
+
+#: ui/help-overlay.ui:145
+msgid "Previous chapter"
+msgstr ""
+
+#: ui/preferences-plugin-ranking-subpage.ui:11
+msgid "Decoders"
+msgstr ""
+
+#: ui/preferences-plugin-ranking-subpage.ui:18
+msgid "Return to the preferences"
+msgstr ""
+
+#: ui/preferences-window.ui:15
+msgid "Behavior"
+msgstr ""
+
+#: ui/preferences-window.ui:18
+msgid "Auto fullscreen"
+msgstr ""
+
+#: ui/preferences-window.ui:19
+msgid "Enter fullscreen when playlist is replaced except floating mode"
+msgstr ""
+
+#: ui/preferences-window.ui:25
+msgid "Ask to resume recent media"
+msgstr ""
+
+#: ui/preferences-window.ui:31
+msgid "Float on all workspaces"
+msgstr ""
+
+#: ui/preferences-window.ui:32
+msgid "This option only works on GNOME"
+msgstr ""
+
+#: ui/preferences-window.ui:38
+msgid "After playback"
+msgstr ""
+
+#: ui/preferences-window.ui:43
+msgid "Do nothing"
+msgstr ""
+
+#: ui/preferences-window.ui:44
+msgid "Freeze last frame"
+msgstr ""
+
+#: ui/preferences-window.ui:45
+msgid "Close the app"
+msgstr ""
+
+#: ui/preferences-window.ui:55
+msgid "Volume"
+msgstr ""
+
+#: ui/preferences-window.ui:58
+msgid "Custom initial value"
+msgstr ""
+
+#: ui/preferences-window.ui:59
+msgid "Set custom volume at startup instead of restoring it"
+msgstr ""
+
+#: ui/preferences-window.ui:63
+msgid "Volume percentage"
+msgstr ""
+
+#: ui/preferences-window.ui:74
+msgid "Seeking"
+msgstr ""
+
+#: ui/preferences-window.ui:77
+msgid "Mode"
+msgstr ""
+
+#: ui/preferences-window.ui:83
+msgid "Accurate"
+msgstr ""
+
+#: ui/preferences-window.ui:84
+msgid "Fast"
+msgstr ""
+
+#: ui/preferences-window.ui:92
+msgid "Unit"
+msgstr ""
+
+#: ui/preferences-window.ui:97
+msgid "Second"
+msgstr ""
+
+#: ui/preferences-window.ui:98
+msgid "Minute"
+msgstr ""
+
+#: ui/preferences-window.ui:99
+msgid "Percentage"
+msgstr ""
+
+#: ui/preferences-window.ui:107
+msgid "Value"
+msgstr ""
+
+#: ui/preferences-window.ui:122
+msgid "Audio"
+msgstr ""
+
+#: ui/preferences-window.ui:125
+msgid "Offset in milliseconds"
+msgstr ""
+
+#: ui/preferences-window.ui:132
+msgid "Only native audio formats"
+msgstr ""
+
+#: ui/preferences-window.ui:140
+msgid "Subtitles"
+msgstr ""
+
+#: ui/preferences-window.ui:143
+msgid "Default font"
+msgstr ""
+
+#: ui/preferences-window.ui:153
+msgid "Network"
+msgstr ""
+
+#: ui/preferences-window.ui:157
+msgid "Client"
+msgstr ""
+
+#: ui/preferences-window.ui:160
+msgid "Progressive download buffering"
+msgstr ""
+
+#: ui/preferences-window.ui:168
+msgid "Server"
+msgstr ""
+
+#: ui/preferences-window.ui:171
+msgid "Control player remotely"
+msgstr ""
+
+#: ui/preferences-window.ui:175
+msgid "Listening port"
+msgstr ""
+
+#: ui/preferences-window.ui:188
+msgid "Tweaks"
+msgstr ""
+
+#: ui/preferences-window.ui:192
+msgid "Appearance"
+msgstr ""
+
+#: ui/preferences-window.ui:195
+msgid "Dark theme"
+msgstr ""
+
+#: ui/preferences-window.ui:201
+msgid "Render window shadows"
+msgstr ""
+
+#: ui/preferences-window.ui:202
+msgid "Disable to increase performance when windowed"
+msgstr ""
+
+#: ui/preferences-window.ui:213
+msgid "Plugin ranking"
+msgstr ""
+
+#: ui/preferences-window.ui:214
+msgid "Alter default ranks of GStreamer plugins"
+msgstr ""
+
+#: ui/preferences-window.ui:219
+msgid "Use playbin3"
+msgstr ""
+
+#: ui/preferences-window.ui:220 ui/preferences-window.ui:229
+msgid "Requires player restart"
+msgstr ""
+
+#: ui/preferences-window.ui:222 ui/preferences-window.ui:231
+msgid "Experimental"
+msgstr ""
+
+#: ui/preferences-window.ui:228
+msgid "Use PipeWire for audio output"
+msgstr ""
+
+#: src/buttons.js:201
+#, javascript-format
+msgid "Decoder: %s"
+msgstr ""
+
+#: src/dialogs.js:152
+msgid "Enter or drop URI here"
+msgstr ""
+
+#: src/dialogs.js:157
+msgid "Cancel"
+msgstr ""
+
+#: src/dialogs.js:158
+msgid "Open"
+msgstr ""
+
+#: src/dialogs.js:226
+msgid "Title"
+msgstr ""
+
+#: src/dialogs.js:227
+msgid "Completed"
+msgstr ""
+
+#: src/dialogs.js:235
+msgid "Resume playback?"
+msgstr ""
+
+#: src/dialogs.js:289
+#, javascript-format
+msgid "GTK version: %s"
+msgstr ""
+
+#: src/dialogs.js:290
+#, javascript-format
+msgid "Adwaita version: %s"
+msgstr ""
+
+#: src/dialogs.js:291
+#, javascript-format
+msgid "GStreamer version: %s"
+msgstr ""
+
+#: src/dialogs.js:292
+#, javascript-format
+msgid "GJS version: %s"
+msgstr ""
+
+#: src/dialogs.js:300
+msgid "A GNOME media player powered by GStreamer"
+msgstr ""
+
+#. TRANSLATORS: Put your name(s) here for credits or leave untranslated
+#: src/dialogs.js:305
+msgid "translator-credits"
+msgstr ""
+
+#: src/revealers.js:170
+#, javascript-format
+msgid "Ends at: %s"
+msgstr ""
+
+#: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
+msgid "Undetermined"
+msgstr ""
+
+#: src/widget.js:242
+msgid "Channels"
+msgstr ""
+
+#: src/widget.js:260
+msgid "Disabled"
+msgstr ""
+
