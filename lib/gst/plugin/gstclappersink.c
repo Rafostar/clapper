@@ -28,6 +28,7 @@
 #define DEFAULT_PAR_N               1
 #define DEFAULT_PAR_D               1
 #define DEFAULT_KEEP_LAST_FRAME     FALSE
+#define DEFAULT_ROTATION            GST_VIDEO_ORIENTATION_AUTO
 
 #define WINDOW_CSS_CLASS_NAME       "clappersinkwindow"
 
@@ -38,6 +39,7 @@ enum
   PROP_FORCE_ASPECT_RATIO,
   PROP_PIXEL_ASPECT_RATIO,
   PROP_KEEP_LAST_FRAME,
+  PROP_ROTATE_METHOD,
   PROP_LAST
 };
 
@@ -116,8 +118,9 @@ calculate_stream_coords (GstClapperSink *self, GtkWidget *widget,
 
   GST_CLAPPER_SINK_LOCK (self);
 
-  video_width = GST_VIDEO_INFO_WIDTH (&self->v_info);
-  video_height = GST_VIDEO_INFO_HEIGHT (&self->v_info);
+  gst_gtk_get_width_height_for_rotation (GST_VIDEO_INFO_WIDTH (&self->v_info),
+      GST_VIDEO_INFO_HEIGHT (&self->v_info), &video_height, &video_width,
+      gst_clapper_paintable_get_rotation (self->paintable));
   force_aspect_ratio = self->force_aspect_ratio;
 
   GST_CLAPPER_SINK_UNLOCK (self);
@@ -343,6 +346,9 @@ gst_clapper_sink_get_property (GObject *object, guint prop_id,
     case PROP_KEEP_LAST_FRAME:
       g_value_set_boolean (value, self->keep_last_frame);
       break;
+    case PROP_ROTATE_METHOD:
+      g_value_set_enum (value, self->rotation_mode);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -384,6 +390,13 @@ gst_clapper_sink_set_property (GObject *object, guint prop_id,
       break;
     case PROP_KEEP_LAST_FRAME:
       self->keep_last_frame = g_value_get_boolean (value);
+      break;
+    case PROP_ROTATE_METHOD:
+      self->rotation_mode = g_value_get_enum (value);
+
+      gst_clapper_paintable_set_rotation (self->paintable,
+          (self->rotation_mode == GST_VIDEO_ORIENTATION_AUTO) ?
+              self->stream_orientation : self->rotation_mode);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -633,6 +646,32 @@ gst_clapper_sink_stop (GstBaseSink *bsink)
   return TRUE;
 }
 
+static gboolean
+gst_clapper_sink_event (GstBaseSink *bsink, GstEvent *event)
+{
+  GstClapperSink *self = GST_CLAPPER_SINK_CAST (bsink);
+  GstTagList *taglist;
+  GstVideoOrientationMethod orientation;
+
+  switch (GST_EVENT_TYPE (event)) {
+    case GST_EVENT_TAG:
+      gst_event_parse_tag (event, &taglist);
+
+      if (gst_video_orientation_from_tag (taglist, &orientation)) {
+        GST_CLAPPER_SINK_LOCK (self);
+        self->stream_orientation = orientation;
+        if (self->rotation_mode == GST_VIDEO_ORIENTATION_AUTO)
+          gst_clapper_paintable_set_rotation (self->paintable, orientation);
+        GST_CLAPPER_SINK_UNLOCK (self);
+      }
+      break;
+    default:
+      break;
+  }
+
+  return GST_BASE_SINK_CLASS (parent_class)->event (bsink, event);
+}
+
 static GstStateChangeReturn
 gst_clapper_sink_change_state (GstElement *element, GstStateChange transition)
 {
@@ -643,6 +682,14 @@ gst_clapper_sink_change_state (GstElement *element, GstStateChange transition)
       gst_element_state_get_name (GST_STATE_TRANSITION_NEXT (transition)));
 
   switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      /* Reset stream_orientation */
+      GST_CLAPPER_SINK_LOCK (self);
+      self->stream_orientation = GST_VIDEO_ORIENTATION_IDENTITY;
+      if (self->rotation_mode == GST_VIDEO_ORIENTATION_AUTO)
+        gst_clapper_paintable_set_rotation (self->paintable, self->stream_orientation);
+      GST_CLAPPER_SINK_UNLOCK (self);
+      break;
     case GST_STATE_CHANGE_PAUSED_TO_READY:
       GST_CLAPPER_SINK_LOCK (self);
       if (!self->keep_last_frame && self->importer) {
@@ -794,6 +841,7 @@ gst_clapper_sink_init (GstClapperSink *self)
   self->par_n = DEFAULT_PAR_N;
   self->par_d = DEFAULT_PAR_D;
   self->keep_last_frame = DEFAULT_KEEP_LAST_FRAME;
+  self->rotation_mode = DEFAULT_ROTATION;
 
   g_mutex_init (&self->lock);
   gst_video_info_init (&self->v_info);
@@ -869,6 +917,12 @@ gst_clapper_sink_class_init (GstClapperSinkClass *klass)
           DEFAULT_KEEP_LAST_FRAME,
           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_object_class_install_property (gobject_class, PROP_ROTATE_METHOD,
+      g_param_spec_enum ("rotate-method", "Rotate Method",
+          "Rotate method to use",
+          GST_TYPE_VIDEO_ORIENTATION_METHOD, DEFAULT_ROTATION,
+          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   gstelement_class->change_state = gst_clapper_sink_change_state;
 
   gstbasesink_class->get_caps = gst_clapper_sink_get_caps;
@@ -878,6 +932,7 @@ gst_clapper_sink_class_init (GstClapperSinkClass *klass)
   gstbasesink_class->query = gst_clapper_sink_query;
   gstbasesink_class->start = gst_clapper_sink_start;
   gstbasesink_class->stop = gst_clapper_sink_stop;
+  gstbasesink_class->event = gst_clapper_sink_event;
 
   gstvideosink_class->set_info = gst_clapper_sink_set_info;
   gstvideosink_class->show_frame = gst_clapper_sink_show_frame;
