@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-04-02 15:25\n"
+"PO-Revision-Date: 2023-04-02 16:38\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -19,19 +19,19 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr ""
+msgstr "Atverti failus…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "Atverti URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Nustatymai"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Spartieji klavišai"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
@@ -43,11 +43,11 @@ msgstr ""
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr ""
+msgstr "Numatyta"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "Bendri"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
@@ -55,7 +55,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Įjungti visame ekrane"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
@@ -75,23 +75,23 @@ msgstr ""
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Baigti"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Medija"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Atverti failus"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Atverti URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Grojaraštis"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
@@ -119,7 +119,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr ""
+msgstr "Atkūrimas"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
@@ -147,7 +147,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Pagarsinti"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
@@ -155,7 +155,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Patildyti"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
@@ -219,11 +219,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "Užverti programą"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "Garsumas"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
@@ -255,7 +255,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "Mat. vienetai"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
@@ -271,7 +271,7 @@ msgstr ""
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "Reikšmė"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
@@ -287,15 +287,15 @@ msgstr ""
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "Titrai"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "Numatytasis šriftas"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "Ryšiai"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
@@ -323,11 +323,11 @@ msgstr ""
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr ""
+msgstr "Išvaizda"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "Tamsi tema"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
@@ -372,15 +372,15 @@ msgstr ""
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Atsisakyti"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Atverti"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: src/dialogs.js:227
 msgid "Completed"
@@ -388,27 +388,27 @@ msgstr ""
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Tęsti atkūrimą?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK versija: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita versija: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer versija: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS versija: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
@@ -417,7 +417,7 @@ msgstr ""
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Mantas Kriaučiūnas <tinklas@tinklas.eu>"
 
 #: src/revealers.js:170
 #, javascript-format
