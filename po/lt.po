@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-03-29 05:54\n"
+"PO-Revision-Date: 2023-04-02 15:25\n"
 "Last-Translator: \n"
 "Language-Team: Lithuanian\n"
 "Language: lt_LT\n"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Apie Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
