@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-05-02 11:12\n"
+"PO-Revision-Date: 2023-05-02 12:22\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -135,7 +135,7 @@ msgstr "Siirry eteenpäin"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Pyyhkäise oikealle - vieritä oikealle"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
@@ -143,7 +143,7 @@ msgstr "Siirry taaksepäin"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Pyyhkäise vasemmalle - vieritä vasemmalle"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
