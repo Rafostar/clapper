@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2022-05-26 16:50\n"
+"PO-Revision-Date: 2023-05-02 09:17\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -19,43 +19,43 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr ""
+msgstr "Avaa tiedostoja…"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "Avaa URI…"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Asetukset"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Pikanäppäimet"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Tietoja - Clapper"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Nopeus"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr ""
+msgstr "Normaali"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "Yleiset"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Näytä pikanäppäimet"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Koko näyttö päälle/pois"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Poistu koko näytön tilasta"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
