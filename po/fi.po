@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-05-02 10:13\n"
+"PO-Revision-Date: 2023-05-02 11:12\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -67,7 +67,7 @@ msgstr "Poistu koko näytön tilasta"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Näytä OSD (vain koko näytön tilassa)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
@@ -123,11 +123,11 @@ msgstr "Toisto"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Aloita tai pysäytä toisto"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Pitkä painallus tai oikean napsautus"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
@@ -191,7 +191,7 @@ msgstr "Automaattinen koko näytön tila"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Siirry koko näytön tilaan, kun soittolista korvataan, paitsi kelluvassa tilassa"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
@@ -215,7 +215,7 @@ msgstr "Älä tee mitään"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Pysäytä viimeinen kuva"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
@@ -339,11 +339,11 @@ msgstr "Poista käytöstä parantaaksesi suorituskykyä ikkunoituna"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Liitännäisten sijoitus"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Muuta GStreamer-liitännäisten sijoitusten oletusarvoja"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
@@ -426,7 +426,7 @@ msgstr "Päättyy: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "Määrittelemätön"
 
 #: src/widget.js:242
 msgid "Channels"
