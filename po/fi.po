@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-05-02 09:17\n"
+"PO-Revision-Date: 2023-05-02 10:13\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -59,7 +59,7 @@ msgstr "Koko näyttö päälle/pois"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Napsauta tai napauta kahdesti"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
@@ -71,55 +71,55 @@ msgstr ""
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Napauta"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Lopeta"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Avaa tiedostoja"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Avaa URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Soittolista"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Seuraava kohde"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Napauta kahdesti (oikea puoli)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Edellinen kohde"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Napauta kahdesti (vasen puoli)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Vaihda kertaustilaa"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Vie tiedostoon"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr ""
+msgstr "Toisto"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
@@ -131,7 +131,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Siirry eteenpäin"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
@@ -139,7 +139,7 @@ msgstr ""
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Siirry taaksepäin"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
@@ -147,47 +147,47 @@ msgstr ""
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Lisää äänenvoimakkuutta"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Vieritä tai pyyhkäise ylös"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Vähennä äänenvoimakkuutta"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Vieritä tai pyyhkäise alas"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Mykistä tai palauta ääni"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Seuraava kappale"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Edellinen kappale"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Dekooderit"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Palaa asetuksiin"
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
-msgstr ""
+msgstr "Toiminta"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Automaattinen koko näytön tila"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
@@ -195,23 +195,23 @@ msgstr ""
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Ehdota palaamista viimeisimpiin"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Pidä kelluvana kaikissa työtiloissa"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Tämä asetus toimii vain Gnomessa"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr ""
+msgstr "Toiston jälkeen"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr ""
+msgstr "Älä tee mitään"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
@@ -219,123 +219,123 @@ msgstr ""
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "Sulje sovellus"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "Äänenvoimakkuus"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr ""
+msgstr "Mukautettu alkuarvo"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Aseta mukautettu äänenvoimakkuus käynnistäessä äänenvoimakkuuden palauttamisen sijaan"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "Ään envoimakkuus prosentteina"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr ""
+msgstr "Siirtyminen"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "Tila"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr ""
+msgstr "Tarkka"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr ""
+msgstr "Nopea"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "Yksikkö"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "Sekunti"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "Minuutti"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "Prosentti"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "Arvo"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "Ääni"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Siirtymä millisekunteina"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Vain natiivit äänimuodot"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "Tekstitykset"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "Oletusfontti"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "Verkko"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "Asiakasohjelmisto"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Progressiivinen latauspuskurointi"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "Palvelin"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr ""
+msgstr "Hallitse videosoitinta etänä"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
-msgstr ""
+msgstr "Kuuntele porttia"
 
 #: ui/preferences-window.ui:188
 msgid "Tweaks"
-msgstr ""
+msgstr "Lisäasetukset"
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr ""
+msgstr "Ulkoasu"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "Tumma teema"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
-msgstr ""
+msgstr "Piirrä ikkunan varjot"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Poista käytöstä parantaaksesi suorituskykyä ikkunoituna"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
@@ -347,82 +347,82 @@ msgstr ""
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
-msgstr ""
+msgstr "Käytä playbin3:a"
 
 #: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
-msgstr ""
+msgstr "Vaatii toistimen uudelleenkäynnistyksen"
 
 #: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
-msgstr ""
+msgstr "Kokeellinen"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Käytä PipeWireä äänen ulostuloon"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Dekooderi: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Syötä tai pudota URI tähän"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Peru"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Avaa"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Nimi"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Valmiusaste"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Jatketaanko toistoa?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK-versio: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita-versio: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer-versio: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS-versio: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "Mediasoitin Gnomelle, jonka mahdollistaa GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Jiri Grönroos"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Päättyy: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
@@ -430,9 +430,9 @@ msgstr ""
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr ""
+msgstr "kanavaa"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr ""
+msgstr "Pois käytöstä"
 
