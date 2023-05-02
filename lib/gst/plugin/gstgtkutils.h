@@ -32,4 +32,8 @@ gpointer        gst_gtk_invoke_on_main                (GThreadFunc func, gpointe
 
 GdkTexture *    gst_video_frame_into_gdk_texture      (GstVideoFrame *frame);
 
+void            gst_gtk_get_width_height_for_rotation (gint width, gint height,
+                                                       gint *out_width, gint *out_height,
+                                                       GstVideoOrientationMethod rotation);
+
 G_END_DECLS

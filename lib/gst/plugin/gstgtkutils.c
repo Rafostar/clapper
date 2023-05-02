@@ -140,3 +140,23 @@ gst_video_frame_into_gdk_texture (GstVideoFrame *frame)
 
   return texture;
 }
+
+void
+gst_gtk_get_width_height_for_rotation (gint width, gint height,
+    gint *out_width, gint *out_height,
+    GstVideoOrientationMethod rotation)
+{
+  switch (rotation) {
+    case GST_VIDEO_ORIENTATION_90R:
+    case GST_VIDEO_ORIENTATION_90L:
+    case GST_VIDEO_ORIENTATION_UL_LR:
+    case GST_VIDEO_ORIENTATION_UR_LL:
+      *out_width = height;
+      *out_height = width;
+      break;
+    default:
+      *out_width = width;
+      *out_height = height;
+      break;
+  }
+}

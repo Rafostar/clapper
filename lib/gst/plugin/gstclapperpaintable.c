@@ -23,6 +23,8 @@
 
 #include "gstclapperpaintable.h"
 
+#include "gstgtkutils.h"
+
 #define DEFAULT_PAR_N               1
 #define DEFAULT_PAR_D               1
 
@@ -56,6 +58,8 @@ gst_clapper_paintable_init (GstClapperPaintable *self)
   self->display_width = 1;
   self->display_height = 1;
   self->display_aspect_ratio = 1.0;
+
+  self->rotation = GST_VIDEO_ORIENTATION_IDENTITY;
 
   self->par_n = DEFAULT_PAR_N;
   self->par_d = DEFAULT_PAR_D;
@@ -111,8 +115,8 @@ calculate_display_par (GstClapperPaintable *self, const GstVideoInfo *info)
   gint width, height, par_n, par_d, req_par_n, req_par_d;
   gboolean success;
 
-  width = GST_VIDEO_INFO_WIDTH (info);
-  height = GST_VIDEO_INFO_HEIGHT (info);
+  gst_gtk_get_width_height_for_rotation (GST_VIDEO_INFO_WIDTH (info),
+      GST_VIDEO_INFO_HEIGHT (info), &width, &height, self->rotation);
 
   /* Cannot apply aspect ratio if there is no video */
   if (width == 0 || height == 0)
@@ -152,8 +156,9 @@ invalidate_paintable_size_internal (GstClapperPaintable *self)
 
   GST_CLAPPER_PAINTABLE_LOCK (self);
 
-  video_width = GST_VIDEO_INFO_WIDTH (&self->v_info);
-  video_height = GST_VIDEO_INFO_HEIGHT (&self->v_info);
+  gst_gtk_get_width_height_for_rotation (GST_VIDEO_INFO_WIDTH (&self->v_info),
+      GST_VIDEO_INFO_HEIGHT (&self->v_info), &video_height, &video_width,
+      self->rotation);
 
   display_ratio_num = self->display_ratio_num;
   display_ratio_den = self->display_ratio_den;
@@ -322,6 +327,38 @@ gst_clapper_paintable_set_pixel_aspect_ratio (GstClapperPaintable *self,
   GST_CLAPPER_PAINTABLE_UNLOCK (self);
 }
 
+void
+gst_clapper_paintable_set_rotation (GstClapperPaintable *self,
+    GstVideoOrientationMethod rotation)
+{
+  GST_CLAPPER_PAINTABLE_LOCK (self);
+
+  self->rotation = rotation;
+
+  if (G_UNLIKELY (!calculate_display_par (self, &self->v_info))) {
+    GST_CLAPPER_PAINTABLE_UNLOCK (self);
+    return;
+  }
+
+  self->pending_resize = TRUE;
+
+  GST_CLAPPER_PAINTABLE_UNLOCK (self);
+}
+
+GstVideoOrientationMethod
+gst_clapper_paintable_get_rotation (GstClapperPaintable *self)
+{
+  GstVideoOrientationMethod rotation;
+
+  GST_CLAPPER_PAINTABLE_LOCK (self);
+
+  rotation = self->rotation;
+
+  GST_CLAPPER_PAINTABLE_UNLOCK (self);
+
+  return rotation;
+}
+
 /*
  * GdkPaintableInterface
  */
@@ -331,6 +368,8 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
     gint widget_width, gint widget_height)
 {
   gfloat scale_x, scale_y;
+  gdouble snapshot_width, snapshot_height;
+  GskTransform *transform = NULL;
 
   GST_LOG_OBJECT (self, "Snapshot");
 
@@ -358,7 +397,63 @@ gst_clapper_paintable_snapshot_internal (GstClapperPaintable *self,
   GST_CLAPPER_PAINTABLE_IMPORTER_LOCK (self);
 
   if (self->importer) {
-    gst_clapper_importer_snapshot (self->importer, snapshot, width, height);
+    switch (self->rotation) {
+      case GST_VIDEO_ORIENTATION_IDENTITY:
+      default:
+        snapshot_width = width;
+        snapshot_height = height;
+        break;
+      case GST_VIDEO_ORIENTATION_90R:
+        transform = gsk_transform_rotate (transform, 90);
+        transform = gsk_transform_translate (transform, &GRAPHENE_POINT_INIT (0, -width));
+        snapshot_width = height;
+        snapshot_height = width;
+        break;
+      case GST_VIDEO_ORIENTATION_180:
+        transform = gsk_transform_rotate (transform, 180);
+        transform = gsk_transform_translate (transform, &GRAPHENE_POINT_INIT (-width, -height));
+        snapshot_width = width;
+        snapshot_height = height;
+        break;
+      case GST_VIDEO_ORIENTATION_90L:
+        transform = gsk_transform_rotate (transform, 270);
+        transform = gsk_transform_translate (transform, &GRAPHENE_POINT_INIT (-height, 0));
+        snapshot_width = height;
+        snapshot_height = width;
+        break;
+      case GST_VIDEO_ORIENTATION_HORIZ:
+        transform = gsk_transform_rotate_3d (transform, 180, graphene_vec3_y_axis ());
+        transform = gsk_transform_translate (transform, &GRAPHENE_POINT_INIT (-width, 0));
+        snapshot_width = width;
+        snapshot_height = height;
+        break;
+      case GST_VIDEO_ORIENTATION_VERT:
+        transform = gsk_transform_rotate_3d (transform, 180, graphene_vec3_x_axis ());
+        transform = gsk_transform_translate (transform, &GRAPHENE_POINT_INIT (0, -height));
+        snapshot_width = width;
+        snapshot_height = height;
+        break;
+      case GST_VIDEO_ORIENTATION_UL_LR:
+        transform = gsk_transform_rotate (transform, 90);
+        transform = gsk_transform_rotate_3d (transform, 180, graphene_vec3_x_axis ());
+        snapshot_width = height;
+        snapshot_height = width;
+        break;
+      case GST_VIDEO_ORIENTATION_UR_LL:
+        transform = gsk_transform_rotate (transform, 90);
+        transform = gsk_transform_rotate_3d (transform, 180, graphene_vec3_y_axis ());
+        transform = gsk_transform_translate (transform, &GRAPHENE_POINT_INIT (-height, -width));
+        snapshot_width = height;
+        snapshot_height = width;
+        break;
+    }
+
+    if (transform) {
+      gtk_snapshot_transform (snapshot, transform);
+      gsk_transform_unref (transform);
+    }
+
+    gst_clapper_importer_snapshot (self->importer, snapshot, snapshot_width, snapshot_height);
   } else {
     GST_LOG_OBJECT (self, "No texture importer, drawing black");
     gtk_snapshot_append_color (snapshot, &self->bg, &GRAPHENE_RECT_INIT (0, 0, width, height));

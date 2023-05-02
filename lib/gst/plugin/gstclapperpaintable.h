@@ -56,6 +56,7 @@ struct _GstClapperPaintable
 
   /* Sink properties */
   gint par_n, par_d;
+  GstVideoOrientationMethod rotation;
 
   /* Resize */
   gboolean pending_resize;
@@ -71,11 +72,13 @@ struct _GstClapperPaintable
   guint draw_id;
 };
 
-GstClapperPaintable * gst_clapper_paintable_new                    (void);
-void                  gst_clapper_paintable_queue_draw             (GstClapperPaintable *paintable);
-void                  gst_clapper_paintable_set_widget             (GstClapperPaintable *paintable, GtkWidget *widget);
-void                  gst_clapper_paintable_set_importer           (GstClapperPaintable *paintable, GstClapperImporter *importer);
-gboolean              gst_clapper_paintable_set_video_info         (GstClapperPaintable *paintable, const GstVideoInfo *v_info);
-void                  gst_clapper_paintable_set_pixel_aspect_ratio (GstClapperPaintable *paintable, gint par_n, gint par_d);
+GstClapperPaintable *      gst_clapper_paintable_new                    (void);
+void                       gst_clapper_paintable_queue_draw             (GstClapperPaintable *paintable);
+void                       gst_clapper_paintable_set_widget             (GstClapperPaintable *paintable, GtkWidget *widget);
+void                       gst_clapper_paintable_set_importer           (GstClapperPaintable *paintable, GstClapperImporter *importer);
+gboolean                   gst_clapper_paintable_set_video_info         (GstClapperPaintable *paintable, const GstVideoInfo *v_info);
+void                       gst_clapper_paintable_set_pixel_aspect_ratio (GstClapperPaintable *paintable, gint par_n, gint par_d);
+void                       gst_clapper_paintable_set_rotation           (GstClapperPaintable *paintable, GstVideoOrientationMethod rotation);
+GstVideoOrientationMethod  gst_clapper_paintable_get_rotation           (GstClapperPaintable *paintable);
 
 G_END_DECLS

@@ -50,6 +50,7 @@ struct _GstClapperSink
   GstClapperImporterLoader *loader;
   GstClapperImporter *importer;
   GstVideoInfo v_info;
+  GstVideoOrientationMethod stream_orientation;
 
   GtkWidget *widget;
   GtkWindow *window;
@@ -58,6 +59,7 @@ struct _GstClapperSink
   gboolean force_aspect_ratio;
   gint par_n, par_d;
   gboolean keep_last_frame;
+  GstVideoOrientationMethod rotation_mode;
 
   /* Position coords */
   gdouble last_pos_x;
