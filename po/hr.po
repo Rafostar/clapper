@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-05-26 18:41+0200\n"
-"PO-Revision-Date: 2023-05-06 18:34\n"
+"PO-Revision-Date: 2023-05-06 19:49\n"
 "Last-Translator: \n"
 "Language-Team: Croatian\n"
 "Language: hr_HR\n"
@@ -19,420 +19,420 @@ msgstr ""
 
 #: ui/clapper.ui:6
 msgid "Open Files…"
-msgstr ""
+msgstr "Otvori datoteke …"
 
 #: ui/clapper.ui:10
 msgid "Open URI…"
-msgstr ""
+msgstr "Otvori URI …"
 
 #: ui/clapper.ui:16 ui/preferences-window.ui:4
 msgid "Preferences"
-msgstr ""
+msgstr "Postavke"
 
 #: ui/clapper.ui:20
 msgid "Shortcuts"
-msgstr ""
+msgstr "Prečaci"
 
 #: ui/clapper.ui:26
 msgid "About Clapper"
-msgstr ""
+msgstr "Clapper informacije"
 
 #: ui/elapsed-time-button.ui:27
 msgid "Speed"
-msgstr ""
+msgstr "Brzina"
 
 #: ui/elapsed-time-button.ui:41 ui/preferences-window.ui:82
 msgid "Normal"
-msgstr ""
+msgstr "Normalna"
 
 #: ui/help-overlay.ui:10 ui/preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "Opće"
 
 #: ui/help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Prikaži prečace"
 
 #: ui/help-overlay.ui:19
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Uključi/isključi cjeloekranski prikaz"
 
 #: ui/help-overlay.ui:20
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Dodirni dvaput | Pritisni tipku miša dvaput"
 
 #: ui/help-overlay.ui:26
 msgid "Leave fullscreen"
-msgstr ""
+msgstr "Napusti cjeloekranski prikaz"
 
 #: ui/help-overlay.ui:32
 msgid "Reveal OSD (fullscreen only)"
-msgstr ""
+msgstr "Prikaži OSD (samo u cjeloekranskom prikazu)"
 
 #: ui/help-overlay.ui:33
 msgid "Tap"
-msgstr ""
+msgstr "Dodirni"
 
 #: ui/help-overlay.ui:39
 msgid "Quit"
-msgstr ""
+msgstr "Zatvori aplikaciju"
 
 #: ui/help-overlay.ui:47
 msgid "Media"
-msgstr ""
+msgstr "Mediji"
 
 #: ui/help-overlay.ui:50
 msgid "Open files"
-msgstr ""
+msgstr "Otvori datoteke"
 
 #: ui/help-overlay.ui:56 src/dialogs.js:137
 msgid "Open URI"
-msgstr ""
+msgstr "Otvori URI"
 
 #: ui/help-overlay.ui:64
 msgid "Playlist"
-msgstr ""
+msgstr "Popis za izvođenje"
 
 #: ui/help-overlay.ui:67
 msgid "Next item"
-msgstr ""
+msgstr "Sljedeće"
 
 #: ui/help-overlay.ui:68
 msgid "Double tap (right side)"
-msgstr ""
+msgstr "Dodirni dvaput (desno)"
 
 #: ui/help-overlay.ui:74
 msgid "Previous item"
-msgstr ""
+msgstr "Prethodno"
 
 #: ui/help-overlay.ui:75
 msgid "Double tap (left side)"
-msgstr ""
+msgstr "Dodirni dvaput (lijevo)"
 
 #: ui/help-overlay.ui:81
 msgid "Change repeat mode"
-msgstr ""
+msgstr "Promijeni način ponavljanja"
 
 #: ui/help-overlay.ui:87
 msgid "Export to file"
-msgstr ""
+msgstr "Izvezi u datoteku"
 
 #: ui/help-overlay.ui:95 ui/preferences-window.ui:118
 msgid "Playback"
-msgstr ""
+msgstr "Reprodukcija"
 
 #: ui/help-overlay.ui:98
 msgid "Toggle play"
-msgstr ""
+msgstr "Uključi/Isključi reprodukciju"
 
 #: ui/help-overlay.ui:99
 msgid "Long press | Right click"
-msgstr ""
+msgstr "Dugi pritisak | Pritisni desnu tipku miša"
 
 #: ui/help-overlay.ui:105
 msgid "Seek forward"
-msgstr ""
+msgstr "Traži prema naprijed"
 
 #: ui/help-overlay.ui:106
 msgid "Swipe right | Scroll right"
-msgstr ""
+msgstr "Povuci udesno | Klizni udesno"
 
 #: ui/help-overlay.ui:112
 msgid "Seek backward"
-msgstr ""
+msgstr "Traži prema natrag"
 
 #: ui/help-overlay.ui:113
 msgid "Swipe left | Scroll left"
-msgstr ""
+msgstr "Povuci ulijevo | Klizni ulijevo"
 
 #: ui/help-overlay.ui:119
 msgid "Volume up"
-msgstr ""
+msgstr "Glasnije"
 
 #: ui/help-overlay.ui:120
 msgid "Swipe up | Scroll up"
-msgstr ""
+msgstr "Povuci gore | Klizni gore"
 
 #: ui/help-overlay.ui:126
 msgid "Volume down"
-msgstr ""
+msgstr "Tiše"
 
 #: ui/help-overlay.ui:127
 msgid "Swipe down | Scroll down"
-msgstr ""
+msgstr "Povuci dolje | Klizni dolje"
 
 #: ui/help-overlay.ui:133
 msgid "Toggle mute"
-msgstr ""
+msgstr "Uključi/isključi zvuk"
 
 #: ui/help-overlay.ui:139
 msgid "Next chapter"
-msgstr ""
+msgstr "Sljedeće poglavlje"
 
 #: ui/help-overlay.ui:145
 msgid "Previous chapter"
-msgstr ""
+msgstr "Prethodno poglavlje"
 
 #: ui/preferences-plugin-ranking-subpage.ui:11
 msgid "Decoders"
-msgstr ""
+msgstr "Dekoderi"
 
 #: ui/preferences-plugin-ranking-subpage.ui:18
 msgid "Return to the preferences"
-msgstr ""
+msgstr "Vrati se na postavke"
 
 #: ui/preferences-window.ui:15
 msgid "Behavior"
-msgstr ""
+msgstr "Ponašanje"
 
 #: ui/preferences-window.ui:18
 msgid "Auto fullscreen"
-msgstr ""
+msgstr "Automatski cjeloekranski prikaz"
 
 #: ui/preferences-window.ui:19
 msgid "Enter fullscreen when playlist is replaced except floating mode"
-msgstr ""
+msgstr "Prijeđi u cjeloekranski prikaz kada se popis za reprodukciju zamijeni, osim ako je aktiviran plutajući način"
 
 #: ui/preferences-window.ui:25
 msgid "Ask to resume recent media"
-msgstr ""
+msgstr "Zatraži nastavljanje nedavnih medija"
 
 #: ui/preferences-window.ui:31
 msgid "Float on all workspaces"
-msgstr ""
+msgstr "Plutaj na svim radnim prostorima"
 
 #: ui/preferences-window.ui:32
 msgid "This option only works on GNOME"
-msgstr ""
+msgstr "Ova opcija radi samo na GNOME-u"
 
 #: ui/preferences-window.ui:38
 msgid "After playback"
-msgstr ""
+msgstr "Nakon reprodukcije"
 
 #: ui/preferences-window.ui:43
 msgid "Do nothing"
-msgstr ""
+msgstr "Nemoj ništa raditi"
 
 #: ui/preferences-window.ui:44
 msgid "Freeze last frame"
-msgstr ""
+msgstr "Zamrzni zadnji kadar"
 
 #: ui/preferences-window.ui:45
 msgid "Close the app"
-msgstr ""
+msgstr "Zatvori aplikaciju"
 
 #: ui/preferences-window.ui:55
 msgid "Volume"
-msgstr ""
+msgstr "Glasnoća"
 
 #: ui/preferences-window.ui:58
 msgid "Custom initial value"
-msgstr ""
+msgstr "Prilagođena početna vrijednost"
 
 #: ui/preferences-window.ui:59
 msgid "Set custom volume at startup instead of restoring it"
-msgstr ""
+msgstr "Postavi prilagođenu glasnoću pri pokretanju umjesto obnavljanja glasnoće"
 
 #: ui/preferences-window.ui:63
 msgid "Volume percentage"
-msgstr ""
+msgstr "Postotak glasnoće"
 
 #: ui/preferences-window.ui:74
 msgid "Seeking"
-msgstr ""
+msgstr "Pretraživanje"
 
 #: ui/preferences-window.ui:77
 msgid "Mode"
-msgstr ""
+msgstr "Način"
 
 #: ui/preferences-window.ui:83
 msgid "Accurate"
-msgstr ""
+msgstr "Točno"
 
 #: ui/preferences-window.ui:84
 msgid "Fast"
-msgstr ""
+msgstr "Brzo"
 
 #: ui/preferences-window.ui:92
 msgid "Unit"
-msgstr ""
+msgstr "Jedinica"
 
 #: ui/preferences-window.ui:97
 msgid "Second"
-msgstr ""
+msgstr "Sekunda"
 
 #: ui/preferences-window.ui:98
 msgid "Minute"
-msgstr ""
+msgstr "Minuta"
 
 #: ui/preferences-window.ui:99
 msgid "Percentage"
-msgstr ""
+msgstr "Postotak"
 
 #: ui/preferences-window.ui:107
 msgid "Value"
-msgstr ""
+msgstr "Vrijednost"
 
 #: ui/preferences-window.ui:122
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 #: ui/preferences-window.ui:125
 msgid "Offset in milliseconds"
-msgstr ""
+msgstr "Odmak u milisekundama"
 
 #: ui/preferences-window.ui:132
 msgid "Only native audio formats"
-msgstr ""
+msgstr "Samo izvorni audio formati"
 
 #: ui/preferences-window.ui:140
 msgid "Subtitles"
-msgstr ""
+msgstr "Titlovi"
 
 #: ui/preferences-window.ui:143
 msgid "Default font"
-msgstr ""
+msgstr "Zadani font"
 
 #: ui/preferences-window.ui:153
 msgid "Network"
-msgstr ""
+msgstr "Mreža"
 
 #: ui/preferences-window.ui:157
 msgid "Client"
-msgstr ""
+msgstr "Klijent"
 
 #: ui/preferences-window.ui:160
 msgid "Progressive download buffering"
-msgstr ""
+msgstr "Progresivno predmemoriranje preuzimanja"
 
 #: ui/preferences-window.ui:168
 msgid "Server"
-msgstr ""
+msgstr "Poslužitelj"
 
 #: ui/preferences-window.ui:171
 msgid "Control player remotely"
-msgstr ""
+msgstr "Daljinsko upravljanje playerom"
 
 #: ui/preferences-window.ui:175
 msgid "Listening port"
-msgstr ""
+msgstr "Priključak slušanja"
 
 #: ui/preferences-window.ui:188
 msgid "Tweaks"
-msgstr ""
+msgstr "Podešavanja"
 
 #: ui/preferences-window.ui:192
 msgid "Appearance"
-msgstr ""
+msgstr "Izgled"
 
 #: ui/preferences-window.ui:195
 msgid "Dark theme"
-msgstr ""
+msgstr "Tamni dizajn"
 
 #: ui/preferences-window.ui:201
 msgid "Render window shadows"
-msgstr ""
+msgstr "Iscrtaj sjene prozora"
 
 #: ui/preferences-window.ui:202
 msgid "Disable to increase performance when windowed"
-msgstr ""
+msgstr "Deaktiviraj za povećavanje performanse u prikazu prozora"
 
 #: ui/preferences-window.ui:213
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Ocjenjivanje dodataka"
 
 #: ui/preferences-window.ui:214
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Promijeni zadane ocjene GStreamer dodataka"
 
 #: ui/preferences-window.ui:219
 msgid "Use playbin3"
-msgstr ""
+msgstr "Koristi playbin3"
 
 #: ui/preferences-window.ui:220 ui/preferences-window.ui:229
 msgid "Requires player restart"
-msgstr ""
+msgstr "Zahtijeva ponovno pokretanje playera"
 
 #: ui/preferences-window.ui:222 ui/preferences-window.ui:231
 msgid "Experimental"
-msgstr ""
+msgstr "Eksperimentalno"
 
 #: ui/preferences-window.ui:228
 msgid "Use PipeWire for audio output"
-msgstr ""
+msgstr "Koristi PipeWire audio rezultat"
 
 #: src/buttons.js:201
 #, javascript-format
 msgid "Decoder: %s"
-msgstr ""
+msgstr "Dekoder: %s"
 
 #: src/dialogs.js:152
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Ovdje upiši ili ispusti URI"
 
 #: src/dialogs.js:157
 msgid "Cancel"
-msgstr ""
+msgstr "Odustani"
 
 #: src/dialogs.js:158
 msgid "Open"
-msgstr ""
+msgstr "Ovori"
 
 #: src/dialogs.js:226
 msgid "Title"
-msgstr ""
+msgstr "Naslov"
 
 #: src/dialogs.js:227
 msgid "Completed"
-msgstr ""
+msgstr "Završeno"
 
 #: src/dialogs.js:235
 msgid "Resume playback?"
-msgstr ""
+msgstr "Nastavi reprodukciju?"
 
 #: src/dialogs.js:289
 #, javascript-format
 msgid "GTK version: %s"
-msgstr ""
+msgstr "GTK verzija: %s"
 
 #: src/dialogs.js:290
 #, javascript-format
 msgid "Adwaita version: %s"
-msgstr ""
+msgstr "Adwaita verzija: %s"
 
 #: src/dialogs.js:291
 #, javascript-format
 msgid "GStreamer version: %s"
-msgstr ""
+msgstr "GStreamer verzija: %s"
 
 #: src/dialogs.js:292
 #, javascript-format
 msgid "GJS version: %s"
-msgstr ""
+msgstr "GJS verzija: %s"
 
 #: src/dialogs.js:300
 msgid "A GNOME media player powered by GStreamer"
-msgstr ""
+msgstr "GNOME media player koji pokreće GStreamer"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/dialogs.js:305
 msgid "translator-credits"
-msgstr ""
+msgstr "Milo Ivir <mail@milotype.de>"
 
 #: src/revealers.js:170
 #, javascript-format
 msgid "Ends at: %s"
-msgstr ""
+msgstr "Završava pri: %s"
 
 #: src/widget.js:226 src/widget.js:235 src/widget.js:241 src/widget.js:247
 msgid "Undetermined"
-msgstr ""
+msgstr "Neodređeno"
 
 #: src/widget.js:242
 msgid "Channels"
-msgstr ""
+msgstr "Kanali"
 
 #: src/widget.js:260
 msgid "Disabled"
-msgstr ""
+msgstr "Deaktivirani"
 
