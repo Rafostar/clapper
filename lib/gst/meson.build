@@ -1,5 +1,2 @@
-if get_option('lib')
-  subdir('clapper')
-endif
-
 subdir('plugin')
+summary('gstplugin', build_gst_plugin ? 'Yes' : 'No', section: 'GStreamer')
