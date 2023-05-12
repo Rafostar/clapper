@@ -1,39 +1,150 @@
-project('com.github.rafostar.Clapper', 'c', 'cpp',
+project('clapper', 'c',
   version: '0.5.2',
-  meson_version: '>= 0.50.0',
-  license: 'GPL-3.0-or-later',
+  meson_version: '>= 0.58.0',
+  license: 'LGPL-2.1-or-later AND GPL-3.0-or-later', # LGPL-2.1+ for libs and gst-plugin, GPL-3+ for player
   default_options: [
     'warning_level=1',
-    'buildtype=debugoptimized'
-  ]
+    'buildtype=debugoptimized',
+  ],
 )
 
+glib_req = '>= 2.70.0'
+gst_req = '>= 1.20.0'
+gtk4_req = '>= 4.6.0'
+
+clapper_version = meson.project_version().split('-')[0]
+version_array = clapper_version.split('.')
+clapper_version_suffix = '-' + version_array[0] + '.0'
+
+clapper_api_name = meson.project_name() + clapper_version_suffix
+os_unix = host_machine.system() != 'windows'
+
 gnome = import('gnome')
-i18n = import('i18n')
-python = import('python')
+pkgconfig = import('pkgconfig')
 
-bindir = join_paths(get_option('prefix'), get_option('bindir'))
-libdir = join_paths(get_option('prefix'), get_option('libdir'))
-datadir = join_paths(get_option('prefix'), get_option('datadir'))
+prefix = get_option('prefix')
+bindir = get_option('bindir')
+datadir = get_option('datadir')
+libdir = get_option('libdir')
+includedir = get_option('includedir')
+optimization = get_option('optimization')
 
-pkglibdir = join_paths(libdir, meson.project_name())
-pkgdatadir = join_paths(datadir, meson.project_name())
+clapper_libdir = join_paths(prefix, libdir, clapper_api_name)
+build_optimized = optimization in ['2', '3', 's']
+
+gst_dep = dependency('gstreamer-1.0',
+  version: gst_req,
+  required: false,
+)
+gst_base_dep = dependency('gstreamer-base-1.0',
+  version: gst_req,
+  required: false,
+)
+gst_video_dep = dependency('gstreamer-video-1.0',
+  version: gst_req,
+  required: false,
+)
+gst_audio_dep = dependency('gstreamer-audio-1.0',
+  version: gst_req,
+  required: false,
+)
+gst_pbutils_dep = dependency('gstreamer-pbutils-1.0',
+  version: gst_req,
+  required: false,
+)
+gst_tag_dep = dependency('gstreamer-tag-1.0',
+  version: gst_req,
+  required: false,
+)
+glib_dep = dependency('glib-2.0',
+  version: glib_req,
+  required: false,
+  fallback: ['glib', 'libglib_dep'],
+)
+gobject_dep = dependency('gobject-2.0',
+  version: glib_req,
+  required: false,
+  fallback: ['glib', 'libgobject_dep'],
+)
+gio_dep = dependency('gio-2.0',
+  version: glib_req,
+  required: false,
+  fallback: ['glib', 'libgio_dep'],
+)
+gmodule_dep = dependency('gmodule-2.0',
+  version: glib_req,
+  required: false,
+  fallback: ['glib', 'libgmodule_dep']
+)
+
+if os_unix
+  gio_unix_dep = dependency('gio-unix-2.0',
+    version: glib_req,
+    required: false,
+    fallback: ['glib', 'libgio_dep'],
+  )
+else
+  gio_win_dep = dependency('gio-windows-2.0',
+    version: glib_req,
+    required: false,
+    fallback: ['glib', 'libgio_dep'],
+  )
+endif
+
+gtk4_dep = dependency('gtk4',
+  version: gtk4_req,
+  required: false,
+)
+
+cc = meson.get_compiler('c')
+libm = cc.find_library('m', required: false)
+
+warning_flags = [
+  '-Wmissing-declarations',
+  '-Wredundant-decls',
+  '-Wwrite-strings',
+  '-Wformat',
+  '-Wformat-security',
+  '-Winit-self',
+  '-Wmissing-include-dirs',
+  '-Waddress',
+  '-Wno-multichar',
+  '-Wvla',
+  '-Wpointer-arith',
+  '-Wmissing-prototypes',
+  '-Wdeclaration-after-statement',
+  '-Wold-style-definition',
+]
+
+foreach extra_arg : warning_flags
+  if cc.has_argument (extra_arg)
+    add_project_arguments([extra_arg], language: 'c')
+  endif
+endforeach
+
+if optimization in ['2', '3', 's']
+  message('Disabling GLib cast checks')
+  add_project_arguments('-DG_DISABLE_CAST_CHECKS', language: 'c')
+
+  message('Disabling GLib asserts')
+  add_project_arguments('-DG_DISABLE_ASSERT', language: 'c')
+
+  message('Disabling GLib checks')
+  add_project_arguments('-DG_DISABLE_CHECKS', language: 'c')
+endif
+
+summary({
+  'prefix': prefix,
+  'bindir': bindir,
+  'datadir': datadir,
+  'libdir': libdir,
+  'includedir': includedir,
+  'optimization': optimization,
+}, section: 'Directories')
 
 subdir('lib')
+summary('introspection', build_gir ? 'Yes' : 'No', section: 'Build')
+summary('vapi', build_vapi ? 'Yes' : 'No', section: 'Build')
 
-if get_option('player')
-  subdir('bin')
-  subdir('data')
-  subdir('po')
-
-  install_subdir('src', install_dir: pkgdatadir)
-  install_subdir('extras', install_dir: pkgdatadir)
-  install_subdir('css', install_dir: pkgdatadir)
-  install_subdir('ui', install_dir: pkgdatadir)
-
-  python_bin = python.find_installation('python3')
-  if not python_bin.found()
-    error('No valid python3 binary found')
-  endif
-  meson.add_install_script('build-aux/meson/postinstall.py')
-endif
+subdir('doc')
+summary('doc', build_doc, section: 'Build')
