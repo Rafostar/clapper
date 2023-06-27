@@ -48,7 +48,7 @@ class ClapperWebServer extends Soup.Server
         this.add_websocket_handler('/websocket', null, null, this._onWsConnection.bind(this));
 
         try {
-            isListening = this.listen_local(this.listeningPort, Soup.ServerListenOptions.IPV4_ONLY);
+            isListening = this.listen_all(this.listeningPort, Soup.ServerListenOptions.IPV4_ONLY);
         }
         catch(err) {
             debug(err);
