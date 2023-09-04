@@ -59,7 +59,7 @@ G_GNUC_INTERNAL
 void clapper_features_manager_trigger_media_item_updated (ClapperFeaturesManager *features, ClapperMediaItem *item);
 
 G_GNUC_INTERNAL
-void clapper_features_manager_trigger_queue_item_added (ClapperFeaturesManager *features, ClapperMediaItem *item);
+void clapper_features_manager_trigger_queue_item_added (ClapperFeaturesManager *features, ClapperMediaItem *item, guint index);
 
 G_GNUC_INTERNAL
 void clapper_features_manager_trigger_queue_item_removed (ClapperFeaturesManager *features, ClapperMediaItem *item);
@@ -71,6 +71,6 @@ G_GNUC_INTERNAL
 void clapper_features_manager_trigger_queue_progression_changed (ClapperFeaturesManager *features, ClapperQueueProgressionMode mode);
 
 G_GNUC_INTERNAL
-void clapper_features_manager_handle_event (ClapperFeaturesManager *features, ClapperFeaturesManagerEvent event, const GValue *value);
+void clapper_features_manager_handle_event (ClapperFeaturesManager *features, ClapperFeaturesManagerEvent event, const GValue *value, const GValue *extra_value);
 
 G_END_DECLS

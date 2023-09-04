@@ -41,7 +41,6 @@
 #define CLAPPER_MPRIS_SECONDS_TO_USECONDS(seconds) ((gint64) (seconds * G_GINT64_CONSTANT (1000000)))
 #define CLAPPER_MPRIS_USECONDS_TO_SECONDS(useconds) ((gfloat) useconds / G_GINT64_CONSTANT (1000000))
 
-/* FIXME: Avoid string comparisons */
 #define CLAPPER_MPRIS_COMPARE(a,b) (strcmp (a,b) == 0)
 #define CLAPPER_MPRIS_FLT_IS_DIFFERENT(a,b) (!G_APPROX_VALUE (a, b, FLT_EPSILON))
 
@@ -58,6 +57,12 @@
 #define GST_CAT_DEFAULT clapper_mpris_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
+typedef struct
+{
+  gchar *id;
+  ClapperMediaItem *item;
+} ClapperMprisTrack;
+
 struct _ClapperMpris
 {
   ClapperFeature parent;
@@ -71,15 +76,19 @@ struct _ClapperMpris
   gboolean tracks_exported;
 
   guint name_id;
-  gchar *mpris_name;
+  gboolean registered;
 
-  gfloat last_volume;
+  GMainLoop *loop;
+
+  GPtrArray *tracks;
+  ClapperMprisTrack *current_track;
+
   ClapperQueueProgressionMode last_progression;
+  ClapperQueueProgressionMode non_shuffle_mode;
 
   gchar *own_name;
   gchar *identity;
   gchar *desktop_entry;
-  gchar *art_url;
   gchar *fallback_art_url;
 };
 
@@ -89,7 +98,6 @@ enum
   PROP_OWN_NAME,
   PROP_IDENTITY,
   PROP_DESKTOP_ENTRY,
-  PROP_ART_URL,
   PROP_FALLBACK_ART_URL,
   PROP_LAST
 };
@@ -100,88 +108,115 @@ G_DEFINE_TYPE (ClapperMpris, clapper_mpris, CLAPPER_TYPE_FEATURE);
 static const gchar *const empty_tracklist[] = { NULL, };
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 
-static gchar *
-_mpris_make_track_id (ClapperMpris *self, ClapperMediaItem *item)
+static ClapperMprisTrack *
+clapper_mpris_track_new (ClapperMediaItem *item)
 {
-  gchar *track_id;
+  ClapperMprisTrack *track = g_new (ClapperMprisTrack, 1);
 
   /* MPRIS docs: "Media players may not use any paths starting with /org/mpris
    * unless explicitly allowed by this specification. Such paths are intended to
    * have special meaning, such as /org/mpris/MediaPlayer2/TrackList/NoTrack" */
   GST_OBJECT_LOCK (item);
-  track_id = g_strdup_printf ("/org/clapper/%s/%s", self->mpris_name, GST_OBJECT_NAME (item));
+  track->id = g_strdup_printf ("/org/clapper/%s", GST_OBJECT_NAME (item));
   GST_OBJECT_UNLOCK (item);
 
-  GST_LOG_OBJECT (self, "Created track ID: %s", track_id);
+  track->item = gst_object_ref (item);
 
-  return track_id;
+  GST_TRACE ("Created track: %s", track->id);
+
+  return track;
 }
 
-static gboolean
-_mpris_find_track_id (ClapperMpris *self, ClapperQueue *queue, const gchar *search_id,
-    ClapperMediaItem **found_item, guint *index)
+static void
+clapper_mpris_track_free (ClapperMprisTrack *track)
 {
-  ClapperMediaItem *item = NULL;
+  GST_TRACE ("Freeing track: %s", track->id);
+
+  g_free (track->id);
+  gst_object_unref (track->item);
+
+  g_free (track);
+}
+
+static inline void
+_mpris_read_initial_tracks (ClapperMpris *self, ClapperQueue *queue)
+{
+  ClapperMediaItem *item, *current_item;
   guint i = 0;
-  gboolean found = FALSE;
+
+  current_item = clapper_queue_get_current_item (queue);
 
   while ((item = clapper_queue_get_item (queue, i))) {
-    gchar *track_id;
+    ClapperMprisTrack *track = clapper_mpris_track_new (item);
 
-    track_id = _mpris_make_track_id (self, item);
-    found = CLAPPER_MPRIS_COMPARE (search_id, track_id);
+    if (track->item == current_item)
+      self->current_track = track;
 
-    g_free (track_id);
-
-    if (found) {
-      if (found_item)
-        *found_item = item;
-      else
-        gst_object_unref (item);
-
-      if (index)
-        *index = i;
-
-      break;
-    }
+    g_ptr_array_add (self->tracks, track);
 
     gst_object_unref (item);
     i++;
   }
 
-  return found;
+  gst_clear_object (&current_item);
 }
 
-/*
- * @track_id: (inout) (nullable): If input is set it will not be modified
- */
+static gboolean
+_mpris_find_track_by_item (ClapperMpris *self, ClapperMediaItem *search_item, guint *index)
+{
+  guint i;
+
+  for (i = 0; i < self->tracks->len; ++i) {
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, i);
+
+    if (search_item == track->item) {
+      if (index)
+        *index = i;
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+static gboolean
+_mpris_find_track_by_id (ClapperMpris *self, const gchar *search_id, guint *index)
+{
+  guint i;
+
+  for (i = 0; i < self->tracks->len; ++i) {
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, i);
+
+    if (CLAPPER_MPRIS_COMPARE (track->id, search_id)) {
+      if (index)
+        *index = i;
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 static GVariant *
-_mpris_build_track_metadata (ClapperMpris *self, ClapperMediaItem *item, gchar **track_id)
+_mpris_build_track_metadata (ClapperMpris *self, ClapperMprisTrack *track)
 {
   GVariantBuilder builder;
   GVariant *variant;
-  const gchar *uri, *art_url;
-  gchar *title, *tmp_track_id = NULL;
+  const gchar *uri;
+  gchar *title;
   gint64 duration;
 
   g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
 
-  if (track_id) {
-    if (*track_id == NULL)
-      *track_id = _mpris_make_track_id (self, item);
-  } else {
-    tmp_track_id = _mpris_make_track_id (self, item);
-  }
-
-  uri = clapper_media_item_get_uri (item);
-  title = clapper_media_item_get_title (item);
+  uri = clapper_media_item_get_uri (track->item);
+  title = clapper_media_item_get_title (track->item);
   duration = CLAPPER_MPRIS_SECONDS_TO_USECONDS (
-      clapper_media_item_get_duration (item));
+      clapper_media_item_get_duration (track->item));
 
   g_variant_builder_add (&builder, "{sv}", "mpris:trackid",
-      g_variant_new_string ((track_id && *track_id != NULL) ? *track_id : tmp_track_id));
-  g_free (tmp_track_id);
-
+      g_variant_new_string (track->id));
   g_variant_builder_add (&builder, "{sv}", "mpris:length",
       g_variant_new_int64 (duration));
   g_variant_builder_add (&builder, "{sv}", "xesam:url",
@@ -193,16 +228,10 @@ _mpris_build_track_metadata (ClapperMpris *self, ClapperMediaItem *item, gchar *
 
   GST_OBJECT_LOCK (self);
 
-  /* TODO: Support image sample */
-  art_url = (self->art_url)
-      ? self->art_url
-      : (self->fallback_art_url)
-      ? self->fallback_art_url
-      : NULL;
-
-  if (art_url) {
+  /* TODO: Support image sample or per-item custom artwork */
+  if (self->fallback_art_url) {
     g_variant_builder_add (&builder, "{sv}", "mpris:artUrl",
-        g_variant_new_string (art_url));
+        g_variant_new_string (self->fallback_art_url));
   }
 
   GST_OBJECT_UNLOCK (self);
@@ -356,49 +385,43 @@ clapper_mpris_unregister (ClapperMpris *self)
     g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->tracks_skeleton));
     self->tracks_exported = FALSE;
   }
+
+  self->registered = FALSE;
 }
 
-/*
- * @current_item: (nullable): Can be NULL to reset metadata and
- *     disable some playback features
- */
 static void
-clapper_mpris_read_current_media_item (ClapperMpris *self, ClapperMediaItem *current_item)
+clapper_mpris_refresh_current_track (ClapperMpris *self, GVariant *variant)
 {
-  GVariant *variant = NULL;
   gboolean is_live = FALSE;
 
-  GST_LOG_OBJECT (self, "Reading current media item");
-
-  /* Current item might be NULL */
-  if (current_item)
-    variant = _mpris_build_track_metadata (self, current_item, NULL);
+  GST_LOG_OBJECT (self, "Current track refresh");
 
   /* Set or clear metadata */
   clapper_mpris_media_player2_player_set_metadata (self->player_skeleton, variant);
 
   /* Properties related to media item availablity, not current state */
-  clapper_mpris_media_player2_player_set_can_play (self->player_skeleton, current_item != NULL);
-  clapper_mpris_media_player2_player_set_can_pause (self->player_skeleton, current_item != NULL);
+  clapper_mpris_media_player2_player_set_can_play (self->player_skeleton, self->current_track != NULL);
+  clapper_mpris_media_player2_player_set_can_pause (self->player_skeleton, self->current_track != NULL);
 
   /* FIXME: Also disable for LIVE content */
-  clapper_mpris_media_player2_player_set_can_seek (self->player_skeleton, current_item != NULL);
+  clapper_mpris_media_player2_player_set_can_seek (self->player_skeleton, self->current_track != NULL);
   clapper_mpris_media_player2_player_set_minimum_rate (self->player_skeleton, (is_live) ? 1.0 : G_MINFLOAT);
   clapper_mpris_media_player2_player_set_maximum_rate (self->player_skeleton, (is_live) ? 1.0 : G_MAXFLOAT);
 }
 
 static void
-clapper_mpris_refresh_can_go_next_previous (ClapperMpris *self, ClapperQueue *queue, ClapperMediaItem *current_item)
+clapper_mpris_refresh_can_go_next_previous (ClapperMpris *self)
 {
-  guint n_items = clapper_queue_get_n_items (queue);
   gboolean can_previous = FALSE, can_next = FALSE;
 
-  if (n_items > 0 && current_item) {
+  GST_LOG_OBJECT (self, "Next/Previous availability refresh");
+
+  if (self->current_track) {
     guint index = 0;
 
-    if (clapper_queue_find_item (queue, current_item, &index)) {
+    if (_mpris_find_track_by_item (self, self->current_track->item, &index)) {
       can_previous = (index > 0);
-      can_next = (index < n_items - 1);
+      can_next = (index < self->tracks->len - 1);
     }
   }
 
@@ -407,37 +430,32 @@ clapper_mpris_refresh_can_go_next_previous (ClapperMpris *self, ClapperQueue *qu
 }
 
 static void
-clapper_mpris_refresh_tracks_list (ClapperMpris *self, ClapperQueue *queue)
+clapper_mpris_refresh_track_list (ClapperMpris *self)
 {
-  ClapperMediaItem *item;
   GStrvBuilder *builder = NULL;
-  guint i = 0;
+  gchar **tracks_ids;
+  guint i;
 
-  while ((item = clapper_queue_get_item (queue, i))) {
-    gchar *track_id;
+  GST_LOG_OBJECT (self, "Track list refresh");
 
-    if (!builder)
-      builder = g_strv_builder_new ();
-
-    track_id = _mpris_make_track_id (self, item);
-    g_strv_builder_add (builder, track_id);
-
-    g_free (track_id);
-    gst_object_unref (item);
-
-    i++;
-  }
-
-  /* Some tracks were added */
-  if (builder) {
-    gchar **tracks = g_strv_builder_end (builder);
-    g_strv_builder_unref (builder);
-
-    clapper_mpris_media_player2_track_list_set_tracks (self->tracks_skeleton, (const gchar *const *) tracks);
-    g_strfreev (tracks);
-  } else {
+  /* Track list is empty */
+  if (self->tracks->len == 0) {
     clapper_mpris_media_player2_track_list_set_tracks (self->tracks_skeleton, empty_tracklist);
+    return;
   }
+
+  builder = g_strv_builder_new ();
+
+  for (i = 0; i < self->tracks->len; ++i) {
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, i);
+    g_strv_builder_add (builder, track->id);
+  }
+
+  tracks_ids = g_strv_builder_end (builder);
+  g_strv_builder_unref (builder);
+
+  clapper_mpris_media_player2_track_list_set_tracks (self->tracks_skeleton, (const gchar *const *) tracks_ids);
+  g_strfreev (tracks_ids);
 }
 
 static void
@@ -468,7 +486,6 @@ clapper_mpris_position_changed (ClapperFeature *feature, gfloat position)
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
 
   GST_LOG_OBJECT (self, "Position changed to: %f", position);
-
   clapper_mpris_media_player2_player_set_position (self->player_skeleton,
       CLAPPER_MPRIS_SECONDS_TO_USECONDS (position));
 }
@@ -501,148 +518,116 @@ clapper_mpris_volume_changed (ClapperFeature *feature, gfloat volume)
   if (CLAPPER_MPRIS_FLT_IS_DIFFERENT (volume, mpris_volume)) {
     GST_LOG_OBJECT (self, "Volume changed to: %f", volume);
     clapper_mpris_media_player2_player_set_volume (self->player_skeleton, volume);
-
-    /* Store volume to restore after toggling mute */
-    self->last_volume = volume;
   }
-}
-
-static void
-clapper_mpris_mute_changed (ClapperFeature *feature, gboolean mute)
-{
-  ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
-
-  GST_LOG_OBJECT (self, "Mute changed to: %smuted", (mute) ? "" : "un");
-
-  /* MPRIS uses 0 volume instead of proper mute state */
-  clapper_mpris_media_player2_player_set_volume (self->player_skeleton,
-      (mute) ? 0 : self->last_volume);
 }
 
 static void
 clapper_mpris_current_media_item_changed (ClapperFeature *feature, ClapperMediaItem *current_item)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
-  ClapperPlayer *player;
+  GVariant *variant = NULL;
+  guint index = 0;
 
   GST_LOG_OBJECT (self, "Current media item changed to: %" GST_PTR_FORMAT, current_item);
 
-  CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    clapper_mpris_refresh_can_go_next_previous (self, queue, current_item);
-  });
+  self->current_track = NULL;
 
-  clapper_mpris_read_current_media_item (self, current_item);
+  if (current_item && _mpris_find_track_by_item (self, current_item, &index)) {
+    self->current_track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, index);
+    variant = _mpris_build_track_metadata (self, self->current_track);
+  }
+
+  clapper_mpris_refresh_current_track (self, variant);
+  clapper_mpris_refresh_can_go_next_previous (self);
 }
 
 static void
 clapper_mpris_media_item_updated (ClapperFeature *feature, ClapperMediaItem *item)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
-  ClapperPlayer *player;
+  guint index = 0;
 
   GST_LOG_OBJECT (self, "Media item updated: %" GST_PTR_FORMAT, item);
 
-  CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *current_item = clapper_queue_get_current_item (queue);
-    GVariant *variant;
-    gchar *track_id = NULL;
+  if (_mpris_find_track_by_item (self, item, &index)) {
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, index);
+    GVariant *variant = g_variant_take_ref (_mpris_build_track_metadata (self, track));
 
-    variant = _mpris_build_track_metadata (self, item, &track_id);
+    if (track == self->current_track)
+      clapper_mpris_refresh_current_track (self, variant);
 
     clapper_mpris_media_player2_track_list_emit_track_metadata_changed (self->tracks_skeleton,
-        track_id, variant);
-    g_free (track_id);
+        track->id, variant);
 
-    if (item == current_item)
-      clapper_mpris_read_current_media_item (self, item);
-
-    gst_object_unref (current_item);
-  });
+    g_variant_unref (variant);
+  }
 }
 
 static void
-clapper_mpris_queue_item_added (ClapperFeature *feature, ClapperMediaItem *item)
+clapper_mpris_queue_item_added (ClapperFeature *feature, ClapperMediaItem *item, guint index)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
-  ClapperPlayer *player;
+  ClapperMprisTrack *track, *prev_track = NULL;
+  GVariant *variant;
 
-  GST_LOG_OBJECT (self, "Queue item added");
+  /* Safety precaution for a case when someone adds MPRIS feature
+   * in middle of altering playlist from another thread, since we
+   * also read initial playlist after name is acquired. */
+  if (G_UNLIKELY (_mpris_find_track_by_item (self, item, NULL)))
+    return;
 
-  CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *current_item;
-    guint index = 0;
+  GST_LOG_OBJECT (self, "Queue item added at position: %u", index);
 
-    clapper_mpris_refresh_tracks_list (self, queue);
+  track = clapper_mpris_track_new (item);
+  g_ptr_array_insert (self->tracks, index, track);
 
-    if (clapper_queue_find_item (queue, item, &index)) {
-      GVariant *variant = _mpris_build_track_metadata (self, item, NULL);
-      gchar *prev_track_id = NULL;
+  clapper_mpris_refresh_track_list (self);
+  clapper_mpris_refresh_can_go_next_previous (self);
 
-      if (index > 0) {
-        ClapperMediaItem *previous_item;
+  variant = _mpris_build_track_metadata (self, track);
 
-        if ((previous_item = clapper_queue_get_item (queue, index - 1))) {
-          if (previous_item != item) // In case previous item was just removed
-            prev_track_id = _mpris_make_track_id (self, previous_item);
-
-          gst_object_unref (previous_item);
-        }
-      }
-
-      /* NoTrack when item is added at first position in queue */
-      clapper_mpris_media_player2_track_list_emit_track_added (self->tracks_skeleton,
-          variant, (prev_track_id != NULL) ? prev_track_id : CLAPPER_MPRIS_NO_TRACK);
-
-      g_free (prev_track_id);
-    }
-
-    current_item = clapper_queue_get_current_item (queue);
-    clapper_mpris_refresh_can_go_next_previous (self, queue, current_item);
-
-    gst_clear_object (&current_item);
-  });
+  /* NoTrack when item is added at first position in queue */
+  clapper_mpris_media_player2_track_list_emit_track_added (self->tracks_skeleton,
+      variant, (prev_track != NULL) ? prev_track->id : CLAPPER_MPRIS_NO_TRACK);
 }
 
 static void
 clapper_mpris_queue_item_removed (ClapperFeature *feature, ClapperMediaItem *item)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
-  ClapperPlayer *player;
-  gchar *track_id;
+  guint index = 0;
 
   GST_LOG_OBJECT (self, "Queue item removed");
 
-  CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *current_item;
+  if (_mpris_find_track_by_item (self, item, &index)) {
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_steal_index (self->tracks, index);
 
-    clapper_mpris_refresh_tracks_list (self, queue);
+    if (track == self->current_track) {
+      self->current_track = NULL;
+      clapper_mpris_refresh_current_track (self, NULL);
+    }
 
-    current_item = clapper_queue_get_current_item (queue);
-    clapper_mpris_refresh_can_go_next_previous (self, queue, current_item);
+    clapper_mpris_refresh_track_list (self);
+    clapper_mpris_refresh_can_go_next_previous (self);
+    clapper_mpris_media_player2_track_list_emit_track_removed (self->tracks_skeleton, track->id);
 
-    gst_clear_object (&current_item);
-  });
-
-  track_id = _mpris_make_track_id (self, item);
-  clapper_mpris_media_player2_track_list_emit_track_removed (self->tracks_skeleton, track_id);
-
-  g_free (track_id);
+    clapper_mpris_track_free (track);
+  }
 }
 
 static void
 clapper_mpris_queue_cleared (ClapperFeature *feature)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
+  guint n_items = self->tracks->len;
 
-  /* Set everything directly, so it wont be racy if user already
-   * started adding items to the queue after clearing it */
-  clapper_mpris_media_player2_track_list_set_tracks (self->tracks_skeleton, empty_tracklist);
-  clapper_mpris_media_player2_player_set_can_go_previous (self->player_skeleton, FALSE);
-  clapper_mpris_media_player2_player_set_can_go_next (self->player_skeleton, FALSE);
+  if (n_items > 0)
+    g_ptr_array_remove_range (self->tracks, 0, n_items);
+
+  self->current_track = NULL;
+  clapper_mpris_refresh_current_track (self, NULL);
+  clapper_mpris_refresh_can_go_next_previous (self);
+  clapper_mpris_refresh_track_list (self);
 
   clapper_mpris_media_player2_track_list_emit_track_list_replaced (self->tracks_skeleton,
       empty_tracklist, CLAPPER_MPRIS_NO_TRACK);
@@ -652,17 +637,15 @@ static void
 clapper_mpris_queue_progression_changed (ClapperFeature *feature, ClapperQueueProgressionMode mode)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (feature);
-  const gchar *current_loop_status, *loop_status = CLAPPER_MPRIS_LOOP_NONE;
-  gboolean current_shuffle, shuffle = FALSE;
-  gboolean loop_changed, shuffle_changed;
+  const gchar *loop_status = CLAPPER_MPRIS_LOOP_NONE;
+  gboolean shuffle = FALSE;
 
   if (self->last_progression == mode)
     return;
 
   self->last_progression = mode;
 
-  current_loop_status = clapper_mpris_media_player2_player_get_loop_status (self->player_skeleton);
-  current_shuffle = clapper_mpris_media_player2_player_get_shuffle (self->player_skeleton);
+  GST_LOG_OBJECT (self, "Queue progression changed");
 
   switch (mode) {
     case CLAPPER_QUEUE_PROGRESSION_REPEAT_ITEM:
@@ -678,20 +661,11 @@ clapper_mpris_queue_progression_changed (ClapperFeature *feature, ClapperQueuePr
       break;
   }
 
-  loop_changed = !CLAPPER_MPRIS_COMPARE (loop_status, current_loop_status);
-  shuffle_changed = (shuffle != current_shuffle);
+  if (mode != CLAPPER_QUEUE_PROGRESSION_SHUFFLE)
+    self->non_shuffle_mode = mode;
 
-  if (loop_changed || shuffle_changed) {
-    GST_LOG_OBJECT (self, "Queue progression changed");
-
-    if (loop_changed)
-      clapper_mpris_media_player2_player_set_loop_status (self->player_skeleton, loop_status);
-
-    if (shuffle_changed)
-      clapper_mpris_media_player2_player_set_shuffle (self->player_skeleton, shuffle);
-
-    self->last_progression = mode;
-  }
+  clapper_mpris_media_player2_player_set_loop_status (self->player_skeleton, loop_status);
+  clapper_mpris_media_player2_player_set_shuffle (self->player_skeleton, shuffle);
 }
 
 static gboolean
@@ -704,6 +678,8 @@ _handle_open_uri_cb (ClapperMprisMediaPlayer2Player *player_skeleton,
     ClapperMediaItem *item = clapper_media_item_new (uri);
     ClapperQueue *queue = clapper_player_get_queue (player);
 
+    /* This will trigger clapper_mpris_queue_item_added(),
+     * then we will add this new item to our track list */
     clapper_queue_add_item (queue, item);
     clapper_queue_select_item (queue, item);
     clapper_player_play (player);
@@ -753,14 +729,19 @@ _handle_play_pause_cb (ClapperMprisMediaPlayer2Player *player_skeleton,
   ClapperPlayer *player;
 
   CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    const gchar *status;
+    ClapperPlayerState state = clapper_player_get_state (player);
 
-    status = clapper_mpris_media_player2_player_get_playback_status (player_skeleton);
-
-    if (CLAPPER_MPRIS_COMPARE (status, CLAPPER_MPRIS_PLAYBACK_STATUS_PAUSED))
-      clapper_player_play (player);
-    else
-      clapper_player_pause (player);
+    switch (state) {
+      case CLAPPER_PLAYER_STATE_PLAYING:
+        clapper_player_pause (player);
+        break;
+      case CLAPPER_PLAYER_STATE_PAUSED:
+      case CLAPPER_PLAYER_STATE_STOPPED:
+        clapper_player_play (player);
+        break;
+      default:
+        break;
+    }
   });
 
   clapper_mpris_media_player2_player_complete_play_pause (player_skeleton, invocation);
@@ -821,31 +802,30 @@ _handle_seek_cb (ClapperMprisMediaPlayer2Player *player_skeleton,
 {
   ClapperPlayer *player;
 
+  if (!self->current_track)
+    goto finish;
+
   CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *current_item;
+    gfloat position, seek_position;
 
-    if ((current_item = clapper_queue_get_current_item (queue))) {
-      gfloat position, seek_position;
+    position = clapper_player_get_position (player);
+    seek_position = position + CLAPPER_MPRIS_USECONDS_TO_SECONDS (offset);
 
-      position = clapper_player_get_position (player);
-      seek_position = position + CLAPPER_MPRIS_USECONDS_TO_SECONDS (offset);
+    if (seek_position <= 0) {
+      clapper_player_seek (player, 0);
+    } else {
+      gfloat duration = clapper_media_item_get_duration (self->current_track->item);
 
-      if (seek_position <= 0) {
-        clapper_player_seek (player, 0);
+      if (seek_position > duration) {
+        ClapperQueue *queue = clapper_player_get_queue (player);
+        clapper_queue_select_next_item (queue);
       } else {
-        gfloat duration = clapper_media_item_get_duration (current_item);
-
-        if (seek_position > duration)
-          clapper_queue_select_next_item (queue);
-        else
-          clapper_player_seek (player, seek_position);
+        clapper_player_seek (player, seek_position);
       }
-
-      gst_object_unref (current_item);
     }
   });
 
+finish:
   clapper_mpris_media_player2_player_complete_seek (player_skeleton, invocation);
 
   return G_DBUS_METHOD_INVOCATION_HANDLED;
@@ -858,31 +838,20 @@ _handle_set_position_cb (ClapperMprisMediaPlayer2Player *player_skeleton,
 {
   ClapperPlayer *player;
 
-  if (G_UNLIKELY (position < 0))
-    goto done;
+  if (G_UNLIKELY (position < 0) || !self->current_track)
+    goto finish;
 
   CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *current_item;
+    gfloat duration, position_flt;
 
-    if ((current_item = clapper_queue_get_current_item (queue))) {
-      gchar *current_track_id = _mpris_make_track_id (self, current_item);
+    duration = clapper_media_item_get_duration (self->current_track->item);
+    position_flt = CLAPPER_MPRIS_USECONDS_TO_SECONDS (position);
 
-      if (strcmp (track_id, current_track_id) == 0) {
-        gfloat duration, position_flt;
-
-        duration = clapper_media_item_get_duration (current_item);
-        position_flt = CLAPPER_MPRIS_USECONDS_TO_SECONDS (position);
-
-        if (position_flt <= duration)
-          clapper_player_seek (player, position_flt);
-      }
-
-      g_free (current_track_id);
-    }
+    if (position_flt <= duration)
+      clapper_player_seek (player, position_flt);
   });
 
-done:
+finish:
   clapper_mpris_media_player2_player_complete_set_position (player_skeleton, invocation);
 
   return G_DBUS_METHOD_INVOCATION_HANDLED;
@@ -969,7 +938,7 @@ _handle_shuffle_notify_cb (ClapperMprisMediaPlayer2Player *player_skeleton,
 
     if (shuffle != player_shuffle) {
       clapper_queue_set_progression_mode (queue,
-          (shuffle) ? CLAPPER_QUEUE_PROGRESSION_SHUFFLE : self->last_progression);
+          (shuffle) ? CLAPPER_QUEUE_PROGRESSION_SHUFFLE : self->non_shuffle_mode);
     }
   });
 }
@@ -978,35 +947,29 @@ static gboolean
 _handle_get_tracks_metadata_cb (ClapperMprisMediaPlayer2TrackList *tracks_skeleton,
     GDBusMethodInvocation *invocation, const gchar *const *tracks_ids, ClapperMpris *self)
 {
-  ClapperPlayer *player;
+  GVariantBuilder builder;
   GVariant *tracks_variant = NULL;
+  gboolean initialized = FALSE;
+  guint i;
 
-  CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    GVariantBuilder builder;
-    gboolean initialized = FALSE;
-    guint i;
+  for (i = 0; tracks_ids[i]; ++i) {
+    guint index = 0;
 
-    for (i = 0; tracks_ids[i]; ++i) {
-      ClapperMediaItem *item = NULL;
-      const gchar *track_id = tracks_ids[i];
+    if (_mpris_find_track_by_id (self, tracks_ids[i], &index)) {
+      ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, index);
+      GVariant *variant = _mpris_build_track_metadata (self, track);
 
-      if (_mpris_find_track_id (self, queue, track_id, &item, NULL)) {
-        GVariant *variant = _mpris_build_track_metadata (self, item, (gchar **) &track_id);
-
-        if (!initialized) {
-          g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
-          initialized = TRUE;
-        }
-        g_variant_builder_add_value (&builder, variant);
-
-        gst_object_unref (item);
+      if (!initialized) {
+        g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+        initialized = TRUE;
       }
-    }
 
-    if (initialized)
-      tracks_variant = g_variant_builder_end (&builder);
-  });
+      g_variant_builder_add_value (&builder, variant);
+    }
+  }
+
+  if (initialized)
+    tracks_variant = g_variant_builder_end (&builder);
 
   clapper_mpris_media_player2_track_list_complete_get_tracks_metadata (tracks_skeleton,
       invocation, tracks_variant);
@@ -1029,7 +992,7 @@ _handle_add_track_cb (ClapperMprisMediaPlayer2TrackList *tracks_skeleton,
 
     if ((added = CLAPPER_MPRIS_COMPARE (after_track, CLAPPER_MPRIS_NO_TRACK)))
       clapper_queue_insert_item (queue, item, 0);
-    else if ((added = _mpris_find_track_id (self, queue, after_track, NULL, &index)))
+    else if ((added = _mpris_find_track_by_id (self, after_track, &index)))
       clapper_queue_insert_item (queue, item, index + 1);
 
     if (added && set_current) {
@@ -1050,17 +1013,19 @@ _handle_remove_track_cb (ClapperMprisMediaPlayer2TrackList *tracks_skeleton,
     GDBusMethodInvocation *invocation, const gchar *track_id, ClapperMpris *self)
 {
   ClapperPlayer *player;
+  guint index = 0;
+
+  if (!_mpris_find_track_by_id (self, track_id, &index))
+    goto finish;
 
   CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
     ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *item = NULL;
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, index);
 
-    if (_mpris_find_track_id (self, queue, track_id, &item, NULL)) {
-      clapper_queue_remove_item (queue, item);
-      gst_object_unref (item);
-    }
+    clapper_queue_remove_item (queue, track->item);
   });
 
+finish:
   clapper_mpris_media_player2_track_list_complete_remove_track (tracks_skeleton, invocation);
 
   return G_DBUS_METHOD_INVOCATION_HANDLED;
@@ -1071,18 +1036,20 @@ _handle_go_to_cb (ClapperMprisMediaPlayer2TrackList *tracks_skeleton,
     GDBusMethodInvocation *invocation, const gchar *track_id, ClapperMpris *self)
 {
   ClapperPlayer *player;
+  guint index = 0;
+
+  if (!_mpris_find_track_by_id (self, track_id, &index))
+    goto finish;
 
   CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
     ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *item = NULL;
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, index);
 
-    if (_mpris_find_track_id (self, queue, track_id, &item, NULL)) {
-      clapper_queue_select_item (queue, item);
+    if (clapper_queue_select_item (queue, track->item))
       clapper_player_play (player);
-      gst_object_unref (item);
-    }
   });
 
+finish:
   clapper_mpris_media_player2_track_list_complete_go_to (tracks_skeleton, invocation);
 
   return G_DBUS_METHOD_INVOCATION_HANDLED;
@@ -1113,6 +1080,8 @@ _name_acquired_cb (GDBusConnection *connection, const gchar *name, ClapperMpris 
     goto finish;
   }
 
+  self->registered = TRUE;
+
   clapper_mpris_media_player2_set_identity (self->base_skeleton, self->identity);
   clapper_mpris_media_player2_set_desktop_entry (self->base_skeleton, self->desktop_entry);
 
@@ -1126,9 +1095,6 @@ _name_acquired_cb (GDBusConnection *connection, const gchar *name, ClapperMpris 
       (const gchar *const *) mime_types);
   g_strfreev (mime_types);
 
-  clapper_mpris_media_player2_player_set_minimum_rate (self->player_skeleton, G_MINFLOAT);
-  clapper_mpris_media_player2_player_set_maximum_rate (self->player_skeleton, G_MAXFLOAT);
-
   /* As stated in MPRIS docs: "This property is not expected to change,
    * as it describes an intrinsic capability of the implementation." */
   clapper_mpris_media_player2_player_set_can_control (self->player_skeleton, TRUE);
@@ -1136,23 +1102,24 @@ _name_acquired_cb (GDBusConnection *connection, const gchar *name, ClapperMpris 
   clapper_mpris_media_player2_track_list_set_can_edit_tracks (self->tracks_skeleton, TRUE);
 
   CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue;
-    ClapperMediaItem *current_item;
+    ClapperQueue *queue = clapper_player_get_queue (player);
+    GVariant *variant = NULL;
 
-    queue = clapper_player_get_queue (player);
-    current_item = clapper_queue_get_current_item (queue);
+    _mpris_read_initial_tracks (self, queue);
 
-    clapper_mpris_refresh_tracks_list (self, queue);
+    /* Update tracks IDs after reading initial tracks from queue */
+    clapper_mpris_refresh_track_list (self);
 
-    /* Can also pass NULL as item here to clear metadata */
-    clapper_mpris_read_current_media_item (self, current_item);
-    clapper_mpris_refresh_can_go_next_previous (self, queue, current_item);
-    gst_clear_object (&current_item);
+    if (self->current_track)
+      variant = _mpris_build_track_metadata (self, self->current_track);
 
-    /* Set initial progression, so LoopStatus will not be NULL */
-    self->last_progression = CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE;
-    clapper_mpris_media_player2_player_set_loop_status (self->player_skeleton, CLAPPER_MPRIS_LOOP_NONE);
-    clapper_mpris_media_player2_player_set_shuffle (self->player_skeleton, FALSE);
+    clapper_mpris_refresh_current_track (self, variant);
+    clapper_mpris_refresh_can_go_next_previous (self);
+
+    /* No last value so we can force progression changed,
+     * thus LoopStatus will not be initially NULL */
+    self->last_progression = -1;
+    self->non_shuffle_mode = CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE;
 
     /* Trigger update with current values */
     clapper_mpris_state_changed (CLAPPER_FEATURE (self), clapper_player_get_state (player));
@@ -1170,12 +1137,18 @@ finish:
 
     clapper_mpris_unregister (self);
   }
+
+  if (self->loop && g_main_loop_is_running (self->loop))
+    g_main_loop_quit (self->loop);
 }
 
 static void
 _name_lost_cb (GDBusConnection *connection, const gchar *name, ClapperMpris *self)
 {
   GST_DEBUG_OBJECT (self, "Name lost: %s", name);
+
+  if (self->loop && g_main_loop_is_running (self->loop))
+    g_main_loop_quit (self->loop);
 
   clapper_mpris_unregister (self);
 }
@@ -1208,6 +1181,8 @@ clapper_mpris_prepare (ClapperFeature *feature)
 
   GST_INFO_OBJECT (self, "Obtained MPRIS DBus connection");
 
+  self->loop = g_main_loop_new (g_main_context_get_thread_default (), FALSE);
+
   self->name_id = g_bus_own_name_on_connection (connection, self->own_name,
       G_BUS_NAME_OWNER_FLAGS_NONE,
       (GBusNameAcquiredCallback) _name_acquired_cb,
@@ -1215,9 +1190,19 @@ clapper_mpris_prepare (ClapperFeature *feature)
       self, NULL);
   g_object_unref (connection);
 
-  GST_DEBUG_OBJECT (self, "Own name ID: %u", self->name_id);
+  /* Wait until connection is established */
+  g_main_loop_run (self->loop);
+  g_clear_pointer (&self->loop, g_main_loop_unref);
 
-  return TRUE;
+  if (self->registered) {
+    GST_DEBUG_OBJECT (self, "Own name ID: %u", self->name_id);
+  } else if (self->name_id > 0) {
+    GST_ERROR_OBJECT (self, "Could not register MPRIS connection");
+    g_bus_unown_name (self->name_id);
+    self->name_id = 0;
+  }
+
+  return self->registered;
 }
 
 static gboolean
@@ -1240,29 +1225,22 @@ clapper_mpris_unprepare (ClapperFeature *feature)
 static gboolean
 _media_refresh_invoke_func (ClapperMpris *self)
 {
-  ClapperPlayer *player;
+  guint i;
 
-  CLAPPER_MPRIS_DO_WITH_PLAYER (self, &player, {
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    ClapperMediaItem *current_item;
+  for (i = 0; i < self->tracks->len; ++i) {
+    ClapperMprisTrack *track = (ClapperMprisTrack *) g_ptr_array_index (self->tracks, i);
+    GVariant *variant = g_variant_take_ref (_mpris_build_track_metadata (self, track));
 
-    /* No need to refresh if there is no item to show the changes */
-    if ((current_item = clapper_queue_get_current_item (queue))) {
-      clapper_mpris_read_current_media_item (self, current_item);
-      gst_object_unref (current_item);
-    }
-  });
+    if (track == self->current_track)
+      clapper_mpris_media_player2_player_set_metadata (self->player_skeleton, variant);
+
+    clapper_mpris_media_player2_track_list_emit_track_metadata_changed (self->tracks_skeleton,
+        track->id, variant);
+
+    g_variant_unref (variant);
+  }
 
   return G_SOURCE_REMOVE;
-}
-
-static void
-clapper_mpris_invoke_media_refresh (ClapperMpris *self)
-{
-  GMainContext *context;
-
-  context = clapper_threaded_object_get_context (CLAPPER_THREADED_OBJECT (self));
-  g_main_context_invoke (context, (GSourceFunc) _media_refresh_invoke_func, self);
 }
 
 /**
@@ -1292,48 +1270,6 @@ clapper_mpris_new (const gchar *own_name, const gchar *identity,
 }
 
 /**
- * clapper_mpris_set_art_url:
- * @mpris: a #ClapperMpris
- * @art_url: (nullable): an art URL
- *
- * Set artwork to show for media. Takes priority over muxed one.
- */
-void
-clapper_mpris_set_art_url (ClapperMpris *self, const gchar *art_url)
-{
-  g_return_if_fail (CLAPPER_IS_MPRIS (self));
-
-  GST_OBJECT_LOCK (self);
-  g_free (self->art_url);
-  self->art_url = g_strdup (art_url);
-  GST_OBJECT_UNLOCK (self);
-
-  clapper_mpris_invoke_media_refresh (self);
-}
-
-/**
- * clapper_mpris_get_art_url:
- * @mpris: a #ClapperMpris
- *
- * Get art URL earlier set by user.
- *
- * Returns: (transfer full): art URL.
- */
-gchar *
-clapper_mpris_get_art_url (ClapperMpris *self)
-{
-  gchar *art_url;
-
-  g_return_val_if_fail (CLAPPER_IS_MPRIS (self), NULL);
-
-  GST_OBJECT_LOCK (self);
-  art_url = g_strdup (self->art_url);
-  GST_OBJECT_UNLOCK (self);
-
-  return art_url;
-}
-
-/**
  * clapper_mpris_set_fallback_art_url:
  * @mpris: a #ClapperMpris
  * @art_url: (nullable): an art URL
@@ -1350,7 +1286,8 @@ clapper_mpris_set_fallback_art_url (ClapperMpris *self, const gchar *art_url)
   self->fallback_art_url = g_strdup (art_url);
   GST_OBJECT_UNLOCK (self);
 
-  clapper_mpris_invoke_media_refresh (self);
+  g_main_context_invoke (g_main_context_get_thread_default (),
+      (GSourceFunc) _media_refresh_invoke_func, self);
 }
 
 /**
@@ -1381,6 +1318,8 @@ clapper_mpris_init (ClapperMpris *self)
   self->base_skeleton = clapper_mpris_media_player2_skeleton_new ();
   self->player_skeleton = clapper_mpris_media_player2_player_skeleton_new ();
   self->tracks_skeleton = clapper_mpris_media_player2_track_list_skeleton_new ();
+
+  self->tracks = g_ptr_array_new_with_free_func ((GDestroyNotify) clapper_mpris_track_free);
 
   g_signal_connect (self->player_skeleton, "handle-open-uri",
       G_CALLBACK (_handle_open_uri_cb), self);
@@ -1420,16 +1359,6 @@ clapper_mpris_init (ClapperMpris *self)
 }
 
 static void
-clapper_mpris_constructed (GObject *object)
-{
-  ClapperMpris *self = CLAPPER_MPRIS_CAST (object);
-
-  self->mpris_name = gst_object_get_name (GST_OBJECT_CAST (object));
-
-  G_OBJECT_CLASS (parent_class)->constructed (object);
-}
-
-static void
 clapper_mpris_finalize (GObject *object)
 {
   ClapperMpris *self = CLAPPER_MPRIS_CAST (object);
@@ -1438,12 +1367,12 @@ clapper_mpris_finalize (GObject *object)
   g_object_unref (self->player_skeleton);
   g_object_unref (self->tracks_skeleton);
 
-  g_free (self->mpris_name);
+  self->current_track = NULL;
+  g_ptr_array_unref (self->tracks);
 
   g_free (self->own_name);
   g_free (self->identity);
   g_free (self->desktop_entry);
-  g_free (self->art_url);
   g_free (self->fallback_art_url);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -1464,9 +1393,6 @@ clapper_mpris_set_property (GObject *object, guint prop_id,
       break;
     case PROP_DESKTOP_ENTRY:
       self->desktop_entry = g_value_dup_string (value);
-      break;
-    case PROP_ART_URL:
-      clapper_mpris_set_art_url (self, g_value_get_string (value));
       break;
     case PROP_FALLBACK_ART_URL:
       clapper_mpris_set_fallback_art_url (self, g_value_get_string (value));
@@ -1493,9 +1419,6 @@ clapper_mpris_get_property (GObject *object, guint prop_id,
     case PROP_DESKTOP_ENTRY:
       g_value_set_string (value, self->desktop_entry);
       break;
-    case PROP_ART_URL:
-      g_value_take_string (value, clapper_mpris_get_art_url (self));
-      break;
     case PROP_FALLBACK_ART_URL:
       g_value_take_string (value, clapper_mpris_get_fallback_art_url (self));
       break;
@@ -1514,7 +1437,6 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappermpris", 0,
       "Clapper Mpris");
 
-  gobject_class->constructed = clapper_mpris_constructed;
   gobject_class->get_property = clapper_mpris_get_property;
   gobject_class->set_property = clapper_mpris_set_property;
   gobject_class->finalize = clapper_mpris_finalize;
@@ -1525,7 +1447,6 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
   feature_class->position_changed = clapper_mpris_position_changed;
   feature_class->speed_changed = clapper_mpris_speed_changed;
   feature_class->volume_changed = clapper_mpris_volume_changed;
-  feature_class->mute_changed = clapper_mpris_mute_changed;
   feature_class->current_media_item_changed = clapper_mpris_current_media_item_changed;
   feature_class->media_item_updated = clapper_mpris_media_item_updated;
   feature_class->queue_item_added = clapper_mpris_queue_item_added;
@@ -1566,15 +1487,6 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
   param_specs[PROP_DESKTOP_ENTRY] = g_param_spec_string ("desktop-entry",
       NULL, NULL, NULL,
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
-
-  /**
-   * ClapperMpris:art-url:
-   *
-   * Artwork to show for media. Takes priority over muxed one.
-   */
-  param_specs[PROP_ART_URL] = g_param_spec_string ("art-url",
-      NULL, NULL, NULL,
-      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperMpris:fallback-art-url:

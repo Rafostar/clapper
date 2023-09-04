@@ -39,6 +39,6 @@ void clapper_features_bus_initialize (void);
 
 ClapperFeaturesBus * clapper_features_bus_new (void);
 
-void clapper_features_bus_post_event (ClapperFeaturesBus *features_bus, ClapperFeaturesManager *src, ClapperFeaturesManagerEvent event, GValue *value);
+void clapper_features_bus_post_event (ClapperFeaturesBus *features_bus, ClapperFeaturesManager *src, ClapperFeaturesManagerEvent event, GValue *value, GValue *extra_value);
 
 G_END_DECLS

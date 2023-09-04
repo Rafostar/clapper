@@ -48,7 +48,7 @@ void clapper_queue_remove_item (ClapperQueue *queue, ClapperMediaItem *item);
 
 void clapper_queue_clear (ClapperQueue *queue);
 
-void clapper_queue_select_item (ClapperQueue *queue, ClapperMediaItem *item);
+gboolean clapper_queue_select_item (ClapperQueue *queue, ClapperMediaItem *item);
 
 gboolean clapper_queue_select_next_item (ClapperQueue *queue);
 

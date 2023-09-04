@@ -48,13 +48,15 @@ enum
 {
   CLAPPER_FEATURES_BUS_FIELD_UNKNOWN = 0,
   CLAPPER_FEATURES_BUS_FIELD_EVENT,
-  CLAPPER_FEATURES_BUS_FIELD_VALUE
+  CLAPPER_FEATURES_BUS_FIELD_VALUE,
+  CLAPPER_FEATURES_BUS_FIELD_EXTRA_VALUE
 };
 
 static ClapperBusQuark _field_quarks[] = {
   {"unknown", 0},
   {"event", 0},
   {"value", 0},
+  {"extra-value", 0},
   {NULL, 0}
 };
 
@@ -75,7 +77,8 @@ clapper_features_bus_initialize (void)
 
 void
 clapper_features_bus_post_event (ClapperFeaturesBus *self,
-    ClapperFeaturesManager *src, ClapperFeaturesManagerEvent event, GValue *value)
+    ClapperFeaturesManager *src, ClapperFeaturesManagerEvent event,
+    GValue *value, GValue *extra_value)
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (EVENT),
       _FIELD_QUARK (EVENT), G_TYPE_ENUM, event,
@@ -83,6 +86,8 @@ clapper_features_bus_post_event (ClapperFeaturesBus *self,
 
   if (value)
     gst_structure_id_take_value (structure, _FIELD_QUARK (VALUE), value);
+  if (extra_value)
+    gst_structure_id_take_value (structure, _FIELD_QUARK (EXTRA_VALUE), extra_value);
 
   gst_bus_post (GST_BUS_CAST (self), gst_message_new_application (
       GST_OBJECT_CAST (src), structure));
@@ -94,12 +99,13 @@ _handle_event_msg (GstMessage *msg, const GstStructure *structure,
 {
   ClapperFeaturesManagerEvent event = CLAPPER_FEATURES_MANAGER_EVENT_UNKNOWN;
   const GValue *value = gst_structure_id_get_value (structure, _FIELD_QUARK (VALUE));
+  const GValue *extra_value = gst_structure_id_get_value (structure, _FIELD_QUARK (EXTRA_VALUE));
 
   gst_structure_id_get (structure,
       _FIELD_QUARK (EVENT), G_TYPE_ENUM, &event,
       NULL);
 
-  clapper_features_manager_handle_event (features_manager, event, value);
+  clapper_features_manager_handle_event (features_manager, event, value, extra_value);
 }
 
 static gboolean

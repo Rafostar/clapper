@@ -43,18 +43,7 @@ _post_object (ClapperFeaturesManager *self, ClapperFeaturesManagerEvent event, G
   g_value_init (&value, G_TYPE_OBJECT);
   g_value_set_object (&value, data);
 
-  clapper_features_bus_post_event (self->bus, self, event, &value);
-}
-
-static inline void
-_post_structure (ClapperFeaturesManager *self, ClapperFeaturesManagerEvent event, GstStructure *data)
-{
-  GValue value = G_VALUE_INIT;
-
-  g_value_init (&value, GST_TYPE_STRUCTURE);
-  g_value_set_object (&value, data);
-
-  clapper_features_bus_post_event (self->bus, self, event, &value);
+  clapper_features_bus_post_event (self->bus, self, event, &value, NULL);
 }
 
 static inline void
@@ -65,7 +54,7 @@ _post_int (ClapperFeaturesManager *self, ClapperFeaturesManagerEvent event, gint
   g_value_init (&value, G_TYPE_INT);
   g_value_set_int (&value, data);
 
-  clapper_features_bus_post_event (self->bus, self, event, &value);
+  clapper_features_bus_post_event (self->bus, self, event, &value, NULL);
 }
 
 static inline void
@@ -76,7 +65,7 @@ _post_float (ClapperFeaturesManager *self, ClapperFeaturesManagerEvent event, gf
   g_value_init (&value, G_TYPE_FLOAT);
   g_value_set_float (&value, data);
 
-  clapper_features_bus_post_event (self->bus, self, event, &value);
+  clapper_features_bus_post_event (self->bus, self, event, &value, NULL);
 }
 
 static inline void
@@ -87,7 +76,7 @@ _post_boolean (ClapperFeaturesManager *self, ClapperFeaturesManagerEvent event, 
   g_value_init (&value, G_TYPE_BOOLEAN);
   g_value_set_boolean (&value, data);
 
-  clapper_features_bus_post_event (self->bus, self, event, &value);
+  clapper_features_bus_post_event (self->bus, self, event, &value, NULL);
 }
 
 /*
@@ -128,7 +117,7 @@ clapper_features_manager_add_feature (ClapperFeaturesManager *self, ClapperFeatu
     g_value_set_object (&value, G_OBJECT (feature));
 
     clapper_features_bus_post_event (self->bus, self,
-        CLAPPER_FEATURES_MANAGER_EVENT_FEATURE_ADDED, &value);
+        CLAPPER_FEATURES_MANAGER_EVENT_FEATURE_ADDED, &value, NULL);
   }
 }
 
@@ -175,9 +164,18 @@ clapper_features_manager_trigger_media_item_updated (ClapperFeaturesManager *sel
 }
 
 void
-clapper_features_manager_trigger_queue_item_added (ClapperFeaturesManager *self, ClapperMediaItem *item)
+clapper_features_manager_trigger_queue_item_added (ClapperFeaturesManager *self, ClapperMediaItem *item, guint index)
 {
-  _post_object (self, CLAPPER_FEATURES_MANAGER_EVENT_QUEUE_ITEM_ADDED, (GObject *) item);
+  GValue value = G_VALUE_INIT;
+  GValue extra_value = G_VALUE_INIT;
+
+  g_value_init (&value, G_TYPE_OBJECT);
+  g_value_set_object (&value, item);
+
+  g_value_init (&extra_value, G_TYPE_UINT);
+  g_value_set_uint (&extra_value, index);
+
+  clapper_features_bus_post_event (self->bus, self, CLAPPER_FEATURES_MANAGER_EVENT_QUEUE_ITEM_ADDED, &value, &extra_value);
 }
 
 void
@@ -189,7 +187,7 @@ clapper_features_manager_trigger_queue_item_removed (ClapperFeaturesManager *sel
 void
 clapper_features_manager_trigger_queue_cleared (ClapperFeaturesManager *self)
 {
-  clapper_features_bus_post_event (self->bus, self, CLAPPER_FEATURES_MANAGER_EVENT_QUEUE_CLEARED, NULL);
+  clapper_features_bus_post_event (self->bus, self, CLAPPER_FEATURES_MANAGER_EVENT_QUEUE_CLEARED, NULL, NULL);
 }
 
 void
@@ -200,7 +198,7 @@ clapper_features_manager_trigger_queue_progression_changed (ClapperFeaturesManag
 
 void
 clapper_features_manager_handle_event (ClapperFeaturesManager *self, ClapperFeaturesManagerEvent event,
-    const GValue *value)
+    const GValue *value, const GValue *extra_value)
 {
   guint i;
 
@@ -242,7 +240,8 @@ clapper_features_manager_handle_event (ClapperFeaturesManager *self, ClapperFeat
         break;
       case CLAPPER_FEATURES_MANAGER_EVENT_QUEUE_ITEM_ADDED:
         clapper_feature_call_queue_item_added (feature,
-            CLAPPER_MEDIA_ITEM_CAST (g_value_get_object (value)));
+            CLAPPER_MEDIA_ITEM_CAST (g_value_get_object (value)),
+            g_value_get_uint (extra_value));
         break;
       case CLAPPER_FEATURES_MANAGER_EVENT_QUEUE_ITEM_REMOVED:
         clapper_feature_call_queue_item_removed (feature,

@@ -77,11 +77,11 @@ clapper_queue_list_model_get_item (GListModel *model, guint index)
   ClapperQueue *self = CLAPPER_QUEUE_CAST (model);
   ClapperMediaItem *item = NULL;
 
-  GST_DEBUG_OBJECT (self, "Reading queue item: %u", index);
-
   GST_OBJECT_LOCK (self);
-  if (G_LIKELY (index < self->items->len))
+  if (G_LIKELY (index < self->items->len)) {
+    GST_DEBUG_OBJECT (self, "Reading queue item: %u", index);
     item = g_object_ref (g_ptr_array_index (self->items, index));
+  }
   GST_OBJECT_UNLOCK (self);
 
   return item;
@@ -115,7 +115,7 @@ _handle_items_changed (ClapperQueue *self, guint index, guint removed, guint add
 
     if (clapper_player_get_have_features (player)) {
       if (added == 1)
-        clapper_features_manager_trigger_queue_item_added (player->features_manager, changed_item);
+        clapper_features_manager_trigger_queue_item_added (player->features_manager, changed_item, index);
       else if (removed == 1)
         clapper_features_manager_trigger_queue_item_removed (player->features_manager, changed_item);
       else if (removed > 1)
@@ -292,25 +292,28 @@ clapper_queue_clear (ClapperQueue *self)
  *
  * Selects #ClapperMediaItem from playlist as current one and
  * signals #ClapperPlayer to play it.
+ *
+ * Returns: %TRUE if item could be selected, %FALSE if it
+ *   was not in the queue.
  */
-void
+gboolean
 clapper_queue_select_item (ClapperQueue *self, ClapperMediaItem *item)
 {
   gboolean queued;
   guint index = 0;
 
-  g_return_if_fail (CLAPPER_IS_QUEUE (self));
-  g_return_if_fail (CLAPPER_IS_MEDIA_ITEM (item));
+  g_return_val_if_fail (CLAPPER_IS_QUEUE (self), FALSE);
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (item), FALSE);
 
   GST_OBJECT_LOCK (self);
   if ((queued = g_ptr_array_find (self->items, item, &index)))
     _replace_current_item_unlocked (self, item);
   GST_OBJECT_UNLOCK (self);
 
-  g_return_if_fail (queued);
-
   if (queued)
     _handle_items_changed (self, index, 0, 0, TRUE, item);
+
+  return queued;
 }
 
 static gboolean
@@ -497,11 +500,23 @@ clapper_queue_get_n_items (ClapperQueue *self)
 void
 clapper_queue_set_progression_mode (ClapperQueue *self, ClapperQueueProgressionMode mode)
 {
+  gboolean changed;
+
   g_return_if_fail (CLAPPER_IS_QUEUE (self));
 
   GST_OBJECT_LOCK (self);
-  self->progression_mode = mode;
+  if ((changed = self->progression_mode != mode))
+    self->progression_mode = mode;
   GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
+
+    if (clapper_player_get_have_features (player))
+      clapper_features_manager_trigger_queue_progression_changed (player->features_manager, mode);
+
+    gst_object_unref (player);
+  }
 }
 
 /**

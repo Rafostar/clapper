@@ -52,7 +52,7 @@ G_GNUC_INTERNAL
 void clapper_feature_call_media_item_updated (ClapperFeature *feature, ClapperMediaItem *item);
 
 G_GNUC_INTERNAL
-void clapper_feature_call_queue_item_added (ClapperFeature *feature, ClapperMediaItem *item);
+void clapper_feature_call_queue_item_added (ClapperFeature *feature, ClapperMediaItem *item, guint index);
 
 G_GNUC_INTERNAL
 void clapper_feature_call_queue_item_removed (ClapperFeature *feature, ClapperMediaItem *item);

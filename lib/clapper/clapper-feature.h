@@ -98,7 +98,7 @@ struct _ClapperFeatureClass
 
   void (* media_item_updated) (ClapperFeature *feature, ClapperMediaItem *item);
 
-  void (* queue_item_added) (ClapperFeature *feature, ClapperMediaItem *item);
+  void (* queue_item_added) (ClapperFeature *feature, ClapperMediaItem *item, guint index);
 
   void (* queue_item_removed) (ClapperFeature *feature, ClapperMediaItem *item);
 
