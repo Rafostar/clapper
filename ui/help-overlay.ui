@@ -16,6 +16,12 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Open preferences</property>
+                <property name="accelerator">&lt;Ctrl&gt;comma</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Toggle fullscreen</property>
                 <property name="subtitle" translatable="yes">Double tap | Double click</property>
                 <property name="accelerator">F11 f</property>
