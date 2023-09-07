@@ -5,25 +5,28 @@
     <property name="vexpand">True</property>
     <property name="hexpand">True</property>
     <child>
-      <object class="AdwPreferencesPage">
-        <child>
-          <object class="AdwPreferencesGroup" id="decoders_group">
-            <property name="title" translatable="yes">Decoders</property>
+      <object class="AdwHeaderBar">
+        <property name="title-widget">
+          <object class="AdwWindowTitle">
+            <property name="title" translatable="yes">Plugin ranking</property>
+          </object>
+        </property>
+        <child type="start">
+          <object class="GtkButton">
+            <property name="icon-name">go-previous-symbolic</property>
+            <signal name="clicked" handler="_onReturnClicked"/>
           </object>
         </child>
       </object>
     </child>
     <child>
-      <object class="GtkButton">
-        <property name="label" translatable="yes">Return to the preferences</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <property name="margin_top">12</property>
-        <property name="margin_bottom">12</property>
-        <signal name="clicked" handler="_onReturnClicked"/>
-        <style>
-          <class name="suggested-action"/>
-        </style>
+      <object class="AdwPreferencesPage">
+        <child>
+          <object class="AdwPreferencesGroup" id="decoders_group">
+            <property name="title" translatable="yes">Decoders</property>
+            <property name="description">Overwrites decoder priorities. A value of 0 disables them entirely.</property>
+          </object>
+        </child>
       </object>
     </child>
   </template>
