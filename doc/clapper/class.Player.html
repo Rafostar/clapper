@@ -1,0 +1,977 @@
+<!--
+SPDX-FileCopyrightText: Rafał Dzięgiel
+
+SPDX-License-Identifier: LGPL-2.1-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Clapper.Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+  <meta property="og:image:width" content="256"/>
+  <meta property="og:image:height" content="256"/>
+  <meta property="og:image:secure_url" content="clapper-logo.svg"/>
+  <meta property="og:image:alt" content="Clapper-0.0"/>
+  
+
+  
+  <meta property="og:title" content="Clapper.Player"/>
+  <meta property="og:description" content="Reference for Clapper.Player"/>
+  <meta name="twitter:title" content="Clapper.Player"/>
+  <meta name="twitter:description" content="Reference for Clapper.Player"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  <link rel="search" type="application/opensearchdescription+xml" title="Clapper" href="opensearch.xml">
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  <script src="urlmap.js"></script>
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      <div class="section">
+        <img src="clapper-logo.svg" class="logo"/>
+      </div>
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Clapper</a></h3>
+        <p>API Version: 0.0</p>
+        
+        <p>Library Version: 0.5.2</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Type</h5>
+  <div class="links">
+    <a class="current" href="class.Player.html#description">Player</a>
+  </div>
+</div>
+
+
+<div class="section">
+  <h5>Constructors</h5>
+  <div class="links">
+  
+    <a class="ctor" href="ctor.Player.new.html">new</a>
+  
+  </div>
+</div>
+
+
+
+
+
+<div class="section">
+  <h5>Instance methods</h5>
+  <div class="links">
+  
+    <a class="method" href="method.Player.add_feature.html">add_feature</a>
+  
+    <a class="method" href="method.Player.get_audio_filter.html">get_audio_filter</a>
+  
+    <a class="method" href="method.Player.get_audio_sink.html">get_audio_sink</a>
+  
+    <a class="method" href="method.Player.get_current_audio_decoder.html">get_current_audio_decoder</a>
+  
+    <a class="method" href="method.Player.get_current_video_decoder.html">get_current_video_decoder</a>
+  
+    <a class="method" href="method.Player.get_mute.html">get_mute</a>
+  
+    <a class="method" href="method.Player.get_position.html">get_position</a>
+  
+    <a class="method" href="method.Player.get_queue.html">get_queue</a>
+  
+    <a class="method" href="method.Player.get_speed.html">get_speed</a>
+  
+    <a class="method" href="method.Player.get_state.html">get_state</a>
+  
+    <a class="method" href="method.Player.get_video_filter.html">get_video_filter</a>
+  
+    <a class="method" href="method.Player.get_video_sink.html">get_video_sink</a>
+  
+    <a class="method" href="method.Player.get_volume.html">get_volume</a>
+  
+    <a class="method" href="method.Player.pause.html">pause</a>
+  
+    <a class="method" href="method.Player.play.html">play</a>
+  
+    <a class="method" href="method.Player.seek.html">seek</a>
+  
+    <a class="method" href="method.Player.seek_custom.html">seek_custom</a>
+  
+    <a class="method" href="method.Player.set_audio_filter.html">set_audio_filter</a>
+  
+    <a class="method" href="method.Player.set_audio_sink.html">set_audio_sink</a>
+  
+    <a class="method" href="method.Player.set_mute.html">set_mute</a>
+  
+    <a class="method" href="method.Player.set_speed.html">set_speed</a>
+  
+    <a class="method" href="method.Player.set_video_filter.html">set_video_filter</a>
+  
+    <a class="method" href="method.Player.set_video_sink.html">set_video_sink</a>
+  
+    <a class="method" href="method.Player.set_volume.html">set_volume</a>
+  
+    <a class="method" href="method.Player.stop.html">stop</a>
+  
+  </div>
+</div>
+
+
+
+<div class="section">
+  <h5>Properties</h5>
+  <div class="links">
+  
+    <a class="property" href="property.Player.audio-filter.html">audio-filter</a>
+  
+    <a class="property" href="property.Player.audio-sink.html">audio-sink</a>
+  
+    <a class="property" href="property.Player.current-audio-decoder.html">current-audio-decoder</a>
+  
+    <a class="property" href="property.Player.current-video-decoder.html">current-video-decoder</a>
+  
+    <a class="property" href="property.Player.mute.html">mute</a>
+  
+    <a class="property" href="property.Player.position.html">position</a>
+  
+    <a class="property" href="property.Player.queue.html">queue</a>
+  
+    <a class="property" href="property.Player.speed.html">speed</a>
+  
+    <a class="property" href="property.Player.state.html">state</a>
+  
+    <a class="property" href="property.Player.video-filter.html">video-filter</a>
+  
+    <a class="property" href="property.Player.video-sink.html">video-sink</a>
+  
+    <a class="property" href="property.Player.volume.html">volume</a>
+  
+  </div>
+</div>
+
+
+
+<div class="section">
+  <h5>Signals</h5>
+  <div class="links">
+  
+    <a class="signal" href="signal.Player.error.html">error</a>
+  
+    <a class="signal" href="signal.Player.missing-plugin.html">missing-plugin</a>
+  
+    <a class="signal" href="signal.Player.warning.html">warning</a>
+  
+  </div>
+</div>
+
+
+
+
+
+
+
+      <div class="section generator">
+        <p>Generated by <a href="https://gitlab.gnome.org/GNOME/gi-docgen">gi-docgen</a> 2023.1</p>
+      </div>
+    </nav>
+
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Class</h3>
+    <h1 aria-label="Name"><a href="index.html">Clapper</a><span class="sep" role="presentation"></span>Player</h1>
+  </header>
+
+  <section>
+    <summary>
+      <div class="docblock">
+        <p></p>
+      </div>
+
+      <div class="toggle-wrapper">
+        <h4 id="description" style="display:flex;">
+          Description
+          <a href="#description" class="anchor"></a>
+          
+          <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-player.h#L37">[src]</a>
+          
+        </h4>
+
+        <pre><code>final class Clapper.Player : Clapper.ThreadedObject {
+  /* No available fields */
+}</pre></code>
+
+        <div class="docblock">
+          <p>Clapper player that uses <code>GStreamer</code> internally to play various&nbsp;media.</p>
+        </div>
+
+        <div class="docblock">
+          
+          
+          
+        </div>
+
+        
+      </div>
+    </summary>
+
+    
+
+    
+    <div class="toggle-wrapper ancestors">
+      <h4 id="ancestors">
+        Ancestors
+        <a href="#ancestors" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <ul>
+        
+          
+          <li class="class"><a href="class.ThreadedObject.html" title="ThreadedObject">ClapperThreadedObject</a></li>
+          
+        
+          
+          <li class="class"><a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a></li>
+          
+        
+          
+          <li class="class"><a class="external" href="javascript:void(0)" data-link="class.InitiallyUnowned.html" data-namespace="GObject">GInitiallyUnowned</a></li>
+          
+        
+          
+          <li class="class"><a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="GObject">GObject</a></li>
+          
+        
+        </ul>
+      </div>
+    </div>
+    
+
+    
+
+    
+
+    
+    <div class="toggle-wrapper constructors">
+      <h4 id="constructors">
+        Constructors
+        <a href="#constructors" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="ctor.Player.new.html">clapper_player_new</a></h6>
+          <div class="docblock">
+            <p>Creates a new <code>ClapperPlayer</code> instance.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+    
+
+    
+
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="methods">
+        Instance methods
+        <a href="#methods" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="method.Player.add_feature.html">clapper_player_add_feature</a></h6>
+          <div class="docblock">
+            <p>Add another <code>ClapperFeature</code> to the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_audio_filter.html">clapper_player_get_audio_filter</a></h6>
+          <div class="docblock">
+            <p>Get <code>GstElement</code> used as audio&nbsp;filter.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_audio_sink.html">clapper_player_get_audio_sink</a></h6>
+          <div class="docblock">
+            <p>Get <code>GstElement</code> used as audio&nbsp;sink.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_current_audio_decoder.html">clapper_player_get_current_audio_decoder</a></h6>
+          <div class="docblock">
+            <p>Get <code>GstElement</code> currently used as audio&nbsp;decoder.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_current_video_decoder.html">clapper_player_get_current_video_decoder</a></h6>
+          <div class="docblock">
+            <p>Get <code>GstElement</code> currently used as video&nbsp;decoder.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_mute.html">clapper_player_get_mute</a></h6>
+          <div class="docblock">
+            <p>Get the mute state of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_position.html">clapper_player_get_position</a></h6>
+          <div class="docblock">
+            <p>Get the current player playback&nbsp;position.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_queue.html">clapper_player_get_queue</a></h6>
+          <div class="docblock">
+            <p>Get the <code>ClapperQueue</code> of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_speed.html">clapper_player_get_speed</a></h6>
+          <div class="docblock">
+            <p>Get the speed of the player used for&nbsp;playback.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_state.html">clapper_player_get_state</a></h6>
+          <div class="docblock">
+            <p>Get the current <code>ClapperPlayerState</code>.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_video_filter.html">clapper_player_get_video_filter</a></h6>
+          <div class="docblock">
+            <p>Get <code>GstElement</code> used as video&nbsp;filter.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_video_sink.html">clapper_player_get_video_sink</a></h6>
+          <div class="docblock">
+            <p>Get <code>GstElement</code> used as video&nbsp;sink.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_volume.html">clapper_player_get_volume</a></h6>
+          <div class="docblock">
+            <p>Get the volume of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.pause.html">clapper_player_pause</a></h6>
+          <div class="docblock">
+            <p>Pause the playback of current media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.play.html">clapper_player_play</a></h6>
+          <div class="docblock">
+            <p>Either start or resume the playback of current media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.seek.html">clapper_player_seek</a></h6>
+          <div class="docblock">
+            <p>Request the player to perform a seek&nbsp;operation.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.seek_custom.html">clapper_player_seek_custom</a></h6>
+          <div class="docblock">
+            <p>Request the player to perform a seek&nbsp;operation.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_audio_filter.html">clapper_player_set_audio_filter</a></h6>
+          <div class="docblock">
+            <p>Set <code>GstElement</code> to be used as audio&nbsp;filter.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_audio_sink.html">clapper_player_set_audio_sink</a></h6>
+          <div class="docblock">
+            <p>Set <code>GstElement</code> to be used as audio&nbsp;sink.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_mute.html">clapper_player_set_mute</a></h6>
+          <div class="docblock">
+            <p>Set the mute state of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_speed.html">clapper_player_set_speed</a></h6>
+          <div class="docblock">
+            <p>Set the speed multiplier of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_video_filter.html">clapper_player_set_video_filter</a></h6>
+          <div class="docblock">
+            <p>Set <code>GstElement</code> to be used as video&nbsp;filter.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_video_sink.html">clapper_player_set_video_sink</a></h6>
+          <div class="docblock">
+            <p>Set <code>GstElement</code> to be used as video&nbsp;sink.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_volume.html">clapper_player_set_volume</a></h6>
+          <div class="docblock">
+            <p>Set the volume of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.stop.html">clapper_player_stop</a></h6>
+          <div class="docblock">
+            <p>Stop the playback of current media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+      </div>
+
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-methods">
+          <h5 style="display:block;">Methods inherited from <a href="class.ThreadedObject.html">ClapperThreadedObject</a> (1)</h5><div class="docblock">
+          
+            <h6><a href="method.ThreadedObject.get_context.html">clapper_threaded_object_get_context</a></h6><div class="docblock">
+              <p>Get the <code>GMainContext</code> of the thread used by this&nbsp;object.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-methods"><h5 style="display:block;">Methods inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a> (25)</h5>
+          <div class="docblock">
+          
+            <div class="docblock">
+              <p>Please see&nbsp;<a class="external" href="javascript:void(0)" data-link="class.Object.html#methods" data-namespace="Gst">GstObject</a>&nbsp;for a full list of methods.</em></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+        
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-methods"><h5 style="display:block;">Methods inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="GObject">GObject</a> (43)</h5>
+          <div class="docblock">
+          
+            <div class="docblock">
+              <p>Please see&nbsp;<a class="external" href="javascript:void(0)" data-link="class.Object.html#methods" data-namespace="GObject">GObject</a>&nbsp;for a full list of methods.</em></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+
+      
+    </div>
+    
+
+    
+    <div class="toggle-wrapper properties">
+      <h4 id="properties">
+        Properties
+        <a href="#properties" class="anchor"></a>
+      </h4>
+
+      
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="property.Player.audio-filter.html">Clapper.Player:audio-filter</a></h6>
+          <div class="docblock">
+            <p>Optional audio filter to use (none by&nbsp;default).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.audio-sink.html">Clapper.Player:audio-sink</a></h6>
+          <div class="docblock">
+            <p>Audio sink to use (autoaudiosink by&nbsp;default).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.current-audio-decoder.html">Clapper.Player:current-audio-decoder</a></h6>
+          <div class="docblock">
+            <p>Currently used audio&nbsp;decoder.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.current-video-decoder.html">Clapper.Player:current-video-decoder</a></h6>
+          <div class="docblock">
+            <p>Currently used video&nbsp;decoder.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.mute.html">Clapper.Player:mute</a></h6>
+          <div class="docblock">
+            <p>Mute audio without changing&nbsp;volume.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.position.html">Clapper.Player:position</a></h6>
+          <div class="docblock">
+            <p>Current playback position as a decimal number in&nbsp;seconds.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.queue.html">Clapper.Player:queue</a></h6>
+          <div class="docblock">
+            <p>Clapper playback&nbsp;queue.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.speed.html">Clapper.Player:speed</a></h6>
+          <div class="docblock">
+            <p>Current playback&nbsp;speed.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.state.html">Clapper.Player:state</a></h6>
+          <div class="docblock">
+            <p>Current playback&nbsp;state.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.video-filter.html">Clapper.Player:video-filter</a></h6>
+          <div class="docblock">
+            <p>Optional video filter to use (none by&nbsp;default).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.video-sink.html">Clapper.Player:video-sink</a></h6>
+          <div class="docblock">
+            <p>Video sink to use (autovideosink by&nbsp;default).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.volume.html">Clapper.Player:volume</a></h6>
+          <div class="docblock">
+            <p>Current volume as a decimal number (1.0 =&nbsp;100%).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+      </div>
+      
+
+      
+        
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-properties"><h5 style="display:block;">Properties inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a> (2)</h5>
+          <div class="docblock">
+          <h6><a class="external" href="javascript:void(0)" data-namespace="Gst" data-link="property.Object.name.html">Gst.Object:name</a></h6>
+            <div class="docblock">
+              No description available.
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          <h6><a class="external" href="javascript:void(0)" data-namespace="Gst" data-link="property.Object.parent.html">Gst.Object:parent</a></h6>
+            <div class="docblock">
+              <p>The parent of the object. Please note, that when changing the &#8216;parent&#8217;
+property, we don&#8217;t emit <code>GObject::notify</code> and <code>GstObject::deep-notify</code>
+signals due to locking issues. In some cases one can use
+<code>GstBin::element-added</code> or <code>GstBin::element-removed</code> signals on the parent to
+achieve a similar&nbsp;effect.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+        
+      
+        
+      
+
+      
+
+    </div>
+    
+
+    
+    <div class="signals toggle-wrapper">
+      <h4 id="signals">
+        Signals
+        <a href="#signals" class="anchor"></a>
+      </h4>
+
+      
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="signal.Player.error.html">Clapper.Player::error</a></h6>
+          <div class="docblock">
+            <p>These are normal error messages. Upon emitting this signal,
+playback will stop due to the&nbsp;error.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="signal.Player.missing-plugin.html">Clapper.Player::missing-plugin</a></h6>
+          <div class="docblock">
+            <p>A <code>GStreamer</code> plugin or one of its features needed for playback is&nbsp;missing.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="signal.Player.warning.html">Clapper.Player::warning</a></h6>
+          <div class="docblock">
+            <p>These are some usually more minor error messages that should
+be treated like warnings. Should not generally prevent/stop&nbsp;playback.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+      </div>
+      
+
+      
+        
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-signals"><h5 style="display:block;">Signals inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a> (1)</h5>
+          <div class="docblock">
+          <h6><a class="external" href="javascript:void(0)" data-namespace="Gst" data-link="signal.Object.deep-notify.html">GstObject::deep-notify</a></h6>
+            <div class="docblock">
+              <p>The deep notify signal is used to be notified of property changes. It is
+typically attached to the toplevel bin to receive notifications from all
+the elements contained in that&nbsp;bin.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+        
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-signals"><h5 style="display:block;">Signals inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="GObject">GObject</a> (1)</h5>
+          <div class="docblock">
+          <h6><a class="external" href="javascript:void(0)" data-namespace="GObject" data-link="signal.Object.notify.html">GObject::notify</a></h6>
+            <div class="docblock">
+              <p>The notify signal is emitted on an object when one of its properties has
+its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+
+      
+
+    </div>
+    
+
+    
+    <div class="class toggle-wrapper default-hide">
+      <h4 id="class-struct">
+        Class structure
+        <a href="#class-struct" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <pre><code>struct ClapperPlayerClass {
+  ClapperThreadedObjectClass parent_class;
+  
+}</code></pre>
+      </div>
+
+      <div class="docblock">
+        No description available.
+      </div>
+
+      
+      <div class="docblock">
+        <h6>Class members</h6>
+
+        <dl class="members">
+        
+          <dt><code>parent_class: ClapperThreadedObjectClass</code></dt>
+          <dd>No description available.</dd>
+        
+        </dd>
+      </div>
+      
+    </div>
+    
+
+    
+
+    
+
+  </section>
+</section>
+
+
+    
+<div id="toc" class="toc">
+  <nav aria-labelledby="toc-title">
+    <p id="toc-title">Content</p>
+    <ul class="toc-list">
+      <li class="toc-list-item"><a href="#description"><span class="link-text">Description</span></a></li>
+      
+      
+      
+      <li class="toc-list-item"><a href="#ancestors"><span class="link-text">Ancestors</span></a></li>
+      
+      
+      
+<li class="toc-list-item"><a href="#constructors"><span class="link-text">Constructors</span></a></li>
+
+
+      
+
+      
+<li class="toc-list-item"><a href="#methods"><span class="link-text">Methods</span></a></li>
+
+
+      
+<li class="toc-list-item"><a href="#properties"><span class="link-text">Properties</span></a></li>
+
+
+      
+<li class="toc-list-item"><a href="#signals"><span class="link-text">Signals</span></a></li>
+
+
+      
+
+      
+
+    </ul>
+  </nav>
+</div>
+
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>
