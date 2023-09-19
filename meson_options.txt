@@ -4,6 +4,11 @@ option('libclapper',
   value: 'auto',
   description: 'Build Clapper library'
 )
+option('libclappergtk',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper GTK integration library'
+)
 option('introspection',
   type: 'feature',
   value: 'auto',
