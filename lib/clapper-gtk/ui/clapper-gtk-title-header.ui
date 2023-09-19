@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="gtk40">
+  <template class="ClapperGtkTitleHeader" parent="ClapperGtkLeadContainer">
+    <property name="halign">center</property>
+    <property name="valign">start</property>
+    <property name="blocked-actions">toggle-play</property>
+    <property name="width-target">640</property>
+    <style>
+      <class name="osd"/>
+      <class name="rounded"/>
+    </style>
+    <child>
+      <object class="GtkLabel" id="title_label">
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="justify">center</property>
+        <property name="single-line-mode">true</property>
+        <property name="ellipsize">end</property>
+        <property name="label" translatable="yes">No media</property>
+        <style>
+          <class name="heading"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>
