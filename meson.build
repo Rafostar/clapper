@@ -10,7 +10,8 @@ project('clapper', 'c',
 
 glib_req = '>= 2.70.0'
 gst_req = '>= 1.20.0'
-gtk4_req = '>= 4.6.0'
+gtk4_req = '>= 4.10.0'
+adw_req = '>= 1.0.0'
 
 clapper_version = meson.project_version().split('-')[0]
 version_array = clapper_version.split('.')
@@ -95,6 +96,10 @@ gtk4_dep = dependency('gtk4',
   version: gtk4_req,
   required: false,
 )
+libadwaita_dep = dependency('libadwaita-1',
+  version: adw_req,
+  required: false,
+)
 
 cc = meson.get_compiler('c')
 libm = cc.find_library('m', required: false)
@@ -122,7 +127,7 @@ foreach extra_arg : warning_flags
   endif
 endforeach
 
-if optimization in ['2', '3', 's']
+if build_optimized
   message('Disabling GLib cast checks')
   add_project_arguments('-DG_DISABLE_CAST_CHECKS', language: 'c')
 

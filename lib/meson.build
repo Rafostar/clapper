@@ -14,3 +14,6 @@ subdir('gst')
 
 subdir('clapper')
 summary('clapper', build_clapper ? 'Yes' : 'No', section: 'Libraries')
+
+subdir('clapper-gtk')
+summary('clapper-gtk', build_clappergtk ? 'Yes' : 'No', section: 'Libraries')
