@@ -1,0 +1,101 @@
+/*
+ * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+#include <glib.h>
+#include <clapper/clapper.h>
+
+#include "clapper-app-file-dialog.h"
+#include "clapper-app-window.h"
+
+static inline void
+_open_files_from_model (GtkApplication *gtk_app, GListModel *files_model)
+{
+  GFile **files;
+  guint i, n_items = g_list_model_get_n_items (files_model);
+
+  if (n_items == 0)
+    return;
+
+  files = g_new (GFile *, n_items);
+
+  for (i = 0; i < n_items; ++i)
+    files[i] = g_list_model_get_item (files_model, i);
+
+  g_application_open (G_APPLICATION (gtk_app), files, n_items, NULL);
+
+  for (i = 0; i < n_items; ++i)
+    g_object_unref (files[i]);
+
+  g_free (files);
+}
+
+static void
+_open_files_cb (GtkFileDialog *dialog, GAsyncResult *result, GtkApplication *gtk_app)
+{
+  GError *error = NULL;
+  GListModel *files_model = gtk_file_dialog_open_multiple_finish (dialog, result, &error);
+
+  if (G_LIKELY (error == NULL)) {
+    _open_files_from_model (gtk_app, files_model);
+  } else {
+    if (error->domain != GTK_DIALOG_ERROR || error->code != GTK_DIALOG_ERROR_DISMISSED) {
+      g_printerr ("Error: %s\n",
+          (error->message) ? error->message : "Could not open file dialog");
+    }
+    g_error_free (error);
+  }
+  g_clear_object (&files_model);
+}
+
+void
+clapper_app_file_dialog_open_files (GtkApplication *gtk_app)
+{
+  GtkWindow *window = gtk_application_get_active_window (gtk_app);
+  GtkFileDialog *dialog = gtk_file_dialog_new ();
+  GListStore *filters = g_list_store_new (GTK_TYPE_FILE_FILTER);
+  GtkFileFilter *filter = gtk_file_filter_new ();
+  guint i;
+
+  const gchar *const mime_types[] = {
+    "video/*",
+    "audio/*",
+    "application/claps",
+    "application/x-subrip",
+    "text/x-ssa",
+    NULL
+  };
+
+  for (i = 0; mime_types[i]; ++i)
+    gtk_file_filter_add_mime_type (filter, mime_types[i]);
+
+  gtk_file_filter_set_name (filter, "Media Files");
+  g_list_store_append (filters, filter);
+
+  gtk_file_dialog_set_filters (dialog, G_LIST_MODEL (filters));
+  gtk_file_dialog_set_modal (dialog, TRUE);
+  gtk_file_dialog_set_title (dialog, "Add Files");
+
+  gtk_file_dialog_open_multiple (dialog, window, NULL,
+      (GAsyncReadyCallback) _open_files_cb,
+      gtk_app);
+
+  g_object_unref (dialog);
+  g_object_unref (filters);
+  g_object_unref (filter);
+}

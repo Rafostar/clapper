@@ -11,9 +11,5 @@ gir_init_section = '--add-init-section=extern void gst_init(gint*,gchar**);' + \
   'gst_init(NULL,NULL);'
 
 subdir('gst')
-
 subdir('clapper')
-summary('clapper', build_clapper ? 'Yes' : 'No', section: 'Libraries')
-
 subdir('clapper-gtk')
-summary('clapper-gtk', build_clappergtk ? 'Yes' : 'No', section: 'Libraries')

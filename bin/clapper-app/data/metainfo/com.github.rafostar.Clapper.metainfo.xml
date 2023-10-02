@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.github.rafostar.Clapper</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <name>Clapper</name>
+  <summary>Simple and modern GNOME media player</summary>
+  <translation type="gettext">com.github.rafostar.Clapper</translation>
+  <launchable type="desktop-id">com.github.rafostar.Clapper.desktop</launchable>
+  <description>
+    <p>
+      Clapper is a GNOME media player built using GJS with GTK4 toolkit.
+      The media player is using GStreamer as a media backend and renders
+      everything via OpenGL. Player works natively on both Xorg and Wayland.
+      It also supports hardware acceleration through VA-API on AMD/Intel GPUs,
+      NVDEC on Nvidia and V4L2 on mobile devices.
+    </p>
+    <p>
+      The media player has an adaptive GUI. When viewing videos in "Windowed Mode",
+      Clapper will use mostly unmodified GTK widgets to match your OS look nicely.
+      When player enters "Fullscreen Mode" all GUI elements will become darker, bigger
+      and semi-transparent for your viewing comfort. It also has a "Floating Mode" which
+      displays only video on top of all other windows for a PiP-like viewing experience.
+      Mobile friendly transitions are also supported.
+    </p>
+  </description>
+  <developer_name>Rafał Dzięgiel</developer_name>
+  <url type="homepage">https://rafostar.github.io/clapper</url>
+  <url type="bugtracker">https://github.com/Rafostar/clapper/issues</url>
+  <url type="donation">https://liberapay.com/Clapper</url>
+  <url type="help">https://github.com/Rafostar/clapper/wiki</url>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Video</category>
+  </categories>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-windowed.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-fullscreen.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-floating.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-mobile.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="0.5.2" date="2022-06-24">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Fix time labels display on RTL languages</li>
+          <li>Improved GL/GLES context automatic selection</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Hebrew</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.5.1" date="2022-05-29">
+      <description>
+        <p>
+          A quick hotfix release. Fixes problems with new video sink on displays with non-100% scaling applied.
+          See 0.5.0 version release notes for full recent changelog.
+        </p>
+      </description>
+    </release>
+    <release version="0.5.0" date="2022-05-28">
+      <description>
+        <p>Changes:</p>
+        <ul>
+          <li>Includes and uses new, improved GStreamer video sink</li>
+          <li>All networking ported to libsoup3</li>
+          <li>A lot of cleanup, including removal of unfinished web application and old YT code</li>
+          <li>App now supports D-Bus launching (DBusActivatable)</li>
+          <li>Other small fixes</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Arabic</li>
+          <li>Basque</li>
+          <li>French</li>
+          <li>Japanese</li>
+          <li>Swedish</li>
+          <li>Turkish</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.4.1" date="2021-12-20">
+      <description>
+        <p>Fixes:</p>
+        <ul>
+          <li>Compatibility with more recent libadwaita versions</li>
+          <li>Toggle mute with M button alone</li>
+          <li>Allow handling YouTube with external GStreamer plugins</li>
+          <li>Fix catching errors when reading clipboard</li>
+          <li>Fix missing translator-credits</li>
+          <li>Fix missing gio-unix-2.0 dep</li>
+          <li>Fix playback pausing when entering fullscreen with touchscreen</li>
+          <li>Fix GST_PLUGIN_FEATURE_RANK env usage</li>
+          <li>Fix video/audio decoder change detection</li>
+          <li>Merge global video tags instead replacing them</li>
+          <li>Few other misc bug fixes</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Chinese Simplified</li>
+          <li>Czech</li>
+          <li>Hungarian</li>
+          <li>Portuguese</li>
+          <li>Portuguese, Brazilian</li>
+          <li>Russian</li>
+          <li>Spanish</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.4.0" date="2021-09-12">
+      <description>
+        <p>Changes:</p>
+        <ul>
+          <li>Now uses libadwaita</li>
+          <li>New and adaptive preferences window</li>
+          <li>Improved open URI dialog</li>
+          <li>Few small tweaks to fullscreen UI design</li>
+          <li>Show current video and audio decoders in popovers (easy way to check if HW accel is used)</li>
+          <li>Enabled NVDEC hardware acceleration by default (requires Nvidia proprietary drivers)</li>
+          <li>Added option to use PipeWire for audio output (experimental)</li>
+          <li>Added option to use playbin3 element (experimental)</li>
+          <li>New PiP icon from icon development kit</li>
+          <li>Improved performance on devices running OpenGL ES</li>
+          <li>Translations support</li>
+          <li>Various bug fixes</li>
+        </ul>
+        <p>New keyboard shortcuts:</p>
+        <ul>
+          <li>Leave fullscreen with Escape key</li>
+          <li>Toggle mute with Ctrl+M</li>
+        </ul>
+        <p>More touchscreen gestures:</p>
+        <ul>
+          <li>Toggle playback with a long press</li>
+          <li>Switch playlist items via double tap on screen side</li>
+        </ul>
+        <p>New translations:</p>
+        <ul>
+          <li>Catalan</li>
+          <li>Dutch</li>
+          <li>German</li>
+          <li>Italian</li>
+          <li>Polish</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.3.0" date="2021-06-18">
+      <description>
+        <p>Changes:</p>
+        <ul>
+          <li>Added MPRIS support</li>
+          <li>Added repeat modes: single video, whole playlist and shuffle</li>
+          <li>Support opening folders with media files</li>
+          <li>Append playlist items by holding Ctrl while doing Drag and Drop</li>
+          <li>Improved handling of keyboard shortcuts</li>
+          <li>Added more keyboard shortcuts</li>
+          <li>Added window that shows available keyboard shortcuts</li>
+          <li>Show black screen by default after playback (make showing last frame optional instead)</li>
+          <li>Added ability to export playlist to file</li>
+          <li>Improve handling of changing displays with different resolutions</li>
+          <li>Added support for EGL under x11 with GTK 4.3.1 or later</li>
+          <li>Added missing symbolic app icon</li>
+          <li>Some misc bug fixes and code cleanups</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.2.1" date="2021-04-19">
+      <description>
+        <p>Player:</p>
+        <ul>
+          <li>Fix missing top left menu buttons on some system configurations</li>
+          <li>Fix potential video sink deadlock</li>
+          <li>Do not show mobile controls transition on launch</li>
+          <li>Show tooltip with full playlist item text on hover</li>
+        </ul>
+        <p>YouTube:</p>
+        <ul>
+          <li>Auto select best matching resolution for used monitor</li>
+          <li>Added some YouTube related preferences</li>
+          <li>Added support for live HLS videos</li>
+          <li>Added support for non-adaptive live HLS streaming</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.2.0" date="2021-04-13">
+      <description>
+        <p>New features:</p>
+        <ul>
+          <li>YouTube support - drag and drop videos from youtube or use open URI dialog to play them</li>
+          <li>Added convenient ways of opening external subtitles</li>
+        </ul>
+        <p>Changes:</p>
+        <ul>
+          <li>Few GUI layout improvements</li>
+          <li>Simplified video sink code</li>
+          <li>Fixed missing Ctrl+O common keybinding</li>
+          <li>Fixed error when playback finishes during controls reveal animation</li>
+          <li>Fixed startup window size on Xorg</li>
+          <li>Fixed top time not showing up on fullscreen startup</li>
+          <li>Fixed missing file extensions in online URIs</li>
+          <li>Fixed some error messages not being displayed</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.1.0" date="2021-02-26">
+      <description>
+        <p>First stable release</p>
+      </description>
+    </release>
+    <release version="0.0.0" date="2020-10-31">
+      <description>
+        <p>GitHub version</p>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1" />
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
+  <requires>
+    <display_length compare="ge">small</display_length>
+  </requires>
+  <custom>
+    <value key="Purism::form_factor">workstation</value>
+    <value key="Purism::form_factor">mobile</value>
+  </custom>
+</component>
