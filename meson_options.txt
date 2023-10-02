@@ -64,9 +64,9 @@ option('rawimporter',
   description: 'Build RAW system memory importer for clappersink'
 )
 
-# Clapper player
-option('player',
+# Clapper application
+option('clapperapp',
   type: 'feature',
   value: 'auto',
-  description: 'Build Clapper player'
+  description: 'Build Clapper application'
 )
