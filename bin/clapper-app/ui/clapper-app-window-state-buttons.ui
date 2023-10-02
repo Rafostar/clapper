@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="gtk40">
+  <template class="ClapperAppWindowStateButtons" parent="GtkBox">
+    <property name="orientation">horizontal</property>
+    <property name="halign">end</property>
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkButton" id="minimize_button">
+        <property name="icon_name">window-minimize-symbolic</property>
+        <property name="visible">false</property>
+        <signal name="clicked" handler="minimize_button_clicked_cb"/>
+        <style>
+          <class name="osd"/>
+          <class name="flat"/>
+          <class name="circular"/>
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="maximize_button">
+        <property name="icon_name">window-maximize-symbolic</property>
+        <property name="visible">false</property>
+        <signal name="clicked" handler="maximize_button_clicked_cb"/>
+        <style>
+          <class name="osd"/>
+          <class name="flat"/>
+          <class name="circular"/>
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkButton" id="close_button">
+        <property name="icon_name">window-close-symbolic</property>
+        <property name="visible">false</property>
+        <signal name="clicked" handler="close_button_clicked_cb"/>
+        <style>
+          <class name="osd"/>
+          <class name="flat"/>
+          <class name="circular"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

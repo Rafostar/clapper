@@ -8,10 +8,10 @@ project('clapper', 'c',
   ],
 )
 
-glib_req = '>= 2.70.0'
+glib_req = '>= 2.76.0'
 gst_req = '>= 1.20.0'
 gtk4_req = '>= 4.10.0'
-adw_req = '>= 1.0.0'
+adw_req = '>= 1.4.0'
 
 clapper_version = meson.project_version().split('-')[0]
 version_array = clapper_version.split('.')
@@ -138,6 +138,10 @@ if build_optimized
   add_project_arguments('-DG_DISABLE_CHECKS', language: 'c')
 endif
 
+subdir('lib')
+subdir('bin')
+subdir('doc')
+
 summary({
   'prefix': prefix,
   'bindir': bindir,
@@ -147,9 +151,14 @@ summary({
   'optimization': optimization,
 }, section: 'Directories')
 
-subdir('lib')
+summary('clapper', build_clapper ? 'Yes' : 'No', section: 'Build')
+summary('clapper-gtk', build_clappergtk ? 'Yes' : 'No', section: 'Build')
+summary('clapper-app', build_clapperapp ? 'Yes' : 'No', section: 'Build')
+summary('gst-plugin', build_gst_plugin ? 'Yes' : 'No', section: 'Build')
 summary('introspection', build_gir ? 'Yes' : 'No', section: 'Build')
 summary('vapi', build_vapi ? 'Yes' : 'No', section: 'Build')
+summary('doc', build_doc  ? 'Yes' : 'No', section: 'Build')
 
-subdir('doc')
-summary('doc', build_doc, section: 'Build')
+foreach name : clapper_possible_features
+  summary(name, clapper_available_features.contains(name) ? 'Yes' : 'No', section: 'Features')
+endforeach
