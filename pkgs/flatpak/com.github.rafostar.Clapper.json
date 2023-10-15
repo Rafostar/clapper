@@ -1,9 +1,9 @@
 {
     "app-id": "com.github.rafostar.Clapper",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "43",
+    "runtime-version": "44",
     "sdk": "org.gnome.Sdk",
-    "command": "com.github.rafostar.Clapper",
+    "command": "clapper",
     "separate-locales": false,
     "finish-args": [
         "--share=ipc",
@@ -19,7 +19,8 @@
         "--own-name=org.mpris.MediaPlayer2.Clapper",
         "--talk-name=org.gtk.vfs.*",
         "--talk-name=org.gnome.Shell",
-        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
+        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
+        "--env=GST_PLUGIN_FEATURE_RANK=vah264dec:MAX,vah265dec:MAX,vavp9dec:MAX,vaav1dec:MAX"
     ],
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
@@ -34,8 +35,8 @@
         "flathub/lib/libass.json",
         "flathub/lib/ffmpeg.json",
         "flathub/lib/uchardet.json",
+        "testing/libmicrodns.json",
         "flathub/gstreamer-1.0/gstreamer.json",
-        "flathub/lib/libadwaita.json",
         "testing/gtuber.json",
         {
             "name": "clapper",
