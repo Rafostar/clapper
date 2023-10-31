@@ -7,7 +7,7 @@ var actions = {
     open_local: ['<Ctrl>O'],
     export_playlist: ['<Ctrl>E'],
     open_uri: ['<Ctrl>U'],
-    prefs: null,
+    prefs: ['<Ctrl>comma'],
     shortcuts: ['F1', '<Ctrl>question'],
     about: null,
     progress_forward: ['Right'],
