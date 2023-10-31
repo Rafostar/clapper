@@ -5,8 +5,17 @@
     "sdk": "org.gnome.Sdk",
     "sdk-extensions": [
         "org.freedesktop.Sdk.Extension.rust-nightly",
-        "org.freedesktop.Sdk.Extension.llvm14"
+        "org.freedesktop.Sdk.Extension.llvm16"
     ],
+    "add-extensions": {
+        "org.freedesktop.Platform.ffmpeg-full": {
+            "version": "23.08",
+            "directory": "lib/ffmpeg",
+            "add-ld-path": ".",
+            "no-autodownload": false,
+            "autodelete": false
+        }
+    },
     "command": "com.github.rafostar.Clapper",
     "separate-locales": false,
     "finish-args": [
@@ -26,8 +35,8 @@
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
     "build-options": {
-        "append-path": "/usr/lib/sdk/rust-nightly/bin:/usr/lib/sdk/llvm14/bin",
-        "prepend-ld-library-path": "/usr/lib/sdk/llvm14/lib"
+        "append-path": "/usr/lib/sdk/rust-nightly/bin:/usr/lib/sdk/llvm16/bin",
+        "prepend-ld-library-path": "/usr/lib/sdk/llvm16/lib"
     },
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
@@ -38,7 +47,6 @@
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
-        "flathub/lib/ffmpeg.json",
         "testing/gstreamer.json",
         "testing/gst-plugins-rs.json",
         "testing/gtuber.json",
@@ -54,6 +62,7 @@
         }
     ],
     "cleanup-commands": [
+        "mkdir -p /app/lib/ffmpeg",
         "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
 }
