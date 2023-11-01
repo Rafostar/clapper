@@ -37,8 +37,10 @@ function handleAction(action, window)
 
     switch(action.name) {
         case 'open_local':
+            Dialogs.showOpenLocalDialog(window);
+            break;
         case 'export_playlist':
-            new Dialogs.FileChooser(window, action.name);
+            Dialogs.showExportPlaylistDialog(window);
             break;
         case 'open_uri':
             new Dialogs.UriDialog(window);
@@ -54,7 +56,7 @@ function handleAction(action, window)
             clapperWidget.activate_action('win.show-help-overlay', null);
             break;
         case 'about':
-            new Dialogs.AboutDialog(window);
+            Dialogs.showAboutDialog(window);
             break;
         case 'progress_forward':
             bool = true;

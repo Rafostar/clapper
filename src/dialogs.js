@@ -6,123 +6,6 @@ const Misc = imports.src.misc;
 
 const { debug } = Debug;
 
-var FileChooser = GObject.registerClass({
-    GTypeName: 'ClapperFileChooser',
-},
-class ClapperFileChooser extends Gtk.FileChooserNative
-{
-    _init(window, purpose)
-    {
-        super._init({
-            transient_for: window,
-            modal: true,
-        });
-
-        switch(purpose) {
-            case 'open_local':
-                this._prepareOpenLocal();
-                break;
-            case 'export_playlist':
-                this._prepareExportPlaylist();
-                break;
-            default:
-                debug(new Error(`unknown file chooser purpose: ${purpose}`));
-                break;
-        }
-
-        this.chooserPurpose = purpose;
-
-        /* File chooser closes itself when nobody is holding its ref */
-        this.ref();
-        this.show();
-    }
-
-    _prepareOpenLocal()
-    {
-        this.select_multiple = true;
-
-        const filter = new Gtk.FileFilter({
-            name: 'Media Files',
-        });
-        filter.add_mime_type('video/*');
-        filter.add_mime_type('audio/*');
-        filter.add_mime_type('application/claps');
-        Misc.subsMimes.forEach(mime => filter.add_mime_type(mime));
-        this.add_filter(filter);
-    }
-
-    _prepareExportPlaylist()
-    {
-        this.action = Gtk.FileChooserAction.SAVE;
-        this.set_current_name('playlist.claps');
-
-        const filter = new Gtk.FileFilter({
-            name: 'Playlist Files',
-        });
-        filter.add_mime_type('application/claps');
-        this.add_filter(filter);
-    }
-
-    vfunc_response(respId)
-    {
-        debug('closing file chooser dialog');
-
-        if(respId === Gtk.ResponseType.ACCEPT) {
-            switch(this.chooserPurpose) {
-                case 'open_local':
-                    this._handleOpenLocal();
-                    break;
-                case 'export_playlist':
-                    this._handleExportPlaylist();
-                    break;
-            }
-        }
-
-        this.unref();
-        this.destroy();
-    }
-
-    _handleOpenLocal()
-    {
-        const files = this.get_files();
-        const filesArray = [];
-
-        let index = 0;
-        let file;
-
-        while((file = files.get_item(index))) {
-            filesArray.push(file);
-            index++;
-        }
-
-        const { application } = this.transient_for;
-        const isHandlesOpen = Boolean(
-            application.flags & Gio.ApplicationFlags.HANDLES_OPEN
-        );
-
-        /* Remote app does not handle open */
-        if(isHandlesOpen)
-           application.open(filesArray, "");
-        else
-           application._openFilesAsync(filesArray);
-    }
-
-    _handleExportPlaylist()
-    {
-        const file = this.get_file();
-        const { playlistWidget } = this.transient_for.child.player;
-        const playlist = playlistWidget.getPlaylist(true);
-
-        FileOps.saveFileSimplePromise(file, playlist.join('\n'))
-            .then(() => {
-                debug(`exported playlist to file: ${file.get_path()}`);
-            })
-            .catch(err => {
-                debug(err);
-            });
-    }
-});
-
 var UriDialog = GObject.registerClass({
     GTypeName: 'ClapperUriDialog',
 },
@@ -166,7 +49,7 @@ class ClapperUriDialog extends Gtk.Dialog
         if(clipboard)
             clipboard.read_text_async(null, this._readTextAsyncCb.bind(this));
 
-        this.show();
+        this.present();
     }
 
     vfunc_response(respId)
@@ -216,7 +99,7 @@ class ClapperUriDialog extends Gtk.Dialog
 var ResumeDialog = GObject.registerClass({
     GTypeName: 'ClapperResumeDialog',
 },
-class ClapperResumeDialog extends Gtk.MessageDialog
+class ClapperResumeDialog extends Adw.MessageDialog
 {
     _init(window, resumeInfo)
     {
@@ -230,85 +113,160 @@ class ClapperResumeDialog extends Gtk.MessageDialog
         super._init({
             transient_for: window,
             modal: true,
-            message_type: Gtk.MessageType.QUESTION,
-            buttons: Gtk.ButtonsType.YES_NO,
-            text: _('Resume playback?'),
-            secondary_use_markup: true,
-            secondary_text: msg,
+            heading: _('Resume Playback?'),
+            body_use_markup: true,
+            body: msg,
         });
 
-        this.resumeInfo = resumeInfo;
-        this.set_default_response(Gtk.ResponseType.YES);
+        this.add_response('cancel', _('Cancel'));
+        this.add_response('resume', _('Resume'));
+        this.set_close_response('cancel');
+        this.set_default_response('resume');
+        this.set_response_appearance('resume', Adw.ResponseAppearance.SUGGESTED);
 
-        this.show();
+        this.resumeInfo = resumeInfo;
+
+        this.present();
     }
 
     vfunc_response(respId)
     {
         const { player } = this.transient_for.child;
 
-        if(respId === Gtk.ResponseType.YES)
+        if(respId === 'resume')
             player.seek_seconds(this.resumeInfo.time);
 
         this.destroy();
     }
 });
 
-var AboutDialog = GObject.registerClass({
-    GTypeName: 'ClapperAboutDialog',
-},
-class ClapperAboutDialog extends Gtk.AboutDialog
+function showOpenLocalDialog(window)
 {
-    _init(window)
-    {
-        const gstVer = [
-            Gst.VERSION_MAJOR, Gst.VERSION_MINOR, Gst.VERSION_MICRO
-        ].join('.');
+    const filters = new Gio.ListStore();
+    const filter = new Gtk.FileFilter({
+        name: 'Media Files',
+    });
+    filter.add_mime_type('video/*');
+    filter.add_mime_type('audio/*');
+    filter.add_mime_type('application/claps');
+    Misc.subsMimes.forEach(mime => filter.add_mime_type(mime));
+    filters.append(filter);
 
-        const gtkVer = [
-            Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
-        ].join('.');
+    const fileDialog = new Gtk.FileDialog({modal: true});
+    fileDialog.set_filters(filters);
+    fileDialog.open_multiple(window, null, _handleOpenLocal.bind(window.application));
+}
 
-        /* TODO: This is as of Alpha2 still broken, requires:
-         * https://gitlab.gnome.org/GNOME/libadwaita/-/merge_requests/230
-         * can be simplified later in future */
-        const adwVer = Adw.MAJOR_VERSION ? [
-            Adw.MAJOR_VERSION, Adw.MINOR_VERSION, Adw.MICRO_VERSION
-        ].join('.') : '1.0.0';
+function _handleOpenLocal(fileDialog, res)
+{
+    try {
+        const files = fileDialog.open_multiple_finish(res);
+        const filesArray = [];
 
-        const gjsVerStr = String(System.version);
-        let gjsVer = '';
+        let index = 0;
+        let file;
 
-        gjsVer += gjsVerStr.charAt(0) + '.';
-        gjsVer += gjsVerStr.charAt(1) + gjsVerStr.charAt(2) + '.';
-        if(gjsVerStr.charAt(3) !== '0')
-            gjsVer += gjsVerStr.charAt(3);
-        gjsVer += gjsVerStr.charAt(4);
+        while((file = files.get_item(index))) {
+            filesArray.push(file);
+            index++;
+        }
 
-        const osInfo = [
-            _('GTK version: %s').format(gtkVer),
-            _('Adwaita version: %s').format(adwVer),
-            _('GStreamer version: %s').format(gstVer),
-            _('GJS version: %s').format(gjsVer)
-        ].join('\n');
+        const isHandlesOpen = Boolean(
+            this.flags & Gio.ApplicationFlags.HANDLES_OPEN
+        );
 
-        super._init({
-            transient_for: window,
-            destroy_with_parent: true,
-            modal: true,
-            program_name: Misc.appName,
-            comments: _('A GNOME media player powered by GStreamer'),
-            version: pkg.version,
-            authors: ['Rafał Dzięgiel'],
-            artists: ['Rafał Dzięgiel'],
-            /* TRANSLATORS: Put your name(s) here for credits or leave untranslated */
-            translator_credits: _('translator-credits'),
-            license_type: Gtk.License.GPL_3_0,
-            logo_icon_name: 'com.github.rafostar.Clapper',
-            website: 'https://rafostar.github.io/clapper',
-            system_information: osInfo,
-        });
-
-        this.show();
+        /* Remote app does not handle open */
+        if(isHandlesOpen)
+            this.open(filesArray, "");
+        else
+            this._openFilesAsync(filesArray);
     }
-});
+    catch(e) {
+        if(!e.matches(Gtk.DialogError.quark(), Gtk.DialogError.DISMISSED))
+            throw e;
+    }
+}
+
+function showExportPlaylistDialog(window)
+{
+    const filters = new Gio.ListStore();
+    const filter = new Gtk.FileFilter({
+        name: 'Playlist Files',
+    });
+    filter.add_mime_type('application/claps');
+    filters.append(filter);
+
+    const fileDialog = new Gtk.FileDialog({modal: true});
+    fileDialog.set_filters(filters);
+    fileDialog.set_initial_name('playlist.claps');
+    fileDialog.save(window, null, _handleExportPlaylist.bind(window.child.player.playlistWidget));
+}
+
+function _handleExportPlaylist(fileDialog, res)
+{
+    try {
+        const file = fileDialog.save_finish(res);
+        const playlist = this.getPlaylist(true);
+
+        FileOps.saveFileSimplePromise(file, playlist.join('\n'))
+            .then(() => {
+                debug(`exported playlist to file: ${file.get_path()}`);
+            })
+            .catch(err => {
+                debug(err);
+            });
+    }
+    catch(e) {
+        if(!e.matches(Gtk.DialogError.quark(), Gtk.DialogError.DISMISSED))
+            throw e;
+    }
+}
+
+function showAboutDialog(window)
+{
+    const gstVer = [
+        Gst.VERSION_MAJOR, Gst.VERSION_MINOR, Gst.VERSION_MICRO
+    ].join('.');
+
+    const gtkVer = [
+        Gtk.MAJOR_VERSION, Gtk.MINOR_VERSION, Gtk.MICRO_VERSION
+    ].join('.');
+
+    const adwVer = [
+        Adw.MAJOR_VERSION, Adw.MINOR_VERSION, Adw.MICRO_VERSION
+    ].join('.');
+
+    const gjsVerStr = String(System.version);
+    let gjsVer = '';
+
+    gjsVer += gjsVerStr.charAt(0) + '.';
+    gjsVer += gjsVerStr.charAt(1) + gjsVerStr.charAt(2) + '.';
+    if(gjsVerStr.charAt(3) !== '0')
+        gjsVer += gjsVerStr.charAt(3);
+    gjsVer += gjsVerStr.charAt(4);
+
+    const osInfo = [
+        _('GTK version: %s').format(gtkVer),
+        _('Adwaita version: %s').format(adwVer),
+        _('GStreamer version: %s').format(gstVer),
+        _('GJS version: %s').format(gjsVer)
+    ].join('\n');
+
+    const aboutWindow = new Adw.AboutWindow({
+        transient_for: window,
+        application_name: Misc.appName,
+        version: pkg.version,
+        developer_name: 'Rafał Dzięgiel',
+        developers: ['Rafał Dzięgiel'],
+        artists: ['Rafał Dzięgiel'],
+        /* TRANSLATORS: Put your name(s) here for credits or leave untranslated */
+        translator_credits: _('translator-credits'),
+        license_type: Gtk.License.GPL_3_0,
+        application_icon: 'com.github.rafostar.Clapper',
+        website: 'https://rafostar.github.io/clapper',
+        issue_url: 'https://github.com/Rafostar/clapper/issues/new',
+        debug_info: osInfo,
+    });
+
+    aboutWindow.present();
+}

@@ -2,3 +2,6 @@
 build/
 install/
 builddir/
+
+# flatpak
+.flatpak-builder
