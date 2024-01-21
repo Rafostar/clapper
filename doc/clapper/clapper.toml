@@ -31,7 +31,7 @@ dependencies = ["GLib-2.0", "GObject-2.0", "Gio-2.0", "Gst-1.0"]
   [dependencies."Gst-1.0"]
   name = "Gst"
   description = "GStreamer core library"
-  docs_url = "https://gstreamer.freedesktop.org/documentation/"
+  docs_url = "https://gstreamer.freedesktop.org/documentation/gstreamer/gi-index.html"
 
   [dependencies."GstBase-1.0"]
   name = "GstBase"
