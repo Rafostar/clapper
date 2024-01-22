@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.BulletinBoard.unpin_pinned_message</title>
+  <title>ClapperGtk.SeekBar:seek-method</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="ClapperGtk.BulletinBoard.unpin_pinned_message"/>
-  <meta priority="og:description" content="Reference for ClapperGtk.BulletinBoard.unpin_pinned_message"/>
-  <meta name="twitter:title" content="ClapperGtk.BulletinBoard.unpin_pinned_message"/>
-  <meta name="twitter:description" content="Reference for ClapperGtk.BulletinBoard.unpin_pinned_message"/>
+  <meta property="og:title" content="ClapperGtk.SeekBar:seek-method"/>
+  <meta property="og:description" content="Reference for property ClapperGtk.SeekBar:seek-method"/>
+  <meta name="twitter:title" content="ClapperGtk.SeekBar:seek-method"/>
+  <meta name="twitter:description" content="Reference for property ClapperGtk.SeekBar:seek-method"/>
 
 
   
@@ -80,22 +80,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.BulletinBoard.html">BulletinBoard</a>
+    <a href="class.SeekBar.html">SeekBar</a>
   </div>
 </div>
 <div class="section">
-  <h5>Methods</h5>
+  <h5>Properties</h5>
   <div class="links">
   
-    <a class="method" href="method.BulletinBoard.announce_speed.html">announce_speed</a>
+    <a class="property"href="property.SeekBar.reveal-labels.html">reveal-labels</a>
   
-    <a class="method" href="method.BulletinBoard.announce_volume.html">announce_volume</a>
-  
-    <a class="method" href="method.BulletinBoard.pin_message.html">pin_message</a>
-  
-    <a class="method" href="method.BulletinBoard.post_message.html">post_message</a>
-  
-    <a class="method current" href="method.BulletinBoard.unpin_pinned_message.html">unpin_pinned_message</a>
+    <a class="property current"href="property.SeekBar.seek-method.html">seek-method</a>
   
   </div>
 </div>
@@ -110,60 +104,79 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Method</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.BulletinBoard.html">BulletinBoard</a><span class="sep"></span>unpin_pinned_message</h1>
+    <h3>Property</h3>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.SeekBar.html">SeekBar</a>:seek-method</h1>
   </header>
 
   <section>
     <div class="docblock">
       <p></p>
     </div>
-
     <div class="declaration toggle-wrapper">
-      <h4 style="display:flex;" id="declaration">
+      <h4 id="declaration">
         Declaration
-        <a class="anchor" href="#declaration"></a>
-        
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-bulletin-board.h#L40">[src]</a>
-        
+        <a href="#declaration" class="anchor"></a>
       </h4>
 
-      <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">clapper_gtk_bulletin_board_unpin_pinned_message</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperGtkBulletinBoard</span><span class="o">*</span><span class="w"> </span><span class="n">board</span>
-<span class="p">)</span>
-</pre></div>
-</code></pre>
+      <div class="docblock">
+        <pre><code>property seek-method: Clapper.PlayerSeekMethod [ read, write ]</code></pre>
       </div>
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 style="display:flex;" id="description">
+      <h4 id="description">
         Description
-        <a class="anchor" href="#description"></a>
+        <a href="#description" class="anchor"></a>
+        
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-seek-bar.c#L452">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        No description available.
+        <p>Method used for&nbsp;seeking.</p>
       </div>
 
       <div class="docblock">
-        
-        
-        
-        
-        
-        
+        <table>
+          <tr><td>Type:</td>
+            <td><a href="javascript:void(0)" data-link="enum.PlayerSeekMethod.html" data-namespace="Clapper" class="external"><code>ClapperPlayerSeekMethod</code></a></td>
+          </tr>
+          
+          
+          
+        </table>
       </div>
 
       
+      <div class="docblock">
+        <table>
+        
+          <tr><td>Default value</td><td>CLAPPER_PLAYER_SEEK_METHOD_NORMAL</td></tr>
+        
+          <tr><td>Getter method</td><td><a href="method.SeekBar.get_seek_method.html"><code>clapper_gtk_seek_bar_get_seek_method()</code></a></td></tr>
+        
+          <tr><td>Setter method</td><td><a href="method.SeekBar.set_seek_method.html"><code>clapper_gtk_seek_bar_set_seek_method()</code></a></td></tr>
+        
+        </table>
+      </div>
+      
     </div>
 
-    
+    <div class="flags toggle-wrapper">
+      <h4 id="flags">
+        Flags
+        <a href="#flags" class="anchor"></a>
+      </h4>
 
-    
+      <div class="docblock">
+      <table>
+        <tr><td>Readable</td><td><b>yes</b></td></tr>
+        <tr><td>Writable</td><td><b>yes</b></td></tr>
+        <tr><td>Construct</td><td><b>no</b></td></tr>
+        <tr><td>Construct only</td><td><b>no</b></td></tr>
+      </table>
+      </div>
+    </div>
 
   </section>
 </section>

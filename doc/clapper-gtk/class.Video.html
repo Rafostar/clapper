@@ -212,6 +212,20 @@ nested within another widget like <a href="javascript:void(0)" data-namespace="G
 <code>ClapperGtkVideo</code> widget it was overlaid on top of. This allows freely creating custom
 playback control panels best suited for specific application. Additionally, pre-made
 widgets such as <a href="class.SimpleControls.html"><code>ClapperGtkSimpleControls</code></a> are also&nbsp;available.</p>
+<h1 id="basic-usage">Basic usage<a class="md-anchor" href="#basic-usage" title="Permanent link"></a></h1>
+<p>A typical use case is to embed video widget as part of your app where video playback
+is needed. Get the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> belonging to the video widget and start adding
+new <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.MediaItem.html" class="external"><code>ClapperMediaItem</code></a> items to the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Queue.html" class="external"><code>ClapperQueue</code></a> for playback.
+For more information please refer to the Clapper playback library&nbsp;documentation.</p>
+<p><code>ClapperGtkVideo</code> can automatically take care of revealing and later fading overlaid
+content when interacting with the video. To do this, simply add your widgets with
+<a href="method.Video.add_fading_overlay.html"><code>clapper_gtk_video_add_fading_overlay()</code></a>. If you want to display some static content
+on top of video (or take care of visibility within overlaid widget itself) you can add
+it to the video as a normal (static) overlay with <a href="method.Video.add_overlay.html"><code>clapper_gtk_video_add_overlay()</code></a>.</p>
+<h1 id="clappergtkvideo-as-gtkbuildable">ClapperGtkVideo as GtkBuildable<a class="md-anchor" href="#clappergtkvideo-as-gtkbuildable" title="Permanent link"></a></h1>
+<p><code>ClapperGtkVideo</code> implementation of the <a href="javascript:void(0)" data-namespace="Gtk" data-link="iface.Buildable.html" class="external"><code>GtkBuildable</code></a> interface supports
+placing children as either normal overlay by specifying <code>overlay</code> or a fading
+one by specifying <code>fading-overlay</code> as the <code>type</code> attribute of a <code>&lt;child&gt;</code> element.</p>
         </div>
 
         <div class="docblock">
@@ -1268,6 +1282,16 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
     <p id="toc-title">Content</p>
     <ul class="toc-list">
       <li class="toc-list-item"><a href="#description"><span class="link-text">Description</span></a></li>
+      
+      <ul class="toc-list">
+      
+      
+        <li class="toc-list-item"><a href="#basic-usage"><span class="link-text">Basic usage</span></a></li>
+      
+        <li class="toc-list-item"><a href="#clappergtkvideo-as-gtkbuildable"><span class="link-text">ClapperGtkVideo as GtkBuildable</span></a></li>
+      
+      
+      </ul>
       
       
       <li class="toc-list-item"><a href="#hierarchy"><span class="link-text">Hierarchy</span></a></li>

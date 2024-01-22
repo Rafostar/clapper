@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.ProgressBar:seek-method</title>
+  <title>ClapperGtk.SeekBar:reveal-labels</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="ClapperGtk.ProgressBar:seek-method"/>
-  <meta property="og:description" content="Reference for property ClapperGtk.ProgressBar:seek-method"/>
-  <meta name="twitter:title" content="ClapperGtk.ProgressBar:seek-method"/>
-  <meta name="twitter:description" content="Reference for property ClapperGtk.ProgressBar:seek-method"/>
+  <meta property="og:title" content="ClapperGtk.SeekBar:reveal-labels"/>
+  <meta property="og:description" content="Reference for property ClapperGtk.SeekBar:reveal-labels"/>
+  <meta name="twitter:title" content="ClapperGtk.SeekBar:reveal-labels"/>
+  <meta name="twitter:description" content="Reference for property ClapperGtk.SeekBar:reveal-labels"/>
 
 
   
@@ -80,16 +80,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.ProgressBar.html">ProgressBar</a>
+    <a href="class.SeekBar.html">SeekBar</a>
   </div>
 </div>
 <div class="section">
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property"href="property.ProgressBar.reveal-labels.html">reveal-labels</a>
+    <a class="property current"href="property.SeekBar.reveal-labels.html">reveal-labels</a>
   
-    <a class="property current"href="property.ProgressBar.seek-method.html">seek-method</a>
+    <a class="property"href="property.SeekBar.seek-method.html">seek-method</a>
   
   </div>
 </div>
@@ -105,7 +105,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Property</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.ProgressBar.html">ProgressBar</a>:seek-method</h1>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.SeekBar.html">SeekBar</a>:reveal-labels</h1>
   </header>
 
   <section>
@@ -119,7 +119,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property seek-method: Clapper.PlayerSeekMethod [ read, write ]</code></pre>
+        <pre><code>property reveal-labels: gboolean [ read, write ]</code></pre>
       </div>
     </div>
 
@@ -128,18 +128,18 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-progress-bar.c#L408">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-seek-bar.c#L443">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Method used for&nbsp;seeking.</p>
+        <p>Reveal state of the position and duration&nbsp;labels.</p>
       </div>
 
       <div class="docblock">
         <table>
           <tr><td>Type:</td>
-            <td><a href="javascript:void(0)" data-link="enum.PlayerSeekMethod.html" data-namespace="Clapper" class="external"><code>ClapperPlayerSeekMethod</code></a></td>
+            <td><code>gboolean</code></td>
           </tr>
           
           
@@ -151,11 +151,11 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Default value</td><td>CLAPPER_PLAYER_SEEK_METHOD_NORMAL</td></tr>
+          <tr><td>Default value</td><td>TRUE</td></tr>
         
-          <tr><td>Getter method</td><td><a href="method.ProgressBar.get_seek_method.html"><code>clapper_gtk_progress_bar_get_seek_method()</code></a></td></tr>
+          <tr><td>Getter method</td><td><a href="method.SeekBar.get_reveal_labels.html"><code>clapper_gtk_seek_bar_get_reveal_labels()</code></a></td></tr>
         
-          <tr><td>Setter method</td><td><a href="method.ProgressBar.set_seek_method.html"><code>clapper_gtk_progress_bar_set_seek_method()</code></a></td></tr>
+          <tr><td>Setter method</td><td><a href="method.SeekBar.set_reveal_labels.html"><code>clapper_gtk_seek_bar_set_reveal_labels()</code></a></td></tr>
         
         </table>
       </div>

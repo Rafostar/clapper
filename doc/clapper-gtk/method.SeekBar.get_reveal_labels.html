@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.ProgressBar.set_reveal_labels</title>
+  <title>ClapperGtk.SeekBar.get_reveal_labels</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="ClapperGtk.ProgressBar.set_reveal_labels"/>
-  <meta priority="og:description" content="Reference for ClapperGtk.ProgressBar.set_reveal_labels"/>
-  <meta name="twitter:title" content="ClapperGtk.ProgressBar.set_reveal_labels"/>
-  <meta name="twitter:description" content="Reference for ClapperGtk.ProgressBar.set_reveal_labels"/>
+  <meta priority="og:title" content="ClapperGtk.SeekBar.get_reveal_labels"/>
+  <meta priority="og:description" content="Reference for ClapperGtk.SeekBar.get_reveal_labels"/>
+  <meta name="twitter:title" content="ClapperGtk.SeekBar.get_reveal_labels"/>
+  <meta name="twitter:description" content="Reference for ClapperGtk.SeekBar.get_reveal_labels"/>
 
 
   
@@ -80,20 +80,20 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.ProgressBar.html">ProgressBar</a>
+    <a href="class.SeekBar.html">SeekBar</a>
   </div>
 </div>
 <div class="section">
   <h5>Methods</h5>
   <div class="links">
   
-    <a class="method" href="method.ProgressBar.get_reveal_labels.html">get_reveal_labels</a>
+    <a class="method current" href="method.SeekBar.get_reveal_labels.html">get_reveal_labels</a>
   
-    <a class="method" href="method.ProgressBar.get_seek_method.html">get_seek_method</a>
+    <a class="method" href="method.SeekBar.get_seek_method.html">get_seek_method</a>
   
-    <a class="method current" href="method.ProgressBar.set_reveal_labels.html">set_reveal_labels</a>
+    <a class="method" href="method.SeekBar.set_reveal_labels.html">set_reveal_labels</a>
   
-    <a class="method" href="method.ProgressBar.set_seek_method.html">set_seek_method</a>
+    <a class="method" href="method.SeekBar.set_seek_method.html">set_seek_method</a>
   
   </div>
 </div>
@@ -109,7 +109,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.ProgressBar.html">ProgressBar</a><span class="sep"></span>set_reveal_labels</h1>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.SeekBar.html">SeekBar</a><span class="sep"></span>get_reveal_labels</h1>
   </header>
 
   <section>
@@ -122,15 +122,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-progress-bar.h#L40">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-seek-bar.h#L42">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">clapper_gtk_progress_bar_set_reveal_labels</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperGtkProgressBar</span><span class="o">*</span><span class="w"> </span><span class="n">progress_bar</span><span class="p">,</span>
-<span class="w">  </span><span class="n">gboolean</span><span class="w"> </span><span class="n">reveal</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">gboolean</span>
+<span class="n">clapper_gtk_seek_bar_get_reveal_labels</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperGtkSeekBar</span><span class="o">*</span><span class="w"> </span><span class="n">seek_bar</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -142,12 +141,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-progress-bar.c#L200">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-seek-bar.c#L239">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Set whether the position and duration labels should be&nbsp;revealed.</p>
+        <p>Get whether the position and duration labels are going to be&nbsp;revealed.</p>
       </div>
 
       <div class="docblock">
@@ -163,7 +162,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Sets property</td><td><a href="property.ProgressBar.reveal-labels.html"><code>ClapperGtk.ProgressBar:reveal-labels</code></a></td></tr>
+          <tr><td>Gets property</td><td><a href="property.SeekBar.reveal-labels.html"><code>ClapperGtk.SeekBar:reveal-labels</code></a></td></tr>
         
         </table>
       </div>
@@ -171,19 +170,21 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     
-    <div class="parameters toggle-wrapper">
-      <h4 id="parameters">
-        Parameters
-        <a href="#parameters" class="anchor"></a>
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <dl class="arguments">
-          
-          <dt class="arg-name"><code>reveal</code></dt>
-          <dd class="arg-description">
+        <div class="returns">
+          <div class="arg-description">
             <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
-            <p><p>Whether to reveal&nbsp;labels.</p></p>
+            <p><p><span class="caps">TRUE</span> if the labels are going to be revealed, <code>FALSE</code> otherwise.</p></p>
+          </div>
+          <div>
             <table>
             
             
@@ -191,19 +192,11 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             
             
-            
-            
-            
             </table>
-          </dd>
-          
-
-          
-        </dl>
+          </div>
+        </div>
       </div>
     </div>
-    
-
     
 
   </section>
