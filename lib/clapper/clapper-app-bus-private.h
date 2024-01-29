@@ -42,7 +42,7 @@ void clapper_app_bus_forward_message (ClapperAppBus *app_bus, GstMessage *msg);
 
 void clapper_app_bus_post_prop_notify (ClapperAppBus *app_bus, GstObject *src, GParamSpec *pspec);
 
-void clapper_app_bus_post_refresh_streams (ClapperAppBus *app_bus, GstObject *src, ClapperMediaItem *item);
+void clapper_app_bus_post_refresh_streams (ClapperAppBus *app_bus, GstObject *src);
 
 void clapper_app_bus_post_model_update (ClapperAppBus *app_bus, GstObject *src, guint position, guint removed, guint added, GParamSpec *n_items_pspec);
 

@@ -36,14 +36,18 @@ void clapper_playbin_bus_post_set_volume (GstBus *bus, GstElement *playbin, gflo
 
 void clapper_playbin_bus_post_set_prop (GstBus *bus, GstObject *src, const gchar *name, GValue *value);
 
+void clapper_playbin_bus_post_set_play_flag (GstBus *bus, ClapperPlayerPlayFlags flag, gboolean enabled);
+
 void clapper_playbin_bus_post_request_state (GstBus *bus, ClapperPlayer *player, GstState state);
 
 void clapper_playbin_bus_post_seek (GstBus *bus, gfloat position, ClapperPlayerSeekMethod flags);
 
 void clapper_playbin_bus_post_rate_change (GstBus *bus, gfloat rate);
 
-void clapper_playbin_bus_post_stream_change (GstBus *bus, ClapperMediaItem *item);
+void clapper_playbin_bus_post_stream_change (GstBus *bus);
 
 void clapper_playbin_bus_post_current_item_change (GstBus *bus, ClapperMediaItem *current_item, ClapperQueueItemChangeMode mode);
+
+void clapper_playbin_bus_post_item_suburi_change (GstBus *bus, ClapperMediaItem *item);
 
 G_END_DECLS

@@ -25,38 +25,25 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gst/gst.h>
-
-#include <clapper/clapper-enums.h>
+#include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_STREAM (clapper_stream_get_type())
-#define CLAPPER_STREAM_CAST(obj) ((ClapperStream *)(obj))
+#define CLAPPER_TYPE_VIDEO_STREAM (clapper_video_stream_get_type())
+#define CLAPPER_VIDEO_STREAM_CAST(obj) ((ClapperVideoStream *)(obj))
 
-G_DECLARE_DERIVABLE_TYPE (ClapperStream, clapper_stream, CLAPPER, STREAM, GstObject)
+G_DECLARE_FINAL_TYPE (ClapperVideoStream, clapper_video_stream, CLAPPER, VIDEO_STREAM, ClapperStream)
 
-struct _ClapperStreamClass
-{
-  GstObjectClass parent_class;
+gchar * clapper_video_stream_get_codec (ClapperVideoStream *stream);
 
-  /**
-   * ClapperStreamClass::internal_stream_updated:
-   * @stream: a #ClapperStream
-   * @caps: (nullable): an updated #GstCaps if changed
-   * @tags: (nullable): an updated #GstTagList if changed
-   *
-   * This function is called when internal #GstStream gets updated.
-   * Meant for internal usage only. Used for subclasses to update
-   * their properties accordingly.
-   *
-   * Note that this vfunc is called from different threads.
-   */
-  void (* internal_stream_updated) (ClapperStream *stream, GstCaps *caps, GstTagList *tags);
-};
+gint clapper_video_stream_get_width (ClapperVideoStream *stream);
 
-ClapperStreamType clapper_stream_get_stream_type (ClapperStream *stream);
+gint clapper_video_stream_get_height (ClapperVideoStream *stream);
 
-gchar * clapper_stream_get_title (ClapperStream *stream);
+gdouble clapper_video_stream_get_fps (ClapperVideoStream *stream);
+
+guint clapper_video_stream_get_bitrate (ClapperVideoStream *stream);
+
+gchar * clapper_video_stream_get_pixel_format (ClapperVideoStream *stream);
 
 G_END_DECLS

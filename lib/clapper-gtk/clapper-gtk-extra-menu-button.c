@@ -28,7 +28,7 @@
 #include "clapper-gtk-extra-menu-button.h"
 #include "clapper-gtk-utils.h"
 
-#define DEFAULT_VOLUME_VISIBLE TRUE
+#define DEFAULT_CAN_OPEN_SUBTITLES FALSE
 
 #define GST_CAT_DEFAULT clapper_gtk_extra_menu_button_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -50,8 +50,13 @@ struct _ClapperGtkExtraMenuButton
   GtkWidget *top_separator;
 
   GtkWidget *video_list_view;
+  GtkScrolledWindow *video_sw;
+
   GtkWidget *audio_list_view;
+  GtkScrolledWindow *audio_sw;
+
   GtkWidget *subtitle_list_view;
+  GtkScrolledWindow *subtitle_sw;
 
   ClapperPlayer *player;
   ClapperMediaItem *current_item;
@@ -60,6 +65,12 @@ struct _ClapperGtkExtraMenuButton
 
   GBinding *volume_binding;
   GBinding *speed_binding;
+
+  GBinding *video_binding;
+  GBinding *audio_binding;
+  GBinding *subtitle_binding;
+
+  gboolean can_open_subtitles;
 };
 
 #define parent_class clapper_gtk_extra_menu_button_parent_class
@@ -70,11 +81,30 @@ enum
   PROP_0,
   PROP_VOLUME_VISIBLE,
   PROP_SPEED_VISIBLE,
-  PROP_OPEN_SUBTITLES_VISIBLE,
+  PROP_CAN_OPEN_SUBTITLES,
   PROP_LAST
 };
 
+enum
+{
+  SIGNAL_OPEN_SUBTITLES,
+  SIGNAL_LAST
+};
+
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
+static guint signals[SIGNAL_LAST] = { 0, };
+
+static void
+_set_action_enabled (ClapperGtkExtraMenuButton *self, const gchar *name, gboolean enabled)
+{
+  GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self->action_group), name);
+  gboolean was_enabled = g_action_get_enabled (action);
+
+  if (was_enabled == enabled)
+    return;
+
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+}
 
 static gint
 volume_spin_input_cb (GtkSpinButton *spin_button, gdouble *value, ClapperGtkExtraMenuButton *self)
@@ -181,78 +211,76 @@ speed_spin_changed_cb (GtkSpinButton *spin_button, ClapperGtkExtraMenuButton *se
 }
 
 static void
+visible_submenu_changed_cb (GtkPopoverMenu *popover_menu,
+    GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkExtraMenuButton *self)
+{
+  gchar *name = NULL;
+  gboolean in_video, in_audio, in_subtitles;
+
+  g_object_get (popover_menu, "visible-submenu", &name, NULL);
+
+  /* TODO: Check if we have to compare translated strings here */
+  in_video = (g_strcmp0 (name, "Video") == 0);
+  in_audio = (g_strcmp0 (name, "Audio") == 0);
+  in_subtitles = (g_strcmp0 (name, "Subtitles") == 0);
+
+  /* XXX: This works around the issue where popover does not adapt its
+   * width when navigating submenus making spin buttons unnecesary centered */
+  gtk_scrolled_window_set_propagate_natural_width (self->video_sw, in_video);
+  gtk_scrolled_window_set_propagate_natural_width (self->audio_sw, in_audio);
+  gtk_scrolled_window_set_propagate_natural_width (self->subtitle_sw, in_subtitles);
+
+  g_free (name);
+}
+
+static void
+_subtitles_enabled_changed_cb (ClapperPlayer *player,
+    GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkExtraMenuButton *self)
+{
+  GAction *action = g_action_map_lookup_action (
+      G_ACTION_MAP (self->action_group), "subtitle-stream-enabled");
+  GVariant *variant = g_action_get_state (action);
+  gboolean was_enabled, enabled;
+
+  was_enabled = g_variant_get_boolean (variant);
+  enabled = clapper_player_get_subtitles_enabled (player);
+
+  g_variant_unref (variant);
+
+  if (was_enabled == enabled)
+    return;
+
+  variant = g_variant_ref_sink (g_variant_new_boolean (enabled));
+
+  g_simple_action_set_state (G_SIMPLE_ACTION (action), variant);
+  g_variant_unref (variant);
+}
+
+static void
 _queue_current_item_changed_cb (ClapperQueue *queue,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkExtraMenuButton *self)
 {
   ClapperMediaItem *current_item = clapper_queue_get_current_item (queue);
 
-  if (current_item) {
-    ClapperStreamList *stream_list;
-    GtkSingleSelection *selection;
+  /* NOTE: This is also called after popover "map" signal */
 
-    stream_list = clapper_media_item_get_video_streams (current_item);
-    selection = gtk_single_selection_new (gst_object_ref (stream_list));
-
-    gtk_list_view_set_model (GTK_LIST_VIEW (self->video_list_view),
-        GTK_SELECTION_MODEL (selection));
-    g_object_unref (selection);
-
-    stream_list = clapper_media_item_get_audio_streams (current_item);
-    selection = gtk_single_selection_new (gst_object_ref (stream_list));
-
-    gtk_list_view_set_model (GTK_LIST_VIEW (self->audio_list_view),
-        GTK_SELECTION_MODEL (selection));
-    g_object_unref (selection);
-
-    stream_list = clapper_media_item_get_subtitle_streams (current_item);
-    selection = gtk_single_selection_new (gst_object_ref (stream_list));
-
-    g_object_bind_property (stream_list, "current-index",
-        selection, "selected", G_BINDING_SYNC_CREATE);
-
-    gtk_list_view_set_model (GTK_LIST_VIEW (self->subtitle_list_view),
-        GTK_SELECTION_MODEL (selection));
-    g_object_unref (selection);
-  } else {
-    gtk_list_view_set_model (GTK_LIST_VIEW (self->video_list_view), NULL);
-    gtk_list_view_set_model (GTK_LIST_VIEW (self->audio_list_view), NULL);
-    gtk_list_view_set_model (GTK_LIST_VIEW (self->subtitle_list_view), NULL);
+  if (gst_object_replace ((GstObject **) &self->current_item, GST_OBJECT_CAST (current_item))) {
+    _set_action_enabled (self, "open-subtitle-stream",
+        (self->can_open_subtitles && self->current_item != NULL));
   }
 
-  gst_object_replace ((GstObject **) &self->current_item, GST_OBJECT_CAST (current_item));
   gst_clear_object (&current_item);
-}
-
-static void
-change_video_stream_enabled (GSimpleAction *action, GVariant *value, gpointer user_data)
-{
-  ClapperGtkExtraMenuButton *self = CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST (user_data);
-/*
-  if (G_LIKELY (self->player != NULL))
-    clapper_player_set_video_enabled (self->player, g_variant_get_boolean (state));
-*/
-  g_simple_action_set_state (action, value);
-}
-
-static void
-change_audio_stream_enabled (GSimpleAction *action, GVariant *value, gpointer user_data)
-{
-  ClapperGtkExtraMenuButton *self = CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST (user_data);
-/*
-  if (G_LIKELY (self->player != NULL))
-    clapper_player_set_audio_enabled (self->player, g_variant_get_boolean (state));
-*/
-  g_simple_action_set_state (action, value);
 }
 
 static void
 change_subtitle_stream_enabled (GSimpleAction *action, GVariant *value, gpointer user_data)
 {
   ClapperGtkExtraMenuButton *self = CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST (user_data);
-/*
+  gboolean enable = g_variant_get_boolean (value);
+
   if (G_LIKELY (self->player != NULL))
-    clapper_player_set_subtitles_enabled (self->player, g_variant_get_boolean (state));
-*/
+    clapper_player_set_subtitles_enabled (self->player, enable);
+
   g_simple_action_set_state (action, value);
 }
 
@@ -261,38 +289,9 @@ open_subtitle_stream (GSimpleAction *action, GVariant *param, gpointer user_data
 {
   ClapperGtkExtraMenuButton *self = CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST (user_data);
 
-  /* FIXME: Should we handle this here? Or simply tell user
-   * to install app action handler for this by himself? */
-  GST_FIXME_OBJECT (self, "Implement open subtitles file dialog");
-}
-
-static gboolean
-_set_action_enabled (ClapperGtkExtraMenuButton *self, const gchar *name, gboolean enabled)
-{
-  GAction *action;
-  gboolean was_enabled;
-
-  action = g_action_map_lookup_action (G_ACTION_MAP (self->action_group), name);
-  g_object_get (action, "enabled", &was_enabled, NULL);
-
-  if (was_enabled == enabled)
-    return FALSE;
-
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
-
-  return TRUE;
-}
-
-static gboolean
-_get_action_enabled (ClapperGtkExtraMenuButton *self, const gchar *name)
-{
-  GAction *action;
-  gboolean enabled = FALSE;
-
-  action = g_action_map_lookup_action (G_ACTION_MAP (self->action_group), name);
-  g_object_get (action, "enabled", &enabled, NULL);
-
-  return enabled;
+  /* We should not be here otherwise */
+  if (G_LIKELY (self->can_open_subtitles && self->current_item != NULL))
+    g_signal_emit (self, signals[SIGNAL_OPEN_SUBTITLES], 0, self->current_item);
 }
 
 static void
@@ -390,23 +389,35 @@ clapper_gtk_extra_menu_button_get_speed_visible (ClapperGtkExtraMenuButton *self
 }
 
 /**
- * clapper_gtk_extra_menu_button_set_open_subtitles_visible:
+ * clapper_gtk_extra_menu_button_set_can_open_subtitles:
  * @button: a #ClapperGtkExtraMenuButton
- * @visible: whether visible
+ * @allowed: whether opening subtitles should be allowed
  *
- * Set whether an option to open external subtitle stream should be visible.
+ * Set whether an option to open external subtitle stream should be allowed.
+ *
+ * Note that this [class@Gtk.Widget] can only add subtitles to currently playing
+ * [class@Clapper.MediaItem]. When no media is selected, option to open subtitles
+ * will not be shown regardless how this option is set.
  */
 void
-clapper_gtk_extra_menu_button_set_open_subtitles_visible (ClapperGtkExtraMenuButton *self, gboolean visible)
+clapper_gtk_extra_menu_button_set_can_open_subtitles (ClapperGtkExtraMenuButton *self, gboolean allowed)
 {
+  gboolean changed;
+
   g_return_if_fail (CLAPPER_GTK_IS_EXTRA_MENU_BUTTON (self));
 
-  if (_set_action_enabled (self, "open-subtitle-stream", visible))
-    g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_OPEN_SUBTITLES_VISIBLE]);
+  if ((changed = self->can_open_subtitles != allowed)) {
+    self->can_open_subtitles = allowed;
+
+    _set_action_enabled (self, "open-subtitle-stream",
+        (self->can_open_subtitles && self->current_item != NULL));
+
+    g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_CAN_OPEN_SUBTITLES]);
+  }
 }
 
 /**
- * clapper_gtk_extra_menu_button_get_open_subtitles_visible:
+ * clapper_gtk_extra_menu_button_get_can_open_subtitles:
  * @button: a #ClapperGtkExtraMenuButton
  *
  * Get whether an option to open external subtitle stream inside popover is visible.
@@ -414,19 +425,17 @@ clapper_gtk_extra_menu_button_set_open_subtitles_visible (ClapperGtkExtraMenuBut
  * Returns: %TRUE if open subtitles is visible, %FALSE otherwise.
  */
 gboolean
-clapper_gtk_extra_menu_button_get_open_subtitles_visible (ClapperGtkExtraMenuButton *self)
+clapper_gtk_extra_menu_button_get_can_open_subtitles (ClapperGtkExtraMenuButton *self)
 {
   g_return_val_if_fail (CLAPPER_GTK_IS_EXTRA_MENU_BUTTON (self), FALSE);
 
-  return _get_action_enabled (self, "open-subtitle-stream");
+  return self->can_open_subtitles;
 }
 
 static void
 clapper_gtk_extra_menu_button_init (ClapperGtkExtraMenuButton *self)
 {
   static GActionEntry action_entries[] = {
-    { "video-stream-enabled", NULL, NULL, "true", change_video_stream_enabled },
-    { "audio-stream-enabled", NULL, NULL, "true", change_audio_stream_enabled },
     { "subtitle-stream-enabled", NULL, NULL, "true", change_subtitle_stream_enabled },
     { "open-subtitle-stream", open_subtitle_stream, NULL, NULL, NULL },
   };
@@ -443,8 +452,9 @@ clapper_gtk_extra_menu_button_init (ClapperGtkExtraMenuButton *self)
   gtk_widget_insert_action_group (GTK_WIDGET (self),
       "clappergtk", G_ACTION_GROUP (self->action_group));
 
-  /* Set default visibilty */
-  clapper_gtk_extra_menu_button_set_open_subtitles_visible (self, FALSE);
+  /* Set default values */
+  self->can_open_subtitles = DEFAULT_CAN_OPEN_SUBTITLES;
+  _set_action_enabled (self, "open-subtitle-stream", self->can_open_subtitles);
 }
 
 static void
@@ -465,43 +475,113 @@ clapper_gtk_extra_menu_button_compute_expand (GtkWidget *widget,
 }
 
 static void
-clapper_gtk_extra_menu_button_map (GtkWidget *widget)
+clapper_gtk_extra_menu_button_realize (GtkWidget *widget)
 {
   ClapperGtkExtraMenuButton *self = CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST (widget);
 
-  if ((self->player = clapper_gtk_get_player_from_ancestor (widget))) {
-    ClapperQueue *queue = clapper_player_get_queue (self->player);
+  GST_TRACE_OBJECT (self, "Realize");
 
-    self->volume_binding = g_object_bind_property (self->volume_spin, "value",
-        self->player, "volume", G_BINDING_BIDIRECTIONAL);
-    self->speed_binding = g_object_bind_property (self->speed_spin, "value",
-        self->player, "speed", G_BINDING_BIDIRECTIONAL);
+  if ((self->player = clapper_gtk_get_player_from_ancestor (GTK_WIDGET (self)))) {
+    ClapperStreamList *stream_list;
+    GtkSingleSelection *selection;
 
-    g_signal_connect (queue, "notify::current-item",
-        G_CALLBACK (_queue_current_item_changed_cb), self);
-    _queue_current_item_changed_cb (queue, NULL, self);
+    stream_list = clapper_player_get_video_streams (self->player);
+    selection = gtk_single_selection_new (gst_object_ref (stream_list));
+
+    self->video_binding = g_object_bind_property (stream_list, "current-index",
+        selection, "selected", G_BINDING_SYNC_CREATE);
+
+    gtk_list_view_set_model (GTK_LIST_VIEW (self->video_list_view),
+        GTK_SELECTION_MODEL (selection));
+    g_object_unref (selection);
+
+    stream_list = clapper_player_get_audio_streams (self->player);
+    selection = gtk_single_selection_new (gst_object_ref (stream_list));
+
+    self->audio_binding = g_object_bind_property (stream_list, "current-index",
+        selection, "selected", G_BINDING_SYNC_CREATE);
+
+    gtk_list_view_set_model (GTK_LIST_VIEW (self->audio_list_view),
+        GTK_SELECTION_MODEL (selection));
+    g_object_unref (selection);
+
+    stream_list = clapper_player_get_subtitle_streams (self->player);
+    selection = gtk_single_selection_new (gst_object_ref (stream_list));
+
+    self->subtitle_binding = g_object_bind_property (stream_list, "current-index",
+        selection, "selected", G_BINDING_SYNC_CREATE);
+
+    gtk_list_view_set_model (GTK_LIST_VIEW (self->subtitle_list_view),
+        GTK_SELECTION_MODEL (selection));
+    g_object_unref (selection);
   }
 
-  GTK_WIDGET_CLASS (parent_class)->map (widget);
+  GTK_WIDGET_CLASS (parent_class)->realize (widget);
 }
 
 static void
-clapper_gtk_extra_menu_button_unmap (GtkWidget *widget)
+clapper_gtk_extra_menu_button_unrealize (GtkWidget *widget)
 {
   ClapperGtkExtraMenuButton *self = CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST (widget);
 
-  if (self->player) {
-    ClapperQueue *queue = clapper_player_get_queue (self->player);
+  GST_TRACE_OBJECT (self, "Unrealize");
 
-    g_clear_pointer (&self->volume_binding, g_binding_unbind);
-    g_clear_pointer (&self->speed_binding, g_binding_unbind);
+  g_clear_pointer (&self->video_binding, g_binding_unbind);
+  g_clear_pointer (&self->audio_binding, g_binding_unbind);
+  g_clear_pointer (&self->subtitle_binding, g_binding_unbind);
 
-    g_signal_handlers_disconnect_by_func (queue, _queue_current_item_changed_cb, self);
+  gtk_list_view_set_model (GTK_LIST_VIEW (self->video_list_view), NULL);
+  gtk_list_view_set_model (GTK_LIST_VIEW (self->audio_list_view), NULL);
+  gtk_list_view_set_model (GTK_LIST_VIEW (self->subtitle_list_view), NULL);
 
-    self->player = NULL;
-  }
+  self->player = NULL;
 
-  GTK_WIDGET_CLASS (parent_class)->unmap (widget);
+  GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
+}
+
+static void
+popover_map_cb (GtkWidget *widget, ClapperGtkExtraMenuButton *self)
+{
+  ClapperQueue *queue;
+
+  GST_TRACE_OBJECT (self, "Popover map");
+
+  if (G_UNLIKELY (self->player == NULL))
+    return;
+
+  queue = clapper_player_get_queue (self->player);
+
+  self->volume_binding = g_object_bind_property (self->player, "volume",
+      self->volume_spin, "value", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+  self->speed_binding = g_object_bind_property (self->player, "speed",
+      self->speed_spin, "value", G_BINDING_BIDIRECTIONAL | G_BINDING_SYNC_CREATE);
+
+  g_signal_connect (self->player, "notify::subtitles-enabled",
+      G_CALLBACK (_subtitles_enabled_changed_cb), self);
+  _subtitles_enabled_changed_cb (self->player, NULL, self);
+
+  g_signal_connect (queue, "notify::current-item",
+      G_CALLBACK (_queue_current_item_changed_cb), self);
+  _queue_current_item_changed_cb (queue, NULL, self);
+}
+
+static void
+popover_unmap_cb (GtkWidget *widget, ClapperGtkExtraMenuButton *self)
+{
+  ClapperQueue *queue;
+
+  GST_TRACE_OBJECT (self, "Popover unmap");
+
+  if (G_UNLIKELY (self->player == NULL))
+    return;
+
+  queue = clapper_player_get_queue (self->player);
+
+  g_clear_pointer (&self->volume_binding, g_binding_unbind);
+  g_clear_pointer (&self->speed_binding, g_binding_unbind);
+
+  g_signal_handlers_disconnect_by_func (self->player, _subtitles_enabled_changed_cb, self);
+  g_signal_handlers_disconnect_by_func (queue, _queue_current_item_changed_cb, self);
 }
 
 static void
@@ -542,8 +622,8 @@ clapper_gtk_extra_menu_button_get_property (GObject *object, guint prop_id,
     case PROP_SPEED_VISIBLE:
       g_value_set_boolean (value, clapper_gtk_extra_menu_button_get_speed_visible (self));
       break;
-    case PROP_OPEN_SUBTITLES_VISIBLE:
-      g_value_set_boolean (value, clapper_gtk_extra_menu_button_get_open_subtitles_visible (self));
+    case PROP_CAN_OPEN_SUBTITLES:
+      g_value_set_boolean (value, clapper_gtk_extra_menu_button_get_can_open_subtitles (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -564,8 +644,8 @@ clapper_gtk_extra_menu_button_set_property (GObject *object, guint prop_id,
     case PROP_SPEED_VISIBLE:
       clapper_gtk_extra_menu_button_set_speed_visible (self, g_value_get_boolean (value));
       break;
-    case PROP_OPEN_SUBTITLES_VISIBLE:
-      clapper_gtk_extra_menu_button_set_open_subtitles_visible (self, g_value_get_boolean (value));
+    case PROP_CAN_OPEN_SUBTITLES:
+      clapper_gtk_extra_menu_button_set_can_open_subtitles (self, g_value_get_boolean (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -588,8 +668,8 @@ clapper_gtk_extra_menu_button_class_init (ClapperGtkExtraMenuButtonClass *klass)
   gobject_class->finalize = clapper_gtk_extra_menu_button_finalize;
 
   widget_class->compute_expand = clapper_gtk_extra_menu_button_compute_expand;
-  widget_class->map = clapper_gtk_extra_menu_button_map;
-  widget_class->unmap = clapper_gtk_extra_menu_button_unmap;
+  widget_class->realize = clapper_gtk_extra_menu_button_realize;
+  widget_class->unrealize = clapper_gtk_extra_menu_button_unrealize;
 
   /**
    * ClapperGtkExtraMenuButton:volume-visible:
@@ -610,13 +690,39 @@ clapper_gtk_extra_menu_button_class_init (ClapperGtkExtraMenuButtonClass *klass)
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
-   * ClapperGtkExtraMenuButton:open-subtitles-visible:
+   * ClapperGtkExtraMenuButton:can-open-subtitles:
    *
    * Visibility of open subtitles option inside popover.
    */
-  param_specs[PROP_OPEN_SUBTITLES_VISIBLE] = g_param_spec_boolean ("open-subtitles-visible",
+  param_specs[PROP_CAN_OPEN_SUBTITLES] = g_param_spec_boolean ("can-open-subtitles",
       NULL, NULL, FALSE,
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperGtkExtraMenuButton::open-subtitles:
+   * @button: a #ClapperGtkExtraMenuButton
+   * @item: a #ClapperMediaItem
+   *
+   * A signal that user wants to open subtitles file.
+   *
+   * Implementation should add a way for user to select subtitles to open
+   * such as by e.g. using [class@Gtk.FileDialog] and then add them to the
+   * @item using [method@Clapper.MediaItem.set_suburi] method.
+   *
+   * This signal will pass the [class@Clapper.MediaItem] that
+   * was current when user clicked the open button and subtitles should be
+   * added to this @item. This avoids situations where another item starts
+   * playing before user selects subtitles file to be opened. When using asynchronous
+   * operations to open file, implementation should [method@GObject.ref] the item
+   * to ensure that it stays valid until finish.
+   *
+   * Note that this signal will not be emitted if open button is not visible by
+   * setting [method@ClapperGtk.ExtraMenuButton.set_can_open_subtitles] to %TRUE,
+   * so you do not have to implement handler for it otherwise.
+   */
+  signals[SIGNAL_OPEN_SUBTITLES] = g_signal_new ("open-subtitles",
+      G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+      0, NULL, NULL, NULL, G_TYPE_NONE, 1, CLAPPER_TYPE_MEDIA_ITEM);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 
@@ -636,8 +742,13 @@ clapper_gtk_extra_menu_button_class_init (ClapperGtkExtraMenuButtonClass *klass)
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, top_separator);
 
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, video_list_view);
+  gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, video_sw);
+
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, audio_list_view);
+  gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, audio_sw);
+
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, subtitle_list_view);
+  gtk_widget_class_bind_template_child (widget_class, ClapperGtkExtraMenuButton, subtitle_sw);
 
   gtk_widget_class_bind_template_callback (widget_class, volume_spin_input_cb);
   gtk_widget_class_bind_template_callback (widget_class, volume_spin_output_cb);
@@ -646,6 +757,10 @@ clapper_gtk_extra_menu_button_class_init (ClapperGtkExtraMenuButtonClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, speed_spin_input_cb);
   gtk_widget_class_bind_template_callback (widget_class, speed_spin_output_cb);
   gtk_widget_class_bind_template_callback (widget_class, speed_spin_changed_cb);
+
+  gtk_widget_class_bind_template_callback (widget_class, popover_map_cb);
+  gtk_widget_class_bind_template_callback (widget_class, popover_unmap_cb);
+  gtk_widget_class_bind_template_callback (widget_class, visible_submenu_changed_cb);
 
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BIN_LAYOUT);
   gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_BUTTON);

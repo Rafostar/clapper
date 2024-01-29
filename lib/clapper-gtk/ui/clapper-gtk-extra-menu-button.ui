@@ -9,24 +9,12 @@
         <attribute name="label" translatable="yes">Video</attribute>
         <section>
           <item>
-            <attribute name="label" translatable="yes">Enabled</attribute>
-            <attribute name="action">clappergtk.video-stream-enabled</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
             <attribute name="custom">video-streams</attribute>
           </item>
         </section>
       </submenu>
       <submenu>
         <attribute name="label" translatable="yes">Audio</attribute>
-        <section>
-          <item>
-            <attribute name="label" translatable="yes">Enabled</attribute>
-            <attribute name="action">clappergtk.audio-stream-enabled</attribute>
-          </item>
-        </section>
         <section>
           <item>
             <attribute name="custom">audio-streams</attribute>
@@ -38,7 +26,7 @@
         <section>
           <item>
             <attribute name="label" translatable="yes">Enabled</attribute>
-            <attribute name="action">clappergtk.video-stream-enabled</attribute>
+            <attribute name="action">clappergtk.subtitle-stream-enabled</attribute>
           </item>
           <item>
             <attribute name="label" translatable="yes">Open…</attribute>
@@ -62,12 +50,16 @@
         <property name="popover">
           <object class="GtkPopoverMenu">
             <property name="menu-model">extra-menu</property>
+            <signal name="map" handler="popover_map_cb"/>
+            <signal name="unmap" handler="popover_unmap_cb"/>
+            <signal name="notify::visible-submenu" handler="visible_submenu_changed_cb"/>
             <child type="top-box">
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
+                    <property name="halign">center</property>
                     <property name="spacing">4</property>
                     <child>
                       <object class="GtkBox" id="volume_box">
@@ -159,53 +151,79 @@
               </object>
             </child>
             <child type="video-streams">
-              <object class="GtkScrolledWindow">
-                <property name="css-name">notheming</property>
-                <property name="hscrollbar-policy">never</property>
-                <property name="vscrollbar-policy">automatic</property>
-                <property name="propagate-natural-height">true</property>
-                <property name="max-content-height">192</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkListView" id="video_list_view">
-                    <property name="orientation">vertical</property>
-                    <property name="enable-rubberband">false</property>
-                    <property name="single-click-activate">false</property>
-                    <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                  <object class="GtkSeparator">
+                    <property name="orientation">horizontal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="video_sw">
+                    <property name="css-name">clapper-gtk-menu-scrolled-window</property>
+                    <property name="hscrollbar-policy">automatic</property>
+                    <property name="vscrollbar-policy">automatic</property>
+                    <property name="propagate-natural-width">false</property>
+                    <property name="propagate-natural-height">true</property>
+                    <property name="max-content-width">240</property>
+                    <property name="max-content-height">192</property>
+                    <child>
+                      <object class="GtkListView" id="video_list_view">
+                        <property name="orientation">vertical</property>
+                        <property name="enable-rubberband">false</property>
+                        <property name="single-click-activate">false</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                          </object>
+                        </property>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
               </object>
             </child>
             <child type="audio-streams">
-              <object class="GtkScrolledWindow">
-                <property name="css-name">notheming</property>
-                <property name="hscrollbar-policy">never</property>
-                <property name="vscrollbar-policy">automatic</property>
-                <property name="propagate-natural-height">true</property>
-                <property name="max-content-height">192</property>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkListView" id="audio_list_view">
-                    <property name="orientation">vertical</property>
-                    <property name="enable-rubberband">false</property>
-                    <property name="single-click-activate">false</property>
-                    <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                  <object class="GtkSeparator">
+                    <property name="orientation">horizontal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="audio_sw">
+                    <property name="css-name">clapper-gtk-menu-scrolled-window</property>
+                    <property name="hscrollbar-policy">automatic</property>
+                    <property name="vscrollbar-policy">automatic</property>
+                    <property name="propagate-natural-width">false</property>
+                    <property name="propagate-natural-height">true</property>
+                    <property name="max-content-width">240</property>
+                    <property name="max-content-height">192</property>
+                    <child>
+                      <object class="GtkListView" id="audio_list_view">
+                        <property name="orientation">vertical</property>
+                        <property name="enable-rubberband">false</property>
+                        <property name="single-click-activate">false</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                          </object>
+                        </property>
                       </object>
-                    </property>
+                    </child>
                   </object>
                 </child>
               </object>
             </child>
             <child type="subtitle-streams">
-              <object class="GtkScrolledWindow">
-                <property name="css-name">notheming</property>
-                <property name="hscrollbar-policy">never</property>
+              <object class="GtkScrolledWindow" id="subtitle_sw">
+                <property name="css-name">clapper-gtk-menu-scrolled-window</property>
+                <property name="hscrollbar-policy">automatic</property>
                 <property name="vscrollbar-policy">automatic</property>
+                <property name="propagate-natural-width">false</property>
                 <property name="propagate-natural-height">true</property>
+                <property name="max-content-width">240</property>
                 <property name="max-content-height">192</property>
                 <child>
                   <object class="GtkListView" id="subtitle_list_view">

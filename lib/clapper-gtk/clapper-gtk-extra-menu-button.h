@@ -44,8 +44,8 @@ void clapper_gtk_extra_menu_button_set_speed_visible (ClapperGtkExtraMenuButton 
 
 gboolean clapper_gtk_extra_menu_button_get_speed_visible (ClapperGtkExtraMenuButton *button);
 
-void clapper_gtk_extra_menu_button_set_open_subtitles_visible (ClapperGtkExtraMenuButton *button, gboolean visible);
+void clapper_gtk_extra_menu_button_set_can_open_subtitles (ClapperGtkExtraMenuButton *button, gboolean allowed);
 
-gboolean clapper_gtk_extra_menu_button_get_open_subtitles_visible (ClapperGtkExtraMenuButton *button);
+gboolean clapper_gtk_extra_menu_button_get_can_open_subtitles (ClapperGtkExtraMenuButton *button);
 
 G_END_DECLS

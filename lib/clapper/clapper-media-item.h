@@ -28,8 +28,6 @@
 #include <gio/gio.h>
 #include <gst/gst.h>
 
-#include <clapper/clapper-stream-list.h>
-
 G_BEGIN_DECLS
 
 #define CLAPPER_TYPE_MEDIA_ITEM (clapper_media_item_get_type())
@@ -39,24 +37,20 @@ G_DECLARE_FINAL_TYPE (ClapperMediaItem, clapper_media_item, CLAPPER, MEDIA_ITEM,
 
 ClapperMediaItem * clapper_media_item_new (const gchar *uri);
 
-ClapperMediaItem * clapper_media_item_new_take (gchar *uri);
-
 ClapperMediaItem * clapper_media_item_new_from_file (GFile *file);
 
 guint clapper_media_item_get_id (ClapperMediaItem *item);
 
 const gchar * clapper_media_item_get_uri (ClapperMediaItem *item);
 
+void clapper_media_item_set_suburi (ClapperMediaItem *item, const gchar *suburi);
+
+gchar * clapper_media_item_get_suburi (ClapperMediaItem *item);
+
 gchar * clapper_media_item_get_title (ClapperMediaItem *item);
 
 gchar * clapper_media_item_get_container_format (ClapperMediaItem *item);
 
 gfloat clapper_media_item_get_duration (ClapperMediaItem *item);
-
-ClapperStreamList * clapper_media_item_get_video_streams (ClapperMediaItem *item);
-
-ClapperStreamList * clapper_media_item_get_audio_streams (ClapperMediaItem *item);
-
-ClapperStreamList * clapper_media_item_get_subtitle_streams (ClapperMediaItem *item);
 
 G_END_DECLS

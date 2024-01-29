@@ -28,15 +28,9 @@ G_GNUC_INTERNAL
 ClapperStreamList * clapper_stream_list_new (void);
 
 G_GNUC_INTERNAL
-void clapper_stream_list_add_stream (ClapperStreamList *list, ClapperStream *stream);
+void clapper_stream_list_replace_streams (ClapperStreamList *list, GList *streams);
 
 G_GNUC_INTERNAL
-gboolean clapper_stream_list_handle_gst_stream_selected (ClapperStreamList *list, GstStream *gst_stream);
-
-G_GNUC_INTERNAL
-void clapper_stream_list_handle_stream_change_failed (ClapperStreamList *list);
-
-G_GNUC_INTERNAL
-void clapper_stream_list_clear (ClapperStreamList *list);
+ClapperStream * clapper_stream_list_get_stream_for_gst_stream (ClapperStreamList *list, GstStream *gst_stream);
 
 G_END_DECLS

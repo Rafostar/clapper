@@ -19,15 +19,12 @@
 
 #pragma once
 
-#include <glib-object.h>
-#include <gtk/gtk.h>
+#include <glib.h>
+#include <clapper/clapper-subtitle-stream-list.h>
 
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-void clapper_app_file_dialog_open_files (GtkApplication *gtk_app);
-
-G_GNUC_INTERNAL
-void clapper_app_file_dialog_open_subtitles (GtkApplication *gtk_app, ClapperMediaItem *item);
+ClapperSubtitleStreamList * clapper_subtitle_stream_list_new (void);
 
 G_END_DECLS

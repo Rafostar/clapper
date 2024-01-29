@@ -24,8 +24,9 @@
 #endif
 
 #include <gst/gst.h>
-#include <clapper/clapper-queue.h>
 #include <clapper/clapper-threaded-object.h>
+#include <clapper/clapper-queue.h>
+#include <clapper/clapper-stream-list.h>
 #include <clapper/clapper-feature.h>
 #include <clapper/clapper-enums.h>
 
@@ -40,9 +41,15 @@ ClapperPlayer * clapper_player_new (void);
 
 ClapperQueue * clapper_player_get_queue (ClapperPlayer *player);
 
-gboolean clapper_player_get_autoplay (ClapperPlayer *player);
+ClapperStreamList * clapper_player_get_video_streams (ClapperPlayer *player);
+
+ClapperStreamList * clapper_player_get_audio_streams (ClapperPlayer *player);
+
+ClapperStreamList * clapper_player_get_subtitle_streams (ClapperPlayer *player);
 
 void clapper_player_set_autoplay (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_autoplay (ClapperPlayer *player);
 
 gfloat clapper_player_get_position (ClapperPlayer *player);
 
@@ -59,6 +66,18 @@ gfloat clapper_player_get_volume (ClapperPlayer *player);
 void clapper_player_set_speed (ClapperPlayer *player, gfloat speed);
 
 gfloat clapper_player_get_speed (ClapperPlayer *player);
+
+void clapper_player_set_video_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_video_enabled (ClapperPlayer *player);
+
+void clapper_player_set_audio_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_audio_enabled (ClapperPlayer *player);
+
+void clapper_player_set_subtitles_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_subtitles_enabled (ClapperPlayer *player);
 
 void clapper_player_set_video_sink (ClapperPlayer *player, GstElement *element);
 

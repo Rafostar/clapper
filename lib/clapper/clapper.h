@@ -26,8 +26,11 @@
 #include <clapper/clapper-queue.h>
 #include <clapper/clapper-feature.h>
 #include <clapper/clapper-media-item.h>
-#include <clapper/clapper-stream.h>
 #include <clapper/clapper-stream-list.h>
+#include <clapper/clapper-stream.h>
+#include <clapper/clapper-video-stream.h>
+#include <clapper/clapper-audio-stream.h>
+#include <clapper/clapper-subtitle-stream.h>
 #include <clapper/clapper-utils.h>
 #include <clapper/clapper-version.h>
 

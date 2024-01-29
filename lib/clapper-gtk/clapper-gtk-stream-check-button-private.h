@@ -24,10 +24,9 @@
 
 G_BEGIN_DECLS
 
-G_GNUC_INTERNAL
-void clapper_app_file_dialog_open_files (GtkApplication *gtk_app);
+#define CLAPPER_GTK_TYPE_STREAM_CHECK_BUTTON (clapper_gtk_stream_check_button_get_type())
+#define CLAPPER_GTK_STREAM_CHECK_BUTTON_CAST(obj) ((ClapperGtkStreamCheckButton *)(obj))
 
-G_GNUC_INTERNAL
-void clapper_app_file_dialog_open_subtitles (GtkApplication *gtk_app, ClapperMediaItem *item);
+G_DECLARE_FINAL_TYPE (ClapperGtkStreamCheckButton, clapper_gtk_stream_check_button, CLAPPER_GTK, STREAM_CHECK_BUTTON, GtkCheckButton)
 
 G_END_DECLS

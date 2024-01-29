@@ -38,6 +38,10 @@ struct _ClapperPlayer
 
   ClapperQueue *queue;
 
+  ClapperStreamList *video_streams;
+  ClapperStreamList *audio_streams;
+  ClapperStreamList *subtitle_streams;
+
   ClapperFeaturesManager *features_manager;
   gint have_features; // atomic integer
 
@@ -62,9 +66,16 @@ struct _ClapperPlayer
   gboolean is_buffering;
   gfloat pending_position; // store seek before playback
 
+  /* Stream collection */
+  GstStreamCollection *collection;
+  gulong stream_notify_id;
+
   /* Extra params */
   gboolean use_playbin3; // when using playbin3
   gboolean had_error; // so we do not do stuff after error
+
+  /* Playbin2 compat */
+  gint n_video, n_audio, n_text;
 
   /* Props */
   gboolean autoplay;
@@ -75,6 +86,9 @@ struct _ClapperPlayer
   ClapperPlayerState state;
   GstElement *video_decoder;
   GstElement *audio_decoder;
+  gboolean video_enabled;
+  gboolean audio_enabled;
+  gboolean subtitles_enabled;
 };
 
 ClapperPlayer * clapper_player_get_from_ancestor (GstObject *object);
@@ -91,15 +105,21 @@ void clapper_player_handle_playbin_volume_changed (ClapperPlayer *player, const 
 
 void clapper_player_handle_playbin_mute_changed (ClapperPlayer *player, const GValue *value);
 
+void clapper_player_handle_playbin_flags_changed (ClapperPlayer *player, const GValue *value);
+
 void clapper_player_handle_playbin_common_prop_changed (ClapperPlayer *player, const gchar *prop_name);
 
 void clapper_player_handle_playbin_rate_changed (ClapperPlayer *player, gfloat speed);
 
-void clapper_player_handle_playbin_video_decoder_changed (ClapperPlayer *player, GstElement *element);
-
-void clapper_player_handle_playbin_audio_decoder_changed (ClapperPlayer *player, GstElement *element);
-
 void clapper_player_set_pending_item (ClapperPlayer *player, ClapperMediaItem *pending_item, ClapperQueueItemChangeMode mode);
+
+void clapper_player_take_stream_collection (ClapperPlayer *player, GstStreamCollection *collection);
+
+void clapper_player_refresh_streams (ClapperPlayer *player);
+
+gboolean clapper_player_find_active_decoder_with_stream_id (ClapperPlayer *player, GstElementFactoryListType type, const gchar *stream_id);
+
+void clapper_player_playbin_update_current_decoders (ClapperPlayer *player);
 
 void clapper_player_reset (ClapperPlayer *player, gboolean pending_dispose);
 

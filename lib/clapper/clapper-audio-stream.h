@@ -25,38 +25,27 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gst/gst.h>
-
-#include <clapper/clapper-enums.h>
+#include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_STREAM (clapper_stream_get_type())
-#define CLAPPER_STREAM_CAST(obj) ((ClapperStream *)(obj))
+#define CLAPPER_TYPE_AUDIO_STREAM (clapper_audio_stream_get_type())
+#define CLAPPER_AUDIO_STREAM_CAST(obj) ((ClapperAudioStream *)(obj))
 
-G_DECLARE_DERIVABLE_TYPE (ClapperStream, clapper_stream, CLAPPER, STREAM, GstObject)
+G_DECLARE_FINAL_TYPE (ClapperAudioStream, clapper_audio_stream, CLAPPER, AUDIO_STREAM, ClapperStream)
 
-struct _ClapperStreamClass
-{
-  GstObjectClass parent_class;
+gchar * clapper_audio_stream_get_codec (ClapperAudioStream *stream);
 
-  /**
-   * ClapperStreamClass::internal_stream_updated:
-   * @stream: a #ClapperStream
-   * @caps: (nullable): an updated #GstCaps if changed
-   * @tags: (nullable): an updated #GstTagList if changed
-   *
-   * This function is called when internal #GstStream gets updated.
-   * Meant for internal usage only. Used for subclasses to update
-   * their properties accordingly.
-   *
-   * Note that this vfunc is called from different threads.
-   */
-  void (* internal_stream_updated) (ClapperStream *stream, GstCaps *caps, GstTagList *tags);
-};
+guint clapper_audio_stream_get_bitrate (ClapperAudioStream *stream);
 
-ClapperStreamType clapper_stream_get_stream_type (ClapperStream *stream);
+gchar * clapper_audio_stream_get_sample_format (ClapperAudioStream *stream);
 
-gchar * clapper_stream_get_title (ClapperStream *stream);
+gint clapper_audio_stream_get_sample_rate (ClapperAudioStream *stream);
+
+gint clapper_audio_stream_get_channels (ClapperAudioStream *stream);
+
+gchar * clapper_audio_stream_get_lang_code (ClapperAudioStream *stream);
+
+gchar * clapper_audio_stream_get_lang_name (ClapperAudioStream *stream);
 
 G_END_DECLS

@@ -2,19 +2,13 @@
 <interface domain="gtk40">
   <template class="GtkListItem">
     <property name="child">
-      <object class="GtkLabel">
-        <property name="halign">start</property>
-        <property name="valign">center</property>
-        <property name="hexpand">true</property>
-        <property name="justify">center</property>
-        <property name="single-line-mode">true</property>
-        <property name="ellipsize">end</property>
-        <property name="label">English</property>
-        <!--binding name="label">
-          <lookup name="title" type="ClapperMediaItem">
-            <lookup name="item">GtkListItem</lookup>
-          </lookup>
-        </binding-->
+      <object class="ClapperGtkStreamCheckButton">
+        <binding name="stream">
+          <lookup name="item">GtkListItem</lookup>
+        </binding>
+        <binding name="active">
+          <lookup name="selected">GtkListItem</lookup>
+        </binding>
       </object>
     </property>
   </template>

@@ -21,6 +21,7 @@
 
 #include "clapper-bus-private.h"
 #include "clapper-app-bus-private.h"
+#include "clapper-player-private.h"
 #include "clapper-media-item-private.h"
 
 #define GST_CAT_DEFAULT clapper_app_bus_debug
@@ -56,7 +57,6 @@ enum
 {
   CLAPPER_APP_BUS_FIELD_UNKNOWN = 0,
   CLAPPER_APP_BUS_FIELD_PSPEC,
-  CLAPPER_APP_BUS_FIELD_MEDIA_ITEM,
   CLAPPER_APP_BUS_FIELD_SIGNAL_ID,
   CLAPPER_APP_BUS_FIELD_DESC,
   CLAPPER_APP_BUS_FIELD_DETAILS,
@@ -67,7 +67,6 @@ enum
 static ClapperBusQuark _field_quarks[] = {
   {"unknown", 0},
   {"pspec", 0},
-  {"media-item", 0},
   {"signal-id", 0},
   {"desc", 0},
   {"details", 0},
@@ -124,26 +123,17 @@ _handle_prop_notify_msg (GstMessage *msg, const GstStructure *structure)
 }
 
 void
-clapper_app_bus_post_refresh_streams (ClapperAppBus *self,
-    GstObject *src, ClapperMediaItem *item)
+clapper_app_bus_post_refresh_streams (ClapperAppBus *self, GstObject *src)
 {
-  GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (REFRESH_STREAMS),
-      _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, item,
-      NULL);
+  GstStructure *structure = gst_structure_new_id_empty (_STRUCTURE_QUARK (REFRESH_STREAMS));
   gst_bus_post (GST_BUS_CAST (self), gst_message_new_application (src, structure));
 }
 
 static inline void
 _handle_refresh_streams_msg (GstMessage *msg, const GstStructure *structure)
 {
-  ClapperMediaItem *item = NULL;
-
-  gst_structure_id_get (structure,
-      _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, &item,
-      NULL);
-
-  clapper_media_item_refresh_streams (item);
-  gst_object_unref (item);
+  ClapperPlayer *player = CLAPPER_PLAYER_CAST (GST_MESSAGE_SRC (msg));
+  clapper_player_refresh_streams (player);
 }
 
 void

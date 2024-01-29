@@ -27,6 +27,7 @@
 #include "clapper-queue-private.h"
 #include "clapper-media-item-private.h"
 #include "clapper-stream-private.h"
+#include "clapper-external-subtitle-stream.h"
 #include "clapper-stream-list-private.h"
 #include "clapper-utils-private.h"
 
@@ -37,19 +38,23 @@ enum
 {
   CLAPPER_PLAYBIN_BUS_STRUCTURE_UNKNOWN = 0,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_SET_PROP,
+  CLAPPER_PLAYBIN_BUS_STRUCTURE_SET_PLAY_FLAG,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_SEEK,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_RATE_CHANGE,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_STREAM_CHANGE,
-  CLAPPER_PLAYBIN_BUS_STRUCTURE_CURRENT_ITEM_CHANGE
+  CLAPPER_PLAYBIN_BUS_STRUCTURE_CURRENT_ITEM_CHANGE,
+  CLAPPER_PLAYBIN_BUS_STRUCTURE_ITEM_SUBURI_CHANGE
 };
 
 static ClapperBusQuark _structure_quarks[] = {
   {"unknown", 0},
   {"set-prop", 0},
+  {"set-play-flag", 0},
   {"seek", 0},
   {"rate-change", 0},
   {"stream-change", 0},
   {"current-item-change", 0},
+  {"item-suburi-change", 0},
   {NULL, 0}
 };
 
@@ -58,6 +63,7 @@ enum
   CLAPPER_PLAYBIN_BUS_FIELD_UNKNOWN = 0,
   CLAPPER_PLAYBIN_BUS_FIELD_NAME,
   CLAPPER_PLAYBIN_BUS_FIELD_VALUE,
+  CLAPPER_PLAYBIN_BUS_FIELD_FLAG,
   CLAPPER_PLAYBIN_BUS_FIELD_POSITION,
   CLAPPER_PLAYBIN_BUS_FIELD_RATE,
   CLAPPER_PLAYBIN_BUS_FIELD_SEEK_METHOD,
@@ -69,6 +75,7 @@ static ClapperBusQuark _field_quarks[] = {
   {"unknown", 0},
   {"name", 0},
   {"value", 0},
+  {"flag", 0},
   {"position", 0},
   {"rate", 0},
   {"seek-method", 0},
@@ -109,6 +116,35 @@ _set_object_prop (GQuark field_id, const GValue *value, GstObject *object)
 */
 
 static void
+_perform_flush_seek (ClapperPlayer *player)
+{
+  GstEvent *seek_event;
+  GstSeekFlags flags = GST_SEEK_FLAG_FLUSH;
+  gint64 position = GST_CLOCK_TIME_NONE;
+  gfloat rate = clapper_player_get_speed (player);
+
+  if (rate != 1.0)
+    flags |= GST_SEEK_FLAG_TRICKMODE;
+
+  gst_element_query_position (player->playbin, GST_FORMAT_TIME, &position);
+
+  if (rate >= 0) {
+    seek_event = gst_event_new_seek (rate, GST_FORMAT_TIME, flags,
+        GST_SEEK_TYPE_SET, position, GST_SEEK_TYPE_SET, GST_CLOCK_TIME_NONE);
+  } else {
+    seek_event = gst_event_new_seek (rate, GST_FORMAT_TIME, flags,
+        GST_SEEK_TYPE_SET, G_GINT64_CONSTANT (0), GST_SEEK_TYPE_SET, position);
+  }
+  clapper_player_remove_tick_source (player);
+
+  GST_DEBUG_OBJECT (player, "Flush seeking with rate %.2lf to: %" GST_TIME_FORMAT,
+      rate, GST_TIME_ARGS (position));
+
+  if (!gst_element_send_event (player->playbin, seek_event))
+    GST_WARNING_OBJECT (player, "Could not perform a flush seek");
+}
+
+static void
 _update_current_duration (ClapperPlayer *player)
 {
   gint64 duration;
@@ -129,73 +165,6 @@ _update_current_duration (ClapperPlayer *player)
         clapper_features_manager_trigger_item_updated (features_manager, player->played_item);
     }
   }
-}
-
-static gboolean
-_iterate_decoder_pads (ClapperPlayer *player, GstElement *element,
-    const gchar *stream_id, GstElementFactoryListType type)
-{
-  GstIterator *iter;
-  GValue value = G_VALUE_INIT;
-  gboolean found = FALSE;
-
-  iter = gst_element_iterate_src_pads (element);
-
-  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
-    GstPad *decoder_pad = g_value_get_object (&value);
-    gchar *decoder_sid = gst_pad_get_stream_id (decoder_pad);
-
-    GST_DEBUG_OBJECT (player, "Decoder stream: %s", decoder_sid);
-
-    if ((found = (g_strcmp0 (decoder_sid, stream_id) == 0))) {
-      GST_DEBUG_OBJECT (player, "Found decoder for stream: %s", stream_id);
-
-      if ((type & GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO) == GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO)
-        clapper_player_handle_playbin_video_decoder_changed (player, element);
-      else if ((type & GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO) == GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO)
-        clapper_player_handle_playbin_audio_decoder_changed (player, element);
-    }
-
-    g_free (decoder_sid);
-    g_value_unset (&value);
-
-    if (found)
-      break;
-  }
-
-  gst_iterator_free (iter);
-
-  return found;
-}
-
-static gboolean
-_find_active_decoder_with_stream_id (ClapperPlayer *player, GstElementFactoryListType type,
-    const gchar *stream_id)
-{
-  GstIterator *iter;
-  GValue value = G_VALUE_INIT;
-  gboolean found = FALSE;
-
-  GST_DEBUG_OBJECT (player, "Searching for decoder with stream: %s", stream_id);
-
-  iter = gst_bin_iterate_recurse (GST_BIN (player->playbin));
-
-  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
-    GstElement *element = g_value_get_object (&value);
-    GstElementFactory *factory = gst_element_get_factory (element);
-
-    if (factory && gst_element_factory_list_is_type (factory, type))
-      found = _iterate_decoder_pads (player, element, stream_id, type);
-
-    g_value_unset (&value);
-
-    if (found)
-      break;
-  }
-
-  gst_iterator_free (iter);
-
-  return found;
 }
 
 static inline void
@@ -330,6 +299,43 @@ _handle_set_prop_msg (GstMessage *msg, const GstStructure *structure, ClapperPla
 
   GST_DEBUG ("Setting %s property: %s", GST_OBJECT_NAME (GST_MESSAGE_SRC (msg)), prop_name);
   g_object_set_property (_MESSAGE_SRC_GOBJECT (msg), prop_name, value);
+}
+
+void
+clapper_playbin_bus_post_set_play_flag (GstBus *bus,
+    ClapperPlayerPlayFlags flag, gboolean enabled)
+{
+  GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (SET_PLAY_FLAG),
+      _FIELD_QUARK (FLAG), G_TYPE_FLAGS, flag,
+      _FIELD_QUARK (VALUE), G_TYPE_BOOLEAN, enabled,
+      NULL);
+  gst_bus_post (bus, gst_message_new_application (NULL, structure));
+}
+
+static inline void
+_handle_set_play_flag_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer *player)
+{
+  ClapperPlayerPlayFlags flag = 0;
+  gboolean enabled, enable = FALSE;
+  gint flags = 0;
+
+  gst_structure_id_get (structure,
+      _FIELD_QUARK (FLAG), G_TYPE_FLAGS, &flag,
+      _FIELD_QUARK (VALUE), G_TYPE_BOOLEAN, &enable,
+      NULL);
+
+  g_object_get (player->playbin, "flags", &flags, NULL);
+  enabled = ((flags & flag) == flag);
+
+  if (enabled != enable) {
+    if (enable)
+      flags |= flag;
+    else
+      flags &= ~flag;
+
+    GST_DEBUG_OBJECT (player, "%sabling play flag: %i", (enable) ? "En" : "Dis", flag);
+    g_object_set (player->playbin, "flags", flags, NULL);
+  }
 }
 
 void
@@ -631,16 +637,16 @@ _handle_current_item_change_msg (GstMessage *msg, const GstStructure *structure,
 }
 
 void
-clapper_playbin_bus_post_stream_change (GstBus *bus, ClapperMediaItem *item)
+clapper_playbin_bus_post_item_suburi_change (GstBus *bus, ClapperMediaItem *item)
 {
-  GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (STREAM_CHANGE),
+  GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (ITEM_SUBURI_CHANGE),
       _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, item,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
 }
 
 static inline void
-_handle_stream_change_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer *player)
+_handle_item_suburi_change_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer *player)
 {
   ClapperMediaItem *item = NULL;
 
@@ -648,54 +654,94 @@ _handle_stream_change_msg (GstMessage *msg, const GstStructure *structure, Clapp
       _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, &item,
       NULL);
 
-  GST_DEBUG ("Stream change in %" GST_PTR_FORMAT, item);
-
   if (item == player->played_item) {
-    if (player->use_playbin3) {
-      GList *list = NULL;
-      ClapperStreamList *vstream_list, *astream_list, *sstream_list;
-      ClapperStream *vstream = NULL, *astream = NULL, *sstream = NULL;
-
-      vstream_list = clapper_media_item_get_video_streams (item);
-      if ((vstream = clapper_stream_list_get_current_stream (vstream_list))) {
-        GstStream *gst_stream = clapper_stream_get_stream (vstream);
-        list = g_list_append (list, (gpointer) gst_stream_get_stream_id (gst_stream));
-      }
-
-      astream_list = clapper_media_item_get_audio_streams (item);
-      if ((astream = clapper_stream_list_get_current_stream (astream_list))) {
-        GstStream *gst_stream = clapper_stream_get_stream (astream);
-        list = g_list_append (list, (gpointer) gst_stream_get_stream_id (gst_stream));
-      }
-
-      sstream_list = clapper_media_item_get_subtitle_streams (item);
-      if ((sstream = clapper_stream_list_get_current_stream (sstream_list))) {
-        GstStream *gst_stream = clapper_stream_get_stream (sstream);
-        list = g_list_append (list, (gpointer) gst_stream_get_stream_id (gst_stream));
-      }
-
-      if (list) {
-        if (!gst_element_send_event (player->playbin,
-            gst_event_new_select_streams (list))) {
-          /* Go back from selected item to active item */
-          clapper_stream_list_handle_stream_change_failed (vstream_list);
-          clapper_stream_list_handle_stream_change_failed (astream_list);
-          clapper_stream_list_handle_stream_change_failed (sstream_list);
-        }
-        g_list_free (list);
-      }
-
-      /* Need to hold ref until after event is
-       * sent to ensure ID pointer lifespan */
-      gst_clear_object (&vstream);
-      gst_clear_object (&astream);
-      gst_clear_object (&sstream);
-    } else {
-      GST_FIXME_OBJECT (player, "Stream selection alternative for playbin2");
-    }
+    gst_element_set_state (player->playbin, GST_STATE_READY);
+    clapper_player_set_pending_item (player, item, CLAPPER_QUEUE_ITEM_CHANGE_NORMAL);
+    gst_element_set_state (player->playbin, player->target_state);
   }
 
   gst_object_unref (item);
+}
+
+void
+clapper_playbin_bus_post_stream_change (GstBus *bus)
+{
+  GstStructure *structure = gst_structure_new_id_empty (_STRUCTURE_QUARK (STREAM_CHANGE));
+  gst_bus_post (bus, gst_message_new_application (NULL, structure));
+}
+
+static inline void
+_handle_stream_change_msg (GstMessage *msg,
+    const GstStructure *structure G_GNUC_UNUSED, ClapperPlayer *player)
+{
+  GST_DEBUG_OBJECT (player, "Requested stream change");
+
+  if (player->use_playbin3) {
+    GList *list = NULL;
+    ClapperStreamList *vstream_list, *astream_list, *sstream_list;
+    ClapperStream *vstream = NULL, *astream = NULL, *sstream = NULL;
+
+    vstream_list = clapper_player_get_video_streams (player);
+    if ((vstream = clapper_stream_list_get_current_stream (vstream_list))) {
+      GstStream *gst_stream = clapper_stream_get_gst_stream (vstream);
+      list = g_list_append (list, (gpointer) gst_stream_get_stream_id (gst_stream));
+    }
+
+    astream_list = clapper_player_get_audio_streams (player);
+    if ((astream = clapper_stream_list_get_current_stream (astream_list))) {
+      GstStream *gst_stream = clapper_stream_get_gst_stream (astream);
+      list = g_list_append (list, (gpointer) gst_stream_get_stream_id (gst_stream));
+    }
+
+    sstream_list = clapper_player_get_subtitle_streams (player);
+    if ((sstream = clapper_stream_list_get_current_stream (sstream_list))) {
+      GstStream *gst_stream = clapper_stream_get_gst_stream (sstream);
+      list = g_list_append (list, (gpointer) gst_stream_get_stream_id (gst_stream));
+    }
+
+    if (list) {
+      if (gst_element_send_event (player->playbin, gst_event_new_select_streams (list))
+          && player->current_state >= GST_STATE_PAUSED) {
+        /* XXX: I am not sure if we "officially" need to flush seek after select
+         * streams, but as of GStreamer 1.22 it doesn't work otherwise. */
+        _perform_flush_seek (player);
+      }
+      g_list_free (list);
+    }
+
+    /* Need to hold ref until after event is
+     * sent to ensure ID pointer lifespan */
+    gst_clear_object (&vstream);
+    gst_clear_object (&astream);
+    gst_clear_object (&sstream);
+  } else {
+    ClapperStreamList *stream_list;
+    gint current_video = -1, current_audio = -1, current_text = -1;
+    guint index;
+
+    g_object_get (player->playbin,
+        "current-video", &current_video,
+        "current-audio", &current_audio,
+        "current-text", &current_text, NULL);
+
+    stream_list = clapper_player_get_video_streams (player);
+    index = clapper_stream_list_get_current_index (stream_list);
+
+    if (index != current_video)
+      g_object_set (player->playbin, "current-video", index, NULL);
+
+    stream_list = clapper_player_get_audio_streams (player);
+    index = clapper_stream_list_get_current_index (stream_list);
+
+    if (index != current_audio)
+      g_object_set (player->playbin, "current-audio", index, NULL);
+
+    stream_list = clapper_player_get_subtitle_streams (player);
+    index = clapper_stream_list_get_current_index (stream_list);
+
+    if (index != current_text)
+      g_object_set (player->playbin, "current-text", index, NULL);
+  }
 }
 
 static inline void
@@ -706,6 +752,8 @@ _handle_app_msg (GstMessage *msg, ClapperPlayer *player)
 
   if (quark == _STRUCTURE_QUARK (SET_PROP))
     _handle_set_prop_msg (msg, structure, player);
+  else if (quark == _STRUCTURE_QUARK (SET_PLAY_FLAG))
+    _handle_set_play_flag_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (SEEK))
     _handle_seek_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (RATE_CHANGE))
@@ -714,6 +762,8 @@ _handle_app_msg (GstMessage *msg, ClapperPlayer *player)
     _handle_stream_change_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (CURRENT_ITEM_CHANGE))
     _handle_current_item_change_msg (msg, structure, player);
+  else if (quark == _STRUCTURE_QUARK (ITEM_SUBURI_CHANGE))
+    _handle_item_suburi_change_msg (msg, structure, player);
 }
 
 static inline void
@@ -776,6 +826,8 @@ _handle_property_notify_msg (GstMessage *msg, ClapperPlayer *player)
     clapper_player_handle_playbin_volume_changed (player, value);
   else if (strcmp (prop_name, "mute") == 0)
     clapper_player_handle_playbin_mute_changed (player, value);
+  else if (strcmp (prop_name, "flags") == 0)
+    clapper_player_handle_playbin_flags_changed (player, value);
   else
     clapper_player_handle_playbin_common_prop_changed (player, prop_name);
 }
@@ -783,143 +835,43 @@ _handle_property_notify_msg (GstMessage *msg, ClapperPlayer *player)
 static inline void
 _handle_stream_collection_msg (GstMessage *msg, ClapperPlayer *player)
 {
-  ClapperMediaItem *item = NULL;
   GstStreamCollection *collection = NULL;
 
   GST_INFO_OBJECT (player, "Stream collection");
 
-  GST_OBJECT_LOCK (player);
-  if (G_LIKELY (player->pending_item != NULL))
-    item = gst_object_ref (player->pending_item);
-  GST_OBJECT_UNLOCK (player);
-
-  if (G_UNLIKELY (item == NULL)) {
-    GST_ERROR_OBJECT (player, "Stream collection, but no item to apply it to");
-    return;
-  }
-
   gst_message_parse_stream_collection (msg, &collection);
-
-  /* Set collection right now so we can find correct item
-   * for update on streams-selected message */
-  clapper_media_item_take_stream_collection (item, collection);
-
-  gst_object_unref (item);
+  clapper_player_take_stream_collection (player, collection);
 }
 
 static inline void
 _handle_streams_selected_msg (GstMessage *msg, ClapperPlayer *player)
 {
-  ClapperMediaItem *item = NULL;
-  GstStreamCollection *collection = NULL;
-
   /* NOTE: Streams selected message carries whole collection
    * and allows reading actually selected streams from it
    * via gst_message_streams_selected_* methods */
 
   GST_INFO_OBJECT (player, "Streams selected");
-  gst_message_parse_streams_selected (msg, &collection);
 
-  GST_OBJECT_LOCK (player);
-  if (G_LIKELY (player->pending_item != NULL))
-    item = gst_object_ref (player->pending_item);
-  GST_OBJECT_UNLOCK (player);
-
-  /* Find out if selected streams are from pending item or from the playing one */
-  if (!item || !clapper_media_item_matches_stream_collection (item, collection)) {
-    gst_object_replace ((GstObject **) &item, GST_OBJECT_CAST (player->played_item));
-
-    if (item && !clapper_media_item_matches_stream_collection (item, collection))
-      gst_clear_object (&item);
-  }
-
-  if (item) {
+  /* In playbin2 we do not know real stream IDs, so this is done elsewhere.
+   * In playbin3 we reach this point after our initial stream selection (after stream start) */
+  if (player->use_playbin3) {
     guint i, n_streams = gst_message_streams_selected_get_size (msg);
 
     for (i = 0; i < n_streams; ++i) {
-      GstStream *gst_stream = gst_message_streams_selected_get_stream (msg, i);
-      GstStreamType stream_type = gst_stream_get_stream_type (gst_stream);
-      ClapperStreamList *stream_list = NULL;
+      GstStream *stream = gst_message_streams_selected_get_stream (msg, i);
+      GstStreamType stream_type = gst_stream_get_stream_type (stream);
 
-      if (stream_type & GST_STREAM_TYPE_VIDEO) {
-        stream_list = clapper_media_item_get_video_streams (item);
-      } else if (stream_type & GST_STREAM_TYPE_AUDIO) {
-        stream_list = clapper_media_item_get_audio_streams (item);
-      } else if (stream_type & GST_STREAM_TYPE_TEXT) {
-        stream_list = clapper_media_item_get_subtitle_streams (item);
+      if ((stream_type & GST_STREAM_TYPE_VIDEO) == GST_STREAM_TYPE_VIDEO) {
+        if (!clapper_player_find_active_decoder_with_stream_id (player,
+            GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, gst_stream_get_stream_id (stream)))
+          GST_DEBUG_OBJECT (player, "Active video decoder not found");
+      } else if ((stream_type & GST_STREAM_TYPE_AUDIO) == GST_STREAM_TYPE_AUDIO) {
+        if (!clapper_player_find_active_decoder_with_stream_id (player,
+            GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, gst_stream_get_stream_id (stream)))
+          GST_DEBUG_OBJECT (player, "Active audio decoder not found");
       }
-
-      if (stream_list) {
-        clapper_stream_list_handle_gst_stream_selected (stream_list, gst_stream);
-      } else {
-        GST_WARNING_OBJECT (item, "Unhandled stream type: %s",
-            gst_stream_type_get_name (stream_type));
-      }
-
-      gst_object_unref (gst_stream);
     }
-
-    gst_object_unref (item);
   }
-
-  gst_object_unref (collection);
-
-/*
-  for (i = 0; i < gst_message_streams_selected_get_size (msg); ++i) {
-    GstStream *stream = gst_message_streams_selected_get_stream (msg, i);
-    GstStreamType stream_type = gst_stream_get_stream_type (stream);
-    const gchar *stream_id = gst_stream_get_stream_id (stream);
-
-    if ((stream_type & GST_STREAM_TYPE_VIDEO) == GST_STREAM_TYPE_VIDEO) {
-      if (G_LIKELY (!video_sid)) {
-        video_sid = g_strdup (stream_id);
-        continue;
-      }
-    } else if ((stream_type & GST_STREAM_TYPE_AUDIO) == GST_STREAM_TYPE_AUDIO) {
-      if (G_LIKELY (!audio_sid)) {
-        audio_sid = g_strdup (stream_id);
-        continue;
-      }
-    } else if ((stream_type & GST_STREAM_TYPE_TEXT) == GST_STREAM_TYPE_TEXT) {
-      if (G_LIKELY (!subtitle_sid)) {
-        subtitle_sid = g_strdup (stream_id);
-        continue;
-      }
-    } else {
-      GST_WARNING_OBJECT (player, "Unhandled stream type %s",
-          gst_stream_type_get_name (stream_type));
-      continue;
-    }
-
-    GST_FIXME_OBJECT (player,
-        "Multiple streams are selected for type %s, using first one",
-        gst_stream_type_get_name (stream_type));
-  }
-
-  if (video_sid) {
-    if (G_UNLIKELY (!_find_active_decoder_with_stream_id (player,
-        GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, video_sid)))
-      GST_WARNING_OBJECT (player, "Could not find active video decoder");
-  }
-  if (audio_sid) {
-    if (G_UNLIKELY (!_find_active_decoder_with_stream_id (player,
-        GST_ELEMENT_FACTORY_TYPE_DECODER | GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, audio_sid)))
-      GST_WARNING_OBJECT (player, "Could not find active audio decoder");
-  }
-
-  GST_OBJECT_LOCK (player);
-
-  g_free (player->video_sid);
-  player->video_sid = video_sid;
-
-  g_free (player->audio_sid);
-  player->audio_sid = audio_sid;
-
-  g_free (player->subtitle_sid);
-  player->subtitle_sid = subtitle_sid;
-
-  GST_OBJECT_UNLOCK (player);
-*/
 }
 
 static inline void
@@ -956,16 +908,19 @@ _handle_stream_start_msg (GstMessage *msg, ClapperPlayer *player)
   if (G_LIKELY (changed)) {
     clapper_queue_handle_played_item_changed (player->queue, player->played_item, player->app_bus);
 
-    clapper_app_bus_post_refresh_streams (player->app_bus,
-        GST_OBJECT_CAST (player), player->played_item);
-
     if (clapper_player_get_have_features (player))
       clapper_features_manager_trigger_played_item_changed (player->features_manager, player->played_item);
   }
 
+  clapper_app_bus_post_refresh_streams (player->app_bus, GST_OBJECT_CAST (player));
+
   /* Update position on start after announcing item change,
    * since we will not do this on state change when gapless */
   clapper_player_query_position (player);
+
+  /* With playbin2 we update all decoders at once after stream start */
+  if (!player->use_playbin3)
+    clapper_player_playbin_update_current_decoders (player);
 }
 
 static inline void

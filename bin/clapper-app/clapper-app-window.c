@@ -22,6 +22,7 @@
 #include <clapper-gtk/clapper-gtk.h>
 
 #include "clapper-app-window.h"
+#include "clapper-app-file-dialog.h"
 #include "clapper-app-utils.h"
 
 #define DEFAULT_WINDOW_WIDTH 1024
@@ -76,6 +77,14 @@ video_toggle_fullscreen_cb (ClapperGtkVideo *video, ClapperAppWindow *self)
   GtkWindow *window = GTK_WINDOW (self);
 
   g_object_set (window, "fullscreened", !gtk_window_is_fullscreen (window), NULL);
+}
+
+static void
+_open_subtitles_cb (ClapperGtkExtraMenuButton *button G_GNUC_UNUSED,
+    ClapperMediaItem *item, ClapperAppWindow *self)
+{
+  GtkApplication *gtk_app = gtk_window_get_application (GTK_WINDOW (self));
+  clapper_app_file_dialog_open_subtitles (gtk_app, item);
 }
 
 static void
@@ -383,7 +392,10 @@ clapper_app_window_init (ClapperAppWindow *self)
 
   button = clapper_gtk_simple_controls_get_extra_menu_button (
       CLAPPER_GTK_SIMPLE_CONTROLS_CAST (self->simple_controls));
-  clapper_gtk_extra_menu_button_set_open_subtitles_visible (button, TRUE);
+
+  g_signal_connect (button, "open-subtitles",
+      G_CALLBACK (_open_subtitles_cb), self);
+  clapper_gtk_extra_menu_button_set_can_open_subtitles (button, TRUE);
 
   /* Prevent GTK from redrawing background for each frame */
   gtk_widget_remove_css_class (GTK_WIDGET (self), "background");

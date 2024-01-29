@@ -35,21 +35,6 @@ G_GNUC_INTERNAL
 void clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDiscovererInfo *info);
 
 G_GNUC_INTERNAL
-gboolean clapper_media_item_take_title (ClapperMediaItem *item, gchar *title, ClapperAppBus *app_bus);
-
-G_GNUC_INTERNAL
-gboolean clapper_media_item_take_container_format (ClapperMediaItem *item, gchar *container_format, ClapperAppBus *app_bus);
-
-G_GNUC_INTERNAL
 gboolean clapper_media_item_set_duration (ClapperMediaItem *item, gfloat duration, ClapperAppBus *app_bus);
-
-G_GNUC_INTERNAL
-void clapper_media_item_take_stream_collection (ClapperMediaItem *item, GstStreamCollection *collection);
-
-G_GNUC_INTERNAL
-gboolean clapper_media_item_matches_stream_collection (ClapperMediaItem *item, GstStreamCollection *collection);
-
-G_GNUC_INTERNAL
-void clapper_media_item_refresh_streams (ClapperMediaItem *item);
 
 G_END_DECLS

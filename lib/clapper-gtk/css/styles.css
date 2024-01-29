@@ -128,3 +128,11 @@ clapper-gtk-extra-menu-button popover spinbutton button.up:dir(ltr) {
 clapper-gtk-extra-menu-button popover spinbutton button.up:dir(rtl) {
   padding-left: 6px;
 }
+clapper-gtk-menu-scrolled-window listview row {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+clapper-gtk-menu-scrolled-window listview row checkbutton label {
+  margin-left: 2px;
+  margin-right: 2px;
+}

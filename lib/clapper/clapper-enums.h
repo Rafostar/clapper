@@ -71,6 +71,21 @@ typedef enum
 } ClapperQueueProgressionMode;
 
 /**
+ * ClapperStreamType:
+ * @CLAPPER_STREAM_TYPE_UNKNOWN: unknown stream type.
+ * @CLAPPER_STREAM_TYPE_VIDEO: stream is a #ClapperVideoStream.
+ * @CLAPPER_STREAM_TYPE_AUDIO: stream is a #ClapperAudioStream.
+ * @CLAPPER_STREAM_TYPE_SUBTITLE: stream is a #ClapperSubtitleStream.
+ */
+typedef enum
+{
+  CLAPPER_STREAM_TYPE_UNKNOWN = 0,
+  CLAPPER_STREAM_TYPE_VIDEO,
+  CLAPPER_STREAM_TYPE_AUDIO,
+  CLAPPER_STREAM_TYPE_SUBTITLE,
+} ClapperStreamType;
+
+/**
  * ClapperDiscovererDiscoveryMode:
  * @CLAPPER_DISCOVERER_DISCOVERY_ALWAYS: Run discovery for every single media item added to [class@Clapper.Queue].
  *   This mode is useful when application presents a list of items to select from to the user before playback.

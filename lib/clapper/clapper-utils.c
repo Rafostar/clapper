@@ -154,3 +154,59 @@ clapper_utils_queue_clear_on_main_sync (ClapperQueue *queue)
       NULL, NULL, CLAPPER_UTILS_QUEUE_ALTER_CLEAR);
   clapper_utils_queue_alter_invoke_on_main_sync_take (data);
 }
+
+gchar *
+clapper_utils_uri_from_file (GFile *file)
+{
+  gchar *uri = g_file_get_uri (file);
+  gsize length = strlen (uri);
+
+  /* GFile might incorrectly append "/" at the end of an URI,
+   * remove it to make it work with GStreamer URI handling */
+  if (uri[length - 1] == '/') {
+    gchar *fixed_uri;
+
+    /* NULL terminated copy without last character */
+    fixed_uri = g_new0 (gchar, length);
+    memcpy (fixed_uri, uri, length - 1);
+
+    g_free (uri);
+    uri = fixed_uri;
+  }
+
+  return uri;
+}
+
+gchar *
+clapper_utils_title_from_uri (const gchar *uri)
+{
+  gchar *proto = gst_uri_get_protocol (uri);
+  gchar *title = NULL;
+
+  if (G_UNLIKELY (proto == NULL))
+    return NULL;
+
+  if (strcmp (proto, "file") == 0) {
+    const gchar *ext = strrchr (uri, '.');
+
+    if (ext && strlen (ext) < 8) {
+      gchar *filename = g_filename_from_uri (uri, NULL, NULL);
+
+      if (filename) {
+        gchar *base = g_path_get_basename (filename);
+
+        title = g_strndup (base, strlen (base) - strlen (ext));
+
+        g_free (filename);
+        g_free (base);
+      }
+    }
+  } else if (strcmp (proto, "dvb") == 0) {
+    const gchar *channel = strrchr (uri, '/') + 1;
+    title = g_strdup (channel);
+  }
+
+  g_free (proto);
+
+  return (title != NULL) ? title : g_strdup (uri);
+}

@@ -34,12 +34,7 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_STREAM_LIST (clapper_stream_list_get_type())
 #define CLAPPER_STREAM_LIST_CAST(obj) ((ClapperStreamList *)(obj))
 
-G_DECLARE_DERIVABLE_TYPE (ClapperStreamList, clapper_stream_list, CLAPPER, STREAM_LIST, GstObject)
-
-struct _ClapperStreamListClass
-{
-  GstObjectClass parent_class;
-};
+G_DECLARE_FINAL_TYPE (ClapperStreamList, clapper_stream_list, CLAPPER, STREAM_LIST, GstObject)
 
 /**
  * CLAPPER_STREAM_LIST_INVALID_POSITION:

@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 #include <gst/gst.h>
 #include <math.h>
 
@@ -46,5 +47,11 @@ void clapper_utils_queue_remove_on_main_sync (ClapperQueue *queue, ClapperMediaI
 
 G_GNUC_INTERNAL
 void clapper_utils_queue_clear_on_main_sync (ClapperQueue *queue);
+
+G_GNUC_INTERNAL
+gchar * clapper_utils_uri_from_file (GFile *file);
+
+G_GNUC_INTERNAL
+gchar * clapper_utils_title_from_uri (const gchar *uri);
 
 G_END_DECLS

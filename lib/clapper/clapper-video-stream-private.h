@@ -22,32 +22,11 @@
 #include <glib.h>
 #include <gst/gst.h>
 
-#include "clapper-stream.h"
+#include "clapper-video-stream.h"
 
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-ClapperStream * clapper_stream_new (GstStream *gst_stream);
-
-G_GNUC_INTERNAL
-void clapper_stream_set_gst_stream (ClapperStream *stream, GstStream *gst_stream);
-
-G_GNUC_INTERNAL
-GstStream * clapper_stream_get_gst_stream (ClapperStream *stream);
-
-G_GNUC_INTERNAL
-void clapper_stream_take_string_prop (ClapperStream *stream, GParamSpec *pspec, gchar **ptr, gchar *value);
-
-G_GNUC_INTERNAL
-void clapper_stream_set_string_prop (ClapperStream *stream, GParamSpec *pspec, gchar **ptr, const gchar *value);
-
-G_GNUC_INTERNAL
-void clapper_stream_set_int_prop (ClapperStream *stream, GParamSpec *pspec, gint *ptr, gint value);
-
-G_GNUC_INTERNAL
-void clapper_stream_set_uint_prop (ClapperStream *stream, GParamSpec *pspec, guint *ptr, guint value);
-
-G_GNUC_INTERNAL
-void clapper_stream_set_double_prop (ClapperStream *stream, GParamSpec *pspec, gdouble *ptr, gdouble value);
+ClapperStream * clapper_video_stream_new (GstStream *gst_stream);
 
 G_END_DECLS

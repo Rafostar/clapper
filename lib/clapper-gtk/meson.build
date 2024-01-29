@@ -102,6 +102,7 @@ clappergtk_sources = [
   'clapper-gtk-lead-container.c',
   'clapper-gtk-limited-layout.c',
   'clapper-gtk-queue-selection.c',
+  'clapper-gtk-stream-check-button.c',
   'clapper-gtk-utils.c',
   clappergtk_resources,
 ]

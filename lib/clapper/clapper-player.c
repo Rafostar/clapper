@@ -46,6 +46,11 @@
 #include "clapper-app-bus-private.h"
 #include "clapper-queue-private.h"
 #include "clapper-media-item.h"
+#include "clapper-stream-list-private.h"
+#include "clapper-stream-private.h"
+#include "clapper-video-stream-private.h"
+#include "clapper-audio-stream-private.h"
+#include "clapper-subtitle-stream-private.h"
 #include "clapper-enums-private.h"
 #include "clapper-utils-private.h"
 #include "../shared/clapper-shared-utils-private.h"
@@ -55,6 +60,9 @@
 #define DEFAULT_VOLUME 1.0
 #define DEFAULT_SPEED 1.0
 #define DEFAULT_STATE CLAPPER_PLAYER_STATE_STOPPED
+#define DEFAULT_VIDEO_ENABLED TRUE
+#define DEFAULT_AUDIO_ENABLED TRUE
+#define DEFAULT_SUBTITLES_ENABLED TRUE
 
 #define GST_CAT_DEFAULT clapper_player_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -66,6 +74,9 @@ enum
 {
   PROP_0,
   PROP_QUEUE,
+  PROP_VIDEO_STREAMS,
+  PROP_AUDIO_STREAMS,
+  PROP_SUBTITLE_STREAMS,
   PROP_AUTOPLAY,
   PROP_POSITION,
   PROP_SPEED,
@@ -78,6 +89,9 @@ enum
   PROP_AUDIO_FILTER,
   PROP_CURRENT_VIDEO_DECODER,
   PROP_CURRENT_AUDIO_DECODER,
+  PROP_VIDEO_ENABLED,
+  PROP_AUDIO_ENABLED,
+  PROP_SUBTITLES_ENABLED,
   PROP_LAST
 };
 
@@ -96,6 +110,7 @@ static guint signals[SIGNAL_LAST] = { 0, };
 static const gchar *playbin_watchlist[] = {
   "volume",
   "mute",
+  "flags",
   "audio-sink",
   "video-sink",
   "audio-filter",
@@ -255,6 +270,47 @@ clapper_player_handle_playbin_mute_changed (ClapperPlayer *self, const GValue *v
 }
 
 void
+clapper_player_handle_playbin_flags_changed (ClapperPlayer *self, const GValue *value)
+{
+  gint flags;
+  gboolean video_enabled, audio_enabled, subtitles_enabled;
+  gboolean video_changed, audio_changed, subtitles_changed;
+
+  flags = g_value_get_flags (value);
+
+  video_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_VIDEO) == CLAPPER_PLAYER_PLAY_FLAG_VIDEO);
+  audio_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_AUDIO) == CLAPPER_PLAYER_PLAY_FLAG_AUDIO);
+  subtitles_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_TEXT) == CLAPPER_PLAYER_PLAY_FLAG_TEXT);
+
+  GST_OBJECT_LOCK (self);
+
+  if ((video_changed = self->video_enabled != video_enabled))
+    self->video_enabled = video_enabled;
+  if ((audio_changed = self->audio_enabled != audio_enabled))
+    self->audio_enabled = audio_enabled;
+  if ((subtitles_changed = self->subtitles_enabled != subtitles_enabled))
+    self->subtitles_enabled = subtitles_enabled;
+
+  GST_OBJECT_UNLOCK (self);
+
+  if (video_changed) {
+    GST_INFO_OBJECT (self, "Video enabled: %s", (video_enabled) ? "yes" : "no");
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_VIDEO_ENABLED]);
+  }
+  if (audio_changed) {
+    GST_INFO_OBJECT (self, "Audio enabled: %s", (audio_enabled) ? "yes" : "no");
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_AUDIO_ENABLED]);
+  }
+  if (subtitles_changed) {
+    GST_INFO_OBJECT (self, "Subtitles enabled: %s", (subtitles_enabled) ? "yes" : "no");
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_SUBTITLES_ENABLED]);
+  }
+}
+
+void
 clapper_player_handle_playbin_common_prop_changed (ClapperPlayer *self, const gchar *prop_name)
 {
   GObjectClass *gobject_class = G_OBJECT_GET_CLASS (self);
@@ -287,14 +343,13 @@ clapper_player_handle_playbin_rate_changed (ClapperPlayer *self, gfloat speed)
   }
 }
 
-void
-clapper_player_handle_playbin_video_decoder_changed (ClapperPlayer *self, GstElement *element)
+static void
+clapper_player_set_current_video_decoder (ClapperPlayer *self, GstElement *element)
 {
   gboolean changed;
 
   GST_OBJECT_LOCK (self);
-  changed = gst_object_replace ((GstObject **) &self->video_decoder,
-      GST_OBJECT_CAST (element));
+  changed = gst_object_replace ((GstObject **) &self->video_decoder, GST_OBJECT_CAST (element));
   GST_OBJECT_UNLOCK (self);
 
   if (changed) {
@@ -304,14 +359,13 @@ clapper_player_handle_playbin_video_decoder_changed (ClapperPlayer *self, GstEle
   }
 }
 
-void
-clapper_player_handle_playbin_audio_decoder_changed (ClapperPlayer *self, GstElement *element)
+static void
+clapper_player_set_current_audio_decoder (ClapperPlayer *self, GstElement *element)
 {
   gboolean changed;
 
   GST_OBJECT_LOCK (self);
-  changed = gst_object_replace ((GstObject **) &self->audio_decoder,
-      GST_OBJECT_CAST (element));
+  changed = gst_object_replace ((GstObject **) &self->audio_decoder, GST_OBJECT_CAST (element));
   GST_OBJECT_UNLOCK (self);
 
   if (changed) {
@@ -326,26 +380,27 @@ clapper_player_set_pending_item (ClapperPlayer *self, ClapperMediaItem *pending_
     ClapperQueueItemChangeMode mode)
 {
   const gchar *uri = NULL;
+  gchar *suburi = NULL;
 
-  /* We cannot do gapless/instant with suburi in place,
+  /* We cannot do gapless/instant with pending suburi in place,
    * do a check and if necessary use normal mode instead */
   if (mode > CLAPPER_QUEUE_ITEM_CHANGE_NORMAL) {
-    gchar *suburi = NULL;
-
     g_object_get (self->playbin, "suburi", &suburi, NULL);
 
     if (suburi) {
       mode = CLAPPER_QUEUE_ITEM_CHANGE_NORMAL;
-      g_free (suburi);
+      g_clear_pointer (&suburi, g_free);
     }
   }
 
   /* Might be NULL (e.g. after queue is cleared) */
-  if (pending_item)
+  if (pending_item) {
     uri = clapper_media_item_get_uri (pending_item);
+    suburi = clapper_media_item_get_suburi (pending_item);
+  }
 
-  GST_INFO_OBJECT (self, "Changing URI with mode %u to: \"%s\"",
-      mode, GST_STR_NULL (uri));
+  GST_INFO_OBJECT (self, "Changing item with mode %u, URI: \"%s\", SUBURI: \"%s\"",
+      mode, GST_STR_NULL (uri), GST_STR_NULL (suburi));
 
   /* We need to lock here, as this function is also called from "about-to-finish"
    * signal which comes from different thread and we need to change URIs in it ASAP,
@@ -356,7 +411,7 @@ clapper_player_set_pending_item (ClapperPlayer *self, ClapperMediaItem *pending_
 
   /* GStreamer does not support changing suburi in gapless/instant mode */
   if (mode == CLAPPER_QUEUE_ITEM_CHANGE_NORMAL)
-    g_object_set (self->playbin, "suburi", NULL, NULL);
+    g_object_set (self->playbin, "suburi", suburi, NULL);
 
   if (uri) {
     if (mode == CLAPPER_QUEUE_ITEM_CHANGE_INSTANT)
@@ -367,6 +422,239 @@ clapper_player_set_pending_item (ClapperPlayer *self, ClapperMediaItem *pending_
     if (mode == CLAPPER_QUEUE_ITEM_CHANGE_INSTANT)
       g_object_set (self->playbin, "instant-uri", FALSE, NULL);
   }
+
+  g_free (suburi);
+}
+
+static void
+_stream_notify_cb (GstStreamCollection *collection,
+    GstStream *gst_stream, GParamSpec *pspec, ClapperPlayer *self)
+{
+  GstStreamType stream_type;
+  ClapperStream *stream = NULL;
+  const gchar *pspec_name = g_param_spec_get_name (pspec);
+  GstCaps *caps = NULL;
+  GstTagList *tags = NULL;
+
+  if (pspec_name == g_intern_string ("caps"))
+    caps = gst_stream_get_caps (gst_stream);
+  else if (pspec_name == g_intern_string ("tags"))
+    tags = gst_stream_get_tags (gst_stream);
+  else
+    return;
+
+  stream_type = gst_stream_get_stream_type (gst_stream);
+
+  if ((stream_type & GST_STREAM_TYPE_VIDEO) == GST_STREAM_TYPE_VIDEO) {
+    stream = clapper_stream_list_get_stream_for_gst_stream (self->video_streams, gst_stream);
+  } else if ((stream_type & GST_STREAM_TYPE_AUDIO) == GST_STREAM_TYPE_AUDIO) {
+    stream = clapper_stream_list_get_stream_for_gst_stream (self->audio_streams, gst_stream);
+  } else if ((stream_type & GST_STREAM_TYPE_TEXT) == GST_STREAM_TYPE_TEXT) {
+    stream = clapper_stream_list_get_stream_for_gst_stream (self->subtitle_streams, gst_stream);
+  }
+
+  if (G_LIKELY (stream != NULL)) {
+    ClapperStreamClass *stream_class = CLAPPER_STREAM_GET_CLASS (stream);
+
+    stream_class->internal_stream_updated (stream, caps, tags);
+    gst_object_unref (stream);
+  } else {
+    GST_WARNING_OBJECT (self, "Some unknown stream was updated");
+  }
+
+  gst_clear_caps (&caps);
+  gst_clear_tag_list (&tags);
+}
+
+void
+clapper_player_take_stream_collection (ClapperPlayer *self, GstStreamCollection *collection)
+{
+  GST_OBJECT_LOCK (self);
+
+  if (self->stream_notify_id != 0) {
+    g_signal_handler_disconnect (self->collection, self->stream_notify_id);
+    self->stream_notify_id = 0;
+  }
+  gst_clear_object (&self->collection);
+  self->collection = collection;
+
+  GST_OBJECT_UNLOCK (self);
+}
+
+/*
+ * Must be called from main thread!
+ */
+void
+clapper_player_refresh_streams (ClapperPlayer *self)
+{
+  GList *vstreams = NULL, *astreams = NULL, *sstreams = NULL;
+  guint i, n_streams;
+
+  GST_TRACE_OBJECT (self, "Removing all obsolete streams");
+
+  GST_OBJECT_LOCK (self);
+
+  n_streams = gst_stream_collection_get_size (self->collection);
+
+  for (i = 0; i < n_streams; ++i) {
+    GstStream *gst_stream = gst_stream_collection_get_stream (self->collection, i);
+    GstStreamType stream_type = gst_stream_get_stream_type (gst_stream);
+
+    GST_LOG_OBJECT (self, "Found %" GST_PTR_FORMAT, gst_stream);
+
+    if ((stream_type & GST_STREAM_TYPE_VIDEO) == GST_STREAM_TYPE_VIDEO) {
+      vstreams = g_list_append (vstreams, clapper_video_stream_new (gst_stream));
+    } else if ((stream_type & GST_STREAM_TYPE_AUDIO) == GST_STREAM_TYPE_AUDIO) {
+      astreams = g_list_append (astreams, clapper_audio_stream_new (gst_stream));
+    } else if ((stream_type & GST_STREAM_TYPE_TEXT) == GST_STREAM_TYPE_TEXT) {
+      sstreams = g_list_append (sstreams, clapper_subtitle_stream_new (gst_stream));
+    } else {
+      GST_WARNING_OBJECT (self, "Unhandled stream type: %s",
+          gst_stream_type_get_name (stream_type));
+    }
+  }
+
+  /* We should be disconnected here, but better be safe */
+  if (G_UNLIKELY (self->stream_notify_id != 0))
+    g_signal_handler_disconnect (self->collection, self->stream_notify_id);
+
+  self->stream_notify_id = g_signal_connect (self->collection, "stream-notify",
+      G_CALLBACK (_stream_notify_cb), self);
+
+  GST_OBJECT_UNLOCK (self);
+
+  clapper_stream_list_replace_streams (self->video_streams, vstreams);
+  clapper_stream_list_replace_streams (self->audio_streams, astreams);
+  clapper_stream_list_replace_streams (self->subtitle_streams, sstreams);
+
+  /* We only want to do this once for all stream lists, so
+   * playbin will select the same streams as we initially did */
+  clapper_playbin_bus_post_stream_change (self->bus);
+
+  if (vstreams)
+    g_list_free (vstreams);
+  if (astreams)
+    g_list_free (astreams);
+  if (sstreams)
+    g_list_free (sstreams);
+}
+
+static gboolean
+_iterate_decoder_pads (ClapperPlayer *self, GstElement *element,
+    const gchar *stream_id, GstElementFactoryListType type)
+{
+  GstIterator *iter;
+  GValue value = G_VALUE_INIT;
+  gboolean found = FALSE;
+
+  iter = gst_element_iterate_src_pads (element);
+
+  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+    GstPad *decoder_pad = g_value_get_object (&value);
+    gchar *decoder_sid = gst_pad_get_stream_id (decoder_pad);
+
+    GST_DEBUG_OBJECT (self, "Decoder stream: %s", decoder_sid);
+
+    if ((found = (g_strcmp0 (decoder_sid, stream_id) == 0))) {
+      GST_DEBUG_OBJECT (self, "Found decoder for stream: %s", stream_id);
+
+      if ((type & GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO) == GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO)
+        clapper_player_set_current_video_decoder (self, element);
+      else if ((type & GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO) == GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO)
+        clapper_player_set_current_audio_decoder (self, element);
+    }
+
+    g_free (decoder_sid);
+    g_value_unset (&value);
+
+    if (found)
+      break;
+  }
+
+  gst_iterator_free (iter);
+
+  return found;
+}
+
+gboolean
+clapper_player_find_active_decoder_with_stream_id (ClapperPlayer *self,
+    GstElementFactoryListType type, const gchar *stream_id)
+{
+  GstIterator *iter;
+  GValue value = G_VALUE_INIT;
+  gboolean found = FALSE;
+
+  GST_DEBUG_OBJECT (self, "Searching for decoder with stream: %s", stream_id);
+
+  type |= GST_ELEMENT_FACTORY_TYPE_DECODER;
+  iter = gst_bin_iterate_recurse (GST_BIN_CAST (self->playbin));
+
+  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+    GstElement *element = g_value_get_object (&value);
+    GstElementFactory *factory = gst_element_get_factory (element);
+
+    if (factory && gst_element_factory_list_is_type (factory, type))
+      found = _iterate_decoder_pads (self, element, stream_id, type);
+
+    g_value_unset (&value);
+
+    if (found)
+      break;
+  }
+
+  gst_iterator_free (iter);
+
+  return found;
+}
+
+/* For playbin2 only */
+void
+clapper_player_playbin_update_current_decoders (ClapperPlayer *self)
+{
+  GstIterator *iter;
+  GValue value = G_VALUE_INIT;
+  gboolean found_video = FALSE, found_audio = FALSE;
+
+  iter = gst_bin_iterate_all_by_element_factory_name (
+      GST_BIN_CAST (self->playbin), "input-selector");
+
+  while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+    GstElement *element = g_value_get_object (&value);
+    GstPad *active_pad;
+
+    g_object_get (element, "active-pad", &active_pad, NULL);
+
+    if (active_pad) {
+      gchar *stream_id;
+
+      stream_id = gst_pad_get_stream_id (active_pad);
+      gst_object_unref (active_pad);
+
+      if (stream_id) {
+        if (!found_video) {
+          found_video = clapper_player_find_active_decoder_with_stream_id (self,
+              GST_ELEMENT_FACTORY_TYPE_MEDIA_VIDEO, stream_id);
+        }
+        if (!found_audio) {
+          found_audio = clapper_player_find_active_decoder_with_stream_id (self,
+              GST_ELEMENT_FACTORY_TYPE_MEDIA_AUDIO, stream_id);
+        }
+        g_free (stream_id);
+      }
+    }
+
+    g_value_unset (&value);
+
+    if (found_video && found_audio)
+      break;
+  }
+
+  gst_iterator_free (iter);
+
+  if (!found_video)
+    GST_DEBUG_OBJECT (self, "Active video decoder not found");
+  if (!found_audio)
+    GST_DEBUG_OBJECT (self, "Active audio decoder not found");
 }
 
 void
@@ -389,8 +677,8 @@ clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
   /* Emit notify when we are not going to be disposed */
   if (!pending_dispose) {
     /* Clear current decoders (next item might not have video/audio track) */
-    clapper_player_handle_playbin_video_decoder_changed (self, NULL);
-    clapper_player_handle_playbin_audio_decoder_changed (self, NULL);
+    clapper_player_set_current_video_decoder (self, NULL);
+    clapper_player_set_current_audio_decoder (self, NULL);
   }
 }
 
@@ -411,6 +699,153 @@ _about_to_finish_cb (GstElement *playbin, ClapperPlayer *self)
     return;
 
   clapper_queue_handle_about_to_finish (self->queue, self);
+}
+
+static void
+_playbin_streams_changed_cb (GstElement *playbin, ClapperPlayer *self)
+{
+  GstStreamCollection *collection = gst_stream_collection_new (NULL);
+  gint i;
+
+  GST_DEBUG_OBJECT (self, "Playbin streams changed");
+
+  g_object_get (playbin, "n-video", &self->n_video, NULL);
+  for (i = 0; i < self->n_video; ++i) {
+    gst_stream_collection_add_stream (collection,
+        gst_stream_new (NULL, NULL, GST_STREAM_TYPE_VIDEO, GST_STREAM_FLAG_NONE));
+  }
+
+  g_object_get (playbin, "n-audio", &self->n_audio, NULL);
+  for (i = 0; i < self->n_audio; ++i) {
+    gst_stream_collection_add_stream (collection,
+        gst_stream_new (NULL, NULL, GST_STREAM_TYPE_AUDIO, GST_STREAM_FLAG_NONE));
+  }
+
+  g_object_get (playbin, "n-text", &self->n_text, NULL);
+  for (i = 0; i < self->n_text; ++i) {
+    gst_stream_collection_add_stream (collection,
+        gst_stream_new (NULL, NULL, GST_STREAM_TYPE_TEXT, GST_STREAM_FLAG_NONE));
+  }
+
+  clapper_player_take_stream_collection (self, collection);
+}
+
+static void
+_playbin_tags_changed (ClapperPlayer *self, gint index, gint global_index)
+{
+  GstStream *gst_stream;
+  GstStreamType stream_type;
+  GstTagList *tags = NULL;
+  GstPad *pad = NULL;
+  GstCaps *caps = NULL;
+
+  gst_stream = gst_stream_collection_get_stream (self->collection, global_index);
+  stream_type = gst_stream_get_stream_type (gst_stream);
+
+  if ((stream_type & GST_STREAM_TYPE_VIDEO) == GST_STREAM_TYPE_VIDEO) {
+    g_signal_emit_by_name (self->playbin, "get-video-tags", index, &tags);
+    g_signal_emit_by_name (self->playbin, "get-video-pad", index, &pad);
+  } else if ((stream_type & GST_STREAM_TYPE_AUDIO) == GST_STREAM_TYPE_AUDIO) {
+    g_signal_emit_by_name (self->playbin, "get-audio-tags", index, &tags);
+    g_signal_emit_by_name (self->playbin, "get-audio-pad", index, &pad);
+  } else if ((stream_type & GST_STREAM_TYPE_TEXT) == GST_STREAM_TYPE_TEXT) {
+    g_signal_emit_by_name (self->playbin, "get-text-tags", index, &tags);
+    g_signal_emit_by_name (self->playbin, "get-text-pad", index, &pad);
+  }
+
+  gst_stream_set_tags (gst_stream, tags);
+  gst_clear_tag_list (&tags);
+
+  if (G_LIKELY (pad != NULL)) {
+    caps = gst_pad_get_current_caps (pad);
+    gst_object_unref (pad);
+  }
+
+  gst_stream_set_caps (gst_stream, caps);
+  gst_clear_caps (&caps);
+}
+
+static void
+_playbin_video_tags_changed_cb (GstElement *playbin, gint index, ClapperPlayer *self)
+{
+  GST_DEBUG_OBJECT (self, "Video stream %i tags changed", index);
+  _playbin_tags_changed (self, index, index);
+}
+
+static void
+_playbin_audio_tags_changed_cb (GstElement *playbin, gint index, ClapperPlayer *self)
+{
+  GST_DEBUG_OBJECT (self, "Audio stream %i tags changed", index);
+  _playbin_tags_changed (self, index, self->n_video + index);
+}
+
+static void
+_playbin_text_tags_changed_cb (GstElement *playbin, gint index, ClapperPlayer *self)
+{
+  GST_DEBUG_OBJECT (self, "Subtitle stream %i tags changed", index);
+  _playbin_tags_changed (self, index, self->n_video + self->n_audio + index);
+}
+
+static void
+_playbin_selected_streams_changed_cb (GstElement *playbin,
+    GParamSpec *pspec G_GNUC_UNUSED, ClapperPlayer *self)
+{
+  GstMessage *msg;
+  gint current_video = 0, current_audio = 0, current_text = 0;
+  gboolean success = TRUE;
+
+  msg = gst_message_new_streams_selected (
+      GST_OBJECT_CAST (playbin), self->collection);
+
+  g_object_get (playbin,
+      "current-video", &current_video,
+      "current-audio", &current_audio,
+      "current-text", &current_text, NULL);
+
+  GST_DEBUG_OBJECT (self, "Selected streams changed, video: %i, audio: %i, text: %i",
+      current_video, current_audio, current_text);
+
+  /* We cannot play text stream only, skip streams selected for now */
+  if (current_video < 0 && current_audio < 0) {
+    success = FALSE;
+    goto finish;
+  }
+
+  if (current_video >= 0) {
+    GstStream *gst_stream = gst_stream_collection_get_stream (self->collection,
+        current_video);
+
+    if (gst_stream)
+      gst_message_streams_selected_add (msg, gst_stream);
+    else
+      success = FALSE;
+  }
+  if (current_audio >= 0) {
+    GstStream *gst_stream = gst_stream_collection_get_stream (self->collection,
+        self->n_video + current_audio);
+
+    if (gst_stream)
+      gst_message_streams_selected_add (msg, gst_stream);
+    else
+      success = FALSE;
+  }
+  if (current_text >= 0) {
+    GstStream *gst_stream = gst_stream_collection_get_stream (self->collection,
+        self->n_video + self->n_audio + current_text);
+
+    if (gst_stream)
+      gst_message_streams_selected_add (msg, gst_stream);
+    else
+      success = FALSE;
+  }
+
+finish:
+  /* Since "current-*" is changed one at a time from signal emissions,
+   * we might fail here to assemble everything until last signal */
+  if (success)
+    gst_bus_post (self->bus, msg);
+  else
+    gst_message_unref (msg);
 }
 
 ClapperPlayer *
@@ -467,6 +902,54 @@ clapper_player_get_queue (ClapperPlayer *self)
   g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
 
   return self->queue;
+}
+
+/**
+ * clapper_player_get_video_streams:
+ * @player: a #ClapperPlayer
+ *
+ * Get a list of video streams within media item.
+ *
+ * Returns: (transfer none): a #ClapperStreamList of video #ClapperStream.
+ */
+ClapperStreamList *
+clapper_player_get_video_streams (ClapperPlayer *self)
+{
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  return self->video_streams;
+}
+
+/**
+ * clapper_player_get_audio_streams:
+ * @player: a #ClapperPlayer
+ *
+ * Get a list of audio streams within media item.
+ *
+ * Returns: (transfer none): a #ClapperStreamList of audio #ClapperStream.
+ */
+ClapperStreamList *
+clapper_player_get_audio_streams (ClapperPlayer *self)
+{
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  return self->audio_streams;
+}
+
+/**
+ * clapper_player_get_subtitle_streams:
+ * @player: a #ClapperPlayer
+ *
+ * Get a list of subtitle streams within media item.
+ *
+ * Returns: (transfer none): a #ClapperStreamList of subtitle #ClapperStream.
+ */
+ClapperStreamList *
+clapper_player_get_subtitle_streams (ClapperPlayer *self)
+{
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  return self->subtitle_streams;
 }
 
 /**
@@ -865,6 +1348,117 @@ clapper_player_get_current_audio_decoder (ClapperPlayer *self)
 }
 
 /**
+ * clapper_player_set_video_enabled:
+ * @player: a #ClapperPlayer
+ * @enabled: whether enabled
+ *
+ * Set whether enable video stream.
+ */
+void
+clapper_player_set_video_enabled (ClapperPlayer *self, gboolean enabled)
+{
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+
+  clapper_playbin_bus_post_set_play_flag (self->bus, CLAPPER_PLAYER_PLAY_FLAG_VIDEO, enabled);
+}
+
+/**
+ * clapper_player_get_video_enabled:
+ * @player: a #ClapperPlayer
+ *
+ * Get whether video stream is enabled.
+ *
+ * Returns: %TRUE if enabled, %FALSE otherwise.
+ */
+gboolean
+clapper_player_get_video_enabled (ClapperPlayer *self)
+{
+  gboolean enabled;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), FALSE);
+
+  GST_OBJECT_LOCK (self);
+  enabled = self->video_enabled;
+  GST_OBJECT_UNLOCK (self);
+
+  return enabled;
+}
+
+/**
+ * clapper_player_set_audio_enabled:
+ * @player: a #ClapperPlayer
+ * @enabled: whether enabled
+ *
+ * Set whether enable audio stream.
+ */
+void
+clapper_player_set_audio_enabled (ClapperPlayer *self, gboolean enabled)
+{
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+
+  clapper_playbin_bus_post_set_play_flag (self->bus, CLAPPER_PLAYER_PLAY_FLAG_AUDIO, enabled);
+}
+
+/**
+ * clapper_player_get_audio_enabled:
+ * @player: a #ClapperPlayer
+ *
+ * Get whether audio stream is enabled.
+ *
+ * Returns: %TRUE if enabled, %FALSE otherwise.
+ */
+gboolean
+clapper_player_get_audio_enabled (ClapperPlayer *self)
+{
+  gboolean enabled;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), FALSE);
+
+  GST_OBJECT_LOCK (self);
+  enabled = self->audio_enabled;
+  GST_OBJECT_UNLOCK (self);
+
+  return enabled;
+}
+
+/**
+ * clapper_player_set_subtitles_enabled:
+ * @player: a #ClapperPlayer
+ * @enabled: whether enabled
+ *
+ * Set whether subtitles should be shown if any.
+ */
+void
+clapper_player_set_subtitles_enabled (ClapperPlayer *self, gboolean enabled)
+{
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+
+  clapper_playbin_bus_post_set_play_flag (self->bus, CLAPPER_PLAYER_PLAY_FLAG_TEXT, enabled);
+}
+
+/**
+ * clapper_player_get_subtitles_enabled:
+ * @player: a #ClapperPlayer
+ *
+ * Get whether subtitles are to be shown if any.
+ *
+ * Returns: %TRUE if enabled, %FALSE otherwise.
+ */
+gboolean
+clapper_player_get_subtitles_enabled (ClapperPlayer *self)
+{
+  gboolean enabled;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), FALSE);
+
+  GST_OBJECT_LOCK (self);
+  enabled = self->subtitles_enabled;
+  GST_OBJECT_UNLOCK (self);
+
+  return enabled;
+}
+
+/**
  * clapper_player_play:
  * @player: a #ClapperPlayer
  *
@@ -1001,7 +1595,7 @@ clapper_player_thread_start (ClapperThreadedObject *threaded_object)
   if (!(env = g_getenv ("CLAPPER_USE_PLAYBIN3")))
     env = g_getenv ("GST_CLAPPER_USE_PLAYBIN3"); // compat
 
-  self->use_playbin3 = (!env || !g_str_has_prefix (env, "0"));
+  self->use_playbin3 = (env && g_str_has_prefix (env, "1"));
   playbin_str = (self->use_playbin3) ? "playbin3" : "playbin";
 
   /* TODO: Check if we still can still simply use legacy playbin when all is done */
@@ -1016,7 +1610,7 @@ clapper_player_thread_start (ClapperThreadedObject *threaded_object)
   for (i = 0; playbin_watchlist[i]; ++i)
     gst_element_add_property_notify_watch (self->playbin, playbin_watchlist[i], TRUE);
 
-  /* TODO: Remove once playbin3 can handle subtitles */
+  /* TODO: Remove once playbin3 can handle subtitles
   if (self->use_playbin3) {
     ClapperPlayerPlayFlags flags = 0;
 
@@ -1024,8 +1618,22 @@ clapper_player_thread_start (ClapperThreadedObject *threaded_object)
     flags &= ~CLAPPER_PLAYER_PLAY_FLAG_TEXT;
     g_object_set (self->playbin, "flags", flags, NULL);
   }
-
+*/
   g_signal_connect (self->playbin, "about-to-finish", G_CALLBACK (_about_to_finish_cb), self);
+
+  if (!self->use_playbin3) {
+    g_signal_connect (self->playbin, "video-changed", G_CALLBACK (_playbin_streams_changed_cb), self);
+    g_signal_connect (self->playbin, "audio-changed", G_CALLBACK (_playbin_streams_changed_cb), self);
+    g_signal_connect (self->playbin, "text-changed", G_CALLBACK (_playbin_streams_changed_cb), self);
+
+    g_signal_connect (self->playbin, "video-tags-changed", G_CALLBACK (_playbin_video_tags_changed_cb), self);
+    g_signal_connect (self->playbin, "audio-tags-changed", G_CALLBACK (_playbin_audio_tags_changed_cb), self);
+    g_signal_connect (self->playbin, "text-tags-changed", G_CALLBACK (_playbin_text_tags_changed_cb), self);
+
+    g_signal_connect (self->playbin, "notify::current-video", G_CALLBACK (_playbin_selected_streams_changed_cb), self);
+    g_signal_connect (self->playbin, "notify::current-audio", G_CALLBACK (_playbin_selected_streams_changed_cb), self);
+    g_signal_connect (self->playbin, "notify::current-text", G_CALLBACK (_playbin_selected_streams_changed_cb), self);
+  }
 
   self->bus = gst_element_get_bus (self->playbin);
   gst_bus_add_watch (self->bus, (GstBusFunc) clapper_playbin_bus_message_func, self);
@@ -1042,25 +1650,36 @@ clapper_player_thread_stop (ClapperThreadedObject *threaded_object)
 
   gst_bus_set_flushing (self->bus, TRUE);
   gst_bus_remove_watch (self->bus);
-  gst_clear_object (&self->bus);
 
   gst_bus_set_flushing (GST_BUS_CAST (self->app_bus), TRUE);
   gst_bus_remove_watch (GST_BUS_CAST (self->app_bus));
-  gst_clear_object (&self->app_bus);
 
   /* TODO: Cleanup HERE */
 
   clapper_player_reset (self, TRUE);
 
   gst_element_set_state (self->playbin, GST_STATE_NULL);
+
+  gst_clear_object (&self->bus);
+  gst_clear_object (&self->app_bus);
   gst_clear_object (&self->playbin);
+  gst_clear_object (&self->collection);
 }
 
 static void
 clapper_player_init (ClapperPlayer *self)
 {
   self->queue = clapper_queue_new ();
-  gst_object_set_parent (GST_OBJECT (self->queue), GST_OBJECT (self));
+  gst_object_set_parent (GST_OBJECT_CAST (self->queue), GST_OBJECT_CAST (self));
+
+  self->video_streams = clapper_stream_list_new ();
+  gst_object_set_parent (GST_OBJECT_CAST (self->video_streams), GST_OBJECT_CAST (self));
+
+  self->audio_streams = clapper_stream_list_new ();
+  gst_object_set_parent (GST_OBJECT_CAST (self->audio_streams), GST_OBJECT_CAST (self));
+
+  self->subtitle_streams = clapper_stream_list_new ();
+  gst_object_set_parent (GST_OBJECT_CAST (self->subtitle_streams), GST_OBJECT_CAST (self));
 
   clapper_player_set_have_features (self, FALSE);
 
@@ -1072,6 +1691,9 @@ clapper_player_init (ClapperPlayer *self)
   self->volume = DEFAULT_VOLUME;
   self->speed = DEFAULT_SPEED;
   self->state = DEFAULT_STATE;
+  self->video_enabled = DEFAULT_VIDEO_ENABLED;
+  self->audio_enabled = DEFAULT_AUDIO_ENABLED;
+  self->subtitles_enabled = DEFAULT_SUBTITLES_ENABLED;
 }
 
 static void
@@ -1091,7 +1713,14 @@ clapper_player_dispose (GObject *object)
 {
   ClapperPlayer *self = CLAPPER_PLAYER_CAST (object);
 
-  /* ??? */
+  GST_OBJECT_LOCK (self);
+
+  if (self->stream_notify_id != 0) {
+    g_signal_handler_disconnect (self->collection, self->stream_notify_id);
+    self->stream_notify_id = 0;
+  }
+
+  GST_OBJECT_UNLOCK (self);
 
   /* Parent class will wait for player thread to stop running */
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -1104,10 +1733,20 @@ clapper_player_finalize (GObject *object)
 
   GST_TRACE_OBJECT (self, "Finalize");
 
-  gst_clear_object (&self->features_manager);
-
   gst_object_unparent (GST_OBJECT (self->queue));
   gst_object_unref (self->queue);
+
+  gst_object_unparent (GST_OBJECT (self->video_streams));
+  gst_object_unref (self->video_streams);
+
+  gst_object_unparent (GST_OBJECT (self->audio_streams));
+  gst_object_unref (self->audio_streams);
+
+  gst_object_unparent (GST_OBJECT (self->subtitle_streams));
+  gst_object_unref (self->subtitle_streams);
+
+  gst_clear_object (&self->collection);
+  gst_clear_object (&self->features_manager);
   gst_clear_object (&self->pending_item);
   gst_clear_object (&self->played_item);
 
@@ -1123,6 +1762,15 @@ clapper_player_get_property (GObject *object, guint prop_id,
   switch (prop_id) {
     case PROP_QUEUE:
       g_value_set_object (value, clapper_player_get_queue (self));
+      break;
+    case PROP_VIDEO_STREAMS:
+      g_value_set_object (value, clapper_player_get_video_streams (self));
+      break;
+    case PROP_AUDIO_STREAMS:
+      g_value_set_object (value, clapper_player_get_audio_streams (self));
+      break;
+    case PROP_SUBTITLE_STREAMS:
+      g_value_set_object (value, clapper_player_get_subtitle_streams (self));
       break;
     case PROP_AUTOPLAY:
       g_value_set_boolean (value, clapper_player_get_autoplay (self));
@@ -1159,6 +1807,15 @@ clapper_player_get_property (GObject *object, guint prop_id,
       break;
     case PROP_CURRENT_VIDEO_DECODER:
       g_value_take_object (value, clapper_player_get_current_video_decoder (self));
+      break;
+    case PROP_VIDEO_ENABLED:
+      g_value_set_boolean (value, clapper_player_get_video_enabled (self));
+      break;
+    case PROP_AUDIO_ENABLED:
+      g_value_set_boolean (value, clapper_player_get_audio_enabled (self));
+      break;
+    case PROP_SUBTITLES_ENABLED:
+      g_value_set_boolean (value, clapper_player_get_subtitles_enabled (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1197,6 +1854,15 @@ clapper_player_set_property (GObject *object, guint prop_id,
     case PROP_VIDEO_FILTER:
       clapper_player_set_video_filter (self, g_value_get_object (value));
       break;
+    case PROP_VIDEO_ENABLED:
+      clapper_player_set_video_enabled (self, g_value_get_boolean (value));
+      break;
+    case PROP_AUDIO_ENABLED:
+      clapper_player_set_audio_enabled (self, g_value_get_boolean (value));
+      break;
+    case PROP_SUBTITLES_ENABLED:
+      clapper_player_set_subtitles_enabled (self, g_value_get_boolean (value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1225,6 +1891,33 @@ clapper_player_class_init (ClapperPlayerClass *klass)
    */
   param_specs[PROP_QUEUE] = g_param_spec_object ("queue",
       NULL, NULL, CLAPPER_TYPE_QUEUE,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:video-streams:
+   *
+   * List of currently available video streams.
+   */
+  param_specs[PROP_VIDEO_STREAMS] = g_param_spec_object ("video-streams",
+      NULL, NULL, CLAPPER_TYPE_STREAM_LIST,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:audio-streams:
+   *
+   * List of currently available audio streams.
+   */
+  param_specs[PROP_AUDIO_STREAMS] = g_param_spec_object ("audio-streams",
+      NULL, NULL, CLAPPER_TYPE_STREAM_LIST,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:subtitle-streams:
+   *
+   * List of currently available subtitle streams.
+   */
+  param_specs[PROP_SUBTITLE_STREAMS] = g_param_spec_object ("subtitle-streams",
+      NULL, NULL, CLAPPER_TYPE_STREAM_LIST,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
@@ -1338,6 +2031,33 @@ clapper_player_class_init (ClapperPlayerClass *klass)
   param_specs[PROP_CURRENT_AUDIO_DECODER] = g_param_spec_object ("current-audio-decoder",
       NULL, NULL, GST_TYPE_ELEMENT,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:video-enabled:
+   *
+   * Whether video stream is enabled.
+   */
+  param_specs[PROP_VIDEO_ENABLED] = g_param_spec_boolean ("video-enabled",
+      NULL, NULL, DEFAULT_VIDEO_ENABLED,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:audio-enabled:
+   *
+   * Whether audio stream is enabled.
+   */
+  param_specs[PROP_AUDIO_ENABLED] = g_param_spec_boolean ("audio-enabled",
+      NULL, NULL, DEFAULT_AUDIO_ENABLED,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:subtitles-enabled:
+   *
+   * Whether subtitles stream is enabled.
+   */
+  param_specs[PROP_SUBTITLES_ENABLED] = g_param_spec_boolean ("subtitles-enabled",
+      NULL, NULL, DEFAULT_SUBTITLES_ENABLED,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperPlayer::missing-plugin:

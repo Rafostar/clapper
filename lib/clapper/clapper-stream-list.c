@@ -33,13 +33,11 @@
 #define GST_CAT_DEFAULT clapper_stream_list_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
-typedef struct _ClapperStreamListPrivate ClapperStreamListPrivate;
-
-struct _ClapperStreamListPrivate
+struct _ClapperStreamList
 {
-  GPtrArray *streams;
+  GstObject parent;
 
-  ClapperStream *active_stream;
+  GPtrArray *streams;
 
   ClapperStream *current_stream;
   guint current_index;
@@ -57,7 +55,6 @@ static void clapper_stream_list_model_iface_init (GListModelInterface *iface);
 
 #define parent_class clapper_stream_list_parent_class
 G_DEFINE_TYPE_WITH_CODE (ClapperStreamList, clapper_stream_list, GST_TYPE_OBJECT,
-    G_ADD_PRIVATE (ClapperStreamList)
     G_IMPLEMENT_INTERFACE (G_TYPE_LIST_MODEL, clapper_stream_list_model_iface_init));
 
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
@@ -72,11 +69,10 @@ static guint
 clapper_stream_list_model_get_n_items (GListModel *model)
 {
   ClapperStreamList *self = CLAPPER_STREAM_LIST_CAST (model);
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
   guint n_streams;
 
   GST_OBJECT_LOCK (self);
-  n_streams = priv->streams->len;
+  n_streams = self->streams->len;
   GST_OBJECT_UNLOCK (self);
 
   return n_streams;
@@ -86,12 +82,11 @@ static gpointer
 clapper_stream_list_model_get_item (GListModel *model, guint index)
 {
   ClapperStreamList *self = CLAPPER_STREAM_LIST_CAST (model);
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
   ClapperStream *stream = NULL;
 
   GST_OBJECT_LOCK (self);
-  if (G_LIKELY (index < priv->streams->len))
-    stream = gst_object_ref (g_ptr_array_index (priv->streams, index));
+  if (G_LIKELY (index < self->streams->len))
+    stream = gst_object_ref (g_ptr_array_index (self->streams, index));
   GST_OBJECT_UNLOCK (self);
 
   return stream;
@@ -109,19 +104,16 @@ static void
 _post_stream_change (ClapperStreamList *self)
 {
   ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
-  ClapperMediaItem *item = CLAPPER_MEDIA_ITEM_CAST (gst_object_get_parent (GST_OBJECT_CAST (self)));
 
-  if (player && item)
-    clapper_playbin_bus_post_stream_change (player->bus, item);
-
-  gst_clear_object (&item);
-  gst_clear_object (&player);
+  if (G_LIKELY (player != NULL)) {
+    clapper_playbin_bus_post_stream_change (player->bus);
+    gst_object_unref (player);
+  }
 }
 
 static void
 _announce_current_stream_and_index_change (ClapperStreamList *self)
 {
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
   ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
   gboolean is_main_thread;
 
@@ -132,7 +124,7 @@ _announce_current_stream_and_index_change (ClapperStreamList *self)
 
   GST_DEBUG_OBJECT (self, "Announcing current stream change from %smain thread,"
       " now: %" GST_PTR_FORMAT " (index: %u)",
-      (is_main_thread) ? "" : "non-", priv->current_stream, priv->current_index);
+      (is_main_thread) ? "" : "non-", self->current_stream, self->current_index);
 
   if (is_main_thread) {
     g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_CURRENT_STREAM]);
@@ -150,14 +142,13 @@ _announce_current_stream_and_index_change (ClapperStreamList *self)
 static gboolean
 clapper_stream_list_select_index_unlocked (ClapperStreamList *self, guint index)
 {
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
   ClapperStream *stream = NULL;
 
   if (index != CLAPPER_STREAM_LIST_INVALID_POSITION)
-    stream = g_ptr_array_index (priv->streams, index);
+    stream = g_ptr_array_index (self->streams, index);
 
-  if (gst_object_replace ((GstObject **) &priv->current_stream, GST_OBJECT_CAST (stream))) {
-    priv->current_index = index;
+  if (gst_object_replace ((GstObject **) &self->current_stream, GST_OBJECT_CAST (stream))) {
+    self->current_index = index;
     return TRUE;
   }
 
@@ -192,17 +183,14 @@ clapper_stream_list_new (void)
 gboolean
 clapper_stream_list_select_stream (ClapperStreamList *self, ClapperStream *stream)
 {
-  ClapperStreamListPrivate *priv;
   gboolean found, changed = FALSE;
   guint index = 0;
 
   g_return_val_if_fail (CLAPPER_IS_STREAM_LIST (self), FALSE);
   g_return_val_if_fail (CLAPPER_IS_STREAM (stream), FALSE);
 
-  priv = clapper_stream_list_get_instance_private (self);
-
   GST_OBJECT_LOCK (self);
-  if ((found = g_ptr_array_find (priv->streams, stream, &index)))
+  if ((found = g_ptr_array_find (self->streams, stream, &index)))
     changed = clapper_stream_list_select_index_unlocked (self, index);
   GST_OBJECT_UNLOCK (self);
 
@@ -226,16 +214,13 @@ clapper_stream_list_select_stream (ClapperStreamList *self, ClapperStream *strea
 gboolean
 clapper_stream_list_select_index (ClapperStreamList *self, guint index)
 {
-  ClapperStreamListPrivate *priv;
   gboolean found, changed = FALSE;
 
   g_return_val_if_fail (CLAPPER_IS_STREAM_LIST (self), FALSE);
   g_return_val_if_fail (index != CLAPPER_STREAM_LIST_INVALID_POSITION, FALSE);
 
-  priv = clapper_stream_list_get_instance_private (self);
-
   GST_OBJECT_LOCK (self);
-  if ((found = index < priv->streams->len))
+  if ((found = index < self->streams->len))
     changed = clapper_stream_list_select_index_unlocked (self, index);
   GST_OBJECT_UNLOCK (self);
 
@@ -278,16 +263,13 @@ clapper_stream_list_get_stream (ClapperStreamList *self, guint index)
 ClapperStream *
 clapper_stream_list_get_current_stream (ClapperStreamList *self)
 {
-  ClapperStreamListPrivate *priv;
   ClapperStream *stream = NULL;
 
   g_return_val_if_fail (CLAPPER_IS_STREAM_LIST (self), NULL);
 
-  priv = clapper_stream_list_get_instance_private (self);
-
   GST_OBJECT_LOCK (self);
-  if (priv->current_stream)
-    stream = gst_object_ref (priv->current_stream);
+  if (self->current_stream)
+    stream = gst_object_ref (self->current_stream);
   GST_OBJECT_UNLOCK (self);
 
   return stream;
@@ -305,15 +287,12 @@ clapper_stream_list_get_current_stream (ClapperStreamList *self)
 guint
 clapper_stream_list_get_current_index (ClapperStreamList *self)
 {
-  ClapperStreamListPrivate *priv;
   guint index;
 
   g_return_val_if_fail (CLAPPER_IS_STREAM_LIST (self), CLAPPER_STREAM_LIST_INVALID_POSITION);
 
-  priv = clapper_stream_list_get_instance_private (self);
-
   GST_OBJECT_LOCK (self);
-  index = priv->current_index;
+  index = self->current_index;
   GST_OBJECT_UNLOCK (self);
 
   return index;
@@ -339,86 +318,99 @@ clapper_stream_list_get_n_streams (ClapperStreamList *self)
 }
 
 void
-clapper_stream_list_add_stream (ClapperStreamList *self, ClapperStream *stream)
+clapper_stream_list_replace_streams (ClapperStreamList *self, GList *streams)
 {
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
+  GList *st;
+  guint prev_n_streams, n_streams;
+  guint index = 0, selected_index = 0;
+  gboolean changed, selected = FALSE;
 
-  g_ptr_array_add (priv->streams, stream);
+  GST_OBJECT_LOCK (self);
+
+  prev_n_streams = self->streams->len;
+
+  if (prev_n_streams > 0)
+    g_ptr_array_remove_range (self->streams, 0, prev_n_streams);
+
+  for (st = streams; st != NULL; st = st->next) {
+    ClapperStream *stream = CLAPPER_STREAM_CAST (st->data);
+
+    /* Try to select first "default" stream, while avoiding
+     * streams that should not be selected by default.
+     * NOTE: This works only with playbin3 */
+    if (!selected) {
+      GstStream *gst_stream = clapper_stream_get_gst_stream (stream);
+      GstStreamFlags flags = gst_stream_get_stream_flags (gst_stream);
+
+      GST_LOG_OBJECT (self, "Stream flags: %i", flags);
+
+      if ((flags & GST_STREAM_FLAG_SELECT) == GST_STREAM_FLAG_SELECT) {
+        GST_DEBUG_OBJECT (self, "Stream has \"select\" stream flag");
+        selected = TRUE;
+        selected_index = index;
+      } else if ((flags & GST_STREAM_FLAG_UNSELECT) == GST_STREAM_FLAG_UNSELECT) {
+        GST_DEBUG_OBJECT (self, "Stream has \"unselect\" stream flag");
+        if (selected_index == index)
+          selected_index++;
+      }
+    }
+
+    g_ptr_array_add (self->streams, stream);
+    gst_object_set_parent (GST_OBJECT_CAST (stream), GST_OBJECT_CAST (self));
+
+    index++;
+  }
+
+  n_streams = self->streams->len;
+
+  GST_OBJECT_UNLOCK (self);
+
+  if (prev_n_streams > 0 || n_streams > 0)
+    g_list_model_items_changed (G_LIST_MODEL (self), 0, prev_n_streams, n_streams);
+
+  /* This can happen when ALL streams had "unselect" flag.
+   * In this case just select the first one. */
+  if (n_streams > 0) {
+    if (G_UNLIKELY (selected_index > n_streams - 1))
+      selected_index = 0;
+  } else {
+    selected_index = CLAPPER_STREAM_LIST_INVALID_POSITION;
+  }
+
+  /* TODO: Consider adding an API (or signal that returns index)
+   * to select preferred initial stream (by e.g. language) */
+
+  GST_OBJECT_LOCK (self);
+  changed = clapper_stream_list_select_index_unlocked (self, selected_index);
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    GST_INFO_OBJECT (self, "Initially selecting stream index: %u", selected_index);
+    _announce_current_stream_and_index_change (self);
+  }
 }
 
-gboolean
-clapper_stream_list_handle_gst_stream_selected (ClapperStreamList *self, GstStream *gst_stream)
+ClapperStream *
+clapper_stream_list_get_stream_for_gst_stream (ClapperStreamList *self, GstStream *gst_stream)
 {
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
-  gboolean changed = FALSE;
+  ClapperStream *found_stream = NULL;
   guint i;
 
   GST_OBJECT_LOCK (self);
 
-  for (i = 0; i < priv->streams->len; ++i) {
-    ClapperStream *stream = g_ptr_array_index (priv->streams, i);
-    GstStream *list_gst_stream = clapper_stream_get_stream (stream);
+  for (i = 0; i < self->streams->len; ++i) {
+    ClapperStream *stream = g_ptr_array_index (self->streams, i);
+    GstStream *list_gst_stream = clapper_stream_get_gst_stream (stream);
 
     if (gst_stream == list_gst_stream) {
-      gst_object_replace ((GstObject **) &priv->active_stream, GST_OBJECT_CAST (stream));
-      changed = clapper_stream_list_select_index_unlocked (self, i);
+      found_stream = gst_object_ref (stream);
       break;
     }
   }
 
   GST_OBJECT_UNLOCK (self);
 
-  if (changed)
-    _announce_current_stream_and_index_change (self);
-
-  return changed;
-}
-
-void
-clapper_stream_list_handle_stream_change_failed (ClapperStreamList *self)
-{
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
-  gboolean restored = FALSE;
-  guint i;
-
-  GST_OBJECT_LOCK (self);
-
-  if (!priv->active_stream || priv->active_stream == priv->current_stream) {
-    GST_OBJECT_UNLOCK (self);
-    return;
-  }
-
-  for (i = 0; i < priv->streams->len; ++i) {
-    ClapperStream *stream = g_ptr_array_index (priv->streams, i);
-
-    if (stream == priv->active_stream) {
-      restored = clapper_stream_list_select_index_unlocked (self, i);
-      break;
-    }
-  }
-
-  GST_OBJECT_UNLOCK (self);
-
-  if (restored)
-    _announce_current_stream_and_index_change (self);
-}
-
-void
-clapper_stream_list_clear (ClapperStreamList *self)
-{
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
-  gboolean changed = FALSE;
-
-  GST_OBJECT_LOCK (self);
-  if (priv->streams->len > 0) {
-    changed = clapper_stream_list_select_index_unlocked (self, CLAPPER_STREAM_LIST_INVALID_POSITION);
-    gst_clear_object (&priv->active_stream);
-    g_ptr_array_remove_range (priv->streams, 0, priv->streams->len);
-  }
-  GST_OBJECT_UNLOCK (self);
-
-  if (changed)
-    _announce_current_stream_and_index_change (self);
+  return found_stream;
 }
 
 static void
@@ -431,23 +423,19 @@ _stream_remove_func (ClapperStream *stream)
 static void
 clapper_stream_list_init (ClapperStreamList *self)
 {
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
-
-  priv->streams = g_ptr_array_new_with_free_func ((GDestroyNotify) _stream_remove_func);
-  priv->current_index = CLAPPER_STREAM_LIST_INVALID_POSITION;
+  self->streams = g_ptr_array_new_with_free_func ((GDestroyNotify) _stream_remove_func);
+  self->current_index = CLAPPER_STREAM_LIST_INVALID_POSITION;
 }
 
 static void
 clapper_stream_list_finalize (GObject *object)
 {
   ClapperStreamList *self = CLAPPER_STREAM_LIST_CAST (object);
-  ClapperStreamListPrivate *priv = clapper_stream_list_get_instance_private (self);
 
   GST_TRACE_OBJECT (self, "Finalize");
 
-  gst_clear_object (&priv->active_stream);
-  gst_clear_object (&priv->current_stream);
-  g_ptr_array_unref (priv->streams);
+  gst_clear_object (&self->current_stream);
+  g_ptr_array_unref (self->streams);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

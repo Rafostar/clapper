@@ -25,38 +25,17 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gst/gst.h>
-
-#include <clapper/clapper-enums.h>
+#include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_STREAM (clapper_stream_get_type())
-#define CLAPPER_STREAM_CAST(obj) ((ClapperStream *)(obj))
+#define CLAPPER_TYPE_SUBTITLE_STREAM (clapper_subtitle_stream_get_type())
+#define CLAPPER_SUBTITLE_STREAM_CAST(obj) ((ClapperSubtitleStream *)(obj))
 
-G_DECLARE_DERIVABLE_TYPE (ClapperStream, clapper_stream, CLAPPER, STREAM, GstObject)
+G_DECLARE_FINAL_TYPE (ClapperSubtitleStream, clapper_subtitle_stream, CLAPPER, SUBTITLE_STREAM, ClapperStream)
 
-struct _ClapperStreamClass
-{
-  GstObjectClass parent_class;
+gchar * clapper_subtitle_stream_get_lang_code (ClapperSubtitleStream *stream);
 
-  /**
-   * ClapperStreamClass::internal_stream_updated:
-   * @stream: a #ClapperStream
-   * @caps: (nullable): an updated #GstCaps if changed
-   * @tags: (nullable): an updated #GstTagList if changed
-   *
-   * This function is called when internal #GstStream gets updated.
-   * Meant for internal usage only. Used for subclasses to update
-   * their properties accordingly.
-   *
-   * Note that this vfunc is called from different threads.
-   */
-  void (* internal_stream_updated) (ClapperStream *stream, GstCaps *caps, GstTagList *tags);
-};
-
-ClapperStreamType clapper_stream_get_stream_type (ClapperStream *stream);
-
-gchar * clapper_stream_get_title (ClapperStream *stream);
+gchar * clapper_subtitle_stream_get_lang_name (ClapperSubtitleStream *stream);
 
 G_END_DECLS

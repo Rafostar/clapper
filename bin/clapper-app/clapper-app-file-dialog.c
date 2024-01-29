@@ -63,14 +63,53 @@ _open_files_cb (GtkFileDialog *dialog, GAsyncResult *result, GtkApplication *gtk
   g_clear_object (&files_model);
 }
 
+static void
+_open_subtitles_cb (GtkFileDialog *dialog, GAsyncResult *result, ClapperMediaItem *item)
+{
+  GError *error = NULL;
+  GFile *file = gtk_file_dialog_open_finish (dialog, result, &error);
+
+  if (G_LIKELY (error == NULL)) {
+    gchar *suburi = g_file_get_uri (file);
+
+    clapper_media_item_set_suburi (item, suburi);
+    g_free (suburi);
+  } else {
+    if (error->domain != GTK_DIALOG_ERROR || error->code != GTK_DIALOG_ERROR_DISMISSED) {
+      g_printerr ("Error: %s\n",
+          (error->message) ? error->message : "Could not open file dialog");
+    }
+    g_error_free (error);
+  }
+  g_clear_object (&file);
+  gst_object_unref (item); // Borrowed reference
+}
+
+static void
+_dialog_add_mime_types (GtkFileDialog *dialog, const gchar *filter_name,
+    const gchar *const *mime_types)
+{
+  GListStore *filters = g_list_store_new (GTK_TYPE_FILE_FILTER);
+  GtkFileFilter *filter = gtk_file_filter_new ();
+  guint i;
+
+  for (i = 0; mime_types[i]; ++i)
+    gtk_file_filter_add_mime_type (filter, mime_types[i]);
+
+  gtk_file_filter_set_name (filter, filter_name);
+  g_list_store_append (filters, filter);
+
+  gtk_file_dialog_set_filters (dialog, G_LIST_MODEL (filters));
+
+  g_object_unref (filters);
+  g_object_unref (filter);
+}
+
 void
 clapper_app_file_dialog_open_files (GtkApplication *gtk_app)
 {
   GtkWindow *window = gtk_application_get_active_window (gtk_app);
   GtkFileDialog *dialog = gtk_file_dialog_new ();
-  GListStore *filters = g_list_store_new (GTK_TYPE_FILE_FILTER);
-  GtkFileFilter *filter = gtk_file_filter_new ();
-  guint i;
 
   const gchar *const mime_types[] = {
     "video/*",
@@ -81,13 +120,8 @@ clapper_app_file_dialog_open_files (GtkApplication *gtk_app)
     NULL
   };
 
-  for (i = 0; mime_types[i]; ++i)
-    gtk_file_filter_add_mime_type (filter, mime_types[i]);
+  _dialog_add_mime_types (dialog, "Media Files", mime_types);
 
-  gtk_file_filter_set_name (filter, "Media Files");
-  g_list_store_append (filters, filter);
-
-  gtk_file_dialog_set_filters (dialog, G_LIST_MODEL (filters));
   gtk_file_dialog_set_modal (dialog, TRUE);
   gtk_file_dialog_set_title (dialog, "Add Files");
 
@@ -96,6 +130,28 @@ clapper_app_file_dialog_open_files (GtkApplication *gtk_app)
       gtk_app);
 
   g_object_unref (dialog);
-  g_object_unref (filters);
-  g_object_unref (filter);
+}
+
+void
+clapper_app_file_dialog_open_subtitles (GtkApplication *gtk_app, ClapperMediaItem *item)
+{
+  GtkWindow *window = gtk_application_get_active_window (gtk_app);
+  GtkFileDialog *dialog = gtk_file_dialog_new ();
+
+  const gchar *const mime_types[] = {
+    "application/x-subrip",
+    "text/x-ssa",
+    NULL
+  };
+
+  _dialog_add_mime_types (dialog, "Subtitles", mime_types);
+
+  gtk_file_dialog_set_modal (dialog, TRUE);
+  gtk_file_dialog_set_title (dialog, "Open Subtitles");
+
+  gtk_file_dialog_open (dialog, window, NULL,
+      (GAsyncReadyCallback) _open_subtitles_cb,
+      gst_object_ref (item));
+
+  g_object_unref (dialog);
 }
