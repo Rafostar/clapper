@@ -94,8 +94,6 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="ctor" href="ctor.MediaItem.new_from_file.html">new_from_file</a>
   
-    <a class="ctor" href="ctor.MediaItem.new_take.html">new_take</a>
-  
   </div>
 </div>
 
@@ -109,21 +107,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Instance methods</h5>
   <div class="links">
   
-    <a class="method" href="method.MediaItem.get_audio_streams.html">get_audio_streams</a>
-  
     <a class="method" href="method.MediaItem.get_container_format.html">get_container_format</a>
   
     <a class="method" href="method.MediaItem.get_duration.html">get_duration</a>
   
     <a class="method" href="method.MediaItem.get_id.html">get_id</a>
   
-    <a class="method" href="method.MediaItem.get_subtitle_streams.html">get_subtitle_streams</a>
+    <a class="method" href="method.MediaItem.get_suburi.html">get_suburi</a>
   
     <a class="method" href="method.MediaItem.get_title.html">get_title</a>
   
     <a class="method" href="method.MediaItem.get_uri.html">get_uri</a>
   
-    <a class="method" href="method.MediaItem.get_video_streams.html">get_video_streams</a>
+    <a class="method" href="method.MediaItem.set_suburi.html">set_suburi</a>
   
   </div>
 </div>
@@ -135,21 +131,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property" href="property.MediaItem.audio-streams.html">audio-streams</a>
-  
     <a class="property" href="property.MediaItem.container-format.html">container-format</a>
   
     <a class="property" href="property.MediaItem.duration.html">duration</a>
   
     <a class="property" href="property.MediaItem.id.html">id</a>
   
-    <a class="property" href="property.MediaItem.subtitle-streams.html">subtitle-streams</a>
+    <a class="property" href="property.MediaItem.suburi.html">suburi</a>
   
     <a class="property" href="property.MediaItem.title.html">title</a>
   
     <a class="property" href="property.MediaItem.uri.html">uri</a>
-  
-    <a class="property" href="property.MediaItem.video-streams.html">video-streams</a>
   
   </div>
 </div>
@@ -351,16 +343,6 @@ first in order to be&nbsp;played.</p>
           </div>
         </div>
       
-        <div class="">
-          <h6><a href="ctor.MediaItem.new_take.html">clapper_media_item_new_take</a></h6>
-          <div class="docblock">
-            <p>Creates new <code>ClapperMediaItem</code> from <span class="caps">URI</span>.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
       </div>
     </div>
     
@@ -375,16 +357,6 @@ first in order to be&nbsp;played.</p>
       </h4>
 
       <div class="docblock">
-      
-        <div class="">
-          <h6><a href="method.MediaItem.get_audio_streams.html">clapper_media_item_get_audio_streams</a></h6>
-          <div class="docblock">
-            <p>Get a list of audio streams within media&nbsp;item.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
       
         <div class="">
           <h6><a href="method.MediaItem.get_container_format.html">clapper_media_item_get_container_format</a></h6>
@@ -417,9 +389,9 @@ first in order to be&nbsp;played.</p>
         </div>
       
         <div class="">
-          <h6><a href="method.MediaItem.get_subtitle_streams.html">clapper_media_item_get_subtitle_streams</a></h6>
+          <h6><a href="method.MediaItem.get_suburi.html">clapper_media_item_get_suburi</a></h6>
           <div class="docblock">
-            <p>Get a list of subtitle streams within media&nbsp;item.</p>
+            <p>Get the additional <span class="caps">URI</span> of <code>ClapperMediaItem</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -449,9 +421,9 @@ of displaying it in the application <span class="caps">UI</span>.</p>
         </div>
       
         <div class="">
-          <h6><a href="method.MediaItem.get_video_streams.html">clapper_media_item_get_video_streams</a></h6>
+          <h6><a href="method.MediaItem.set_suburi.html">clapper_media_item_set_suburi</a></h6>
           <div class="docblock">
-            <p>Get a list of video streams within media&nbsp;item.</p>
+            <p>Set the additional <span class="caps">URI</span> of <code>ClapperMediaItem</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -503,16 +475,6 @@ of displaying it in the application <span class="caps">UI</span>.</p>
       <div class="docblock">
       
         <div class="">
-          <h6><a href="property.MediaItem.audio-streams.html">Clapper.MediaItem:audio-streams</a></h6>
-          <div class="docblock">
-            <p>List of available audio&nbsp;streams.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-        <div class="">
           <h6><a href="property.MediaItem.container-format.html">Clapper.MediaItem:container-format</a></h6>
           <div class="docblock">
             <p>Media container&nbsp;format.</p>
@@ -543,9 +505,9 @@ of displaying it in the application <span class="caps">UI</span>.</p>
         </div>
       
         <div class="">
-          <h6><a href="property.MediaItem.subtitle-streams.html">Clapper.MediaItem:subtitle-streams</a></h6>
+          <h6><a href="property.MediaItem.suburi.html">Clapper.MediaItem:suburi</a></h6>
           <div class="docblock">
-            <p>List of available subtitle&nbsp;streams.</p>
+            <p>Media additional <span class="caps">URI</span>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -566,16 +528,6 @@ of displaying it in the application <span class="caps">UI</span>.</p>
           <h6><a href="property.MediaItem.uri.html">Clapper.MediaItem:uri</a></h6>
           <div class="docblock">
             <p>Media <span class="caps">URI</span>.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-        <div class="">
-          <h6><a href="property.MediaItem.video-streams.html">Clapper.MediaItem:video-streams</a></h6>
-          <div class="docblock">
-            <p>List of available video&nbsp;streams.</p>
           </div>
           <div class="docblock">
             <p></p>

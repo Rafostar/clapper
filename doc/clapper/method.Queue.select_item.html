@@ -185,8 +185,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <p>Selects <code>ClapperMediaItem</code> from <code>queue</code> as current one and
-signals <code>ClapperPlayer</code> to play&nbsp;it.</p>
+        <p>Selects <code>ClapperMediaItem</code> from <code>queue</code> as current one or
+unselects currently selected item when <code>item</code> is <code>NULL</code>.</p>
       </div>
 
       <div class="docblock">
@@ -214,10 +214,10 @@ signals <code>ClapperPlayer</code> to play&nbsp;it.</p>
           <dt class="arg-name"><code>item</code></dt>
           <dd class="arg-description">
             <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
-            <p><p>A <code>ClapperMediaItem</code>.</p></p>
+            <p><p>A <code>ClapperMediaItem</code> or <code>NULL</code> to&nbsp;unselect.</p></p>
             <table>
             
-            
+            <tr><td>The argument can be <code>NULL</code>.</td></tr>
             
             
             
@@ -246,8 +246,8 @@ signals <code>ClapperPlayer</code> to play&nbsp;it.</p>
         <div class="returns">
           <div class="arg-description">
             <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
-            <p><p><code>TRUE</code> if item could be selected, <code>FALSE</code> if it
-  was not in the&nbsp;queue.</p></p>
+            <p><p><code>TRUE</code> if item could be selected/unselected,
+  <code>FALSE</code> if it was not in the&nbsp;queue.</p></p>
           </div>
           <div>
             <table>

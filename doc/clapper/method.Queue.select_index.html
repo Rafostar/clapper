@@ -180,13 +180,13 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-queue.c#L660">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-queue.c#L662">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Selects <code>ClapperMediaItem</code> at <code>index</code> from <code>queue</code> as
-current one and signals <code>ClapperPlayer</code> to play&nbsp;it.</p>
+        <p>Selects <code>ClapperMediaItem</code> at <code>index</code> from <code>queue</code> as current one or
+unselects currently selected index when <code>index</code> is&nbsp;#CLAPPER_QUEUE_INVALID_POSITION.</p>
       </div>
 
       <div class="docblock">
@@ -214,7 +214,7 @@ current one and signals <code>ClapperPlayer</code> to play&nbsp;it.</p>
           <dt class="arg-name"><code>index</code></dt>
           <dd class="arg-description">
             <p><em>Type:</em>&nbsp;<code>guint</code></p>
-            <p><p>An item&nbsp;index.</p></p>
+            <p><p>An item index or #CLAPPER_QUEUE_INVALID_POSITION to&nbsp;unselect.</p></p>
             <table>
             
             
@@ -246,8 +246,8 @@ current one and signals <code>ClapperPlayer</code> to play&nbsp;it.</p>
         <div class="returns">
           <div class="arg-description">
             <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
-            <p><p><code>TRUE</code> if item could be selected, <code>FALSE</code> if it
-  was not in the&nbsp;queue.</p></p>
+            <p><p><code>TRUE</code> if item at <code>index</code> could be selected/unselected,
+  <code>FALSE</code> if index was out of queue&nbsp;range.</p></p>
           </div>
           <div>
             <table>

@@ -91,8 +91,6 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method current" href="ctor.MediaItem.new_from_file.html">new_from_file</a>
   
-    <a class="method" href="ctor.MediaItem.new_take.html">new_take</a>
-  
   </div>
 </div>
 
@@ -119,7 +117,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.h#L44">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.h#L40">[src]</a>
         
       </h4>
 
@@ -138,14 +136,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.c#L278">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.c#L110">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <p>Creates new <code>ClapperMediaItem</code> from <code>GFile</code>.</p>
-<p>Same as clapper_media_item_new(), but uses a <code>GFile</code> for convenience
-in some situations instead of an <span class="caps">URI</span>.</p>
+<p>Same as <a href="ctor.MediaItem.new.html"><code>clapper_media_item_new()</code></a>, but uses a <a href="javascript:void(0)" data-namespace="Gio" data-link="iface.File.html" class="external"><code>GFile</code></a>
+for convenience in some situations instead of an <span class="caps">URI</span>.</p>
       </div>
 
       <div class="docblock">
@@ -203,8 +201,7 @@ in some situations instead of an <span class="caps">URI</span>.</p>
         <div class="returns">
           <div class="arg-description">
             <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
-            <p><p>A new <code>ClapperMediaItem</code>,
-  <code>NULL</code> when no <code>GFile</code> provided.</p></p>
+            <p><p>A new <code>ClapperMediaItem</code>.</p></p>
           </div>
           <div>
             <table>
@@ -212,7 +209,7 @@ in some situations instead of an <span class="caps">URI</span>.</p>
             
             
             <tr><td title="transfer: full">The caller of the function takes ownership of the data, and is responsible for freeing it.</td></tr>
-            <tr><td>The return value can be <code>NULL</code>.</td></tr>
+            
             
             </table>
           </div>

@@ -208,7 +208,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <p><code>ClapperGtkVideo</code> is the main widget exposed by <code>ClapperGtk</code> <span class="caps">API</span>. All other widgets
 exposed by this library are meant to be overlaid on top of this&nbsp;widget.</p>
 <p>For example a button type of widget once placed anywhere on video (can also be
-nested within another widget like <a href="javascript:void(0)" data-namespace="Gtk" data-link="class.Box.html" class="external"><code>GtkBox</code></a>) automatically works and controls
+nested within another widget like <a href="javascript:void(0)" data-namespace="Gtk" data-link="class.Box.html" class="external"><code>GtkBox</code></a>) automatically controls
 <code>ClapperGtkVideo</code> widget it was overlaid on top of. This allows freely creating custom
 playback control panels best suited for specific application. Additionally, pre-made
 widgets such as <a href="class.SimpleControls.html"><code>ClapperGtkSimpleControls</code></a> are also&nbsp;available.</p>
@@ -221,11 +221,25 @@ For more information please refer to the Clapper playback library&nbsp;documenta
 content when interacting with the video. To do this, simply add your widgets with
 <a href="method.Video.add_fading_overlay.html"><code>clapper_gtk_video_add_fading_overlay()</code></a>. If you want to display some static content
 on top of video (or take care of visibility within overlaid widget itself) you can add
-it to the video as a normal (static) overlay with <a href="method.Video.add_overlay.html"><code>clapper_gtk_video_add_overlay()</code></a>.</p>
+it to the video as a normal overlay with <a href="method.Video.add_overlay.html"><code>clapper_gtk_video_add_overlay()</code></a>.</p>
 <h1 id="clappergtkvideo-as-gtkbuildable">ClapperGtkVideo as GtkBuildable<a class="md-anchor" href="#clappergtkvideo-as-gtkbuildable" title="Permanent link"></a></h1>
 <p><code>ClapperGtkVideo</code> implementation of the <a href="javascript:void(0)" data-namespace="Gtk" data-link="iface.Buildable.html" class="external"><code>GtkBuildable</code></a> interface supports
 placing children as either normal overlay by specifying <code>overlay</code> or a fading
-one by specifying <code>fading-overlay</code> as the <code>type</code> attribute of a <code>&lt;child&gt;</code> element.</p>
+one by specifying <code>fading-overlay</code> as the <code>type</code> attribute of a <code>&lt;child&gt;</code> element.
+Position of overlaid content is determined by <code>valign/halign</code> properties.</p>
+<div class="codehilite"><pre><span></span><code><span class="nt">&lt;object</span><span class="w"> </span><span class="na">class=</span><span class="s">&quot;ClapperGtkVideo&quot;</span><span class="w"> </span><span class="na">id=</span><span class="s">&quot;video&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;child</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;fading-overlay&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;object</span><span class="w"> </span><span class="na">class=</span><span class="s">&quot;ClapperGtkTitleHeader&quot;</span><span class="nt">&gt;</span>
+<span class="w">      </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;valign&quot;</span><span class="nt">&gt;</span>start<span class="nt">&lt;/property&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/object&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/child&gt;</span>
+<span class="w">  </span><span class="nt">&lt;child</span><span class="w"> </span><span class="na">type=</span><span class="s">&quot;fading-overlay&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;object</span><span class="w"> </span><span class="na">class=</span><span class="s">&quot;ClapperGtkSimpleControls&quot;</span><span class="nt">&gt;</span>
+<span class="w">      </span><span class="nt">&lt;property</span><span class="w"> </span><span class="na">name=</span><span class="s">&quot;valign&quot;</span><span class="nt">&gt;</span>end<span class="nt">&lt;/property&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/object&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/child&gt;</span>
+<span class="nt">&lt;/object&gt;</span>
+</code></pre></div>
         </div>
 
         <div class="docblock">

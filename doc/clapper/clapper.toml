@@ -11,7 +11,7 @@ description = "Clapper playback library"
 devhelp = true
 search_index = true
 
-dependencies = ["GLib-2.0", "GObject-2.0", "Gio-2.0", "Gst-1.0"]
+dependencies = ["GLib-2.0", "GObject-2.0", "Gio-2.0", "Gst-1.0", "GstBase-1.0", "GstAudio-1.0", "GstTag-1.0", "GstPbutils-1.0"]
 
   [dependencies."GLib-2.0"]
   name = "GLib"

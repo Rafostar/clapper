@@ -107,9 +107,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.add_feature.html">add_feature</a>
   
+    <a class="method" href="method.Player.get_audio_enabled.html">get_audio_enabled</a>
+  
     <a class="method" href="method.Player.get_audio_filter.html">get_audio_filter</a>
   
     <a class="method" href="method.Player.get_audio_sink.html">get_audio_sink</a>
+  
+    <a class="method" href="method.Player.get_audio_streams.html">get_audio_streams</a>
+  
+    <a class="method" href="method.Player.get_autoplay.html">get_autoplay</a>
   
     <a class="method" href="method.Player.get_current_audio_decoder.html">get_current_audio_decoder</a>
   
@@ -125,9 +131,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.get_state.html">get_state</a>
   
+    <a class="method" href="method.Player.get_subtitle_streams.html">get_subtitle_streams</a>
+  
+    <a class="method" href="method.Player.get_subtitles_enabled.html">get_subtitles_enabled</a>
+  
+    <a class="method" href="method.Player.get_video_enabled.html">get_video_enabled</a>
+  
     <a class="method" href="method.Player.get_video_filter.html">get_video_filter</a>
   
     <a class="method" href="method.Player.get_video_sink.html">get_video_sink</a>
+  
+    <a class="method" href="method.Player.get_video_streams.html">get_video_streams</a>
   
     <a class="method" href="method.Player.get_volume.html">get_volume</a>
   
@@ -139,13 +153,21 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.seek_custom.html">seek_custom</a>
   
+    <a class="method" href="method.Player.set_audio_enabled.html">set_audio_enabled</a>
+  
     <a class="method" href="method.Player.set_audio_filter.html">set_audio_filter</a>
   
     <a class="method" href="method.Player.set_audio_sink.html">set_audio_sink</a>
   
+    <a class="method" href="method.Player.set_autoplay.html">set_autoplay</a>
+  
     <a class="method" href="method.Player.set_mute.html">set_mute</a>
   
     <a class="method" href="method.Player.set_speed.html">set_speed</a>
+  
+    <a class="method" href="method.Player.set_subtitles_enabled.html">set_subtitles_enabled</a>
+  
+    <a class="method" href="method.Player.set_video_enabled.html">set_video_enabled</a>
   
     <a class="method" href="method.Player.set_video_filter.html">set_video_filter</a>
   
@@ -165,9 +187,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Properties</h5>
   <div class="links">
   
+    <a class="property" href="property.Player.audio-enabled.html">audio-enabled</a>
+  
     <a class="property" href="property.Player.audio-filter.html">audio-filter</a>
   
     <a class="property" href="property.Player.audio-sink.html">audio-sink</a>
+  
+    <a class="property" href="property.Player.audio-streams.html">audio-streams</a>
+  
+    <a class="property" href="property.Player.autoplay.html">autoplay</a>
   
     <a class="property" href="property.Player.current-audio-decoder.html">current-audio-decoder</a>
   
@@ -183,9 +211,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property" href="property.Player.state.html">state</a>
   
+    <a class="property" href="property.Player.subtitle-streams.html">subtitle-streams</a>
+  
+    <a class="property" href="property.Player.subtitles-enabled.html">subtitles-enabled</a>
+  
+    <a class="property" href="property.Player.video-enabled.html">video-enabled</a>
+  
     <a class="property" href="property.Player.video-filter.html">video-filter</a>
   
     <a class="property" href="property.Player.video-sink.html">video-sink</a>
+  
+    <a class="property" href="property.Player.video-streams.html">video-streams</a>
   
     <a class="property" href="property.Player.volume.html">volume</a>
   
@@ -261,9 +297,7 @@ player&nbsp;operates.</p>
 serializing all events/commands between player and the thread it was created upon
 (usually main app thread). This makes it very easy to integrate with <span class="caps">UI</span> toolkits
 that operate on a single thread like (but not limited to) <span class="caps">GTK</span>.</p>
-<p>To listen for property changes, you can connect to property &#8220;notify&#8221; signal.
-As previously mentioned, all signals will be dispatched from the thread player
-was created&nbsp;on.</p>
+<p>To listen for property changes, you can connect to property &#8220;notify&#8221;&nbsp;signal.</p>
         </div>
 
         <div class="docblock">
@@ -445,6 +479,16 @@ was created&nbsp;on.</p>
         </div>
       
         <div class="">
+          <h6><a href="method.Player.get_audio_enabled.html">clapper_player_get_audio_enabled</a></h6>
+          <div class="docblock">
+            <p>Get whether audio stream is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.get_audio_filter.html">clapper_player_get_audio_filter</a></h6>
           <div class="docblock">
             <p>Get <code>GstElement</code> used as audio&nbsp;filter.</p>
@@ -458,6 +502,26 @@ was created&nbsp;on.</p>
           <h6><a href="method.Player.get_audio_sink.html">clapper_player_get_audio_sink</a></h6>
           <div class="docblock">
             <p>Get <code>GstElement</code> used as audio&nbsp;sink.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_audio_streams.html">clapper_player_get_audio_streams</a></h6>
+          <div class="docblock">
+            <p>Get a list of audio streams within media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_autoplay.html">clapper_player_get_autoplay</a></h6>
+          <div class="docblock">
+            <p>Get the autoplay&nbsp;value.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -535,6 +599,36 @@ was created&nbsp;on.</p>
         </div>
       
         <div class="">
+          <h6><a href="method.Player.get_subtitle_streams.html">clapper_player_get_subtitle_streams</a></h6>
+          <div class="docblock">
+            <p>Get a list of subtitle streams within media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_subtitles_enabled.html">clapper_player_get_subtitles_enabled</a></h6>
+          <div class="docblock">
+            <p>Get whether subtitles are to be shown if&nbsp;any.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_video_enabled.html">clapper_player_get_video_enabled</a></h6>
+          <div class="docblock">
+            <p>Get whether video stream is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.get_video_filter.html">clapper_player_get_video_filter</a></h6>
           <div class="docblock">
             <p>Get <code>GstElement</code> used as video&nbsp;filter.</p>
@@ -548,6 +642,16 @@ was created&nbsp;on.</p>
           <h6><a href="method.Player.get_video_sink.html">clapper_player_get_video_sink</a></h6>
           <div class="docblock">
             <p>Get <code>GstElement</code> used as video&nbsp;sink.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_video_streams.html">clapper_player_get_video_streams</a></h6>
+          <div class="docblock">
+            <p>Get a list of video streams within media&nbsp;item.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -605,6 +709,16 @@ was created&nbsp;on.</p>
         </div>
       
         <div class="">
+          <h6><a href="method.Player.set_audio_enabled.html">clapper_player_set_audio_enabled</a></h6>
+          <div class="docblock">
+            <p>Set whether enable audio&nbsp;stream.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.set_audio_filter.html">clapper_player_set_audio_filter</a></h6>
           <div class="docblock">
             <p>Set <code>GstElement</code> to be used as audio&nbsp;filter.</p>
@@ -625,6 +739,16 @@ was created&nbsp;on.</p>
         </div>
       
         <div class="">
+          <h6><a href="method.Player.set_autoplay.html">clapper_player_set_autoplay</a></h6>
+          <div class="docblock">
+            <p>Set the autoplay state of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.set_mute.html">clapper_player_set_mute</a></h6>
           <div class="docblock">
             <p>Set the mute state of the&nbsp;player.</p>
@@ -638,6 +762,26 @@ was created&nbsp;on.</p>
           <h6><a href="method.Player.set_speed.html">clapper_player_set_speed</a></h6>
           <div class="docblock">
             <p>Set the speed multiplier of the&nbsp;player.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_subtitles_enabled.html">clapper_player_set_subtitles_enabled</a></h6>
+          <div class="docblock">
+            <p>Set whether subtitles should be shown if&nbsp;any.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_video_enabled.html">clapper_player_set_video_enabled</a></h6>
+          <div class="docblock">
+            <p>Set whether enable video&nbsp;stream.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -744,6 +888,16 @@ was created&nbsp;on.</p>
       <div class="docblock">
       
         <div class="">
+          <h6><a href="property.Player.audio-enabled.html">Clapper.Player:audio-enabled</a></h6>
+          <div class="docblock">
+            <p>Whether audio stream is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="property.Player.audio-filter.html">Clapper.Player:audio-filter</a></h6>
           <div class="docblock">
             <p>Optional audio filter to use (none by&nbsp;default).</p>
@@ -757,6 +911,26 @@ was created&nbsp;on.</p>
           <h6><a href="property.Player.audio-sink.html">Clapper.Player:audio-sink</a></h6>
           <div class="docblock">
             <p>Audio sink to use (autoaudiosink by&nbsp;default).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.audio-streams.html">Clapper.Player:audio-streams</a></h6>
+          <div class="docblock">
+            <p>List of currently available audio&nbsp;streams.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.autoplay.html">Clapper.Player:autoplay</a></h6>
+          <div class="docblock">
+            <p>Always try to start playback after media item&nbsp;changes.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -834,6 +1008,36 @@ was created&nbsp;on.</p>
         </div>
       
         <div class="">
+          <h6><a href="property.Player.subtitle-streams.html">Clapper.Player:subtitle-streams</a></h6>
+          <div class="docblock">
+            <p>List of currently available subtitle&nbsp;streams.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.subtitles-enabled.html">Clapper.Player:subtitles-enabled</a></h6>
+          <div class="docblock">
+            <p>Whether subtitles stream is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.video-enabled.html">Clapper.Player:video-enabled</a></h6>
+          <div class="docblock">
+            <p>Whether video stream is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="property.Player.video-filter.html">Clapper.Player:video-filter</a></h6>
           <div class="docblock">
             <p>Optional video filter to use (none by&nbsp;default).</p>
@@ -847,6 +1051,16 @@ was created&nbsp;on.</p>
           <h6><a href="property.Player.video-sink.html">Clapper.Player:video-sink</a></h6>
           <div class="docblock">
             <p>Video sink to use (autovideosink by&nbsp;default).</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.video-streams.html">Clapper.Player:video-streams</a></h6>
+          <div class="docblock">
+            <p>List of currently available video&nbsp;streams.</p>
           </div>
           <div class="docblock">
             <p></p>

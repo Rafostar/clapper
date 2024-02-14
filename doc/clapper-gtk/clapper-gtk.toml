@@ -23,7 +23,7 @@ dependencies = ["Clapper-0.0", "Gtk-4.0"]
   description = "The GTK toolkit"
   docs_url = "https://docs.gtk.org/gtk4/"
 
-related = ["GLib-2.0", "GObject-2.0", "Gst-1.0"]
+related = ["GLib-2.0", "GObject-2.0", "Gio-2.0", "Gst-1.0"]
 
   [related."GLib-2.0"]
   name = "GLib"
@@ -34,6 +34,11 @@ related = ["GLib-2.0", "GObject-2.0", "Gst-1.0"]
   name = "GObject"
   description = "The base type system library"
   docs_url = "https://docs.gtk.org/gobject/"
+
+  [related."Gio-2.0"]
+  name = "Gio"
+  description = "GObject Interfaces and Objects, Networking, IPC, and I/O"
+  docs_url = "https://docs.gtk.org/gio/"
 
   [related."Gst-1.0"]
   name = "Gst"

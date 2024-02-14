@@ -96,7 +96,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Instance methods</h5>
   <div class="links">
   
-    <a class="method" href="method.Stream.get_caps.html">get_caps</a>
+    <a class="method" href="method.Stream.get_stream_type.html">get_stream_type</a>
+  
+    <a class="method" href="method.Stream.get_title.html">get_title</a>
   
   </div>
 </div>
@@ -108,7 +110,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property" href="property.Stream.caps.html">caps</a>
+    <a class="property" href="property.Stream.stream-type.html">stream-type</a>
+  
+    <a class="property" href="property.Stream.title.html">title</a>
   
   </div>
 </div>
@@ -122,6 +126,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
 
   
+<div class="section">
+  <h5>Virtual methods</h5>
+  <div class="links">
+  
+    <a class="method" href="vfunc.Stream.internal_stream_updated.html">internal_stream_updated</a>
+  
+  </div>
+</div>
+
 
 
 
@@ -276,6 +289,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 
     
+    <div class="descendants toggle-wrapper default-hide">
+      <h4 id="descendants">Descendants <a href="#descendants" class="anchor"></a></h4>
+      <div class="docblock">
+        <ul>
+          <li class="class"><a href="class.AudioStream.html" title="AudioStream">ClapperAudioStream</a></li>
+        
+          <li class="class"><a href="class.SubtitleStream.html" title="SubtitleStream">ClapperSubtitleStream</a></li>
+        
+          <li class="class"><a href="class.VideoStream.html" title="VideoStream">ClapperVideoStream</a></li>
+        </ul>
+      </div>
+    </div>
+    
 
     
 
@@ -293,9 +319,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       
         <div class="">
-          <h6><a href="method.Stream.get_caps.html">clapper_stream_get_caps</a></h6>
+          <h6><a href="method.Stream.get_stream_type.html">clapper_stream_get_stream_type</a></h6>
           <div class="docblock">
-            <p>Get the caps of <code>stream</code>, if&nbsp;any.</p>
+            <p>Get the <code>ClapperStreamType</code> of <code>stream</code>.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Stream.get_title.html">clapper_stream_get_title</a></h6>
+          <div class="docblock">
+            <p>Get the title of <code>stream</code>, if&nbsp;any.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -347,9 +383,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       
         <div class="">
-          <h6><a href="property.Stream.caps.html">Clapper.Stream:caps</a></h6>
+          <h6><a href="property.Stream.stream-type.html">Clapper.Stream:stream-type</a></h6>
           <div class="docblock">
-            <p>The <code>GstCaps</code> of&nbsp;stream.</p>
+            <p>Type of&nbsp;stream.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Stream.title.html">Clapper.Stream:title</a></h6>
+          <div class="docblock">
+            <p>Title of&nbsp;stream.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -457,6 +503,11 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
       <div class="docblock">
         <pre><code>struct ClapperStreamClass {
   GstObjectClass parent_class;
+  void (* internal_stream_updated) (
+    ClapperStream* stream,
+    GstCaps* caps,
+    GstTagList* tags
+  );
   
 }</code></pre>
       </div>
@@ -474,12 +525,42 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
           <dt><code>parent_class: GstObjectClass</code></dt>
           <dd>No description available.</dd>
         
+          <dt><code>internal_stream_updated: void (* internal_stream_updated) (
+    ClapperStream* stream,
+    GstCaps* caps,
+    GstTagList* tags
+  )</code></dt>
+          <dd>No description available.</dd>
+        
         </dd>
       </div>
       
     </div>
     
 
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="virtual-methods">
+        Virtual methods
+        <a href="#virtual-methods" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+      <div class="">
+        <h6 id="vfunc-internal_stream_updated"><a href="vfunc.Stream.internal_stream_updated.html">Clapper.StreamClass.internal_stream_updated</a></h6>
+        <div class="docblock">
+          <p>This function is called when internal <code>GstStream</code> gets updated.
+Meant for internal usage only. Used for subclasses to update
+their properties&nbsp;accordingly.</p>
+        </div>
+        <div class="docblock">
+          <p></p>
+        </div>
+      </div>
+      
+      </div>
+    </div>
     
 
     
@@ -519,6 +600,8 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
       
 
       
+<li class="toc-list-item"><a href="#virtual-methods"><span class="link-text">Virtual methods</span></a></li>
+
 
     </ul>
   </nav>
