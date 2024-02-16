@@ -26,6 +26,7 @@
 #include "clapper-player-private.h"
 #include "clapper-queue-private.h"
 #include "clapper-media-item-private.h"
+#include "clapper-timeline-private.h"
 #include "clapper-stream-private.h"
 #include "clapper-stream-list-private.h"
 #include "clapper-utils-private.h"
@@ -806,6 +807,35 @@ _handle_tag_msg (GstMessage *msg, ClapperPlayer *player)
 }
 
 static inline void
+_handle_toc_msg (GstMessage *msg, ClapperPlayer *player)
+{
+  GstObject *src = GST_MESSAGE_SRC (msg);
+  GstToc *toc = NULL;
+  ClapperTimeline *timeline;
+  gboolean updated = FALSE;
+
+  /* TOC messages should only be posted by sink elements after start */
+  if (G_UNLIKELY (!src || !player->played_item))
+    return;
+
+  /* Either new TOC was found or previous one was updated */
+  gst_message_parse_toc (msg, &toc, &updated);
+
+  GST_DEBUG_OBJECT (player, "Got TOC (%" GST_PTR_FORMAT ")"
+      " from element: %s, updated: %s",
+      toc, GST_OBJECT_NAME (src), (updated) ? "yes" : "no");
+
+  timeline = clapper_media_item_get_timeline (player->played_item);
+
+  if (clapper_timeline_set_toc (timeline, toc, updated)) {
+    clapper_app_bus_post_refresh_timeline (player->app_bus,
+        GST_OBJECT_CAST (player->played_item));
+  }
+
+  gst_toc_unref (toc);
+}
+
+static inline void
 _handle_property_notify_msg (GstMessage *msg, ClapperPlayer *player)
 {
   GstObject *src = NULL;
@@ -1009,6 +1039,9 @@ clapper_playbin_bus_message_func (GstBus *bus, GstMessage *msg, ClapperPlayer *p
       break;
     case GST_MESSAGE_TAG:
       _handle_tag_msg (msg, player);
+      break;
+    case GST_MESSAGE_TOC:
+      _handle_toc_msg (msg, player);
       break;
     case GST_MESSAGE_PROPERTY_NOTIFY:
       _handle_property_notify_msg (msg, player);

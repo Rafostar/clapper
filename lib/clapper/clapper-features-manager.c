@@ -347,7 +347,7 @@ clapper_features_manager_thread_stop (ClapperThreadedObject *threaded_object)
     ClapperFeature *feature = g_ptr_array_index (self->features, i);
 
     clapper_feature_call_unprepare (feature);
-    gst_object_unparent (GST_OBJECT (feature));
+    gst_object_unparent (GST_OBJECT_CAST (feature));
   }
 
   g_ptr_array_unref (self->features);

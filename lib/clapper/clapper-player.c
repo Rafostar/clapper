@@ -1515,13 +1515,13 @@ clapper_player_stop (ClapperPlayer *self)
  *
  * Request the player to perform a seek operation.
  *
- * This function will use #CLAPPER_PLAYER_SEEK_METHOD_NORMAL as a default
+ * This function will use [enum@Clapper.PlayerSeekMethod.NORMAL] as a
  * seeking method. If you wish to specify what method to use per seeking
- * request, use clapper_player_seek_custom() instead.
+ * request, use [method@Clapper.Player.seek_custom] instead.
  *
  * Note that seeking requests are per selected media item. Seeking
  * requests will be ignored if player is stopped. You need to at least
- * call clapper_player_pause() before seeking and then your requested
+ * call [method@Clapper.Player.pause] before seeking and then your requested
  * seek will be handled if item could be played.
  */
 void
@@ -1538,8 +1538,8 @@ clapper_player_seek (ClapperPlayer *self, gfloat position)
  *
  * Request the player to perform a seek operation.
  *
- * Same as clapper_player_seek(), but also allows to specify
- * #ClapperPlayerSeekMethod to use for seek.
+ * Same as [method@Clapper.Player.seek], but also allows to specify
+ * [enum@Clapper.PlayerSeekMethod] to use for seek.
  */
 void
 clapper_player_seek_custom (ClapperPlayer *self, gfloat position, ClapperPlayerSeekMethod method)
@@ -1731,16 +1731,16 @@ clapper_player_finalize (GObject *object)
 
   GST_TRACE_OBJECT (self, "Finalize");
 
-  gst_object_unparent (GST_OBJECT (self->queue));
+  gst_object_unparent (GST_OBJECT_CAST (self->queue));
   gst_object_unref (self->queue);
 
-  gst_object_unparent (GST_OBJECT (self->video_streams));
+  gst_object_unparent (GST_OBJECT_CAST (self->video_streams));
   gst_object_unref (self->video_streams);
 
-  gst_object_unparent (GST_OBJECT (self->audio_streams));
+  gst_object_unparent (GST_OBJECT_CAST (self->audio_streams));
   gst_object_unref (self->audio_streams);
 
-  gst_object_unparent (GST_OBJECT (self->subtitle_streams));
+  gst_object_unparent (GST_OBJECT_CAST (self->subtitle_streams));
   gst_object_unref (self->subtitle_streams);
 
   gst_clear_object (&self->collection);

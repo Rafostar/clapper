@@ -91,6 +91,10 @@ clapper-gtk-simple-controls .mainbox {
 clapper-gtk-simple-controls .mainbox button {
   margin: 2px;
 }
+clapper-gtk-simple-controls .mainbox scale {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
 clapper-gtk-simple-controls .mainbox popover button {
   margin: 0px;
 }

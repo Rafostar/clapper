@@ -71,6 +71,27 @@ typedef enum
 } ClapperQueueProgressionMode;
 
 /**
+ * ClapperMarkerType:
+ * @CLAPPER_MARKER_TYPE_UNKNOWN: unknown marker type.
+ * @CLAPPER_MARKER_TYPE_TITLE: a title marker in timeline.
+ * @CLAPPER_MARKER_TYPE_CHAPTER: a chapter marker in timeline.
+ * @CLAPPER_MARKER_TYPE_TRACK: a track marker in timeline.
+ * @CLAPPER_STREAM_TYPE_CUSTOM_1: a custom marker 1 for free usage by application.
+ * @CLAPPER_STREAM_TYPE_CUSTOM_2: a custom marker 2 for free usage by application.
+ * @CLAPPER_STREAM_TYPE_CUSTOM_3: a custom marker 3 for free usage by application.
+ */
+typedef enum
+{
+  CLAPPER_MARKER_TYPE_UNKNOWN = 0,
+  CLAPPER_MARKER_TYPE_TITLE,
+  CLAPPER_MARKER_TYPE_CHAPTER,
+  CLAPPER_MARKER_TYPE_TRACK,
+  CLAPPER_MARKER_TYPE_CUSTOM_1 = 101,
+  CLAPPER_MARKER_TYPE_CUSTOM_2 = 102,
+  CLAPPER_MARKER_TYPE_CUSTOM_3 = 103,
+} ClapperMarkerType;
+
+/**
  * ClapperStreamType:
  * @CLAPPER_STREAM_TYPE_UNKNOWN: unknown stream type.
  * @CLAPPER_STREAM_TYPE_VIDEO: stream is a #ClapperVideoStream.

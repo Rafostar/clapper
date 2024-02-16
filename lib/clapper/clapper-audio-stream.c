@@ -20,7 +20,7 @@
 /**
  * ClapperAudioStream:
  *
- * Represents a audio stream within media.
+ * Represents an audio stream within media.
  */
 
 #include <gst/tag/tag.h>

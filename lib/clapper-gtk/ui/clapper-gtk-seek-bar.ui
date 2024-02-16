@@ -26,6 +26,19 @@
         <property name="hexpand">true</property>
         <property name="draw-value">false</property>
         <property name="adjustment">position_adjustment</property>
+        <signal name="value-changed" handler="scale_value_changed_cb"/>
+        <signal name="notify::css-classes" handler="scale_css_classes_changed_cb"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkPopover" id="popover">
+        <property name="position">top</property>
+        <property name="autohide">false</property>
+        <child>
+          <object class="GtkLabel" id="popover_label">
+            <property name="valign">center</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
@@ -43,6 +56,12 @@
             </style>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkEventControllerMotion">
+        <signal name="motion" handler="motion_cb"/>
+        <signal name="leave" handler="motion_leave_cb"/>
       </object>
     </child>
   </template>

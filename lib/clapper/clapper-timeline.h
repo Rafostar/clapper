@@ -25,36 +25,23 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gio/gio.h>
 #include <gst/gst.h>
 
-#include <clapper/clapper-timeline.h>
+#include <clapper/clapper-marker.h>
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_MEDIA_ITEM (clapper_media_item_get_type())
-#define CLAPPER_MEDIA_ITEM_CAST(obj) ((ClapperMediaItem *)(obj))
+#define CLAPPER_TYPE_TIMELINE (clapper_timeline_get_type())
+#define CLAPPER_TIMELINE_CAST(obj) ((ClapperTimeline *)(obj))
 
-G_DECLARE_FINAL_TYPE (ClapperMediaItem, clapper_media_item, CLAPPER, MEDIA_ITEM, GstObject)
+G_DECLARE_FINAL_TYPE (ClapperTimeline, clapper_timeline, CLAPPER, TIMELINE, GstObject)
 
-ClapperMediaItem * clapper_media_item_new (const gchar *uri);
+gboolean clapper_timeline_insert_marker (ClapperTimeline *timeline, ClapperMarker *marker);
 
-ClapperMediaItem * clapper_media_item_new_from_file (GFile *file);
+void clapper_timeline_remove_marker (ClapperTimeline *timeline, ClapperMarker *marker);
 
-guint clapper_media_item_get_id (ClapperMediaItem *item);
+ClapperMarker * clapper_timeline_get_marker (ClapperTimeline *timeline, guint index);
 
-const gchar * clapper_media_item_get_uri (ClapperMediaItem *item);
-
-void clapper_media_item_set_suburi (ClapperMediaItem *item, const gchar *suburi);
-
-gchar * clapper_media_item_get_suburi (ClapperMediaItem *item);
-
-gchar * clapper_media_item_get_title (ClapperMediaItem *item);
-
-gchar * clapper_media_item_get_container_format (ClapperMediaItem *item);
-
-gfloat clapper_media_item_get_duration (ClapperMediaItem *item);
-
-ClapperTimeline * clapper_media_item_get_timeline (ClapperMediaItem *item);
+guint clapper_timeline_get_n_markers (ClapperTimeline *timeline);
 
 G_END_DECLS

@@ -432,7 +432,7 @@ clapper_queue_insert_item (ClapperQueue *self, ClapperMediaItem *item, gint inde
     guint prev_length = self->items->len;
 
     g_ptr_array_insert (self->items, index, gst_object_ref (item));
-    gst_object_set_parent (GST_OBJECT (item), GST_OBJECT (self));
+    gst_object_set_parent (GST_OBJECT_CAST (item), GST_OBJECT_CAST (self));
 
     /* In append we inserted at array length */
     if (index == -1)
@@ -588,7 +588,7 @@ clapper_queue_steal_index (ClapperQueue *self, guint index)
     }
 
     removed_item = g_ptr_array_steal_index (self->items, index);
-    gst_object_unparent (GST_OBJECT (removed_item));
+    gst_object_unparent (GST_OBJECT_CAST (removed_item));
 
     _announce_model_update (self, index, 1, 0, removed_item);
   }
@@ -754,13 +754,13 @@ clapper_queue_select_previous_item (ClapperQueue *self)
  *
  * Get the #ClapperMediaItem at index.
  *
- * This behaves the same as g_list_model_get_item(), and is here
+ * This behaves the same as [method@Gio.ListModel.get_item], and is here
  * for code uniformity and convenience to avoid type casting by user.
  *
  * This function is not available in bindings as they already
- * inherit get_item() method from #GListModel interface.
+ * inherit `get_item()` method from [iface@Gio.ListModel] interface.
  *
- * Returns: (transfer full): The #ClapperMediaItem at @index.
+ * Returns: (transfer full) (nullable): The #ClapperMediaItem at @index.
  */
 ClapperMediaItem *
 clapper_queue_get_item (ClapperQueue *self, guint index)
@@ -1068,7 +1068,7 @@ clapper_queue_get_instant (ClapperQueue *self)
 static void
 _item_remove_func (ClapperMediaItem *item)
 {
-  gst_object_unparent (GST_OBJECT (item));
+  gst_object_unparent (GST_OBJECT_CAST (item));
   gst_object_unref (item);
 }
 

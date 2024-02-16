@@ -48,6 +48,7 @@ enum
   PROP_0,
   PROP_CURRENT_STREAM,
   PROP_CURRENT_INDEX,
+  PROP_N_STREAMS,
   PROP_LAST
 };
 
@@ -239,10 +240,10 @@ clapper_stream_list_select_index (ClapperStreamList *self, guint index)
  *
  * Get the #ClapperStream at index.
  *
- * This behaves the same as g_list_model_get_item(), and is here
+ * This behaves the same as [method@Gio.ListModel.get_item], and is here
  * for code uniformity and convenience to avoid type casting by user.
  *
- * Returns: (transfer full): The #ClapperStream at @index.
+ * Returns: (transfer full) (nullable): The #ClapperStream at @index.
  */
 ClapperStream *
 clapper_stream_list_get_stream (ClapperStreamList *self, guint index)
@@ -365,8 +366,12 @@ clapper_stream_list_replace_streams (ClapperStreamList *self, GList *streams)
 
   GST_OBJECT_UNLOCK (self);
 
-  if (prev_n_streams > 0 || n_streams > 0)
+  if (prev_n_streams > 0 || n_streams > 0) {
     g_list_model_items_changed (G_LIST_MODEL (self), 0, prev_n_streams, n_streams);
+
+    if (prev_n_streams != n_streams)
+      g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_N_STREAMS]);
+  }
 
   /* This can happen when ALL streams had "unselect" flag.
    * In this case just select the first one. */
@@ -416,7 +421,7 @@ clapper_stream_list_get_stream_for_gst_stream (ClapperStreamList *self, GstStrea
 static void
 _stream_remove_func (ClapperStream *stream)
 {
-  gst_object_unparent (GST_OBJECT (stream));
+  gst_object_unparent (GST_OBJECT_CAST (stream));
   gst_object_unref (stream);
 }
 
@@ -453,6 +458,9 @@ clapper_stream_list_get_property (GObject *object, guint prop_id,
     case PROP_CURRENT_INDEX:
       g_value_set_uint (value, clapper_stream_list_get_current_index (self));
       break;
+    case PROP_N_STREAMS:
+      g_value_set_uint (value, clapper_stream_list_get_n_streams (self));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -486,6 +494,15 @@ clapper_stream_list_class_init (ClapperStreamListClass *klass)
    */
   param_specs[PROP_CURRENT_INDEX] = g_param_spec_uint ("current-index",
       NULL, NULL, 0, G_MAXUINT, CLAPPER_STREAM_LIST_INVALID_POSITION,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperStreamList:n-streams:
+   *
+   * Number of streams in the list.
+   */
+  param_specs[PROP_N_STREAMS] = g_param_spec_uint ("n-streams",
+      NULL, NULL, 0, G_MAXUINT, 0,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);

@@ -27,6 +27,7 @@
  */
 
 #include "clapper-media-item-private.h"
+#include "clapper-timeline-private.h"
 #include "clapper-player-private.h"
 #include "clapper-playbin-bus-private.h"
 #include "clapper-features-manager-private.h"
@@ -41,6 +42,8 @@ struct _ClapperMediaItem
 
   gchar *uri;
   gchar *suburi;
+
+  ClapperTimeline *timeline;
 
   guint id;
   gchar *title;
@@ -57,6 +60,7 @@ enum
   PROP_TITLE,
   PROP_CONTAINER_FORMAT,
   PROP_DURATION,
+  PROP_TIMELINE,
   PROP_LAST
 };
 
@@ -351,6 +355,22 @@ clapper_media_item_get_duration (ClapperMediaItem *self)
   return duration;
 }
 
+/**
+ * clapper_media_item_get_timeline:
+ * @item: a #ClapperMediaItem
+ *
+ * Get the [class@Clapper.Timeline] assosiated with @item.
+ *
+ * Returns: (transfer none): a #ClapperTimeline of item.
+ */
+ClapperTimeline *
+clapper_media_item_get_timeline (ClapperMediaItem *self)
+{
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), NULL);
+
+  return self->timeline;
+}
+
 static gboolean
 clapper_media_item_update_from_container_tags (ClapperMediaItem *self, const GstTagList *tags,
     ClapperAppBus *app_bus)
@@ -431,6 +451,8 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
 static void
 clapper_media_item_init (ClapperMediaItem *self)
 {
+  self->timeline = clapper_timeline_new ();
+  gst_object_set_parent (GST_OBJECT_CAST (self->timeline), GST_OBJECT_CAST (self));
 }
 
 static void
@@ -457,6 +479,9 @@ clapper_media_item_finalize (GObject *object)
   g_free (self->uri);
   g_free (self->title);
   g_free (self->container_format);
+
+  gst_object_unparent (GST_OBJECT_CAST (self->timeline));
+  gst_object_unref (self->timeline);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -504,6 +529,9 @@ clapper_media_item_get_property (GObject *object, guint prop_id,
       break;
     case PROP_DURATION:
       g_value_set_float (value, clapper_media_item_get_duration (self));
+      break;
+    case PROP_TIMELINE:
+      g_value_set_object (value, clapper_media_item_get_timeline (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -576,6 +604,15 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
    */
   param_specs[PROP_DURATION] = g_param_spec_float ("duration",
       NULL, NULL, 0, G_MAXFLOAT, 0,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:timeline:
+   *
+   * Media timeline.
+   */
+  param_specs[PROP_TIMELINE] = g_param_spec_object ("timeline",
+      NULL, NULL, CLAPPER_TYPE_TIMELINE,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);

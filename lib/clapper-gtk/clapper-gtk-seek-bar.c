@@ -44,10 +44,14 @@ struct _ClapperGtkSeekBar
 
   GtkWidget *scale;
 
+  GtkPopover *popover;
+  GtkLabel *popover_label;
+
   GtkWidget *duration_revealer;
   GtkWidget *duration_label;
 
   gboolean has_hours;
+  gboolean has_markers;
 
   gboolean dragging;
   guint position_int;
@@ -57,6 +61,10 @@ struct _ClapperGtkSeekBar
 
   ClapperPlayer *player;
   ClapperMediaItem *current_item;
+
+  /* Cache */
+  gdouble curr_marker_start;
+  gdouble next_marker_start;
 };
 
 static void
@@ -91,8 +99,75 @@ enum
 
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 
+static inline gboolean
+_prepare_popover (ClapperGtkSeekBar *self, gdouble x,
+    gdouble pointing_val, gdouble upper)
+{
+  /* Avoid iterating through markers if within last marker range
+   * (currently set title label remains the same) */
+  gboolean found_title = (pointing_val >= self->curr_marker_start
+      && pointing_val < self->next_marker_start);
+
+  if (!found_title) {
+    ClapperTimeline *timeline = clapper_media_item_get_timeline (self->current_item);
+    guint i = clapper_timeline_get_n_markers (timeline);
+
+    GST_DEBUG ("Searching for marker at: %lf", pointing_val);
+
+    /* We start from the end of scale */
+    self->next_marker_start = upper;
+
+    while (i--) {
+      ClapperMarker *marker = clapper_timeline_get_marker (timeline, i);
+      self->curr_marker_start = clapper_marker_get_start (marker);
+
+      if (self->curr_marker_start <= pointing_val) {
+        const gchar *title = clapper_marker_get_title (marker);
+
+        GST_DEBUG ("Found marker, range: (%lf-%lf), title: \"%s\"",
+            self->curr_marker_start, self->next_marker_start,
+            GST_STR_NULL (title));
+
+        /* XXX: It does string comparison internally, so its more efficient
+         * for us and we do not have to compare strings here too */
+        gtk_label_set_label (self->popover_label, title);
+        found_title = (title != NULL);
+      }
+
+      gst_object_unref (marker);
+
+      if (found_title)
+        break;
+
+      self->next_marker_start = self->curr_marker_start;
+    }
+  }
+
+  gtk_popover_set_pointing_to (self->popover,
+      &(const GdkRectangle){ x, 0, 1, 1 });
+
+  return found_title;
+}
+
+static inline gboolean
+_compute_scale_coords (ClapperGtkSeekBar *self,
+    gdouble *min_pointing_val, gdouble *max_pointing_val)
+{
+  graphene_rect_t slider_bounds;
+
+  if (!gtk_widget_compute_bounds (GTK_WIDGET (self), self->scale, &slider_bounds))
+    return FALSE;
+
+  /* XXX: Number "2" is the correction for range protruding rounded sides
+   * compared to how marks above/below it are positioned */
+  *min_pointing_val = -slider_bounds.origin.x + 2;
+  *max_pointing_val = slider_bounds.size.width + slider_bounds.origin.x - 2;
+
+  return TRUE;
+}
+
 static void
-_scale_value_changed_cb (GtkRange *range, ClapperGtkSeekBar *self)
+scale_value_changed_cb (GtkRange *range, ClapperGtkSeekBar *self)
 {
   gdouble value = gtk_range_get_value (range);
   gchar *position_str = g_strdup_printf ("%" CLAPPER_TIME_FORMAT, CLAPPER_TIME_ARGS (value));
@@ -100,6 +175,95 @@ _scale_value_changed_cb (GtkRange *range, ClapperGtkSeekBar *self)
   gtk_label_set_label (GTK_LABEL (self->position_label),
       (self->has_hours) ? position_str : position_str + 3);
   g_free (position_str);
+
+  if (self->dragging && self->has_markers) {
+    gdouble min_pointing_val, max_pointing_val;
+    gdouble x, upper, scaling;
+
+    if (!_compute_scale_coords (self, &min_pointing_val, &max_pointing_val)) {
+      gtk_popover_popdown (self->popover);
+      return;
+    }
+
+    upper = gtk_adjustment_get_upper (
+        gtk_range_get_adjustment (GTK_RANGE (self->scale)));
+    scaling = (upper / (max_pointing_val - min_pointing_val));
+
+    x = min_pointing_val + (value / scaling);
+
+    if (_prepare_popover (self, x, value, upper))
+      gtk_popover_popup (self->popover);
+    else
+      gtk_popover_popdown (self->popover);
+  }
+}
+
+static void
+scale_css_classes_changed_cb (GtkWidget *widget,
+    GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkSeekBar *self)
+{
+  const gboolean dragging = gtk_widget_has_css_class (widget, "dragging");
+  gdouble value;
+
+  if (self->dragging == dragging)
+    return;
+
+  if ((self->dragging = dragging)) {
+    GST_DEBUG_OBJECT (self, "Scale drag started");
+    return;
+  }
+
+  value = gtk_range_get_value (GTK_RANGE (widget));
+  GST_DEBUG_OBJECT (self, "Scale dropped at: %lf", value);
+
+  if (G_UNLIKELY (self->player == NULL))
+    return;
+
+  /* We should be ALWAYS doing normal seeks if dropped at marker position */
+  if (self->has_markers
+      && G_APPROX_VALUE (self->curr_marker_start, value, FLT_EPSILON)) {
+    GST_DEBUG ("Seeking to marker");
+    clapper_player_seek (self->player, value);
+  } else {
+    clapper_player_seek_custom (self->player, value, self->seek_method);
+  }
+}
+
+static void
+motion_cb (GtkEventControllerMotion *motion,
+    gdouble x, gdouble y, ClapperGtkSeekBar *self)
+{
+  gdouble min_pointing_val, max_pointing_val, pointing_val;
+  gdouble upper, scaling;
+
+  /* If no markers, popover should never popup,
+   * so we do not try to pop it down here */
+  if (!self->has_markers)
+    return;
+
+  if (!_compute_scale_coords (self, &min_pointing_val, &max_pointing_val)
+      || (x < min_pointing_val || x > max_pointing_val)) {
+    gtk_popover_popdown (self->popover);
+    return;
+  }
+
+  upper = gtk_adjustment_get_upper (
+      gtk_range_get_adjustment (GTK_RANGE (self->scale)));
+  scaling = (upper / (max_pointing_val - min_pointing_val));
+
+  pointing_val = (x - min_pointing_val) * scaling;
+  GST_LOG ("Cursor pointing to: %lf", pointing_val);
+
+  if (_prepare_popover (self, x, pointing_val, upper))
+    gtk_popover_popup (self->popover);
+  else
+    gtk_popover_popdown (self->popover);
+}
+
+static void
+motion_leave_cb (GtkEventControllerMotion *motion, ClapperGtkSeekBar *self)
+{
+  gtk_popover_popdown (self->popover);
 }
 
 static void
@@ -137,7 +301,7 @@ _update_duration_label (ClapperGtkSeekBar *self, gfloat duration)
   /* Refresh position label when changing text length */
   if (has_hours != self->has_hours) {
     self->has_hours = has_hours;
-    _scale_value_changed_cb (GTK_RANGE (self->scale), self);
+    scale_value_changed_cb (GTK_RANGE (self->scale), self);
   }
 
   gtk_label_set_label (GTK_LABEL (self->duration_label),
@@ -148,10 +312,59 @@ _update_duration_label (ClapperGtkSeekBar *self, gfloat duration)
 }
 
 static void
+_update_scale_marks (ClapperGtkSeekBar *self, ClapperTimeline *timeline)
+{
+  GtkAdjustment *adjustment;
+  guint i, n_markers = clapper_timeline_get_n_markers (timeline);
+
+  GST_DEBUG_OBJECT (self, "Placing %u markers on scale", n_markers);
+
+  gtk_scale_clear_marks (GTK_SCALE (self->scale));
+
+  self->curr_marker_start = -1;
+  self->next_marker_start = -1;
+  self->has_markers = FALSE;
+
+  if (n_markers == 0) {
+    gtk_popover_popdown (self->popover);
+    return;
+  }
+
+  adjustment = gtk_range_get_adjustment (GTK_RANGE (self->scale));
+
+  /* Avoid placing marks when duration is zero. Otherwise we may
+   * end up with a single mark at zero until another refresh. */
+  if (gtk_adjustment_get_upper (adjustment) <= 0)
+    return;
+
+  for (i = 0; i < n_markers; ++i) {
+    ClapperMarker *marker = clapper_timeline_get_marker (timeline, i);
+    gdouble start = clapper_marker_get_start (marker);
+
+    gtk_scale_add_mark (GTK_SCALE (self->scale), start, GTK_POS_TOP, NULL);
+    gtk_scale_add_mark (GTK_SCALE (self->scale), start, GTK_POS_BOTTOM, NULL);
+
+    gst_object_unref (marker);
+  }
+
+  self->has_markers = TRUE;
+}
+
+static void
 _current_item_duration_changed_cb (ClapperMediaItem *current_item,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkSeekBar *self)
 {
+  /* GtkScale ignores markers placed post its adjustment upper range.
+   * We need to place them again on scale AFTER duration changes. */
   _update_duration_label (self, clapper_media_item_get_duration (current_item));
+  _update_scale_marks (self, clapper_media_item_get_timeline (current_item));
+}
+
+static void
+_timeline_markers_changed_cb (GListModel *list_model, guint position,
+    guint removed, guint added, ClapperGtkSeekBar *self)
+{
+  _update_scale_marks (self, CLAPPER_TIMELINE (list_model));
 }
 
 static void
@@ -162,8 +375,12 @@ _queue_current_item_changed_cb (ClapperQueue *queue,
 
   /* Disconnect signals from old item */
   if (self->current_item) {
+    ClapperTimeline *timeline = clapper_media_item_get_timeline (self->current_item);
+
     g_signal_handlers_disconnect_by_func (self->current_item,
         _current_item_duration_changed_cb, self);
+    g_signal_handlers_disconnect_by_func (timeline,
+        _timeline_markers_changed_cb, self);
   }
 
   gst_object_replace ((GstObject **) &self->current_item, GST_OBJECT_CAST (current_item));
@@ -171,37 +388,19 @@ _queue_current_item_changed_cb (ClapperQueue *queue,
 
   /* Reconnect signals to new item */
   if (self->current_item) {
+    ClapperTimeline *timeline = clapper_media_item_get_timeline (self->current_item);
+
     g_signal_connect (self->current_item, "notify::duration",
         G_CALLBACK (_current_item_duration_changed_cb), self);
+    g_signal_connect (timeline, "items-changed",
+        G_CALLBACK (_timeline_markers_changed_cb), self);
 
-    _current_item_duration_changed_cb (self->current_item, NULL, self);
+    _update_duration_label (self, clapper_media_item_get_duration (self->current_item));
+    _update_scale_marks (self, timeline);
   } else {
+    gtk_scale_clear_marks (GTK_SCALE (self->scale));
     _update_duration_label (self, 0);
   }
-}
-
-static void
-_scale_css_classes_changed_cb (GtkWidget *widget,
-    GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkSeekBar *self)
-{
-  const gboolean dragging = gtk_widget_has_css_class (widget, "dragging");
-  gdouble value;
-
-  if (self->dragging == dragging)
-    return;
-
-  if ((self->dragging = dragging)) {
-    GST_DEBUG_OBJECT (self, "Scale drag started");
-    return;
-  }
-
-  value = gtk_range_get_value (GTK_RANGE (widget));
-  GST_DEBUG_OBJECT (self, "Scale dropped at: %lf", value);
-
-  if (G_UNLIKELY (self->player == NULL))
-    return;
-
-  clapper_player_seek_custom (self->player, value, self->seek_method);
 }
 
 /**
@@ -295,12 +494,13 @@ clapper_gtk_seek_bar_init (ClapperGtkSeekBar *self)
   self->reveal_labels = DEFAULT_REVEAL_LABELS;
   self->seek_method = DEFAULT_SEEK_METHOD;
 
+  self->curr_marker_start = -1;
+  self->next_marker_start = -1;
+
   gtk_revealer_set_reveal_child (GTK_REVEALER (self->position_revealer), self->reveal_labels);
 
-  g_signal_connect (self->scale, "notify::css-classes",
-      G_CALLBACK (_scale_css_classes_changed_cb), self);
-  g_signal_connect (self->scale, "value-changed",
-      G_CALLBACK (_scale_value_changed_cb), self);
+  /* Correction for calculated popover position when marks are drawn */
+  gtk_popover_set_offset (self->popover, 0, -2);
 }
 
 static void
@@ -321,20 +521,56 @@ clapper_gtk_seek_bar_compute_expand (GtkWidget *widget,
 }
 
 static void
-clapper_gtk_seek_bar_map (GtkWidget *widget)
+clapper_gtk_seek_bar_size_allocate (GtkWidget *widget,
+    gint width, gint height, gint baseline)
+{
+  ClapperGtkSeekBar *self = CLAPPER_GTK_SEEK_BAR_CAST (widget);
+
+  gtk_popover_present (self->popover);
+
+  GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, width, height, baseline);
+}
+
+static void
+clapper_gtk_seek_bar_realize (GtkWidget *widget)
 {
   ClapperGtkSeekBar *self = CLAPPER_GTK_SEEK_BAR_CAST (widget);
 
   if ((self->player = clapper_gtk_get_player_from_ancestor (widget))) {
     ClapperQueue *queue = clapper_player_get_queue (self->player);
 
-    g_signal_connect (self->player, "notify::position",
-        G_CALLBACK (_player_position_changed_cb), self);
     g_signal_connect (queue, "notify::current-item",
         G_CALLBACK (_queue_current_item_changed_cb), self);
-
-    /* Update duration and then position */
     _queue_current_item_changed_cb (queue, NULL, self);
+  }
+
+  GTK_WIDGET_CLASS (parent_class)->realize (widget);
+}
+
+static void
+clapper_gtk_seek_bar_unrealize (GtkWidget *widget)
+{
+  ClapperGtkSeekBar *self = CLAPPER_GTK_SEEK_BAR_CAST (widget);
+
+  if (self->player) {
+    ClapperQueue *queue = clapper_player_get_queue (self->player);
+
+    g_signal_handlers_disconnect_by_func (queue, _queue_current_item_changed_cb, self);
+
+    self->player = NULL;
+  }
+
+  GTK_WIDGET_CLASS (parent_class)->unrealize (widget);
+}
+
+static void
+clapper_gtk_seek_bar_map (GtkWidget *widget)
+{
+  ClapperGtkSeekBar *self = CLAPPER_GTK_SEEK_BAR_CAST (widget);
+
+  if (self->player) {
+    g_signal_connect (self->player, "notify::position",
+        G_CALLBACK (_player_position_changed_cb), self);
     _player_position_changed_cb (self->player, NULL, self);
   }
 
@@ -346,16 +582,16 @@ clapper_gtk_seek_bar_unmap (GtkWidget *widget)
 {
   ClapperGtkSeekBar *self = CLAPPER_GTK_SEEK_BAR_CAST (widget);
 
-  if (self->player) {
-    ClapperQueue *queue = clapper_player_get_queue (self->player);
-
+  if (self->player)
     g_signal_handlers_disconnect_by_func (self->player, _player_position_changed_cb, self);
-    g_signal_handlers_disconnect_by_func (queue, _queue_current_item_changed_cb, self);
-
-    self->player = NULL;
-  }
 
   GTK_WIDGET_CLASS (parent_class)->unmap (widget);
+}
+
+static void
+_popover_unparent (GtkPopover *popover)
+{
+  gtk_widget_unparent (GTK_WIDGET (popover));
 }
 
 static void
@@ -367,6 +603,7 @@ clapper_gtk_seek_bar_dispose (GObject *object)
 
   g_clear_pointer (&self->position_revealer, gtk_widget_unparent);
   g_clear_pointer (&self->scale, gtk_widget_unparent);
+  g_clear_pointer (&self->popover, _popover_unparent);
   g_clear_pointer (&self->duration_revealer, gtk_widget_unparent);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -437,6 +674,9 @@ clapper_gtk_seek_bar_class_init (ClapperGtkSeekBarClass *klass)
   gobject_class->finalize = clapper_gtk_seek_bar_finalize;
 
   widget_class->compute_expand = clapper_gtk_seek_bar_compute_expand;
+  widget_class->size_allocate = clapper_gtk_seek_bar_size_allocate;
+  widget_class->realize = clapper_gtk_seek_bar_realize;
+  widget_class->unrealize = clapper_gtk_seek_bar_unrealize;
   widget_class->map = clapper_gtk_seek_bar_map;
   widget_class->unmap = clapper_gtk_seek_bar_unmap;
 
@@ -466,8 +706,15 @@ clapper_gtk_seek_bar_class_init (ClapperGtkSeekBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, position_revealer);
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, position_label);
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, scale);
+  gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, popover);
+  gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, popover_label);
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, duration_revealer);
   gtk_widget_class_bind_template_child (widget_class, ClapperGtkSeekBar, duration_label);
+
+  gtk_widget_class_bind_template_callback (widget_class, scale_value_changed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, scale_css_classes_changed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, motion_cb);
+  gtk_widget_class_bind_template_callback (widget_class, motion_leave_cb);
 
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
   gtk_widget_class_set_accessible_role (widget_class, GTK_ACCESSIBLE_ROLE_GENERIC);

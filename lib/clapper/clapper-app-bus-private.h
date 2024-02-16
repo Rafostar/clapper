@@ -22,8 +22,6 @@
 #include <gst/gst.h>
 #include <glib-object.h>
 
-#include "clapper-media-item.h"
-
 G_BEGIN_DECLS
 
 #define CLAPPER_TYPE_APP_BUS (clapper_app_bus_get_type())
@@ -44,7 +42,7 @@ void clapper_app_bus_post_prop_notify (ClapperAppBus *app_bus, GstObject *src, G
 
 void clapper_app_bus_post_refresh_streams (ClapperAppBus *app_bus, GstObject *src);
 
-void clapper_app_bus_post_model_update (ClapperAppBus *app_bus, GstObject *src, guint position, guint removed, guint added, GParamSpec *n_items_pspec);
+void clapper_app_bus_post_refresh_timeline (ClapperAppBus *app_bus, GstObject *src);
 
 void clapper_app_bus_post_desc_with_details_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, const gchar *desc, const gchar *details);
 

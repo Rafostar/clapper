@@ -23,6 +23,7 @@
 #include "clapper-app-bus-private.h"
 #include "clapper-player-private.h"
 #include "clapper-media-item-private.h"
+#include "clapper-timeline-private.h"
 
 #define GST_CAT_DEFAULT clapper_app_bus_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -40,6 +41,7 @@ enum
   CLAPPER_APP_BUS_STRUCTURE_UNKNOWN = 0,
   CLAPPER_APP_BUS_STRUCTURE_PROP_NOTIFY,
   CLAPPER_APP_BUS_STRUCTURE_REFRESH_STREAMS,
+  CLAPPER_APP_BUS_STRUCTURE_REFRESH_TIMELINE,
   CLAPPER_APP_BUS_STRUCTURE_DESC_WITH_DETAILS_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_ERROR_SIGNAL
 };
@@ -48,6 +50,7 @@ static ClapperBusQuark _structure_quarks[] = {
   {"unknown", 0},
   {"prop-notify", 0},
   {"refresh-streams", 0},
+  {"refresh-timeline", 0},
   {"desc-with-details-signal", 0},
   {"error-signal", 0},
   {NULL, 0}
@@ -137,6 +140,22 @@ _handle_refresh_streams_msg (GstMessage *msg, const GstStructure *structure)
 }
 
 void
+clapper_app_bus_post_refresh_timeline (ClapperAppBus *self, GstObject *src)
+{
+  GstStructure *structure = gst_structure_new_id_empty (_STRUCTURE_QUARK (REFRESH_TIMELINE));
+  gst_bus_post (GST_BUS_CAST (self), gst_message_new_application (src, structure));
+}
+
+static inline void
+_handle_refresh_timeline_msg (GstMessage *msg, const GstStructure *structure)
+{
+  ClapperMediaItem *item = CLAPPER_MEDIA_ITEM_CAST (GST_MESSAGE_SRC (msg));
+  ClapperTimeline *timeline = clapper_media_item_get_timeline (item);
+
+  clapper_timeline_refresh (timeline);
+}
+
+void
 clapper_app_bus_post_desc_with_details_signal (ClapperAppBus *self,
     GstObject *src, guint signal_id,
     const gchar *desc, const gchar *details)
@@ -206,12 +225,14 @@ clapper_app_bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G
 
     if (quark == _STRUCTURE_QUARK (PROP_NOTIFY))
       _handle_prop_notify_msg (msg, structure);
+    else if (quark == _STRUCTURE_QUARK (REFRESH_STREAMS))
+      _handle_refresh_streams_msg (msg, structure);
+    else if (quark == _STRUCTURE_QUARK (REFRESH_TIMELINE))
+      _handle_refresh_timeline_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (ERROR_SIGNAL))
       _handle_error_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (DESC_WITH_DETAILS_SIGNAL))
       _handle_desc_with_details_signal_msg (msg, structure);
-    else if (quark == _STRUCTURE_QUARK (REFRESH_STREAMS))
-      _handle_refresh_streams_msg (msg, structure);
   }
 
   return G_SOURCE_CONTINUE;

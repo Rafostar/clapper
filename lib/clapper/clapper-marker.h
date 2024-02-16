@@ -25,36 +25,34 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gio/gio.h>
 #include <gst/gst.h>
-
-#include <clapper/clapper-timeline.h>
+#include <clapper/clapper-enums.h>
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_MEDIA_ITEM (clapper_media_item_get_type())
-#define CLAPPER_MEDIA_ITEM_CAST(obj) ((ClapperMediaItem *)(obj))
+#define CLAPPER_TYPE_MARKER (clapper_marker_get_type())
+#define CLAPPER_MARKER_CAST(obj) ((ClapperMarker *)(obj))
 
-G_DECLARE_FINAL_TYPE (ClapperMediaItem, clapper_media_item, CLAPPER, MEDIA_ITEM, GstObject)
+/* NOTE: #ClapperMarker are immutable objects that cannot be derived,
+ * otherwise #ClapperFeaturesManager would not be able to announce media
+ * item changed caused by changes within them */
+G_DECLARE_FINAL_TYPE (ClapperMarker, clapper_marker, CLAPPER, MARKER, GstObject)
 
-ClapperMediaItem * clapper_media_item_new (const gchar *uri);
+/**
+ * CLAPPER_MARKER_NO_END:
+ *
+ * The value used to indicate that marker does not have an ending time specified
+ */
+#define CLAPPER_MARKER_NO_END (-1.0)
 
-ClapperMediaItem * clapper_media_item_new_from_file (GFile *file);
+ClapperMarker * clapper_marker_new (ClapperMarkerType marker_type, const gchar *title, gdouble start, gdouble end);
 
-guint clapper_media_item_get_id (ClapperMediaItem *item);
+ClapperMarkerType clapper_marker_get_marker_type (ClapperMarker *marker);
 
-const gchar * clapper_media_item_get_uri (ClapperMediaItem *item);
+const gchar * clapper_marker_get_title (ClapperMarker *marker);
 
-void clapper_media_item_set_suburi (ClapperMediaItem *item, const gchar *suburi);
+gdouble clapper_marker_get_start (ClapperMarker *marker);
 
-gchar * clapper_media_item_get_suburi (ClapperMediaItem *item);
-
-gchar * clapper_media_item_get_title (ClapperMediaItem *item);
-
-gchar * clapper_media_item_get_container_format (ClapperMediaItem *item);
-
-gfloat clapper_media_item_get_duration (ClapperMediaItem *item);
-
-ClapperTimeline * clapper_media_item_get_timeline (ClapperMediaItem *item);
+gdouble clapper_marker_get_end (ClapperMarker *marker);
 
 G_END_DECLS
