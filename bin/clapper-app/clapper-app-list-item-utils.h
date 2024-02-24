@@ -19,12 +19,22 @@
 
 #pragma once
 
-#include <glib-object.h>
+#include <glib.h>
 #include <gtk/gtk.h>
+#include <clapper/clapper.h>
 
 G_BEGIN_DECLS
 
-G_GNUC_INTERNAL
-GtkWidget * clapper_app_about_window_new (GtkApplication *gtk_app);
+gchar * clapper_app_list_item_make_stream_group_title (GtkListItem *list_item, ClapperStream *stream);
+
+gchar * clapper_app_list_item_make_resolution (GtkListItem *list_item, gint width, gint height);
+
+gchar * clapper_app_list_item_make_bitrate (GtkListItem *list_item, guint value);
+
+gchar * clapper_app_list_item_convert_int (GtkListItem *list_item, gint value);
+
+gchar * clapper_app_list_item_convert_uint (GtkListItem *list_item, guint value);
+
+gchar * clapper_app_list_item_convert_double (GtkListItem *list_item, gdouble value);
 
 G_END_DECLS

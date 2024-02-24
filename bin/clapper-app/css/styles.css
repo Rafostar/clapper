@@ -5,6 +5,19 @@ window .initialstate {
   background-color: @dark_4;
 }
 
+window.mediainfo .maincontent {
+  margin: 16px;
+  margin-top: 0px;
+}
+window.mediainfo .subcontent {
+  margin: 16px;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+window.mediainfo .subcontent streamlist preferencesgroup {
+  margin-bottom: 8px;
+}
+
 clapper-gtk-seek-bar scale trough highlight {
   color: @accent_fg_color;
   background-color: @accent_bg_color;

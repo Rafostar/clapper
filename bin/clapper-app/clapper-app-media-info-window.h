@@ -19,12 +19,20 @@
 
 #pragma once
 
+#include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+#include <adwaita.h>
+#include <clapper/clapper.h>
 
 G_BEGIN_DECLS
 
+#define CLAPPER_APP_TYPE_MEDIA_INFO_WINDOW (clapper_app_media_info_window_get_type())
+#define CLAPPER_APP_MEDIA_INFO_WINDOW_CAST(obj) ((ClapperAppMediaInfoWindow *)(obj))
+
+G_DECLARE_FINAL_TYPE (ClapperAppMediaInfoWindow, clapper_app_media_info_window, CLAPPER_APP, MEDIA_INFO_WINDOW, AdwWindow)
+
 G_GNUC_INTERNAL
-GtkWidget * clapper_app_about_window_new (GtkApplication *gtk_app);
+GtkWidget * clapper_app_media_info_window_new (GtkApplication *gtk_app, ClapperPlayer *player);
 
 G_END_DECLS

@@ -100,6 +100,7 @@
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="icon-name">help-about-symbolic</property>
+                        <property name="action-name">app.media_info</property>
                         <style>
                           <class name="flat"/>
                           <class name="circular"/>

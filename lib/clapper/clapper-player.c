@@ -1317,7 +1317,8 @@ clapper_player_get_current_video_decoder (ClapperPlayer *self)
   g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
 
   GST_OBJECT_LOCK (self);
-  element = gst_object_ref (self->video_decoder);
+  if (self->video_decoder)
+    element = gst_object_ref (self->video_decoder);
   GST_OBJECT_UNLOCK (self);
 
   return element;
@@ -1339,7 +1340,8 @@ clapper_player_get_current_audio_decoder (ClapperPlayer *self)
   g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
 
   GST_OBJECT_LOCK (self);
-  element = gst_object_ref (self->audio_decoder);
+  if (self->audio_decoder)
+    element = gst_object_ref (self->audio_decoder);
   GST_OBJECT_UNLOCK (self);
 
   return element;

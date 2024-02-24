@@ -41,7 +41,7 @@ typedef struct _ClapperGtkSkipItemButtonPrivate ClapperGtkSkipItemButtonPrivate;
 struct _ClapperGtkSkipItemButtonPrivate
 {
   GBinding *n_items_binding;
-  GBinding *current_item_binding;
+  GBinding *current_index_binding;
 };
 
 #define parent_class clapper_gtk_skip_item_button_parent_class
@@ -87,7 +87,7 @@ clapper_gtk_skip_item_button_map (GtkWidget *widget)
         self, "sensitive", G_BINDING_DEFAULT, // Since we sync below, no need to do it twice
         (GBindingTransformFunc) _transform_sensitive_func,
         NULL, self, NULL);
-    priv->current_item_binding = g_object_bind_property_full (queue, "current-index",
+    priv->current_index_binding = g_object_bind_property_full (queue, "current-index",
         self, "sensitive", G_BINDING_SYNC_CREATE,
         (GBindingTransformFunc) _transform_sensitive_func,
         NULL, self, NULL);
@@ -103,7 +103,7 @@ clapper_gtk_skip_item_button_unmap (GtkWidget *widget)
   ClapperGtkSkipItemButtonPrivate *priv = clapper_gtk_skip_item_button_get_instance_private (self);
 
   g_clear_pointer (&priv->n_items_binding, g_binding_unbind);
-  g_clear_pointer (&priv->current_item_binding, g_binding_unbind);
+  g_clear_pointer (&priv->current_index_binding, g_binding_unbind);
 
   GTK_WIDGET_CLASS (parent_class)->unmap (widget);
 }

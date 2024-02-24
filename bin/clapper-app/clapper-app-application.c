@@ -24,6 +24,7 @@
 #include "clapper-app-window.h"
 #include "clapper-app-file-dialog.h"
 #include "clapper-app-uri-dialog.h"
+#include "clapper-app-media-info-window.h"
 #include "clapper-app-about-window.h"
 
 #define GST_CAT_DEFAULT clapper_app_application_debug
@@ -88,6 +89,21 @@ add_uri (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+show_media_info (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  GtkApplication *gtk_app = GTK_APPLICATION (user_data);
+  GtkWidget *media_info_window;
+  GtkWindow *window;
+  ClapperPlayer *player;
+
+  window = gtk_application_get_active_window (gtk_app);
+  player = clapper_app_window_get_player (CLAPPER_APP_WINDOW (window));
+
+  media_info_window = clapper_app_media_info_window_new (gtk_app, player);
+  gtk_window_present (GTK_WINDOW (media_info_window));
+}
+
+static void
 show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   GtkApplication *gtk_app = GTK_APPLICATION (user_data);
@@ -116,11 +132,13 @@ clapper_app_application_constructed (GObject *object)
     { "add_files", add_files, NULL, NULL, NULL },
     { "add_uri", add_uri, NULL, NULL, NULL },
     //{ "preferences", show_preferences, NULL, NULL, NULL },
+    { "media_info", show_media_info, NULL, NULL, NULL },
     { "about", show_about, NULL, NULL, NULL },
   };
   static const ClapperAppShortcut app_shortcuts[] = {
     { "app.add_files", { "<Control>o", NULL, NULL }},
     { "app.add_uri", { "<Control>u", NULL, NULL }},
+    { "app.media_info", { "<Control>i", NULL, NULL }},
     { "app.about", { "F1", NULL, NULL }},
     { "win.toggle_fullscreen", { "F11", "f", NULL }},
   };

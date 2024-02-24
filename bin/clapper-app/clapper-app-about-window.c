@@ -22,7 +22,7 @@
 #include "clapper-app-about-window.h"
 
 GtkWidget *
-clapper_app_about_window_new (GtkApplication *application)
+clapper_app_about_window_new (GtkApplication *gtk_app)
 {
   AdwAboutWindow *about;
   GtkWindow *window;
@@ -35,8 +35,9 @@ clapper_app_about_window_new (GtkApplication *application)
 #else
   about = ADW_ABOUT_WINDOW (adw_about_window_new ());
 #endif
-  window = gtk_application_get_active_window (application);
+  window = gtk_application_get_active_window (gtk_app);
 
+  gtk_window_set_modal (GTK_WINDOW (about), TRUE);
   gtk_window_set_transient_for (GTK_WINDOW (about), window);
 
   //adw_about_window_set_translator_credits (about, _("translator-credits"));

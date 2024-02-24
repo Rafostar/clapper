@@ -37,7 +37,7 @@ G_BEGIN_DECLS
  * Example:
  *
  * ```c
- * gchar *str = g_strdup_printf ("%" CLAPPER_TIME_FORMAT, CLAPPER_TIME_ARGS(t));
+ * gchar *str = g_strdup_printf ("%" CLAPPER_TIME_FORMAT, CLAPPER_TIME_ARGS (time));
  * ```
  */
 #define CLAPPER_TIME_FORMAT "02u:%02u:%02u"
@@ -62,7 +62,7 @@ G_BEGIN_DECLS
  * Example:
  *
  * ```c
- * gchar *str = g_strdup_printf ("%" CLAPPER_TIME_MS_FORMAT, CLAPPER_TIME_MS_ARGS(t));
+ * gchar *str = g_strdup_printf ("%" CLAPPER_TIME_MS_FORMAT, CLAPPER_TIME_MS_ARGS (time));
  * ```
  */
 #define CLAPPER_TIME_MS_FORMAT "02u:%02u:%02u.%03u"

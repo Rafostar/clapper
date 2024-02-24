@@ -19,12 +19,15 @@
 
 #pragma once
 
+#include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
-G_GNUC_INTERNAL
-GtkWidget * clapper_app_about_window_new (GtkApplication *gtk_app);
+#define CLAPPER_APP_TYPE_PROPERTY_ROW (clapper_app_property_row_get_type())
+#define CLAPPER_APP_PROPERTY_ROW_CAST(obj) ((ClapperAppPropertyRow *)(obj))
+
+G_DECLARE_FINAL_TYPE (ClapperAppPropertyRow, clapper_app_property_row, CLAPPER_APP, PROPERTY_ROW, AdwActionRow)
 
 G_END_DECLS
