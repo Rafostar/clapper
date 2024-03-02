@@ -31,7 +31,6 @@ struct _ClapperAppHeaderbar
   GtkWidget *previous_item_revealer;
   GtkWidget *title_label;
   GtkWidget *next_item_revealer;
-  GtkWidget *media_info_button;
   GtkWidget *win_buttons_revealer;
 
   GBinding *title_binding;
@@ -232,7 +231,6 @@ clapper_app_headerbar_class_init (ClapperAppHeaderbarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, ClapperAppHeaderbar, previous_item_revealer);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppHeaderbar, title_label);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppHeaderbar, next_item_revealer);
-  gtk_widget_class_bind_template_child (widget_class, ClapperAppHeaderbar, media_info_button);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppHeaderbar, win_buttons_revealer);
 
   gtk_widget_class_bind_template_callback (widget_class, container_adapt_cb);

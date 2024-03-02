@@ -50,6 +50,7 @@ clapperapp_sources = [
   'clapper-app-uri-dialog.c',
   'clapper-app-about-window.c',
   'clapper-app-info-window.c',
+  'clapper-app-preferences-window.c',
   'clapper-app-window.c',
   'clapper-app-window-state-buttons.c',
   'clapper-app-property-row.c',

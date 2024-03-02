@@ -374,7 +374,7 @@
       </object>
     </property>
     <style>
-      <class name="mediainfo"/>
+      <class name="info"/>
     </style>
   </template>
 </interface>

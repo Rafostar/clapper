@@ -406,6 +406,7 @@ clapper_app_window_constructed (GObject *object)
 {
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (object);
   ClapperPlayer *player = clapper_app_window_get_player (self);
+  GstElement *element;
   AdwStyleManager *manager;
 
   static const GActionEntry win_entries[] = {
@@ -438,6 +439,12 @@ clapper_app_window_constructed (GObject *object)
   clapper_player_add_feature (player, feature);
   gst_object_unref (feature);
 #endif
+
+  /* FIXME: Allow setting sink/filter elements from prefs window
+   * (this should include parsing bin descriptions) */
+  element = gst_element_factory_make ("scaletempo", NULL);
+  if (G_LIKELY (element != NULL))
+    clapper_player_set_audio_filter (player, element);
 
   clapper_player_set_autoplay (player, TRUE);
 

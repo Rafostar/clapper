@@ -32,7 +32,7 @@
                       <class name="rounded"/>
                     </style>
                     <child>
-                      <object class="GtkButton" id="reveal_queue_button">
+                      <object class="GtkButton">
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="icon-name">view-list-symbolic</property>
@@ -96,11 +96,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkButton" id="media_info_button">
+                      <object class="GtkButton">
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="icon-name">help-about-symbolic</property>
-                        <property name="action-name">app.media_info</property>
+                        <property name="action-name">app.info</property>
                         <style>
                           <class name="flat"/>
                           <class name="circular"/>
@@ -152,7 +152,7 @@
                   <class name="winbox"/>
                 </style>
                 <child>
-                  <object class="GtkMenuButton" id="menu_button">
+                  <object class="GtkMenuButton">
                     <property name="halign">center</property>
                     <property name="valign">center</property>
                     <property name="icon-name">open-menu-symbolic</property>

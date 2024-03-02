@@ -1,6 +1,6 @@
 project('clapper', 'c',
   version: '0.5.2',
-  meson_version: '>= 0.58.0',
+  meson_version: '>= 0.64.0',
   license: 'LGPL-2.1-or-later AND GPL-3.0-or-later', # LGPL-2.1+ for libs and gst-plugin, GPL-3+ for player
   default_options: [
     'warning_level=1',

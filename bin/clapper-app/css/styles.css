@@ -5,16 +5,27 @@ window .initialstate {
   background-color: @dark_4;
 }
 
-window.mediainfo .maincontent {
+window.info .maincontent {
   margin: 16px;
   margin-top: 0px;
 }
-window.mediainfo .subcontent {
+window.info .subcontent {
   margin: 16px;
   margin-top: 0px;
   margin-bottom: 8px;
 }
-window.mediainfo .subcontent streamlist preferencesgroup {
+window.info .subcontent streamlist preferencesgroup {
+  margin-bottom: 8px;
+}
+
+window.preferences .subcontent {
+  margin: 16px;
+}
+window.preferences .pluginssubpage .subcontent popover {
+  min-width: 264px;
+}
+window.preferences .pluginssubpage .subcontent button.pill {
+  margin-top: 8px;
   margin-bottom: 8px;
 }
 

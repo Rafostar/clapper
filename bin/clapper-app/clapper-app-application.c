@@ -25,7 +25,10 @@
 #include "clapper-app-file-dialog.h"
 #include "clapper-app-uri-dialog.h"
 #include "clapper-app-info-window.h"
+#include "clapper-app-preferences-window.h"
 #include "clapper-app-about-window.h"
+
+#define CLAPPER_APP_ID "com.github.rafostar.Clapper"
 
 #define GST_CAT_DEFAULT clapper_app_application_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -33,6 +36,8 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 struct _ClapperAppApplication
 {
   GtkApplication parent;
+
+  GSettings *settings;
 
   gboolean need_init_state;
 };
@@ -89,6 +94,16 @@ add_uri (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+show_preferences (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  GtkApplication *gtk_app = GTK_APPLICATION (user_data);
+  GtkWidget *preferences_window;
+
+  preferences_window = clapper_app_preferences_window_new (gtk_app);
+  gtk_window_present (GTK_WINDOW (preferences_window));
+}
+
+static void
 show_info (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   GtkApplication *gtk_app = GTK_APPLICATION (user_data);
@@ -113,45 +128,70 @@ show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
   gtk_window_present (GTK_WINDOW (about_window));
 }
 
+static inline void
+_restore_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_window)
+{
+  ClapperPlayer *player = clapper_app_window_get_player (app_window);
+  ClapperQueue *queue = clapper_player_get_queue (player);
+
+  GST_DEBUG ("Restoring saved GSettings values to: %" GST_PTR_FORMAT, app_window);
+
+  clapper_player_set_volume (player, g_settings_get_double (self->settings, "volume"));
+  clapper_player_set_speed (player, g_settings_get_double (self->settings, "speed"));
+  clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
+  clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
+
+  GST_DEBUG ("Configuration restored");
+}
+
+static inline void
+_store_settings_from_window (ClapperAppApplication *self, ClapperAppWindow *app_window)
+{
+  ClapperPlayer *player = clapper_app_window_get_player (app_window);
+  ClapperQueue *queue = clapper_player_get_queue (player);
+
+  GST_DEBUG ("Storing current configuration to GSettings");
+
+  g_settings_set_double (self->settings, "volume", clapper_player_get_volume (player));
+  g_settings_set_double (self->settings, "speed", clapper_player_get_speed (player));
+  g_settings_set_boolean (self->settings, "subtitles-enabled", clapper_player_get_subtitles_enabled (player));
+  g_settings_set_int (self->settings, "progression-mode", clapper_queue_get_progression_mode (queue));
+
+  GST_DEBUG ("Configuration stored");
+}
+
 GApplication *
 clapper_app_application_new (void)
 {
   return g_object_new (CLAPPER_APP_TYPE_APPLICATION,
-      "application-id", "com.github.rafostar.Clapper",
+      "application-id", CLAPPER_APP_ID,
       "flags", G_APPLICATION_HANDLES_OPEN,
       NULL);
 }
 
 static void
-clapper_app_application_constructed (GObject *object)
+clapper_app_application_window_removed (GtkApplication *gtk_app, GtkWindow *window)
 {
-  GApplication *app = G_APPLICATION (object);
-  guint i;
+  ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (gtk_app);
 
-  static const GActionEntry app_entries[] = {
-    { "add_files", add_files, NULL, NULL, NULL },
-    { "add_uri", add_uri, NULL, NULL, NULL },
-    //{ "preferences", show_preferences, NULL, NULL, NULL },
-    { "media_info", show_info, NULL, NULL, NULL },
-    { "about", show_about, NULL, NULL, NULL },
-  };
-  static const ClapperAppShortcut app_shortcuts[] = {
-    { "app.add_files", { "<Control>o", NULL, NULL }},
-    { "app.add_uri", { "<Control>u", NULL, NULL }},
-    { "app.media_info", { "<Control>i", NULL, NULL }},
-    { "app.about", { "F1", NULL, NULL }},
-    { "win.toggle_fullscreen", { "F11", "f", NULL }},
-  };
+  if (CLAPPER_APP_IS_WINDOW (window)) {
+    GList *win, *windows = gtk_application_get_windows (gtk_app);
+    gboolean has_player_windows = FALSE;
 
-  g_action_map_add_action_entries (G_ACTION_MAP (app),
-      app_entries, G_N_ELEMENTS (app_entries), app);
+    for (win = windows; win != NULL; win = win->next) {
+      GtkWindow *rem_window = GTK_WINDOW (win->data);
 
-  for (i = 0; i < G_N_ELEMENTS (app_shortcuts); ++i)
-    gtk_application_set_accels_for_action (GTK_APPLICATION (app), app_shortcuts[i].action, app_shortcuts[i].accels);
+      if ((has_player_windows = (rem_window != window
+          && CLAPPER_APP_IS_WINDOW (rem_window))))
+        break;
+    }
 
-  g_application_add_option_group (app, gst_init_get_option_group ());
+    /* Last player window is closing, time to store settings */
+    if (!has_player_windows)
+      _store_settings_from_window (self, CLAPPER_APP_WINDOW_CAST (window));
+  }
 
-  G_OBJECT_CLASS (parent_class)->constructed (object);
+  GTK_APPLICATION_CLASS (parent_class)->window_removed (gtk_app, window);
 }
 
 static void
@@ -165,6 +205,7 @@ clapper_app_application_activate (GApplication *app)
 
   if (!(window = gtk_application_get_active_window (GTK_APPLICATION (app)))) {
     window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
+    _restore_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window));
   }
 
   if (self->need_init_state) {
@@ -247,11 +288,49 @@ clapper_app_application_init (ClapperAppApplication *self)
 }
 
 static void
+clapper_app_application_constructed (GObject *object)
+{
+  ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (object);
+  GApplication *app = G_APPLICATION (self);
+  guint i;
+
+  static const GActionEntry app_entries[] = {
+    { "add_files", add_files, NULL, NULL, NULL },
+    { "add_uri", add_uri, NULL, NULL, NULL },
+    { "info", show_info, NULL, NULL, NULL },
+    { "preferences", show_preferences, NULL, NULL, NULL },
+    { "about", show_about, NULL, NULL, NULL },
+  };
+  static const ClapperAppShortcut app_shortcuts[] = {
+    { "app.add_files", { "<Control>o", NULL, NULL }},
+    { "app.add_uri", { "<Control>u", NULL, NULL }},
+    { "app.info", { "<Control>i", NULL, NULL }},
+    { "app.preferences", { "<Control>comma", NULL, NULL }},
+    { "app.about", { "F1", NULL, NULL }},
+    { "win.toggle_fullscreen", { "F11", "f", NULL }},
+  };
+
+  self->settings = g_settings_new (CLAPPER_APP_ID);
+
+  g_action_map_add_action_entries (G_ACTION_MAP (app),
+      app_entries, G_N_ELEMENTS (app_entries), app);
+
+  for (i = 0; i < G_N_ELEMENTS (app_shortcuts); ++i)
+    gtk_application_set_accels_for_action (GTK_APPLICATION (app), app_shortcuts[i].action, app_shortcuts[i].accels);
+
+  g_application_add_option_group (app, gst_init_get_option_group ());
+
+  G_OBJECT_CLASS (parent_class)->constructed (object);
+}
+
+static void
 clapper_app_application_finalize (GObject *object)
 {
   ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (object);
 
   GST_TRACE_OBJECT (self, "Finalize");
+
+  g_object_unref (self->settings);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -261,12 +340,15 @@ clapper_app_application_class_init (ClapperAppApplicationClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
   GApplicationClass *application_class = (GApplicationClass *) klass;
+  GtkApplicationClass *gtk_application_class = (GtkApplicationClass *) klass;
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperappapplication", 0,
       "Clapper App Application");
 
   gobject_class->constructed = clapper_app_application_constructed;
   gobject_class->finalize = clapper_app_application_finalize;
+
+  gtk_application_class->window_removed = clapper_app_application_window_removed;
 
   application_class->activate = clapper_app_application_activate;
   application_class->local_command_line = clapper_app_application_local_command_line;
