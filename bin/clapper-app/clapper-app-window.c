@@ -25,6 +25,8 @@
 #include "clapper-app-file-dialog.h"
 #include "clapper-app-utils.h"
 
+#define CLAPPER_APP_ID "com.github.rafostar.Clapper"
+
 #define DEFAULT_WINDOW_WIDTH 1024
 #define DEFAULT_WINDOW_HEIGHT 576
 
@@ -42,10 +44,24 @@ struct _ClapperAppWindow
   GtkWidget *simple_controls;
 
   GtkCssProvider *provider;
+
+  GSettings *settings;
 };
 
 #define parent_class clapper_app_window_parent_class
 G_DEFINE_TYPE (ClapperAppWindow, clapper_app_window, GTK_TYPE_APPLICATION_WINDOW);
+
+static gboolean
+_get_seek_method_mapping (GValue *value,
+    GVariant *variant, gpointer user_data G_GNUC_UNUSED)
+{
+  ClapperPlayerSeekMethod seek_method;
+
+  seek_method = (ClapperPlayerSeekMethod) g_variant_get_int32 (variant);
+  g_value_set_enum (value, seek_method);
+
+  return TRUE;
+}
 
 static GtkWidget *
 _pick_pointer_widget (ClapperAppWindow *self)
@@ -332,7 +348,7 @@ clapper_app_window_close_request (GtkWindow *window)
 {
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (window);
 /* FIXME: Have GSettings again to store these values
-  GSettings *settings = g_settings_new ("com.github.rafostar.Clapper");
+  GSettings *settings = g_settings_new (CLAPPER_APP_ID);
   gint width = DEFAULT_WINDOW_WIDTH, height = DEFAULT_WINDOW_HEIGHT;
 */
   GST_DEBUG_OBJECT (self, "Close request");
@@ -379,7 +395,6 @@ static void
 clapper_app_window_init (ClapperAppWindow *self)
 {
   GtkWidget *dummy_titlebar;
-  ClapperGtkExtraMenuButton *button;
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -390,13 +405,6 @@ clapper_app_window_init (ClapperAppWindow *self)
       NULL);
   gtk_window_set_titlebar (GTK_WINDOW (self), dummy_titlebar);
 
-  button = clapper_gtk_simple_controls_get_extra_menu_button (
-      CLAPPER_GTK_SIMPLE_CONTROLS_CAST (self->simple_controls));
-
-  g_signal_connect (button, "open-subtitles",
-      G_CALLBACK (_open_subtitles_cb), self);
-  clapper_gtk_extra_menu_button_set_can_open_subtitles (button, TRUE);
-
   /* Prevent GTK from redrawing background for each frame */
   gtk_widget_remove_css_class (GTK_WIDGET (self), "background");
 }
@@ -406,6 +414,7 @@ clapper_app_window_constructed (GObject *object)
 {
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (object);
   ClapperPlayer *player = clapper_app_window_get_player (self);
+  ClapperGtkExtraMenuButton *button;
   GstElement *element;
   AdwStyleManager *manager;
 
@@ -417,10 +426,12 @@ clapper_app_window_constructed (GObject *object)
   ClapperFeature *feature = NULL;
 #endif
 
+  self->settings = g_settings_new (CLAPPER_APP_ID);
+
 #if CLAPPER_HAVE_MPRIS
   feature = CLAPPER_FEATURE (clapper_mpris_new (
       "org.mpris.MediaPlayer2.Clapper",
-      "Clapper", "com.github.rafostar.Clapper"));
+      "Clapper", CLAPPER_APP_ID));
   clapper_mpris_set_queue_controllable (CLAPPER_MPRIS (feature), TRUE);
   clapper_player_add_feature (player, feature);
   gst_object_unref (feature);
@@ -429,7 +440,8 @@ clapper_app_window_constructed (GObject *object)
 #if CLAPPER_HAVE_SERVER
   feature = CLAPPER_FEATURE (clapper_server_new ());
   clapper_server_set_queue_controllable (CLAPPER_SERVER (feature), TRUE);
-  clapper_server_set_enabled (CLAPPER_SERVER (feature), TRUE);
+  g_settings_bind (self->settings, "server-enabled",
+      feature, "enabled", G_SETTINGS_BIND_GET);
   clapper_player_add_feature (player, feature);
   gst_object_unref (feature);
 #endif
@@ -447,6 +459,24 @@ clapper_app_window_constructed (GObject *object)
     clapper_player_set_audio_filter (player, element);
 
   clapper_player_set_autoplay (player, TRUE);
+
+  g_settings_bind (self->settings, "audio-offset",
+      player, "audio-offset", G_SETTINGS_BIND_GET);
+  g_settings_bind (self->settings, "subtitle-offset",
+      player, "subtitle-offset", G_SETTINGS_BIND_GET);
+  g_settings_bind (self->settings, "subtitle-font-desc",
+      player, "subtitle-font-desc", G_SETTINGS_BIND_GET);
+
+  button = clapper_gtk_simple_controls_get_extra_menu_button (
+      CLAPPER_GTK_SIMPLE_CONTROLS_CAST (self->simple_controls));
+
+  g_settings_bind_with_mapping (self->settings, "seek-method",
+      self->simple_controls, "seek-method", G_SETTINGS_BIND_GET,
+      (GSettingsBindGetMapping) _get_seek_method_mapping,
+      NULL, NULL, NULL);
+  g_signal_connect (button, "open-subtitles",
+      G_CALLBACK (_open_subtitles_cb), self);
+  clapper_gtk_extra_menu_button_set_can_open_subtitles (button, TRUE);
 
   manager = adw_style_manager_get_default ();
   adw_style_manager_set_color_scheme (manager, ADW_COLOR_SCHEME_FORCE_DARK);
@@ -476,6 +506,7 @@ clapper_app_window_finalize (GObject *object)
 
   GST_TRACE_OBJECT (self, "Finalize");
 
+  g_object_unref (self->settings);
   g_object_unref (self->provider);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);

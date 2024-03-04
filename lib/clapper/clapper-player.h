@@ -67,18 +67,6 @@ void clapper_player_set_speed (ClapperPlayer *player, gfloat speed);
 
 gfloat clapper_player_get_speed (ClapperPlayer *player);
 
-void clapper_player_set_video_enabled (ClapperPlayer *player, gboolean enabled);
-
-gboolean clapper_player_get_video_enabled (ClapperPlayer *player);
-
-void clapper_player_set_audio_enabled (ClapperPlayer *player, gboolean enabled);
-
-gboolean clapper_player_get_audio_enabled (ClapperPlayer *player);
-
-void clapper_player_set_subtitles_enabled (ClapperPlayer *player, gboolean enabled);
-
-gboolean clapper_player_get_subtitles_enabled (ClapperPlayer *player);
-
 void clapper_player_set_video_sink (ClapperPlayer *player, GstElement *element);
 
 GstElement * clapper_player_get_video_sink (ClapperPlayer *player);
@@ -98,6 +86,30 @@ GstElement * clapper_player_get_audio_filter (ClapperPlayer *player);
 GstElement * clapper_player_get_current_video_decoder (ClapperPlayer *player);
 
 GstElement * clapper_player_get_current_audio_decoder (ClapperPlayer *player);
+
+void clapper_player_set_video_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_video_enabled (ClapperPlayer *player);
+
+void clapper_player_set_audio_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_audio_enabled (ClapperPlayer *player);
+
+void clapper_player_set_subtitles_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_subtitles_enabled (ClapperPlayer *player);
+
+void clapper_player_set_audio_offset (ClapperPlayer *player, gdouble offset);
+
+gdouble clapper_player_get_audio_offset (ClapperPlayer *player);
+
+void clapper_player_set_subtitle_offset (ClapperPlayer *player, gdouble offset);
+
+gdouble clapper_player_get_subtitle_offset (ClapperPlayer *player);
+
+void clapper_player_set_subtitle_font_desc (ClapperPlayer *player, const gchar *font_desc);
+
+gchar * clapper_player_get_subtitle_font_desc (ClapperPlayer *player);
 
 void clapper_player_play (ClapperPlayer *player);
 

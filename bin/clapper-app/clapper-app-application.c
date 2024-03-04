@@ -27,6 +27,7 @@
 #include "clapper-app-info-window.h"
 #include "clapper-app-preferences-window.h"
 #include "clapper-app-about-window.h"
+#include "clapper-app-utils.h"
 
 #define CLAPPER_APP_ID "com.github.rafostar.Clapper"
 
@@ -50,6 +51,29 @@ typedef struct
 
 #define parent_class clapper_app_application_parent_class
 G_DEFINE_TYPE (ClapperAppApplication, clapper_app_application, GTK_TYPE_APPLICATION);
+
+static void
+_iter_ranks_func (const gchar *feature_name, GstRank rank,
+    gboolean from_env, gpointer user_data G_GNUC_UNUSED)
+{
+  GstPluginFeature *feature;
+
+  if ((feature = gst_registry_find_feature (gst_registry_get (),
+      feature_name, GST_TYPE_ELEMENT_FACTORY))) {
+    gst_plugin_feature_set_rank (feature, rank);
+    GST_INFO ("Set \"%s\" rank to: %i", feature_name, rank);
+
+    gst_object_unref (feature);
+  }
+}
+
+static void
+plugin_feature_ranks_settings_changed_cb (GSettings *settings,
+    gchar *key G_GNUC_UNUSED, gpointer user_data G_GNUC_UNUSED)
+{
+  clapper_app_utils_iterate_plugin_feature_ranks (settings,
+      (ClapperAppUtilsIterRanks) _iter_ranks_func, NULL);
+}
 
 static void
 _assemble_initial_state (GtkWindow *window)
@@ -311,6 +335,11 @@ clapper_app_application_constructed (GObject *object)
   };
 
   self->settings = g_settings_new (CLAPPER_APP_ID);
+
+  g_signal_connect (self->settings,
+      "changed::plugin-feature-ranks",
+      G_CALLBACK (plugin_feature_ranks_settings_changed_cb), self);
+  plugin_feature_ranks_settings_changed_cb (self->settings, NULL, NULL);
 
   g_action_map_add_action_entries (G_ACTION_MAP (app),
       app_entries, G_N_ELEMENTS (app_entries), app);

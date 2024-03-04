@@ -2,9 +2,9 @@
 <schemalist gettext-domain="com.github.rafostar.Clapper">
   <schema id="com.github.rafostar.Clapper" path="/com/github/rafostar/Clapper/">
     <!-- General -->
-    <key name="seek-mode" type="i">
+    <key name="seek-method" type="i">
       <default>1</default>
-      <summary>Mode used for seeking</summary>
+      <summary>Method used for seeking</summary>
     </key>
     <key name="seek-unit" type="i">
       <default>0</default>
@@ -19,15 +19,15 @@
       <summary>Enable Server feature for remote playback control</summary>
     </key>
     <!-- Playback -->
-    <key name="audio-offset" type="i">
+    <key name="audio-offset" type="d">
       <default>0</default>
-      <summary>Offset time for audio stream relative to video (milliseconds)</summary>
+      <summary>Offset time for audio stream relative to video</summary>
     </key>
-    <key name="subtitle-offset" type="i">
+    <key name="subtitle-offset" type="d">
       <default>0</default>
-      <summary>Offset time for subtitle stream relative to video (milliseconds)</summary>
+      <summary>Offset time for subtitle stream relative to video</summary>
     </key>
-    <key name="subtitle-font" type="s">
+    <key name="subtitle-font-desc" type="s">
       <default>"Sans 12"</default>
       <summary>Default subtitle stream font description</summary>
     </key>

@@ -89,6 +89,8 @@ struct _ClapperPlayer
   gboolean video_enabled;
   gboolean audio_enabled;
   gboolean subtitles_enabled;
+  gdouble audio_offset;
+  gdouble subtitle_offset;
 };
 
 ClapperPlayer * clapper_player_get_from_ancestor (GstObject *object);
@@ -106,6 +108,10 @@ void clapper_player_handle_playbin_volume_changed (ClapperPlayer *player, const 
 void clapper_player_handle_playbin_mute_changed (ClapperPlayer *player, const GValue *value);
 
 void clapper_player_handle_playbin_flags_changed (ClapperPlayer *player, const GValue *value);
+
+void clapper_player_handle_playbin_av_offset_changed (ClapperPlayer *player, const GValue *value);
+
+void clapper_player_handle_playbin_text_offset_changed (ClapperPlayer *player, const GValue *value);
 
 void clapper_player_handle_playbin_common_prop_changed (ClapperPlayer *player, const gchar *prop_name);
 

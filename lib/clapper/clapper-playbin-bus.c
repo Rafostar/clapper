@@ -857,6 +857,10 @@ _handle_property_notify_msg (GstMessage *msg, ClapperPlayer *player)
     clapper_player_handle_playbin_mute_changed (player, value);
   else if (strcmp (prop_name, "flags") == 0)
     clapper_player_handle_playbin_flags_changed (player, value);
+  else if (strcmp (prop_name, "av-offset") == 0)
+    clapper_player_handle_playbin_av_offset_changed (player, value);
+  else if (strcmp (prop_name, "text-offset") == 0)
+    clapper_player_handle_playbin_text_offset_changed (player, value);
   else
     clapper_player_handle_playbin_common_prop_changed (player, prop_name);
 }

@@ -20,9 +20,13 @@
 #pragma once
 
 #include <glib.h>
+#include <gio/gio.h>
+#include <gst/gst.h>
 #include <clapper/clapper.h>
 
 G_BEGIN_DECLS
+
+typedef void (* ClapperAppUtilsIterRanks) (const gchar *feature_name, GstRank rank, gboolean from_env, gpointer user_data);
 
 G_GNUC_INTERNAL
 gboolean clapper_app_utils_uri_is_valid (const gchar *uri);
@@ -32,5 +36,8 @@ gboolean clapper_app_utils_value_for_item_is_valid (const GValue *value);
 
 G_GNUC_INTERNAL
 ClapperMediaItem * clapper_app_utils_media_item_from_value (const GValue *value);
+
+G_GNUC_INTERNAL
+void clapper_app_utils_iterate_plugin_feature_ranks (GSettings *settings, ClapperAppUtilsIterRanks callback, gpointer user_data);
 
 G_END_DECLS

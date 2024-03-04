@@ -22,6 +22,7 @@
 
 #include "clapper-app-preferences-window.h"
 #include "clapper-app-application.h"
+#include "clapper-app-utils.h"
 
 #define CLAPPER_APP_ID "com.github.rafostar.Clapper"
 
@@ -32,7 +33,7 @@ struct _ClapperAppPreferencesWindow
 {
   AdwPreferencesWindow parent;
 
-  AdwComboRow *seek_mode_combo_row;
+  AdwComboRow *seek_method_combo_row;
   AdwComboRow *seek_unit_combo_row;
   AdwSpinRow *seek_value_spin_row;
   AdwSwitchRow *server_switch_row;
@@ -51,8 +52,8 @@ struct _ClapperAppPreferencesWindow
   GList *features;
   GtkStringList *plugins_list;
 
-  GHashTable *rank_overrides;
-  GHashTable *rank_overrides_rows;
+  GPtrArray *rank_rows;
+  gulong ranks_setting_changed_id;
 
   gboolean ranking_has_plugins_model;
 };
@@ -60,10 +61,17 @@ struct _ClapperAppPreferencesWindow
 #define parent_class clapper_app_preferences_window_parent_class
 G_DEFINE_TYPE (ClapperAppPreferencesWindow, clapper_app_preferences_window, ADW_TYPE_PREFERENCES_WINDOW);
 
+typedef struct
+{
+  ClapperAppPreferencesWindow *prefs;
+  GHashTable *parsed_overrides;
+  gboolean updated;
+} ClapperAppPreferencesIterRanksData;
+
 enum
 {
   PROP_0,
-  PROP_RANK_OVERRIDES,
+  PROP_RANK_ROWS,
   PROP_LAST
 };
 
@@ -100,108 +108,26 @@ _compare_names_cb (gconstpointer ptr_a, gconstpointer ptr_b)
 }
 
 static gboolean
+_prefs_rows_compare_func (gconstpointer ptr_a, gconstpointer ptr_b)
+{
+  AdwPreferencesRow *row = (AdwPreferencesRow *) ptr_a;
+  const gchar *name = (const gchar *) ptr_b;
+
+  return (strcmp (adw_preferences_row_get_title (row), name) == 0);
+}
+
+static gboolean
+_find_rank_overide_for_name (ClapperAppPreferencesWindow *self,
+    const gchar *plugin_feature, guint *index)
+{
+  return g_ptr_array_find_with_equal_func (self->rank_rows,
+      plugin_feature, (GEqualFunc) _prefs_rows_compare_func, index);
+}
+
+static gboolean
 _plugin_feature_filter_cb (GstPluginFeature *feature, gpointer user_data G_GNUC_UNUSED)
 {
   return GST_IS_ELEMENT_FACTORY (feature);
-}
-
-static inline gboolean
-_parse_feature_name (gchar *str, const gchar **feature_name)
-{
-  if (!str)
-    return FALSE;
-
-  g_strstrip (str);
-
-  if (str[0] == '\0')
-    return FALSE;
-
-  *feature_name = str;
-  return TRUE;
-}
-
-static inline gboolean
-_parse_feature_rank (gchar *str, GstRank *rank)
-{
-  if (!str)
-    return FALSE;
-
-  g_strstrip (str);
-
-  if (str[0] == '\0')
-    return FALSE;
-
-  if (g_ascii_isdigit (str[0])) {
-    gulong l;
-    gchar *endptr;
-
-    l = strtoul (str, &endptr, 10);
-    if (endptr > str && endptr[0] == 0) {
-      *rank = (GstRank) l;
-    } else {
-      return FALSE;
-    }
-  } else if (g_ascii_strcasecmp (str, "NONE") == 0) {
-    *rank = GST_RANK_NONE;
-  } else if (g_ascii_strcasecmp (str, "MARGINAL") == 0) {
-    *rank = GST_RANK_MARGINAL;
-  } else if (g_ascii_strcasecmp (str, "SECONDARY") == 0) {
-    *rank = GST_RANK_SECONDARY;
-  } else if (g_ascii_strcasecmp (str, "PRIMARY") == 0) {
-    *rank = GST_RANK_PRIMARY;
-  } else if (g_ascii_strcasecmp (str, "MAX") == 0) {
-    *rank = (GstRank) G_MAXINT;
-  } else {
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-static void
-_update_rank_overrides_from_string (ClapperAppPreferencesWindow *self, const gchar *string)
-{
-  gchar **split, **walk;
-  gboolean updated = (g_hash_table_size (self->rank_overrides) > 0);
-
-  g_hash_table_remove_all (self->rank_overrides);
-
-  split = g_strsplit (string, ",", 0);
-
-  for (walk = split; *walk; walk++) {
-    gchar **values;
-
-    if (!strchr (*walk, ':'))
-      continue;
-
-    values = g_strsplit (*walk, ":", 2);
-
-    if (g_strv_length (values) == 2) {
-      GstRank rank;
-      const gchar *feature_name;
-
-      if (_parse_feature_name (values[0], &feature_name)
-          && _parse_feature_rank (values[1], &rank)) {
-        GstPluginFeature *feature;
-
-        if ((feature = gst_registry_find_feature (gst_registry_get (),
-            feature_name, GST_TYPE_ELEMENT_FACTORY))) {
-          g_hash_table_insert (self->rank_overrides,
-              g_strdup (feature_name), GINT_TO_POINTER (rank));
-          updated = TRUE;
-
-          gst_object_unref (feature);
-        }
-      }
-    }
-
-    g_strfreev (values);
-  }
-
-  g_strfreev (split);
-
-  if (updated)
-    g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_RANK_OVERRIDES]);
 }
 
 static void
@@ -210,19 +136,22 @@ remove_rank_override_button_clicked_cb (GtkButton *button, ClapperAppPreferences
   GtkWidget *spin_row;
   const gchar *feature_name;
 
-  g_signal_handlers_disconnect_by_func (button, remove_rank_override_button_clicked_cb, self);
-
   spin_row = gtk_widget_get_ancestor (GTK_WIDGET (button), ADW_TYPE_SPIN_ROW);
   feature_name = adw_preferences_row_get_title (ADW_PREFERENCES_ROW (spin_row));
 
   GST_DEBUG ("Removing rank override for: %s", feature_name);
 
-  g_hash_table_remove (self->rank_overrides, feature_name);
-  g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_RANK_OVERRIDES]);
+  g_ptr_array_remove (self->rank_rows, spin_row);
+  adw_preferences_group_remove (self->overrides_group, GTK_WIDGET (spin_row));
+
+  gtk_widget_set_visible (GTK_WIDGET (self->overrides_group), self->rank_rows->len > 0);
+
+  g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_RANK_ROWS]);
 }
 
 static void
-_add_rank_override (ClapperAppPreferencesWindow *self, const gchar *feature_name, GstRank rank)
+_add_rank_override (ClapperAppPreferencesWindow *self,
+    const gchar *feature_name, GstRank rank, gboolean from_env)
 {
   GtkWidget *spin_row, *remove_button;
 
@@ -233,21 +162,81 @@ _add_rank_override (ClapperAppPreferencesWindow *self, const gchar *feature_name
   gtk_widget_set_valign (remove_button, GTK_ALIGN_CENTER);
   gtk_widget_add_css_class (remove_button, "circular");
 
-  g_signal_connect (remove_button, "clicked",
-      G_CALLBACK (remove_rank_override_button_clicked_cb), self);
-
   adw_preferences_row_set_title (ADW_PREFERENCES_ROW (spin_row), feature_name);
   adw_action_row_add_prefix (ADW_ACTION_ROW (spin_row), remove_button);
   adw_spin_row_set_numeric (ADW_SPIN_ROW (spin_row), TRUE);
   adw_spin_row_set_value (ADW_SPIN_ROW (spin_row), rank);
+  gtk_widget_set_sensitive (spin_row, !from_env);
+
+  if (!from_env) {
+    g_signal_connect (remove_button, "clicked",
+        G_CALLBACK (remove_rank_override_button_clicked_cb), self);
+  }
 
   adw_preferences_group_add (self->overrides_group, spin_row);
+  g_ptr_array_add (self->rank_rows, spin_row);
+}
 
-  g_hash_table_insert (self->rank_overrides_rows,
-      (gpointer) adw_preferences_row_get_title (ADW_PREFERENCES_ROW (spin_row)),
-      ADW_SPIN_ROW (spin_row));
+static void
+_iter_ranks_func (const gchar *feature_name, GstRank rank,
+    gboolean from_env, ClapperAppPreferencesIterRanksData *data)
+{
+  ClapperAppPreferencesWindow *self = data->prefs;
+  guint index = 0;
 
-  gtk_widget_set_visible (GTK_WIDGET (self->overrides_group), TRUE);
+  if (_find_rank_overide_for_name (self, feature_name, &index)) {
+    GtkWidget *spin_row = g_ptr_array_index (self->rank_rows, index);
+
+    if (rank != adw_spin_row_get_value (ADW_SPIN_ROW (spin_row))) {
+      adw_spin_row_set_value (ADW_SPIN_ROW (spin_row), rank);
+      data->updated = TRUE;
+    }
+    if (from_env == gtk_widget_get_sensitive (spin_row)) {
+      gtk_widget_set_sensitive (spin_row, !from_env);
+      data->updated = TRUE;
+    }
+  } else {
+    _add_rank_override (self, feature_name, rank, from_env);
+    data->updated = TRUE;
+  }
+  g_hash_table_insert (data->parsed_overrides,
+      g_strdup (feature_name), GINT_TO_POINTER (rank));
+}
+
+static void
+_update_rank_overrides (ClapperAppPreferencesWindow *self)
+{
+  ClapperAppPreferencesIterRanksData *data;
+  gint i;
+
+  data = g_new (ClapperAppPreferencesIterRanksData, 1);
+  data->prefs = self;
+  data->parsed_overrides = g_hash_table_new (g_str_hash, g_str_equal);
+  data->updated = FALSE;
+
+  GST_DEBUG ("Updating rank overrides");
+
+  clapper_app_utils_iterate_plugin_feature_ranks (self->settings,
+      (ClapperAppUtilsIterRanks) _iter_ranks_func, data);
+
+  for (i = self->rank_rows->len - 1; i >= 0; --i) {
+    AdwPreferencesRow *prefs_row = ADW_PREFERENCES_ROW (g_ptr_array_index (self->rank_rows, i));
+    const gchar *feature_name = adw_preferences_row_get_title (prefs_row);
+
+    if (!g_hash_table_contains (data->parsed_overrides, feature_name)) {
+      g_ptr_array_remove_index (self->rank_rows, i);
+      adw_preferences_group_remove (self->overrides_group, GTK_WIDGET (prefs_row));
+      data->updated = TRUE;
+    }
+  }
+
+  if (data->updated) {
+    gtk_widget_set_visible (GTK_WIDGET (self->overrides_group), self->rank_rows->len > 0);
+    g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_RANK_ROWS]);
+  }
+
+  g_hash_table_unref (data->parsed_overrides);
+  g_free (data);
 }
 
 static void
@@ -266,11 +255,15 @@ add_override_button_clicked_cb (GtkButton *button, ClapperAppPreferencesWindow *
 
   feature_name = gtk_string_object_get_string (string_obj);
 
+  GST_DEBUG ("Adding rank override for: %s", feature_name);
+
   plugin_feature = gst_registry_lookup_feature (gst_registry_get (), feature_name);
   rank = gst_plugin_feature_get_rank (plugin_feature);
 
-  g_hash_table_insert (self->rank_overrides, g_strdup (feature_name), GINT_TO_POINTER (rank));
-  g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_RANK_OVERRIDES]);
+  _add_rank_override (self, feature_name, rank, FALSE);
+  gtk_widget_set_visible (GTK_WIDGET (self->overrides_group), self->rank_rows->len > 0);
+
+  g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_RANK_ROWS]);
 
   gst_object_unref (plugin_feature);
 }
@@ -320,10 +313,18 @@ ranking_features_model_closure (ClapperAppPreferencesWindow *self, GtkStringObje
 
 static gboolean
 add_override_button_sensitive_closure (ClapperAppPreferencesWindow *self,
-    GtkStringObject *string_obj, GHashTable *rank_overrides)
+    GtkStringObject *string_obj, GPtrArray *rank_rows)
 {
-  return (string_obj
-      && !g_hash_table_contains (rank_overrides, gtk_string_object_get_string (string_obj)));
+  return (string_obj && !_find_rank_overide_for_name (self,
+      gtk_string_object_get_string (string_obj), NULL));
+}
+
+static void
+plugin_feature_ranks_settings_changed_cb (GSettings *settings,
+    gchar *key G_GNUC_UNUSED, ClapperAppPreferencesWindow *self)
+{
+  GST_DEBUG ("Plugin feature ranks stored setting changed");
+  _update_rank_overrides (self);
 }
 
 static void
@@ -334,7 +335,9 @@ _ensure_plugins_and_features_lists (ClapperAppPreferencesWindow *self)
   gchar **plugin_names;
   const gchar *last_plugin_name = NULL;
 
-  if (self->features)
+  /* Return if we were here already. Features can be NULL
+   * when no plugins are found at specified directory */
+  if (self->features || self->plugins_list)
     return;
 
   GST_DEBUG ("Reading available plugin features...");
@@ -368,8 +371,6 @@ _ensure_plugins_and_features_lists (ClapperAppPreferencesWindow *self)
 static void
 plugin_ranking_activated_cb (AdwActionRow *action_row, ClapperAppPreferencesWindow *self)
 {
-  gchar *stored_overrides;
-
   _ensure_plugins_and_features_lists (self);
 
   if (!self->ranking_has_plugins_model) {
@@ -383,90 +384,54 @@ plugin_ranking_activated_cb (AdwActionRow *action_row, ClapperAppPreferencesWind
     self->ranking_has_plugins_model = TRUE;
   }
 
-  stored_overrides = g_settings_get_string (self->settings, "plugin-feature-ranks");
-  _update_rank_overrides_from_string (self, stored_overrides);
-  g_free (stored_overrides);
+  if (self->ranks_setting_changed_id == 0) {
+    self->ranks_setting_changed_id = g_signal_connect (self->settings,
+        "changed::plugin-feature-ranks",
+        G_CALLBACK (plugin_feature_ranks_settings_changed_cb), self);
+  }
+  _update_rank_overrides (self);
 
   adw_preferences_window_push_subpage (ADW_PREFERENCES_WINDOW (self), self->plugins_subpage);
 }
 
 static void
-_append_rank_func (const gchar *key, gpointer value, GString *string)
-{
-  GstRank rank = GPOINTER_TO_INT (value);
-
-  if (string->len == 0)
-    g_string_append_printf (string, "%s:%i", key, rank);
-  else
-    g_string_append_printf (string, ",%s:%i", key, rank);
-}
-
-static void
-plugin_ranking_hidden_cb (AdwNavigationPage *nav_page, ClapperAppPreferencesWindow *self)
+plugin_ranking_unrealize_cb (GtkWidget *widget, ClapperAppPreferencesWindow *self)
 {
   GString *string;
   gchar *ranks_str;
+  guint i;
+
+  /* Since we are closing ranking subpage, disconnect this
+   * signal as we do not need to update widgets immediately */
+  if (self->ranks_setting_changed_id != 0) {
+    g_signal_handler_disconnect (self->settings, self->ranks_setting_changed_id);
+    self->ranks_setting_changed_id = 0;
+  }
 
   GST_DEBUG ("Saving current rank overrides");
-
   string = g_string_new (NULL);
-  g_hash_table_foreach (self->rank_overrides, (GHFunc) _append_rank_func, string);
+
+  for (i = 0; i < self->rank_rows->len; ++i) {
+    GtkWidget *spin_row = g_ptr_array_index (self->rank_rows, i);
+    GstRank rank;
+    const gchar *feature_name;
+
+    /* Insensitive are from env, we do not want to save these */
+    if (!gtk_widget_get_sensitive (spin_row))
+      continue;
+
+    rank = adw_spin_row_get_value (ADW_SPIN_ROW (spin_row));
+    feature_name = adw_preferences_row_get_title (ADW_PREFERENCES_ROW (spin_row));
+
+    if (string->len == 0)
+      g_string_append_printf (string, "%s:%i", feature_name, rank);
+    else
+      g_string_append_printf (string, ",%s:%i", feature_name, rank);
+  }
 
   ranks_str = g_string_free_and_steal (string);
   g_settings_set_string (self->settings, "plugin-feature-ranks", ranks_str);
   g_free (ranks_str);
-}
-
-static void
-_update_rank_widgets_func (const gchar *key, gpointer value,
-    ClapperAppPreferencesWindow *self)
-{
-  GstRank rank = GPOINTER_TO_INT (value);
-  AdwSpinRow *spin_row;
-
-  spin_row = ADW_SPIN_ROW (g_hash_table_lookup (self->rank_overrides_rows, key));
-
-  if (!spin_row)
-    _add_rank_override (self, key, GPOINTER_TO_INT (value));
-  else if (rank != adw_spin_row_get_value (spin_row))
-    adw_spin_row_set_value (spin_row, rank);
-}
-
-static gboolean
-_check_remove_widgets_func (const gchar *key, gpointer value,
-    ClapperAppPreferencesWindow *self)
-{
-  GtkWidget *spin_row = GTK_WIDGET (value);
-  gboolean remove = !g_hash_table_contains (self->rank_overrides, key);
-
-  if (remove)
-    adw_preferences_group_remove (self->overrides_group, spin_row);
-
-  return remove;
-}
-
-static void
-rank_overrides_changed_cb (ClapperAppPreferencesWindow *self,
-    GParamSpec *pspec G_GNUC_UNUSED, gpointer user_data G_GNUC_UNUSED)
-{
-  g_hash_table_foreach (self->rank_overrides, (GHFunc) _update_rank_widgets_func, self);
-  g_hash_table_foreach_remove (self->rank_overrides_rows, (GHRFunc) _check_remove_widgets_func, self);
-
-  if (g_hash_table_size (self->rank_overrides) == 0)
-    gtk_widget_set_visible (GTK_WIDGET (self->overrides_group), FALSE);
-}
-
-static void
-plugin_feature_ranks_settings_changed_cb (GSettings *settings,
-    gchar *key G_GNUC_UNUSED, ClapperAppPreferencesWindow *self)
-{
-  gchar *stored_overrides;
-
-  GST_DEBUG ("Plugin feature ranks stored setting changed");
-
-  stored_overrides = g_settings_get_string (settings, "plugin-feature-ranks");
-  _update_rank_overrides_from_string (self, stored_overrides);
-  g_free (stored_overrides);
 }
 
 static gchar *
@@ -531,15 +496,12 @@ clapper_app_preferences_window_init (ClapperAppPreferencesWindow *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
 
-  self->rank_overrides = g_hash_table_new_full (
-      g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
-  self->rank_overrides_rows = g_hash_table_new (
-      g_str_hash, g_str_equal);
+  self->rank_rows = g_ptr_array_new ();
 
   self->settings = g_settings_new (CLAPPER_APP_ID);
 
-  g_settings_bind (self->settings, "seek-mode",
-      self->seek_mode_combo_row, "selected", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (self->settings, "seek-method",
+      self->seek_method_combo_row, "selected", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (self->settings, "seek-unit",
       self->seek_unit_combo_row, "selected", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (self->settings, "seek-value",
@@ -551,21 +513,20 @@ clapper_app_preferences_window_init (ClapperAppPreferencesWindow *self)
       self->audio_offset_spin_row, "value", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (self->settings, "subtitle-offset",
       self->subtitle_offset_spin_row, "value", G_SETTINGS_BIND_DEFAULT);
-  g_settings_bind_with_mapping (self->settings, "subtitle-font",
+  g_settings_bind_with_mapping (self->settings, "subtitle-font-desc",
       self->font_dialog_button, "font-desc", G_SETTINGS_BIND_DEFAULT,
       (GSettingsBindGetMapping) _get_font_mapping,
       (GSettingsBindSetMapping) _set_font_mapping,
       NULL, NULL);
-
-  g_signal_connect (self->settings, "changed::plugin-feature-ranks",
-      G_CALLBACK (plugin_feature_ranks_settings_changed_cb), self);
-  plugin_feature_ranks_settings_changed_cb (self->settings, NULL, self);
 }
 
 static void
 clapper_app_preferences_window_dispose (GObject *object)
 {
-  gtk_widget_dispose_template (GTK_WIDGET (object), CLAPPER_APP_TYPE_PREFERENCES_WINDOW);
+  ClapperAppPreferencesWindow *self = CLAPPER_APP_PREFERENCES_WINDOW_CAST (object);
+
+  g_clear_pointer (&self->rank_rows, g_ptr_array_unref);
+  gtk_widget_dispose_template (GTK_WIDGET (self), CLAPPER_APP_TYPE_PREFERENCES_WINDOW);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -578,9 +539,6 @@ clapper_app_preferences_window_finalize (GObject *object)
   GST_TRACE_OBJECT (self, "Finalize");
 
   g_object_unref (self->settings);
-
-  g_hash_table_unref (self->rank_overrides);
-  g_hash_table_unref (self->rank_overrides_rows);
 
   g_clear_object (&self->plugins_list);
 
@@ -597,8 +555,8 @@ clapper_app_preferences_get_property (GObject *object, guint prop_id,
   ClapperAppPreferencesWindow *self = CLAPPER_APP_PREFERENCES_WINDOW_CAST (object);
 
   switch (prop_id) {
-    case PROP_RANK_OVERRIDES:
-      g_value_set_boxed (value, self->rank_overrides);
+    case PROP_RANK_ROWS:
+      g_value_set_boxed (value, self->rank_rows);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -622,13 +580,13 @@ clapper_app_preferences_window_class_init (ClapperAppPreferencesWindowClass *kla
   gtk_widget_class_set_template_from_resource (widget_class,
       "/com/github/rafostar/Clapper/clapper-app/ui/clapper-app-preferences-window.ui");
 
-  param_specs[PROP_RANK_OVERRIDES] = g_param_spec_boxed ("rank-overrides",
-      NULL, NULL, G_TYPE_HASH_TABLE,
+  param_specs[PROP_RANK_ROWS] = g_param_spec_boxed ("rank-rows",
+      NULL, NULL, G_TYPE_PTR_ARRAY,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 
-  gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_mode_combo_row);
+  gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_method_combo_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_unit_combo_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_value_spin_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, server_switch_row);
@@ -645,8 +603,7 @@ clapper_app_preferences_window_class_init (ClapperAppPreferencesWindowClass *kla
   gtk_widget_class_bind_template_callback (widget_class, seek_method_name_closure);
 
   gtk_widget_class_bind_template_callback (widget_class, plugin_ranking_activated_cb);
-  gtk_widget_class_bind_template_callback (widget_class, plugin_ranking_hidden_cb);
-  gtk_widget_class_bind_template_callback (widget_class, rank_overrides_changed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, plugin_ranking_unrealize_cb);
 
   gtk_widget_class_bind_template_callback (widget_class, ranking_features_model_closure);
   gtk_widget_class_bind_template_callback (widget_class, add_override_button_sensitive_closure);

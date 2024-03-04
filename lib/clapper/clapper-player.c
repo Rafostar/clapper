@@ -90,6 +90,9 @@ enum
   PROP_VIDEO_ENABLED,
   PROP_AUDIO_ENABLED,
   PROP_SUBTITLES_ENABLED,
+  PROP_AUDIO_OFFSET,
+  PROP_SUBTITLE_OFFSET,
+  PROP_SUBTITLE_FONT_DESC,
   PROP_LAST
 };
 
@@ -113,6 +116,8 @@ static const gchar *playbin_watchlist[] = {
   "video-sink",
   "audio-filter",
   "video-filter",
+  "av-offset",
+  "text-offset",
   NULL
 };
 
@@ -305,6 +310,44 @@ clapper_player_handle_playbin_flags_changed (ClapperPlayer *self, const GValue *
     GST_INFO_OBJECT (self, "Subtitles enabled: %s", (subtitles_enabled) ? "yes" : "no");
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_SUBTITLES_ENABLED]);
+  }
+}
+
+void
+clapper_player_handle_playbin_av_offset_changed (ClapperPlayer *self, const GValue *value)
+{
+  gdouble offset = (gdouble) g_value_get_int64 (value) / GST_SECOND;
+  gboolean changed;
+
+  GST_OBJECT_LOCK (self);
+  if ((changed = FLT_IS_DIFFERENT (self->audio_offset, offset)))
+    self->audio_offset = offset;
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    GST_INFO_OBJECT (self, "Audio offset: %.2lf", offset);
+
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_AUDIO_OFFSET]);
+  }
+}
+
+void
+clapper_player_handle_playbin_text_offset_changed (ClapperPlayer *self, const GValue *value)
+{
+  gdouble offset = (gdouble) g_value_get_int64 (value) / GST_SECOND;
+  gboolean changed;
+
+  GST_OBJECT_LOCK (self);
+  if ((changed = FLT_IS_DIFFERENT (self->subtitle_offset, offset)))
+    self->subtitle_offset = offset;
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    GST_INFO_OBJECT (self, "Subtitles offset: %.2lf", offset);
+
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_SUBTITLE_OFFSET]);
   }
 }
 
@@ -1459,6 +1502,145 @@ clapper_player_get_subtitles_enabled (ClapperPlayer *self)
 }
 
 /**
+ * clapper_player_set_audio_offset:
+ * @player: a #ClapperPlayer
+ * @offset: a decimal audio offset (in seconds)
+ *
+ * Set synchronisation offset between the audio stream and video.
+ *
+ * Positive values make the audio ahead of the video and negative
+ * values make the audio go behind the video.
+ */
+void
+clapper_player_set_audio_offset (ClapperPlayer *self, gdouble offset)
+{
+  GValue value = G_VALUE_INIT;
+
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+  g_return_if_fail (offset >= G_MININT64 && offset <= G_MAXINT64);
+
+  g_value_init (&value, G_TYPE_INT64);
+  g_value_set_int64 (&value, (gint64) (offset * GST_SECOND));
+
+  clapper_playbin_bus_post_set_prop (self->bus,
+      GST_OBJECT_CAST (self->playbin), "av-offset", &value);
+}
+
+/**
+ * clapper_player_get_audio_offset:
+ * @player: a #ClapperPlayer
+ *
+ * Get the currently set audio stream offset.
+ *
+ * The returned value is in seconds as a decimal number.
+ *
+ * Returns: the audio stream offset.
+ */
+gdouble
+clapper_player_get_audio_offset (ClapperPlayer *self)
+{
+  gdouble offset;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), 0);
+
+  GST_OBJECT_LOCK (self);
+  offset = self->audio_offset;
+  GST_OBJECT_UNLOCK (self);
+
+  return offset;
+}
+
+/**
+ * clapper_player_set_subtitle_offset:
+ * @player: a #ClapperPlayer
+ * @offset: a decimal subtitle stream offset (in seconds)
+ *
+ * Set synchronisation offset between the subtitle stream and video.
+ *
+ * Positive values make the subtitles ahead of the video and negative
+ * values make the subtitles go behind the video.
+ */
+void
+clapper_player_set_subtitle_offset (ClapperPlayer *self, gdouble offset)
+{
+  GValue value = G_VALUE_INIT;
+
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+  g_return_if_fail (offset >= G_MININT64 && offset <= G_MAXINT64);
+
+  g_value_init (&value, G_TYPE_INT64);
+  g_value_set_int64 (&value, (gint64) (offset * GST_SECOND));
+
+  clapper_playbin_bus_post_set_prop (self->bus,
+      GST_OBJECT_CAST (self->playbin), "text-offset", &value);
+}
+
+/**
+ * clapper_player_get_subtitle_offset:
+ * @player: a #ClapperPlayer
+ *
+ * Get the currently set subtitle stream offset.
+ *
+ * The returned value is in seconds as a decimal number.
+ *
+ * Returns: the subtitle stream offset.
+ */
+gdouble
+clapper_player_get_subtitle_offset (ClapperPlayer *self)
+{
+  gdouble offset;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), 0);
+
+  GST_OBJECT_LOCK (self);
+  offset = self->subtitle_offset;
+  GST_OBJECT_UNLOCK (self);
+
+  return offset;
+}
+
+/**
+ * clapper_player_set_subtitle_font_desc:
+ * @player: a #ClapperPlayer
+ * @font_desc: Font description
+ *
+ * Set Pango font description to be used for subtitle stream rendering.
+ */
+void
+clapper_player_set_subtitle_font_desc (ClapperPlayer *self, const gchar *font_desc)
+{
+  GValue value = G_VALUE_INIT;
+
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+
+  g_value_init (&value, G_TYPE_STRING);
+  g_value_set_string (&value, font_desc);
+
+  clapper_playbin_bus_post_set_prop (self->bus,
+      GST_OBJECT_CAST (self->playbin), "subtitle-font-desc", &value);
+}
+
+/**
+ * clapper_player_get_subtitle_font_desc:
+ * @player: a #ClapperPlayer
+ *
+ * Get the currently set font description used for subtitle stream rendering.
+ *
+ * Returns: (transfer full): the subtitles font description.
+ */
+gchar *
+clapper_player_get_subtitle_font_desc (ClapperPlayer *self)
+{
+  gchar *font_desc = NULL;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  g_object_get (self->playbin, "subtitle-font-desc", &font_desc, NULL);
+
+  return font_desc;
+}
+
+/**
  * clapper_player_play:
  * @player: a #ClapperPlayer
  *
@@ -1817,6 +1999,15 @@ clapper_player_get_property (GObject *object, guint prop_id,
     case PROP_SUBTITLES_ENABLED:
       g_value_set_boolean (value, clapper_player_get_subtitles_enabled (self));
       break;
+    case PROP_AUDIO_OFFSET:
+      g_value_set_double (value, clapper_player_get_audio_offset (self));
+      break;
+    case PROP_SUBTITLE_OFFSET:
+      g_value_set_double (value, clapper_player_get_subtitle_offset (self));
+      break;
+    case PROP_SUBTITLE_FONT_DESC:
+      g_value_take_string (value, clapper_player_get_subtitle_font_desc (self));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1862,6 +2053,15 @@ clapper_player_set_property (GObject *object, guint prop_id,
       break;
     case PROP_SUBTITLES_ENABLED:
       clapper_player_set_subtitles_enabled (self, g_value_get_boolean (value));
+      break;
+    case PROP_AUDIO_OFFSET:
+      clapper_player_set_audio_offset (self, g_value_get_double (value));
+      break;
+    case PROP_SUBTITLE_OFFSET:
+      clapper_player_set_subtitle_offset (self, g_value_get_double (value));
+      break;
+    case PROP_SUBTITLE_FONT_DESC:
+      clapper_player_set_subtitle_font_desc (self, g_value_get_string (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2057,6 +2257,33 @@ clapper_player_class_init (ClapperPlayerClass *klass)
    */
   param_specs[PROP_SUBTITLES_ENABLED] = g_param_spec_boolean ("subtitles-enabled",
       NULL, NULL, DEFAULT_SUBTITLES_ENABLED,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:audio-offset:
+   *
+   * Audio stream offset relative to video.
+   */
+  param_specs[PROP_AUDIO_OFFSET] = g_param_spec_double ("audio-offset",
+      NULL, NULL, G_MININT64, G_MAXINT64, 0, // NOTE: Gstreamer has gint64 range
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:subtitle-offset:
+   *
+   * Subtitle stream offset relative to video.
+   */
+  param_specs[PROP_SUBTITLE_OFFSET] = g_param_spec_double ("subtitle-offset",
+      NULL, NULL, G_MININT64, G_MAXINT64, 0, // NOTE: Gstreamer has gint64 range
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:subtitle-font-desc:
+   *
+   * Subtitle stream font description.
+   */
+  param_specs[PROP_SUBTITLE_FONT_DESC] = g_param_spec_string ("subtitle-font-desc",
+      NULL, NULL, NULL,
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
