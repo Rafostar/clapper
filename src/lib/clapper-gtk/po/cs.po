@@ -1,0 +1,66 @@
+# Czech translations for clapper-gtk package.
+# Copyright (C) 2024 THE clapper-gtk'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the clapper-gtk package.
+# Automatically generated, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: clapper-gtk\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-05 20:50+0200\n"
+"PO-Revision-Date: 2024-03-07 20:49+0100\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
+msgid "Video"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
+msgid "Audio"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
+msgid "Subtitles"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
+msgid "Enabled"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
+msgid "Open…"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
+msgid "Mute"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
+msgid "Reset"
+msgstr ""
+
+#: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
+#: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
+msgid "Undetermined"
+msgstr ""
+
+#: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
+msgid "Channels"
+msgstr ""
+
+#: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
+msgid "No media"
+msgstr ""
+
+#: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
+msgid "Unknown title"
+msgstr ""

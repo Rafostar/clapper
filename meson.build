@@ -130,6 +130,7 @@ summary({
 }, section: 'Directories')
 
 summary('clapper', build_clapper ? 'Yes' : 'No', section: 'Build')
+summary('clapper-gtk', build_clappergtk ? 'Yes' : 'No', section: 'Build')
 summary('gst-plugin', build_gst_plugin ? 'Yes' : 'No', section: 'Build')
 summary('introspection', build_gir ? 'Yes' : 'No', section: 'Build')
 summary('vapi', build_vapi ? 'Yes' : 'No', section: 'Build')

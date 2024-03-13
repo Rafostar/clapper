@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkSeekBar" parent="GtkWidget">
+    <property name="hexpand">true</property>
+    <child>
+      <object class="GtkRevealer" id="position_revealer">
+        <property name="halign">end</property>
+        <property name="transition-type">slide-left</property>
+        <property name="transition-duration">800</property>
+        <child>
+          <object class="GtkLabel" id="position_label">
+            <property name="valign">center</property>
+            <property name="label">00:00</property>
+            <style>
+              <class name="numeric"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkScale" id="scale">
+        <property name="orientation">horizontal</property>
+        <property name="halign">fill</property>
+        <property name="valign">center</property>
+        <property name="hexpand">true</property>
+        <property name="focusable">false</property>
+        <property name="draw-value">false</property>
+        <property name="adjustment">position_adjustment</property>
+        <signal name="value-changed" handler="scale_value_changed_cb"/>
+        <signal name="notify::css-classes" handler="scale_css_classes_changed_cb"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkPopover" id="popover">
+        <property name="position">top</property>
+        <property name="autohide">false</property>
+        <child>
+          <object class="GtkLabel" id="popover_label">
+            <property name="valign">center</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkRevealer" id="duration_revealer">
+        <property name="halign">start</property>
+        <property name="transition-type">slide-right</property>
+        <property name="transition-duration">800</property>
+        <property name="reveal-child" bind-source="position_revealer" bind-property="reveal-child" bind-flags="sync-create"/>
+        <child>
+          <object class="GtkLabel" id="duration_label">
+            <property name="valign">center</property>
+            <property name="label">00:00</property>
+            <style>
+              <class name="numeric"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkEventControllerMotion">
+        <signal name="motion" handler="motion_cb"/>
+        <signal name="leave" handler="motion_leave_cb"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkGestureClick">
+        <property name="propagation-phase">capture</property>
+        <property name="touch-only">true</property>
+        <signal name="released" handler="touch_released_cb"/>
+      </object>
+    </child>
+  </template>
+  <object class="GtkAdjustment" id="position_adjustment">
+    <property name="lower">0</property>
+    <property name="upper">0</property>
+    <property name="value">0</property>
+    <property name="page-increment">0</property>
+    <property name="step-increment">8</property>
+  </object>
+</interface>
