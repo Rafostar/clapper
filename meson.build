@@ -11,6 +11,7 @@ project('clapper', 'c',
 glib_req = '>= 2.76.0'
 gst_req = '>= 1.20.0'
 gtk4_req = '>= 4.10.0'
+adw_req = '>= 1.4.0'
 
 clapper_version = meson.project_version().split('-')[0]
 version_array = clapper_version.split('.')
@@ -77,6 +78,10 @@ gtk4_dep = dependency('gtk4',
   version: gtk4_req,
   required: false,
 )
+libadwaita_dep = dependency('libadwaita-1',
+  version: adw_req,
+  required: false,
+)
 
 cc = meson.get_compiler('c')
 libm = cc.find_library('m', required: false)
@@ -131,6 +136,7 @@ summary({
 
 summary('clapper', build_clapper ? 'Yes' : 'No', section: 'Build')
 summary('clapper-gtk', build_clappergtk ? 'Yes' : 'No', section: 'Build')
+summary('clapper-app', build_clapperapp ? 'Yes' : 'No', section: 'Build')
 summary('gst-plugin', build_gst_plugin ? 'Yes' : 'No', section: 'Build')
 summary('introspection', build_gir ? 'Yes' : 'No', section: 'Build')
 summary('vapi', build_vapi ? 'Yes' : 'No', section: 'Build')

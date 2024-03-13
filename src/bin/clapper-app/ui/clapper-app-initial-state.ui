@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <object class="GtkBox" id="initial_state">
+    <property name="orientation">vertical</property>
+    <property name="spacing">6</property>
+    <style>
+       <class name="initialstate"/>
+    </style>
+    <child>
+      <object class="ClapperAppWindowStateButtons">
+        <property name="halign">end</property>
+        <property name="valign">center</property>
+      </object>
+    </child>
+    <child>
+      <object class="AdwStatusPage">
+        <property name="vexpand">true</property>
+        <property name="hexpand">true</property>
+        <property name="icon-name">com.github.rafostar.Clapper</property>
+        <property name="title" translatable="no">Clapper</property>
+        <property name="description" translatable="yes">Start by adding media to playback queue</property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Add Files…</property>
+                <property name="action-name">app.add-files</property>
+                <style>
+                  <class name="pill"/>
+                  <class name="suggested-action"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Add URI…</property>
+                <property name="action-name">app.add-uri</property>
+                <style>
+                  <class name="pill"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

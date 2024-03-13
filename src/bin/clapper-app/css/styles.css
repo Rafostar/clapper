@@ -1,0 +1,109 @@
+window.app {
+  min-width: 352px;
+  min-height: 198px;
+}
+
+window .initialstate {
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 8px;
+  background-color: @dark_4;
+}
+
+window.info .maincontent {
+  margin: 16px;
+  margin-top: 0px;
+}
+window.info .subcontent {
+  margin: 16px;
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+window.info .subcontent streamlist preferencesgroup {
+  margin-bottom: 8px;
+}
+
+window.preferences .subcontent {
+  margin: 16px;
+}
+window.preferences .pluginssubpage .subcontent popover {
+  min-width: 264px;
+}
+window.preferences .pluginssubpage .subcontent button.pill {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+clapper-gtk-seek-bar scale trough highlight {
+  color: @accent_fg_color;
+  background-color: @accent_bg_color;
+}
+clapper-gtk-video .overamp trough highlight {
+  color: @error_fg_color;
+  background-color: @error_bg_color;
+}
+
+clapper-app-headerbar .mainbox {
+  margin: 6px;
+  padding: 2px;
+}
+clapper-app-headerbar .titlelabel label {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+clapper-app-headerbar clapper-app-window-state-buttons {
+  margin-top: 8px;
+}
+clapper-app-headerbar clapper-app-window-state-buttons:dir(ltr) {
+  padding-right: 6px;
+}
+clapper-app-headerbar clapper-app-window-state-buttons:dir(rtl) {
+  padding-left: 6px;
+}
+
+clapper-app-queue-list .topseparator {
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+clapper-app-queue-list .buttonsbox {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+clapper-app-queue-list .buttonsbox dropdown .toggle row {
+  background-color: transparent;
+}
+clapper-app-queue-list .buttonsbox .additemsbutton box {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+clapper-app-queue-list .buttonsbox .additemsbutton box image {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+clapper-app-queue-list .buttonsbox .progressiondropdown popover label {
+  min-width: 100px;
+}
+clapper-app-queue-list .removeitembox {
+  margin-left: 6px;
+  margin-right: 6px;
+  border-radius: 9999px;
+  background-color: alpha(@destructive_bg_color, 0.9);
+}
+clapper-app-queue-list .queue {
+  padding: 3px;
+}
+clapper-app-queue-list .queue listview {
+  padding: 2px;
+  padding-bottom: 0px;
+  border-radius: 0px 0px 19px 19px;
+}
+clapper-app-queue-list .queue listview row {
+  padding-left: 10px;
+  padding-right: 10px;
+  min-height: 30px;
+  border-radius: 9999px;
+}
+/* Disable background light on hover when doing D&D */
+clapper-app-queue-list .queue listview.dnd row.activatable:not(:selected):hover {
+  background: none;
+}

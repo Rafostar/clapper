@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="GtkListItem">
+    <property name="activatable">false</property>
+    <property name="child">
+      <object class="AdwPreferencesGroup">
+        <binding name="title">
+          <closure type="gchararray" function="clapper_app_list_item_make_stream_group_title">
+            <lookup name="item">GtkListItem</lookup>
+          </closure>
+        </binding>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Codec</property>
+            <binding name="subtitle">
+              <lookup name="codec" type="ClapperVideoStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Resolution</property>
+            <binding name="subtitle">
+              <closure type="gchararray" function="clapper_app_list_item_make_resolution">
+                <lookup name="width" type="ClapperVideoStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+                <lookup name="height" type="ClapperVideoStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Framerate</property>
+            <binding name="subtitle">
+              <closure type="gchararray" function="clapper_app_list_item_convert_double">
+                <lookup name="fps" type="ClapperVideoStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Bitrate</property>
+            <binding name="subtitle">
+              <closure type="gchararray" function="clapper_app_list_item_make_bitrate">
+                <lookup name="bitrate" type="ClapperVideoStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Pixel Format</property>
+            <binding name="subtitle">
+              <lookup name="pixel-format" type="ClapperVideoStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
