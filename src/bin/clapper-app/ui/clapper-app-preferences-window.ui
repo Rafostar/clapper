@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="ClapperAppPreferencesWindow" parent="AdwPreferencesWindow">
+    <property name="width-request">280</property>
+    <property name="height-request">280</property>
+    <property name="default-width">540</property>
+    <property name="default-height">540</property>
+    <property name="modal">true</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">General</property>
+        <property name="icon-name">user-home-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Seeking</property>
+            <child>
+              <object class="AdwComboRow" id="seek_method_combo_row">
+                <property name="title" translatable="yes">Method</property>
+                <property name="subtitle" translatable="yes">A preferred method used for seeking</property>
+                <property name="model">
+                  <object class="AdwEnumListModel">
+                    <property name="enum-type">ClapperPlayerSeekMethod</property>
+                  </object>
+                </property>
+                <property name="expression">
+                  <closure type="gchararray" function="seek_method_name_closure"/>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwSpinRow" id="seek_value_spin_row">
+                <property name="title" translatable="yes">Value</property>
+                <property name="subtitle" translatable="yes">Value used for seeking forward/backward</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">1</property>
+                    <property name="upper">99</property>
+                    <property name="page-increment">1</property>
+                    <property name="step-increment">1</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="seek_unit_combo_row">
+                <property name="title" translatable="yes">Unit</property>
+                <property name="subtitle" translatable="yes">An unit of a seek forward/backward value</property>
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item translatable="yes">Second</item>
+                      <item translatable="yes">Minute</item>
+                      <item translatable="yes">Percentage</item>
+                    </items>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Features</property>
+            <child>
+              <object class="AdwSwitchRow" id="server_switch_row">
+                <property name="title" translatable="yes">Server</property>
+                <property name="subtitle" translatable="yes">Control player remotely</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Playback</property>
+        <property name="icon-name">camera-video-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Audio</property>
+            <child>
+              <object class="AdwSpinRow" id="audio_offset_spin_row">
+                <property name="title" translatable="yes">Offset</property>
+                <property name="subtitle" translatable="yes">Synchronisation offset in seconds between the audio and video streams</property>
+                <property name="digits">3</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">-10</property>
+                    <property name="upper">10</property>
+                    <property name="page-increment">1</property>
+                    <property name="step-increment">0.025</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Subtitles</property>
+            <child>
+              <object class="AdwSpinRow" id="subtitle_offset_spin_row">
+                <property name="title" translatable="yes">Offset</property>
+                <property name="subtitle" translatable="yes">Synchronisation offset in seconds between the subtitle and video streams</property>
+                <property name="digits">3</property>
+                <property name="adjustment">
+                  <object class="GtkAdjustment">
+                    <property name="lower">-10</property>
+                    <property name="upper">10</property>
+                    <property name="page-increment">1</property>
+                    <property name="step-increment">0.025</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Default font</property>
+                <property name="subtitle" translatable="yes">Text font used for subtitles when media does not explicitly specify one</property>
+                <child>
+                  <object class="GtkFontDialogButton" id="font_dialog_button">
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="dialog">
+                      <object class="GtkFontDialog"/>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">Tweaks</property>
+        <property name="icon-name">applications-engineering-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="no">GStreamer</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Plugin ranking</property>
+                <property name="subtitle" translatable="yes">Alter default ranks of GStreamer plugins</property>
+                <property name="activatable">true</property>
+                <signal name="activated" handler="plugin_ranking_activated_cb"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="preferences"/>
+    </style>
+  </template>
+  <object class="AdwNavigationPage" id="plugins_subpage">
+    <property name="title" translatable="yes">Plugin Ranking</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <child>
+              <object class="AdwClamp">
+                <style>
+                  <class name="subcontent"/>
+                </style>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="AdwPreferencesGroup">
+                        <property name="title" translatable="yes">Available plugins</property>
+                        <property name="description" translatable="yes">Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred.</property>
+                        <child>
+                          <object class="AdwComboRow" id="plugins_combo_row">
+                            <property name="title" translatable="yes">Plugin</property>
+                            <property name="enable-search">true</property>
+                            <property name="expression">
+                              <lookup type="GtkStringObject" name="string"/>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="AdwComboRow" id="features_combo_row">
+                            <property name="title" translatable="yes">Plugin feature</property>
+                            <property name="enable-search">true</property>
+                            <property name="expression">
+                              <lookup type="GtkStringObject" name="string"/>
+                            </property>
+                            <binding name="model">
+                              <closure type="GtkStringList" function="ranking_features_model_closure">
+                                <lookup name="selected-item">plugins_combo_row</lookup>
+                              </closure>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="add_override_button">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">Add override</property>
+                        <binding name="sensitive">
+                          <closure type="gboolean" function="add_override_button_sensitive_closure">
+                            <lookup name="selected-item">features_combo_row</lookup>
+                            <lookup name="rank-rows">ClapperAppPreferencesWindow</lookup>
+                          </closure>
+                        </binding>
+                        <signal name="clicked" handler="add_override_button_clicked_cb"/>
+                        <style>
+                          <class name="pill"/>
+                          <class name="suggested-action"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwPreferencesGroup" id="overrides_group">
+                        <property name="title" translatable="yes">Rank overrides</property>
+                        <property name="visible">false</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+    <signal name="unrealize" handler="plugin_ranking_unrealize_cb"/>
+    <style>
+      <class name="pluginssubpage"/>
+    </style>
+  </object>
+</interface>
