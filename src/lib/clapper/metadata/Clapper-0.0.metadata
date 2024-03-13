@@ -1,0 +1,7 @@
+// Skipped by GI, but Vala can handle it fine
+//init_get_option_group skip=false
+*_FORMAT skip=false
+
+// Init func compatibility
+init.argv unowned
+init_check.argv unowned
