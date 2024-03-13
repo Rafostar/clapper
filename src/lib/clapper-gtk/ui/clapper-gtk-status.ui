@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkStatus" parent="ClapperGtkContainer">
+    <property name="width-target">562</property>
+    <property name="height-target">402</property>
+    <property name="adaptive-width">560</property>
+    <property name="adaptive-height">400</property>
+    <signal name="adapt" handler="adapt_cb"/>
+    <child>
+      <object class="GtkBox" id="status_box">
+        <property name="orientation">vertical</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <child>
+          <object class="GtkImage" id="image">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="title_label">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="justify">center</property>
+            <property name="wrap">true</property>
+            <style>
+              <class name="title-1"/>
+            </style>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="description_label">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="justify">center</property>
+            <property name="wrap">true</property>
+            <style>
+              <class name="body"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

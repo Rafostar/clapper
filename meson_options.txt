@@ -4,6 +4,11 @@ option('clapper',
   value: 'auto',
   description: 'Build Clapper library'
 )
+option('clapper-gtk',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper GTK integration library'
+)
 option('gst-plugin',
   type: 'feature',
   value: 'auto',
