@@ -160,7 +160,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-queue.h#L85">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.h#L85">[src]</a>
         
       </h4>
 
@@ -180,7 +180,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-queue.c#L952">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.c#L970">[src]</a>
         
       </h4>
 
@@ -189,6 +189,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <p>Gapless playback will try to re-use as much as possible of underlying
 GStreamer elements when <code>ClapperQueue</code> progresses, removing any
 potential gap in the&nbsp;data.</p>
+<p>Enabling this option mostly makes sense when used together with
+<a href="property.Queue.progression-mode.html"><code>ClapperQueue:progression-mode</code></a> property set to
+<a href="enum.QueueProgressionMode.html"><code>ClapperQueueProgressionMode</code></a>.</p>
 <p><span class="caps">NOTE</span>: This feature within GStreamer is rather new and
 might still cause playback issues. Disabled by&nbsp;default.</p>
       </div>

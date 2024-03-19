@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.QueueSelection:queue</title>
+  <title>Clapper.Marker:marker-type</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -19,14 +19,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <meta property="og:image:width" content="256"/>
   <meta property="og:image:height" content="256"/>
   <meta property="og:image:secure_url" content="clapper-logo.svg"/>
-  <meta property="og:image:alt" content="ClapperGtk-0.0"/>
+  <meta property="og:image:alt" content="Clapper-0.0"/>
   
 
   
-  <meta property="og:title" content="ClapperGtk.QueueSelection:queue"/>
-  <meta property="og:description" content="Reference for property ClapperGtk.QueueSelection:queue"/>
-  <meta name="twitter:title" content="ClapperGtk.QueueSelection:queue"/>
-  <meta name="twitter:description" content="Reference for property ClapperGtk.QueueSelection:queue"/>
+  <meta property="og:title" content="Clapper.Marker:marker-type"/>
+  <meta property="og:description" content="Reference for property Clapper.Marker:marker-type"/>
+  <meta name="twitter:title" content="Clapper.Marker:marker-type"/>
+  <meta name="twitter:description" content="Reference for property Clapper.Marker:marker-type"/>
 
 
   
@@ -35,7 +35,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
   
   
-  <link rel="search" type="application/opensearchdescription+xml" title="ClapperGtk" href="opensearch.xml">
+  <link rel="search" type="application/opensearchdescription+xml" title="Clapper" href="opensearch.xml">
   
   
 
@@ -70,7 +70,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </div>
       
       <div class="section namespace">
-        <h3><a href="index.html">ClapperGtk</a></h3>
+        <h3><a href="index.html">Clapper</a></h3>
         <p>API Version: 0.0</p>
         
         <p>Library Version: 0.5.2</p>
@@ -80,14 +80,20 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.QueueSelection.html">QueueSelection</a>
+    <a href="class.Marker.html">Marker</a>
   </div>
 </div>
 <div class="section">
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property current"href="property.QueueSelection.queue.html">queue</a>
+    <a class="property"href="property.Marker.end.html">end</a>
+  
+    <a class="property current"href="property.Marker.marker-type.html">marker-type</a>
+  
+    <a class="property"href="property.Marker.start.html">start</a>
+  
+    <a class="property"href="property.Marker.title.html">title</a>
   
   </div>
 </div>
@@ -103,7 +109,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Property</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.QueueSelection.html">QueueSelection</a>:queue</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Marker.html">Marker</a>:marker-type</h1>
   </header>
 
   <section>
@@ -117,7 +123,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property queue: Clapper.Queue [ read, write ]</code></pre>
+        <pre><code>property marker-type: Clapper.MarkerType [ read, write, construct-only ]</code></pre>
       </div>
     </div>
 
@@ -126,18 +132,18 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-queue-selection.c#L352">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-marker.c#L301">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>The queue being&nbsp;managed.</p>
+        <p>Type of&nbsp;stream.</p>
       </div>
 
       <div class="docblock">
         <table>
           <tr><td>Type:</td>
-            <td><a href="javascript:void(0)" data-link="class.Queue.html" data-namespace="Clapper" class="external"><code>ClapperQueue</code></a></td>
+            <td><a href="enum.MarkerType.html"><code>ClapperMarkerType</code></a></td>
           </tr>
           
           
@@ -149,9 +155,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Getter method</td><td><a href="method.QueueSelection.get_queue.html"><code>clapper_gtk_queue_selection_get_queue()</code></a></td></tr>
+          <tr><td>Default value</td><td>CLAPPER_MARKER_TYPE_UNKNOWN</td></tr>
         
-          <tr><td>Setter method</td><td><a href="method.QueueSelection.set_queue.html"><code>clapper_gtk_queue_selection_set_queue()</code></a></td></tr>
+          <tr><td>Getter method</td><td><a href="method.Marker.get_marker_type.html"><code>clapper_marker_get_marker_type()</code></a></td></tr>
         
         </table>
       </div>
@@ -169,7 +175,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <tr><td>Readable</td><td><b>yes</b></td></tr>
         <tr><td>Writable</td><td><b>yes</b></td></tr>
         <tr><td>Construct</td><td><b>no</b></td></tr>
-        <tr><td>Construct only</td><td><b>no</b></td></tr>
+        <tr><td>Construct only</td><td><b>yes</b></td></tr>
       </table>
       </div>
     </div>

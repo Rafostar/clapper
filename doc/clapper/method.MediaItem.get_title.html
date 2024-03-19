@@ -95,6 +95,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.MediaItem.get_suburi.html">get_suburi</a>
   
+    <a class="method" href="method.MediaItem.get_timeline.html">get_timeline</a>
+  
     <a class="method current" href="method.MediaItem.get_title.html">get_title</a>
   
     <a class="method" href="method.MediaItem.get_uri.html">get_uri</a>
@@ -128,7 +130,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.h#L50">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.h#L52">[src]</a>
         
       </h4>
 
@@ -147,16 +149,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.c#L243">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L247">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get media item title for displaying in app <span class="caps">UI</span>. This function
-always returns a media title of some sort for convenience
-of displaying it in the application <span class="caps">UI</span>.</p>
+        <p>Get media item&nbsp;title.</p>
 <p>The title can be either text detected by media discovery once it
-completes, file basename for local files or eventually a media <span class="caps">URI</span>.</p>
+completes. Otherwise whenever possible this will try to return a title
+extracted from media <span class="caps">URI</span> e.g. basename without extension for local&nbsp;files.</p>
       </div>
 
       <div class="docblock">
@@ -200,7 +201,7 @@ completes, file basename for local files or eventually a media <span class="caps
             
             
             <tr><td title="transfer: full">The caller of the method takes ownership of the data, and is responsible for freeing it.</td></tr>
-            
+            <tr><td>The return value can be <code>NULL</code>.</td></tr>
             <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
             </table>
           </div>

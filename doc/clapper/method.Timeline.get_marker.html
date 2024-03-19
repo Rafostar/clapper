@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Stream.get_caps</title>
+  <title>Clapper.Timeline.get_marker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Stream.get_caps"/>
-  <meta priority="og:description" content="Reference for Clapper.Stream.get_caps"/>
-  <meta name="twitter:title" content="Clapper.Stream.get_caps"/>
-  <meta name="twitter:description" content="Reference for Clapper.Stream.get_caps"/>
+  <meta priority="og:title" content="Clapper.Timeline.get_marker"/>
+  <meta priority="og:description" content="Reference for Clapper.Timeline.get_marker"/>
+  <meta name="twitter:title" content="Clapper.Timeline.get_marker"/>
+  <meta name="twitter:description" content="Reference for Clapper.Timeline.get_marker"/>
 
 
   
@@ -80,14 +80,20 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.Stream.html">Stream</a>
+    <a href="class.Timeline.html">Timeline</a>
   </div>
 </div>
 <div class="section">
   <h5>Methods</h5>
   <div class="links">
   
-    <a class="method current" href="method.Stream.get_caps.html">get_caps</a>
+    <a class="method current" href="method.Timeline.get_marker.html">get_marker</a>
+  
+    <a class="method" href="method.Timeline.get_n_markers.html">get_n_markers</a>
+  
+    <a class="method" href="method.Timeline.insert_marker.html">insert_marker</a>
+  
+    <a class="method" href="method.Timeline.remove_marker.html">remove_marker</a>
   
   </div>
 </div>
@@ -103,7 +109,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Stream.html">Stream</a><span class="sep"></span>get_caps</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Timeline.html">Timeline</a><span class="sep"></span>get_marker</h1>
   </header>
 
   <section>
@@ -116,14 +122,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-stream.h#L42">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-timeline.h#L43">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">GstCaps</span><span class="o">*</span>
-<span class="n">clapper_stream_get_caps</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperStream</span><span class="o">*</span><span class="w"> </span><span class="n">stream</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">ClapperMarker</span><span class="o">*</span>
+<span class="n">clapper_timeline_get_marker</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperTimeline</span><span class="o">*</span><span class="w"> </span><span class="n">timeline</span><span class="p">,</span>
+<span class="w">  </span><span class="n">guint</span><span class="w"> </span><span class="n">index</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -135,12 +142,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-stream.c#L65">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-timeline.c#L262">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get the caps of <code>stream</code>, if&nbsp;any.</p>
+        <p>Get the <code>ClapperMarker</code> at&nbsp;index.</p>
+<p>This behaves the same as <a href="javascript:void(0)" data-namespace="Gio" data-link="method.ListModel.get_item.html" class="external"><code>g_list_model_get_item()</code></a>, and is here
+for code uniformity and convenience to avoid type casting by&nbsp;user.</p>
       </div>
 
       <div class="docblock">
@@ -152,17 +161,41 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
       </div>
 
-      
-      <div class="docblock">
-        <table>
-        
-          <tr><td>Gets property</td><td><a href="property.Stream.caps.html"><code>Clapper.Stream:caps</code></a></td></tr>
-        
-        </table>
-      </div>
       
     </div>
 
+    
+    <div class="parameters toggle-wrapper">
+      <h4 id="parameters">
+        Parameters
+        <a href="#parameters" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <dl class="arguments">
+          
+          <dt class="arg-name"><code>index</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>guint</code></p>
+            <p><p>A marker&nbsp;index.</p></p>
+            <table>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            </table>
+          </dd>
+          
+
+          
+        </dl>
+      </div>
+    </div>
     
 
     
@@ -175,8 +208,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <div class="returns">
           <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="struct.Caps.html" data-namespace="Gst" class="external"><code>GstCaps</code></a></p>
-            <p><p><code>GstCaps</code> of&nbsp;stream.</p></p>
+            <p><em>Type:</em>&nbsp;<a href="class.Marker.html"><code>ClapperMarker</code></a></p>
+            <p><p>The <code>ClapperMarker</code> at <code>index</code>.</p></p>
           </div>
           <div>
             <table>

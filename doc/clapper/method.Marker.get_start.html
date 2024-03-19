@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Stream:caps</title>
+  <title>Clapper.Marker.get_start</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.Stream:caps"/>
-  <meta property="og:description" content="Reference for property Clapper.Stream:caps"/>
-  <meta name="twitter:title" content="Clapper.Stream:caps"/>
-  <meta name="twitter:description" content="Reference for property Clapper.Stream:caps"/>
+  <meta priority="og:title" content="Clapper.Marker.get_start"/>
+  <meta priority="og:description" content="Reference for Clapper.Marker.get_start"/>
+  <meta name="twitter:title" content="Clapper.Marker.get_start"/>
+  <meta name="twitter:description" content="Reference for Clapper.Marker.get_start"/>
 
 
   
@@ -80,14 +80,20 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.Stream.html">Stream</a>
+    <a href="class.Marker.html">Marker</a>
   </div>
 </div>
 <div class="section">
-  <h5>Properties</h5>
+  <h5>Methods</h5>
   <div class="links">
   
-    <a class="property current"href="property.Stream.caps.html">caps</a>
+    <a class="method" href="method.Marker.get_end.html">get_end</a>
+  
+    <a class="method" href="method.Marker.get_marker_type.html">get_marker_type</a>
+  
+    <a class="method current" href="method.Marker.get_start.html">get_start</a>
+  
+    <a class="method" href="method.Marker.get_title.html">get_title</a>
   
   </div>
 </div>
@@ -102,75 +108,96 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Property</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Stream.html">Stream</a>:caps</h1>
+    <h3>Method</h3>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Marker.html">Marker</a><span class="sep"></span>get_start</h1>
   </header>
 
   <section>
     <div class="docblock">
       <p></p>
     </div>
+
     <div class="declaration toggle-wrapper">
-      <h4 id="declaration">
+      <h4 style="display:flex;" id="declaration">
         Declaration
-        <a href="#declaration" class="anchor"></a>
+        <a class="anchor" href="#declaration"></a>
+        
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-marker.h#L54">[src]</a>
+        
       </h4>
 
-      <div class="docblock">
-        <pre><code>property caps: Gst.Caps [ read ]</code></pre>
+      <div class="docblock c-decl">
+        <pre><code><div class="highlight"><pre><span></span><span class="n">gdouble</span>
+<span class="n">clapper_marker_get_start</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperMarker</span><span class="o">*</span><span class="w"> </span><span class="n">marker</span>
+<span class="p">)</span>
+</pre></div>
+</code></pre>
       </div>
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 id="description">
+      <h4 style="display:flex;" id="description">
         Description
-        <a href="#description" class="anchor"></a>
+        <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-stream.c#L141">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-marker.c#L169">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>The <code>GstCaps</code> of&nbsp;stream.</p>
+        <p>Get the start position (in seconds) of <code>marker</code>.</p>
       </div>
 
       <div class="docblock">
-        <table>
-          <tr><td>Type:</td>
-            <td><a href="javascript:void(0)" data-link="struct.Caps.html" data-namespace="Gst" class="external"><code>GstCaps</code></a></td>
-          </tr>
-          
-          
-          
-        </table>
+        
+        
+        
+        
+        
+        
       </div>
 
       
       <div class="docblock">
         <table>
         
-          <tr><td>Getter method</td><td><a href="method.Stream.get_caps.html"><code>clapper_stream_get_caps()</code></a></td></tr>
+          <tr><td>Gets property</td><td><a href="property.Marker.start.html"><code>Clapper.Marker:start</code></a></td></tr>
         
         </table>
       </div>
       
     </div>
 
-    <div class="flags toggle-wrapper">
-      <h4 id="flags">
-        Flags
-        <a href="#flags" class="anchor"></a>
+    
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-      <table>
-        <tr><td>Readable</td><td><b>yes</b></td></tr>
-        <tr><td>Writable</td><td><b>no</b></td></tr>
-        <tr><td>Construct</td><td><b>no</b></td></tr>
-        <tr><td>Construct only</td><td><b>no</b></td></tr>
-      </table>
+        <div class="returns">
+          <div class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>gdouble</code></p>
+            <p><p>Marker&nbsp;start.</p></p>
+          </div>
+          <div>
+            <table>
+            
+            
+            
+            
+            
+            
+            </table>
+          </div>
+        </div>
       </div>
     </div>
+    
 
   </section>
 </section>

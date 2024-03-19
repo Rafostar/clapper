@@ -160,7 +160,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-queue.h#L69">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.h#L69">[src]</a>
         
       </h4>
 
@@ -180,16 +180,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-queue.c#L750">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.c#L768">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <p>Get the <code>ClapperMediaItem</code> at&nbsp;index.</p>
-<p>This behaves the same as g_list_model_get_item(), and is here
+<p>This behaves the same as <a href="javascript:void(0)" data-namespace="Gio" data-link="method.ListModel.get_item.html" class="external"><code>g_list_model_get_item()</code></a>, and is here
 for code uniformity and convenience to avoid type casting by&nbsp;user.</p>
 <p>This function is not available in bindings as they already
-inherit <code>get_item()</code> method from <code>GListModel</code> interface.</p>
+inherit <code>get_item()</code> method from <a href="javascript:void(0)" data-namespace="Gio" data-link="iface.ListModel.html" class="external"><code>GListModel</code></a>&nbsp;interface.</p>
       </div>
 
       <div class="docblock">
@@ -257,7 +257,7 @@ inherit <code>get_item()</code> method from <code>GListModel</code> interface.</
             
             
             <tr><td title="transfer: full">The caller of the method takes ownership of the data, and is responsible for freeing it.</td></tr>
-            
+            <tr><td>The return value can be <code>NULL</code>.</td></tr>
             
             </table>
           </div>

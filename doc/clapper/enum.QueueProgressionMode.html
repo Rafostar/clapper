@@ -147,11 +147,21 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <dl class="enum-members">
         
+          <dt><a id="none" href="#none"><code>CLAPPER_QUEUE_PROGRESSION_NONE</code></a></dt>
+          <dd>
+            <div><p>Queue will not change current item after playback&nbsp;finishes.</p></div>
+            <ul>
+              <li>Value: <code>0</code></li>
+              <li>Nickname: <code>none</code></li>
+              <li>Available since: 0.0</li>
+            </ul>
+          </dd>
+        
           <dt><a id="consecutive" href="#consecutive"><code>CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE</code></a></dt>
           <dd>
             <div><p>Queue plays items one after another until the&nbsp;end.</p></div>
             <ul>
-              <li>Value: <code>0</code></li>
+              <li>Value: <code>1</code></li>
               <li>Nickname: <code>consecutive</code></li>
               <li>Available since: 0.0</li>
             </ul>
@@ -161,7 +171,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           <dd>
             <div><p>Queue keeps repeating current media&nbsp;item.</p></div>
             <ul>
-              <li>Value: <code>1</code></li>
+              <li>Value: <code>2</code></li>
               <li>Nickname: <code>repeat-item</code></li>
               <li>Available since: 0.0</li>
             </ul>
@@ -171,7 +181,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           <dd>
             <div><p>Queue starts from beginning after last media&nbsp;item.</p></div>
             <ul>
-              <li>Value: <code>2</code></li>
+              <li>Value: <code>3</code></li>
               <li>Nickname: <code>carousel</code></li>
               <li>Available since: 0.0</li>
             </ul>
@@ -181,7 +191,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           <dd>
             <div><p>Queue selects a random media item after current&nbsp;one.</p></div>
             <ul>
-              <li>Value: <code>3</code></li>
+              <li>Value: <code>4</code></li>
               <li>Nickname: <code>shuffle</code></li>
               <li>Available since: 0.0</li>
             </ul>

@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.QueueSelection</title>
+  <title>Clapper.Timeline</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -19,14 +19,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <meta property="og:image:width" content="256"/>
   <meta property="og:image:height" content="256"/>
   <meta property="og:image:secure_url" content="clapper-logo.svg"/>
-  <meta property="og:image:alt" content="ClapperGtk-0.0"/>
+  <meta property="og:image:alt" content="Clapper-0.0"/>
   
 
   
-  <meta property="og:title" content="ClapperGtk.QueueSelection"/>
-  <meta property="og:description" content="Reference for ClapperGtk.QueueSelection"/>
-  <meta name="twitter:title" content="ClapperGtk.QueueSelection"/>
-  <meta name="twitter:description" content="Reference for ClapperGtk.QueueSelection"/>
+  <meta property="og:title" content="Clapper.Timeline"/>
+  <meta property="og:description" content="Reference for Clapper.Timeline"/>
+  <meta name="twitter:title" content="Clapper.Timeline"/>
+  <meta name="twitter:description" content="Reference for Clapper.Timeline"/>
 
 
   
@@ -35,7 +35,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
   
   
-  <link rel="search" type="application/opensearchdescription+xml" title="ClapperGtk" href="opensearch.xml">
+  <link rel="search" type="application/opensearchdescription+xml" title="Clapper" href="opensearch.xml">
   
   
 
@@ -70,7 +70,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </div>
       
       <div class="section namespace">
-        <h3><a href="index.html">ClapperGtk</a></h3>
+        <h3><a href="index.html">Clapper</a></h3>
         <p>API Version: 0.0</p>
         
         <p>Library Version: 0.5.2</p>
@@ -80,21 +80,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a class="current" href="class.QueueSelection.html#description">QueueSelection</a>
+    <a class="current" href="class.Timeline.html#description">Timeline</a>
   </div>
 </div>
 
 
   
-<div class="section">
-  <h5>Constructors</h5>
-  <div class="links">
-  
-    <a class="ctor" href="ctor.QueueSelection.new.html">new</a>
-  
-  </div>
-</div>
-
 
 
   
@@ -105,9 +96,13 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Instance methods</h5>
   <div class="links">
   
-    <a class="method" href="method.QueueSelection.get_queue.html">get_queue</a>
+    <a class="method" href="method.Timeline.get_marker.html">get_marker</a>
   
-    <a class="method" href="method.QueueSelection.set_queue.html">set_queue</a>
+    <a class="method" href="method.Timeline.get_n_markers.html">get_n_markers</a>
+  
+    <a class="method" href="method.Timeline.insert_marker.html">insert_marker</a>
+  
+    <a class="method" href="method.Timeline.remove_marker.html">remove_marker</a>
   
   </div>
 </div>
@@ -119,7 +114,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property" href="property.QueueSelection.queue.html">queue</a>
+    <a class="property" href="property.Timeline.n-markers.html">n-markers</a>
   
   </div>
 </div>
@@ -127,17 +122,6 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
 
   
-<div class="section">
-  <h5>Signals</h5>
-  <div class="links">
-  
-    <a class="signal" href="signal.QueueSelection.item-query.html">item-query</a>
-  
-    <a class="signal" href="signal.QueueSelection.item-selected.html">item-selected</a>
-  
-  </div>
-</div>
-
 
 
   
@@ -158,7 +142,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Class</h3>
-    <h1 aria-label="Name"><a href="index.html">ClapperGtk</a><span class="sep" role="presentation"></span>QueueSelection</h1>
+    <h1 aria-label="Name"><a href="index.html">Clapper</a><span class="sep" role="presentation"></span>Timeline</h1>
   </header>
 
   <section>
@@ -172,17 +156,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           Description
           <a href="#description" class="anchor"></a>
           
-          <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-queue-selection.c#L20">[src]</a>
+          <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-timeline.c#L20">[src]</a>
           
         </h4>
 
-        <pre><code>final class ClapperGtk.QueueSelection : GObject.Object
-  implements Gio.ListModel, Gtk.SelectionModel {
+        <pre><code>final class Clapper.Timeline : Gst.Object
+  implements Gio.ListModel {
   /* No available fields */
 }</pre></code>
 
         <div class="docblock">
-          <p>A <code>GtkSelectionModel</code> that considers current item of <code>ClapperQueue</code> as selected&nbsp;one.</p>
+          <p>A media timeline filled with point&nbsp;markers.</p>
         </div>
 
         <div class="docblock">
@@ -201,67 +185,81 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Hierarchy
         <a href="#hierarchy" class="anchor"></a>
       </h4>
-      <div class="docblock" alt="Hierarchy for ClapperGtk.QueueSelection">
+      <div class="docblock" alt="Hierarchy for Clapper.Timeline">
         <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 7.1.0 (0)
+<!-- Generated by graphviz version 8.1.0 (20230707.0739)
  -->
 <!-- Title: hierarchy Pages: 1 -->
-<svg width="260pt" height="188pt"
- viewBox="0.00 0.00 260.00 188.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 184)">
+<svg width="129pt" height="332pt"
+ viewBox="0.00 0.00 129.00 332.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 328)">
 <title>hierarchy</title>
 <!-- this -->
 <g id="node1" class="node">
 <title>this</title>
-<g id="a_node1"><a xlink:title="ClapperGtkQueueSelection">
-<path fill="none" stroke="black" d="M184,-108C184,-108 42,-108 42,-108 36,-108 30,-102 30,-96 30,-96 30,-84 30,-84 30,-78 36,-72 42,-72 42,-72 184,-72 184,-72 190,-72 196,-78 196,-84 196,-84 196,-96 196,-96 196,-102 190,-108 184,-108"/>
-<text text-anchor="middle" x="113" y="-86.3" font-family="Times,serif" font-size="14.00">ClapperGtkQueueSelection</text>
+<g id="a_node1"><a xlink:title="ClapperTimeline">
+<path fill="none" stroke="black" d="M102.62,-108C102.62,-108 18.38,-108 18.38,-108 12.38,-108 6.38,-102 6.38,-96 6.38,-96 6.38,-84 6.38,-84 6.38,-78 12.38,-72 18.38,-72 18.38,-72 102.62,-72 102.62,-72 108.62,-72 114.62,-78 114.62,-84 114.62,-84 114.62,-96 114.62,-96 114.62,-102 108.62,-108 102.62,-108"/>
+<text text-anchor="middle" x="60.5" y="-84.95" font-family="Times,serif" font-size="14.00">ClapperTimeline</text>
 </a>
 </g>
 </g>
 <!-- implements_0 -->
-<g id="node3" class="node">
+<g id="node5" class="node">
 <title>implements_0</title>
-<g id="a_node3"><a xlink:title="Gio.ListModel">
-<polygon fill="none" stroke="black" points="92,-36 0,-36 0,0 92,0 92,-36"/>
-<text text-anchor="middle" x="46" y="-14.3" font-family="sans-serif" font-size="14.00">GListModel</text>
+<g id="a_node5"><a xlink:title="Gio.ListModel">
+<polygon fill="none" stroke="black" points="106,-36 15,-36 15,0 106,0 106,-36"/>
+<text text-anchor="middle" x="60.5" y="-14.45" font-family="sans-serif" font-size="14.00">GListModel</text>
 </a>
 </g>
 </g>
 <!-- this&#45;&#45;implements_0 -->
-<g id="edge2" class="edge">
+<g id="edge4" class="edge">
 <title>this&#45;&#45;implements_0</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M96.44,-71.7C86.05,-60.85 72.72,-46.92 62.37,-36.1"/>
-</g>
-<!-- implements_1 -->
-<g id="node4" class="node">
-<title>implements_1</title>
-<g id="a_node4"><a xlink:title="Gtk.SelectionModel">
-<polygon fill="none" stroke="black" points="252,-36 110,-36 110,0 252,0 252,-36"/>
-<text text-anchor="middle" x="181" y="-14.3" font-family="sans-serif" font-size="14.00">GtkSelectionModel</text>
-</a>
-</g>
-</g>
-<!-- this&#45;&#45;implements_1 -->
-<g id="edge3" class="edge">
-<title>this&#45;&#45;implements_1</title>
-<path fill="none" stroke="black" stroke-dasharray="1,5" d="M129.81,-71.7C140.35,-60.85 153.88,-46.92 164.38,-36.1"/>
+<path fill="none" stroke="black" stroke-dasharray="1,5" d="M60.5,-71.7C60.5,-60.85 60.5,-46.92 60.5,-36.1"/>
 </g>
 <!-- ancestor_0 -->
 <g id="node2" class="node">
 <title>ancestor_0</title>
-<g id="a_node2"><a xlink:title="GObject.Object">
-<path fill="none" stroke="black" d="M132,-180C132,-180 94,-180 94,-180 88,-180 82,-174 82,-168 82,-168 82,-156 82,-156 82,-150 88,-144 94,-144 94,-144 132,-144 132,-144 138,-144 144,-150 144,-156 144,-156 144,-168 144,-168 144,-174 138,-180 132,-180"/>
-<text text-anchor="middle" x="113" y="-158.3" font-family="Times,serif" font-size="14.00">GObject</text>
+<g id="a_node2"><a xlink:title="Gst.Object">
+<path fill="none" stroke="black" d="M83.88,-180C83.88,-180 37.12,-180 37.12,-180 31.12,-180 25.12,-174 25.12,-168 25.12,-168 25.12,-156 25.12,-156 25.12,-150 31.12,-144 37.12,-144 37.12,-144 83.88,-144 83.88,-144 89.88,-144 95.88,-150 95.88,-156 95.88,-156 95.88,-168 95.88,-168 95.88,-174 89.88,-180 83.88,-180"/>
+<text text-anchor="middle" x="60.5" y="-156.95" font-family="Times,serif" font-size="14.00">GstObject</text>
 </a>
 </g>
 </g>
 <!-- ancestor_0&#45;&#45;this -->
-<g id="edge1" class="edge">
+<g id="edge3" class="edge">
 <title>ancestor_0&#45;&#45;this</title>
-<path fill="none" stroke="black" d="M113,-143.7C113,-132.85 113,-118.92 113,-108.1"/>
+<path fill="none" stroke="black" d="M60.5,-143.7C60.5,-132.85 60.5,-118.92 60.5,-108.1"/>
+</g>
+<!-- ancestor_1 -->
+<g id="node3" class="node">
+<title>ancestor_1</title>
+<g id="a_node3"><a xlink:title="GObject.InitiallyUnowned">
+<path fill="none" stroke="black" d="M109,-252C109,-252 12,-252 12,-252 6,-252 0,-246 0,-240 0,-240 0,-228 0,-228 0,-222 6,-216 12,-216 12,-216 109,-216 109,-216 115,-216 121,-222 121,-228 121,-228 121,-240 121,-240 121,-246 115,-252 109,-252"/>
+<text text-anchor="middle" x="60.5" y="-228.95" font-family="Times,serif" font-size="14.00">GInitiallyUnowned</text>
+</a>
+</g>
+</g>
+<!-- ancestor_1&#45;&#45;ancestor_0 -->
+<g id="edge2" class="edge">
+<title>ancestor_1&#45;&#45;ancestor_0</title>
+<path fill="none" stroke="black" d="M60.5,-215.7C60.5,-204.85 60.5,-190.92 60.5,-180.1"/>
+</g>
+<!-- ancestor_2 -->
+<g id="node4" class="node">
+<title>ancestor_2</title>
+<g id="a_node4"><a xlink:title="GObject.Object">
+<path fill="none" stroke="black" d="M79.38,-324C79.38,-324 41.62,-324 41.62,-324 35.62,-324 29.62,-318 29.62,-312 29.62,-312 29.62,-300 29.62,-300 29.62,-294 35.62,-288 41.62,-288 41.62,-288 79.38,-288 79.38,-288 85.38,-288 91.38,-294 91.38,-300 91.38,-300 91.38,-312 91.38,-312 91.38,-318 85.38,-324 79.38,-324"/>
+<text text-anchor="middle" x="60.5" y="-300.95" font-family="Times,serif" font-size="14.00">GObject</text>
+</a>
+</g>
+</g>
+<!-- ancestor_2&#45;&#45;ancestor_1 -->
+<g id="edge1" class="edge">
+<title>ancestor_2&#45;&#45;ancestor_1</title>
+<path fill="none" stroke="black" d="M60.5,-287.7C60.5,-276.85 60.5,-262.92 60.5,-252.1"/>
 </g>
 </g>
 </svg>
@@ -279,6 +277,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
       <div class="docblock">
         <ul>
+        
+          
+          <li class="class"><a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a></li>
+          
+        
+          
+          <li class="class"><a class="external" href="javascript:void(0)" data-link="class.InitiallyUnowned.html" data-namespace="GObject">GInitiallyUnowned</a></li>
+          
         
           
           <li class="class"><a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="GObject">GObject</a></li>
@@ -305,36 +311,11 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           <li class="interface"><a class="external" href="javascript:void(0)" data-link="iface.ListModel.html" data-namespace="Gio">GListModel</a></li>
           
         
-          
-          <li class="interface"><a class="external" href="javascript:void(0)" data-link="iface.SelectionModel.html" data-namespace="Gtk">GtkSelectionModel</a></li>
-          
-        
         </ul>
       </div>
     </div>
     
 
-    
-    <div class="toggle-wrapper constructors">
-      <h4 id="constructors">
-        Constructors
-        <a href="#constructors" class="anchor"></a>
-      </h4>
-
-      <div class="docblock">
-      
-        <div class="">
-          <h6><a href="ctor.QueueSelection.new.html">clapper_gtk_queue_selection_new</a></h6>
-          <div class="docblock">
-            <p>Creates a new <code>ClapperGtkQueueSelection</code> instance.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-      </div>
-    </div>
     
 
     
@@ -349,9 +330,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       
         <div class="">
-          <h6><a href="method.QueueSelection.get_queue.html">clapper_gtk_queue_selection_get_queue</a></h6>
+          <h6><a href="method.Timeline.get_marker.html">clapper_timeline_get_marker</a></h6>
           <div class="docblock">
-            <p>Get <code>ClapperQueue</code> managed by this selection&nbsp;model.</p>
+            <p>Get the <code>ClapperMarker</code> at&nbsp;index.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -359,9 +340,29 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         </div>
       
         <div class="">
-          <h6><a href="method.QueueSelection.set_queue.html">clapper_gtk_queue_selection_set_queue</a></h6>
+          <h6><a href="method.Timeline.get_n_markers.html">clapper_timeline_get_n_markers</a></h6>
           <div class="docblock">
-            <p>Set <code>ClapperQueue</code> to be managed by this selection&nbsp;model.</p>
+            <p>Get the number of markers in <code>ClapperTimeline</code>.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Timeline.insert_marker.html">clapper_timeline_insert_marker</a></h6>
+          <div class="docblock">
+            <p>Insert the <code>ClapperMarker</code> into <code>timeline</code>.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Timeline.remove_marker.html">clapper_timeline_remove_marker</a></h6>
+          <div class="docblock">
+            <p>Removes <code>ClapperMarker</code> from the&nbsp;timeline.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -370,6 +371,20 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       
       </div>
 
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-methods"><h5 style="display:block;">Methods inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a> (25)</h5>
+          <div class="docblock">
+          
+            <div class="docblock">
+              <p>Please see&nbsp;<a class="external" href="javascript:void(0)" data-link="class.Object.html#methods" data-namespace="Gst">GstObject</a>&nbsp;for a full list of methods.</em></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+        
       
         
         <div class="toggle-wrapper default-hide ancestor-methods"><h5 style="display:block;">Methods inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="GObject">GObject</a> (43)</h5>
@@ -428,91 +443,6 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         </div>
         
       
-        
-        <div class="toggle-wrapper default-hide ancestor-methods"><h5 style="display:block;">Methods inherited from <a class="external" href="javascript:void(0)" data-link="iface.SelectionModel.html" data-namespace="Gtk">GtkSelectionModel</a> (11)</h5>
-          <div class="docblock">
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.get_selection.html">gtk_selection_model_get_selection</a></h6>
-            <div class="docblock">
-              <p>Gets the set containing all currently selected items in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.get_selection_in_range.html">gtk_selection_model_get_selection_in_range</a></h6>
-            <div class="docblock">
-              <p>Gets the set of selected items in a&nbsp;range.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.is_selected.html">gtk_selection_model_is_selected</a></h6>
-            <div class="docblock">
-              <p>Checks if the given item is&nbsp;selected.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.select_all.html">gtk_selection_model_select_all</a></h6>
-            <div class="docblock">
-              <p>Requests to select all items in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.select_item.html">gtk_selection_model_select_item</a></h6>
-            <div class="docblock">
-              <p>Requests to select an item in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.select_range.html">gtk_selection_model_select_range</a></h6>
-            <div class="docblock">
-              <p>Requests to select a range of items in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.selection_changed.html">gtk_selection_model_selection_changed</a></h6>
-            <div class="docblock">
-              <p>Helper function for implementations of <code>GtkSelectionModel</code>.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.set_selection.html">gtk_selection_model_set_selection</a></h6>
-            <div class="docblock">
-              <p>Make selection&nbsp;changes.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.unselect_all.html">gtk_selection_model_unselect_all</a></h6>
-            <div class="docblock">
-              <p>Requests to unselect all items in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.unselect_item.html">gtk_selection_model_unselect_item</a></h6>
-            <div class="docblock">
-              <p>Requests to unselect an item in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="method.SelectionModel.unselect_range.html">gtk_selection_model_unselect_range</a></h6>
-            <div class="docblock">
-              <p>Requests to unselect a range of items in the&nbsp;model.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          
-          </div>
-        </div>
-        
-      
     </div>
     
 
@@ -527,9 +457,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       
         <div class="">
-          <h6><a href="property.QueueSelection.queue.html">ClapperGtk.QueueSelection:queue</a></h6>
+          <h6><a href="property.Timeline.n-markers.html">Clapper.Timeline:n-markers</a></h6>
           <div class="docblock">
-            <p>The queue being&nbsp;managed.</p>
+            <p>Number of markers in the&nbsp;timeline.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -541,10 +471,36 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
       
         
-      
-
+        <div class="toggle-wrapper default-hide ancestor-properties"><h5 style="display:block;">Properties inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a> (2)</h5>
+          <div class="docblock">
+          <h6><a class="external" href="javascript:void(0)" data-namespace="Gst" data-link="property.Object.name.html">Gst.Object:name</a></h6>
+            <div class="docblock">
+              No description available.
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          <h6><a class="external" href="javascript:void(0)" data-namespace="Gst" data-link="property.Object.parent.html">Gst.Object:parent</a></h6>
+            <div class="docblock">
+              <p>The parent of the object. Please note, that when changing the &#8216;parent&#8217;
+property, we don&#8217;t emit <code>GObject::notify</code> and <code>GstObject::deep-notify</code>
+signals due to locking issues. In some cases one can use
+<code>GstBin::element-added</code> or <code>GstBin::element-removed</code> signals on the parent to
+achieve a similar&nbsp;effect.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          
+          </div>
+        </div>
+        
       
         
+      
+        
+      
+
       
         
       
@@ -560,34 +516,26 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       
-      <div class="docblock">
-      
-        <div class="">
-          <h6><a href="signal.QueueSelection.item-query.html">ClapperGtk.QueueSelection::item-query</a></h6>
-          <div class="docblock">
-            <p>Signals when the <code>GtkSelectionModel</code> is doing item&nbsp;query.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-        <div class="">
-          <h6><a href="signal.QueueSelection.item-selected.html">ClapperGtk.QueueSelection::item-selected</a></h6>
-          <div class="docblock">
-            <p>Signals when user selected item within the <code>GtkSelectionModel</code>.
-Note that this signal is emitted only when item gets selected from
-the <span class="caps">GTK</span> side. If item was changed internally by e.g. <code>ClapperQueue</code>
-progression, this signal will not be&nbsp;emitted.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-      </div>
-      
 
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-signals"><h5 style="display:block;">Signals inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="Gst">GstObject</a> (1)</h5>
+          <div class="docblock">
+          <h6><a class="external" href="javascript:void(0)" data-namespace="Gst" data-link="signal.Object.deep-notify.html">GstObject::deep-notify</a></h6>
+            <div class="docblock">
+              <p>The deep notify signal is used to be notified of property changes. It is
+typically attached to the toplevel bin to receive notifications from all
+the elements contained in that&nbsp;bin.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+          
+          </div>
+        </div>
+        
+      
+        
       
         
         <div class="toggle-wrapper default-hide ancestor-signals"><h5 style="display:block;">Signals inherited from <a class="external" href="javascript:void(0)" data-link="class.Object.html" data-namespace="GObject">GObject</a> (1)</h5>
@@ -624,21 +572,6 @@ items were added in their&nbsp;place.</p>
         </div>
         
       
-        
-        <div class="toggle-wrapper default-hide ancestor-signals"><h5 style="display:block;">Signals inherited from <a class="external" href="javascript:void(0)" data-link="iface.SelectionModel.html" data-namespace="Gtk">GtkSelectionModel</a> (1)</h5>
-          <div class="docblock">
-          <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="signal.SelectionModel.selection-changed.html">GtkSelectionModel::selection-changed</a></h6>
-            <div class="docblock">
-              <p>Emitted when the selection state of some of the items in <code>model</code> changes.</p>
-            </div>
-            <div class="docblock">
-              <p></p>
-            </div>
-          
-          </div>
-        </div>
-        
-      
 
     </div>
     
@@ -651,8 +584,8 @@ items were added in their&nbsp;place.</p>
       </h4>
 
       <div class="docblock">
-        <pre><code>struct ClapperGtkQueueSelectionClass {
-  GObjectClass parent_class;
+        <pre><code>struct ClapperTimelineClass {
+  GstObjectClass parent_class;
   
 }</code></pre>
       </div>
@@ -667,7 +600,7 @@ items were added in their&nbsp;place.</p>
 
         <dl class="members">
         
-          <dt><code>parent_class: GObjectClass</code></dt>
+          <dt><code>parent_class: GstObjectClass</code></dt>
           <dd>No description available.</dd>
         
         </dd>
@@ -701,8 +634,6 @@ items were added in their&nbsp;place.</p>
       <li class="toc-list-item"><a href="#implements"><span class="link-text">Implements</span></a></li>
       
       
-<li class="toc-list-item"><a href="#constructors"><span class="link-text">Constructors</span></a></li>
-
 
       
 
@@ -715,8 +646,6 @@ items were added in their&nbsp;place.</p>
 
 
       
-<li class="toc-list-item"><a href="#signals"><span class="link-text">Signals</span></a></li>
-
 
       
 

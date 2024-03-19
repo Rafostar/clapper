@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.QueueSelection::item-selected</title>
+  <title>ClapperGtk.TitleLabel.set_fallback_to_uri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="ClapperGtk.QueueSelection::item-selected"/>
-  <meta property="og:description" content="Reference for signal ClapperGtk.QueueSelection::item-selected"/>
-  <meta name="twitter:title" content="ClapperGtk.QueueSelection::item-selected"/>
-  <meta name="twitter:description" content="Reference for signal ClapperGtk.QueueSelection::item-selected"/>
+  <meta priority="og:title" content="ClapperGtk.TitleLabel.set_fallback_to_uri"/>
+  <meta priority="og:description" content="Reference for ClapperGtk.TitleLabel.set_fallback_to_uri"/>
+  <meta name="twitter:title" content="ClapperGtk.TitleLabel.set_fallback_to_uri"/>
+  <meta name="twitter:description" content="Reference for ClapperGtk.TitleLabel.set_fallback_to_uri"/>
 
 
   
@@ -80,16 +80,22 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.QueueSelection.html">QueueSelection</a>
+    <a href="class.TitleLabel.html">TitleLabel</a>
   </div>
 </div>
 <div class="section">
-  <h5>Signals</h5>
+  <h5>Methods</h5>
   <div class="links">
   
-    <a class="signal" href="signal.QueueSelection.item-query.html">item-query</a>
+    <a class="method" href="method.TitleLabel.get_current_title.html">get_current_title</a>
   
-    <a class="signal current" href="signal.QueueSelection.item-selected.html">item-selected</a>
+    <a class="method" href="method.TitleLabel.get_fallback_to_uri.html">get_fallback_to_uri</a>
+  
+    <a class="method" href="method.TitleLabel.get_media_item.html">get_media_item</a>
+  
+    <a class="method current" href="method.TitleLabel.set_fallback_to_uri.html">set_fallback_to_uri</a>
+  
+    <a class="method" href="method.TitleLabel.set_media_item.html">set_media_item</a>
   
   </div>
 </div>
@@ -104,26 +110,29 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Signal</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.QueueSelection.html">QueueSelection</a>::item-selected</h1>
+    <h3>Method</h3>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.TitleLabel.html">TitleLabel</a><span class="sep"></span>set_fallback_to_uri</h1>
   </header>
 
   <section>
     <div class="docblock">
       <p></p>
     </div>
+
     <div class="declaration toggle-wrapper">
-      <h4 id="declaration">
+      <h4 style="display:flex;" id="declaration">
         Declaration
-        <a href="#declaration" class="anchor"></a>
+        <a class="anchor" href="#declaration"></a>
+        
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-title-label.h#L46">[src]</a>
+        
       </h4>
 
-      <div class="docblock">
+      <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">item_selected</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperGtkQueueSelection</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span>
-<span class="w">  </span><span class="n">guint</span><span class="w"> </span><span class="n">index</span><span class="p">,</span>
-<span class="w">  </span><span class="n">gpointer</span><span class="w"> </span><span class="n">user_data</span>
+<span class="n">clapper_gtk_title_label_set_fallback_to_uri</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperGtkTitleLabel</span><span class="o">*</span><span class="w"> </span><span class="n">label</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gboolean</span><span class="w"> </span><span class="n">enabled</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -131,41 +140,36 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 id="description" style="display:flex;">
+      <h4 style="display:flex;" id="description">
         Description
-        <a href="#description" class="anchor"></a>
+        <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-queue-selection.c#L375">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-title-label.c#L259">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Signals when user selected item within the <code>GtkSelectionModel</code>.
-Note that this signal is emitted only when item gets selected from
-the <span class="caps">GTK</span> side. If item was changed internally by e.g. <code>ClapperQueue</code>
-progression, this signal will not be&nbsp;emitted.</p>
-<p>This signal is useful if you need to differentiate what caused item
-selection, otherwise use either <code>SelectionModel::selection-changed</code>
-signal or listen for changes of <code>ClapperQueue:current-item</code>.</p>
+        <p>Set whether a <a href="javascript:void(0)" data-namespace="Clapper" data-link="property.MediaItem.uri.html" class="external"><code>ClapperMediaItem:uri</code></a> property should
+be displayed as a label text when no other title could be&nbsp;determined.</p>
       </div>
 
       <div class="docblock">
-        <table>
-          <tr><td>Default handler: <p>The default handler is called after the handlers added via <code>g_signal_connect()</code>.</p></td></tr>
-          
-          <tr><td>Signal emission will restart instead of <a href="https://docs.gtk.org/gobject/flags.SignalFlags.html#no_recurse" class="external">recursing</a></td></tr>
-          
-          
-          
-          
-          <tr><td><a href="https://docs.gtk.org/gobject/flags.SignalFlags.html#no_hooks" class="external">Hooks</a> are disabled for this signal</td></tr>
-          
-          
-          
-          
-        </table>
+        
+        
+        
+        
+        
+        
       </div>
 
+      
+      <div class="docblock">
+        <table>
+        
+          <tr><td>Sets property</td><td><a href="property.TitleLabel.fallback-to-uri.html"><code>ClapperGtk.TitleLabel:fallback-to-uri</code></a></td></tr>
+        
+        </table>
+      </div>
       
     </div>
 
@@ -179,10 +183,10 @@ signal or listen for changes of <code>ClapperQueue:current-item</code>.</p>
       <div class="docblock">
         <dl class="arguments">
           
-          <dt class="arg-name"><code>index</code></dt>
+          <dt class="arg-name"><code>enabled</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>guint</code></p>
-            <p><p>An index of selected&nbsp;item.</p></p>
+            <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
+            <p><p>Whether&nbsp;enabled.</p></p>
             <table>
             
             

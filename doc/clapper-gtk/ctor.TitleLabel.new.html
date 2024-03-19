@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.QueueSelection.get_queue</title>
+  <title>ClapperGtk.TitleLabel.new</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="ClapperGtk.QueueSelection.get_queue"/>
-  <meta priority="og:description" content="Reference for ClapperGtk.QueueSelection.get_queue"/>
-  <meta name="twitter:title" content="ClapperGtk.QueueSelection.get_queue"/>
-  <meta name="twitter:description" content="Reference for ClapperGtk.QueueSelection.get_queue"/>
+  <meta property="og:title" content="ClapperGtk.TitleLabel.new"/>
+  <meta property="og:description" content="Reference for ClapperGtk.TitleLabel.new"/>
+  <meta name="twitter:title" content="ClapperGtk.TitleLabel.new"/>
+  <meta name="twitter:description" content="Reference for ClapperGtk.TitleLabel.new"/>
 
 
   
@@ -80,16 +80,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.QueueSelection.html">QueueSelection</a>
+    <a href="class.TitleLabel.html">TitleLabel</a>
   </div>
 </div>
 <div class="section">
-  <h5>Methods</h5>
+  <h5>Constructors</h5>
   <div class="links">
   
-    <a class="method current" href="method.QueueSelection.get_queue.html">get_queue</a>
-  
-    <a class="method" href="method.QueueSelection.set_queue.html">set_queue</a>
+    <a class="method current" href="ctor.TitleLabel.new.html">new</a>
   
   </div>
 </div>
@@ -104,28 +102,27 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Method</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.QueueSelection.html">QueueSelection</a><span class="sep"></span>get_queue</h1>
+    <h3>Constructor</h3>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.TitleLabel.html">TitleLabel</a><span class="sep"></span>new</h1>
   </header>
 
   <section>
     <div class="docblock">
       <p></p>
     </div>
-
     <div class="declaration toggle-wrapper">
-      <h4 style="display:flex;" id="declaration">
+      <h4 id="declaration" style="display:flex;">
         Declaration
-        <a class="anchor" href="#declaration"></a>
+        <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-queue-selection.h#L41">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-title-label.h#L38">[src]</a>
         
       </h4>
 
-      <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">ClapperQueue</span><span class="o">*</span>
-<span class="n">clapper_gtk_queue_selection_get_queue</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperGtkQueueSelection</span><span class="o">*</span><span class="w"> </span><span class="n">selection</span>
+      <div class="docblock">
+        <pre><code><div class="highlight"><pre><span></span><span class="n">GtkWidget</span><span class="o">*</span>
+<span class="n">clapper_gtk_title_label_new</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="kt">void</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -133,16 +130,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 style="display:flex;" id="description">
+      <h4 id="description" style="display:flex;">
         Description
-        <a class="anchor" href="#description"></a>
+        <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper-gtk/clapper-gtk-queue-selection.c#L269">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-title-label.c#L173">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get <code>ClapperQueue</code> managed by this selection&nbsp;model.</p>
+        <p>Creates a new <code>ClapperGtkTitleLabel</code> instance.</p>
       </div>
 
       <div class="docblock">
@@ -150,18 +147,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
         
         
-        
-        
       </div>
 
-      
-      <div class="docblock">
-        <table>
-        
-          <tr><td>Gets property</td><td><a href="property.QueueSelection.queue.html"><code>ClapperGtk.QueueSelection:queue</code></a></td></tr>
-        
-        </table>
-      </div>
       
     </div>
 
@@ -177,15 +164,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <div class="returns">
           <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="class.Queue.html" data-namespace="Clapper" class="external"><code>ClapperQueue</code></a></p>
-            <p><p><code>ClapperQueue</code> being&nbsp;managed.</p></p>
+            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="class.Widget.html" data-namespace="Gtk" class="external"><code>GtkWidget</code></a></p>
+            <p><p>A new title label <code>GtkWidget</code>.</p></p>
           </div>
           <div>
             <table>
             
             
             
-            <tr><td title="transfer: none">The data is owned by the instance.</td></tr>
+            <tr><td title="transfer: none">The data is owned by the called function.</td></tr>
             
             
             </table>
@@ -194,7 +181,6 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </div>
     </div>
     
-
   </section>
 </section>
 

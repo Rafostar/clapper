@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.MediaItem.get_video_streams</title>
+  <title>ClapperGtk.TitleLabel.get_current_title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -19,14 +19,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <meta property="og:image:width" content="256"/>
   <meta property="og:image:height" content="256"/>
   <meta property="og:image:secure_url" content="clapper-logo.svg"/>
-  <meta property="og:image:alt" content="Clapper-0.0"/>
+  <meta property="og:image:alt" content="ClapperGtk-0.0"/>
   
 
   
-  <meta priority="og:title" content="Clapper.MediaItem.get_video_streams"/>
-  <meta priority="og:description" content="Reference for Clapper.MediaItem.get_video_streams"/>
-  <meta name="twitter:title" content="Clapper.MediaItem.get_video_streams"/>
-  <meta name="twitter:description" content="Reference for Clapper.MediaItem.get_video_streams"/>
+  <meta priority="og:title" content="ClapperGtk.TitleLabel.get_current_title"/>
+  <meta priority="og:description" content="Reference for ClapperGtk.TitleLabel.get_current_title"/>
+  <meta name="twitter:title" content="ClapperGtk.TitleLabel.get_current_title"/>
+  <meta name="twitter:description" content="Reference for ClapperGtk.TitleLabel.get_current_title"/>
 
 
   
@@ -35,7 +35,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
   
   
-  <link rel="search" type="application/opensearchdescription+xml" title="Clapper" href="opensearch.xml">
+  <link rel="search" type="application/opensearchdescription+xml" title="ClapperGtk" href="opensearch.xml">
   
   
 
@@ -70,7 +70,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </div>
       
       <div class="section namespace">
-        <h3><a href="index.html">Clapper</a></h3>
+        <h3><a href="index.html">ClapperGtk</a></h3>
         <p>API Version: 0.0</p>
         
         <p>Library Version: 0.5.2</p>
@@ -80,28 +80,22 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.MediaItem.html">MediaItem</a>
+    <a href="class.TitleLabel.html">TitleLabel</a>
   </div>
 </div>
 <div class="section">
   <h5>Methods</h5>
   <div class="links">
   
-    <a class="method" href="method.MediaItem.get_audio_streams.html">get_audio_streams</a>
+    <a class="method current" href="method.TitleLabel.get_current_title.html">get_current_title</a>
   
-    <a class="method" href="method.MediaItem.get_container_format.html">get_container_format</a>
+    <a class="method" href="method.TitleLabel.get_fallback_to_uri.html">get_fallback_to_uri</a>
   
-    <a class="method" href="method.MediaItem.get_duration.html">get_duration</a>
+    <a class="method" href="method.TitleLabel.get_media_item.html">get_media_item</a>
   
-    <a class="method" href="method.MediaItem.get_id.html">get_id</a>
+    <a class="method" href="method.TitleLabel.set_fallback_to_uri.html">set_fallback_to_uri</a>
   
-    <a class="method" href="method.MediaItem.get_subtitle_streams.html">get_subtitle_streams</a>
-  
-    <a class="method" href="method.MediaItem.get_title.html">get_title</a>
-  
-    <a class="method" href="method.MediaItem.get_uri.html">get_uri</a>
-  
-    <a class="method current" href="method.MediaItem.get_video_streams.html">get_video_streams</a>
+    <a class="method" href="method.TitleLabel.set_media_item.html">set_media_item</a>
   
   </div>
 </div>
@@ -117,7 +111,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a><span class="sep"></span>get_video_streams</h1>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.TitleLabel.html">TitleLabel</a><span class="sep"></span>get_current_title</h1>
   </header>
 
   <section>
@@ -130,14 +124,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.h#L56">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-title-label.h#L44">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">ClapperStreamList</span><span class="o">*</span>
-<span class="n">clapper_media_item_get_video_streams</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span>
+<span class="n">clapper_gtk_title_label_get_current_title</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperGtkTitleLabel</span><span class="o">*</span><span class="w"> </span><span class="n">label</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -149,12 +143,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/lib/clapper/clapper-media-item.c#L595">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-title-label.c#L243">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get a list of video streams within media&nbsp;item.</p>
+        <p>Get currently displayed title by <code>label</code>.</p>
       </div>
 
       <div class="docblock">
@@ -170,7 +164,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Gets property</td><td><a href="property.MediaItem.video-streams.html"><code>Clapper.MediaItem:video-streams</code></a></td></tr>
+          <tr><td>Gets property</td><td><a href="property.TitleLabel.current-title.html"><code>ClapperGtk.TitleLabel:current-title</code></a></td></tr>
         
         </table>
       </div>
@@ -189,8 +183,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <div class="returns">
           <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="class.StreamList.html"><code>ClapperStreamList</code></a></p>
-            <p><p>A <code>ClapperStreamList</code> of video <code>ClapperStream</code>.</p></p>
+            <p><em>Type:</em>&nbsp;<code>const gchar*</code></p>
+            <p><p>Text of title&nbsp;label.</p></p>
           </div>
           <div>
             <table>
@@ -199,7 +193,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             <tr><td title="transfer: none">The data is owned by the instance.</td></tr>
             
-            
+            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
             </table>
           </div>
         </div>
