@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="ClapperAppMediaItemBox">
+        <property name="orientation">horizontal</property>
+        <property name="hexpand">true</property>
+        <property name="can-target">true</property>
+        <property name="spacing">6</property>
+        <binding name="media-item">
+          <lookup name="item">GtkListItem</lookup>
+        </binding>
+        <child>
+          <object class="GtkImage">
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="can-target">false</property>
+            <property name="icon-name">list-drag-handle-symbolic</property>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperGtkTitleLabel">
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="hexpand">true</property>
+            <property name="can-target">false</property>
+            <property name="fallback-to-uri">true</property>
+            <binding name="media-item">
+              <lookup name="item">GtkListItem</lookup>
+            </binding>
+            <style>
+              <class name="heading"/>
+            </style>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

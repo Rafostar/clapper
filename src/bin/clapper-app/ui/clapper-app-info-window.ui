@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="ClapperAppInfoWindow" parent="AdwWindow">
+    <property name="width-request">280</property>
+    <property name="height-request">280</property>
+    <property name="default-width">400</property>
+    <property name="default-height">640</property>
+    <property name="modal">true</property>
+    <property name="content">
+      <object class="AdwNavigationView">
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Info</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar"/>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="AdwClamp">
+                        <style>
+                          <class name="maincontent"/>
+                        </style>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">8</property>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Media</property>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Title</property>
+                                    <binding name="subtitle">
+                                      <lookup name="title" type="ClapperMediaItem">
+                                        <lookup name="current-item" type="ClapperQueue">
+                                          <lookup name="queue" type="ClapperPlayer">
+                                            <lookup name="player">ClapperAppInfoWindow</lookup>
+                                          </lookup>
+                                        </lookup>
+                                      </lookup>
+                                    </binding>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Container Format</property>
+                                    <binding name="subtitle">
+                                      <lookup name="container-format" type="ClapperMediaItem">
+                                        <lookup name="current-item" type="ClapperQueue">
+                                          <lookup name="queue" type="ClapperPlayer">
+                                            <lookup name="player">ClapperAppInfoWindow</lookup>
+                                          </lookup>
+                                        </lookup>
+                                      </lookup>
+                                    </binding>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Duration</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="media_duration_closure">
+                                        <lookup name="duration" type="ClapperMediaItem">
+                                          <lookup name="current-item" type="ClapperQueue">
+                                            <lookup name="queue" type="ClapperPlayer">
+                                              <lookup name="player">ClapperAppInfoWindow</lookup>
+                                            </lookup>
+                                          </lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Streams</property>
+                                <child>
+                                  <object class="AdwActionRow" id="video_action_row">
+                                    <property name="title" translatable="yes">Video</property>
+                                    <property name="activatable">true</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'video-streams-page'</property>
+                                    <binding name="sensitive">
+                                      <closure type="gboolean" function="has_streams_closure">
+                                        <lookup name="n-streams" type="ClapperStreamList">
+                                          <lookup name="video-streams" type="ClapperPlayer">
+                                            <lookup name="player">ClapperAppInfoWindow</lookup>
+                                          </lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon_name">go-next-symbolic</property>
+                                        <property name="visible" bind-source="video_action_row" bind-property="sensitive" bind-flags="sync-create"/>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow" id="audio_action_row">
+                                    <property name="title" translatable="yes">Audio</property>
+                                    <property name="activatable">true</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'audio-streams-page'</property>
+                                    <binding name="sensitive">
+                                      <closure type="gboolean" function="has_streams_closure">
+                                        <lookup name="n-streams" type="ClapperStreamList">
+                                          <lookup name="audio-streams" type="ClapperPlayer">
+                                            <lookup name="player">ClapperAppInfoWindow</lookup>
+                                          </lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon_name">go-next-symbolic</property>
+                                        <property name="visible" bind-source="audio_action_row" bind-property="sensitive" bind-flags="sync-create"/>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow" id="subtitles_action_row">
+                                    <property name="title" translatable="yes">Subtitles</property>
+                                    <property name="activatable">true</property>
+                                    <property name="action-name">navigation.push</property>
+                                    <property name="action-target">'subtitle-streams-page'</property>
+                                    <binding name="sensitive">
+                                      <closure type="gboolean" function="has_streams_closure">
+                                        <lookup name="n-streams" type="ClapperStreamList">
+                                          <lookup name="subtitle-streams" type="ClapperPlayer">
+                                            <lookup name="player">ClapperAppInfoWindow</lookup>
+                                          </lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                    <child>
+                                      <object class="GtkImage">
+                                        <property name="icon_name">go-next-symbolic</property>
+                                        <property name="visible" bind-source="subtitles_action_row" bind-property="sensitive" bind-flags="sync-create"/>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Video Playback</property>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Decoder</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="playback_decoder_closure">
+                                        <lookup name="current-video-decoder" type="ClapperPlayer">
+                                          <lookup name="player">ClapperAppInfoWindow</lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Filter</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="playback_element_name_closure">
+                                        <lookup name="video-filter" type="ClapperPlayer">
+                                          <lookup name="player">ClapperAppInfoWindow</lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Sink</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="playback_element_name_closure">
+                                        <lookup name="video-sink" type="ClapperPlayer">
+                                          <lookup name="player">ClapperAppInfoWindow</lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Audio Playback</property>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Decoder</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="playback_element_name_closure">
+                                        <lookup name="current-audio-decoder" type="ClapperPlayer">
+                                          <lookup name="player">ClapperAppInfoWindow</lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Filter</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="playback_element_name_closure">
+                                        <lookup name="audio-filter" type="ClapperPlayer">
+                                          <lookup name="player">ClapperAppInfoWindow</lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="ClapperAppPropertyRow">
+                                    <property name="title" translatable="yes">Sink</property>
+                                    <binding name="subtitle">
+                                      <closure type="gchararray" function="playback_element_name_closure">
+                                        <lookup name="audio-sink" type="ClapperPlayer">
+                                          <lookup name="player">ClapperAppInfoWindow</lookup>
+                                        </lookup>
+                                      </closure>
+                                    </binding>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Video Streams</property>
+            <property name="tag">video-streams-page</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar"/>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="AdwClamp">
+                        <style>
+                          <class name="subcontent"/>
+                        </style>
+                        <child>
+                          <object class="GtkListView" id="vstreams_list">
+                            <property name="orientation">vertical</property>
+                            <property name="css-name">streamlist</property>
+                            <property name="can-target">false</property>
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory">
+                                <property name="resource">/com/github/rafostar/Clapper/clapper-app/ui/clapper-app-video-stream-list-item.ui</property>
+                              </object>
+                            </property>
+                            <binding name="model">
+                              <closure type="GtkSelectionModel" function="create_no_selection_closure">
+                                <lookup name="video-streams" type="ClapperPlayer">
+                                  <lookup name="player">ClapperAppInfoWindow</lookup>
+                                </lookup>
+                              </closure>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Audio Streams</property>
+            <property name="tag">audio-streams-page</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar"/>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="AdwClamp">
+                        <style>
+                          <class name="subcontent"/>
+                        </style>
+                        <child>
+                          <object class="GtkListView" id="astreams_list">
+                            <property name="orientation">vertical</property>
+                            <property name="css-name">streamlist</property>
+                            <property name="can-target">false</property>
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory">
+                                <property name="resource">/com/github/rafostar/Clapper/clapper-app/ui/clapper-app-audio-stream-list-item.ui</property>
+                              </object>
+                            </property>
+                            <binding name="model">
+                              <closure type="GtkSelectionModel" function="create_no_selection_closure">
+                                <lookup name="audio-streams" type="ClapperPlayer">
+                                  <lookup name="player">ClapperAppInfoWindow</lookup>
+                                </lookup>
+                              </closure>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Subtitle Streams</property>
+            <property name="tag">subtitle-streams-page</property>
+            <property name="child">
+              <object class="AdwToolbarView">
+                <child type="top">
+                  <object class="AdwHeaderBar"/>
+                </child>
+                <property name="content">
+                  <object class="GtkScrolledWindow">
+                    <child>
+                      <object class="AdwClamp">
+                        <style>
+                          <class name="subcontent"/>
+                        </style>
+                        <child>
+                          <object class="GtkListView" id="sstreams_list">
+                            <property name="orientation">vertical</property>
+                            <property name="css-name">streamlist</property>
+                            <property name="can-target">false</property>
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory">
+                                <property name="resource">/com/github/rafostar/Clapper/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui</property>
+                              </object>
+                            </property>
+                            <binding name="model">
+                              <closure type="GtkSelectionModel" function="create_no_selection_closure">
+                                <lookup name="subtitle-streams" type="ClapperPlayer">
+                                  <lookup name="player">ClapperAppInfoWindow</lookup>
+                                </lookup>
+                              </closure>
+                            </binding>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </child>
+      </object>
+    </property>
+    <style>
+      <class name="info"/>
+    </style>
+  </template>
+</interface>
