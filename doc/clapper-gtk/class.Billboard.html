@@ -170,8 +170,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <div class="docblock">
           <p>A layer where various messages can be&nbsp;displayed.</p>
 <p><code>ClapperGtkBillboard</code> widget is meant to be overlaid on top of
-<a href="class.Video.html"><code>ClapperGtkVideo</code></a> as a normal (non-fading) overlay. It takes
-care of displaying and later fading individual messages on its&nbsp;own.</p>
+<a href="class.Video.html"><code>ClapperGtkVideo</code></a> as a normal (non-fading)&nbsp;overlay.</p>
+<p>It is used to display various messages/announcements and later
+takes care of fading them on its&nbsp;own.</p>
+<p>If automatic volume/speed change notifications when their values do
+change are desired, functions for announcing them can be run in callbacks
+to corresponding property notify signals on the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a>.</p>
         </div>
 
         <div class="docblock">
@@ -412,7 +416,8 @@ care of displaying and later fading individual messages on its&nbsp;own.</p>
         <div class="">
           <h6><a href="method.Billboard.announce_speed.html">clapper_gtk_billboard_announce_speed</a></h6>
           <div class="docblock">
-            No description available.
+            <p>Temporarily displays current speed value on the
+side of <code>billboard</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -422,7 +427,8 @@ care of displaying and later fading individual messages on its&nbsp;own.</p>
         <div class="">
           <h6><a href="method.Billboard.announce_volume.html">clapper_gtk_billboard_announce_volume</a></h6>
           <div class="docblock">
-            No description available.
+            <p>Temporarily displays current volume level on the
+side of <code>billboard</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -432,7 +438,7 @@ care of displaying and later fading individual messages on its&nbsp;own.</p>
         <div class="">
           <h6><a href="method.Billboard.pin_message.html">clapper_gtk_billboard_pin_message</a></h6>
           <div class="docblock">
-            No description available.
+            <p>Pins a permanent message on the <code>billboard</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -442,7 +448,7 @@ care of displaying and later fading individual messages on its&nbsp;own.</p>
         <div class="">
           <h6><a href="method.Billboard.post_message.html">clapper_gtk_billboard_post_message</a></h6>
           <div class="docblock">
-            No description available.
+            <p>Posts a temporary message on the <code>billboard</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -452,7 +458,7 @@ care of displaying and later fading individual messages on its&nbsp;own.</p>
         <div class="">
           <h6><a href="method.Billboard.unpin_pinned_message.html">clapper_gtk_billboard_unpin_pinned_message</a></h6>
           <div class="docblock">
-            No description available.
+            <p>Unpins previously pinned message on the <code>billboard</code>.</p>
           </div>
           <div class="docblock">
             <p></p>

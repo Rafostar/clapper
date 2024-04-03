@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ClapperGtk.SkipItemButton.skip_item</title>
+  <title>ClapperGtk.Video::seek-request</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="ClapperGtk.SkipItemButton.skip_item"/>
-  <meta property="og:description" content="Reference for ClapperGtk.SkipItemButton.skip_item"/>
-  <meta name="twitter:title" content="ClapperGtk.SkipItemButton.skip_item"/>
-  <meta name="twitter:description" content="Reference for ClapperGtk.SkipItemButton.skip_item"/>
+  <meta property="og:title" content="ClapperGtk.Video::seek-request"/>
+  <meta property="og:description" content="Reference for signal ClapperGtk.Video::seek-request"/>
+  <meta name="twitter:title" content="ClapperGtk.Video::seek-request"/>
+  <meta name="twitter:description" content="Reference for signal ClapperGtk.Video::seek-request"/>
 
 
   
@@ -80,16 +80,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.SkipItemButton.html">SkipItemButton</a>
+    <a href="class.Video.html">Video</a>
   </div>
 </div>
 <div class="section">
-  <h5>Virtual methods</h5>
+  <h5>Signals</h5>
   <div class="links">
   
-    <a class="method" href="vfunc.SkipItemButton.can_skip.html">can_skip</a>
+    <a class="signal current" href="signal.Video.seek-request.html">seek-request</a>
   
-    <a class="method current" href="vfunc.SkipItemButton.skip_item.html">skip_item</a>
+    <a class="signal" href="signal.Video.toggle-fullscreen.html">toggle-fullscreen</a>
   
   </div>
 </div>
@@ -104,29 +104,26 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Virtual Method</h3>
-    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.SkipItemButton.html">SkipItemButton</a><span class="sep"></span>skip_item</h1>
+    <h3>Signal</h3>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span><a href="class.Video.html">Video</a>::seek-request</h1>
   </header>
 
   <section>
     <div class="docblock">
       <p></p>
     </div>
-
     <div class="declaration toggle-wrapper">
       <h4 id="declaration">
         Declaration
         <a href="#declaration" class="anchor"></a>
-        
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-skip-item-button.h#L43">[src]</a>
-        
       </h4>
 
-      <div class="docblock c-decl">
+      <div class="docblock">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">skip_item</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperGtkSkipItemButton</span><span class="o">*</span><span class="w"> </span><span class="n">skip_button</span><span class="p">,</span>
-<span class="w">  </span><span class="n">ClapperQueue</span><span class="o">*</span><span class="w"> </span><span class="n">queue</span>
+<span class="n">seek_request</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperGtkVideo</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gboolean</span><span class="w"> </span><span class="n">forward</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gpointer</span><span class="w"> </span><span class="n">user_data</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -134,20 +131,36 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 id="description">
+      <h4 id="description" style="display:flex;">
         Description
         <a href="#description" class="anchor"></a>
+        
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-video.c#L1544">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        No description available.
+        <p>A helper signal for implementing common seeking by double tap
+on screen side for touchscreen&nbsp;devices.</p>
+<p>Note that <code>forward</code> already takes into account <span class="caps">RTL</span> direction,
+so implementation does not have to&nbsp;check.</p>
       </div>
 
       <div class="docblock">
-        
-        
-        
+        <table>
+          <tr><td>Default handler: <p>The default handler is called after the handlers added via <code>g_signal_connect()</code>.</p></td></tr>
+          
+          <tr><td>Signal emission will restart instead of <a href="https://docs.gtk.org/gobject/flags.SignalFlags.html#no_recurse" class="external">recursing</a></td></tr>
+          
+          
+          
+          
+          <tr><td><a href="https://docs.gtk.org/gobject/flags.SignalFlags.html#no_hooks" class="external">Hooks</a> are disabled for this signal</td></tr>
+          
+          
+          
+          
+        </table>
       </div>
 
       
@@ -163,10 +176,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <dl class="arguments">
           
-          <dt class="arg-name"><code>queue</code></dt>
+          <dt class="arg-name"><code>forward</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="class.Queue.html" data-namespace="Clapper" class="external"><code>ClapperQueue</code></a></p>
-            <p>No description available.</p>
+            <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
+            <p><p><code>TRUE</code> if seek should be forward, <code>FALSE</code> if&nbsp;backward.</p></p>
             <table>
             
             
@@ -175,7 +188,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             
             
-            <tr><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+            
             
             </table>
           </dd>

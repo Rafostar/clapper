@@ -155,6 +155,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Signals</h5>
   <div class="links">
   
+    <a class="signal" href="signal.Video.seek-request.html">seek-request</a>
+  
     <a class="signal" href="signal.Video.toggle-fullscreen.html">toggle-fullscreen</a>
   
   </div>
@@ -205,13 +207,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
         <div class="docblock">
           <p>A ready to be used <span class="caps">GTK</span> video widget implementing Clapper <span class="caps">API</span>.</p>
-<p><code>ClapperGtkVideo</code> is the main widget exposed by <code>ClapperGtk</code> <span class="caps">API</span>. All other widgets
-exposed by this library are meant to be overlaid on top of this&nbsp;widget.</p>
-<p>For example a button type of widget once placed anywhere on video (can also be
-nested within another widget like <a href="javascript:void(0)" data-namespace="Gtk" data-link="class.Box.html" class="external"><code>GtkBox</code></a>) automatically controls
-<code>ClapperGtkVideo</code> widget it was overlaid on top of. This allows freely creating custom
-playback control panels best suited for specific application. Additionally, pre-made
-widgets such as <a href="class.SimpleControls.html"><code>ClapperGtkSimpleControls</code></a> are also&nbsp;available.</p>
+<p><code>ClapperGtkVideo</code> is the main widget exposed by <code>ClapperGtk</code> <span class="caps">API</span>. It both displays
+videos played by <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> (exposed as its property) and manages
+revealing and fading of any additional widgets overlaid on top of&nbsp;it.</p>
+<p>Other widgets provided by <code>ClapperGtk</code> library, once placed anywhere on video
+(including nesting within another widget like <a href="javascript:void(0)" data-namespace="Gtk" data-link="class.Box.html" class="external"><code>GtkBox</code></a>) will automatically
+control <code>ClapperGtkVideo</code> they were overlaid on top of. This allows to freely create
+custom playback control panels best suited for specific application. Additionally,
+pre-made widgets such as <a href="class.SimpleControls.html"><code>ClapperGtkSimpleControls</code></a> are also&nbsp;available.</p>
 <h1 id="basic-usage">Basic usage<a class="md-anchor" href="#basic-usage" title="Permanent link"></a></h1>
 <p>A typical use case is to embed video widget as part of your app where video playback
 is needed. Get the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> belonging to the video widget and start adding
@@ -222,6 +225,27 @@ content when interacting with the video. To do this, simply add your widgets wit
 <a href="method.Video.add_fading_overlay.html"><code>clapper_gtk_video_add_fading_overlay()</code></a>. If you want to display some static content
 on top of video (or take care of visibility within overlaid widget itself) you can add
 it to the video as a normal overlay with <a href="method.Video.add_overlay.html"><code>clapper_gtk_video_add_overlay()</code></a>.</p>
+<h1 id="actions">Actions<a class="md-anchor" href="#actions" title="Permanent link"></a></h1>
+<p><code>ClapperGtkVideo</code> defines a set of built-in&nbsp;actions:</p>
+<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.toggle-play&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">toggle play/pause</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.play&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">start/resume playback</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.pause&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pause playback</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.stop&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stop playback</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.seek&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seek to position (variant &quot;d&quot;)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.seek-custom&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seek to position using seek method (variant &quot;(di)&quot;)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.toggle-mute&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">toggle mute state</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.set-mute&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set mute state (variant &quot;b&quot;)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.volume-up&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">increase volume by 2%</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.volume-down&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">decrease volume by 2%</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.set-volume&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set volume to specified value (variant &quot;d&quot;)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.speed-up&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">increase speed (from 0.05x - 2x range to nearest quarter)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.speed-down&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">decrease speed (from 0.05x - 2x range to nearest quarter)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.set-speed&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set speed to specified value (variant &quot;d&quot;)</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.previous-item&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select previous item in queue</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.next-item&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select next item in queue</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.select-item&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select item at specified index in queue (variant &quot;u&quot;)</span>
+</code></pre></div>
+
 <h1 id="clappergtkvideo-as-gtkbuildable">ClapperGtkVideo as GtkBuildable<a class="md-anchor" href="#clappergtkvideo-as-gtkbuildable" title="Permanent link"></a></h1>
 <p><code>ClapperGtkVideo</code> implementation of the <a href="javascript:void(0)" data-namespace="Gtk" data-link="iface.Buildable.html" class="external"><code>GtkBuildable</code></a> interface supports
 placing children as either normal overlay by specifying <code>overlay</code> or a fading
@@ -1106,6 +1130,17 @@ with Pango&nbsp;markup.</p>
       <div class="docblock">
       
         <div class="">
+          <h6><a href="signal.Video.seek-request.html">ClapperGtk.Video::seek-request</a></h6>
+          <div class="docblock">
+            <p>A helper signal for implementing common seeking by double tap
+on screen side for touchscreen&nbsp;devices.</p>
+          </div>
+          <div class="docblock">
+            <p></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="signal.Video.toggle-fullscreen.html">ClapperGtk.Video::toggle-fullscreen</a></h6>
           <div class="docblock">
             <p>A signal that user requested a change in fullscreen state of the&nbsp;video.</p>
@@ -1301,6 +1336,8 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
       
       
         <li class="toc-list-item"><a href="#basic-usage"><span class="link-text">Basic usage</span></a></li>
+      
+        <li class="toc-list-item"><a href="#actions"><span class="link-text">Actions</span></a></li>
       
         <li class="toc-list-item"><a href="#clappergtkvideo-as-gtkbuildable"><span class="link-text">ClapperGtkVideo as GtkBuildable</span></a></li>
       

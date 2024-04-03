@@ -159,7 +159,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
           <dt><a id="consecutive" href="#consecutive"><code>CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE</code></a></dt>
           <dd>
-            <div><p>Queue plays items one after another until the&nbsp;end.</p></div>
+            <div><p>Queue selects items one after another until the end.
+  When end of queue is reached, this mode will continue one another item is added to the queue,
+  playing it if player autoplay property is set, otherwise current player state is&nbsp;kept.</p></div>
             <ul>
               <li>Value: <code>1</code></li>
               <li>Nickname: <code>consecutive</code></li>
@@ -189,7 +191,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
           <dt><a id="shuffle" href="#shuffle"><code>CLAPPER_QUEUE_PROGRESSION_SHUFFLE</code></a></dt>
           <dd>
-            <div><p>Queue selects a random media item after current&nbsp;one.</p></div>
+            <div><p>Queue selects a random media item after current one.
+  Shuffle mode will avoid reselecting previously shuffled items as long as possible.
+  After it runs out of unused items, shuffling begins&nbsp;anew.</p></div>
             <ul>
               <li>Value: <code>4</code></li>
               <li>Nickname: <code>shuffle</code></li>
