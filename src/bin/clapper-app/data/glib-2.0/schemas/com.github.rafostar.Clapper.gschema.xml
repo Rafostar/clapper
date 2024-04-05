@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="com.github.rafostar.Clapper">
+  <schema id="com.github.rafostar.Clapper" path="/com/github/rafostar/Clapper/">
+    <!-- General -->
+    <key name="seek-method" type="i">
+      <default>1</default>
+      <summary>Method used for seeking</summary>
+    </key>
+    <key name="seek-unit" type="i">
+      <default>0</default>
+      <summary>Unit ID to use with seeking value</summary>
+    </key>
+    <key name="seek-value" type="i">
+      <default>10</default>
+      <summary>Time amount to seek with single press of arrow keys</summary>
+    </key>
+    <key name="server-enabled" type="b">
+      <default>false</default>
+      <summary>Enable Server feature for remote playback control</summary>
+    </key>
+    <!-- Playback -->
+    <key name="audio-offset" type="d">
+      <default>0</default>
+      <summary>Offset time for audio stream relative to video</summary>
+    </key>
+    <key name="subtitle-offset" type="d">
+      <default>0</default>
+      <summary>Offset time for subtitle stream relative to video</summary>
+    </key>
+    <key name="subtitle-font-desc" type="s">
+      <default>"Sans 12"</default>
+      <summary>Default subtitle stream font description</summary>
+    </key>
+    <!-- Tweaks -->
+    <key name="plugin-feature-ranks" type="s">
+      <default>''</default>
+      <summary>Overrides for GStreamer plugin ranking</summary>
+    </key>
+    <!-- Other -->
+    <key name="volume" type="d">
+      <default>1.0</default>
+      <summary>Stores last volume value to apply on startup</summary>
+    </key>
+    <key name="mute" type="b">
+      <default>false</default>
+      <summary>Stores last mute state to apply on startup</summary>
+    </key>
+    <key name="speed" type="d">
+      <default>1.0</default>
+      <summary>Stores last speed value to apply on startup</summary>
+    </key>
+    <key name="progression-mode" type="i">
+      <default>1</default>
+      <summary>Stores last queue progression mode used to apply on startup</summary>
+    </key>
+    <key name="subtitles-enabled" type="b">
+      <default>true</default>
+      <summary>Stores whether subtitles are enabled value to apply on startup</summary>
+    </key>
+    <key name="maximized" type="b">
+      <default>false</default>
+      <summary>Stores whether window was last time maximized to restore on startup</summary>
+    </key>
+    <key name="fullscreened" type="b">
+      <default>false</default>
+      <summary>Stores whether window was last time in fullscreen to restore on startup</summary>
+    </key>
+  </schema>
+</schemalist>

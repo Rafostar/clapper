@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkBillboard" parent="ClapperGtkContainer">
+    <property name="halign">fill</property>
+    <property name="valign">center</property>
+    <property name="height-target">422</property>
+    <property name="adaptive-height">420</property>
+    <property name="visible">false</property>
+    <signal name="adapt" handler="adapt_cb"/>
+    <child>
+      <object class="GtkCenterBox">
+        <property name="orientation">horizontal</property>
+        <property name="halign">fill</property>
+        <property name="valign">center</property>
+        <property name="hexpand">true</property>
+        <child type="start">
+          <object class="GtkRevealer" id="side_revealer">
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="transition-type">crossfade</property>
+            <property name="transition-duration">500</property>
+            <property name="visible">false</property>
+            <signal name="notify::child-revealed" handler="revealer_revealed_cb"/>
+            <child>
+              <object class="ClapperGtkLeadContainer">
+                <property name="blocked-actions">toggle-play</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="halign">start</property>
+                    <style>
+                      <class name="osd"/>
+                      <class name="sidebox"/>
+                    </style>
+                    <child>
+                      <object class="GtkRevealer" id="progress_revealer">
+                        <property name="halign">fill</property>
+                        <property name="valign">end</property>
+                        <property name="transition-type">slide-up</property>
+                        <property name="transition-duration">200</property>
+                        <property name="reveal-child">true</property>
+                        <child>
+                          <object class="GtkBox" id="progress_box">
+                            <property name="orientation">vertical</property>
+                            <property name="halign">center</property>
+                            <property name="valign">fill</property>
+                            <property name="spacing">4</property>
+                            <style>
+                              <class name="progressbox"/>
+                            </style>
+                            <child>
+                              <object class="GtkProgressBar" id="top_progress">
+                                <property name="orientation">vertical</property>
+                                <property name="halign">center</property>
+                                <property name="valign">fill</property>
+                                <property name="vexpand">true</property>
+                                <property name="inverted">true</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkProgressBar" id="bottom_progress">
+                                <property name="orientation">vertical</property>
+                                <property name="halign">center</property>
+                                <property name="valign">fill</property>
+                                <property name="vexpand">true</property>
+                                <property name="inverted">true</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkImage" id="progress_image">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkRevealer">
+                            <property name="halign">start</property>
+                            <property name="valign">fill</property>
+                            <property name="transition-type">slide-right</property>
+                            <property name="transition-duration" bind-source="progress_revealer" bind-property="transition-duration" bind-flags="sync-create"/>
+                            <property name="reveal-child" bind-source="progress_revealer" bind-property="reveal-child" bind-flags="invert-boolean">false</property>
+                            <child>
+                              <object class="GtkLabel" id="progress_label">
+                                <property name="valign">center</property>
+                                <property name="label">100%</property>
+                                <style>
+                                  <class name="numeric"/>
+                                  <class name="progresslabel"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="center">
+          <object class="GtkRevealer" id="message_revealer">
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="transition-type">crossfade</property>
+            <property name="transition-duration">500</property>
+            <signal name="notify::child-revealed" handler="revealer_revealed_cb"/>
+            <child>
+              <object class="ClapperGtkContainer">
+                <property name="width-target">280</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="spacing">8</property>
+                    <style>
+                      <class name="osd"/>
+                      <class name="rounded"/>
+                      <class name="messagebox"/>
+                    </style>
+                    <child>
+                      <object class="GtkImage" id="message_image">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="message_label">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="justify">center</property>
+                        <property name="wrap">true</property>
+                        <property name="wrap-mode">word-char</property>
+                        <property name="natural-wrap-mode">word</property>
+                        <style>
+                          <class name="heading"/>
+                          <class name="numeric"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

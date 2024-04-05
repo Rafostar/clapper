@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkTitleHeader" parent="ClapperGtkLeadContainer">
+    <property name="halign">center</property>
+    <property name="valign">start</property>
+    <property name="blocked-actions">toggle-play|seek-request</property>
+    <property name="width-target">640</property>
+    <style>
+      <class name="osd"/>
+      <class name="rounded"/>
+    </style>
+    <child>
+      <object class="ClapperGtkTitleLabel" id="label">
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <style>
+          <class name="heading"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

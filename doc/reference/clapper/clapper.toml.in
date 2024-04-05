@@ -1,0 +1,73 @@
+[library]
+version = "@CLAPPER_VERSION@"
+browse_url = "https://github.com/Rafostar/clapper/"
+repository_url = "https://github.com/Rafostar/clapper.git"
+website_url = "https://rafostar.github.io/clapper/"
+docs_url = "https://rafostar.github.io/clapper/doc/clapper/"
+authors = "Rafał Dzięgiel"
+logo_url = "clapper-logo.svg"
+license = "LGPL-2.1-or-later"
+description = "Clapper playback library"
+devhelp = true
+search_index = true
+
+dependencies = ["GLib-2.0", "GObject-2.0", "Gio-2.0", "Gst-1.0", "GstBase-1.0", "GstAudio-1.0", "GstTag-1.0", "GstPbutils-1.0"]
+
+  [dependencies."GLib-2.0"]
+  name = "GLib"
+  description = "A general-purpose, portable utility library"
+  docs_url = "https://docs.gtk.org/glib/"
+
+  [dependencies."GObject-2.0"]
+  name = "GObject"
+  description = "The base type system library"
+  docs_url = "https://docs.gtk.org/gobject/"
+
+  [dependencies."Gio-2.0"]
+  name = "Gio"
+  description = "GObject Interfaces and Objects, Networking, IPC, and I/O"
+  docs_url = "https://docs.gtk.org/gio/"
+
+  [dependencies."Gst-1.0"]
+  name = "Gst"
+  description = "GStreamer core library"
+  docs_url = "https://gstreamer.freedesktop.org/documentation/gstreamer/gi-index.html"
+
+  [dependencies."GstBase-1.0"]
+  name = "GstBase"
+  description = "GStreamer base and utility classes"
+  docs_url = "https://gstreamer.freedesktop.org/documentation/base/"
+
+  [dependencies."GstAudio-1.0"]
+  name = "GstAudio"
+  description = "GStreamer audio library"
+  docs_url = "https://gstreamer.freedesktop.org/documentation/audio/"
+
+  [dependencies."GstTag-1.0"]
+  name = "GstTag"
+  description = "GStreamer tag support library"
+  docs_url = "https://gstreamer.freedesktop.org/documentation/tag/"
+
+  [dependencies."GstPbutils-1.0"]
+  name = "GstPbutils"
+  description = "GStreamer base utils library"
+  docs_url = "https://gstreamer.freedesktop.org/documentation/pbutils/"
+
+related = []
+
+[theme]
+name = "basic"
+show_index_summary = true
+show_class_hierarchy = true
+
+[source-location]
+base_url = "https://github.com/Rafostar/clapper/tree/master/"
+
+[extra]
+# The same order will be used when generating the index
+content_files = [
+]
+content_images = [
+  "images/clapper-logo.svg",
+]
+urlmap_file = "urlmap.js"

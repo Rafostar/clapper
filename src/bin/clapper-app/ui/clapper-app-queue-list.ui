@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="ClapperAppQueueList" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkSeparator">
+        <property name="orientation">horizontal</property>
+        <style>
+          <class name="topseparator"/>
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkStack" id="stack">
+        <property name="transition-duration">200</property>
+        <property name="transition-type">crossfade</property>
+        <child>
+          <object class="GtkBox" id="stack_default_page">
+            <property name="orientation">horizontal</property>
+            <property name="hexpand">true</property>
+            <property name="spacing">6</property>
+            <style>
+              <class name="buttonsbox"/>
+            </style>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="halign">start</property>
+                <property name="valign">center</property>
+                <property name="hexpand">true</property>
+                <property name="spacing">6</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="halign">start</property>
+                    <property name="valign">center</property>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="action-name">app.add-files</property>
+                        <style>
+                          <class name="additemsbutton"/>
+                          <class name="circular"/>
+                        </style>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">2</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="icon-name">list-add-symbolic</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="label" translatable="yes">Add</property>
+                                <property name="use-underline">true</property>
+                                <property name="ellipsize">end</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuButton">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="menu-model">add_items_menu</property>
+                        <style>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkDropDown" id="progression_drop_down">
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="tooltip-text" translatable="yes">Queue progression</property>
+                <property name="show-arrow">false</property>
+                <property name="model">
+                  <object class="ClapperAppQueueProgressionModel"/>
+                </property>
+                <property name="factory">
+                  <object class="GtkBuilderListItemFactory">
+                    <property name="resource">/com/github/rafostar/Clapper/clapper-app/ui/clapper-app-queue-progression-item.ui</property>
+                  </object>
+                </property>
+                <style>
+                  <class name="progressiondropdown"/>
+                  <class name="circular"/>
+                </style>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="stack_trash_page">
+            <property name="orientation">horizontal</property>
+            <property name="hexpand">true</property>
+            <style>
+              <class name="removeitembox"/>
+            </style>
+            <child>
+              <object class="GtkImage">
+                <property name="hexpand">true</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="icon-name">user-trash-symbolic</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkDropTarget" id="trash_drop_target">
+                <property name="actions">move</property>
+                <signal name="drop" handler="trash_drop_cb"/>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="hscrollbar-policy">never</property>
+        <property name="vscrollbar-policy">automatic</property>
+        <property name="propagate-natural-height">true</property>
+        <property name="max-content-height">274</property>
+        <style>
+          <class name="queue"/>
+        </style>
+        <child>
+          <object class="GtkListView" id="list_view">
+            <property name="orientation">vertical</property>
+            <property name="enable-rubberband">false</property>
+            <property name="single-click-activate">false</property>
+            <property name="factory">
+              <object class="GtkBuilderListItemFactory">
+                <property name="resource">/com/github/rafostar/Clapper/clapper-app/ui/clapper-app-queue-list-item.ui</property>
+              </object>
+            </property>
+            <style>
+              <class name="osd"/>
+            </style>
+            <child>
+              <object class="GtkDragSource">
+                <property name="actions">move</property>
+                <signal name="prepare" handler="drag_item_prepare_cb"/>
+                <signal name="drag-begin" handler="drag_item_drag_begin_cb"/>
+                <signal name="drag-end" handler="drag_item_drag_end_cb"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkDropTarget" id="drop_target">
+                <property name="actions">move|copy</property>
+                <property name="preload">true</property>
+                <signal name="notify::value" handler="queue_drop_value_notify_cb"/>
+                <signal name="motion" handler="queue_drop_motion_cb"/>
+                <signal name="leave" handler="queue_drop_leave_cb"/>
+                <signal name="drop" handler="queue_drop_cb"/>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <menu id="add_items_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Add Files…</attribute>
+        <attribute name="action">app.add-files</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Add URI…</attribute>
+        <attribute name="action">app.add-uri</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

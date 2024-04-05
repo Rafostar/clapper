@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkSimpleControls" parent="ClapperGtkContainer">
+    <property name="halign">center</property>
+    <property name="valign">end</property>
+    <property name="adaptive-width">560</property>
+    <signal name="adapt" handler="initial_adapt_cb"/>
+    <child>
+      <object class="ClapperGtkContainer">
+        <property name="adaptive-width">400</property>
+        <signal name="adapt" handler="full_adapt_cb"/>
+        <child>
+          <object class="GtkCenterBox">
+            <property name="orientation">horizontal</property>
+            <property name="halign">center</property>
+            <property name="valign">end</property>
+            <style>
+              <class name="centerbox"/>
+            </style>
+            <child type="center">
+              <object class="ClapperGtkContainer">
+                <property name="width-target">944</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="halign">fill</property>
+                    <property name="valign">center</property>
+                    <child>
+                      <object class="GtkRevealer" id="fullscreen_top_revealer">
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <property name="transition-type">crossfade</property>
+                        <property name="transition-duration">200</property>
+                        <property name="reveal-child" bind-source="controls_slide_revealer" bind-property="child-revealed" bind-flags="invert-boolean">false</property>
+                        <property name="visible" bind-source="controls_slide_revealer" bind-property="reveal-child" bind-flags="invert-boolean">false</property>
+                        <child>
+                          <object class="ClapperGtkToggleFullscreenButton">
+                            <property name="halign">end</property>
+                            <property name="valign">center</property>
+                            <property name="visible" bind-source="ClapperGtkSimpleControls" bind-property="fullscreenable" bind-flags="sync-create"/>
+                            <style>
+                              <class name="osd"/>
+                              <class name="flat"/>
+                              <class name="circular"/>
+                              <class name="fullscreenbutton"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ClapperGtkLeadContainer">
+                        <property name="blocked-actions">toggle-play|seek-request</property>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">horizontal</property>
+                            <property name="halign">fill</property>
+                            <property name="valign">center</property>
+                            <style>
+                              <class name="osd"/>
+                              <class name="rounded"/>
+                              <class name="mainbox"/>
+                            </style>
+                            <child>
+                              <object class="ClapperGtkTogglePlayButton">
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <style>
+                                  <class name="flat"/>
+                                  <class name="circular"/>
+                                </style>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ClapperGtkSeekBar" id="seek_bar">
+                                <property name="halign">fill</property>
+                                <property name="valign">center</property>
+                                <property name="seek-method" bind-source="ClapperGtkSimpleControls" bind-property="seek-method" bind-flags="bidirectional"/>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="ClapperGtkExtraMenuButton" id="extra_menu_button">
+                                <property name="halign">center</property>
+                                <property name="valign">center</property>
+                                <style>
+                                  <class name="flat"/>
+                                  <class name="circular"/>
+                                </style>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkRevealer" id="controls_slide_revealer">
+                <property name="halign">end</property>
+                <property name="valign">end</property>
+                <property name="transition-type">slide-left</property>
+                <property name="transition-duration">400</property>
+                <property name="reveal-child" bind-source="fullscreen_top_revealer" bind-property="child-revealed" bind-flags="invert-boolean">true</property>
+                <property name="reveal-child" bind-source="fullscreen_bottom_revealer" bind-property="child-revealed" bind-flags="default"/>
+                <signal name="notify::child-revealed" handler="controls_revealed_cb"/>
+                <child>
+                  <object class="GtkRevealer" id="fullscreen_bottom_revealer">
+                    <property name="halign">center</property>
+                    <property name="valign">end</property>
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">200</property>
+                    <property name="reveal-child" bind-source="controls_slide_revealer" bind-property="child-revealed" bind-flags="default">true</property>
+                    <child>
+                      <object class="ClapperGtkToggleFullscreenButton">
+                        <property name="halign">center</property>
+                        <property name="valign">end</property>
+                        <property name="visible" bind-source="ClapperGtkSimpleControls" bind-property="fullscreenable" bind-flags="sync-create"/>
+                        <style>
+                          <class name="osd"/>
+                          <class name="flat"/>
+                          <class name="circular"/>
+                          <class name="fullscreenbutton"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

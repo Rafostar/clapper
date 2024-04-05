@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="GtkListItem">
+    <property name="activatable">false</property>
+    <property name="child">
+      <object class="AdwPreferencesGroup">
+        <binding name="title">
+          <closure type="gchararray" function="clapper_app_list_item_make_stream_group_title">
+            <lookup name="item">GtkListItem</lookup>
+          </closure>
+        </binding>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Title</property>
+            <binding name="subtitle">
+              <lookup name="title" type="ClapperStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Language</property>
+            <binding name="subtitle">
+              <lookup name="lang-name" type="ClapperSubtitleStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

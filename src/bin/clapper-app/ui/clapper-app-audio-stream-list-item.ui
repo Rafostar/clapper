@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="GtkListItem">
+    <property name="activatable">false</property>
+    <property name="child">
+      <object class="AdwPreferencesGroup">
+        <binding name="title">
+          <closure type="gchararray" function="clapper_app_list_item_make_stream_group_title">
+            <lookup name="item">GtkListItem</lookup>
+          </closure>
+        </binding>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Codec</property>
+            <binding name="subtitle">
+              <lookup name="codec" type="ClapperAudioStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Channels</property>
+            <binding name="subtitle">
+              <closure type="gchararray" function="clapper_app_list_item_convert_int">
+                <lookup name="channels" type="ClapperAudioStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Sample Format</property>
+            <binding name="subtitle">
+              <lookup name="sample-format" type="ClapperAudioStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Sample Rate</property>
+            <binding name="subtitle">
+              <closure type="gchararray" function="clapper_app_list_item_convert_int">
+                <lookup name="sample-rate" type="ClapperAudioStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Bitrate</property>
+            <binding name="subtitle">
+              <closure type="gchararray" function="clapper_app_list_item_make_bitrate">
+                <lookup name="bitrate" type="ClapperAudioStream">
+                  <lookup name="item">GtkListItem</lookup>
+                </lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="ClapperAppPropertyRow">
+            <property name="title" translatable="yes">Language</property>
+            <binding name="subtitle">
+              <lookup name="lang-name" type="ClapperAudioStream">
+                <lookup name="item">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

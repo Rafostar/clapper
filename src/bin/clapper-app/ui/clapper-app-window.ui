@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="ClapperAppWindow" parent="GtkApplicationWindow">
+    <property name="default-width">1024</property>
+    <property name="default-height">576</property>
+    <property name="child">
+      <object class="GtkStack">
+        <property name="transition-duration">300</property>
+        <property name="transition-type">crossfade</property>
+        <child>
+          <object class="ClapperGtkVideo" id="video">
+            <property name="focusable">true</property>
+            <property name="auto-inhibit">true</property>
+            <signal name="toggle-fullscreen" handler="video_toggle_fullscreen_cb"/>
+            <signal name="seek-request" handler="video_seek_request_cb"/>
+            <signal name="map" handler="video_map_cb"/>
+            <signal name="unmap" handler="video_unmap_cb"/>
+            <child type="overlay">
+              <object class="ClapperGtkBillboard" id="billboard"/>
+            </child>
+            <child type="fading-overlay">
+              <object class="ClapperGtkSimpleControls" id="simple_controls">
+                <property name="valign">end</property>
+              </object>
+            </child>
+            <child type="fading-overlay">
+              <object class="ClapperAppHeaderbar">
+                <property name="valign">start</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEventControllerScroll">
+                <property name="flags">both-axes</property>
+                <signal name="scroll-begin" handler="scroll_begin_cb"/>
+                <signal name="scroll" handler="scroll_cb"/>
+                <signal name="scroll-end" handler="scroll_end_cb"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEventControllerKey">
+                <property name="propagation-phase">capture</property>
+                <signal name="key-pressed" handler="key_pressed_cb"/>
+                <signal name="key-released" handler="key_released_cb"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkGestureClick">
+            <property name="button">3</property>
+            <signal name="pressed" handler="right_click_pressed_cb"/>
+            <signal name="released" handler="right_click_released_cb"/>
+          </object>
+        </child>
+        <child>
+          <object class="GtkGestureDrag">
+            <signal name="drag-begin" handler="drag_begin_cb"/>
+            <signal name="drag-update" handler="drag_update_cb"/>
+          </object>
+        </child>
+      </object>
+    </property>
+    <child>
+      <object class="GtkDropTarget" id="drop_target">
+        <property name="actions">copy</property>
+        <property name="preload">true</property>
+        <signal name="notify::value" handler="drop_value_notify_cb"/>
+        <signal name="drop" handler="drop_cb"/>
+      </object>
+    </child>
+    <style>
+      <class name="app"/>
+    </style>
+  </template>
+</interface>

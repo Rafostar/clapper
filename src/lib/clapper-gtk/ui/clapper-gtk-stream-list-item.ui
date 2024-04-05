@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="ClapperGtkStreamCheckButton">
+        <binding name="stream">
+          <lookup name="item">GtkListItem</lookup>
+        </binding>
+        <binding name="active">
+          <lookup name="selected">GtkListItem</lookup>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>

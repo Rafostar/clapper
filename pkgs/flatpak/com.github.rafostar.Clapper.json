@@ -1,9 +1,18 @@
 {
     "app-id": "com.github.rafostar.Clapper",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "43",
+    "runtime-version": "45",
     "sdk": "org.gnome.Sdk",
-    "command": "com.github.rafostar.Clapper",
+    "add-extensions": {
+        "org.freedesktop.Platform.ffmpeg-full": {
+            "version": "23.08",
+            "directory": "lib/ffmpeg",
+            "add-ld-path": ".",
+            "no-autodownload": false,
+            "autodelete": false
+        }
+    },
+    "command": "clapper",
     "separate-locales": false,
     "finish-args": [
         "--share=ipc",
@@ -18,24 +27,20 @@
         "--filesystem=xdg-run/gvfsd",
         "--own-name=org.mpris.MediaPlayer2.Clapper",
         "--talk-name=org.gtk.vfs.*",
-        "--talk-name=org.gnome.Shell",
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
-        "flathub/lib/libsass.json",
-        "flathub/lib/sassc.json",
-        "flathub/lib/liba52.json",
+        "testing/liba52.json",
         "flathub/lib/libmpeg2.json",
         "flathub/lib/libdv.json",
         "flathub/lib/libdvdcss.json",
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
-        "flathub/lib/ffmpeg.json",
         "flathub/lib/uchardet.json",
+        "testing/libmicrodns.json",
         "flathub/gstreamer-1.0/gstreamer.json",
-        "flathub/lib/libadwaita.json",
         "testing/gtuber.json",
         {
             "name": "clapper",
@@ -52,6 +57,7 @@
         }
     ],
     "cleanup-commands": [
+        "mkdir -p /app/lib/ffmpeg",
         "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
 }

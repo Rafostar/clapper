@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkVideo" parent="GtkWidget">
+    <child type="overlay">
+      <object class="ClapperGtkStatus" id="status">
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="visible">false</property>
+      </object>
+    </child>
+    <child type="overlay">
+      <object class="ClapperGtkBufferingAnimation" id="buffering_animation">
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="visible">false</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkGestureClick" id="touch_gesture">
+        <property name="propagation-phase">capture</property>
+        <property name="touch-only">true</property>
+        <signal name="pressed" handler="touch_pressed_cb"/>
+        <signal name="released" handler="touch_released_cb"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkGestureClick" id="click_gesture">
+        <property name="button">1</property>
+        <signal name="pressed" handler="left_click_pressed_cb"/>
+        <signal name="released" handler="left_click_released_cb"/>
+        <signal name="stopped" handler="left_click_stopped_cb"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkEventControllerMotion">
+        <signal name="enter" handler="motion_enter_cb"/>
+        <signal name="motion" handler="motion_cb"/>
+        <signal name="leave" handler="motion_leave_cb"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkDropControllerMotion">
+        <signal name="motion" handler="drop_motion_cb"/>
+        <signal name="leave" handler="drop_motion_leave_cb"/>
+      </object>
+    </child>
+  </template>
+</interface>

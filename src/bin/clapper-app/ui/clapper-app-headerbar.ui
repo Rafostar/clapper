@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="ClapperAppHeaderbar" parent="ClapperGtkContainer">
+    <property name="adaptive-width">560</property>
+    <signal name="adapt" handler="container_adapt_cb"/>
+    <child>
+      <object class="GtkCenterBox">
+        <property name="orientation">horizontal</property>
+        <property name="halign">fill</property>
+        <property name="valign">start</property>
+        <child type="center">
+          <object class="ClapperGtkLeadContainer">
+            <property name="blocked-actions">toggle-play|seek-request</property>
+            <property name="width-target">640</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="halign">fill</property>
+                <property name="valign">center</property>
+                <style>
+                  <class name="osd"/>
+                  <class name="rounded"/>
+                  <class name="mainbox"/>
+                </style>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <property name="halign">fill</property>
+                    <property name="valign">center</property>
+                    <property name="spacing">2</property>
+                    <style>
+                      <class name="rounded"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">view-list-symbolic</property>
+                        <signal name="clicked" handler="reveal_queue_button_clicked_cb"/>
+                        <style>
+                          <class name="flat"/>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="previous_item_revealer">
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="transition-type">slide-right</property>
+                        <property name="transition-duration">400</property>
+                        <property name="reveal-child">true</property>
+                        <child>
+                          <object class="ClapperGtkPreviousItemButton">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <style>
+                              <class name="flat"/>
+                              <class name="circular"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ClapperGtkTitleLabel">
+                        <property name="halign">fill</property>
+                        <property name="valign">fill</property>
+                        <property name="hexpand">true</property>
+                        <property name="fallback-to-uri">true</property>
+                        <style>
+                          <class name="heading"/>
+                          <class name="titlelabel"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRevealer" id="next_item_revealer">
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <property name="transition-type">slide-left</property>
+                        <property name="transition-duration">400</property>
+                        <property name="reveal-child">true</property>
+                        <child>
+                          <object class="ClapperGtkNextItemButton">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <style>
+                              <class name="flat"/>
+                              <class name="circular"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="icon-name">help-about-symbolic</property>
+                        <property name="action-name">app.info</property>
+                        <style>
+                          <class name="flat"/>
+                          <class name="circular"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkDropTarget" id="drop_target">
+                        <property name="actions">copy</property>
+                        <property name="preload">true</property>
+                        <signal name="notify::value" handler="drop_value_notify_cb"/>
+                        <signal name="drop" handler="drop_cb"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="queue_revealer">
+                    <property name="halign">fill</property>
+                    <property name="valign">start</property>
+                    <property name="transition-type">slide-down</property>
+                    <property name="transition-duration">800</property>
+                    <property name="reveal-child">false</property>
+                    <signal name="notify::reveal-child" handler="queue_reveal_cb"/>
+                    <child>
+                      <object class="ClapperAppQueueList"/>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkRevealer" id="win_buttons_revealer">
+            <property name="halign">end</property>
+            <property name="valign">start</property>
+            <property name="transition-type">slide-left</property>
+            <property name="transition-duration">500</property>
+            <property name="reveal-child">true</property>
+            <child>
+              <object class="ClapperAppWindowStateButtons">
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

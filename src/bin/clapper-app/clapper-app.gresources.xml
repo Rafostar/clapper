@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/rafostar/Clapper/clapper-app">
+    <file preprocess="xml-stripblanks">data/metainfo/com.github.rafostar.Clapper.metainfo.xml</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-initial-state.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-uri-dialog.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-headerbar.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-help-overlay.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-info-window.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-queue-list.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-queue-list-item.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-queue-progression-item.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-video-stream-list-item.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-audio-stream-list-item.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-subtitle-stream-list-item.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-preferences-window.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-window.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-window-state-buttons.ui</file>
+    <file compressed="true">css/styles.css</file>
+  </gresource>
+</gresources>

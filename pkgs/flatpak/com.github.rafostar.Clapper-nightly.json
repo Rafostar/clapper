@@ -31,7 +31,6 @@
         "--filesystem=xdg-run/gvfsd",
         "--own-name=org.mpris.MediaPlayer2.Clapper",
         "--talk-name=org.gtk.vfs.*",
-        "--talk-name=org.gnome.Shell",
         "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
     ],
     "build-options": {
@@ -40,7 +39,7 @@
     },
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
-        "flathub/lib/liba52.json",
+        "testing/liba52.json",
         "flathub/lib/libmpeg2.json",
         "flathub/lib/libdv.json",
         "flathub/lib/libdvdcss.json",

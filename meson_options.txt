@@ -1,19 +1,58 @@
-option('player',
-  type: 'boolean',
-  value: true,
-  description: 'Build Clapper player'
+# Build
+option('clapper',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper library'
 )
-option('lib',
-  type: 'boolean',
-  value: true,
-  description: 'Build GstClapper lib'
+option('clapper-gtk',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper GTK integration library'
+)
+option('clapper-app',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper application'
 )
 option('gst-plugin',
   type: 'feature',
   value: 'auto',
   description: 'Build GStreamer plugin (includes GTK video sink element)'
 )
+option('introspection',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build GObject Introspection data'
+)
+option('vapi',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Vala bindings'
+)
+option('doc',
+  type: 'boolean',
+  value: false,
+  description: 'Build documentation'
+)
 
+# Features
+option('discoverer',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper Discoverer feature'
+)
+option('mpris',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper MPRIS feature'
+)
+option('server',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper Server feature'
+)
+
+# GStreamer plugin options
 option('glimporter',
   type: 'feature',
   value: 'auto',
@@ -28,15 +67,4 @@ option('rawimporter',
   type: 'feature',
   value: 'auto',
   description: 'Build RAW system memory importer for clappersink'
-)
-
-option('devel-checks',
-  type: 'boolean',
-  value: false,
-  description: 'GStreamer GLib checks and asserts such as API guards (disable for stable releases)'
-)
-option('deprecated-glib-api',
-  type: 'boolean',
-  value: true,
-  description: 'Allow using of deprecated GLib API'
 )

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <menu id="extra-menu">
+    <section>
+      <item>
+        <attribute name="custom">top-box</attribute>
+      </item>
+      <submenu>
+        <attribute name="label" translatable="yes">Video</attribute>
+        <section>
+          <item>
+            <attribute name="custom">video-streams</attribute>
+          </item>
+        </section>
+      </submenu>
+      <submenu>
+        <attribute name="label" translatable="yes">Audio</attribute>
+        <section>
+          <item>
+            <attribute name="custom">audio-streams</attribute>
+          </item>
+        </section>
+      </submenu>
+      <submenu>
+        <attribute name="label" translatable="yes">Subtitles</attribute>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">Enabled</attribute>
+            <attribute name="action">clappergtk.subtitle-stream-enabled</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Open…</attribute>
+            <attribute name="action">clappergtk.open-subtitle-stream</attribute>
+            <attribute name="hidden-when">action-disabled</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="custom">subtitle-streams</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+  </menu>
+  <template class="ClapperGtkExtraMenuButton" parent="GtkWidget">
+    <child>
+      <object class="GtkMenuButton" id="menu_button">
+        <property name="direction">up</property>
+        <property name="icon-name">view-more-symbolic</property>
+        <property name="popover">
+          <object class="GtkPopoverMenu">
+            <property name="menu-model">extra-menu</property>
+            <signal name="map" handler="popover_map_cb"/>
+            <signal name="unmap" handler="popover_unmap_cb"/>
+            <signal name="notify::visible-submenu" handler="visible_submenu_changed_cb"/>
+            <child type="top-box">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="halign">center</property>
+                    <property name="spacing">4</property>
+                    <child>
+                      <object class="GtkBox" id="volume_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkButton" id="volume_button">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="icon-name">audio-volume-high-symbolic</property>
+                            <property name="action-name">video.toggle-mute</property>
+                            <property name="tooltip-text" translatable="yes">Mute</property>
+                            <style>
+                              <class name="circular"/>
+                              <class name="flat"/>
+                              <class name="spinsidebutton"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="volume_spin">
+                            <property name="halign">fill</property>
+                            <property name="valign">center</property>
+                            <property name="width-chars">5</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">0.0</property>
+                                <property name="upper">2.0</property>
+                                <property name="value">1.0</property>
+                                <property name="page-increment">0</property>
+                                <property name="step-increment">0.02</property>
+                              </object>
+                            </property>
+                            <signal name="input" handler="volume_spin_input_cb"/>
+                            <signal name="output" handler="volume_spin_output_cb"/>
+                            <signal name="value-changed" handler="volume_spin_changed_cb"/>
+                            <style>
+                              <class name="numeric"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="speed_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="halign">fill</property>
+                        <property name="valign">center</property>
+                        <child>
+                          <object class="GtkButton" id="speed_button">
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="icon-name">power-profile-balanced-symbolic</property>
+                            <property name="action-name">video.set-speed</property>
+                            <property name="action-target">1.0</property>
+                            <property name="tooltip-text" translatable="yes">Reset</property>
+                            <style>
+                              <class name="circular"/>
+                              <class name="flat"/>
+                              <class name="spinsidebutton"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="speed_spin">
+                            <property name="halign">fill</property>
+                            <property name="valign">center</property>
+                            <property name="width-chars">5</property>
+                            <property name="adjustment">
+                              <object class="GtkAdjustment">
+                                <property name="lower">0.05</property>
+                                <property name="upper">2.0</property>
+                                <property name="value">1.0</property>
+                                <property name="page-increment">0</property>
+                                <property name="step-increment">0.05</property>
+                              </object>
+                            </property>
+                            <signal name="input" handler="speed_spin_input_cb"/>
+                            <signal name="output" handler="speed_spin_output_cb"/>
+                            <signal name="value-changed" handler="speed_spin_changed_cb"/>
+                            <style>
+                              <class name="numeric"/>
+                            </style>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkSeparator" id="top_separator">
+                    <property name="orientation">horizontal</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="video-streams">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="orientation">horizontal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="video_sw">
+                    <property name="css-name">clapper-gtk-menu-scrolled-window</property>
+                    <property name="hscrollbar-policy">automatic</property>
+                    <property name="vscrollbar-policy">automatic</property>
+                    <property name="propagate-natural-width">false</property>
+                    <property name="propagate-natural-height">true</property>
+                    <property name="max-content-width">320</property>
+                    <property name="max-content-height">192</property>
+                    <child>
+                      <object class="GtkListView" id="video_list_view">
+                        <property name="orientation">vertical</property>
+                        <property name="enable-rubberband">false</property>
+                        <property name="single-click-activate">false</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="audio-streams">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkSeparator">
+                    <property name="orientation">horizontal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="audio_sw">
+                    <property name="css-name">clapper-gtk-menu-scrolled-window</property>
+                    <property name="hscrollbar-policy">automatic</property>
+                    <property name="vscrollbar-policy">automatic</property>
+                    <property name="propagate-natural-width">false</property>
+                    <property name="propagate-natural-height">true</property>
+                    <property name="max-content-width">320</property>
+                    <property name="max-content-height">192</property>
+                    <child>
+                      <object class="GtkListView" id="audio_list_view">
+                        <property name="orientation">vertical</property>
+                        <property name="enable-rubberband">false</property>
+                        <property name="single-click-activate">false</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="subtitle-streams">
+              <object class="GtkScrolledWindow" id="subtitle_sw">
+                <property name="css-name">clapper-gtk-menu-scrolled-window</property>
+                <property name="hscrollbar-policy">automatic</property>
+                <property name="vscrollbar-policy">automatic</property>
+                <property name="propagate-natural-width">false</property>
+                <property name="propagate-natural-height">true</property>
+                <property name="max-content-width">320</property>
+                <property name="max-content-height">192</property>
+                <child>
+                  <object class="GtkListView" id="subtitle_list_view">
+                    <property name="orientation">vertical</property>
+                    <property name="enable-rubberband">false</property>
+                    <property name="single-click-activate">false</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="resource">/com/github/rafostar/Clapper/clapper-gtk/ui/clapper-gtk-stream-list-item.ui</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

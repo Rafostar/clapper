@@ -1,0 +1,153 @@
+/* Adwaita OSD background color is unacceptable:
+ * https://gitlab.gnome.org/GNOME/libadwaita/-/issues/454 */
+clapper-gtk-video menubutton.osd,
+clapper-gtk-video button.osd,
+clapper-gtk-video box.osd,
+clapper-gtk-video clapper-gtk-title-header.osd,
+clapper-gtk-video .osd popover contents,
+clapper-gtk-video .osd popover arrow {
+  background-color: rgba(38,38,38,0.8);
+}
+clapper-gtk-video button.osd:hover,
+clapper-gtk-video button.osd:checked {
+  background-color: rgba(63,63,63,0.8);
+}
+clapper-gtk-video button.osd:active {
+  background-color: rgba(82,82,82,0.8);
+}
+clapper-gtk-video box.osd listview.osd {
+  background-color: transparent;
+}
+
+clapper-gtk-status box {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+clapper-gtk-status box image {
+  -gtk-icon-size: 128px;
+  -gtk-icon-filter: opacity(0.6);
+}
+clapper-gtk-status.adapted box image {
+  -gtk-icon-size: 96px;
+}
+
+clapper-gtk-billboard .sidebox {
+  padding: 12px;
+  border-radius: 9999px;
+}
+clapper-gtk-billboard .sidebox:dir(ltr) {
+  margin-left: 6px;
+}
+clapper-gtk-billboard .sidebox:dir(rtl) {
+  margin-right: 6px;
+}
+clapper-gtk-billboard .sidebox .progressbox {
+  margin-bottom: 6px;
+}
+clapper-gtk-billboard .sidebox .progressbox progressbar {
+  min-height: 90px;
+}
+clapper-gtk-billboard .sidebox .progressbox.overamp progress {
+  background: #c01c28;
+}
+clapper-gtk-billboard .sidebox .progresslabel:dir(ltr) {
+  margin-left: 6px;
+}
+clapper-gtk-billboard .sidebox .progresslabel:dir(rtl) {
+  margin-right: 6px;
+}
+clapper-gtk-billboard .messagebox {
+  margin: 6px;
+  padding: 12px;
+  min-width: 92px;
+}
+clapper-gtk-billboard .messagebox image {
+  -gtk-icon-size: 48px;
+}
+
+menubutton.circular,
+dropdown.circular button.toggle {
+  border-radius: 9999px;
+}
+.rounded {
+  border-radius: 19px;
+}
+
+clapper-gtk-title-header {
+  margin: 6px;
+  min-height: 38px;
+}
+clapper-gtk-title-header label {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+clapper-gtk-simple-controls .centerbox {
+  margin-bottom: 2px;
+}
+clapper-gtk-simple-controls .mainbox {
+  margin-left: 6px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+}
+clapper-gtk-simple-controls .mainbox button {
+  margin: 2px;
+}
+clapper-gtk-simple-controls .mainbox scale {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+clapper-gtk-simple-controls .mainbox popover button {
+  margin: 0px;
+}
+clapper-gtk-simple-controls .fullscreenbutton {
+  margin-bottom: 6px;
+}
+clapper-gtk-simple-controls .fullscreenbutton:dir(ltr) {
+  margin-right: 6px;
+}
+clapper-gtk-simple-controls .fullscreenbutton:dir(rtl) {
+  margin-left: 6px;
+}
+
+clapper-gtk-seek-bar scale trough highlight {
+  min-height: 6px;
+}
+clapper-gtk-seek-bar label {
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+clapper-gtk-extra-menu-button popover .spinsidebutton {
+  min-width: 28px;
+  min-height: 28px;
+}
+clapper-gtk-extra-menu-button popover .spinsidebutton:dir(ltr) {
+  margin-right: 2px;
+}
+clapper-gtk-extra-menu-button popover .spinsidebutton:dir(rtl) {
+  margin-left: 2px;
+}
+clapper-gtk-extra-menu-button popover spinbutton {
+  border-radius: 9999px;
+}
+clapper-gtk-extra-menu-button popover spinbutton button.up:dir(ltr) {
+  border-radius: 0px 9999px 9999px 0px;
+}
+clapper-gtk-extra-menu-button popover spinbutton button.up:dir(rtl) {
+  border-radius: 9999px 0px 0px 9999px;
+}
+clapper-gtk-extra-menu-button popover spinbutton button.up:dir(ltr) {
+  padding-right: 6px;
+}
+clapper-gtk-extra-menu-button popover spinbutton button.up:dir(rtl) {
+  padding-left: 6px;
+}
+clapper-gtk-menu-scrolled-window listview row {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+clapper-gtk-menu-scrolled-window listview row checkbutton label {
+  margin-left: 2px;
+  margin-right: 2px;
+}
