@@ -5,35 +5,35 @@
 [![Matrix](https://img.shields.io/matrix/clapper-player:matrix.org?label=matrix)](https://matrix.to/#/#clapper-player:matrix.org)
 [![Donate](https://img.shields.io/liberapay/receives/Clapper.svg?logo=liberapay)](https://liberapay.com/Clapper)
 
-A GNOME media player built using [GJS](https://gitlab.gnome.org/GNOME/gjs) with [GTK4](https://www.gtk.org) toolkit.
-The media player uses [GStreamer](https://gstreamer.freedesktop.org/) as a media backend and renders everything via [OpenGL](https://www.opengl.org).
+Clapper is a modern media player designed for simplicity and ease of use. Powered by [GStreamer](https://gstreamer.freedesktop.org/) and built for the GNOME
+desktop environment using [GTK4](https://www.gtk.org/) toolkit, it has a clean and stylish interface that lets you focus on enjoying your favorite videos.
+
+This application aim is to offer all the essentials features you'd expect from a video player in a simple form.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-windowed.png"><br>
-  <b>Windowed Mode</b>
+  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png">
 </p>
+
+Clapper uses a playback queue where you can add multiple media files. Think of it like a playlist that you can build.
+You can easily reorder items or remove them from the queue with a simple drag and drop operation.
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-fullscreen.png"><br>
-  <b>Fullscreen Mode</b>
+  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_04.png">
 </p>
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-floating.png"><br>
-  <b>Floating Mode</b>
-</p>
+### Components
+Clapper's codebase consists of 2 libraries using which main application is built:
+* [Clapper](https://rafostar.github.io/clapper/doc/clapper/) - a playback library
+* [ClapperGtk](https://rafostar.github.io/clapper/doc/clapper-gtk/) - a GTK integration library
 
-### Features:
-* [Hardware acceleration](https://github.com/Rafostar/clapper/wiki/Hardware-acceleration)
-* [Floating mode](https://github.com/Rafostar/clapper/wiki/Floating-mode)
-* [Adaptive UI](https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-mobile.png)
-* [Playlist from file](https://github.com/Rafostar/clapper/wiki/Playlists)
-* Chapters on progress bar
-* MPRIS support
+Both libraries support *GObject Introspection* bindings. A simple application example can be found [here](https://github.com/Rafostar/clapper-vala-test).
+
+Above libraries are licensed under `LGPL-2.1-or-later`. You are free to use them in your own projects as long as you comply with license terms.
+Please note that until version 1.0 they should be considered as an unstable API (some things may change without prior notice).
 
 ## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
-Additionally it also has a few patches, thus some functionalities work better (or are only available) in `Flatpak` version (until my changes are accepted upstream).
+Additionally it also has a few patches, thus some functionalities work better in `Flatpak` version (until my changes are accepted upstream).
 List of patches used in this version can be found [here](https://github.com/Rafostar/clapper/issues/35).
 
 <a href='https://flathub.org/apps/details/com.github.rafostar.Clapper'>
