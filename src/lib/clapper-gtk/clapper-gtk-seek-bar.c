@@ -57,6 +57,7 @@ struct _ClapperGtkSeekBar
 
   gboolean can_scrub;
   gboolean scrubbing;
+  gboolean was_playing;
 
   gboolean dragging;
   guint position_uint;
@@ -267,6 +268,14 @@ scale_css_classes_changed_cb (GtkWidget *widget,
 
   if ((self->dragging = dragging)) {
     GST_DEBUG_OBJECT (self, "Scale drag started");
+
+    if (G_LIKELY (self->player != NULL)) {
+      ClapperPlayerState state = clapper_player_get_state (self->player);
+
+      if ((self->was_playing = (state == CLAPPER_PLAYER_STATE_PLAYING)))
+        clapper_player_pause (self->player);
+    }
+
     return;
   }
 
@@ -289,6 +298,9 @@ scale_css_classes_changed_cb (GtkWidget *widget,
   } else {
     clapper_player_seek_custom (self->player, value, self->seek_method);
   }
+
+  if (self->was_playing)
+    clapper_player_play (self->player);
 }
 
 static void
