@@ -482,8 +482,8 @@ scroll_cb (GtkEventControllerScroll *scroll,
   switch (gdk_device_get_source (device)) {
     case GDK_SOURCE_TOUCHPAD:
     case GDK_SOURCE_TOUCHSCREEN:
-      dx *= -0.4;
-      dy *= -0.4;
+      dx *= 0.4;
+      dy *= 0.4;
       break;
     default:
       break;
