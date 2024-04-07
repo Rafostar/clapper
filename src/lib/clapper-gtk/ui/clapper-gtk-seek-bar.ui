@@ -29,6 +29,15 @@
         <property name="adjustment">position_adjustment</property>
         <signal name="value-changed" handler="scale_value_changed_cb"/>
         <signal name="notify::css-classes" handler="scale_css_classes_changed_cb"/>
+        <child>
+          <object class="GtkEventControllerScroll">
+            <property name="propagation-phase">capture</property>
+            <property name="flags">both-axes</property>
+            <signal name="scroll-begin" handler="scale_scroll_begin_cb"/>
+            <signal name="scroll" handler="scale_scroll_cb"/>
+            <signal name="scroll-end" handler="scale_scroll_end_cb"/>
+          </object>
+        </child>
       </object>
     </child>
     <child>

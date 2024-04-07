@@ -55,6 +55,9 @@ struct _ClapperGtkSeekBar
   gboolean has_hours;
   gboolean has_markers;
 
+  gboolean can_scrub;
+  gboolean scrubbing;
+
   gboolean dragging;
   guint position_uint;
 
@@ -286,6 +289,38 @@ scale_css_classes_changed_cb (GtkWidget *widget,
   } else {
     clapper_player_seek_custom (self->player, value, self->seek_method);
   }
+}
+
+static void
+scale_scroll_begin_cb (GtkEventControllerScroll *scroll, ClapperGtkSeekBar *self)
+{
+  self->can_scrub = TRUE;
+}
+
+static gboolean
+scale_scroll_cb (GtkEventControllerScroll *scroll,
+    gdouble dx, gdouble dy, ClapperGtkSeekBar *self)
+{
+  if (self->can_scrub && !self->scrubbing) {
+    GST_DEBUG_OBJECT (self, "Scrubbing start");
+    self->scrubbing = TRUE;
+    gtk_widget_add_css_class (self->scale, "dragging");
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
+static void
+scale_scroll_end_cb (GtkEventControllerScroll *scroll, ClapperGtkSeekBar *self)
+{
+  if (self->scrubbing) {
+    GST_DEBUG_OBJECT (self, "Scrubbing end");
+    gtk_widget_remove_css_class (self->scale, "dragging");
+    self->scrubbing = FALSE;
+  }
+  self->can_scrub = FALSE;
 }
 
 static void
@@ -773,6 +808,9 @@ clapper_gtk_seek_bar_class_init (ClapperGtkSeekBarClass *klass)
 
   gtk_widget_class_bind_template_callback (widget_class, scale_value_changed_cb);
   gtk_widget_class_bind_template_callback (widget_class, scale_css_classes_changed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, scale_scroll_begin_cb);
+  gtk_widget_class_bind_template_callback (widget_class, scale_scroll_cb);
+  gtk_widget_class_bind_template_callback (widget_class, scale_scroll_end_cb);
   gtk_widget_class_bind_template_callback (widget_class, motion_cb);
   gtk_widget_class_bind_template_callback (widget_class, motion_leave_cb);
   gtk_widget_class_bind_template_callback (widget_class, touch_released_cb);
