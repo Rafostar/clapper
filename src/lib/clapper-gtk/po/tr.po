@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-08 19:04\n"
+"PO-Revision-Date: 2024-04-08 20:07\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -30,7 +30,7 @@ msgstr "Ses"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Subtitles"
-msgstr "Altyazılar"
+msgstr "Alt Yazılar"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
 msgid "Enabled"
