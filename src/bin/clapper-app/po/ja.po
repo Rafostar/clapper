@@ -1,21 +1,21 @@
-# Japanese translations for clapper-app package.
-# Copyright (C) 2024 THE clapper-app'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the clapper-app package.
-# Automatically generated, 2024.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: clapper-app\n"
+"Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-03-07 21:34+0100\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: ja\n"
+"PO-Revision-Date: 2024-04-08 15:36\n"
+"Last-Translator: \n"
+"Language-Team: Japanese\n"
+"Language: ja_JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Crowdin-Project: clapper\n"
+"X-Crowdin-Project-ID: 473374\n"
+"X-Crowdin-Language: ja\n"
+"X-Crowdin-File: /master/src/bin/clapper-app/po/clapper-app.pot\n"
+"X-Crowdin-File-ID: 48\n"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -24,7 +24,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
-msgstr ""
+msgstr "チャンネル"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:36
 msgid "Sample Format"
@@ -47,11 +47,11 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "一般"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "ショートカットを表示する"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -59,20 +59,20 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "フルスクリーン切り替え"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:26
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "ダブルタップ | ダブルクリック"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Quit"
-msgstr ""
+msgstr "終了"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
-msgstr ""
+msgstr "メディア"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:30
@@ -93,12 +93,12 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:61
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 msgid "Next item"
-msgstr ""
+msgstr "次の項目"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:75
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
 msgid "Previous item"
-msgstr ""
+msgstr "前の項目"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:88
 msgid "Change progression mode"
@@ -107,11 +107,11 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:96
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
-msgstr ""
+msgstr "プレイバック"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:99
 msgid "Toggle play"
-msgstr ""
+msgstr "一時停止・再生"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
 msgid "Tap | Left click"
@@ -120,7 +120,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 msgid "Seek forward"
-msgstr ""
+msgstr "早送り"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
@@ -135,11 +135,11 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
 msgid "Seek backward"
-msgstr ""
+msgstr "巻き戻し"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:138
 msgid "Volume up"
-msgstr ""
+msgstr "音量を上げる"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
 msgid "Scroll up"
@@ -147,7 +147,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
 msgid "Volume down"
-msgstr ""
+msgstr "音量を下げる"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:146
 msgid "Scroll down"
@@ -155,7 +155,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:152
 msgid "Toggle mute"
-msgstr ""
+msgstr "ミュート切り替え"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Speed up"
@@ -168,12 +168,12 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:178
 msgid "Next chapter"
-msgstr ""
+msgstr "次のチャプターへ"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:185
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:192
 msgid "Previous chapter"
-msgstr ""
+msgstr "前のチャプターへ\""
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
@@ -182,7 +182,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
 msgid "Title"
-msgstr ""
+msgstr "タイトル"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
 msgid "Container Format"
@@ -205,13 +205,13 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:80
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:39
 msgid "Audio"
-msgstr ""
+msgstr "オ−ディオ"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:130
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:100
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:42
 msgid "Subtitles"
-msgstr ""
+msgstr "字幕"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
@@ -254,7 +254,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr ""
+msgstr "シーキング"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
@@ -266,7 +266,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
-msgstr ""
+msgstr "値"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
@@ -274,7 +274,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
-msgstr ""
+msgstr "ユニット"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
@@ -282,15 +282,15 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
-msgstr ""
+msgstr "秒"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:52
 msgid "Minute"
-msgstr ""
+msgstr "分"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:53
 msgid "Percentage"
-msgstr ""
+msgstr "パーセント"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
 msgid "Features"
@@ -298,11 +298,11 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:66
 msgid "Server"
-msgstr ""
+msgstr "サーバー"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Control player remotely"
-msgstr ""
+msgstr "プレーヤーをリモートでコントロールする"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:83
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:103
@@ -314,13 +314,12 @@ msgid "Synchronisation offset in seconds between the audio and video streams"
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
-msgid ""
-"Synchronisation offset in seconds between the subtitle and video streams"
+msgid "Synchronisation offset in seconds between the subtitle and video streams"
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
-msgstr ""
+msgstr "既定のフォント"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
@@ -328,15 +327,15 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:137
 msgid "Tweaks"
-msgstr ""
+msgstr "詳細設定"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:144
 msgid "Plugin ranking"
-msgstr ""
+msgstr "プライグインの優先順位"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "GStreamerプラグインの優先順位を変更します"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
 msgid "Plugin Ranking"
@@ -347,9 +346,7 @@ msgid "Available plugins"
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
-msgid ""
-"Select a plugin and its feature to override rank for. When multiple elements "
-"have similiar capabilities, the one with highest value is preferred."
+msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
@@ -387,11 +384,11 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "ここにURIを入力またはドロップ"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:22
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
@@ -407,7 +404,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
 msgid "Preferences"
-msgstr ""
+msgstr "設定"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
 msgid "Keyboard Shortcuts"
@@ -416,12 +413,12 @@ msgstr ""
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
 msgid "About Clapper"
-msgstr ""
+msgstr "Clapperについて"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
 msgid "translator-credits"
-msgstr ""
+msgstr "翻訳者"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
@@ -433,15 +430,15 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
-msgstr ""
+msgstr "精密"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
-msgstr ""
+msgstr "標準"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:445
 msgid "Fast"
-msgstr ""
+msgstr "高速"
 
 #: src/bin/clapper-app/clapper-app-utils.c:66
 msgid "No progression"
@@ -466,3 +463,4 @@ msgstr ""
 #: src/bin/clapper-app/clapper-app-window.c:824
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr ""
+
