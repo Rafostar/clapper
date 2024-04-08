@@ -1,3 +1,7 @@
 files:
   - source: /po/com.github.rafostar.Clapper.pot
     translation: /po/%osx_locale%.po
+  - source: /src/lib/clapper-gtk/po/clapper-gtk.pot
+    translation: /src/lib/clapper-gtk/po/%osx_locale%.po
+  - source: /src/bin/clapper-app/po/clapper-app.pot
+    translation: /src/bin/clapper-app/po/%osx_locale%.po
