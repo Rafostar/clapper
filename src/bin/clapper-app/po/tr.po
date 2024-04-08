@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-08 19:04\n"
+"PO-Revision-Date: 2024-04-08 20:07\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -32,12 +32,12 @@ msgstr "Örnek Biçimi"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:46
 msgid "Sample Rate"
-msgstr "Örnek Oranı"
+msgstr "Örnek Hızı"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:58
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:51
 msgid "Bitrate"
-msgstr "Bit hızı"
+msgstr "Bit Hızı"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
@@ -115,7 +115,7 @@ msgstr "Oynatmayı başlat/durdur"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
 msgid "Tap | Left click"
-msgstr ""
+msgstr "Dokunma | Sol tık"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
@@ -125,12 +125,12 @@ msgstr "İleri sar"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 msgid "Double tap (right side) | Scroll right"
-msgstr ""
+msgstr "İki kez dokunma (sağ taraf) | Sağa kaydır"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Double tap (left side) | Scroll left"
-msgstr ""
+msgstr "İki kez dokunma (sol taraf) | Sola kaydır"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
@@ -211,7 +211,7 @@ msgstr "Ses"
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:100
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:42
 msgid "Subtitles"
-msgstr "Altyazılar"
+msgstr "Alt Yazılar"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
@@ -230,7 +230,7 @@ msgstr "Süz"
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr ""
+msgstr "Havuz"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
@@ -250,7 +250,7 @@ msgstr "Alt Yazı Akışları"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:21
 msgid "Start by adding media to playback queue"
-msgstr ""
+msgstr "Oynatma sırasına ortam ekleyerek başlayın"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
@@ -262,7 +262,7 @@ msgstr "Yöntem"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr ""
+msgstr "Aramak için kullanılacak yöntem"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
@@ -270,7 +270,7 @@ msgstr "Değer"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
-msgstr ""
+msgstr "İleri/geri arama için kullanılan değer"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
@@ -278,7 +278,7 @@ msgstr "Birim"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
-msgstr ""
+msgstr "İleri/geri arama değerinin birimi"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
@@ -307,15 +307,15 @@ msgstr "Oynatıcıyı uzaktan denetle"
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:83
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:103
 msgid "Offset"
-msgstr ""
+msgstr "Denge"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 msgid "Synchronisation offset in seconds between the audio and video streams"
-msgstr ""
+msgstr "Ses ve video akışları arasındaki eşzamanlama dengesi (saniye olarak)"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
-msgstr ""
+msgstr "Alt yazı ve video akışları arasındaki eşzamanlama dengesi (saniye olarak)"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
@@ -323,7 +323,7 @@ msgstr "Öntanımlı yazı tipi"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
-msgstr ""
+msgstr "Ortam açıkça alt yazı belirtmediğinde alt yazılar için kullanılacak metin yazı tipi"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:137
 msgid "Tweaks"
@@ -343,11 +343,11 @@ msgstr "Eklenti Puanı"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:182
 msgid "Available plugins"
-msgstr ""
+msgstr "Kullanılabilir eklentiler"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
+msgstr "Puanlamayı geçersiz kılmak için bir eklenti ve onun özelliğini seçin. Birden çok ögenin benzer yeteneklere sahip olması durumunda değeri en yüksek olan tercih edilir."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
@@ -359,11 +359,11 @@ msgstr "Eklenti özellikleri"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:213
 msgid "Add override"
-msgstr ""
+msgstr "Üzerine yazma ekle"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:229
 msgid "Rank overrides"
-msgstr ""
+msgstr "Puan üzerine yazmalar"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
@@ -372,7 +372,7 @@ msgstr "Ekle"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr ""
+msgstr "Kuyruk ilerlemesi"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
@@ -380,7 +380,7 @@ msgstr "URI Ekle"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
+msgstr "Oynatma kuyruğuna eklemek için URI ekleyin"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
@@ -392,15 +392,15 @@ msgstr "İptal Et"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr ""
+msgstr "Çözünürlük"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr ""
+msgstr "Kare Kızı"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr ""
+msgstr "Piksel Biçimi"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
 msgid "Preferences"
@@ -408,7 +408,7 @@ msgstr "Tercihler"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Klavye Kısayolları"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
@@ -426,7 +426,7 @@ msgstr "Donanım"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Software"
-msgstr ""
+msgstr "Yazılım"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
@@ -442,25 +442,25 @@ msgstr "Hızlı"
 
 #: src/bin/clapper-app/clapper-app-utils.c:66
 msgid "No progression"
-msgstr ""
+msgstr "İlerleme yok"
 
 #: src/bin/clapper-app/clapper-app-utils.c:67
 msgid "Consecutive"
-msgstr ""
+msgstr "Ardaşık"
 
 #: src/bin/clapper-app/clapper-app-utils.c:68
 msgid "Repeat item"
-msgstr ""
+msgstr "Ögeyi Yinele"
 
 #: src/bin/clapper-app/clapper-app-utils.c:69
 msgid "Carousel"
-msgstr ""
+msgstr "Karosel"
 
 #: src/bin/clapper-app/clapper-app-utils.c:70
 msgid "Shuffle"
-msgstr ""
+msgstr "Karıştır"
 
 #: src/bin/clapper-app/clapper-app-window.c:824
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
+msgstr "Şimdi oynatmak için başlık çubuğuna ya da sıraya eklemek için başka bir yere bırakın."
 
