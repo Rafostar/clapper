@@ -1,20 +1,21 @@
-# Asturian translations for clapper-app package.
-# Copyright (C) 2024 THE clapper-app'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the clapper-app package.
-# Automatically generated, 2024.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: clapper-app\n"
+"Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-03-07 21:34+0100\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: ast\n"
+"PO-Revision-Date: 2024-04-08 15:36\n"
+"Last-Translator: \n"
+"Language-Team: Asturian\n"
+"Language: ast_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: clapper\n"
+"X-Crowdin-Project-ID: 473374\n"
+"X-Crowdin-Language: ast\n"
+"X-Crowdin-File: /master/src/bin/clapper-app/po/clapper-app.pot\n"
+"X-Crowdin-File-ID: 48\n"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -46,11 +47,11 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "Xenerales"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Amosar los atayos"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -66,7 +67,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Quit"
-msgstr ""
+msgstr "Colar"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
@@ -181,7 +182,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
 msgid "Title"
-msgstr ""
+msgstr "Títulu"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
 msgid "Container Format"
@@ -204,13 +205,13 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:80
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:39
 msgid "Audio"
-msgstr ""
+msgstr "Audio"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:130
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:100
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:42
 msgid "Subtitles"
-msgstr ""
+msgstr "Sotítulos"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
@@ -281,15 +282,15 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
-msgstr ""
+msgstr "Segundu"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:52
 msgid "Minute"
-msgstr ""
+msgstr "Minutu"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:53
 msgid "Percentage"
-msgstr ""
+msgstr "Porcentaxe"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
 msgid "Features"
@@ -297,7 +298,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:66
 msgid "Server"
-msgstr ""
+msgstr "Sirvidor"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Control player remotely"
@@ -313,8 +314,7 @@ msgid "Synchronisation offset in seconds between the audio and video streams"
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
-msgid ""
-"Synchronisation offset in seconds between the subtitle and video streams"
+msgid "Synchronisation offset in seconds between the subtitle and video streams"
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
@@ -346,9 +346,7 @@ msgid "Available plugins"
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
-msgid ""
-"Select a plugin and its feature to override rank for. When multiple elements "
-"have similiar capabilities, the one with highest value is preferred."
+msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
 msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
@@ -390,7 +388,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:22
 msgid "Cancel"
-msgstr ""
+msgstr "Encaboxar"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
@@ -406,7 +404,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
 msgid "Preferences"
-msgstr ""
+msgstr "Preferencies"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
 msgid "Keyboard Shortcuts"
@@ -415,12 +413,12 @@ msgstr ""
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
 msgid "About Clapper"
-msgstr ""
+msgstr "Tocante a Clapper"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
 msgid "translator-credits"
-msgstr ""
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2022"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
@@ -436,7 +434,7 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:445
 msgid "Fast"
@@ -465,3 +463,4 @@ msgstr ""
 #: src/bin/clapper-app/clapper-app-window.c:824
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr ""
+
