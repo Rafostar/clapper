@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-08 15:36\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2024-04-12 19:52+0200\n"
+"PO-Revision-Date: 2024-04-09 16:53+0200\n"
+"Last-Translator: Florian \"sp1rit\" <sp1rit@disroot.org>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
@@ -33,25 +33,39 @@ msgid "Subtitles"
 msgstr "Untertitel"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
-msgid "Enabled"
-msgstr ""
+msgid "Show Subtitles"
+msgstr "Untertitel anzeigen"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
-msgstr ""
+msgstr "Öffnen…"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
 msgid "Mute"
-msgstr ""
+msgstr "Stummschalten"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Zurücksetzen"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:79
+msgid "Unplayable Content"
+msgstr "Medium nicht abspielbar"
+
+#. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
+#: src/lib/clapper-gtk/clapper-gtk-status.c:89
+#, c-format
+msgid "Your GStreamer installation is missing a plugin: %s"
+msgstr "GStreamer fehlt folgendes Plugin: %s"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:90
+msgid "Missing Plugin"
+msgstr "Fehlendes Plugin"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
 msgid "Undetermined"
-msgstr "Unbestimmet"
+msgstr "Unbestimmt"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 msgid "Channels"
@@ -59,9 +73,8 @@ msgstr "Audio-Kanäle"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Keine Medien"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
-
+msgstr "Unbekannter Titel"
