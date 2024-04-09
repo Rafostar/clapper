@@ -38,10 +38,8 @@ install_subdir('applications',
 install_subdir('metainfo',
   install_dir: join_paths(prefix, datadir)
 )
-install_subdir('glib-2.0',
-  install_dir: join_paths(prefix, datadir)
-)
 
+subdir('glib-2.0/schemas')
 subdir('dbus-1')
 
 gnome.post_install(
