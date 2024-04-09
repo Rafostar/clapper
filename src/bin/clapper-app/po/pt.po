@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-09 05:38\n"
+"PO-Revision-Date: 2024-04-09 06:52\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -93,7 +93,7 @@ msgstr "Fila de espera"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:61
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 msgid "Next item"
-msgstr "Próximo item"
+msgstr "Item seguinte"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:75
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
@@ -143,7 +143,7 @@ msgstr "Aumentar o volume"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
 msgid "Scroll up"
-msgstr "Deslocar para cima"
+msgstr "Deslizar para cima"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
 msgid "Volume down"
@@ -230,7 +230,7 @@ msgstr "Filtro"
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr ""
+msgstr "Pia"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
@@ -250,11 +250,11 @@ msgstr "Transmissões de legenda"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:21
 msgid "Start by adding media to playback queue"
-msgstr ""
+msgstr "Comece por adicionar multimédia à fila de reprodução"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr "Procurando"
+msgstr "A procurar"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
@@ -262,7 +262,7 @@ msgstr "Método"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr "Um método preferido usado para a procura"
+msgstr "Um método preferido usado para procurar"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
@@ -347,7 +347,7 @@ msgstr "Plugins disponíveis"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr "Selecionar um plugin e a sua funcionalidade para substituir a classificação. Quando vários elementos têm capacidade semelhante, o com valor mais alto é preferido."
+msgstr "Selecionar um plugin e sua funcionalidade para substituir a classificação. Quando vários elementos têm capacidade semelhante, o com valor mais alto é preferido."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
@@ -413,7 +413,7 @@ msgstr "Teclas de atalho"
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
 msgid "About Clapper"
-msgstr "Sobre o Clapper"
+msgstr "Acerca do Clapper"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
@@ -430,7 +430,7 @@ msgstr "Software"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
-msgstr "Preciso"
+msgstr "Precisão"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
