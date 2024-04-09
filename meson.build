@@ -19,6 +19,8 @@ clapper_version_suffix = '-' + version_array[0] + '.0'
 
 clapper_api_name = meson.project_name() + clapper_version_suffix
 
+devenv = environment()
+
 gnome = import('gnome')
 pkgconfig = import('pkgconfig')
 i18n = import('i18n')
@@ -123,6 +125,8 @@ endif
 
 subdir('src')
 subdir('doc')
+
+meson.add_devenv(devenv)
 
 summary({
   'prefix': prefix,

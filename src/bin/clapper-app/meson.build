@@ -42,7 +42,7 @@ clapperapp_conf_inc = [
 ]
 
 config_h = configuration_data()
-config_h.set_quoted('GETTEXT_PACKAGE', meson.project_name() + '-gtk')
+config_h.set_quoted('GETTEXT_PACKAGE', meson.project_name() + '-app')
 config_h.set_quoted('LOCALEDIR', join_paths (prefix, localedir))
 config_h.set_quoted('CLAPPER_APP_NAME', 'Clapper')
 config_h.set_quoted('CLAPPER_APP_ID', app_id)
