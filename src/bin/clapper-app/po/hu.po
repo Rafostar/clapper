@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-09 16:18\n"
+"PO-Revision-Date: 2024-04-09 17:47\n"
 "Last-Translator: \n"
 "Language-Team: Hungarian\n"
 "Language: hu_HU\n"
@@ -372,7 +372,7 @@ msgstr "Hozzáadás"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr ""
+msgstr "Lejátszólista haladása"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
@@ -392,15 +392,15 @@ msgstr "Mégsem"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr ""
+msgstr "Felbontás"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr ""
+msgstr "Képkockasebesség"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr ""
+msgstr "Képpont formátum"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
 msgid "Preferences"
@@ -408,7 +408,7 @@ msgstr "Beállítások"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Gyorsbillentyűk"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
@@ -422,7 +422,7 @@ msgstr "Ferenc Géczi"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
-msgstr ""
+msgstr "Hardver"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Software"
@@ -442,7 +442,7 @@ msgstr "Gyors"
 
 #: src/bin/clapper-app/clapper-app-utils.c:66
 msgid "No progression"
-msgstr ""
+msgstr "Ne haladjon"
 
 #: src/bin/clapper-app/clapper-app-utils.c:67
 msgid "Consecutive"
@@ -450,11 +450,11 @@ msgstr "Folyamatos"
 
 #: src/bin/clapper-app/clapper-app-utils.c:68
 msgid "Repeat item"
-msgstr ""
+msgstr "Listaelem ismétlése"
 
 #: src/bin/clapper-app/clapper-app-utils.c:69
 msgid "Carousel"
-msgstr ""
+msgstr "Körkörös"
 
 #: src/bin/clapper-app/clapper-app-utils.c:70
 msgid "Shuffle"
@@ -462,5 +462,5 @@ msgstr "Véletlenszerű"
 
 #: src/bin/clapper-app/clapper-app-window.c:824
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
+msgstr "Húzza és ejtse a címsorra az azonnali lejátszáshoz vagy bárhova máshova a lejátszólistára vételhez."
 
