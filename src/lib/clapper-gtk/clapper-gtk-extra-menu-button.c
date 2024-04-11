@@ -129,7 +129,7 @@ volume_spin_input_cb (GtkSpinButton *spin_button, gdouble *value, ClapperGtkExtr
 {
   const gchar *text = gtk_editable_get_text (GTK_EDITABLE (spin_button));
   gchar *sign = NULL;
-  gdouble volume = g_ascii_strtod (text, &sign);
+  gdouble volume = g_strtod (text, &sign);
 
   if (volume < 0 || volume > 200
       || (sign && sign[0] != '\0' && sign[0] != '%'))
@@ -174,7 +174,7 @@ speed_spin_input_cb (GtkSpinButton *spin_button, gdouble *value, ClapperGtkExtra
 {
   const gchar *text = gtk_editable_get_text (GTK_EDITABLE (spin_button));
   gchar *sign = NULL;
-  gdouble speed = g_ascii_strtod (text, &sign);
+  gdouble speed = g_strtod (text, &sign);
 
   if (speed < 0.05 || speed > 2.0
       || (sign && sign[0] != '\0' && sign[0] != 'x'))
