@@ -128,12 +128,12 @@ static gint
 volume_spin_input_cb (GtkSpinButton *spin_button, gdouble *value, ClapperGtkExtraMenuButton *self)
 {
   const gchar *text = gtk_editable_get_text (GTK_EDITABLE (spin_button));
-  gchar *sign = NULL;
-  gdouble volume = g_strtod (text, &sign);
+  gdouble volume = g_strtod (text, NULL);
 
-  if (volume < 0 || volume > 200
-      || (sign && sign[0] != '\0' && sign[0] != '%'))
-    return GTK_INPUT_ERROR;
+  if (volume < 0)
+    volume = 0;
+  else if (volume > 200)
+    volume = 200;
 
   volume /= 100.0;
 
@@ -173,12 +173,12 @@ static gint
 speed_spin_input_cb (GtkSpinButton *spin_button, gdouble *value, ClapperGtkExtraMenuButton *self)
 {
   const gchar *text = gtk_editable_get_text (GTK_EDITABLE (spin_button));
-  gchar *sign = NULL;
-  gdouble speed = g_strtod (text, &sign);
+  gdouble speed = g_strtod (text, NULL);
 
-  if (speed < 0.05 || speed > 2.0
-      || (sign && sign[0] != '\0' && sign[0] != 'x'))
-    return GTK_INPUT_ERROR;
+  if (speed < 0.05)
+    speed = 0.05;
+  else if (speed > 2.0)
+    speed = 2.0;
 
   if (speed > 0.99 && speed < 1.01)
     speed = 1.0;
