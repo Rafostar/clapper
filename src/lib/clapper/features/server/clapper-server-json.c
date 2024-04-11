@@ -41,9 +41,11 @@
     _JSON_AUTO_COMMA                                           \
     g_string_append_printf (_json, "\"%s\":%" G_GUINT64_FORMAT, key, (guint64) val);
 
-#define _ADD_KEY_VAL_DOUBLE(key, val)                          \
+#define _ADD_KEY_VAL_DOUBLE(key, val) {                        \
+    gchar _buf[G_ASCII_DTOSTR_BUF_SIZE];                       \
     _JSON_AUTO_COMMA                                           \
-    g_string_append_printf (_json, "\"%s\":%.2lf", key, (gdouble) val);
+    g_string_append_printf (_json, "\"%s\":%s", key,           \
+        g_ascii_formatd (_buf, sizeof (_buf), "%.2f", val)); }
 
 #define _ADD_KEY_VAL_STRING(key, val)                          \
     _JSON_AUTO_COMMA                                           \
