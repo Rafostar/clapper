@@ -25,7 +25,7 @@
         <attribute name="label" translatable="yes">Subtitles</attribute>
         <section>
           <item>
-            <attribute name="label" translatable="yes">Enabled</attribute>
+            <attribute name="label" translatable="yes">Show Subtitles</attribute>
             <attribute name="action">clappergtk.subtitle-stream-enabled</attribute>
           </item>
           <item>
