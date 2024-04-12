@@ -19,9 +19,11 @@
 
 #include "config.h"
 
+#include <glib/gi18n-lib.h>
 #include <gst/gst.h>
 
 #include "clapper-gtk-status-private.h"
+#include "clapper-gtk-utils-private.h"
 
 #define NORMAL_SPACING 16
 #define ADAPT_SPACING 8
@@ -74,7 +76,7 @@ void
 clapper_gtk_status_set_error (ClapperGtkStatus *self, const GError *error)
 {
   GST_DEBUG_OBJECT (self, "Status set to \"error\"");
-  _set_status (self, "dialog-warning-symbolic", "Unplayable Content", error->message);
+  _set_status (self, "dialog-warning-symbolic", _("Unplayable Content"), error->message);
 }
 
 void
@@ -83,8 +85,9 @@ clapper_gtk_status_set_missing_plugin (ClapperGtkStatus *self, const gchar *name
   gchar *description;
 
   GST_DEBUG_OBJECT (self, "Status set to \"missing-plugin\"");
-  description = g_strdup_printf ("Your GStreamer installation is missing a plugin: %s", name);
-  _set_status (self, "dialog-information-symbolic", "Missing Plugin", description);
+  /* TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name). */
+  description = g_strdup_printf (_("Your GStreamer installation is missing a plugin: %s"), name);
+  _set_status (self, "dialog-information-symbolic", _("Missing Plugin"), description);
 
   g_free (description);
 }
@@ -120,6 +123,7 @@ clapper_gtk_status_class_init (ClapperGtkStatusClass *klass)
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappergtkstatus", 0,
       "Clapper GTK Status");
+  clapper_gtk_init_translations ();
 
   gobject_class->dispose = clapper_gtk_status_dispose;
 
