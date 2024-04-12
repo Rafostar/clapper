@@ -613,6 +613,9 @@ _handle_state_changed_msg (GstMessage *msg, ClapperPlayer *player)
     }
 
     _update_current_duration (player);
+
+    if (!player->use_playbin3)
+      clapper_player_playbin_update_current_decoders (player);
   }
 }
 
