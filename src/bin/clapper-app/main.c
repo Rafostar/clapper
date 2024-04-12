@@ -29,13 +29,16 @@
 gint
 main (gint argc, gchar **argv)
 {
+  const gchar *clapper_ldir;
   GApplication *application;
   gint status;
 
   g_setenv ("GSK_RENDERER", "gl", FALSE);
 
   setlocale (LC_ALL, "");
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  if (!(clapper_ldir = g_getenv ("CLAPPER_APP_OVERRIDE_LOCALEDIR")))
+    clapper_ldir = LOCALEDIR;
+  bindtextdomain (GETTEXT_PACKAGE, clapper_ldir);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
 

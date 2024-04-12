@@ -62,10 +62,14 @@ clapper_gtk_get_player_from_ancestor (GtkWidget *widget)
 void
 clapper_gtk_init_translations (void)
 {
+  const gchar *clapper_gtk_ldir;
+
   if (initialized)
     return;
 
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+  if (!(clapper_gtk_ldir = g_getenv ("CLAPPER_GTK_OVERRIDE_LOCALEDIR")))
+    clapper_gtk_ldir = LOCALEDIR;
+  bindtextdomain (GETTEXT_PACKAGE, clapper_gtk_ldir);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
   initialized = TRUE;
