@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-09 04:31\n"
+"POT-Creation-Date: 2024-04-12 19:52+0200\n"
+"PO-Revision-Date: 2024-04-12 18:47\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -33,8 +33,8 @@ msgid "Subtitles"
 msgstr "Legendas"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
-msgid "Enabled"
-msgstr "Ativado"
+msgid "Show Subtitles"
+msgstr ""
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
@@ -47,6 +47,20 @@ msgstr "Silenciar"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
 msgstr "Repor"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:79
+msgid "Unplayable Content"
+msgstr ""
+
+#. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
+#: src/lib/clapper-gtk/clapper-gtk-status.c:89
+#, c-format
+msgid "Your GStreamer installation is missing a plugin: %s"
+msgstr ""
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:90
+msgid "Missing Plugin"
+msgstr ""
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
