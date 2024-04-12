@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-09 17:44+0200\n"
-"Last-Translator: Florian \"sp1rit\" <sp1rit@disroot.org>\n"
+"PO-Revision-Date: 2024-04-12 19:44\n"
+"Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -347,10 +347,7 @@ msgstr "Verfügbare Plugins"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
-"Wähle ein Plugin und seine Funktion für welches sie die Position der "
-"Reihenfolge überschreiben möchten. Falls mehrere Plugins ähnlicheFähigkeiten "
-"besitzen, wird dasjenige mit dem höchsten Rang bevorzugt."
+msgstr "Wähle ein Plugin und seine Funktion für welches sie die Position der Reihenfolge überschreiben möchten. Falls mehrere Plugins ähnlicheFähigkeiten besitzen, wird dasjenige mit dem höchsten Rang bevorzugt."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
@@ -383,8 +380,7 @@ msgstr "URI hinzufügen"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
-"Geben sie eine URI an, welche zur Wiedergabewarteschlange hinzugefügt werden soll"
+msgstr "Geben sie eine URI an, welche zur Wiedergabewarteschlange hinzugefügt werden soll"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
@@ -466,6 +462,5 @@ msgstr "Zufallswiedergabe"
 
 #: src/bin/clapper-app/clapper-app-window.c:824
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
-"Zur direkten Wiedergabe legen Sie die Datei auf der Titelleiste ab, "
-"andernfalls wird die Datei der Warteschlange hinzugefügt."
+msgstr "Zur direkten Wiedergabe legen Sie die Datei auf der Titelleiste ab, andernfalls wird die Datei der Warteschlange hinzugefügt."
+
