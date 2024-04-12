@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-04-09 16:53+0200\n"
-"Last-Translator: Florian \"sp1rit\" <sp1rit@disroot.org>\n"
+"PO-Revision-Date: 2024-04-12 18:47\n"
+"Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Untertitel"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
 msgid "Show Subtitles"
-msgstr "Untertitel anzeigen"
+msgstr ""
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
@@ -61,6 +61,20 @@ msgstr "GStreamer fehlt folgendes Plugin: %s"
 #: src/lib/clapper-gtk/clapper-gtk-status.c:90
 msgid "Missing Plugin"
 msgstr "Fehlendes Plugin"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:79
+msgid "Unplayable Content"
+msgstr ""
+
+#. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
+#: src/lib/clapper-gtk/clapper-gtk-status.c:89
+#, c-format
+msgid "Your GStreamer installation is missing a plugin: %s"
+msgstr ""
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:90
+msgid "Missing Plugin"
+msgstr ""
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
