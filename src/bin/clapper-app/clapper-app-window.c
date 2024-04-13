@@ -471,19 +471,22 @@ scroll_cb (GtkEventControllerScroll *scroll,
 
   pickup = _pick_pointer_widget (self);
 
-  /* We do not want to accidentally allow this controller
-   * to handle scrolls when hovering over scrolled window */
-  if (pickup && (GTK_IS_SCROLLED_WINDOW (pickup)
-      || gtk_widget_get_ancestor (pickup, GTK_TYPE_SCROLLED_WINDOW)))
-    return FALSE;
+  /* We do not want to accidentally allow this controller to handle
+   * scrolls when hovering over widgets that also handle scroll */
+  while (pickup && !CLAPPER_GTK_IS_VIDEO (pickup)) {
+    if (GTK_IS_SCROLLED_WINDOW (pickup) || GTK_IS_RANGE (pickup))
+      return FALSE;
+
+    pickup = gtk_widget_get_parent (pickup);
+  }
 
   device = gtk_event_controller_get_current_event_device (GTK_EVENT_CONTROLLER (scroll));
 
   switch (gdk_device_get_source (device)) {
     case GDK_SOURCE_TOUCHPAD:
     case GDK_SOURCE_TOUCHSCREEN:
-      dx *= -0.4;
-      dy *= -0.4;
+      dx *= 0.4;
+      dy *= 0.4;
       break;
     default:
       break;
