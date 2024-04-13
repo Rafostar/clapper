@@ -54,11 +54,17 @@ clapper-app-headerbar .titlelabel label {
 clapper-app-headerbar clapper-app-window-state-buttons {
   margin-top: 8px;
 }
-clapper-app-headerbar clapper-app-window-state-buttons:dir(ltr) {
+clapper-app-headerbar clapper-app-window-state-buttons.filled.right:dir(ltr) {
   padding-right: 6px;
 }
-clapper-app-headerbar clapper-app-window-state-buttons:dir(rtl) {
+clapper-app-headerbar clapper-app-window-state-buttons.filled.right:dir(rtl) {
   padding-left: 6px;
+}
+clapper-app-headerbar clapper-app-window-state-buttons.filled.left:dir(ltr) {
+  padding-left: 6px;
+}
+clapper-app-headerbar clapper-app-window-state-buttons.filled.left:dir(rtl) {
+  padding-right: 6px;
 }
 
 clapper-app-queue-list .topseparator {

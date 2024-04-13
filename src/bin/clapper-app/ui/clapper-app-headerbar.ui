@@ -8,6 +8,22 @@
         <property name="orientation">horizontal</property>
         <property name="halign">fill</property>
         <property name="valign">start</property>
+        <child type="start">
+          <object class="GtkRevealer">
+            <property name="halign">start</property>
+            <property name="valign">start</property>
+            <property name="transition-type">slide-right</property>
+            <property name="transition-duration">500</property>
+            <property name="reveal-child" bind-source="win_buttons_revealer" bind-property="reveal-child" bind-flags="sync-create"/>
+            <child>
+              <object class="ClapperAppWindowStateButtons">
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="position">left</property>
+              </object>
+            </child>
+          </object>
+        </child>
         <child type="center">
           <object class="ClapperGtkLeadContainer">
             <property name="blocked-actions">toggle-play|seek-request</property>
@@ -143,6 +159,17 @@
               <object class="ClapperAppWindowStateButtons">
                 <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="menu-button">
+                  <object class="GtkMenuButton">
+                    <property name="icon-name">open-menu-symbolic</property>
+                    <property name="menu-model">app_menu</property>
+                    <style>
+                      <class name="osd"/>
+                      <class name="flat"/>
+                      <class name="circular"/>
+                    </style>
+                  </object>
+                </property>
               </object>
             </child>
           </object>
@@ -150,4 +177,23 @@
       </object>
     </child>
   </template>
+  <menu id="app_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <!-- TRANSLATORS: Please do not translate application name -->
+        <attribute name="label" translatable="yes">About Clapper</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

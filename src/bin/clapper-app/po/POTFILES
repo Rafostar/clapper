@@ -1,4 +1,5 @@
 src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui
+src/bin/clapper-app/ui/clapper-app-headerbar.ui
 src/bin/clapper-app/ui/clapper-app-help-overlay.ui
 src/bin/clapper-app/ui/clapper-app-info-window.ui
 src/bin/clapper-app/ui/clapper-app-initial-state.ui
@@ -7,7 +8,6 @@ src/bin/clapper-app/ui/clapper-app-queue-list.ui
 src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui
 src/bin/clapper-app/ui/clapper-app-uri-dialog.ui
 src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui
-src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui
 
 src/bin/clapper-app/clapper-app-about-window.c
 src/bin/clapper-app/clapper-app-info-window.c

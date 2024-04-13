@@ -28,13 +28,19 @@ struct _ClapperAppWindowStateButtons
 {
   GtkBox parent;
 
-  GtkWidget *menu_button;
   GtkWidget *minimize_button;
   GtkWidget *maximize_button;
   GtkWidget *close_button;
 
+  /* Props */
+  GtkWidget *menu_button;
+  GtkPositionType position;
+
   gboolean has_minimize;
   gboolean has_maximize;
+  gboolean has_close;
+
+  gboolean has_buttons;
 
   gboolean is_maximized;
   gboolean is_fullscreen;
@@ -42,8 +48,18 @@ struct _ClapperAppWindowStateButtons
   GtkSettings *settings;
 };
 
+enum
+{
+  PROP_0,
+  PROP_POSITION,
+  PROP_MENU_BUTTON,
+  PROP_LAST
+};
+
 #define parent_class clapper_app_window_state_buttons_parent_class
 G_DEFINE_TYPE (ClapperAppWindowStateButtons, clapper_app_window_state_buttons, GTK_TYPE_BOX)
+
+static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 
 static void
 minimize_button_clicked_cb (GtkButton *button, ClapperAppWindowStateButtons *self)
@@ -67,12 +83,27 @@ close_button_clicked_cb (GtkButton *button, ClapperAppWindowStateButtons *self)
 }
 
 static void
-_refresh_min_max_visibility (ClapperAppWindowStateButtons *self)
+_refresh_buttons_visibility (ClapperAppWindowStateButtons *self)
 {
-  gtk_widget_set_visible (self->minimize_button,
-      (self->has_minimize && !self->is_fullscreen));
-  gtk_widget_set_visible (self->maximize_button,
-      (self->has_maximize && !self->is_fullscreen));
+  gboolean show_minimize = (self->has_minimize && !self->is_fullscreen);
+  gboolean show_maximize = (self->has_maximize && !self->is_fullscreen);
+  gboolean has_buttons;
+
+  gtk_widget_set_visible (self->minimize_button, show_minimize);
+  gtk_widget_set_visible (self->maximize_button, show_maximize);
+  gtk_widget_set_visible (self->close_button, self->has_close);
+
+  has_buttons = (self->menu_button != NULL || show_minimize
+      || show_maximize || self->has_close);
+
+  if (self->has_buttons != has_buttons) {
+    self->has_buttons = has_buttons;
+
+    if (self->has_buttons)
+      gtk_widget_add_css_class (GTK_WIDGET (self), "filled");
+    else
+      gtk_widget_remove_css_class (GTK_WIDGET (self), "filled");
+  }
 }
 
 static void
@@ -89,46 +120,57 @@ clapper_app_window_state_buttons_parse_layout (ClapperAppWindowStateButtons *sel
 
   if (G_LIKELY (org_layout != NULL)) {
     GtkWidget *last_widget = self->menu_button;
-    const gchar *layout = org_layout;
+    gboolean can_parse = (self->position == GTK_POS_LEFT);
+    gboolean had_sign = can_parse;
     guint i;
 
-    for (i = 0; layout[i]; ++i) {
-      GtkWidget *widget = NULL;
-      const gchar *next = layout + i + 1;
+    for (i = 0; org_layout[i] != '\0'; ++i) {
+      const gchar *layout = org_layout + i;
 
-      if (next[0] != '\0' && next[0] != ',' && next[0] != ':')
+      if (layout[0] == ',') {
+        had_sign = TRUE;
         continue;
-
-      GST_TRACE_OBJECT (self, "Remaining layout: %s", layout);
-
-      if (g_str_has_prefix (layout, "minimize")) {
-        widget = self->minimize_button;
-        has_minimize = TRUE;
-      } else if (g_str_has_prefix (layout, "maximize")) {
-        widget = self->maximize_button;
-        has_maximize = TRUE;
-      } else if (g_str_has_prefix (layout, "close")) {
-        widget = self->close_button;
-        has_close = TRUE;
       }
 
-      if (widget) {
-        gtk_box_reorder_child_after (GTK_BOX (self), widget, last_widget);
-        last_widget = widget;
+      if (layout[0] == ':') {
+        if (self->position == GTK_POS_LEFT)
+          break;
+        else
+          can_parse = TRUE;
+
+        had_sign = TRUE;
+        continue;
       }
 
-      if (next[0] == '\0')
-        break;
+      if (had_sign && can_parse) {
+        GtkWidget *widget = NULL;
 
-      layout = next + 1;
-      i = 0;
+        GST_TRACE_OBJECT (self, "Remaining layout: %s", layout);
+
+        if (g_str_has_prefix (layout, "minimize")) {
+          widget = self->minimize_button;
+          has_minimize = TRUE;
+        } else if (g_str_has_prefix (layout, "maximize")) {
+          widget = self->maximize_button;
+          has_maximize = TRUE;
+        } else if (g_str_has_prefix (layout, "close")) {
+          widget = self->close_button;
+          has_close = TRUE;
+        }
+
+        if (widget) {
+          gtk_box_reorder_child_after (GTK_BOX (self), widget, last_widget);
+          last_widget = widget;
+        }
+
+        had_sign = FALSE;
+      }
     }
   }
 
   self->has_minimize = has_minimize;
   self->has_maximize = has_maximize;
-
-  gtk_widget_set_visible (self->close_button, has_close);
+  self->has_close = has_close;
 
   GST_DEBUG_OBJECT (self, "Buttons layout parsed");
 
@@ -140,7 +182,7 @@ _decoration_layout_changed_cb (GtkSettings *settings,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperAppWindowStateButtons *self)
 {
   clapper_app_window_state_buttons_parse_layout (self);
-  _refresh_min_max_visibility (self);
+  _refresh_buttons_visibility (self);
 }
 
 static void
@@ -162,14 +204,29 @@ _surface_state_changed_cb (GdkSurface *surface,
   }
   if (self->is_fullscreen != is_fullscreen) {
     self->is_fullscreen = is_fullscreen;
-    _refresh_min_max_visibility (self);
+    _refresh_buttons_visibility (self);
   }
 }
 
 static void
 clapper_app_window_state_buttons_init (ClapperAppWindowStateButtons *self)
 {
+  self->position = GTK_POS_RIGHT;
+
   gtk_widget_init_template (GTK_WIDGET (self));
+}
+
+static void
+clapper_app_window_state_buttons_constructed (GObject *object)
+{
+  ClapperAppWindowStateButtons *self = CLAPPER_APP_WINDOW_STATE_BUTTONS_CAST (object);
+
+  if (self->position == GTK_POS_RIGHT)
+    gtk_widget_add_css_class (GTK_WIDGET (self), "right");
+  else
+    gtk_widget_add_css_class (GTK_WIDGET (self), "left");
+
+  G_OBJECT_CLASS (parent_class)->constructed (object);
 }
 
 static void
@@ -246,23 +303,56 @@ clapper_app_window_state_buttons_dispose (GObject *object)
 }
 
 static void
+clapper_app_window_state_buttons_set_property (GObject *object, guint prop_id,
+    const GValue *value, GParamSpec *pspec)
+{
+  ClapperAppWindowStateButtons *self = CLAPPER_APP_WINDOW_STATE_BUTTONS_CAST (object);
+
+  switch (prop_id) {
+    case PROP_POSITION:
+      self->position = g_value_get_enum (value);
+      break;
+    case PROP_MENU_BUTTON:
+      if ((self->menu_button = GTK_WIDGET (g_value_get_object (value)))) {
+        gtk_box_prepend (GTK_BOX (self), self->menu_button);
+        _refresh_buttons_visibility (self);
+      }
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
 clapper_app_window_state_buttons_class_init (ClapperAppWindowStateButtonsClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
   GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
 
-  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappergtkwindowstatebuttons", 0,
-      "Clapper GTK Window State Buttons");
+  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperappwindowstatebuttons", 0,
+      "Clapper App Window State Buttons");
 
+  gobject_class->constructed = clapper_app_window_state_buttons_constructed;
+  gobject_class->set_property = clapper_app_window_state_buttons_set_property;
   gobject_class->dispose = clapper_app_window_state_buttons_dispose;
 
   widget_class->realize = clapper_app_window_state_buttons_realize;
   widget_class->unrealize = clapper_app_window_state_buttons_unrealize;
 
+  param_specs[PROP_POSITION] = g_param_spec_enum ("position",
+      NULL, NULL, GTK_TYPE_POSITION_TYPE, GTK_POS_RIGHT,
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+  param_specs[PROP_MENU_BUTTON] = g_param_spec_object ("menu-button",
+      NULL, NULL, GTK_TYPE_MENU_BUTTON,
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+  g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
+
   gtk_widget_class_set_template_from_resource (widget_class,
       CLAPPER_APP_RESOURCE_PREFIX "/ui/clapper-app-window-state-buttons.ui");
 
-  gtk_widget_class_bind_template_child (widget_class, ClapperAppWindowStateButtons, menu_button);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppWindowStateButtons, minimize_button);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppWindowStateButtons, maximize_button);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppWindowStateButtons, close_button);
