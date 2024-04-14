@@ -16,7 +16,8 @@ jobs:
         arch: [x86_64, aarch64]
       fail-fast: false
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v4
       with:
         submodules: recursive
     - name: Install Docker
@@ -24,15 +25,15 @@ jobs:
         dnf -y install docker
     - name: Setup QEMU
       id: qemu
-      uses: docker/setup-qemu-action@v1
+      uses: docker/setup-qemu-action@v3
       with:
         platforms: arm64
     - name: Prepare Runtime
       run: |
         flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.rust-nightly/${{ matrix.arch }}/23.08
         flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.llvm16/${{ matrix.arch }}/23.08
-    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
-      name: Build
+    - name: Build
+      uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: com.github.rafostar.Clapper.flatpak
         manifest-path: pkgs/flatpak/com.github.rafostar.Clapper-nightly.json
