@@ -257,9 +257,12 @@ clapper_audio_stream_get_lang_code (ClapperAudioStream *self)
  * clapper_audio_stream_get_lang_name:
  * @stream: a #ClapperAudioStream
  *
- * Get an ISO-639 language code of the @stream.
+ * Get language name of the @stream.
  *
- * Returns: (transfer full) (nullable): the language code of audio stream.
+ * This function will try to return a translated string into current
+ * locale if possible, with a fallback to a name extracted from tags.
+ *
+ * Returns: (transfer full) (nullable): the language name of audio stream.
  */
 gchar *
 clapper_audio_stream_get_lang_name (ClapperAudioStream *self)
@@ -419,7 +422,7 @@ clapper_audio_stream_class_init (ClapperAudioStreamClass *klass)
   /**
    * ClapperAudioStream:lang-name:
    *
-   * Stream full language name determined from lang code.
+   * Stream language name.
    */
   param_specs[PROP_LANG_NAME] = g_param_spec_string ("lang-name",
       NULL, NULL, NULL,

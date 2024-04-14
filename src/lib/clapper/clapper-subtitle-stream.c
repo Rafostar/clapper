@@ -106,9 +106,12 @@ clapper_subtitle_stream_get_lang_code (ClapperSubtitleStream *self)
  * clapper_subtitle_stream_get_lang_name:
  * @stream: a #ClapperSubtitleStream
  *
- * Get an ISO-639 language code of the @stream.
+ * Get language name of the @stream.
  *
- * Returns: (transfer full) (nullable): the language code of subtitle stream.
+ * This function will try to return a translated string into current
+ * locale if possible, with a fallback to a name extracted from tags.
+ *
+ * Returns: (transfer full) (nullable): the language name of subtitle stream.
  */
 gchar *
 clapper_subtitle_stream_get_lang_name (ClapperSubtitleStream *self)
@@ -204,7 +207,7 @@ clapper_subtitle_stream_class_init (ClapperSubtitleStreamClass *klass)
   /**
    * ClapperSubtitleStream:lang-name:
    *
-   * Stream full language name determined from lang code.
+   * Stream language name.
    */
   param_specs[PROP_LANG_NAME] = g_param_spec_string ("lang-name",
       NULL, NULL, NULL,

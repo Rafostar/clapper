@@ -156,7 +156,7 @@ clapper_marker_get_marker_type (ClapperMarker *self)
  *
  * Get the title of @marker.
  *
- * Returns: the marker title.
+ * Returns: (nullable): the marker title.
  */
 const gchar *
 clapper_marker_get_title (ClapperMarker *self)

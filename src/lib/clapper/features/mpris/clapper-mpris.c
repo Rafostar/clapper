@@ -1342,7 +1342,7 @@ clapper_mpris_property_changed (ClapperFeature *feature, GParamSpec *pspec)
  * clapper_mpris_new:
  * @own_name: an unique DBus name with "org.mpris.MediaPlayer2." prefix
  * @identity: a media player friendly name
- * @desktop_entry: (nullable): desktop entry filename
+ * @desktop_entry: (nullable): desktop file basename (without ".desktop" extension)
  *
  * Creates a new #ClapperMpris instance.
  *

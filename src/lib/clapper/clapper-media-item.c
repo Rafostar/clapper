@@ -176,11 +176,11 @@ clapper_media_item_get_uri (ClapperMediaItem *self)
 /**
  * clapper_media_item_set_suburi:
  * @item: a #ClapperMediaItem
+ * @suburi: an additional URI
  *
  * Set the additional URI of #ClapperMediaItem.
  *
- * This is typically used to add an external subtitles URI
- * to the @item.
+ * This is typically used to add an external subtitles URI to the @item.
  */
 void
 clapper_media_item_set_suburi (ClapperMediaItem *self, const gchar *suburi)
@@ -629,7 +629,7 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
-   * ClapperPlayer:timeline:
+   * ClapperMediaItem:timeline:
    *
    * Media timeline.
    */

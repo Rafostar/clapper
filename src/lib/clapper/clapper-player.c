@@ -1158,6 +1158,8 @@ clapper_player_set_volume (ClapperPlayer *self, gdouble volume)
  * @player: a #ClapperPlayer
  *
  * Get the volume of the player.
+ *
+ * Returns: current volume level.
  */
 gdouble
 clapper_player_get_volume (ClapperPlayer *self)
@@ -1649,7 +1651,7 @@ clapper_player_get_subtitle_font_desc (ClapperPlayer *self)
  * Either start or resume the playback of current media item.
  *
  * This function will queue a request for the underlaying #GStreamer
- * pipeline to go into PLAYING state.
+ * pipeline to go into `PLAYING` state.
  */
 void
 clapper_player_play (ClapperPlayer *self)
@@ -1666,8 +1668,8 @@ clapper_player_play (ClapperPlayer *self)
  * Pause the playback of current media item.
  *
  * This function will queue a request for the underlaying #GStreamer
- * pipeline to go into PAUSED state, thus can also be used on a not
- * yet started video to go into PAUSED state first.
+ * pipeline to go into `PAUSED` state, thus can also be used on a not
+ * yet started video to go into `PAUSED` state first.
  */
 void
 clapper_player_pause (ClapperPlayer *self)
@@ -1684,7 +1686,7 @@ clapper_player_pause (ClapperPlayer *self)
  * Stop the playback of current media item.
  *
  * This function will queue a request for the underlaying #GStreamer
- * pipeline to go into READY state.
+ * pipeline to go into `READY` state.
  */
 void
 clapper_player_stop (ClapperPlayer *self)
@@ -1742,9 +1744,6 @@ clapper_player_seek_custom (ClapperPlayer *self, gdouble position, ClapperPlayer
  * @feature: a #ClapperFeature
  *
  * Add another #ClapperFeature to the player.
- *
- * If feature is already added, this function will do nothing,
- * so it is safe to call multiple times if unsure.
  */
 void
 clapper_player_add_feature (ClapperPlayer *self, ClapperFeature *feature)

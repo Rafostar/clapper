@@ -184,7 +184,7 @@ struct _ClapperFeatureClass
   void (* queue_item_removed) (ClapperFeature *feature, ClapperMediaItem *item, guint index);
 
   /**
-   * ClapperFeatureClass::queue_item_reposition:
+   * ClapperFeatureClass::queue_item_repositioned:
    * @feature: a #ClapperFeature
    * @before: position from which #ClapperMediaItem was removed
    * @after: position at which #ClapperMediaItem was inserted after removal

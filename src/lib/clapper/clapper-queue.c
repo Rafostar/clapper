@@ -749,7 +749,7 @@ clapper_queue_select_index (ClapperQueue *self, guint index)
  * Selects next #ClapperMediaItem from @queue for playback.
  *
  * Note that this will try to select next item in the order
- * of the queue, regardless of #ClapperQueueProgressionMode set.
+ * of the queue, regardless of [enum@Clapper.QueueProgressionMode] set.
  *
  * Returns: %TRUE if there was another media item in queue, %FALSE otherwise.
  */
@@ -780,7 +780,7 @@ clapper_queue_select_next_item (ClapperQueue *self)
  * Selects previous #ClapperMediaItem from @queue for playback.
  *
  * Note that this will try to select previous item in the order
- * of the queue, regardless of #ClapperQueueProgressionMode set.
+ * of the queue, regardless of [enum@Clapper.QueueProgressionMode] set.
  *
  * Returns: %TRUE if there was previous media item in queue, %FALSE otherwise.
  */
@@ -933,7 +933,7 @@ clapper_queue_find_item (ClapperQueue *self, ClapperMediaItem *item, guint *inde
  *
  * Get the number of items in #ClapperQueue.
  *
- * This behaves the same as g_list_model_get_n_items(), and is here
+ * This behaves the same as [method@Gio.ListModel.get_n_items], and is here
  * for code uniformity and convenience to avoid type casting by user.
  *
  * This function is not available in bindings as they already

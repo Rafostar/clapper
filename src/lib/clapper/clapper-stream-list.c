@@ -320,7 +320,7 @@ clapper_stream_list_get_current_index (ClapperStreamList *self)
  *
  * Get the number of streams in #ClapperStreamList.
  *
- * This behaves the same as g_list_model_get_n_items(), and is here
+ * This behaves the same as [method@Gio.ListModel.get_n_items], and is here
  * for code uniformity and convenience to avoid type casting by user.
  *
  * Returns: The number of streams in #ClapperStreamList.

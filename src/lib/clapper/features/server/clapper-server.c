@@ -920,7 +920,10 @@ clapper_server_set_port (ClapperServer *self, guint port)
  *
  * Get requested server listening port.
  *
- * Returns: Requested listening port or 0 using random port.
+ * If you want to know the port server is currently listening on,
+ * use [method@Clapper.Server.get_current_port] instead.
+ *
+ * Returns: Requested listening port or 0 when using random port.
  */
 guint
 clapper_server_get_port (ClapperServer *self)
@@ -965,9 +968,8 @@ clapper_server_get_current_port (ClapperServer *self)
  *
  * Set whether remote @server clients can control [class@Clapper.Queue].
  *
- * This includes ability to add/remove items from
- * the queue and selecting current item for playback
- * remotely using WebSocket messages.
+ * This includes ability to add/remove items from the queue and selecting
+ * current item for playback remotely using WebSocket messages.
  *
  * You probably want to keep this disabled if your application
  * is supposed to manage what is played now and not WebSocket client.
