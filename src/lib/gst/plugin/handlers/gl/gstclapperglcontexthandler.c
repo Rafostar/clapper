@@ -152,7 +152,13 @@ _gl_context_handler_context_realize (GstClapperGLContextHandler *self, GdkGLCont
    * See: https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1236 */
 #if GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_WAYLAND || GST_CLAPPER_GL_CONTEXT_HANDLER_HAVE_X11_EGL
 #if !defined(HAVE_GST_PATCHES) && (defined(__i386__) || defined(_M_IX86) || defined(__x86_64__) || defined(_M_X64))
-  preferred_api = GDK_GL_API_GL;
+  {
+    guint major = 0, minor = 0, micro = 0, nano = 0;
+
+    gst_version (&major, &minor, &micro, &nano);
+    if (major == 1 && minor < 24)
+      preferred_api = GDK_GL_API_GL;
+  }
 #endif
 #endif
 
