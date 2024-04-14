@@ -283,6 +283,8 @@ clapper_gtk_title_label_set_fallback_to_uri (ClapperGtkTitleLabel *self, gboolea
  *
  * Get whether a [property@Clapper.MediaItem:uri] property is going
  * be displayed as a label text when no other title could be determined.
+ *
+ * Returns: %TRUE when item URI will be used as fallback, %FALSE otherwise.
  */
 gboolean
 clapper_gtk_title_label_get_fallback_to_uri (ClapperGtkTitleLabel *self)

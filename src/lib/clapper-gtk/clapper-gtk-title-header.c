@@ -121,6 +121,8 @@ clapper_gtk_title_header_set_fallback_to_uri (ClapperGtkTitleHeader *self, gbool
  *
  * Get whether a [property@Clapper.MediaItem:uri] property is going
  * be displayed as a header text when no other title could be determined.
+ *
+ * Returns: %TRUE when item URI will be used as fallback, %FALSE otherwise.
  */
 gboolean
 clapper_gtk_title_header_get_fallback_to_uri (ClapperGtkTitleHeader *self)

@@ -166,6 +166,8 @@ clapper_gtk_simple_controls_set_fullscreenable (ClapperGtkSimpleControls *self, 
  *
  * Get whether [class@ClapperGtk.ToggleFullscreenButton] button in the @controls
  * is set to be visible.
+ *
+ * Returns: %TRUE when fullscreenable, %FALSE otherwise.
  */
 gboolean
 clapper_gtk_simple_controls_get_fullscreenable (ClapperGtkSimpleControls *self)

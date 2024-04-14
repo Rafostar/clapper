@@ -86,6 +86,7 @@ clapper_gtk_container_new (void)
 /**
  * clapper_gtk_container_set_child:
  * @container: a #ClapperGtkContainer
+ * @child: a #GtkWidget
  *
  * Set a child #GtkWidget of @container.
  */
