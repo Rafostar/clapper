@@ -1,0 +1,25 @@
+{
+    "name": "dav1d",
+    "buildsystem": "meson",
+    "only-arches": [
+        "x86_64"
+    ],
+    "config-opts": [
+        "-Denable_tools=false",
+        "-Denable_examples=false",
+        "-Denable_tests=false",
+        "-Denable_docs=false",
+        "-Dlogging=false"
+    ],
+    "cleanup": [
+        "/include",
+        "/lib/pkgconfig"
+    ],
+    "sources": [
+        {
+            "type": "git",
+            "url": "https://code.videolan.org/videolan/dav1d.git",
+            "branch": "master"
+        }
+    ]
+}
