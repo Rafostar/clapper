@@ -7,9 +7,34 @@
        <class name="initialstate"/>
     </style>
     <child>
-      <object class="ClapperAppWindowStateButtons">
-        <property name="halign">end</property>
-        <property name="valign">center</property>
+      <object class="GtkCenterBox">
+        <property name="orientation">horizontal</property>
+        <property name="halign">fill</property>
+        <property name="valign">start</property>
+        <child type="start">
+          <object class="ClapperAppWindowStateButtons">
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <property name="position">left</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="ClapperAppWindowStateButtons">
+            <property name="halign">end</property>
+            <property name="valign">center</property>
+            <property name="menu-button">
+              <object class="GtkMenuButton">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">app_menu</property>
+                <style>
+                  <class name="osd"/>
+                  <class name="flat"/>
+                  <class name="circular"/>
+                </style>
+              </object>
+            </property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
@@ -49,4 +74,23 @@
       </object>
     </child>
   </object>
+  <menu id="app_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <!-- TRANSLATORS: Please do not translate application name -->
+        <attribute name="label" translatable="yes">About Clapper</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>
