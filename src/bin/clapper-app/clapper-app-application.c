@@ -527,7 +527,7 @@ clapper_app_application_constructed (GObject *object)
     { "app.about", { "F1", NULL, NULL }},
     { "win.toggle-fullscreen", { "F11", "f", NULL }},
     { "win.show-help-overlay", { "<Control>question", NULL, NULL }},
-    { "window.close", { "<Control>q", NULL, NULL }},
+    { "window.close", { "<Control>q", "q", NULL }},
   };
 
   /* Override initial ranks, they will be updated

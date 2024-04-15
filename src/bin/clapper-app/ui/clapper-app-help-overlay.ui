@@ -30,7 +30,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Quit</property>
-                <property name="accelerator">&lt;Ctrl&gt;Q</property>
+                <property name="accelerator">&lt;Ctrl&gt;q q</property>
               </object>
             </child>
           </object>
@@ -41,13 +41,13 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Add Files…</property>
-                <property name="accelerator">&lt;Ctrl&gt;O</property>
+                <property name="accelerator">&lt;Ctrl&gt;o</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Add URI…</property>
-                <property name="accelerator">&lt;Ctrl&gt;U</property>
+                <property name="accelerator">&lt;Ctrl&gt;u</property>
               </object>
             </child>
           </object>
@@ -86,7 +86,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Change progression mode</property>
-                <property name="accelerator">&lt;Ctrl&gt;P</property>
+                <property name="accelerator">&lt;Ctrl&gt;p</property>
               </object>
             </child>
           </object>
@@ -150,7 +150,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Toggle mute</property>
-                <property name="accelerator">M</property>
+                <property name="accelerator">m</property>
               </object>
             </child>
             <child>
