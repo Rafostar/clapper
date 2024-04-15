@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-15 16:31\n"
+"PO-Revision-Date: 2024-04-15 17:41\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -343,44 +343,44 @@ msgstr "Ranking pluginów"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:182
 msgid "Available plugins"
-msgstr ""
+msgstr "Dostępne pluginy"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
+msgstr "Wybierz plugin i jego funkcję do nadpisania rangi. Gdy wiele elementów oferuje podobne możliwości, preferowany będzie ten o najwyższej wartości."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:195
 msgid "Plugin feature"
-msgstr ""
+msgstr "Funkcja pluginu"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:213
 msgid "Add override"
-msgstr ""
+msgstr "Dodaj nadpisanie"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:229
 msgid "Rank overrides"
-msgstr ""
+msgstr "Nadpisane rangi"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
 msgid "Add"
-msgstr ""
+msgstr "Dodaj"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr ""
+msgstr "Progresja kolejki"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
-msgstr ""
+msgstr "Dodaj URI"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
+msgstr "Wpisz URI, które chcesz dodać do kolejki odtwarzania"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
@@ -392,15 +392,15 @@ msgstr "Anuluj"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr ""
+msgstr "Rozdzielczość"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr ""
+msgstr "Ilość klatek na sekundę"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr ""
+msgstr "Format pikseli"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
 msgid "Preferences"
@@ -408,7 +408,7 @@ msgstr "Preferencje"
 
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Skróty klawiszowe"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
@@ -422,11 +422,11 @@ msgstr "Rafał Dzięgiel <rafostar.github@gmail.com>"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
-msgstr ""
+msgstr "Sprzętowe"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Software"
-msgstr ""
+msgstr "Programowe"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
@@ -442,25 +442,25 @@ msgstr "Szybki"
 
 #: src/bin/clapper-app/clapper-app-utils.c:66
 msgid "No progression"
-msgstr ""
+msgstr "Brak progresji"
 
 #: src/bin/clapper-app/clapper-app-utils.c:67
 msgid "Consecutive"
-msgstr ""
+msgstr "Po kolei"
 
 #: src/bin/clapper-app/clapper-app-utils.c:68
 msgid "Repeat item"
-msgstr ""
+msgstr "Powtarzaj rzecz"
 
 #: src/bin/clapper-app/clapper-app-utils.c:69
 msgid "Carousel"
-msgstr ""
+msgstr "Karuzela"
 
 #: src/bin/clapper-app/clapper-app-utils.c:70
 msgid "Shuffle"
-msgstr ""
+msgstr "Losowo"
 
 #: src/bin/clapper-app/clapper-app-window.c:824
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
+msgstr "Upuść na pasku tytułowym, aby odtworzyć teraz lub gdziekolwiek indziej by skolejkować."
 
