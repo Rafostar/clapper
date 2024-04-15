@@ -16,7 +16,7 @@
             "autodelete": false
         }
     },
-    "command": "com.github.rafostar.Clapper",
+    "command": "clapper",
     "separate-locales": false,
     "finish-args": [
         "--share=ipc",
@@ -46,6 +46,8 @@
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
+        "testing/libmicrodns.json",
+        "testing/dav1d.json",
         "testing/gstreamer.json",
         "testing/gst-plugins-rs.json",
         "testing/gtuber.json",
