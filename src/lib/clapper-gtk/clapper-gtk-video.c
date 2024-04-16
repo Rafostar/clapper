@@ -976,7 +976,7 @@ _video_sink_changed_cb (ClapperPlayer *player,
   GstElement *vsink = clapper_player_get_video_sink (player);
   GtkWidget *child = NULL;
 
-  GST_DEBUG_OBJECT (self, "Video sink changed");
+  GST_DEBUG_OBJECT (self, "Video sink changed to: %" GST_PTR_FORMAT, vsink);
 
   if (vsink) {
     GParamSpec *pspec;
