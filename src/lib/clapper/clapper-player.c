@@ -1220,7 +1220,7 @@ clapper_player_set_playbin_prop_element (ClapperPlayer *self, const gchar *prop_
   GValue value = G_VALUE_INIT;
 
   g_return_if_fail (CLAPPER_IS_PLAYER (self));
-  g_return_if_fail (GST_IS_ELEMENT (element));
+  g_return_if_fail (element == NULL || GST_IS_ELEMENT (element));
 
   g_value_init (&value, GST_TYPE_ELEMENT);
   g_value_set_object (&value, element);
@@ -1243,7 +1243,7 @@ clapper_player_get_playbin_prop_element (ClapperPlayer *self, const gchar *prop_
 /**
  * clapper_player_set_video_sink:
  * @player: a #ClapperPlayer
- * @element: a #GstElement.
+ * @element: (nullable): a #GstElement or %NULL to use default.
  *
  * Set #GstElement to be used as video sink.
  */
@@ -1270,7 +1270,7 @@ clapper_player_get_video_sink (ClapperPlayer *self)
 /**
  * clapper_player_set_audio_sink:
  * @player: a #ClapperPlayer
- * @element: a #GstElement.
+ * @element: (nullable): a #GstElement or %NULL to use default.
  *
  * Set #GstElement to be used as audio sink.
  */
@@ -1297,7 +1297,7 @@ clapper_player_get_audio_sink (ClapperPlayer *self)
 /**
  * clapper_player_set_video_filter:
  * @player: a #ClapperPlayer
- * @element: a #GstElement.
+ * @element: (nullable): a #GstElement or %NULL for none.
  *
  * Set #GstElement to be used as video filter.
  */
@@ -1324,7 +1324,7 @@ clapper_player_get_video_filter (ClapperPlayer *self)
 /**
  * clapper_player_set_audio_filter:
  * @player: a #ClapperPlayer
- * @element: a #GstElement.
+ * @element: (nullable): a #GstElement or %NULL for none.
  *
  * Set #GstElement to be used as audio filter.
  */
