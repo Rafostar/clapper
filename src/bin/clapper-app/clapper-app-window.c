@@ -701,15 +701,15 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
 {
   switch (keyval) {
     case GDK_KEY_Up:
-      if (state == 0)
+      if ((state & GDK_MODIFIER_MASK) == 0)
         gtk_widget_activate_action (self->video, "video.volume-up", NULL);
       break;
     case GDK_KEY_Down:
-      if (state == 0)
+      if ((state & GDK_MODIFIER_MASK) == 0)
         gtk_widget_activate_action (self->video, "video.volume-down", NULL);
       break;
     case GDK_KEY_Left:
-      if (state == 0) {
+      if ((state & GDK_MODIFIER_MASK) == 0) {
         _handle_seek_key_press (self, FALSE);
       } else if (!self->key_held && (state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) {
         _handle_chapter_key_press (self, FALSE);
@@ -718,11 +718,11 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
       }
       break;
     case GDK_KEY_j:
-      if (state == 0)
+      if ((state & GDK_MODIFIER_MASK) == 0)
         _handle_seek_key_press (self, FALSE);
       break;
     case GDK_KEY_Right:
-      if (state == 0) {
+      if ((state & GDK_MODIFIER_MASK) == 0) {
         _handle_seek_key_press (self, TRUE);
       } else if (!self->key_held && (state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) {
         _handle_chapter_key_press (self, TRUE);
@@ -731,7 +731,7 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
       }
       break;
     case GDK_KEY_l:
-      if (state == 0)
+      if ((state & GDK_MODIFIER_MASK) == 0)
         _handle_seek_key_press (self, TRUE);
       break;
     case GDK_KEY_space:
