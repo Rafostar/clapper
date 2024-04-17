@@ -86,7 +86,7 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Change progression mode</property>
-                <property name="accelerator">&lt;Ctrl&gt;p</property>
+                <property name="accelerator">p</property>
               </object>
             </child>
           </object>
