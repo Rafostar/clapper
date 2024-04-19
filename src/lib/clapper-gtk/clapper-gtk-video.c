@@ -969,46 +969,78 @@ _player_state_changed_cb (ClapperPlayer *player,
   _set_buffering_animation_enabled (self, state == CLAPPER_PLAYER_STATE_BUFFERING);
 }
 
+static GtkWidget *
+_get_widget_from_video_sink (GstElement *vsink)
+{
+  GtkWidget *widget = NULL;
+  GParamSpec *pspec;
+
+  if ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (vsink), "widget"))
+      && pspec->value_type == GTK_TYPE_WIDGET) {
+    GST_DEBUG ("Video sink provides a widget");
+    g_object_get (vsink, "widget", &widget, NULL);
+  } else if ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (vsink), "paintable"))
+      && pspec->value_type == GDK_TYPE_PAINTABLE) {
+    GdkPaintable *paintable = NULL;
+
+    GST_DEBUG ("Video sink provides a paintable");
+    g_object_get (vsink, "paintable", &paintable, NULL);
+
+    widget = g_object_ref_sink (gtk_picture_new ());
+    gtk_picture_set_paintable (GTK_PICTURE (widget), paintable);
+
+    g_object_unref (paintable);
+  }
+
+  return widget;
+}
+
 static void
 _video_sink_changed_cb (ClapperPlayer *player,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkVideo *self)
 {
   GstElement *vsink = clapper_player_get_video_sink (player);
-  GtkWidget *child = NULL;
+  GtkWidget *widget = NULL;
 
   GST_DEBUG_OBJECT (self, "Video sink changed to: %" GST_PTR_FORMAT, vsink);
 
   if (vsink) {
-    GParamSpec *pspec;
+    widget = _get_widget_from_video_sink (vsink);
 
-    if ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (vsink), "widget"))
-        && pspec->value_type == GTK_TYPE_WIDGET) {
-      g_object_get (vsink, "widget", &child, NULL);
-      GST_DEBUG_OBJECT (self, "Video sink provides a widget");
-    } else if ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (vsink), "paintable"))
-        && pspec->value_type == GDK_TYPE_PAINTABLE) {
-      GdkPaintable *paintable = NULL;
+    if (!widget && GST_IS_BIN (vsink)) {
+      GstIterator *iter;
+      GValue value = G_VALUE_INIT;
 
-      g_object_get (vsink, "paintable", &paintable, NULL);
-      GST_DEBUG_OBJECT (self, "Video sink provides a paintable");
+      iter = gst_bin_iterate_recurse (GST_BIN_CAST (vsink));
 
-      child = gtk_picture_new ();
-      gtk_picture_set_paintable (GTK_PICTURE (child), paintable);
+      while (gst_iterator_next (iter, &value) == GST_ITERATOR_OK) {
+        GstElement *element = g_value_get_object (&value);
 
-      g_object_unref (paintable);
+        if (GST_OBJECT_FLAG_IS_SET (element, GST_ELEMENT_FLAG_SINK))
+          widget = _get_widget_from_video_sink (element);
+
+        g_value_unset (&value);
+
+        if (widget)
+          break;
+      }
+
+      gst_iterator_free (iter);
     }
 
     gst_object_unref (vsink);
   }
 
-  if (!child) {
+  if (!widget) {
     /* FIXME: Create some default widget to show */
-    child = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    widget = g_object_ref_sink (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
 
     GST_DEBUG_OBJECT (self, "No widget from video sink, using placeholder");
   }
 
-  gtk_overlay_set_child (GTK_OVERLAY (self->overlay), child);
+  gtk_overlay_set_child (GTK_OVERLAY (self->overlay), widget);
+  g_object_unref (widget);
+
   GST_DEBUG_OBJECT (self, "Set new video widget");
 }
 
