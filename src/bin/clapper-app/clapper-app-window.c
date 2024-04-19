@@ -736,7 +736,7 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
       break;
     case GDK_KEY_space:
     case GDK_KEY_k:
-      if (!self->key_held) // Disable constant toggling when key held
+      if (!self->key_held && (state & GDK_MODIFIER_MASK) == 0)
         gtk_widget_activate_action (self->video, "video.toggle-play", NULL);
       break;
     case GDK_KEY_less:
@@ -748,10 +748,11 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
         _handle_speed_key_press (self, TRUE);
       break;
     case GDK_KEY_m:
-      gtk_widget_activate_action (self->video, "video.toggle-mute", NULL);
+      if (!self->key_held && (state & GDK_MODIFIER_MASK) == 0)
+        gtk_widget_activate_action (self->video, "video.toggle-mute", NULL);
       break;
     case GDK_KEY_p:
-      if (!self->key_held)
+      if (!self->key_held && (state & GDK_MODIFIER_MASK) == 0)
         _handle_progression_key_press (self);
       break;
     default:
