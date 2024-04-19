@@ -1399,6 +1399,22 @@ clapper_gtk_video_constructed (GObject *object)
   g_signal_connect (self->player, "notify::video-sink",
       G_CALLBACK (_video_sink_changed_cb), self);
 
+  /* FIXME: This is a temporary workaround for lack
+   * of DMA_DRM negotiation support in sink itself */
+  if (G_LIKELY (vsink != NULL)) {
+    guint major = 0, minor = 0, micro = 0, nano = 0;
+
+    gst_version (&major, &minor, &micro, &nano);
+    if (major == 1 && minor >= 24) {
+      GstElement *bin;
+
+      if ((bin = gst_element_factory_make ("glsinkbin", NULL))) {
+        g_object_set (bin, "sink", vsink, NULL);
+        vsink = bin;
+      }
+    }
+  }
+
   clapper_player_set_video_sink (self->player, vsink);
 
   g_signal_connect (self->player, "error",
