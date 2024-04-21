@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-21 20:36\n"
+"POT-Creation-Date: 2024-04-21 20:22+0200\n"
+"PO-Revision-Date: 2024-04-21 20:51\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -44,6 +44,22 @@ msgstr "Szybkość transmisji bitów"
 msgid "Language"
 msgstr "Język"
 
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
+msgid "Preferences"
+msgstr "Preferencje"
+
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
+msgid "Keyboard Shortcuts"
+msgstr "Skróty klawiszowe"
+
+#. TRANSLATORS: Please do not translate application name
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
+msgid "About Clapper"
+msgstr "O programie"
+
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
@@ -75,13 +91,13 @@ msgid "Media"
 msgstr "Media"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:30
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
 msgstr "Dodaj pliki…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:40
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
 msgstr "Dodaj URI…"
@@ -248,7 +264,7 @@ msgstr "Strumienie audio"
 msgid "Subtitle Streams"
 msgstr "Strumienie napisów"
 
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:21
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
 msgstr "Zacznij przez dodanie mediów do kolejki odtwarzania"
 
@@ -402,19 +418,6 @@ msgstr "Ilość klatek na sekundę"
 msgid "Pixel Format"
 msgstr "Format pikseli"
 
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
-msgid "Preferences"
-msgstr "Preferencje"
-
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
-msgid "Keyboard Shortcuts"
-msgstr "Skróty klawiszowe"
-
-#. TRANSLATORS: Please do not translate application name
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
-msgid "About Clapper"
-msgstr "O programie"
-
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
 msgid "translator-credits"
@@ -460,7 +463,7 @@ msgstr "Karuzela"
 msgid "Shuffle"
 msgstr "Losowo"
 
-#: src/bin/clapper-app/clapper-app-window.c:824
+#: src/bin/clapper-app/clapper-app-window.c:828
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr "Upuść na pasku tytułowym, aby odtworzyć teraz lub gdziekolwiek indziej by skolejkować."
 
