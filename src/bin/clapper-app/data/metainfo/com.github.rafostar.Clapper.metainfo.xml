@@ -1,50 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2024 Rafał Dzięgiel -->
 <component type="desktop-application">
   <id>com.github.rafostar.Clapper</id>
+  <name>Clapper</name>
+  <summary>Simple and modern media player</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
-  <name>Clapper</name>
-  <summary>Simple and modern GNOME media player</summary>
-  <translation type="gettext">com.github.rafostar.Clapper</translation>
+  <developer id="com.github.rafostar">
+    <name>Rafał Dzięgiel</name>
+  </developer>
+  <translation type="gettext">clapper-app</translation>
   <launchable type="desktop-id">com.github.rafostar.Clapper.desktop</launchable>
-  <description>
-    <p>
-      Clapper is a GNOME media player built using GJS with GTK4 toolkit.
-      The media player is using GStreamer as a media backend and renders
-      everything via OpenGL. Player works natively on both Xorg and Wayland.
-      It also supports hardware acceleration through VA-API on AMD/Intel GPUs,
-      NVDEC on Nvidia and V4L2 on mobile devices.
-    </p>
-    <p>
-      The media player has an adaptive GUI. When viewing videos in "Windowed Mode",
-      Clapper will use mostly unmodified GTK widgets to match your OS look nicely.
-      When player enters "Fullscreen Mode" all GUI elements will become darker, bigger
-      and semi-transparent for your viewing comfort. It also has a "Floating Mode" which
-      displays only video on top of all other windows for a PiP-like viewing experience.
-      Mobile friendly transitions are also supported.
-    </p>
-  </description>
-  <developer_name>Rafał Dzięgiel</developer_name>
   <url type="homepage">https://rafostar.github.io/clapper</url>
   <url type="bugtracker">https://github.com/Rafostar/clapper/issues</url>
   <url type="donation">https://liberapay.com/Clapper</url>
   <url type="help">https://github.com/Rafostar/clapper/wiki</url>
-  <categories>
-    <category>AudioVideo</category>
-    <category>Video</category>
-  </categories>
+  <description>
+    <p>
+      Clapper is a modern media player designed for simplicity and ease of use.
+      Powered by GStreamer and built for the GNOME desktop environment using
+      GTK4 toolkit, it has a clean and stylish interface that lets you focus
+      on enjoying your favorite videos.
+    </p>
+    <p>
+      Clapper uses a playback queue where you can add multiple media files.
+      Think of it like a playlist that you can build. You can easily reorder
+      items or remove them from the queue with a simple drag and drop operation.
+    </p>
+  </description>
   <screenshots>
     <screenshot type="default">
-      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-windowed.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_01.png</image>
     </screenshot>
     <screenshot>
-      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-fullscreen.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_02.png</image>
     </screenshot>
     <screenshot>
-      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-floating.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png</image>
     </screenshot>
     <screenshot>
-      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot-mobile.png</image>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_04.png</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_05.png</image>
     </screenshot>
   </screenshots>
   <releases>
@@ -231,10 +229,6 @@
     <control>touch</control>
   </recommends>
   <requires>
-    <display_length compare="ge">small</display_length>
+    <display_length compare="ge">360</display_length>
   </requires>
-  <custom>
-    <value key="Purism::form_factor">workstation</value>
-    <value key="Purism::form_factor">mobile</value>
-  </custom>
 </component>
