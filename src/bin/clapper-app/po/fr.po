@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-15 17:41\n"
+"POT-Creation-Date: 2024-04-21 20:22+0200\n"
+"PO-Revision-Date: 2024-04-21 20:51\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -44,6 +44,22 @@ msgstr "Taux d’échantillonnage"
 msgid "Language"
 msgstr "Langue"
 
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
+msgid "Preferences"
+msgstr "Préférences"
+
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
+msgid "Keyboard Shortcuts"
+msgstr "Raccourcis clavier"
+
+#. TRANSLATORS: Please do not translate application name
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
+msgid "About Clapper"
+msgstr "À propos de Clapper"
+
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
@@ -75,13 +91,13 @@ msgid "Media"
 msgstr "Média"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:30
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
 msgstr "Ajouter des fichiers…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:40
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
 msgstr "Ajouter un URI…"
@@ -248,7 +264,7 @@ msgstr "Flux audio"
 msgid "Subtitle Streams"
 msgstr "Flux de sous-titres"
 
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:21
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
 msgstr "Commencez par ajouter des médias à la file d’attente de lecture"
 
@@ -402,19 +418,6 @@ msgstr "Fréquence d’images"
 msgid "Pixel Format"
 msgstr "Format de pixel"
 
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
-msgid "Preferences"
-msgstr "Préférences"
-
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
-msgid "Keyboard Shortcuts"
-msgstr "Raccourcis clavier"
-
-#. TRANSLATORS: Please do not translate application name
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
-msgid "About Clapper"
-msgstr "À propos de Clapper"
-
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
 msgid "translator-credits"
@@ -461,7 +464,7 @@ msgstr "Carrousel"
 msgid "Shuffle"
 msgstr "Aléatoire"
 
-#: src/bin/clapper-app/clapper-app-window.c:824
+#: src/bin/clapper-app/clapper-app-window.c:828
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr "Déposez sur la barre de titre pour lire maintenant, ou ailleurs pour ajouter à la file d’attente."
 
