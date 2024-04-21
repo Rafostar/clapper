@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-08 15:36\n"
+"POT-Creation-Date: 2024-04-12 19:52+0200\n"
+"PO-Revision-Date: 2024-04-12 19:44\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
 msgid "Video"
-msgstr ""
+msgstr "Vídeo"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
@@ -33,20 +33,34 @@ msgid "Subtitles"
 msgstr "Legendas"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
-msgid "Enabled"
-msgstr ""
+msgid "Show Subtitles"
+msgstr "Mostrar legendas"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
-msgstr ""
+msgstr "Abrir…"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
 msgid "Mute"
-msgstr ""
+msgstr "Silenciar"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Repor"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:79
+msgid "Unplayable Content"
+msgstr "Conteúdo não reproduzível"
+
+#. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
+#: src/lib/clapper-gtk/clapper-gtk-status.c:89
+#, c-format
+msgid "Your GStreamer installation is missing a plugin: %s"
+msgstr "A sua instalação do GStreamer está com um plugin em falta: %s"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:90
+msgid "Missing Plugin"
+msgstr "Plugin em falta"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
@@ -59,9 +73,9 @@ msgstr "Canais"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Nenhum ficheiro"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
+msgstr "Título desconhecido"
 

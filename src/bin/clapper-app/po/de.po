@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-09 17:44+0200\n"
-"Last-Translator: Florian \"sp1rit\" <sp1rit@disroot.org>\n"
+"POT-Creation-Date: 2024-04-21 20:22+0200\n"
+"PO-Revision-Date: 2024-04-21 20:51\n"
+"Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -44,6 +44,22 @@ msgstr "Bitrate"
 msgid "Language"
 msgstr "Sprache"
 
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
+msgid "Keyboard Shortcuts"
+msgstr "Tastaturkürzel"
+
+#. TRANSLATORS: Please do not translate application name
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
+msgid "About Clapper"
+msgstr "Über Clapper"
+
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
@@ -75,13 +91,13 @@ msgid "Media"
 msgstr "Medien"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:30
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
 msgstr "Dateien hinzufügen…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:40
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
 msgstr "URI hinzufügen…"
@@ -248,7 +264,7 @@ msgstr "Audiospuren"
 msgid "Subtitle Streams"
 msgstr "Untertitelspuren"
 
-#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:21
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
 msgstr "Beginnen sie damit, Medien zur Wiedergabewarteschlange hinzuzufügen"
 
@@ -347,10 +363,7 @@ msgstr "Verfügbare Plugins"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
-"Wähle ein Plugin und seine Funktion für welches sie die Position der "
-"Reihenfolge überschreiben möchten. Falls mehrere Plugins ähnlicheFähigkeiten "
-"besitzen, wird dasjenige mit dem höchsten Rang bevorzugt."
+msgstr "Wähle ein Plugin und seine Funktion für welches sie die Position der Reihenfolge überschreiben möchten. Falls mehrere Plugins ähnlicheFähigkeiten besitzen, wird dasjenige mit dem höchsten Rang bevorzugt."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
@@ -383,8 +396,7 @@ msgstr "URI hinzufügen"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
-"Geben sie eine URI an, welche zur Wiedergabewarteschlange hinzugefügt werden soll"
+msgstr "Geben sie eine URI an, welche zur Wiedergabewarteschlange hinzugefügt werden soll"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
@@ -405,19 +417,6 @@ msgstr "Bildwiederholrate"
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
 msgstr "Pixelformat"
-
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:57
-msgid "Preferences"
-msgstr "Einstellungen"
-
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:61
-msgid "Keyboard Shortcuts"
-msgstr "Tastaturkürzel"
-
-#. TRANSLATORS: Please do not translate application name
-#: src/bin/clapper-app/ui/clapper-app-window-state-buttons.ui:68
-msgid "About Clapper"
-msgstr "Über Clapper"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
@@ -464,8 +463,7 @@ msgstr "Kreislauf"
 msgid "Shuffle"
 msgstr "Zufallswiedergabe"
 
-#: src/bin/clapper-app/clapper-app-window.c:824
+#: src/bin/clapper-app/clapper-app-window.c:828
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
-"Zur direkten Wiedergabe legen Sie die Datei auf der Titelleiste ab, "
-"andernfalls wird die Datei der Warteschlange hinzugefügt."
+msgstr "Zur direkten Wiedergabe legen Sie die Datei auf der Titelleiste ab, andernfalls wird die Datei der Warteschlange hinzugefügt."
+

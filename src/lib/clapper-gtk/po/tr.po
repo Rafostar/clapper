@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-05 20:50+0200\n"
-"PO-Revision-Date: 2024-04-08 15:36\n"
+"POT-Creation-Date: 2024-04-12 19:52+0200\n"
+"PO-Revision-Date: 2024-04-12 20:52\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
@@ -30,23 +30,37 @@ msgstr "Ses"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Subtitles"
-msgstr "Altyazılar"
+msgstr "Alt Yazılar"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
-msgid "Enabled"
-msgstr ""
+msgid "Show Subtitles"
+msgstr "Alt Yazıları Göster"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
-msgstr ""
+msgstr "Aç…"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
 msgid "Mute"
-msgstr ""
+msgstr "Sessiz"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Sıfırla"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:79
+msgid "Unplayable Content"
+msgstr "Oynatılamaz İçerik"
+
+#. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
+#: src/lib/clapper-gtk/clapper-gtk-status.c:89
+#, c-format
+msgid "Your GStreamer installation is missing a plugin: %s"
+msgstr "GStreamer kurulumunda eksik eklenti: %s"
+
+#: src/lib/clapper-gtk/clapper-gtk-status.c:90
+msgid "Missing Plugin"
+msgstr "Eksik Eklenti"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
@@ -59,9 +73,9 @@ msgstr "Kanallar"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Ortam yok"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
+msgstr "Bilinmeyen başlık"
 
