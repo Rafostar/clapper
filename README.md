@@ -48,8 +48,10 @@ Those are automatically built on each git commit, thus are considered unstable.
 
 ## Installation from Source Code
 ```sh
-meson builddir --prefix=/usr/local
-sudo meson install -C builddir
+meson setup builddir
+cd builddir
+meson compile
+sudo meson install
 ```
 
 ## Questions?
