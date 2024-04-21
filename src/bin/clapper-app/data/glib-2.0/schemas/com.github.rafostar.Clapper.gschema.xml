@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="com.github.rafostar.Clapper">
+<schemalist gettext-domain="clapper-app">
   <schema id="com.github.rafostar.Clapper" path="/com/github/rafostar/Clapper/">
     <!-- General -->
     <key name="seek-method" type="i">
