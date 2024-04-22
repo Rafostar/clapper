@@ -114,6 +114,17 @@ _set_object_prop (GQuark field_id, const GValue *value, GstObject *object)
 }
 */
 
+static inline void
+dump_dot_file (ClapperPlayer *player, const gchar *name)
+{
+  gchar full_name[40];
+
+  g_snprintf (full_name, sizeof (full_name), "clapper.%p.%s", player, name);
+
+  GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS (GST_BIN_CAST (player->playbin),
+      GST_DEBUG_GRAPH_SHOW_ALL, full_name);
+}
+
 static void
 _perform_flush_seek (ClapperPlayer *player)
 {
@@ -177,6 +188,8 @@ _handle_warning_msg (GstMessage *msg, ClapperPlayer *player)
   gst_message_parse_warning (msg, &error, &debug_info);
   GST_WARNING_OBJECT (player, "Warning: %s", error->message);
 
+  dump_dot_file (player, "WARNING");
+
   signal_id = g_signal_lookup ("warning", CLAPPER_TYPE_PLAYER);
 
   clapper_app_bus_post_error_signal (player->app_bus,
@@ -195,6 +208,8 @@ _handle_error_msg (GstMessage *msg, ClapperPlayer *player)
 
   gst_message_parse_error (msg, &error, &debug_info);
   GST_ERROR_OBJECT (player, "Error: %s", error->message);
+
+  dump_dot_file (player, "ERROR");
 
   GST_OBJECT_LOCK (player);
   player->had_error = TRUE;
@@ -559,6 +574,8 @@ _handle_state_changed_msg (GstMessage *msg, ClapperPlayer *player)
   gst_message_parse_state_changed (msg, &old_state, &player->current_state, &pending_state);
   GST_LOG_OBJECT (player, "State changed, old: %i, current: %i, pending: %i",
       old_state, player->current_state, pending_state);
+
+  dump_dot_file (player, gst_element_state_get_name (player->current_state));
 
   /* Seek operation is progressing as expected. Return as we do not
    * want to change ClapperPlayerState when seeking or rate changing. */
