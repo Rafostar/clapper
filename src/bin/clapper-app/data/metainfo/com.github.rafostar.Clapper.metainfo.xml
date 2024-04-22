@@ -6,6 +6,8 @@
   <summary>Simple and modern media player</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
+  <!-- Old AppStream compat -->
+  <developer_name>Rafał Dzięgiel</developer_name>
   <developer id="com.github.rafostar">
     <name>Rafał Dzięgiel</name>
   </developer>
