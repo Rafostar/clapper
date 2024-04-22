@@ -73,7 +73,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <h3><a href="index.html">Clapper</a></h3>
         <p>API Version: 0.0</p>
         
-        <p>Library Version: 0.5.2</p>
+        <p>Library Version: 0.6.0</p>
         
       </div>
       
@@ -155,6 +155,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
       <div class="docblock">
         <p>Get requested server listening&nbsp;port.</p>
+<p>If you want to know the port server is currently listening on,
+use <a href="method.Server.get_current_port.html"><code>clapper_server_get_current_port()</code></a>&nbsp;instead.</p>
       </div>
 
       <div class="docblock">
@@ -190,7 +192,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <div class="returns">
           <div class="arg-description">
             <p><em>Type:</em>&nbsp;<code>guint</code></p>
-            <p><p>Requested listening port or 0 using random&nbsp;port.</p></p>
+            <p><p>Requested listening port or 0 when using random&nbsp;port.</p></p>
           </div>
           <div>
             <table>
