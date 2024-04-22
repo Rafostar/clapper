@@ -48,6 +48,34 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.6.0" date="2024-04-22">
+      <description>
+        <p>
+          In this release Clapper code was rewritten from scratch. Now split into
+          two libraries and an application built on top of them, with:
+        </p>
+        <ul>
+          <li>Brand new, simplified and consistent UI</li>
+          <li>Player now operates on playback queue model</li>
+          <li>Multiple queue progression modes to choose from (consecutive, repeat item, carousel, shuffle)</li>
+          <li>New media info window (shows media information and GStreamer elements used to play it)</li>
+          <li>More dialogs and windows use libadwaita</li>
+          <li>Multiple new status/info overlays showing what is going and other messages</li>
+          <li>Added video buffering animation</li>
+          <li>Clapper will now inform users about missing GStreamer plugins needed for playback</li>
+          <li>Video chapters now appear throughout the seek bar on hover and while dragging slider</li>
+          <li>Vastly expanded MPRIS implementation</li>
+          <li>Integrated media discovery (see titles of queued items instead of URIs)</li>
+          <li>Expanded WebSocket server functionality (for remote playback control)</li>
+          <li>Increased maximum volume amplification level to 200%</li>
+          <li>Added some new keyboard shortcuts</li>
+          <li>In addition to volume, now also speed and queue progression mode are restored on launch</li>
+          <li>Fixed keyboard shortcuts not being reversed (e.g. seek) in RTL languages</li>
+          <li>Toggle play moved to left mouse button, right one now opens context menu (which was previously hard to access)</li>
+          <li>Many bug fixes and QoL improvements</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.5.2" date="2022-06-24">
       <description>
         <p>Fixes:</p>
