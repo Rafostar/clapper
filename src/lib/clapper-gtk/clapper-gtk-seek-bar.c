@@ -248,6 +248,9 @@ scale_value_changed_cb (GtkRange *range, ClapperGtkSeekBar *self)
 
     x = min_pointing_val + (value / scaling);
 
+    if (gtk_widget_get_default_direction () == GTK_TEXT_DIR_RTL)
+      x = max_pointing_val + min_pointing_val - x;
+
     if (_prepare_popover (self, x, value, upper))
       gtk_popover_popup (self->popover);
     else
@@ -346,6 +349,10 @@ motion_cb (GtkEventControllerMotion *motion,
   scaling = (upper / (max_pointing_val - min_pointing_val));
 
   pointing_val = (x - min_pointing_val) * scaling;
+
+  if (gtk_widget_get_default_direction () == GTK_TEXT_DIR_RTL)
+    pointing_val = upper - pointing_val;
+
   GST_LOG ("Cursor pointing to: %lf", pointing_val);
 
   if (_prepare_popover (self, x, pointing_val, upper))
