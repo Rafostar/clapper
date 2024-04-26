@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-04-26 02:29\n"
+"PO-Revision-Date: 2024-04-26 03:26\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -25,7 +25,7 @@ msgstr "Vídeo"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Audio"
-msgstr "Audio"
+msgstr "Áudio"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
