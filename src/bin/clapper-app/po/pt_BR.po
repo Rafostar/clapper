@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-04-21 20:51\n"
+"PO-Revision-Date: 2024-04-26 02:29\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
 msgid "Codec"
-msgstr ""
+msgstr "Codec"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
@@ -215,7 +215,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:36
 msgid "Video"
-msgstr ""
+msgstr "Vídeo"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:107
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:80
