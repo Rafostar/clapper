@@ -254,8 +254,8 @@
   </releases>
   <content_rating type="oars-1.1" />
   <branding>
-    <color type="primary" scheme_preference="light">#9141ac</color>
-    <color type="primary" scheme_preference="dark">#241f31</color>
+    <color type="primary" scheme_preference="light">#8484ee</color>
+    <color type="primary" scheme_preference="dark">#1a1a74</color>
   </branding>
   <recommends>
     <control>keyboard</control>
