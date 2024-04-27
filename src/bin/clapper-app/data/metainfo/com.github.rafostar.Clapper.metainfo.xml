@@ -3,7 +3,7 @@
 <component type="desktop-application">
   <id>com.github.rafostar.Clapper</id>
   <name>Clapper</name>
-  <summary>Simple and modern media player</summary>
+  <summary>Lean back and enjoy videos</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <!-- Old AppStream compat -->
