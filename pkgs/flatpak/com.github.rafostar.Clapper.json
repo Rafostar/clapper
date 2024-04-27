@@ -31,7 +31,7 @@
     ],
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
-        "testing/liba52.json",
+        "flathub/lib/liba52.json",
         "flathub/lib/libmpeg2.json",
         "flathub/lib/libdv.json",
         "flathub/lib/libdvdcss.json",
@@ -39,7 +39,7 @@
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
         "flathub/lib/uchardet.json",
-        "testing/libmicrodns.json",
+        "flathub/lib/libmicrodns.json",
         "flathub/gstreamer-1.0/gstreamer.json",
         "testing/gtuber.json",
         {
