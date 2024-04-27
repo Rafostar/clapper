@@ -19,6 +19,7 @@
 
 #include <glib/gi18n.h>
 #include <gst/gst.h>
+#include <clapper/clapper.h>
 #include <adwaita.h>
 
 #include "clapper-app-about-window.h"
@@ -38,6 +39,9 @@ clapper_app_about_window_new (GtkApplication *gtk_app)
 
   gtk_window_set_modal (GTK_WINDOW (about), TRUE);
   gtk_window_set_transient_for (GTK_WINDOW (about), window);
+
+  /* Also show development versions */
+  adw_about_window_set_version (about, CLAPPER_VERSION_S);
 
   /* TRANSLATORS: Put your name(s) here for credits or leave untranslated */
   adw_about_window_set_translator_credits (about, _("translator-credits"));
