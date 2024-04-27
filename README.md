@@ -54,6 +54,8 @@ meson compile
 sudo meson install
 ```
 
+If you want to compile app as `Flatpak`, remember to clone this repo with `--recurse-submodules` option.
+
 ## Questions?
 Feel free to ask me any questions. Come and talk on Matrix: [#clapper-player:matrix.org](https://matrix.to/#/#clapper-player:matrix.org)
 
