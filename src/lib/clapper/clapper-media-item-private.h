@@ -38,6 +38,12 @@ G_GNUC_INTERNAL
 gboolean clapper_media_item_set_duration (ClapperMediaItem *item, gdouble duration, ClapperAppBus *app_bus);
 
 G_GNUC_INTERNAL
+void clapper_media_item_set_cache_location (ClapperMediaItem *item, const gchar *location);
+
+G_GNUC_INTERNAL
+const gchar * clapper_media_item_get_playback_uri (ClapperMediaItem *item);
+
+G_GNUC_INTERNAL
 void clapper_media_item_set_used (ClapperMediaItem *item, gboolean used);
 
 G_GNUC_INTERNAL

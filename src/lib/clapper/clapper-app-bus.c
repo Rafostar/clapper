@@ -43,6 +43,7 @@ enum
   CLAPPER_APP_BUS_STRUCTURE_REFRESH_STREAMS,
   CLAPPER_APP_BUS_STRUCTURE_REFRESH_TIMELINE,
   CLAPPER_APP_BUS_STRUCTURE_SIMPLE_SIGNAL,
+  CLAPPER_APP_BUS_STRUCTURE_OBJECT_DESC_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_DESC_WITH_DETAILS_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_ERROR_SIGNAL
 };
@@ -53,6 +54,7 @@ static ClapperBusQuark _structure_quarks[] = {
   {"refresh-streams", 0},
   {"refresh-timeline", 0},
   {"simple-signal", 0},
+  {"object-desc-signal", 0},
   {"desc-with-details-signal", 0},
   {"error-signal", 0},
   {NULL, 0}
@@ -63,6 +65,7 @@ enum
   CLAPPER_APP_BUS_FIELD_UNKNOWN = 0,
   CLAPPER_APP_BUS_FIELD_PSPEC,
   CLAPPER_APP_BUS_FIELD_SIGNAL_ID,
+  CLAPPER_APP_BUS_FIELD_OBJECT,
   CLAPPER_APP_BUS_FIELD_DESC,
   CLAPPER_APP_BUS_FIELD_DETAILS,
   CLAPPER_APP_BUS_FIELD_ERROR,
@@ -73,6 +76,7 @@ static ClapperBusQuark _field_quarks[] = {
   {"unknown", 0},
   {"pspec", 0},
   {"signal-id", 0},
+  {"object", 0},
   {"desc", 0},
   {"details", 0},
   {"error", 0},
@@ -178,6 +182,37 @@ _handle_simple_signal_msg (GstMessage *msg, const GstStructure *structure)
 }
 
 void
+clapper_app_bus_post_object_desc_signal (ClapperAppBus *self,
+    GstObject *src, guint signal_id,
+    GstObject *object, const gchar *desc)
+{
+  GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (OBJECT_DESC_SIGNAL),
+      _FIELD_QUARK (SIGNAL_ID), G_TYPE_UINT, signal_id,
+      _FIELD_QUARK (OBJECT), GST_TYPE_OBJECT, object,
+      _FIELD_QUARK (DESC), G_TYPE_STRING, desc,
+      NULL);
+  gst_bus_post (GST_BUS_CAST (self), gst_message_new_application (src, structure));
+}
+
+static inline void
+_handle_object_desc_signal_msg (GstMessage *msg, const GstStructure *structure)
+{
+  guint signal_id = 0;
+  GstObject *object = NULL;
+  gchar *desc = NULL;
+
+  gst_structure_id_get (structure,
+      _FIELD_QUARK (SIGNAL_ID), G_TYPE_UINT, &signal_id,
+      _FIELD_QUARK (OBJECT), GST_TYPE_OBJECT, &object,
+      _FIELD_QUARK (DESC), G_TYPE_STRING, &desc,
+      NULL);
+  g_signal_emit (_MESSAGE_SRC_GOBJECT (msg), signal_id, 0, object, desc);
+
+  gst_object_unref (object);
+  g_free (desc);
+}
+
+void
 clapper_app_bus_post_desc_with_details_signal (ClapperAppBus *self,
     GstObject *src, guint signal_id,
     const gchar *desc, const gchar *details)
@@ -253,6 +288,8 @@ clapper_app_bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G
       _handle_refresh_timeline_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (SIMPLE_SIGNAL))
       _handle_simple_signal_msg (msg, structure);
+    else if (quark == _STRUCTURE_QUARK (OBJECT_DESC_SIGNAL))
+      _handle_object_desc_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (ERROR_SIGNAL))
       _handle_error_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (DESC_WITH_DETAILS_SIGNAL))

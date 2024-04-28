@@ -827,6 +827,24 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
 
     g_free (name);
     g_free (details);
+  } else if (gst_message_has_name (msg, "GstCacheDownloadComplete")) {
+    const GstStructure *structure;
+    const gchar *location;
+    guint signal_id;
+
+    if (G_UNLIKELY (player->played_item == NULL))
+      return;
+
+    structure = gst_message_get_structure (msg);
+    location = gst_structure_get_string (structure, "location");
+    signal_id = g_signal_lookup ("download-complete", CLAPPER_TYPE_PLAYER);
+
+    GST_INFO_OBJECT (player, "Download complete: %s", location);
+    clapper_media_item_set_cache_location (player->played_item, location);
+
+    clapper_app_bus_post_object_desc_signal (player->app_bus,
+        GST_OBJECT_CAST (player), signal_id,
+        GST_OBJECT_CAST (player->played_item), location);
   }
 }
 

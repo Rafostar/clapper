@@ -43,7 +43,7 @@
 #include "clapper-playbin-bus-private.h"
 #include "clapper-app-bus-private.h"
 #include "clapper-queue-private.h"
-#include "clapper-media-item.h"
+#include "clapper-media-item-private.h"
 #include "clapper-stream-list-private.h"
 #include "clapper-stream-private.h"
 #include "clapper-video-stream-private.h"
@@ -61,6 +61,7 @@
 #define DEFAULT_VIDEO_ENABLED TRUE
 #define DEFAULT_AUDIO_ENABLED TRUE
 #define DEFAULT_SUBTITLES_ENABLED TRUE
+#define DEFAULT_DOWNLOAD_ENABLED FALSE
 
 #define GST_CAT_DEFAULT clapper_player_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -90,6 +91,8 @@ enum
   PROP_VIDEO_ENABLED,
   PROP_AUDIO_ENABLED,
   PROP_SUBTITLES_ENABLED,
+  PROP_DOWNLOAD_DIR,
+  PROP_DOWNLOAD_ENABLED,
   PROP_AUDIO_OFFSET,
   PROP_SUBTITLE_OFFSET,
   PROP_SUBTITLE_FONT_DESC,
@@ -99,6 +102,7 @@ enum
 enum
 {
   SIGNAL_SEEK_DONE,
+  SIGNAL_DOWNLOAD_COMPLETE,
   SIGNAL_MISSING_PLUGIN,
   SIGNAL_WARNING,
   SIGNAL_ERROR,
@@ -278,14 +282,15 @@ void
 clapper_player_handle_playbin_flags_changed (ClapperPlayer *self, const GValue *value)
 {
   gint flags;
-  gboolean video_enabled, audio_enabled, subtitles_enabled;
-  gboolean video_changed, audio_changed, subtitles_changed;
+  gboolean video_enabled, audio_enabled, subtitles_enabled, download_enabled;
+  gboolean video_changed, audio_changed, subtitles_changed, download_changed;
 
   flags = g_value_get_flags (value);
 
   video_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_VIDEO) == CLAPPER_PLAYER_PLAY_FLAG_VIDEO);
   audio_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_AUDIO) == CLAPPER_PLAYER_PLAY_FLAG_AUDIO);
   subtitles_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_TEXT) == CLAPPER_PLAYER_PLAY_FLAG_TEXT);
+  download_enabled = ((flags & CLAPPER_PLAYER_PLAY_FLAG_DOWNLOAD) == CLAPPER_PLAYER_PLAY_FLAG_DOWNLOAD);
 
   GST_OBJECT_LOCK (self);
 
@@ -295,6 +300,8 @@ clapper_player_handle_playbin_flags_changed (ClapperPlayer *self, const GValue *
     self->audio_enabled = audio_enabled;
   if ((subtitles_changed = self->subtitles_enabled != subtitles_enabled))
     self->subtitles_enabled = subtitles_enabled;
+  if ((download_changed = self->download_enabled != download_enabled))
+    self->download_enabled = download_enabled;
 
   GST_OBJECT_UNLOCK (self);
 
@@ -312,6 +319,11 @@ clapper_player_handle_playbin_flags_changed (ClapperPlayer *self, const GValue *
     GST_INFO_OBJECT (self, "Subtitles enabled: %s", (subtitles_enabled) ? "yes" : "no");
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_SUBTITLES_ENABLED]);
+  }
+  if (download_changed) {
+    GST_INFO_OBJECT (self, "Download enabled: %s", (download_enabled) ? "yes" : "no");
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_DOWNLOAD_ENABLED]);
   }
 }
 
@@ -438,7 +450,7 @@ clapper_player_set_pending_item (ClapperPlayer *self, ClapperMediaItem *pending_
 
   /* Might be NULL (e.g. after queue is cleared) */
   if (pending_item) {
-    uri = clapper_media_item_get_uri (pending_item);
+    uri = clapper_media_item_get_playback_uri (pending_item);
     suburi = clapper_media_item_get_suburi (pending_item);
   }
 
@@ -722,6 +734,50 @@ clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
     /* Clear current decoders (next item might not have video/audio track) */
     clapper_player_set_current_video_decoder (self, NULL);
     clapper_player_set_current_audio_decoder (self, NULL);
+  }
+}
+
+static inline gchar *
+_make_download_template (ClapperPlayer *self)
+{
+  gchar *download_template = NULL;
+
+  GST_OBJECT_LOCK (self);
+
+  if (self->download_enabled && self->download_dir) {
+    if (g_mkdir_with_parents (self->download_dir, 0755) == 0) {
+      download_template = g_build_filename (self->download_dir, "XXXXXX", NULL);
+    } else {
+      GST_ERROR_OBJECT (self, "Could not create download dir: \"%s\"", self->download_dir);
+    }
+  }
+
+  GST_OBJECT_UNLOCK (self);
+
+  return download_template;
+}
+
+static void
+_element_setup_cb (GstElement *playbin, GstElement *element, ClapperPlayer *self)
+{
+  GstElementFactory *factory = gst_element_get_factory (element);
+
+  if (G_UNLIKELY (factory == NULL))
+    return;
+
+  GST_INFO_OBJECT (self, "Element setup: %s", GST_OBJECT_NAME (factory));
+
+  if (strcmp (GST_OBJECT_NAME (factory), "downloadbuffer") == 0) {
+    gchar *download_template;
+
+    /* Only set props if we have download template */
+    if ((download_template = _make_download_template (self))) {
+      g_object_set (element,
+          "temp-template", download_template,
+          "temp-remove", FALSE,
+          NULL);
+      g_free (download_template);
+    }
   }
 }
 
@@ -1506,6 +1562,106 @@ clapper_player_get_subtitles_enabled (ClapperPlayer *self)
 }
 
 /**
+ * clapper_player_set_download_dir:
+ * @player: a #ClapperPlayer
+ * @path: (type filename): the path of a directory to use for media downloads
+ *
+ * Set a directory that @player will use to store downloads.
+ *
+ * See [property@Clapper.Player:download-enabled] description for more
+ * info how this works.
+ *
+ * Since: 0.8
+ */
+void
+clapper_player_set_download_dir (ClapperPlayer *self, const gchar *path)
+{
+  gboolean changed;
+
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+  g_return_if_fail (path != NULL);
+
+  GST_OBJECT_LOCK (self);
+  changed = g_set_str (&self->download_dir, path);
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    GST_INFO_OBJECT (self, "Current download dir: %s", path);
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_DOWNLOAD_DIR]);
+  }
+}
+
+/**
+ * clapper_player_get_download_dir:
+ * @player: a #ClapperPlayer
+ *
+ * Get path to a directory set for media downloads.
+ *
+ * Returns: (type filename) (transfer full) (nullable): the path of a directory
+ *   set for media downloads or %NULL if no directory was set yet.
+ *
+ * Since: 0.8
+ */
+gchar *
+clapper_player_get_download_dir (ClapperPlayer *self)
+{
+  gchar *download_dir;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  GST_OBJECT_LOCK (self);
+  download_dir = g_strdup (self->download_dir);
+  GST_OBJECT_UNLOCK (self);
+
+  return download_dir;
+}
+
+/**
+ * clapper_player_set_download_enabled:
+ * @player: a #ClapperPlayer
+ * @enabled: whether enabled
+ *
+ * Set whether player should attempt progressive download buffering.
+ *
+ * For this to actually work a [property@Clapper.Player:download-dir]
+ * must also be set.
+ *
+ * Since: 0.8
+ */
+void
+clapper_player_set_download_enabled (ClapperPlayer *self, gboolean enabled)
+{
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+
+  clapper_playbin_bus_post_set_play_flag (self->bus, CLAPPER_PLAYER_PLAY_FLAG_DOWNLOAD, enabled);
+}
+
+/**
+ * clapper_player_get_download_enabled:
+ * @player: a #ClapperPlayer
+ *
+ * Get whether progressive download buffering is enabled.
+ *
+ * Returns: %TRUE if enabled, %FALSE otherwise.
+ *
+ * Since: 0.8
+ */
+gboolean
+clapper_player_get_download_enabled (ClapperPlayer *self)
+{
+  gboolean enabled;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), FALSE);
+
+  GST_OBJECT_LOCK (self);
+  enabled = self->download_enabled;
+  GST_OBJECT_UNLOCK (self);
+
+  return enabled;
+}
+
+/**
  * clapper_player_set_audio_offset:
  * @player: a #ClapperPlayer
  * @offset: a decimal audio offset (in seconds)
@@ -1793,6 +1949,7 @@ clapper_player_thread_start (ClapperThreadedObject *threaded_object)
   for (i = 0; playbin_watchlist[i]; ++i)
     gst_element_add_property_notify_watch (self->playbin, playbin_watchlist[i], TRUE);
 
+  g_signal_connect (self->playbin, "element-setup", G_CALLBACK (_element_setup_cb), self);
   g_signal_connect (self->playbin, "about-to-finish", G_CALLBACK (_about_to_finish_cb), self);
 
   if (!self->use_playbin3) {
@@ -1866,6 +2023,7 @@ clapper_player_init (ClapperPlayer *self)
   self->video_enabled = DEFAULT_VIDEO_ENABLED;
   self->audio_enabled = DEFAULT_AUDIO_ENABLED;
   self->subtitles_enabled = DEFAULT_SUBTITLES_ENABLED;
+  self->download_enabled = DEFAULT_DOWNLOAD_ENABLED;
 }
 
 static void
@@ -1923,6 +2081,8 @@ clapper_player_finalize (GObject *object)
   gst_clear_object (&self->features_manager);
   gst_clear_object (&self->pending_item);
   gst_clear_object (&self->played_item);
+
+  g_free (self->download_dir);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -1991,6 +2151,12 @@ clapper_player_get_property (GObject *object, guint prop_id,
     case PROP_SUBTITLES_ENABLED:
       g_value_set_boolean (value, clapper_player_get_subtitles_enabled (self));
       break;
+    case PROP_DOWNLOAD_DIR:
+      g_value_take_string (value, clapper_player_get_download_dir (self));
+      break;
+    case PROP_DOWNLOAD_ENABLED:
+      g_value_set_boolean (value, clapper_player_get_download_enabled (self));
+      break;
     case PROP_AUDIO_OFFSET:
       g_value_set_double (value, clapper_player_get_audio_offset (self));
       break;
@@ -2045,6 +2211,12 @@ clapper_player_set_property (GObject *object, guint prop_id,
       break;
     case PROP_SUBTITLES_ENABLED:
       clapper_player_set_subtitles_enabled (self, g_value_get_boolean (value));
+      break;
+    case PROP_DOWNLOAD_DIR:
+      clapper_player_set_download_dir (self, g_value_get_string (value));
+      break;
+    case PROP_DOWNLOAD_ENABLED:
+      clapper_player_set_download_enabled (self, g_value_get_boolean (value));
       break;
     case PROP_AUDIO_OFFSET:
       clapper_player_set_audio_offset (self, g_value_get_double (value));
@@ -2252,6 +2424,52 @@ clapper_player_class_init (ClapperPlayerClass *klass)
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
+   * ClapperPlayer:download-dir:
+   *
+   * A directory that @player will use to download network content
+   * when [property@Clapper.Player:download-enabled] is set to %TRUE.
+   *
+   * If directory at @path does not exist, it will be automatically created.
+   *
+   * Since: 0.8
+   */
+  param_specs[PROP_DOWNLOAD_DIR] = g_param_spec_string ("download-dir",
+      NULL, NULL, NULL,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:download-enabled:
+   *
+   * Whether progressive download buffering is enabled.
+   *
+   * If progressive download is enabled and [property@Clapper.Player:download-dir]
+   * is set, streamed network content will be cached to the disk space instead
+   * of memory whenever possible. This allows for faster seeking through
+   * currently played media.
+   *
+   * Not every type of content is download applicable. Mainly applies to
+   * web content that does not use adaptive streaming.
+   *
+   * Once data that media item URI points to is fully downloaded, player
+   * will emit [signal@Clapper.Player::download-complete] signal with a
+   * location of downloaded file.
+   *
+   * Playing again the exact same [class@Clapper.MediaItem] object that was
+   * previously fully downloaded will cause player to automatically use that
+   * cached file if it still exists, avoiding any further network requests.
+   *
+   * Please note that player will not delete nor manage downloaded content.
+   * It is up to application to cleanup data in created cache directory
+   * (e.g. before app exits), in order to remove any downloads that app
+   * is not going to use next time it is run and incomplete ones.
+   *
+   * Since: 0.8
+   */
+  param_specs[PROP_DOWNLOAD_ENABLED] = g_param_spec_boolean ("download-enabled",
+      NULL, NULL, DEFAULT_DOWNLOAD_ENABLED,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
    * ClapperPlayer:audio-offset:
    *
    * Audio stream offset relative to video.
@@ -2287,6 +2505,22 @@ clapper_player_class_init (ClapperPlayerClass *klass)
   signals[SIGNAL_SEEK_DONE] = g_signal_new ("seek-done",
       G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
       0, NULL, NULL, NULL, G_TYPE_NONE, 0);
+
+  /**
+   * ClapperPlayer::download-complete:
+   * @player: a #ClapperPlayer
+   * @item: a #ClapperMediaItem
+   * @location: (type filename): a path to downloaded file
+   *
+   * Media was fully downloaded to local cache directory. This signal will
+   * be only emitted when progressive download buffering is enabled by
+   * setting [property@Clapper.Player:download-enabled] property to %TRUE.
+   *
+   * Since: 0.8
+   */
+  signals[SIGNAL_DOWNLOAD_COMPLETE] = g_signal_new ("download-complete",
+      G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+      0, NULL, NULL, NULL, G_TYPE_NONE, 2, CLAPPER_TYPE_MEDIA_ITEM, G_TYPE_STRING);
 
   /**
    * ClapperPlayer::missing-plugin:
