@@ -48,6 +48,7 @@
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_05.png</image>
     </screenshot>
   </screenshots>
+  <!-- Linux Phone Apps parses categories from XML -->
   <categories>
     <category>AudioVideo</category>
     <category>Video</category>
