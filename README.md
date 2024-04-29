@@ -31,6 +31,8 @@ Both libraries support *GObject Introspection* bindings. A simple application ex
 Above libraries are licensed under `LGPL-2.1-or-later`. You are free to use them in your own projects as long as you comply with license terms.
 Please note that until version 1.0 they should be considered as an unstable API (some things may change without prior notice).
 
+Clapper `Vala` bindings are part of this repo, while `Rust` bindings can be found [here](https://gitlab.gnome.org/JanGernert/clapper-rs).
+
 ## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
 Additionally it also has a few patches, thus some functionalities work better in `Flatpak` version (until my changes are accepted upstream).
@@ -70,5 +72,6 @@ so if your language is not available, please contact me first.
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
 Big thanks to [bridadan](https://github.com/bridadan) and [Uniformbuffer3](https://github.com/Uniformbuffer3) for helping
 with testing V4L2 and NVDEC hardware acceleration methods.
+Also words of appreciation for [JanGernert](https://gitlab.gnome.org/JanGernert) who made and is sharing Clapper Rust bindings.
 
 Thanks a lot to all the people who are supporting the development with their anonymous donations through [Liberapay](https://liberapay.com/Clapper/). I :heart: U.
