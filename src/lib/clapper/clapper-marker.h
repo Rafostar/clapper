@@ -43,7 +43,7 @@ G_DECLARE_FINAL_TYPE (ClapperMarker, clapper_marker, CLAPPER, MARKER, GstObject)
  *
  * The value used to indicate that marker does not have an ending time specified
  */
-#define CLAPPER_MARKER_NO_END (-1.0)
+#define CLAPPER_MARKER_NO_END ((gdouble) -1) // Needs a cast from int, otherwise GIR is generated incorrectly
 
 ClapperMarker * clapper_marker_new (ClapperMarkerType marker_type, const gchar *title, gdouble start, gdouble end);
 
