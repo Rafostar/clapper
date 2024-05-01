@@ -17,6 +17,7 @@
   <url type="bugtracker">https://github.com/Rafostar/clapper/issues</url>
   <url type="donation">https://liberapay.com/Clapper</url>
   <url type="help">https://github.com/Rafostar/clapper/wiki</url>
+  <url type="vcs-browser">https://github.com/Rafostar/clapper</url>
   <description>
     <p>
       Clapper is a modern media player designed for simplicity and ease of use.
@@ -47,6 +48,11 @@
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_05.png</image>
     </screenshot>
   </screenshots>
+  <!-- Linux Phone Apps parses categories from XML -->
+  <categories>
+    <category>AudioVideo</category>
+    <category>Video</category>
+  </categories>
   <releases>
     <release version="0.6.0" date="2024-04-22">
       <description>
