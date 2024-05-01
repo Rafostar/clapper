@@ -1063,6 +1063,11 @@ static void
 _player_missing_plugin_cb (ClapperPlayer *player, const gchar *name,
     const gchar *installer_detail, ClapperGtkVideo *self)
 {
+  /* Some media files have custom/proprietary metadata,
+   * it should be safe to simply ignore these */
+  if (g_str_has_prefix (name, "meta/"))
+    return;
+
   /* XXX: Playbin2 seems to not emit state change here,
    * so manually stop buffering animation just in case */
   _set_buffering_animation_enabled (self, FALSE);
