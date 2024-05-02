@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-05-02 01:39\n"
+"PO-Revision-Date: 2024-05-02 02:34\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -131,7 +131,7 @@ msgstr "切换播放"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
 msgid "Tap | Left click"
-msgstr ""
+msgstr "单击 | 左键点击"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
@@ -141,12 +141,12 @@ msgstr "快进"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 msgid "Double tap (right side) | Scroll right"
-msgstr ""
+msgstr "双击(右侧) | 向右滚动"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Double tap (left side) | Scroll left"
-msgstr ""
+msgstr "双击(左侧) | 向左滚动"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
@@ -159,7 +159,7 @@ msgstr "提高音量"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
 msgid "Scroll up"
-msgstr ""
+msgstr "向上滚动"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
 msgid "Volume down"
@@ -167,7 +167,7 @@ msgstr "降低音量"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:146
 msgid "Scroll down"
-msgstr ""
+msgstr "向下滚动"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:152
 msgid "Toggle mute"
@@ -175,11 +175,11 @@ msgstr "切换静音"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Speed up"
-msgstr ""
+msgstr "加速"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Speed down"
-msgstr ""
+msgstr "减速"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:178
@@ -193,7 +193,7 @@ msgstr "上一章节"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
-msgstr ""
+msgstr "信息"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
@@ -202,15 +202,15 @@ msgstr "标题"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
 msgid "Container Format"
-msgstr ""
+msgstr "封装格式"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:63
 msgid "Duration"
-msgstr ""
+msgstr "时长"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:81
 msgid "Streams"
-msgstr ""
+msgstr "串流"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:36
@@ -236,12 +236,12 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:158
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:199
 msgid "Decoder"
-msgstr ""
+msgstr "解码器"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:170
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:211
 msgid "Filter"
-msgstr ""
+msgstr "过滤器"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
@@ -254,19 +254,19 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:247
 msgid "Video Streams"
-msgstr ""
+msgstr "视频流"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:290
 msgid "Audio Streams"
-msgstr ""
+msgstr "音频流"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:333
 msgid "Subtitle Streams"
-msgstr ""
+msgstr "字幕流"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
-msgstr ""
+msgstr "添加媒体到播放队列即可开始"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
@@ -274,11 +274,11 @@ msgstr "定位播放"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
-msgstr ""
+msgstr "快进/快退方式"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr ""
+msgstr "快进/快退的偏好方式"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
@@ -392,7 +392,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
-msgstr ""
+msgstr "添加"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
@@ -462,9 +462,9 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-utils.c:70
 msgid "Shuffle"
-msgstr ""
+msgstr "随机"
 
 #: src/bin/clapper-app/clapper-app-window.c:828
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
+msgstr "拖放到标题栏即刻播放或任何其他地方加入队列。"
 
