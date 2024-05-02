@@ -83,7 +83,7 @@ clapper_init (int *argc, char **argv[])
  * @argv: (inout) (array length=argc) (nullable) (optional): pointer to application's argv
  *
  * This function does the same thing as [func@Clapper.init], but instead of
- * terminating on failure it returns %FALSE with @error set.
+ * terminating on failure it returns %FALSE.
  *
  * Returns: %TRUE if Clapper could be initialized, %FALSE otherwise.
  */
