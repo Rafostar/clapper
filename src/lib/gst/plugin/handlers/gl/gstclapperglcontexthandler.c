@@ -473,7 +473,12 @@ gst_clapper_gl_context_handler_finalize (GObject *object)
 
   gst_clear_object (&self->gst_display);
   gst_clear_object (&self->wrapped_context);
-  gst_clear_object (&self->gst_context);
+
+  /* FIXME: It seems GTK continues using created contexts, so we cannot unref
+   * it here. Looking at GTK sink implementation for GtkVideo, I see that they
+   * do not unref it either, but since we use surfaceless context it would be
+   * probably better to have a static GstDisplay and reuse the same context. */
+  //gst_clear_object (&self->gst_context);
 
   GST_CALL_PARENT (G_OBJECT_CLASS, finalize, (object));
 }
