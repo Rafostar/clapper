@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-05-02 03:36\n"
+"PO-Revision-Date: 2024-05-02 04:49\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -123,7 +123,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:96
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
-msgstr "播放"
+msgstr "回放"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:99
 msgid "Toggle play"
@@ -231,7 +231,7 @@ msgstr "字幕"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
-msgstr ""
+msgstr "视频回放"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:158
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:199
@@ -250,7 +250,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
-msgstr ""
+msgstr "音频回放"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:247
 msgid "Video Streams"
@@ -379,7 +379,7 @@ msgstr "添加覆盖"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:229
 msgid "Rank overrides"
-msgstr "覆盖优先级"
+msgstr "覆盖排序"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
@@ -438,7 +438,7 @@ msgstr "精确"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
-msgstr "一般"
+msgstr "标准"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:445
 msgid "Fast"
