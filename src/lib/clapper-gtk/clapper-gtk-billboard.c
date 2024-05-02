@@ -290,7 +290,6 @@ clapper_gtk_billboard_unpin_pinned_message (ClapperGtkBillboard *self)
  * side of @billboard.
  *
  * Use this if you want to present current volume level to the user.
- * Note that @billboard also automatically announces volume changes.
  */
 void
 clapper_gtk_billboard_announce_volume (ClapperGtkBillboard *self)
@@ -336,7 +335,6 @@ clapper_gtk_billboard_announce_volume (ClapperGtkBillboard *self)
  * side of @billboard.
  *
  * Use this if you want to present current speed value to the user.
- * Note that @billboard also automatically announces speed changes.
  */
 void
 clapper_gtk_billboard_announce_speed (ClapperGtkBillboard *self)
