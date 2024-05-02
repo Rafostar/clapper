@@ -324,3 +324,29 @@ parse_overrides:
 
   g_free (stored_overrides);
 }
+
+GstElement *
+clapper_app_utils_make_element (const gchar *string)
+{
+  gchar *char_loc;
+
+  if (strcmp (string, "none") == 0)
+    return NULL;
+
+  char_loc = strchr (string, ' ');
+
+  if (char_loc) {
+    GstElement *element;
+    GError *error = NULL;
+
+    element = gst_parse_bin_from_description (string, TRUE, &error);
+    if (error) {
+      GST_ERROR ("Bin parse error: \"%s\", reason: %s", string, error->message);
+      g_error_free (error);
+    }
+
+    return element;
+  }
+
+  return gst_element_factory_make (string, NULL);
+}

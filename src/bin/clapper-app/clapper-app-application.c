@@ -18,6 +18,7 @@
 #include "config.h"
 
 #include <math.h>
+#include <glib/gi18n.h>
 #include <gst/gst.h>
 #include <clapper-gtk/clapper-gtk.h>
 
@@ -57,6 +58,15 @@ struct ClapperPluginData
   struct ClapperPluginFeatureData features[10];
 };
 
+struct ClapperAppOptions
+{
+  gchar *video_filter;
+  gchar *audio_filter;
+
+  gchar *video_sink;
+  gchar *audio_sink;
+};
+
 typedef struct
 {
   const gchar *action;
@@ -65,6 +75,18 @@ typedef struct
 
 #define parent_class clapper_app_application_parent_class
 G_DEFINE_TYPE (ClapperAppApplication, clapper_app_application, GTK_TYPE_APPLICATION);
+
+static struct ClapperAppOptions app_opts = { 0, };
+
+static inline void
+_app_opts_free (void)
+{
+  g_free (app_opts.video_filter);
+  g_free (app_opts.audio_filter);
+
+  g_free (app_opts.video_sink);
+  g_free (app_opts.audio_sink);
+}
 
 static inline void
 _set_initial_plugin_feature_ranks (void)
@@ -232,6 +254,15 @@ _restore_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_
   ClapperQueue *queue = clapper_player_get_queue (player);
 
   GST_DEBUG ("Restoring saved GSettings values to: %" GST_PTR_FORMAT, app_window);
+
+  if (app_opts.video_filter)
+    clapper_player_set_video_filter (player, clapper_app_utils_make_element (app_opts.video_filter));
+  if (app_opts.audio_filter)
+    clapper_player_set_audio_filter (player, clapper_app_utils_make_element (app_opts.audio_filter));
+  if (app_opts.video_sink)
+    clapper_player_set_video_sink (player, clapper_app_utils_make_element (app_opts.video_sink));
+  if (app_opts.audio_sink)
+    clapper_player_set_audio_sink (player, clapper_app_utils_make_element (app_opts.audio_sink));
 
   clapper_player_set_volume (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume")));
   clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
@@ -512,7 +543,14 @@ clapper_app_application_constructed (GObject *object)
   GApplication *app = G_APPLICATION (self);
   guint i;
 
-  static const GActionEntry app_entries[] = {
+  const GOptionEntry app_options[] = {
+    { "video-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_filter, _("Video filter to use (\"none\" to disable)"), NULL },
+    { "audio-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.audio_filter, _("Audio filter to use (\"none\" to disable)"), NULL },
+    { "video-sink", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_sink, _("Video sink to use"), NULL },
+    { "audio-sink", 0, 0, G_OPTION_ARG_STRING, &app_opts.audio_sink, _("Audio sink to use"), NULL },
+    { NULL }
+  };
+  static const GActionEntry app_actions[] = {
     { "add-files", add_files, NULL, NULL, NULL },
     { "add-uri", add_uri, NULL, NULL, NULL },
     { "info", show_info, NULL, NULL, NULL },
@@ -542,11 +580,12 @@ clapper_app_application_constructed (GObject *object)
   plugin_feature_ranks_settings_changed_cb (self->settings, NULL, NULL);
 
   g_action_map_add_action_entries (G_ACTION_MAP (app),
-      app_entries, G_N_ELEMENTS (app_entries), app);
+      app_actions, G_N_ELEMENTS (app_actions), app);
 
   for (i = 0; i < G_N_ELEMENTS (app_shortcuts); ++i)
     gtk_application_set_accels_for_action (GTK_APPLICATION (app), app_shortcuts[i].action, app_shortcuts[i].accels);
 
+  g_application_add_main_option_entries (app, app_options);
   g_application_add_option_group (app, gst_init_get_option_group ());
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
@@ -560,6 +599,7 @@ clapper_app_application_finalize (GObject *object)
   GST_TRACE ("Finalize");
 
   g_object_unref (self->settings);
+  _app_opts_free ();
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

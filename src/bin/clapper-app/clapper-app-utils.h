@@ -59,4 +59,7 @@ void clapper_app_utils_files_free (GFile **files);
 G_GNUC_INTERNAL
 void clapper_app_utils_iterate_plugin_feature_ranks (GSettings *settings, ClapperAppUtilsIterRanks callback, gpointer user_data);
 
+G_GNUC_INTERNAL
+GstElement * clapper_app_utils_make_element (const gchar *string);
+
 G_END_DECLS
