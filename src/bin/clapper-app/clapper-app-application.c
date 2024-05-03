@@ -61,6 +61,7 @@ struct ClapperPluginData
 struct ClapperAppOptions
 {
   gdouble volume;
+  gdouble speed;
 
   gchar *video_filter;
   gchar *audio_filter;
@@ -273,7 +274,12 @@ _restore_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_
     clapper_player_set_volume (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume")));
 
   clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
-  clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
+
+  if (app_opts.speed >= 0)
+    clapper_player_set_speed (player, PERCENTAGE_ROUND (app_opts.speed));
+  else
+    clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
+
   clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
   clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
 
@@ -541,6 +547,7 @@ static void
 clapper_app_application_init (ClapperAppApplication *self)
 {
   app_opts.volume = -1;
+  app_opts.speed = -1;
 
   self->need_init_state = TRUE;
 }
@@ -554,6 +561,7 @@ clapper_app_application_constructed (GObject *object)
 
   const GOptionEntry app_options[] = {
     { "volume", 0, 0, G_OPTION_ARG_DOUBLE, &app_opts.volume, _("Audio volume to set (0 - 2.0 range)"), NULL },
+    { "speed", 0, 0, G_OPTION_ARG_DOUBLE, &app_opts.speed, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
     { "video-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_filter, _("Video filter to use (\"none\" to disable)"), NULL },
     { "audio-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.audio_filter, _("Audio filter to use (\"none\" to disable)"), NULL },
     { "video-sink", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_sink, _("Video sink to use"), NULL },
