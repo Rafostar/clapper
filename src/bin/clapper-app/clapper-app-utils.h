@@ -51,6 +51,9 @@ G_GNUC_INTERNAL
 gboolean clapper_app_utils_files_from_string (const gchar *string, GFile ***files, gint *n_files);
 
 G_GNUC_INTERNAL
+gboolean clapper_app_utils_files_from_command_line (GApplicationCommandLine *cmd_line, GFile ***files, gint *n_files);
+
+G_GNUC_INTERNAL
 gboolean clapper_app_utils_files_from_value (const GValue *value, GFile ***files, gint *n_files);
 
 G_GNUC_INTERNAL

@@ -317,7 +317,7 @@ clapper_app_application_new (void)
 {
   return g_object_new (CLAPPER_APP_TYPE_APPLICATION,
       "application-id", CLAPPER_APP_ID,
-      "flags", G_APPLICATION_HANDLES_OPEN,
+      "flags", G_APPLICATION_HANDLES_OPEN | G_APPLICATION_HANDLES_COMMAND_LINE,
       NULL);
 }
 
@@ -375,6 +375,8 @@ clapper_app_application_local_command_line (GApplication *app,
   gchar **argv = *arguments;
   guint i;
 
+  GST_INFO ("Handling local command line");
+
   /* NOTE: argv is never NULL, so no need to check */
 
   for (i = 0; argv[i]; ++i) {
@@ -386,6 +388,32 @@ clapper_app_application_local_command_line (GApplication *app,
   }
 
   return G_APPLICATION_CLASS (parent_class)->local_command_line (app, arguments, exit_status);
+}
+
+static gint
+clapper_app_application_command_line (GApplication *app, GApplicationCommandLine *cmd_line)
+{
+  GVariantDict *options;
+  GFile **files = NULL;
+  gint n_files = 0;
+  gboolean enqueue = FALSE;
+
+  GST_INFO ("Handling command line");
+
+  options = g_application_command_line_get_options_dict (cmd_line);
+
+  /* Enqueue only makes sense from remote invocation */
+  if (g_application_command_line_get_is_remote (cmd_line))
+    enqueue = g_variant_dict_contains (options, "enqueue");
+
+  if (clapper_app_utils_files_from_command_line (cmd_line, &files, &n_files)) {
+    g_application_open (app, files, n_files, (enqueue) ? "add-only" : "");
+    clapper_app_utils_files_free (files);
+  } else {
+    g_application_activate (app);
+  }
+
+  return EXIT_SUCCESS;
 }
 
 static gboolean
@@ -560,6 +588,7 @@ clapper_app_application_constructed (GObject *object)
   guint i;
 
   const GOptionEntry app_options[] = {
+    { "enqueue", 0, 0, G_OPTION_ARG_NONE, NULL, _("Add media to queue in primary application instance"), NULL },
     { "volume", 0, 0, G_OPTION_ARG_DOUBLE, &app_opts.volume, _("Audio volume to set (0 - 2.0 range)"), NULL },
     { "speed", 0, 0, G_OPTION_ARG_DOUBLE, &app_opts.speed, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
     { "video-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_filter, _("Video filter to use (\"none\" to disable)"), NULL },
@@ -639,5 +668,6 @@ clapper_app_application_class_init (ClapperAppApplicationClass *klass)
 
   application_class->activate = clapper_app_application_activate;
   application_class->local_command_line = clapper_app_application_local_command_line;
+  application_class->command_line = clapper_app_application_command_line;
   application_class->open = clapper_app_application_open;
 }

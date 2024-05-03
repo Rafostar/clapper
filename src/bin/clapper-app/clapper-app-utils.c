@@ -185,6 +185,30 @@ clapper_app_utils_files_from_string (const gchar *string, GFile ***files, gint *
   return success;
 }
 
+gboolean
+clapper_app_utils_files_from_command_line (GApplicationCommandLine *cmd_line, GFile ***files, gint *n_files)
+{
+  GSList *slist = NULL;
+  gchar **argv;
+  gint i, argc = 0;
+  gboolean success;
+
+  argv = g_application_command_line_get_arguments (cmd_line, &argc);
+
+  for (i = 1; i < argc; ++i)
+    slist = g_slist_append (slist, g_application_command_line_create_file_for_arg (cmd_line, argv[i]));
+
+  g_strfreev (argv);
+
+  if (!slist)
+    return FALSE;
+
+  success = clapper_app_utils_files_from_slist (slist, files, n_files);
+  g_slist_free_full (slist, g_object_unref);
+
+  return success;
+}
+
 static inline gboolean
 _files_from_file (GFile *file, GFile ***files, gint *n_files)
 {
