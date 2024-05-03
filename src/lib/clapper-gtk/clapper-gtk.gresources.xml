@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/com/github/rafostar/Clapper/clapper-gtk">
     <file preprocess="xml-stripblanks">ui/clapper-gtk-billboard.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-gtk-engage-layer.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-extra-menu-button.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-seek-bar.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-simple-controls.ui</file>

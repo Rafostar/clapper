@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-gtk">
+  <template class="ClapperGtkEngageLayer" parent="ClapperGtkLeadContainer">
+    <property name="blocked-actions">toggle-play|reveal-overlays</property>
+    <child>
+      <object class="ClapperGtkTogglePlayButton">
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <style>
+          <class name="osd"/>
+          <class name="flat"/>
+          <class name="circular"/>
+        </style>
+      </object>
+    </child>
+  </template>
+</interface>

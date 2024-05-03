@@ -19,25 +19,23 @@
 
 #pragma once
 
-#define __CLAPPER_GTK_INSIDE__
+#if !defined(__CLAPPER_GTK_INSIDE__) && !defined(CLAPPER_GTK_COMPILATION)
+#error "Only <clapper-gtk/clapper-gtk.h> can be included directly."
+#endif
 
-#include <clapper-gtk/clapper-gtk-enums.h>
-#include <clapper-gtk/clapper-gtk-version.h>
+#include <glib.h>
+#include <glib-object.h>
+#include <gtk/gtk.h>
 
-#include <clapper-gtk/clapper-gtk-billboard.h>
-#include <clapper-gtk/clapper-gtk-container.h>
-#include <clapper-gtk/clapper-gtk-engage-layer.h>
-#include <clapper-gtk/clapper-gtk-extra-menu-button.h>
 #include <clapper-gtk/clapper-gtk-lead-container.h>
-#include <clapper-gtk/clapper-gtk-next-item-button.h>
-#include <clapper-gtk/clapper-gtk-previous-item-button.h>
-#include <clapper-gtk/clapper-gtk-seek-bar.h>
-#include <clapper-gtk/clapper-gtk-simple-controls.h>
-#include <clapper-gtk/clapper-gtk-title-header.h>
-#include <clapper-gtk/clapper-gtk-title-label.h>
-#include <clapper-gtk/clapper-gtk-toggle-fullscreen-button.h>
-#include <clapper-gtk/clapper-gtk-toggle-play-button.h>
-#include <clapper-gtk/clapper-gtk-utils.h>
-#include <clapper-gtk/clapper-gtk-video.h>
 
-#undef __CLAPPER_GTK_INSIDE__
+G_BEGIN_DECLS
+
+#define CLAPPER_GTK_TYPE_ENGAGE_LAYER (clapper_gtk_engage_layer_get_type())
+#define CLAPPER_GTK_ENGAGE_LAYER_CAST(obj) ((ClapperGtkEngageLayer *)(obj))
+
+G_DECLARE_FINAL_TYPE (ClapperGtkEngageLayer, clapper_gtk_engage_layer, CLAPPER_GTK, ENGAGE_LAYER, ClapperGtkLeadContainer)
+
+GtkWidget * clapper_gtk_engage_layer_new (void);
+
+G_END_DECLS
