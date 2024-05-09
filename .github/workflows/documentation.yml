@@ -1,0 +1,55 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+name: "Documentation"
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    container:
+      image: registry.fedoraproject.org/fedora
+      options: --privileged
+    steps:
+    - name: Prepare
+      run: |
+        dnf -y install git gcc meson glib2-devel \
+          gstreamer1-devel gstreamer1-plugins-base-devel \
+          gtk4-devel libsoup3-devel libmicrodns-devel \
+          gobject-introspection-devel graphviz gi-docgen
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Build
+      run: |
+        meson setup builddir -Dauto_features=enabled \
+          -Dclapper-app=disabled -Dvapi=disabled -Ddoc=true \
+          -Dglimporter=auto -Dgluploader=auto -Drawimporter=auto
+        cd builddir
+        meson compile
+    - name: Commit files
+      if: ${{ success() && github.ref == 'refs/heads/master' }}
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
+        git checkout gh-pages
+        rm -rf doc/clapper/*
+        rm -rf doc/clapper-gtk/*
+        mv builddir/doc/reference/clapper/clapper.toml doc/clapper/
+        mv builddir/doc/reference/clapper/clapper/* doc/clapper/
+        mv builddir/doc/reference/clapper-gtk/clapper-gtk.toml doc/clapper-gtk/
+        mv builddir/doc/reference/clapper-gtk/clapper-gtk/* doc/clapper-gtk/
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add doc/clapper/* doc/clapper-gtk/*
+        git commit -m "doc: Update"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      if: ${{ success() && github.ref == 'refs/heads/master' }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
