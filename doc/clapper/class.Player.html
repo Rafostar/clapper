@@ -123,6 +123,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.get_current_video_decoder.html">get_current_video_decoder</a>
   
+    <a class="method" href="method.Player.get_download_dir.html">get_download_dir</a>
+  
+    <a class="method" href="method.Player.get_download_enabled.html">get_download_enabled</a>
+  
     <a class="method" href="method.Player.get_mute.html">get_mute</a>
   
     <a class="method" href="method.Player.get_position.html">get_position</a>
@@ -168,6 +172,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     <a class="method" href="method.Player.set_audio_sink.html">set_audio_sink</a>
   
     <a class="method" href="method.Player.set_autoplay.html">set_autoplay</a>
+  
+    <a class="method" href="method.Player.set_download_dir.html">set_download_dir</a>
+  
+    <a class="method" href="method.Player.set_download_enabled.html">set_download_enabled</a>
   
     <a class="method" href="method.Player.set_mute.html">set_mute</a>
   
@@ -215,6 +223,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property" href="property.Player.current-video-decoder.html">current-video-decoder</a>
   
+    <a class="property" href="property.Player.download-dir.html">download-dir</a>
+  
+    <a class="property" href="property.Player.download-enabled.html">download-enabled</a>
+  
     <a class="property" href="property.Player.mute.html">mute</a>
   
     <a class="property" href="property.Player.position.html">position</a>
@@ -252,6 +264,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Signals</h5>
   <div class="links">
+  
+    <a class="signal" href="signal.Player.download-complete.html">download-complete</a>
   
     <a class="signal" href="signal.Player.error.html">error</a>
   
@@ -579,6 +593,26 @@ that operate on a single thread like (but not limited to) <span class="caps">GTK
         </div>
       
         <div class="">
+          <h6><a href="method.Player.get_download_dir.html">clapper_player_get_download_dir</a></h6>
+          <div class="docblock">
+            <p>Get path to a directory set for media&nbsp;downloads.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_download_enabled.html">clapper_player_get_download_enabled</a></h6>
+          <div class="docblock">
+            <p>Get whether progressive download buffering is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.get_mute.html">clapper_player_get_mute</a></h6>
           <div class="docblock">
             <p>Get the mute state of the&nbsp;player.</p>
@@ -805,6 +839,26 @@ that operate on a single thread like (but not limited to) <span class="caps">GTK
           </div>
           <div class="docblock">
             <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_download_dir.html">clapper_player_set_download_dir</a></h6>
+          <div class="docblock">
+            <p>Set a directory that <code>player</code> will use to store&nbsp;downloads.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_download_enabled.html">clapper_player_set_download_enabled</a></h6>
+          <div class="docblock">
+            <p>Set whether player should attempt progressive download&nbsp;buffering.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
           </div>
         </div>
       
@@ -1048,6 +1102,27 @@ that operate on a single thread like (but not limited to) <span class="caps">GTK
         </div>
       
         <div class="">
+          <h6><a href="property.Player.download-dir.html">Clapper.Player:download-dir</a></h6>
+          <div class="docblock">
+            <p>A directory that <code>player</code> will use to download network content
+when <code>ClapperPlayer:download-enabled</code> is set to <code>TRUE</code>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.download-enabled.html">Clapper.Player:download-enabled</a></h6>
+          <div class="docblock">
+            <p>Whether progressive download buffering is&nbsp;enabled.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="property.Player.mute.html">Clapper.Player:mute</a></h6>
           <div class="docblock">
             <p>Mute audio without changing&nbsp;volume.</p>
@@ -1238,6 +1313,18 @@ achieve a similar&nbsp;effect.</p>
 
       
       <div class="docblock">
+      
+        <div class="">
+          <h6><a href="signal.Player.download-complete.html">Clapper.Player::download-complete</a></h6>
+          <div class="docblock">
+            <p>Media was fully downloaded to local cache directory. This signal will
+be only emitted when progressive download buffering is enabled by
+setting <code>ClapperPlayer:download-enabled</code> property to <code>TRUE</code>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This signal will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
       
         <div class="">
           <h6><a href="signal.Player.error.html">Clapper.Player::error</a></h6>

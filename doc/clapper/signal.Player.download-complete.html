@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Player::warning</title>
+  <title>Clapper.Player::download-complete</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.Player::warning"/>
-  <meta property="og:description" content="Reference for signal Clapper.Player::warning"/>
-  <meta name="twitter:title" content="Clapper.Player::warning"/>
-  <meta name="twitter:description" content="Reference for signal Clapper.Player::warning"/>
+  <meta property="og:title" content="Clapper.Player::download-complete"/>
+  <meta property="og:description" content="Reference for signal Clapper.Player::download-complete"/>
+  <meta name="twitter:title" content="Clapper.Player::download-complete"/>
+  <meta name="twitter:description" content="Reference for signal Clapper.Player::download-complete"/>
 
 
   
@@ -87,7 +87,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Signals</h5>
   <div class="links">
   
-    <a class="signal" href="signal.Player.download-complete.html">download-complete</a>
+    <a class="signal current" href="signal.Player.download-complete.html">download-complete</a>
   
     <a class="signal" href="signal.Player.error.html">error</a>
   
@@ -95,7 +95,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="signal" href="signal.Player.seek-done.html">seek-done</a>
   
-    <a class="signal current" href="signal.Player.warning.html">warning</a>
+    <a class="signal" href="signal.Player.warning.html">warning</a>
   
   </div>
 </div>
@@ -111,12 +111,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Signal</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a>::warning</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a>::download-complete</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This signal will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration">
@@ -126,10 +126,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
       <div class="docblock">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">warning</span><span class="w"> </span><span class="p">(</span>
+<span class="n">download_complete</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span>
-<span class="w">  </span><span class="n">GError</span><span class="o">*</span><span class="w"> </span><span class="n">error</span><span class="p">,</span>
-<span class="w">  </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">debug_info</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">location</span><span class="p">,</span>
 <span class="w">  </span><span class="n">gpointer</span><span class="w"> </span><span class="n">user_data</span>
 <span class="p">)</span>
 </pre></div>
@@ -142,13 +142,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L2543">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L2509">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>These are some usually more minor error messages that should
-be treated like warnings. Should not generally prevent/stop&nbsp;playback.</p>
+        <p>Media was fully downloaded to local cache directory. This signal will
+be only emitted when progressive download buffering is enabled by
+setting <a href="property.Player.download-enabled.html"><code>ClapperPlayer:download-enabled</code></a> property to <code>TRUE</code>.</p>
       </div>
 
       <div class="docblock">
@@ -163,6 +164,8 @@ be treated like warnings. Should not generally prevent/stop&nbsp;playback.</p>
           <tr><td><a href="https://docs.gtk.org/gobject/flags.SignalFlags.html#no_hooks" class="external">Hooks</a> are disabled for this signal</td></tr>
           
           
+          
+          <tr><td>Available since: 0.8</td></tr>
           
           
         </table>
@@ -181,10 +184,10 @@ be treated like warnings. Should not generally prevent/stop&nbsp;playback.</p>
       <div class="docblock">
         <dl class="arguments">
           
-          <dt class="arg-name"><code>error</code></dt>
+          <dt class="arg-name"><code>item</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="struct.Error.html" data-namespace="GLib" class="external"><code>GError</code></a></p>
-            <p><p>A <code>GError</code>.</p></p>
+            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
+            <p><p>A <code>ClapperMediaItem</code>.</p></p>
             <table>
             
             
@@ -198,20 +201,20 @@ be treated like warnings. Should not generally prevent/stop&nbsp;playback.</p>
             </table>
           </dd>
           
-          <dt class="arg-name"><code>debug_info</code></dt>
+          <dt class="arg-name"><code>location</code></dt>
           <dd class="arg-description">
             <p><em>Type:</em>&nbsp;<code>gchar*</code></p>
-            <p><p>An additional debug&nbsp;message.</p></p>
+            <p><p>A path to downloaded&nbsp;file.</p></p>
             <table>
             
-            <tr><td>The argument can be <code>NULL</code>.</td></tr>
+            
             
             
             
             
             
             <tr><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
-            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
+            <tr><td>The value is a file system path, using the OS encoding.</td></tr>
             </table>
           </dd>
           
