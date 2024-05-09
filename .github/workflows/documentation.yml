@@ -34,6 +34,7 @@ jobs:
         meson compile
     - name: Commit files
       if: ${{ success() && github.ref == 'refs/heads/master' }}
+      continue-on-error: true
       run: |
         git config --global --add safe.directory $GITHUB_WORKSPACE
         git checkout gh-pages
@@ -50,6 +51,7 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       if: ${{ success() && github.ref == 'refs/heads/master' }}
+      continue-on-error: true
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: gh-pages
