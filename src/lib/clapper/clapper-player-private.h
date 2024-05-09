@@ -95,6 +95,8 @@ struct _ClapperPlayer
   gboolean video_enabled;
   gboolean audio_enabled;
   gboolean subtitles_enabled;
+  gchar *download_dir;
+  gboolean download_enabled;
   gdouble audio_offset;
   gdouble subtitle_offset;
 };

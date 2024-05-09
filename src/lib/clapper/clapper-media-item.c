@@ -50,6 +50,8 @@ struct _ClapperMediaItem
   gchar *container_format;
   gdouble duration;
 
+  gchar *cache_uri;
+
   /* For shuffle */
   gboolean used;
 };
@@ -450,6 +452,41 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
   gst_object_unref (player);
 }
 
+/* XXX: Must be set from player thread */
+inline void
+clapper_media_item_set_cache_location (ClapperMediaItem *self, const gchar *location)
+{
+  g_free (self->cache_uri);
+  self->cache_uri = g_filename_to_uri (location, NULL, NULL);
+  GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"", self->cache_uri);
+}
+
+/* XXX: Can only be read from player thread.
+ * Returns cache URI if available, item URI otherwise. */
+inline const gchar *
+clapper_media_item_get_playback_uri (ClapperMediaItem *self)
+{
+  if (self->cache_uri) {
+    GFile *file = g_file_new_for_uri (self->cache_uri);
+    gboolean exists;
+
+    /* It is an app error if it removes files in non-stopped state,
+     * and this function is only called when starting playback */
+    exists = g_file_query_exists (file, NULL);
+    g_object_unref (file);
+
+    if (exists)
+      return self->cache_uri;
+
+    /* Do not test file existence next time */
+    GST_DEBUG_OBJECT (self, "Cleared cache URI for non-existing file: \"%s\"",
+        self->cache_uri);
+    g_clear_pointer (&self->cache_uri, g_free);
+  }
+
+  return self->uri;
+}
+
 void
 clapper_media_item_set_used (ClapperMediaItem *self, gboolean used)
 {
@@ -504,6 +541,8 @@ clapper_media_item_finalize (GObject *object)
 
   gst_object_unparent (GST_OBJECT_CAST (self->timeline));
   gst_object_unref (self->timeline);
+
+  g_free (self->cache_uri);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

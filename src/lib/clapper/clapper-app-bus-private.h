@@ -47,6 +47,8 @@ void clapper_app_bus_post_refresh_timeline (ClapperAppBus *app_bus, GstObject *s
 
 void clapper_app_bus_post_simple_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id);
 
+void clapper_app_bus_post_object_desc_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, GstObject *object, const gchar *desc);
+
 void clapper_app_bus_post_desc_with_details_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, const gchar *desc, const gchar *details);
 
 void clapper_app_bus_post_error_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, GError *error, const gchar *debug_info);

@@ -101,6 +101,14 @@ void clapper_player_set_subtitles_enabled (ClapperPlayer *player, gboolean enabl
 
 gboolean clapper_player_get_subtitles_enabled (ClapperPlayer *player);
 
+void clapper_player_set_download_dir (ClapperPlayer *player, const gchar *path);
+
+gchar * clapper_player_get_download_dir (ClapperPlayer *player);
+
+void clapper_player_set_download_enabled (ClapperPlayer *player, gboolean enabled);
+
+gboolean clapper_player_get_download_enabled (ClapperPlayer *player);
+
 void clapper_player_set_audio_offset (ClapperPlayer *player, gdouble offset);
 
 gdouble clapper_player_get_audio_offset (ClapperPlayer *player);
