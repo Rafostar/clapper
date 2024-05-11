@@ -394,7 +394,7 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
 {
   ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (app);
   struct ClapperAppOptions app_opts = { 0, };
-  GtkWindow *window;
+  GtkWindow *window = NULL;
   GVariantDict *options;
   GFile **files = NULL;
   gint n_files = 0;
@@ -403,9 +403,13 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
 
   options = g_application_command_line_get_options_dict (cmd_line);
 
-  /* Enqueue only makes sense from remote invocation */
-  if (g_application_command_line_get_is_remote (cmd_line))
+  /* Some options only make sense from remote invocation */
+  if (g_application_command_line_get_is_remote (cmd_line)) {
+    if (g_variant_dict_contains (options, "new-window"))
+      window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
+
     app_opts.enqueue = g_variant_dict_contains (options, "enqueue");
+  }
 
   if (!g_variant_dict_lookup (options, "volume", "d", &app_opts.volume))
     app_opts.volume = -1;
@@ -425,9 +429,10 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
     g_application_activate (app);
   }
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (app));
-  _apply_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window), &app_opts);
+  if (!window)
+    window = gtk_application_get_active_window (GTK_APPLICATION (app));
 
+  _apply_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window), &app_opts);
   _app_opts_free_contents (&app_opts);
 
   return EXIT_SUCCESS;
@@ -602,6 +607,7 @@ clapper_app_application_constructed (GObject *object)
   guint i;
 
   const GOptionEntry app_options[] = {
+    { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, _("Create a new window"), NULL },
     { "enqueue", 0, 0, G_OPTION_ARG_NONE, NULL, _("Add media to queue in primary application instance"), NULL },
     { "volume", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Audio volume to set (0 - 2.0 range)"), NULL },
     { "speed", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
