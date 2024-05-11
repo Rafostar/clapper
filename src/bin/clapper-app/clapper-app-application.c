@@ -45,6 +45,9 @@ struct _ClapperAppApplication
   gboolean need_init_state;
 };
 
+#define parent_class clapper_app_application_parent_class
+G_DEFINE_TYPE (ClapperAppApplication, clapper_app_application, GTK_TYPE_APPLICATION);
+
 struct ClapperPluginFeatureData
 {
   const gchar *name;
@@ -58,8 +61,16 @@ struct ClapperPluginData
   struct ClapperPluginFeatureData features[10];
 };
 
+typedef struct
+{
+  const gchar *action;
+  const gchar *accels[3];
+} ClapperAppShortcut;
+
 struct ClapperAppOptions
 {
+  gboolean enqueue;
+
   gdouble volume;
   gdouble speed;
 
@@ -70,25 +81,14 @@ struct ClapperAppOptions
   gchar *audio_sink;
 };
 
-typedef struct
-{
-  const gchar *action;
-  const gchar *accels[3];
-} ClapperAppShortcut;
-
-#define parent_class clapper_app_application_parent_class
-G_DEFINE_TYPE (ClapperAppApplication, clapper_app_application, GTK_TYPE_APPLICATION);
-
-static struct ClapperAppOptions app_opts = { 0, };
-
 static inline void
-_app_opts_free (void)
+_app_opts_free_contents (struct ClapperAppOptions *app_opts)
 {
-  g_free (app_opts.video_filter);
-  g_free (app_opts.audio_filter);
+  g_free (app_opts->video_filter);
+  g_free (app_opts->audio_filter);
 
-  g_free (app_opts.video_sink);
-  g_free (app_opts.audio_sink);
+  g_free (app_opts->video_sink);
+  g_free (app_opts->audio_sink);
 }
 
 static inline void
@@ -251,32 +251,33 @@ show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static inline void
-_restore_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_window)
+_apply_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_window,
+    const struct ClapperAppOptions *app_opts)
 {
   ClapperPlayer *player = clapper_app_window_get_player (app_window);
   ClapperQueue *queue = clapper_player_get_queue (player);
 
-  GST_DEBUG ("Restoring saved GSettings values to: %" GST_PTR_FORMAT, app_window);
+  GST_DEBUG ("Applying settings values to: %" GST_PTR_FORMAT, app_window);
 
-  if (app_opts.video_filter)
-    clapper_player_set_video_filter (player, clapper_app_utils_make_element (app_opts.video_filter));
-  if (app_opts.audio_filter)
-    clapper_player_set_audio_filter (player, clapper_app_utils_make_element (app_opts.audio_filter));
-  if (app_opts.video_sink)
-    clapper_player_set_video_sink (player, clapper_app_utils_make_element (app_opts.video_sink));
-  if (app_opts.audio_sink)
-    clapper_player_set_audio_sink (player, clapper_app_utils_make_element (app_opts.audio_sink));
+  if (app_opts->video_filter)
+    clapper_player_set_video_filter (player, clapper_app_utils_make_element (app_opts->video_filter));
+  if (app_opts->audio_filter)
+    clapper_player_set_audio_filter (player, clapper_app_utils_make_element (app_opts->audio_filter));
+  if (app_opts->video_sink)
+    clapper_player_set_video_sink (player, clapper_app_utils_make_element (app_opts->video_sink));
+  if (app_opts->audio_sink)
+    clapper_player_set_audio_sink (player, clapper_app_utils_make_element (app_opts->audio_sink));
 
   /* NOTE: Not using ternary operator to avoid accidental typecasting */
-  if (app_opts.volume >= 0)
-    clapper_player_set_volume (player, PERCENTAGE_ROUND (app_opts.volume));
+  if (app_opts->volume >= 0)
+    clapper_player_set_volume (player, PERCENTAGE_ROUND (app_opts->volume));
   else
     clapper_player_set_volume (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume")));
 
   clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
 
-  if (app_opts.speed >= 0)
-    clapper_player_set_speed (player, PERCENTAGE_ROUND (app_opts.speed));
+  if (app_opts->speed >= 0)
+    clapper_player_set_speed (player, PERCENTAGE_ROUND (app_opts->speed));
   else
     clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
 
@@ -288,7 +289,7 @@ _restore_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_
   else if (g_settings_get_boolean (self->settings, "maximized"))
     gtk_window_maximize (GTK_WINDOW (app_window));
 
-  GST_DEBUG ("Configuration restored");
+  GST_DEBUG ("Configuration applied");
 }
 
 static inline void
@@ -355,10 +356,8 @@ clapper_app_application_activate (GApplication *app)
   GST_INFO ("Activate");
   G_APPLICATION_CLASS (parent_class)->activate (app);
 
-  if (!(window = gtk_application_get_active_window (GTK_APPLICATION (app)))) {
+  if (!(window = gtk_application_get_active_window (GTK_APPLICATION (app))))
     window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
-    _restore_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window));
-  }
 
   if (self->need_init_state) {
     _assemble_initial_state (window);
@@ -393,10 +392,12 @@ clapper_app_application_local_command_line (GApplication *app,
 static gint
 clapper_app_application_command_line (GApplication *app, GApplicationCommandLine *cmd_line)
 {
+  ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (app);
+  struct ClapperAppOptions app_opts = { 0, };
+  GtkWindow *window;
   GVariantDict *options;
   GFile **files = NULL;
   gint n_files = 0;
-  gboolean enqueue = FALSE;
 
   GST_INFO ("Handling command line");
 
@@ -404,14 +405,30 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
 
   /* Enqueue only makes sense from remote invocation */
   if (g_application_command_line_get_is_remote (cmd_line))
-    enqueue = g_variant_dict_contains (options, "enqueue");
+    app_opts.enqueue = g_variant_dict_contains (options, "enqueue");
+
+  if (!g_variant_dict_lookup (options, "volume", "d", &app_opts.volume))
+    app_opts.volume = -1;
+  if (!g_variant_dict_lookup (options, "speed", "d", &app_opts.speed))
+    app_opts.speed = -1;
+
+  g_variant_dict_lookup (options, "video-filter", "s", &app_opts.video_filter);
+  g_variant_dict_lookup (options, "audio-filter", "s", &app_opts.audio_filter);
+
+  g_variant_dict_lookup (options, "video-sink", "s", &app_opts.video_sink);
+  g_variant_dict_lookup (options, "audio-sink", "s", &app_opts.audio_sink);
 
   if (clapper_app_utils_files_from_command_line (cmd_line, &files, &n_files)) {
-    g_application_open (app, files, n_files, (enqueue) ? "add-only" : "");
+    g_application_open (app, files, n_files, (app_opts.enqueue) ? "add-only" : "");
     clapper_app_utils_files_free (files);
   } else {
     g_application_activate (app);
   }
+
+  window = gtk_application_get_active_window (GTK_APPLICATION (app));
+  _apply_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window), &app_opts);
+
+  _app_opts_free_contents (&app_opts);
 
   return EXIT_SUCCESS;
 }
@@ -574,9 +591,6 @@ clapper_app_application_open (GApplication *app,
 static void
 clapper_app_application_init (ClapperAppApplication *self)
 {
-  app_opts.volume = -1;
-  app_opts.speed = -1;
-
   self->need_init_state = TRUE;
 }
 
@@ -589,12 +603,12 @@ clapper_app_application_constructed (GObject *object)
 
   const GOptionEntry app_options[] = {
     { "enqueue", 0, 0, G_OPTION_ARG_NONE, NULL, _("Add media to queue in primary application instance"), NULL },
-    { "volume", 0, 0, G_OPTION_ARG_DOUBLE, &app_opts.volume, _("Audio volume to set (0 - 2.0 range)"), NULL },
-    { "speed", 0, 0, G_OPTION_ARG_DOUBLE, &app_opts.speed, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
-    { "video-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_filter, _("Video filter to use (\"none\" to disable)"), NULL },
-    { "audio-filter", 0, 0, G_OPTION_ARG_STRING, &app_opts.audio_filter, _("Audio filter to use (\"none\" to disable)"), NULL },
-    { "video-sink", 0, 0, G_OPTION_ARG_STRING, &app_opts.video_sink, _("Video sink to use"), NULL },
-    { "audio-sink", 0, 0, G_OPTION_ARG_STRING, &app_opts.audio_sink, _("Audio sink to use"), NULL },
+    { "volume", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Audio volume to set (0 - 2.0 range)"), NULL },
+    { "speed", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
+    { "video-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video filter to use (\"none\" to disable)"), NULL },
+    { "audio-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Audio filter to use (\"none\" to disable)"), NULL },
+    { "video-sink", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video sink to use"), NULL },
+    { "audio-sink", 0, 0, G_OPTION_ARG_STRING, NULL, _("Audio sink to use"), NULL },
     { NULL }
   };
   static const GActionEntry app_actions[] = {
@@ -646,7 +660,6 @@ clapper_app_application_finalize (GObject *object)
   GST_TRACE ("Finalize");
 
   g_object_unref (self->settings);
-  _app_opts_free ();
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
