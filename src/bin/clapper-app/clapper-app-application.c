@@ -666,6 +666,8 @@ clapper_app_application_constructed (GObject *object)
   for (i = 0; i < G_N_ELEMENTS (app_shortcuts); ++i)
     gtk_application_set_accels_for_action (GTK_APPLICATION (app), app_shortcuts[i].action, app_shortcuts[i].accels);
 
+  g_application_set_option_context_parameter_string (app, "[URI1|FILE1] [URI2|FILE2] …");
+
   g_application_add_main_option_entries (app, app_options);
   g_application_add_option_group (app, gst_init_get_option_group ());
 
