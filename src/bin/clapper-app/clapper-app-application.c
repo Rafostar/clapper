@@ -76,6 +76,8 @@ struct ClapperAppOptions
 
   gint progression_mode;
 
+  gboolean fullscreen;
+
   gchar *video_filter;
   gchar *audio_filter;
 
@@ -290,7 +292,7 @@ _apply_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_wi
   else
     clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
 
-  if (g_settings_get_boolean (self->settings, "fullscreened"))
+  if (app_opts->fullscreen || g_settings_get_boolean (self->settings, "fullscreened"))
     gtk_window_fullscreen (GTK_WINDOW (app_window));
   else if (g_settings_get_boolean (self->settings, "maximized"))
     gtk_window_maximize (GTK_WINDOW (app_window));
@@ -423,6 +425,8 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
     app_opts.speed = -1;
   if (!g_variant_dict_lookup (options, "progression-mode", "i", &app_opts.progression_mode))
     app_opts.progression_mode = -1;
+
+  app_opts.fullscreen = g_variant_dict_contains (options, "fullscreen");
 
   g_variant_dict_lookup (options, "video-filter", "s", &app_opts.video_filter);
   g_variant_dict_lookup (options, "audio-filter", "s", &app_opts.audio_filter);
@@ -620,6 +624,7 @@ clapper_app_application_constructed (GObject *object)
     { "volume", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Audio volume to set (0 - 2.0 range)"), NULL },
     { "speed", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
     { "progression-mode", 0, 0, G_OPTION_ARG_INT, NULL, _("Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"), NULL },
+    { "fullscreen", 'f', 0, G_OPTION_ARG_NONE, NULL, _("Set window to be fullscreen"), NULL },
     { "video-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video filter to use (\"none\" to disable)"), NULL },
     { "audio-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Audio filter to use (\"none\" to disable)"), NULL },
     { "video-sink", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video sink to use"), NULL },
