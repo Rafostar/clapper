@@ -419,11 +419,19 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
     app_opts.enqueue = g_variant_dict_contains (options, "enqueue");
   }
 
-  if (!g_variant_dict_lookup (options, "volume", "d", &app_opts.volume))
+  if (g_variant_dict_lookup (options, "volume", "d", &app_opts.volume))
+    app_opts.volume = CLAMP (app_opts.volume, 0, 2.0); // clamp to allowed range
+  else
     app_opts.volume = -1;
-  if (!g_variant_dict_lookup (options, "speed", "d", &app_opts.speed))
+
+  if (g_variant_dict_lookup (options, "speed", "d", &app_opts.speed))
+    app_opts.speed = CLAMP (app_opts.speed, 0.05, 2.0); // clamp to allowed range
+  else
     app_opts.speed = -1;
-  if (!g_variant_dict_lookup (options, "progression-mode", "i", &app_opts.progression_mode))
+
+  if (g_variant_dict_lookup (options, "progression-mode", "i", &app_opts.progression_mode))
+    app_opts.progression_mode = CLAMP (app_opts.progression_mode, 0, 4); // clamp to possible modes
+  else
     app_opts.progression_mode = -1;
 
   app_opts.fullscreen = g_variant_dict_contains (options, "fullscreen");
