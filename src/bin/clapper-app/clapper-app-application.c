@@ -256,7 +256,7 @@ show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
 
 static inline void
 _apply_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_window,
-    const struct ClapperAppOptions *app_opts)
+    const struct ClapperAppOptions *app_opts, gboolean restore)
 {
   ClapperPlayer *player = clapper_app_window_get_player (app_window);
   ClapperQueue *queue = clapper_player_get_queue (player);
@@ -275,26 +275,28 @@ _apply_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_wi
   /* NOTE: Not using ternary operator to avoid accidental typecasting */
   if (app_opts->volume >= 0)
     clapper_player_set_volume (player, PERCENTAGE_ROUND (app_opts->volume));
-  else
+  else if (restore)
     clapper_player_set_volume (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume")));
 
-  clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
+  if (restore)
+    clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
 
   if (app_opts->speed >= 0)
     clapper_player_set_speed (player, PERCENTAGE_ROUND (app_opts->speed));
-  else
+  else if (restore)
     clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
 
-  clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
+  if (restore)
+    clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
 
   if (app_opts->progression_mode >= 0)
     clapper_queue_set_progression_mode (queue, app_opts->progression_mode);
-  else
+  else if (restore)
     clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
 
-  if (app_opts->fullscreen || g_settings_get_boolean (self->settings, "fullscreened"))
+  if (app_opts->fullscreen || (restore && g_settings_get_boolean (self->settings, "fullscreened")))
     gtk_window_fullscreen (GTK_WINDOW (app_window));
-  else if (g_settings_get_boolean (self->settings, "maximized"))
+  else if (restore && g_settings_get_boolean (self->settings, "maximized"))
     gtk_window_maximize (GTK_WINDOW (app_window));
 
   GST_DEBUG ("Configuration applied");
@@ -406,13 +408,15 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
   GVariantDict *options;
   GFile **files = NULL;
   gint n_files = 0;
+  gboolean is_remote, restore;
 
   GST_INFO ("Handling command line");
 
   options = g_application_command_line_get_options_dict (cmd_line);
+  is_remote = g_application_command_line_get_is_remote (cmd_line);
 
   /* Some options only make sense from remote invocation */
-  if (g_application_command_line_get_is_remote (cmd_line)) {
+  if (is_remote) {
     if (g_variant_dict_contains (options, "new-window"))
       window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
 
@@ -449,10 +453,14 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
     g_application_activate (app);
   }
 
+  /* We want to restore settings when starting main process
+   * or a new window is being added from the remote one */
+  restore = (!is_remote || window != NULL);
+
   if (!window)
     window = gtk_application_get_active_window (GTK_APPLICATION (app));
 
-  _apply_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window), &app_opts);
+  _apply_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window), &app_opts, restore);
   _app_opts_free_contents (&app_opts);
 
   return EXIT_SUCCESS;
