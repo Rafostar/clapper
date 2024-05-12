@@ -1609,9 +1609,9 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
    * DBus name to own on connection.
    *
    * Must be written as a reverse DNS format starting with "org.mpris.MediaPlayer2." prefix.
-   * Each #ClapperMpris instance running on the same system must have an unique.
+   * Each #ClapperMpris instance running on the same system must have an unique name.
    *
-   * Example: "org.mpris.MediaPlayer2.MyPlayer1"
+   * Example: "org.mpris.MediaPlayer2.MyPlayer.instance123"
    */
   param_specs[PROP_OWN_NAME] = g_param_spec_string ("own-name",
       NULL, NULL, NULL,
