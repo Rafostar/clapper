@@ -14,3 +14,8 @@ Type=Application
 Keywords=Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;
 # Translators: Do NOT translate or transliterate this text (these are enum types)!
 X-Purism-FormFactor=Workstation;Mobile;
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=clapper --new-window

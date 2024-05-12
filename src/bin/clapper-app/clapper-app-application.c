@@ -18,6 +18,7 @@
 #include "config.h"
 
 #include <math.h>
+#include <glib/gi18n.h>
 #include <gst/gst.h>
 #include <clapper-gtk/clapper-gtk.h>
 
@@ -44,6 +45,9 @@ struct _ClapperAppApplication
   gboolean need_init_state;
 };
 
+#define parent_class clapper_app_application_parent_class
+G_DEFINE_TYPE (ClapperAppApplication, clapper_app_application, GTK_TYPE_APPLICATION);
+
 struct ClapperPluginFeatureData
 {
   const gchar *name;
@@ -63,8 +67,31 @@ typedef struct
   const gchar *accels[3];
 } ClapperAppShortcut;
 
-#define parent_class clapper_app_application_parent_class
-G_DEFINE_TYPE (ClapperAppApplication, clapper_app_application, GTK_TYPE_APPLICATION);
+struct ClapperAppOptions
+{
+  gdouble volume;
+  gdouble speed;
+
+  gint progression_mode;
+
+  gboolean fullscreen;
+
+  gchar *video_filter;
+  gchar *audio_filter;
+
+  gchar *video_sink;
+  gchar *audio_sink;
+};
+
+static inline void
+_app_opts_free_contents (struct ClapperAppOptions *app_opts)
+{
+  g_free (app_opts->video_filter);
+  g_free (app_opts->audio_filter);
+
+  g_free (app_opts->video_sink);
+  g_free (app_opts->audio_sink);
+}
 
 static inline void
 _set_initial_plugin_feature_ranks (void)
@@ -226,25 +253,51 @@ show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static inline void
-_restore_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_window)
+_apply_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_window,
+    const struct ClapperAppOptions *app_opts, gboolean restore)
 {
   ClapperPlayer *player = clapper_app_window_get_player (app_window);
   ClapperQueue *queue = clapper_player_get_queue (player);
 
-  GST_DEBUG ("Restoring saved GSettings values to: %" GST_PTR_FORMAT, app_window);
+  GST_DEBUG ("Applying settings values to: %" GST_PTR_FORMAT, app_window);
 
-  clapper_player_set_volume (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume")));
-  clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
-  clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
-  clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
-  clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
+  if (app_opts->video_filter)
+    clapper_player_set_video_filter (player, clapper_app_utils_make_element (app_opts->video_filter));
+  if (app_opts->audio_filter)
+    clapper_player_set_audio_filter (player, clapper_app_utils_make_element (app_opts->audio_filter));
+  if (app_opts->video_sink)
+    clapper_player_set_video_sink (player, clapper_app_utils_make_element (app_opts->video_sink));
+  if (app_opts->audio_sink)
+    clapper_player_set_audio_sink (player, clapper_app_utils_make_element (app_opts->audio_sink));
 
-  if (g_settings_get_boolean (self->settings, "fullscreened"))
+  /* NOTE: Not using ternary operator to avoid accidental typecasting */
+  if (app_opts->volume >= 0)
+    clapper_player_set_volume (player, PERCENTAGE_ROUND (app_opts->volume));
+  else if (restore)
+    clapper_player_set_volume (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume")));
+
+  if (restore)
+    clapper_player_set_mute (player, g_settings_get_boolean (self->settings, "mute"));
+
+  if (app_opts->speed >= 0)
+    clapper_player_set_speed (player, PERCENTAGE_ROUND (app_opts->speed));
+  else if (restore)
+    clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
+
+  if (restore)
+    clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
+
+  if (app_opts->progression_mode >= 0)
+    clapper_queue_set_progression_mode (queue, app_opts->progression_mode);
+  else if (restore)
+    clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
+
+  if (app_opts->fullscreen || (restore && g_settings_get_boolean (self->settings, "fullscreened")))
     gtk_window_fullscreen (GTK_WINDOW (app_window));
-  else if (g_settings_get_boolean (self->settings, "maximized"))
+  else if (restore && g_settings_get_boolean (self->settings, "maximized"))
     gtk_window_maximize (GTK_WINDOW (app_window));
 
-  GST_DEBUG ("Configuration restored");
+  GST_DEBUG ("Configuration applied");
 }
 
 static inline void
@@ -273,7 +326,7 @@ clapper_app_application_new (void)
 {
   return g_object_new (CLAPPER_APP_TYPE_APPLICATION,
       "application-id", CLAPPER_APP_ID,
-      "flags", G_APPLICATION_HANDLES_OPEN,
+      "flags", G_APPLICATION_HANDLES_OPEN | G_APPLICATION_HANDLES_COMMAND_LINE,
       NULL);
 }
 
@@ -311,10 +364,8 @@ clapper_app_application_activate (GApplication *app)
   GST_INFO ("Activate");
   G_APPLICATION_CLASS (parent_class)->activate (app);
 
-  if (!(window = gtk_application_get_active_window (GTK_APPLICATION (app)))) {
+  if (!(window = gtk_application_get_active_window (GTK_APPLICATION (app))))
     window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
-    _restore_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window));
-  }
 
   if (self->need_init_state) {
     _assemble_initial_state (window);
@@ -331,6 +382,8 @@ clapper_app_application_local_command_line (GApplication *app,
   gchar **argv = *arguments;
   guint i;
 
+  GST_INFO ("Handling local command line");
+
   /* NOTE: argv is never NULL, so no need to check */
 
   for (i = 0; argv[i]; ++i) {
@@ -342,6 +395,73 @@ clapper_app_application_local_command_line (GApplication *app,
   }
 
   return G_APPLICATION_CLASS (parent_class)->local_command_line (app, arguments, exit_status);
+}
+
+static gint
+clapper_app_application_command_line (GApplication *app, GApplicationCommandLine *cmd_line)
+{
+  ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (app);
+  struct ClapperAppOptions app_opts = { 0, };
+  GtkWindow *window = NULL;
+  GVariantDict *options;
+  GFile **files = NULL;
+  gint n_files = 0;
+  gboolean is_remote, restore, enqueue = FALSE;
+
+  GST_INFO ("Handling command line");
+
+  options = g_application_command_line_get_options_dict (cmd_line);
+  is_remote = g_application_command_line_get_is_remote (cmd_line);
+
+  /* Some options only make sense from remote invocation */
+  if (is_remote) {
+    if (g_variant_dict_contains (options, "new-window"))
+      window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
+
+    enqueue = g_variant_dict_contains (options, "enqueue");
+  }
+
+  if (g_variant_dict_lookup (options, "volume", "d", &app_opts.volume))
+    app_opts.volume = CLAMP (app_opts.volume, 0, 2.0); // clamp to allowed range
+  else
+    app_opts.volume = -1;
+
+  if (g_variant_dict_lookup (options, "speed", "d", &app_opts.speed))
+    app_opts.speed = CLAMP (app_opts.speed, 0.05, 2.0); // clamp to allowed range
+  else
+    app_opts.speed = -1;
+
+  if (g_variant_dict_lookup (options, "progression-mode", "i", &app_opts.progression_mode))
+    app_opts.progression_mode = CLAMP (app_opts.progression_mode, 0, 4); // clamp to possible modes
+  else
+    app_opts.progression_mode = -1;
+
+  app_opts.fullscreen = g_variant_dict_contains (options, "fullscreen");
+
+  g_variant_dict_lookup (options, "video-filter", "s", &app_opts.video_filter);
+  g_variant_dict_lookup (options, "audio-filter", "s", &app_opts.audio_filter);
+
+  g_variant_dict_lookup (options, "video-sink", "s", &app_opts.video_sink);
+  g_variant_dict_lookup (options, "audio-sink", "s", &app_opts.audio_sink);
+
+  if (clapper_app_utils_files_from_command_line (cmd_line, &files, &n_files)) {
+    g_application_open (app, files, n_files, (enqueue) ? "add-only" : "");
+    clapper_app_utils_files_free (files);
+  } else {
+    g_application_activate (app);
+  }
+
+  /* We want to restore settings when starting main process
+   * or a new window is being added from the remote one */
+  restore = (!is_remote || window != NULL);
+
+  if (!window)
+    window = gtk_application_get_active_window (GTK_APPLICATION (app));
+
+  _apply_settings_to_window (self, CLAPPER_APP_WINDOW_CAST (window), &app_opts, restore);
+  _app_opts_free_contents (&app_opts);
+
+  return EXIT_SUCCESS;
 }
 
 static gboolean
@@ -512,7 +632,20 @@ clapper_app_application_constructed (GObject *object)
   GApplication *app = G_APPLICATION (self);
   guint i;
 
-  static const GActionEntry app_entries[] = {
+  const GOptionEntry app_options[] = {
+    { "new-window", 'n', 0, G_OPTION_ARG_NONE, NULL, _("Create a new window"), NULL },
+    { "enqueue", 0, 0, G_OPTION_ARG_NONE, NULL, _("Add media to queue in primary application instance"), NULL },
+    { "volume", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Audio volume to set (0 - 2.0 range)"), NULL },
+    { "speed", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
+    { "progression-mode", 0, 0, G_OPTION_ARG_INT, NULL, _("Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"), NULL },
+    { "fullscreen", 'f', 0, G_OPTION_ARG_NONE, NULL, _("Set window to be fullscreen"), NULL },
+    { "video-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video filter to use (\"none\" to disable)"), NULL },
+    { "audio-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Audio filter to use (\"none\" to disable)"), NULL },
+    { "video-sink", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video sink to use"), NULL },
+    { "audio-sink", 0, 0, G_OPTION_ARG_STRING, NULL, _("Audio sink to use"), NULL },
+    { NULL }
+  };
+  static const GActionEntry app_actions[] = {
     { "add-files", add_files, NULL, NULL, NULL },
     { "add-uri", add_uri, NULL, NULL, NULL },
     { "info", show_info, NULL, NULL, NULL },
@@ -542,11 +675,14 @@ clapper_app_application_constructed (GObject *object)
   plugin_feature_ranks_settings_changed_cb (self->settings, NULL, NULL);
 
   g_action_map_add_action_entries (G_ACTION_MAP (app),
-      app_entries, G_N_ELEMENTS (app_entries), app);
+      app_actions, G_N_ELEMENTS (app_actions), app);
 
   for (i = 0; i < G_N_ELEMENTS (app_shortcuts); ++i)
     gtk_application_set_accels_for_action (GTK_APPLICATION (app), app_shortcuts[i].action, app_shortcuts[i].accels);
 
+  g_application_set_option_context_parameter_string (app, "[URI1|FILE1] [URI2|FILE2] …");
+
+  g_application_add_main_option_entries (app, app_options);
   g_application_add_option_group (app, gst_init_get_option_group ());
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
@@ -581,5 +717,6 @@ clapper_app_application_class_init (ClapperAppApplicationClass *klass)
 
   application_class->activate = clapper_app_application_activate;
   application_class->local_command_line = clapper_app_application_local_command_line;
+  application_class->command_line = clapper_app_application_command_line;
   application_class->open = clapper_app_application_open;
 }

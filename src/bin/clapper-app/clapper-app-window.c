@@ -74,6 +74,8 @@ struct _ClapperAppWindow
 #define parent_class clapper_app_window_parent_class
 G_DEFINE_TYPE (ClapperAppWindow, clapper_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
+static guint16 instance_count = 0;
+
 static void
 _media_item_title_changed_cb (ClapperMediaItem *item,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperAppWindow *self)
@@ -1008,14 +1010,18 @@ clapper_app_window_constructed (GObject *object)
 #if (CLAPPER_HAVE_MPRIS || CLAPPER_HAVE_SERVER || CLAPPER_HAVE_DISCOVERER)
   ClapperFeature *feature = NULL;
 #endif
+#if CLAPPER_HAVE_MPRIS
+  gchar mpris_name[45];
+  g_snprintf (mpris_name, sizeof (mpris_name),
+      "org.mpris.MediaPlayer2.Clapper.instance%" G_GUINT16_FORMAT, instance_count++);
+#endif
 
   self->settings = g_settings_new (CLAPPER_APP_ID);
   self->last_volume = PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume"));
 
 #if CLAPPER_HAVE_MPRIS
   feature = CLAPPER_FEATURE (clapper_mpris_new (
-      "org.mpris.MediaPlayer2.Clapper",
-      "Clapper", CLAPPER_APP_ID));
+      mpris_name, CLAPPER_APP_NAME, CLAPPER_APP_ID));
   clapper_mpris_set_queue_controllable (CLAPPER_MPRIS (feature), TRUE);
   clapper_player_add_feature (player, feature);
   gst_object_unref (feature);
