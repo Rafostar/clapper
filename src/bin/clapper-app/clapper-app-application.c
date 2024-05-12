@@ -74,6 +74,8 @@ struct ClapperAppOptions
   gdouble volume;
   gdouble speed;
 
+  gint progression_mode;
+
   gchar *video_filter;
   gchar *audio_filter;
 
@@ -282,7 +284,11 @@ _apply_settings_to_window (ClapperAppApplication *self, ClapperAppWindow *app_wi
     clapper_player_set_speed (player, PERCENTAGE_ROUND (g_settings_get_double (self->settings, "speed")));
 
   clapper_player_set_subtitles_enabled (player, g_settings_get_boolean (self->settings, "subtitles-enabled"));
-  clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
+
+  if (app_opts->progression_mode >= 0)
+    clapper_queue_set_progression_mode (queue, app_opts->progression_mode);
+  else
+    clapper_queue_set_progression_mode (queue, g_settings_get_int (self->settings, "progression-mode"));
 
   if (g_settings_get_boolean (self->settings, "fullscreened"))
     gtk_window_fullscreen (GTK_WINDOW (app_window));
@@ -415,6 +421,8 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
     app_opts.volume = -1;
   if (!g_variant_dict_lookup (options, "speed", "d", &app_opts.speed))
     app_opts.speed = -1;
+  if (!g_variant_dict_lookup (options, "progression-mode", "i", &app_opts.progression_mode))
+    app_opts.progression_mode = -1;
 
   g_variant_dict_lookup (options, "video-filter", "s", &app_opts.video_filter);
   g_variant_dict_lookup (options, "audio-filter", "s", &app_opts.audio_filter);
@@ -611,6 +619,7 @@ clapper_app_application_constructed (GObject *object)
     { "enqueue", 0, 0, G_OPTION_ARG_NONE, NULL, _("Add media to queue in primary application instance"), NULL },
     { "volume", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Audio volume to set (0 - 2.0 range)"), NULL },
     { "speed", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
+    { "progression-mode", 0, 0, G_OPTION_ARG_INT, NULL, _("Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"), NULL },
     { "video-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video filter to use (\"none\" to disable)"), NULL },
     { "audio-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Audio filter to use (\"none\" to disable)"), NULL },
     { "video-sink", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video sink to use"), NULL },
