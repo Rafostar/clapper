@@ -69,8 +69,6 @@ typedef struct
 
 struct ClapperAppOptions
 {
-  gboolean enqueue;
-
   gdouble volume;
   gdouble speed;
 
@@ -408,7 +406,7 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
   GVariantDict *options;
   GFile **files = NULL;
   gint n_files = 0;
-  gboolean is_remote, restore;
+  gboolean is_remote, restore, enqueue = FALSE;
 
   GST_INFO ("Handling command line");
 
@@ -420,7 +418,7 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
     if (g_variant_dict_contains (options, "new-window"))
       window = GTK_WINDOW (clapper_app_window_new (GTK_APPLICATION (app)));
 
-    app_opts.enqueue = g_variant_dict_contains (options, "enqueue");
+    enqueue = g_variant_dict_contains (options, "enqueue");
   }
 
   if (g_variant_dict_lookup (options, "volume", "d", &app_opts.volume))
@@ -447,7 +445,7 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
   g_variant_dict_lookup (options, "audio-sink", "s", &app_opts.audio_sink);
 
   if (clapper_app_utils_files_from_command_line (cmd_line, &files, &n_files)) {
-    g_application_open (app, files, n_files, (app_opts.enqueue) ? "add-only" : "");
+    g_application_open (app, files, n_files, (enqueue) ? "add-only" : "");
     clapper_app_utils_files_free (files);
   } else {
     g_application_activate (app);
