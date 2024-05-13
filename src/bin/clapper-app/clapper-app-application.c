@@ -671,6 +671,7 @@ clapper_app_application_constructed (GObject *object)
   static const ClapperAppShortcut app_shortcuts[] = {
     { "app.add-files", { "<Control>o", NULL, NULL }},
     { "app.add-uri", { "<Control>u", NULL, NULL }},
+    { "app.new-window", { "<Control>n", NULL, NULL }},
     { "app.info", { "<Control>i", NULL, NULL }},
     { "app.preferences", { "<Control>comma", NULL, NULL }},
     { "app.about", { "F1", NULL, NULL }},
