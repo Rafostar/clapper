@@ -101,6 +101,15 @@ has_streams_closure (ClapperAppInfoWindow *self, guint n_streams)
   return (n_streams > 0);
 }
 
+static gboolean
+close_cb (GtkWidget *widget, GVariant *args G_GNUC_UNUSED,
+    gpointer user_data G_GNUC_UNUSED)
+{
+  gtk_window_close (GTK_WINDOW (widget));
+
+  return TRUE;
+}
+
 GtkWidget *
 clapper_app_info_window_new (GtkApplication *gtk_app, ClapperPlayer *player)
 {
@@ -199,6 +208,8 @@ clapper_app_info_window_class_init (ClapperAppInfoWindowClass *klass)
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
+
+  gtk_widget_class_add_binding (widget_class, GDK_KEY_Escape, 0, close_cb, NULL);
 
   gtk_widget_class_bind_template_child (widget_class, ClapperAppInfoWindow, vstreams_list);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppInfoWindow, astreams_list);
