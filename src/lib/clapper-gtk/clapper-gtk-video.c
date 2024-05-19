@@ -101,6 +101,7 @@
 #include "clapper-gtk-lead-container.h"
 #include "clapper-gtk-status-private.h"
 #include "clapper-gtk-buffering-animation-private.h"
+#include "clapper-gtk-video-placeholder-private.h"
 
 #define PERCENTAGE_ROUND(a) (round ((gdouble) a / 0.01) * 0.01)
 
@@ -1032,10 +1033,8 @@ _video_sink_changed_cb (ClapperPlayer *player,
   }
 
   if (!widget) {
-    /* FIXME: Create some default widget to show */
-    widget = g_object_ref_sink (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
-
     GST_DEBUG_OBJECT (self, "No widget from video sink, using placeholder");
+    widget = g_object_ref_sink (clapper_gtk_video_placeholder_new ());
   }
 
   gtk_overlay_set_child (GTK_OVERLAY (self->overlay), widget);

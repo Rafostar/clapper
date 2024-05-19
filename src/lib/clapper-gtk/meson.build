@@ -114,6 +114,7 @@ clappergtk_sources = [
   'clapper-gtk-toggle-play-button.c',
   'clapper-gtk-utils.c',
   'clapper-gtk-video.c',
+  'clapper-gtk-video-placeholder.c',
   clappergtk_resources,
 ]
 clappergtk_c_args = [

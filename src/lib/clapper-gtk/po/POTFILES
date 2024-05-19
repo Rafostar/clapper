@@ -1,4 +1,5 @@
 src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui
+src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui
 
 src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c
 src/lib/clapper-gtk/clapper-gtk-status.c
