@@ -25,15 +25,21 @@ clapper-gtk-video clapper-gtk-status.osd {
   background-color: transparent;
 }
 
-clapper-gtk-status box {
+clapper-gtk-video-placeholder {
+  background-color: black;
+}
+clapper-gtk-status box,
+clapper-gtk-video-placeholder box {
   padding-left: 6px;
   padding-right: 6px;
 }
-clapper-gtk-status box image {
+clapper-gtk-status box image,
+clapper-gtk-video-placeholder box image {
   -gtk-icon-size: 128px;
   -gtk-icon-filter: opacity(0.6);
 }
-clapper-gtk-status.adapted box image {
+clapper-gtk-status.adapted box image,
+clapper-gtk-video-placeholder.adapted box image {
   -gtk-icon-size: 96px;
 }
 
