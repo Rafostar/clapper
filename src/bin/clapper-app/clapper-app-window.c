@@ -76,6 +76,26 @@ G_DEFINE_TYPE (ClapperAppWindow, clapper_app_window, GTK_TYPE_APPLICATION_WINDOW
 
 static guint16 instance_count = 0;
 
+static inline GQuark
+clapper_app_window_extra_options_get_quark (void)
+{
+  return g_quark_from_static_string ("clapper-app-window-extra-options-quark");
+}
+
+static void
+clapper_app_window_extra_options_free (ClapperAppWindowExtraOptions *extra_opts)
+{
+  GST_TRACE ("Freeing window extra options: %p", extra_opts);
+
+  g_free (extra_opts->video_filter);
+  g_free (extra_opts->audio_filter);
+
+  g_free (extra_opts->video_sink);
+  g_free (extra_opts->audio_sink);
+
+  g_free (extra_opts);
+}
+
 static void
 _media_item_title_changed_cb (ClapperMediaItem *item,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperAppWindow *self)
@@ -905,6 +925,13 @@ clapper_app_window_get_player (ClapperAppWindow *self)
   return clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (self->video));
 }
 
+ClapperAppWindowExtraOptions *
+clapper_app_window_get_extra_options (ClapperAppWindow *self)
+{
+  return g_object_get_qdata ((GObject *) self,
+      clapper_app_window_extra_options_get_quark ());
+}
+
 void
 clapper_app_window_ensure_no_initial_state (ClapperAppWindow *self)
 {
@@ -966,9 +993,17 @@ clapper_app_window_unrealize (GtkWidget *widget)
 static void
 clapper_app_window_init (ClapperAppWindow *self)
 {
+  ClapperAppWindowExtraOptions *extra_opts;
   GtkSettings *settings;
   GtkWidget *dummy_titlebar;
   gint distance = 0;
+
+  extra_opts = g_new0 (ClapperAppWindowExtraOptions, 1);
+  GST_TRACE ("Created window extra options: %p", extra_opts);
+
+  g_object_set_qdata_full ((GObject *) self,
+      clapper_app_window_extra_options_get_quark (),
+      extra_opts, (GDestroyNotify) clapper_app_window_extra_options_free);
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
