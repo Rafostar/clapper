@@ -27,6 +27,15 @@ G_BEGIN_DECLS
 #define CLAPPER_APP_TYPE_WINDOW (clapper_app_window_get_type())
 #define CLAPPER_APP_WINDOW_CAST(obj) ((ClapperAppWindow *)(obj))
 
+typedef struct
+{
+  gchar *video_filter;
+  gchar *audio_filter;
+
+  gchar *video_sink;
+  gchar *audio_sink;
+} ClapperAppWindowExtraOptions;
+
 G_DECLARE_FINAL_TYPE (ClapperAppWindow, clapper_app_window, CLAPPER_APP, WINDOW, GtkApplicationWindow)
 
 G_GNUC_INTERNAL
@@ -37,6 +46,9 @@ GtkWidget * clapper_app_window_get_video (ClapperAppWindow *window);
 
 G_GNUC_INTERNAL
 ClapperPlayer * clapper_app_window_get_player (ClapperAppWindow *window);
+
+G_GNUC_INTERNAL
+ClapperAppWindowExtraOptions * clapper_app_window_get_extra_options (ClapperAppWindow *window);
 
 G_GNUC_INTERNAL
 void clapper_app_window_ensure_no_initial_state (ClapperAppWindow *window);

@@ -10,14 +10,20 @@
             <property name="title" translatable="yes">General</property>
             <child>
               <object class="GtkShortcutsShortcut">
-                <property name="title" translatable="yes">Show shortcuts</property>
-                <property name="accelerator">&lt;Ctrl&gt;question</property>
+                <property name="title" translatable="yes">New window</property>
+                <property name="accelerator">&lt;Ctrl&gt;n</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Open preferences</property>
                 <property name="accelerator">&lt;Ctrl&gt;comma</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Show shortcuts</property>
+                <property name="accelerator">&lt;Ctrl&gt;question</property>
               </object>
             </child>
             <child>
