@@ -47,9 +47,9 @@
         </child>
         <child>
           <object class="GtkGestureClick">
-            <property name="button">3</property>
-            <signal name="pressed" handler="right_click_pressed_cb"/>
-            <signal name="released" handler="right_click_released_cb"/>
+            <property name="button">0</property>
+            <signal name="pressed" handler="click_pressed_cb"/>
+            <signal name="released" handler="click_released_cb"/>
           </object>
         </child>
         <child>
@@ -68,8 +68,5 @@
         <signal name="drop" handler="drop_cb"/>
       </object>
     </child>
-    <style>
-      <class name="app"/>
-    </style>
   </template>
 </interface>
