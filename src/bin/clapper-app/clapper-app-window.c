@@ -1064,6 +1064,12 @@ toggle_fullscreen (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+auto_resize (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  _resize_window (CLAPPER_APP_WINDOW_CAST (user_data));
+}
+
+static void
 show_help_overlay (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (user_data);
@@ -1217,6 +1223,7 @@ clapper_app_window_constructed (GObject *object)
 
   static const GActionEntry win_entries[] = {
     { "toggle-fullscreen", toggle_fullscreen, NULL, NULL, NULL },
+    { "auto-resize", auto_resize, NULL, NULL, NULL },
     { "show-help-overlay", show_help_overlay, NULL, NULL, NULL },
   };
 
