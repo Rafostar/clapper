@@ -28,6 +28,9 @@
 #include "clapper-app-file-dialog.h"
 #include "clapper-app-utils.h"
 
+#define MIN_WINDOW_WIDTH 352
+#define MIN_WINDOW_HEIGHT 198
+
 #define DEFAULT_WINDOW_WIDTH 1024
 #define DEFAULT_WINDOW_HEIGHT 576
 
@@ -39,6 +42,8 @@
 
 #define PERCENTAGE_ROUND(a) (round ((gdouble) a / 0.01) * 0.01)
 #define AXIS_WINS_OVER(a,b) ((a > 0 && a - 0.3 > b) || (a < 0 && a + 0.3 < b))
+
+#define MIN_STEP_DELAY 12000
 
 #define GST_CAT_DEFAULT clapper_app_window_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -59,6 +64,7 @@ struct _ClapperAppWindow
   GSettings *settings;
 
   guint seek_timeout;
+  guint resize_tick_id;
 
   gboolean key_held;
   gboolean scrolling;
@@ -73,6 +79,12 @@ struct _ClapperAppWindow
 
 #define parent_class clapper_app_window_parent_class
 G_DEFINE_TYPE (ClapperAppWindow, clapper_app_window, GTK_TYPE_APPLICATION_WINDOW)
+
+typedef struct
+{
+  gint dest_width, dest_height;
+  gint64 last_tick;
+} ClapperAppWindowResizeData;
 
 static guint16 instance_count = 0;
 
@@ -246,11 +258,15 @@ _open_subtitles_cb (ClapperGtkExtraMenuButton *button G_GNUC_UNUSED,
 }
 
 static void
-right_click_pressed_cb (GtkGestureClick *click, gint n_press,
+click_pressed_cb (GtkGestureClick *click, gint n_press,
     gdouble x, gdouble y, ClapperAppWindow *self)
 {
   GdkCursor *cursor;
   const gchar *cursor_name = NULL;
+
+  if (gtk_gesture_single_get_current_button (
+      GTK_GESTURE_SINGLE (click)) != GDK_BUTTON_SECONDARY)
+    return;
 
   GST_LOG_OBJECT (self, "Right click pressed");
 
@@ -266,9 +282,152 @@ right_click_pressed_cb (GtkGestureClick *click, gint n_press,
   }
 }
 
+static gboolean
+_resize_tick (GtkWidget *widget, GdkFrameClock *frame_clock,
+    ClapperAppWindowResizeData *resize_data)
+{
+  gint64 now = gdk_frame_clock_get_frame_time (frame_clock);
+
+  if (now - resize_data->last_tick >= MIN_STEP_DELAY) {
+    ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (widget);
+    gint win_width, win_height;
+
+    GST_LOG_OBJECT (self, "Resize step, last: %" G_GINT64_FORMAT
+        ", now: %" G_GINT64_FORMAT, resize_data->last_tick, now);
+
+    gtk_window_get_default_size (GTK_WINDOW (self), &win_width, &win_height);
+
+    if (win_width != resize_data->dest_width) {
+      gint width_diff = ABS (win_width - resize_data->dest_width);
+      gint step_size = (width_diff > 180) ? 120 : MAX (width_diff / 4, 1);
+
+      win_width += (win_width > resize_data->dest_width) ? -step_size : step_size;
+    }
+    if (win_height != resize_data->dest_height) {
+      gint height_diff = ABS (win_height - resize_data->dest_height);
+      gint step_size = (height_diff > 180) ? 120 : MAX (height_diff / 4, 1);
+
+      win_height += (win_height > resize_data->dest_height) ? -step_size : step_size;
+    }
+
+    gtk_window_set_default_size (GTK_WINDOW (self), win_width, win_height);
+
+    if (win_width == resize_data->dest_width
+        && win_height == resize_data->dest_height) {
+      GST_DEBUG_OBJECT (self, "Window resize finish");
+      self->resize_tick_id = 0;
+
+      return G_SOURCE_REMOVE;
+    }
+
+    resize_data->last_tick = now;
+  }
+
+  return G_SOURCE_CONTINUE;
+}
+
 static void
-right_click_released_cb (GtkGestureClick *click, gint n_press,
-    gdouble x, gdouble y, ClapperAppWindow *self)
+_calculate_win_resize (gint win_w, gint win_h,
+    gint vid_w, gint vid_h, gint *dest_w, gint *dest_h)
+{
+  gdouble win_aspect = (gdouble) win_w / win_h;
+  gdouble vid_aspect = (gdouble) vid_w / vid_h;
+
+  if (win_aspect < vid_aspect) {
+    while (!G_APPROX_VALUE (fmod (win_w, vid_aspect), 0, FLT_EPSILON))
+      win_w++;
+
+    win_h = round ((gdouble) win_w / vid_aspect);
+
+    if (win_h < MIN_WINDOW_HEIGHT) {
+      _calculate_win_resize (G_MAXINT, MIN_WINDOW_HEIGHT, vid_w, vid_h, dest_w, dest_h);
+      return;
+    }
+  } else {
+    while (!G_APPROX_VALUE (fmod (win_h * vid_aspect, 1.0), 0, FLT_EPSILON))
+      win_h++;
+
+    win_w = round ((gdouble) win_h * vid_aspect);
+
+    if (win_w < MIN_WINDOW_WIDTH) {
+      _calculate_win_resize (MIN_WINDOW_WIDTH, G_MAXINT, vid_w, vid_h, dest_w, dest_h);
+      return;
+    }
+  }
+
+  *dest_w = win_w;
+  *dest_h = win_h;
+}
+
+static void
+_resize_window (ClapperAppWindow *self)
+{
+  ClapperPlayer *player;
+  ClapperStreamList *vstreams;
+  ClapperVideoStream *vstream;
+  GdkToplevelState toplevel_state, disallowed;
+
+  if (self->resize_tick_id != 0)
+    return;
+
+  toplevel_state = gdk_toplevel_get_state (GDK_TOPLEVEL (
+      gtk_native_get_surface (GTK_NATIVE (self))));
+  disallowed = (GDK_TOPLEVEL_STATE_MINIMIZED
+      | GDK_TOPLEVEL_STATE_MAXIMIZED
+      | GDK_TOPLEVEL_STATE_FULLSCREEN
+      | GDK_TOPLEVEL_STATE_TILED);
+
+  if ((toplevel_state & disallowed) > 0) {
+    GST_DEBUG_OBJECT (self, "Cannot resize window in disallowed state");
+    return;
+  }
+
+  player = clapper_app_window_get_player (self);
+  vstreams = clapper_player_get_video_streams (player);
+  vstream = CLAPPER_VIDEO_STREAM_CAST (
+      clapper_stream_list_get_current_stream (vstreams));
+
+  if (vstream) {
+    gint video_width = clapper_video_stream_get_width (vstream);
+    gint video_height = clapper_video_stream_get_height (vstream);
+
+    if (G_LIKELY (video_width > 0 && video_height > 0)) {
+      gint win_width, win_height, dest_width, dest_height;
+
+      gtk_window_get_default_size (GTK_WINDOW (self), &win_width, &win_height);
+
+      _calculate_win_resize (win_width, win_height,
+          video_width, video_height, &dest_width, &dest_height);
+
+      /* Only begin resize when not already at perfect size */
+      if (dest_width != win_width || dest_height != win_height) {
+        ClapperAppWindowResizeData *resize_data;
+
+        resize_data = g_new0 (ClapperAppWindowResizeData, 1);
+        resize_data->dest_width = dest_width;
+        resize_data->dest_height = dest_height;
+
+        GST_DEBUG_OBJECT (self, "Window resize start, dest: %ix%i",
+            resize_data->dest_width, resize_data->dest_height);
+
+        self->resize_tick_id = gtk_widget_add_tick_callback (GTK_WIDGET (self),
+            (GtkTickCallback) _resize_tick, resize_data, g_free);
+      }
+    }
+
+    gst_object_unref (vstream);
+  }
+}
+
+static void
+_handle_middle_click (ClapperAppWindow *self, GtkGestureClick *click)
+{
+  _resize_window (self);
+  gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_CLAIMED);
+}
+
+static void
+_handle_right_click (ClapperAppWindow *self, GtkGestureClick *click)
 {
   GdkSurface *surface;
   GdkEventSequence *sequence;
@@ -287,6 +446,22 @@ right_click_released_cb (GtkGestureClick *click, gint n_press,
     GST_FIXME_OBJECT (self, "Implement fallback context menu");
 
   gtk_gesture_set_state (GTK_GESTURE (click), GTK_EVENT_SEQUENCE_CLAIMED);
+}
+
+static void
+click_released_cb (GtkGestureClick *click, gint n_press,
+    gdouble x, gdouble y, ClapperAppWindow *self)
+{
+  switch (gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (click))) {
+    case GDK_BUTTON_MIDDLE:
+      _handle_middle_click (self, click);
+      break;
+    case GDK_BUTTON_SECONDARY:
+      _handle_right_click (self, click);
+      break;
+    default:
+      break;
+  }
 }
 
 static void
@@ -889,6 +1064,12 @@ toggle_fullscreen (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+auto_resize (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  _resize_window (CLAPPER_APP_WINDOW_CAST (user_data));
+}
+
+static void
 show_help_overlay (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (user_data);
@@ -998,6 +1179,9 @@ clapper_app_window_init (ClapperAppWindow *self)
   GtkWidget *dummy_titlebar;
   gint distance = 0;
 
+  gtk_widget_set_size_request (GTK_WIDGET (self),
+      MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT);
+
   extra_opts = g_new0 (ClapperAppWindowExtraOptions, 1);
   GST_TRACE ("Created window extra options: %p", extra_opts);
 
@@ -1039,6 +1223,7 @@ clapper_app_window_constructed (GObject *object)
 
   static const GActionEntry win_entries[] = {
     { "toggle-fullscreen", toggle_fullscreen, NULL, NULL, NULL },
+    { "auto-resize", auto_resize, NULL, NULL, NULL },
     { "show-help-overlay", show_help_overlay, NULL, NULL, NULL },
   };
 
@@ -1126,6 +1311,11 @@ clapper_app_window_dispose (GObject *object)
 {
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (object);
 
+  if (self->resize_tick_id != 0) {
+    gtk_widget_remove_tick_callback (GTK_WIDGET (self), self->resize_tick_id);
+    self->resize_tick_id = 0;
+  }
+
   g_clear_handle_id (&self->seek_timeout, g_source_remove);
 
   gtk_widget_dispose_template (GTK_WIDGET (object), CLAPPER_APP_TYPE_WINDOW);
@@ -1185,8 +1375,8 @@ clapper_app_window_class_init (ClapperAppWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, key_pressed_cb);
   gtk_widget_class_bind_template_callback (widget_class, key_released_cb);
 
-  gtk_widget_class_bind_template_callback (widget_class, right_click_pressed_cb);
-  gtk_widget_class_bind_template_callback (widget_class, right_click_released_cb);
+  gtk_widget_class_bind_template_callback (widget_class, click_pressed_cb);
+  gtk_widget_class_bind_template_callback (widget_class, click_released_cb);
   gtk_widget_class_bind_template_callback (widget_class, drag_begin_cb);
   gtk_widget_class_bind_template_callback (widget_class, drag_update_cb);
 
