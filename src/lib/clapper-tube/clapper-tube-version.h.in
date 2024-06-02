@@ -1,0 +1,76 @@
+/* Clapper Tube Library
+ * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+#pragma once
+
+#if !defined(__CLAPPER_TUBE_INSIDE__) && !defined(CLAPPER_TUBE_COMPILATION)
+#error "Only <clapper-tube/clapper-tube.h> can be included directly."
+#endif
+
+/**
+ * CLAPPER_TUBE_MAJOR_VERSION:
+ *
+ * ClapperTube major version component
+ */
+#define CLAPPER_TUBE_MAJOR_VERSION            (@CLAPPER_TUBE_MAJOR_VERSION@)
+
+/**
+ * CLAPPER_TUBE_MINOR_VERSION:
+ *
+ * ClapperTube minor version component
+ */
+#define CLAPPER_TUBE_MINOR_VERSION            (@CLAPPER_TUBE_MINOR_VERSION@)
+
+/**
+ * CLAPPER_TUBE_MICRO_VERSION:
+ *
+ * ClapperTube micro version component
+ */
+#define CLAPPER_TUBE_MICRO_VERSION            (@CLAPPER_TUBE_MICRO_VERSION@)
+
+/**
+ * CLAPPER_TUBE_VERSION:
+ *
+ * ClapperTube version
+ */
+#define CLAPPER_TUBE_VERSION                  (@CLAPPER_TUBE_VERSION@)
+
+/**
+ * CLAPPER_TUBE_VERSION_S:
+ *
+ * ClapperTube version, encoded as a string
+ */
+#define CLAPPER_TUBE_VERSION_S                "@CLAPPER_TUBE_VERSION@"
+
+#define CLAPPER_TUBE_ENCODE_VERSION(major,minor,micro) \
+    ((major) << 24 | (minor) << 16 | (micro) << 8)
+
+/**
+ * CLAPPER_TUBE_VERSION_HEX:
+ *
+ * ClapperTube version, encoded as an hexadecimal number, useful for integer comparisons.
+ */
+#define CLAPPER_TUBE_VERSION_HEX \
+    (CLAPPER_TUBE_ENCODE_VERSION (CLAPPER_TUBE_MAJOR_VERSION, CLAPPER_TUBE_MINOR_VERSION, CLAPPER_TUBE_MICRO_VERSION))
+
+#define CLAPPER_TUBE_CHECK_VERSION(major, minor, micro)                                \
+    (CLAPPER_TUBE_MAJOR_VERSION > (major) ||                                           \
+    (CLAPPER_TUBE_MAJOR_VERSION == (major) && CLAPPER_TUBE_MINOR_VERSION > (minor)) || \
+    (CLAPPER_TUBE_MAJOR_VERSION == (major) && CLAPPER_TUBE_MINOR_VERSION == (minor) && \
+    CLAPPER_TUBE_MICRO_VERSION >= (micro)))

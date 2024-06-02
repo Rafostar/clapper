@@ -34,6 +34,7 @@ includedir = get_option('includedir')
 optimization = get_option('optimization')
 
 clapper_libdir = join_paths(prefix, libdir, clapper_api_name)
+gst_plugins_libdir = join_paths(prefix, libdir, 'gstreamer-1.0')
 build_optimized = optimization in ['2', '3', 's']
 
 gst_dep = dependency('gstreamer-1.0',
@@ -139,6 +140,7 @@ summary({
 }, section: 'Directories')
 
 summary('clapper', build_clapper ? 'Yes' : 'No', section: 'Build')
+summary('clapper-tube', build_clappertube ? 'Yes' : 'No', section: 'Build')
 summary('clapper-gtk', build_clappergtk ? 'Yes' : 'No', section: 'Build')
 summary('clapper-app', build_clapperapp ? 'Yes' : 'No', section: 'Build')
 summary('gst-plugin', build_gst_plugin ? 'Yes' : 'No', section: 'Build')

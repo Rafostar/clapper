@@ -13,3 +13,4 @@ gir_init_section = '--add-init-section=extern void gst_init(gint*,gchar**);' + \
 subdir('gst')
 subdir('clapper')
 subdir('clapper-gtk')
+subdir('clapper-tube')
