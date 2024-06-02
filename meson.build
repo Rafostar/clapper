@@ -34,6 +34,7 @@ includedir = get_option('includedir')
 optimization = get_option('optimization')
 
 clapper_libdir = join_paths(prefix, libdir, clapper_api_name)
+gst_plugins_libdir = join_paths(prefix, libdir, 'gstreamer-1.0')
 build_optimized = optimization in ['2', '3', 's']
 
 gst_dep = dependency('gstreamer-1.0',
@@ -74,6 +75,9 @@ gio_dep = dependency('gio-2.0',
 )
 gmodule_dep = dependency('gmodule-2.0',
   version: glib_req,
+  required: false,
+)
+libsoup_dep = dependency('libsoup-3.0',
   required: false,
 )
 gtk4_dep = dependency('gtk4',

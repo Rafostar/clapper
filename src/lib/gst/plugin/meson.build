@@ -1,6 +1,4 @@
 gst_clapper_sink_dep = dependency('', required: false)
-
-gst_plugins_libdir = join_paths(prefix, libdir, 'gstreamer-1.0')
 gst_clapper_importers_libdir = join_paths(clapper_libdir, 'gst', 'plugin', 'importers')
 
 gst_clapper_plugin_deps = [

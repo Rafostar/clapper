@@ -4,6 +4,11 @@ option('clapper',
   value: 'auto',
   description: 'Build Clapper library'
 )
+option('clapper-tube',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper Tube library'
+)
 option('clapper-gtk',
   type: 'feature',
   value: 'auto',
