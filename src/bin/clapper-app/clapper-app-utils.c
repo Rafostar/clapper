@@ -86,9 +86,21 @@ clapper_app_utils_is_subtitles_file (GFile *file)
       G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE,
       G_FILE_QUERY_INFO_NONE,
       NULL, NULL))) {
-    is_subs = g_strv_contains (
+    const gchar *content_type = NULL;
+
+    if (g_file_info_has_attribute (info,
+        G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)) {
+      content_type = g_file_info_get_content_type (info);
+    } else if (g_file_info_has_attribute (info,
+        G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE)) {
+      content_type = g_file_info_get_attribute_string (info,
+          G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
+    }
+
+    is_subs = (content_type && g_strv_contains (
         clapper_app_utils_get_subtitles_mime_types (),
-        g_file_info_get_content_type (info));
+        content_type));
+
     g_object_unref (info);
   }
 
