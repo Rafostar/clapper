@@ -25,6 +25,8 @@
 
 #include <glib.h>
 #include <glib-object.h>
+
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
@@ -32,18 +34,25 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_VIDEO_STREAM (clapper_video_stream_get_type())
 #define CLAPPER_VIDEO_STREAM_CAST(obj) ((ClapperVideoStream *)(obj))
 
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperVideoStream, clapper_video_stream, CLAPPER, VIDEO_STREAM, ClapperStream)
 
+CLAPPER_API
 gchar * clapper_video_stream_get_codec (ClapperVideoStream *stream);
 
+CLAPPER_API
 gint clapper_video_stream_get_width (ClapperVideoStream *stream);
 
+CLAPPER_API
 gint clapper_video_stream_get_height (ClapperVideoStream *stream);
 
+CLAPPER_API
 gdouble clapper_video_stream_get_fps (ClapperVideoStream *stream);
 
+CLAPPER_API
 guint clapper_video_stream_get_bitrate (ClapperVideoStream *stream);
 
+CLAPPER_API
 gchar * clapper_video_stream_get_pixel_format (ClapperVideoStream *stream);
 
 G_END_DECLS

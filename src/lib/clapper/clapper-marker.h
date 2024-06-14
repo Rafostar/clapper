@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gst/gst.h>
+
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-enums.h>
 
 G_BEGIN_DECLS
@@ -36,6 +38,7 @@ G_BEGIN_DECLS
 /* NOTE: #ClapperMarker are immutable objects that cannot be derived,
  * otherwise #ClapperFeaturesManager would not be able to announce media
  * item changed caused by changes within them */
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperMarker, clapper_marker, CLAPPER, MARKER, GstObject)
 
 /**
@@ -45,14 +48,19 @@ G_DECLARE_FINAL_TYPE (ClapperMarker, clapper_marker, CLAPPER, MARKER, GstObject)
  */
 #define CLAPPER_MARKER_NO_END ((gdouble) -1) // Needs a cast from int, otherwise GIR is generated incorrectly
 
+CLAPPER_API
 ClapperMarker * clapper_marker_new (ClapperMarkerType marker_type, const gchar *title, gdouble start, gdouble end);
 
+CLAPPER_API
 ClapperMarkerType clapper_marker_get_marker_type (ClapperMarker *marker);
 
+CLAPPER_API
 const gchar * clapper_marker_get_title (ClapperMarker *marker);
 
+CLAPPER_API
 gdouble clapper_marker_get_start (ClapperMarker *marker);
 
+CLAPPER_API
 gdouble clapper_marker_get_end (ClapperMarker *marker);
 
 G_END_DECLS

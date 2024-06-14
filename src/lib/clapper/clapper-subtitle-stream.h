@@ -25,6 +25,8 @@
 
 #include <glib.h>
 #include <glib-object.h>
+
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
@@ -32,10 +34,13 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_SUBTITLE_STREAM (clapper_subtitle_stream_get_type())
 #define CLAPPER_SUBTITLE_STREAM_CAST(obj) ((ClapperSubtitleStream *)(obj))
 
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperSubtitleStream, clapper_subtitle_stream, CLAPPER, SUBTITLE_STREAM, ClapperStream)
 
+CLAPPER_API
 gchar * clapper_subtitle_stream_get_lang_code (ClapperSubtitleStream *stream);
 
+CLAPPER_API
 gchar * clapper_subtitle_stream_get_lang_name (ClapperSubtitleStream *stream);
 
 G_END_DECLS

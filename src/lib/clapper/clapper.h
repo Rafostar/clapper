@@ -21,6 +21,8 @@
 
 #define __CLAPPER_INSIDE__
 
+#include <clapper/clapper-visibility.h>
+
 #include <clapper/clapper-enums.h>
 #include <clapper/clapper-version.h>
 
@@ -52,8 +54,10 @@
 
 G_BEGIN_DECLS
 
+CLAPPER_API
 void clapper_init (int *argc, char **argv[]);
 
+CLAPPER_API
 gboolean clapper_init_check (int *argc, char **argv[]);
 
 G_END_DECLS

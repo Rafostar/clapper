@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <gst/gst.h>
 
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-enums.h>
 
 G_BEGIN_DECLS
@@ -34,6 +35,7 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_STREAM (clapper_stream_get_type())
 #define CLAPPER_STREAM_CAST(obj) ((ClapperStream *)(obj))
 
+CLAPPER_API
 G_DECLARE_DERIVABLE_TYPE (ClapperStream, clapper_stream, CLAPPER, STREAM, GstObject)
 
 struct _ClapperStreamClass
@@ -58,8 +60,10 @@ struct _ClapperStreamClass
   gpointer padding[4];
 };
 
+CLAPPER_API
 ClapperStreamType clapper_stream_get_stream_type (ClapperStream *stream);
 
+CLAPPER_API
 gchar * clapper_stream_get_title (ClapperStream *stream);
 
 G_END_DECLS
