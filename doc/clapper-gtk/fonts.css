@@ -129,7 +129,7 @@
   font-family: 'Source Code Pro';
   font-style: normal;
   font-weight: 400;
-  src: local('SourceCodePro-Regular');
+  src: local('SourceCodePro-Regular'), local('monospace');
   font-display: swap;
 }
 
@@ -137,7 +137,7 @@
   font-family: 'Source Code Pro';
   font-style: italic;
   font-weight: 400;
-  src: local('SourceCodePro-It');
+  src: local('SourceCodePro-It'), local('monospace');
   font-display: swap;
 }
 
@@ -145,6 +145,6 @@
   font-family: 'Source Code Pro';
   font-style: normal;
   font-weight: 600;
-  src: local('SourceCodePro-Semibold');
+  src: local('SourceCodePro-Semibold'), local('monospace');
   font-display: swap;
 }
