@@ -27,25 +27,35 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_GTK_TYPE_EXTRA_MENU_BUTTON (clapper_gtk_extra_menu_button_get_type())
 #define CLAPPER_GTK_EXTRA_MENU_BUTTON_CAST(obj) ((ClapperGtkExtraMenuButton *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkExtraMenuButton, clapper_gtk_extra_menu_button, CLAPPER_GTK, EXTRA_MENU_BUTTON, GtkWidget)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_extra_menu_button_new (void);
 
+CLAPPER_GTK_API
 void clapper_gtk_extra_menu_button_set_volume_visible (ClapperGtkExtraMenuButton *button, gboolean visible);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_extra_menu_button_get_volume_visible (ClapperGtkExtraMenuButton *button);
 
+CLAPPER_GTK_API
 void clapper_gtk_extra_menu_button_set_speed_visible (ClapperGtkExtraMenuButton *button, gboolean visible);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_extra_menu_button_get_speed_visible (ClapperGtkExtraMenuButton *button);
 
+CLAPPER_GTK_API
 void clapper_gtk_extra_menu_button_set_can_open_subtitles (ClapperGtkExtraMenuButton *button, gboolean allowed);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_extra_menu_button_get_can_open_subtitles (ClapperGtkExtraMenuButton *button);
 
 G_END_DECLS

@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
 #include <clapper-gtk/clapper-gtk-container.h>
 
 G_BEGIN_DECLS
@@ -34,18 +35,25 @@ G_BEGIN_DECLS
 #define CLAPPER_GTK_TYPE_BILLBOARD (clapper_gtk_billboard_get_type())
 #define CLAPPER_GTK_BILLBOARD_CAST(obj) ((ClapperGtkBillboard *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkBillboard, clapper_gtk_billboard, CLAPPER_GTK, BILLBOARD, ClapperGtkContainer)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_billboard_new (void);
 
+CLAPPER_GTK_API
 void clapper_gtk_billboard_post_message (ClapperGtkBillboard *billboard, const gchar *icon_name, const gchar *message);
 
+CLAPPER_GTK_API
 void clapper_gtk_billboard_pin_message (ClapperGtkBillboard *billboard, const gchar *icon_name, const gchar *message);
 
+CLAPPER_GTK_API
 void clapper_gtk_billboard_unpin_pinned_message (ClapperGtkBillboard *billboard);
 
+CLAPPER_GTK_API
 void clapper_gtk_billboard_announce_volume (ClapperGtkBillboard *billboard);
 
+CLAPPER_GTK_API
 void clapper_gtk_billboard_announce_speed (ClapperGtkBillboard *billboard);
 
 G_END_DECLS

@@ -27,13 +27,17 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_GTK_TYPE_TOGGLE_FULLSCREEN_BUTTON (clapper_gtk_toggle_fullscreen_button_get_type())
 #define CLAPPER_GTK_TOGGLE_FULLSCREEN_BUTTON_CAST(obj) ((ClapperGtkToggleFullscreenButton *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkToggleFullscreenButton, clapper_gtk_toggle_fullscreen_button, CLAPPER_GTK, TOGGLE_FULLSCREEN_BUTTON, GtkButton)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_toggle_fullscreen_button_new (void);
 
 G_END_DECLS

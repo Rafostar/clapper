@@ -28,33 +28,47 @@
 #include <gtk/gtk.h>
 #include <clapper/clapper.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_GTK_TYPE_VIDEO (clapper_gtk_video_get_type())
 #define CLAPPER_GTK_VIDEO_CAST(obj) ((ClapperGtkVideo *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkVideo, clapper_gtk_video, CLAPPER_GTK, VIDEO, GtkWidget)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_video_new (void);
 
+CLAPPER_GTK_API
 void clapper_gtk_video_add_overlay (ClapperGtkVideo *video, GtkWidget *widget);
 
+CLAPPER_GTK_API
 void clapper_gtk_video_add_fading_overlay (ClapperGtkVideo *video, GtkWidget *widget);
 
+CLAPPER_GTK_API
 ClapperPlayer * clapper_gtk_video_get_player (ClapperGtkVideo *video);
 
+CLAPPER_GTK_API
 void clapper_gtk_video_set_fade_delay (ClapperGtkVideo *video, guint delay);
 
+CLAPPER_GTK_API
 guint clapper_gtk_video_get_fade_delay (ClapperGtkVideo *video);
 
+CLAPPER_GTK_API
 void clapper_gtk_video_set_touch_fade_delay (ClapperGtkVideo *video, guint delay);
 
+CLAPPER_GTK_API
 guint clapper_gtk_video_get_touch_fade_delay (ClapperGtkVideo *video);
 
+CLAPPER_GTK_API
 void clapper_gtk_video_set_auto_inhibit (ClapperGtkVideo *video, gboolean inhibit);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_video_get_auto_inhibit (ClapperGtkVideo *video);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_video_get_inhibited (ClapperGtkVideo *video);
 
 G_END_DECLS

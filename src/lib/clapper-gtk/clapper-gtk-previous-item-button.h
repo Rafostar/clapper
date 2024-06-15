@@ -27,13 +27,17 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_GTK_TYPE_PREVIOUS_ITEM_BUTTON (clapper_gtk_previous_item_button_get_type())
 #define CLAPPER_GTK_PREVIOUS_ITEM_BUTTON_CAST(obj) ((ClapperGtkPreviousItemButton *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkPreviousItemButton, clapper_gtk_previous_item_button, CLAPPER_GTK, PREVIOUS_ITEM_BUTTON, GtkButton)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_previous_item_button_new (void);
 
 G_END_DECLS

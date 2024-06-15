@@ -39,6 +39,19 @@ configure_file(
   configuration: config_h,
 )
 
+visibility_conf = configuration_data()
+
+visibility_conf.set(
+  'CLAPPER_API',
+  'CLAPPER_GTK',
+)
+
+clappergtk_visibility_header = configure_file(
+  input: '../shared/clapper-api-visibility.h.in',
+  output: 'clapper-gtk-visibility.h',
+  configuration: visibility_conf,
+)
+
 version_conf = configuration_data()
 
 version_conf.set(
@@ -93,6 +106,7 @@ clappergtk_headers = [
   'clapper-gtk-utils.h',
   'clapper-gtk-video.h',
   clappergtk_version_header,
+  clappergtk_visibility_header,
 ]
 clappergtk_sources = [
   'clapper-gtk-billboard.c',
@@ -122,11 +136,17 @@ clappergtk_c_args = [
   '-DGST_USE_UNSTABLE_API',
 ]
 
+if get_option('default_library') == 'static'
+  clappergtk_c_args += ['-DCLAPPER_GTK_STATIC_COMPILATION']
+endif
+
 clappergtk_headers_dir = join_paths(includedir, clapper_api_name, 'clapper-gtk')
 
 clappergtk_enums = gnome.mkenums_simple(
   'clapper-gtk-enum-types',
   sources: clappergtk_headers,
+  decorator: 'CLAPPER_GTK_API',
+  header_prefix: '#include <clapper-gtk/clapper-gtk-visibility.h>',
   identifier_prefix: 'ClapperGtk',
   symbol_prefix: 'clapper_gtk',
   install_header: true,
@@ -215,6 +235,7 @@ clappergtk_dep = declare_dependency(
   include_directories: clappergtk_conf_inc,
   dependencies: clappergtk_deps,
   sources: [
+    clappergtk_visibility_header,
     clappergtk_version_header,
     clappergtk_enums[1],
   ],
