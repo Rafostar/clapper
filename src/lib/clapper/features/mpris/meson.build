@@ -26,6 +26,14 @@ foreach dep : feature_deps
   endif
 endforeach
 
+gdbus_codegen = find_program('gdbus-codegen', required: false)
+if not gdbus_codegen.found()
+  if feature_option.enabled()
+    error('@0@ feature was enabled, but program gdbus-codegen was not found'.format(feature_name))
+  endif
+  subdir_done()
+endif
+
 clapper_mpris_gdbus = gnome.gdbus_codegen('clapper-mpris-gdbus',
   sources: 'clapper-mpris-gdbus.xml',
   interface_prefix: 'org.mpris.',
