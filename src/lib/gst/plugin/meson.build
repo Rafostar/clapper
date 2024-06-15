@@ -23,11 +23,15 @@ endforeach
 
 gst_clapper_plugin_args = [
   '-DHAVE_CONFIG_H',
+  '-DCLAPPER_GST_COMPILATION',
   '-DGST_USE_UNSTABLE_API',
 ]
 
 if get_option('default_library') == 'static'
-  gst_clapper_plugin_args += ['-DGST_STATIC_COMPILATION']
+  gst_clapper_plugin_args += [
+    '-DGST_STATIC_COMPILATION',
+    '-DCLAPPER_GST_STATIC_COMPILATION',
+  ]
 endif
 
 cdata = configuration_data()
@@ -46,6 +50,20 @@ configure_file(
   output: 'config.h',
   configuration: cdata,
 )
+
+visibility_conf = configuration_data()
+
+visibility_conf.set(
+  'CLAPPER_API',
+  'CLAPPER_GST',
+)
+
+clappergst_visibility_header = configure_file(
+  input: '../../shared/clapper-api-visibility.h.in',
+  output: 'clapper-gst-visibility.h',
+  configuration: visibility_conf,
+)
+
 gst_plugin_conf_inc = [
   include_directories('.'),
   include_directories('..'),
