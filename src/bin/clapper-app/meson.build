@@ -67,6 +67,7 @@ clapperapp_sources = [
   'clapper-app-queue-progression-item.c',
   'clapper-app-queue-progression-model.c',
   'clapper-app-queue-selection.c',
+  'clapper-app-types.c',
   'clapper-app-uri-dialog.c',
   'clapper-app-utils.c',
   'clapper-app-window.c',
