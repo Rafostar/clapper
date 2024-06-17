@@ -115,11 +115,14 @@ _obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
   GFile *dir;
   GFileEnumerator *dir_enum;
   GError *error = NULL;
+  const gchar *imp_path, *env_path = g_getenv ("CLAPPER_SINK_IMPORTER_PATH");
 
   GST_INFO ("Preparing modules");
 
   modules = g_ptr_array_new ();
-  dir = g_file_new_for_path (CLAPPER_SINK_IMPORTER_PATH);
+
+  imp_path = (env_path && env_path[0]) ? env_path : CLAPPER_SINK_IMPORTER_PATH;
+  dir = g_file_new_for_path (imp_path);
 
   if ((dir_enum = g_file_enumerate_children (dir,
       G_FILE_ATTRIBUTE_STANDARD_NAME,
@@ -139,7 +142,7 @@ _obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
       if (!g_str_has_suffix (module_name, G_MODULE_SUFFIX))
         continue;
 
-      module_path = g_module_build_path (CLAPPER_SINK_IMPORTER_PATH, module_name);
+      module_path = g_module_build_path (imp_path, module_name);
       module = g_module_open (module_path, G_MODULE_BIND_LAZY);
       g_free (module_path);
 
