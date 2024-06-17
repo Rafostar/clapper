@@ -1451,6 +1451,24 @@ clapper_gtk_video_dispose (GObject *object)
 
   g_clear_handle_id (&self->fade_timeout, g_source_remove);
 
+  /* Something else might still be holding a reference on the player,
+   * thus we should disconnect everything before disposing template */
+  if (self->player) {
+    ClapperQueue *queue = clapper_player_get_queue (self->player);
+
+    g_signal_handlers_disconnect_by_func (self->player,
+        _player_state_changed_cb, self);
+    g_signal_handlers_disconnect_by_func (self->player,
+        _video_sink_changed_cb, self);
+    g_signal_handlers_disconnect_by_func (self->player,
+        _player_error_cb, self);
+    g_signal_handlers_disconnect_by_func (self->player,
+        _player_missing_plugin_cb, self);
+
+    g_signal_handlers_disconnect_by_func (queue,
+        _queue_current_item_changed_cb, self);
+  }
+
   gtk_widget_dispose_template (GTK_WIDGET (object), CLAPPER_GTK_TYPE_VIDEO);
 
   g_clear_pointer (&self->overlay, gtk_widget_unparent);
