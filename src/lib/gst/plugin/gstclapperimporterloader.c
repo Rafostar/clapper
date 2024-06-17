@@ -27,6 +27,11 @@
 #include "gstclapperimporter.h"
 #include "gstclappercontexthandler.h"
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+static HMODULE _importer_dll_handle = NULL;
+#endif
+
 #define GST_CAT_DEFAULT gst_clapper_importer_loader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -112,21 +117,43 @@ static gpointer
 _obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
 {
   GPtrArray *modules;
-  GFile *dir;
+  GFile *dir = NULL;
   GFileEnumerator *dir_enum;
   GError *error = NULL;
-  const gchar *imp_path, *env_path = g_getenv ("CLAPPER_SINK_IMPORTER_PATH");
+  const gchar *env_path = g_getenv ("CLAPPER_SINK_IMPORTER_PATH");
 
   GST_INFO ("Preparing modules");
 
   modules = g_ptr_array_new ();
 
-  imp_path = (env_path && env_path[0]) ? env_path : CLAPPER_SINK_IMPORTER_PATH;
-  dir = g_file_new_for_path (imp_path);
+#ifdef G_OS_WIN32
+  if (!env_path || env_path[0] == '\0') {
+    gchar *win_base_dir, *dir_path;
+
+    win_base_dir = g_win32_get_package_installation_directory_of_module (
+        _importer_dll_handle);
+    dir_path = g_build_filename (win_base_dir,
+        "lib", "clapper-0.0", "gst", "plugin", "importers", NULL);
+    GST_INFO ("Win32 importers path: %s", dir_path);
+
+    dir = g_file_new_for_path (dir_path);
+
+    g_free (win_base_dir);
+    g_free (dir_path);
+  }
+#endif
+
+  if (!dir) {
+    const gchar *imp_path = (env_path && env_path[0] != '\0')
+        ? env_path : CLAPPER_SINK_IMPORTER_PATH;
+    dir = g_file_new_for_path (imp_path);
+  }
 
   if ((dir_enum = g_file_enumerate_children (dir,
       G_FILE_ATTRIBUTE_STANDARD_NAME,
       G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error))) {
+    gchar *dir_path = g_file_get_path (dir);
+
     while (TRUE) {
       GFileInfo *info = NULL;
       GModule *module;
@@ -142,7 +169,7 @@ _obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
       if (!g_str_has_suffix (module_name, G_MODULE_SUFFIX))
         continue;
 
-      module_path = g_module_build_path (imp_path, module_name);
+      module_path = g_module_build_path (dir_path, module_name);
       module = g_module_open (module_path, G_MODULE_BIND_LAZY);
       g_free (module_path);
 
@@ -157,6 +184,7 @@ _obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
     }
 
     g_object_unref (dir_enum);
+    g_free (dir_path);
   }
 
   g_object_unref (dir);
