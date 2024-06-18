@@ -1,0 +1,89 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+name: "Windows"
+jobs:
+  windows:
+    name: "Windows"
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [x86_64]
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: |-
+          mingw-w64-${{ matrix.arch }}-meson
+          mingw-w64-${{ matrix.arch }}-gcc
+          mingw-w64-${{ matrix.arch }}-glib2
+          mingw-w64-${{ matrix.arch }}-gstreamer
+          mingw-w64-${{ matrix.arch }}-gst-plugins-base
+          mingw-w64-${{ matrix.arch }}-gst-plugins-good
+          mingw-w64-${{ matrix.arch }}-gst-plugins-bad
+          mingw-w64-${{ matrix.arch }}-gst-plugins-ugly
+          mingw-w64-${{ matrix.arch }}-gst-libav
+          mingw-w64-${{ matrix.arch }}-libsoup3
+          mingw-w64-${{ matrix.arch }}-libmicrodns
+          mingw-w64-${{ matrix.arch }}-gtk4
+          mingw-w64-${{ matrix.arch }}-libadwaita
+    - name: Prepare
+      run: |
+        BUILD_PREFIX="$GITHUB_WORKSPACE/clapper-win-${{ matrix.arch }}"
+
+        mkdir -p $BUILD_PREFIX/bin
+        cp /mingw64/bin/gdbus.exe $BUILD_PREFIX/bin/
+        cp /mingw64/bin/gst-inspect-1.0.exe $BUILD_PREFIX/bin/
+
+        mkdir -p $BUILD_PREFIX/lib
+        cp -r /mingw64/lib/gio $BUILD_PREFIX/lib/
+        cp -r /mingw64/lib/gstreamer-1.0 $BUILD_PREFIX/lib/
+        cp -r /mingw64/lib/gdk-pixbuf-2.0 $BUILD_PREFIX/lib/
+
+        mkdir -p $BUILD_PREFIX/share/glib-2.0/schemas
+        cp -r /mingw64/share/glib-2.0/schemas/*.xml $BUILD_PREFIX/share/glib-2.0/schemas/
+        cp -r /mingw64/share/icons $BUILD_PREFIX/share/
+
+        mkdir -p $BUILD_PREFIX/share/xml/iso-codes
+        cp /mingw64/share/xml/iso-codes/iso_639.xml $BUILD_PREFIX/share/xml/iso-codes/
+
+        cd "$BUILD_PREFIX/lib/gstreamer-1.0"
+        rm -f \
+            libgstadpcmenc.dll libgstamfcodec.dll libgstdvbsubenc.dll libgstencoding.dll \
+            libgstfrei0r.dll libgstinter.dll libgstlame.dll libgstldac.dll libgstmpeg2enc.dll \
+            libgstmpegpsmux.dll libgstmpegtsmux.dll libgstmplex.dll libgstrealmedia.dll \
+            libgstsubenc.dll libgstsvtav1.dll libgstsvthevcenc.dll libgsttwolame.dll \
+            libgstvoamrwbenc.dll libgstwavenc.dll libgstx264.dll libgstx265.dll \
+            libgstxingmux.dll libgsty4menc.dll libgstzbar.dll
+    - name: Build
+      run: |
+        meson setup builddir --prefix=$GITHUB_WORKSPACE/clapper-win-${{ matrix.arch }}
+        cd builddir
+        meson compile
+        meson install
+    - name: Package
+      run: |
+        BUILD_PREFIX="$GITHUB_WORKSPACE/clapper-win-${{ matrix.arch }}"
+
+        ldd $BUILD_PREFIX/bin/clapper.exe | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
+        find $BUILD_PREFIX/lib/clapper-0.0/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
+        find $BUILD_PREFIX/lib/gstreamer-1.0/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
+        find $BUILD_PREFIX/lib/gio/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: clapper-win-${{ matrix.arch }}
+        path: clapper-win-${{ matrix.arch }}
+        if-no-files-found: error
