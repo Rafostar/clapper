@@ -88,5 +88,18 @@ executable(
   c_args: clapperapp_c_args,
   install: true,
   install_dir: bindir,
+  win_subsystem: 'windows',
 )
+if ['windows'].contains(host_machine.system())
+  executable(
+    meson.project_name() + '-console',
+    clapperapp_sources,
+    dependencies: clapperapp_deps,
+    include_directories: clapperapp_conf_inc,
+    c_args: clapperapp_c_args,
+    install: true,
+    install_dir: bindir,
+    win_subsystem: 'console',
+  )
+endif
 build_clapperapp = true
