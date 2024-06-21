@@ -27,8 +27,11 @@
 #include <gtk/gtk.h>
 #include <clapper/clapper.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
+CLAPPER_GTK_API
 ClapperPlayer * clapper_gtk_get_player_from_ancestor (GtkWidget *widget);
 
 G_END_DECLS

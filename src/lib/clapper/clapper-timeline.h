@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <gst/gst.h>
 
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-marker.h>
 
 G_BEGIN_DECLS
@@ -34,14 +35,19 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_TIMELINE (clapper_timeline_get_type())
 #define CLAPPER_TIMELINE_CAST(obj) ((ClapperTimeline *)(obj))
 
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperTimeline, clapper_timeline, CLAPPER, TIMELINE, GstObject)
 
+CLAPPER_API
 gboolean clapper_timeline_insert_marker (ClapperTimeline *timeline, ClapperMarker *marker);
 
+CLAPPER_API
 void clapper_timeline_remove_marker (ClapperTimeline *timeline, ClapperMarker *marker);
 
+CLAPPER_API
 ClapperMarker * clapper_timeline_get_marker (ClapperTimeline *timeline, guint index);
 
+CLAPPER_API
 guint clapper_timeline_get_n_markers (ClapperTimeline *timeline);
 
 G_END_DECLS

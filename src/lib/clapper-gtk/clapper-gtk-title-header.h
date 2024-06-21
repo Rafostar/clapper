@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gtk/gtk.h>
+
+#include <clapper-gtk/clapper-gtk-visibility.h>
 #include <clapper-gtk/clapper-gtk-lead-container.h>
 
 G_BEGIN_DECLS
@@ -33,14 +35,19 @@ G_BEGIN_DECLS
 #define CLAPPER_GTK_TYPE_TITLE_HEADER (clapper_gtk_title_header_get_type())
 #define CLAPPER_GTK_TITLE_HEADER_CAST(obj) ((ClapperGtkTitleHeader *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkTitleHeader, clapper_gtk_title_header, CLAPPER_GTK, TITLE_HEADER, ClapperGtkLeadContainer)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_title_header_new (void);
 
+CLAPPER_GTK_API
 const gchar * clapper_gtk_title_header_get_current_title (ClapperGtkTitleHeader *header);
 
+CLAPPER_GTK_API
 void clapper_gtk_title_header_set_fallback_to_uri (ClapperGtkTitleHeader *header, gboolean enabled);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_title_header_get_fallback_to_uri (ClapperGtkTitleHeader *header);
 
 G_END_DECLS

@@ -27,10 +27,13 @@
 #include <gtk/gtk.h>
 
 #include "gst/plugin/gstclappercontexthandler.h"
+#include "gst/plugin/clapper-gst-visibility.h"
 
 G_BEGIN_DECLS
 
 #define GST_TYPE_CLAPPER_GL_CONTEXT_HANDLER (gst_clapper_gl_context_handler_get_type())
+
+CLAPPER_GST_API
 G_DECLARE_FINAL_TYPE (GstClapperGLContextHandler, gst_clapper_gl_context_handler, GST, CLAPPER_GL_CONTEXT_HANDLER, GstClapperContextHandler)
 
 #define GST_CLAPPER_GL_CONTEXT_HANDLER_CAST(obj)        ((GstClapperGLContextHandler *)(obj))
@@ -55,10 +58,13 @@ struct _GstClapperGLContextHandler
   GstGLContext *gst_context;
 };
 
+CLAPPER_GST_API
 void         gst_clapper_gl_context_handler_add_handler            (GPtrArray *context_handlers);
 
+CLAPPER_GST_API
 GstCaps *    gst_clapper_gl_context_handler_make_gdk_gl_caps       (const gchar *features, gboolean only_2d);
 
+CLAPPER_GST_API
 GdkTexture * gst_clapper_gl_context_handler_make_gl_texture        (GstClapperGLContextHandler *handler, GstBuffer *buffer, GstVideoInfo *v_info);
 
 G_END_DECLS

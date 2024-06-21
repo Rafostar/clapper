@@ -25,6 +25,7 @@
 #include <clapper/clapper.h>
 
 #include "clapper-app-application.h"
+#include "clapper-app-types.h"
 
 gint
 main (gint argc, gchar **argv)
@@ -45,6 +46,8 @@ main (gint argc, gchar **argv)
   clapper_init (&argc, &argv);
   gtk_init ();
   adw_init ();
+
+  clapper_app_types_init ();
 
   g_set_application_name ("Clapper");
 

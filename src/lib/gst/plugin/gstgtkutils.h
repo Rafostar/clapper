@@ -26,10 +26,14 @@
 #include <gtk/gtk.h>
 #include <gst/video/video.h>
 
+#include "gst/plugin/clapper-gst-visibility.h"
+
 G_BEGIN_DECLS
 
+CLAPPER_GST_API
 gpointer        gst_gtk_invoke_on_main                (GThreadFunc func, gpointer data);
 
+CLAPPER_GST_API
 GdkTexture *    gst_video_frame_into_gdk_texture      (GstVideoFrame *frame);
 
 void            gst_gtk_get_width_height_for_rotation (gint width, gint height,

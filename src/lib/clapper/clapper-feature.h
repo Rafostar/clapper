@@ -27,6 +27,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gst/gst.h>
+
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-media-item.h>
 #include <clapper/clapper-enums.h>
 
@@ -35,6 +37,7 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_FEATURE (clapper_feature_get_type())
 #define CLAPPER_FEATURE_CAST(obj) ((ClapperFeature *)(obj))
 
+CLAPPER_API
 G_DECLARE_DERIVABLE_TYPE (ClapperFeature, clapper_feature, CLAPPER, FEATURE, GstObject)
 
 /**

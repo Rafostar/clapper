@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <gst/gst.h>
 
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
@@ -34,6 +35,7 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_STREAM_LIST (clapper_stream_list_get_type())
 #define CLAPPER_STREAM_LIST_CAST(obj) ((ClapperStreamList *)(obj))
 
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperStreamList, clapper_stream_list, CLAPPER, STREAM_LIST, GstObject)
 
 /**
@@ -43,16 +45,22 @@ G_DECLARE_FINAL_TYPE (ClapperStreamList, clapper_stream_list, CLAPPER, STREAM_LI
  */
 #define CLAPPER_STREAM_LIST_INVALID_POSITION ((guint) 0xffffffff)
 
+CLAPPER_API
 gboolean clapper_stream_list_select_stream (ClapperStreamList *list, ClapperStream *stream);
 
+CLAPPER_API
 gboolean clapper_stream_list_select_index (ClapperStreamList *list, guint index);
 
+CLAPPER_API
 ClapperStream * clapper_stream_list_get_stream (ClapperStreamList *list, guint index);
 
+CLAPPER_API
 ClapperStream * clapper_stream_list_get_current_stream (ClapperStreamList *list);
 
+CLAPPER_API
 guint clapper_stream_list_get_current_index (ClapperStreamList *list);
 
+CLAPPER_API
 guint clapper_stream_list_get_n_streams (ClapperStreamList *list);
 
 G_END_DECLS

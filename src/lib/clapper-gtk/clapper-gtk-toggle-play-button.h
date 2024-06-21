@@ -27,13 +27,17 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_GTK_TYPE_TOGGLE_PLAY_BUTTON (clapper_gtk_toggle_play_button_get_type())
 #define CLAPPER_GTK_TOGGLE_PLAY_BUTTON_CAST(obj) ((ClapperGtkTogglePlayButton *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkTogglePlayButton, clapper_gtk_toggle_play_button, CLAPPER_GTK, TOGGLE_PLAY_BUTTON, GtkButton)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_toggle_play_button_new (void);
 
 G_END_DECLS

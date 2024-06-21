@@ -22,6 +22,8 @@
 #include <gst/gst.h>
 #include <gst/base/gstbasesink.h>
 
+#include "gst/plugin/clapper-gst-visibility.h"
+
 G_BEGIN_DECLS
 
 #define GST_TYPE_CLAPPER_CONTEXT_HANDLER               (gst_clapper_context_handler_get_type())
@@ -53,10 +55,13 @@ struct _GstClapperContextHandlerClass
                                      GstQuery                 *query);
 };
 
+CLAPPER_GST_API
 GType                      gst_clapper_context_handler_get_type              (void);
 
+CLAPPER_GST_API
 gboolean                   gst_clapper_context_handler_handle_context_query  (GstClapperContextHandler *handler, GstBaseSink *bsink, GstQuery *query);
 
+CLAPPER_GST_API
 GstClapperContextHandler * gst_clapper_context_handler_obtain_with_type      (GPtrArray *context_handlers, GType type);
 
 G_END_DECLS

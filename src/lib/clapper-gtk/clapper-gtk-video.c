@@ -1384,6 +1384,10 @@ clapper_gtk_video_init (ClapperGtkVideo *self)
   self->touch_fade_delay = DEFAULT_TOUCH_FADE_DELAY;
   self->auto_inhibit = DEFAULT_AUTO_INHIBIT;
 
+  /* Ensure private types */
+  g_type_ensure (CLAPPER_GTK_TYPE_STATUS);
+  g_type_ensure (CLAPPER_GTK_TYPE_BUFFERING_ANIMATION);
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
   gtk_gesture_group (self->touch_gesture, self->click_gesture);

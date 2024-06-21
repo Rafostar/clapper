@@ -86,7 +86,9 @@ typedef struct
   gint64 last_tick;
 } ClapperAppWindowResizeData;
 
+#if CLAPPER_HAVE_MPRIS
 static guint16 instance_count = 0;
+#endif
 
 static inline GQuark
 clapper_app_window_extra_options_get_quark (void)

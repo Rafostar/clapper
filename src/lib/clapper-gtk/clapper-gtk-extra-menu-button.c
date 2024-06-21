@@ -30,6 +30,7 @@
 #include <clapper/clapper.h>
 
 #include "clapper-gtk-extra-menu-button.h"
+#include "clapper-gtk-stream-check-button-private.h"
 #include "clapper-gtk-utils-private.h"
 
 #define PERCENTAGE_ROUND(a) (round ((gdouble) a / 0.01) * 0.01)
@@ -452,6 +453,9 @@ clapper_gtk_extra_menu_button_init (ClapperGtkExtraMenuButton *self)
     { "subtitle-stream-enabled", NULL, NULL, "true", change_subtitle_stream_enabled },
     { "open-subtitle-stream", open_subtitle_stream, NULL, NULL, NULL },
   };
+
+  /* Ensure private types */
+  g_type_ensure (CLAPPER_GTK_TYPE_STREAM_CHECK_BUTTON);
 
   gtk_widget_init_template (GTK_WIDGET (self));
 

@@ -27,11 +27,14 @@
 #include <glib-object.h>
 #include <gst/gst.h>
 
+#include <clapper/clapper-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_TYPE_THREADED_OBJECT (clapper_threaded_object_get_type())
 #define CLAPPER_THREADED_OBJECT_CAST(obj) ((ClapperThreadedObject *)(obj))
 
+CLAPPER_API
 G_DECLARE_DERIVABLE_TYPE (ClapperThreadedObject, clapper_threaded_object, CLAPPER, THREADED_OBJECT, GstObject)
 
 /**
@@ -68,6 +71,7 @@ struct _ClapperThreadedObjectClass
   gpointer padding[4];
 };
 
+CLAPPER_API
 GMainContext * clapper_threaded_object_get_context (ClapperThreadedObject *threaded_object);
 
 G_END_DECLS

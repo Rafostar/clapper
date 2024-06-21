@@ -80,8 +80,15 @@ _dialog_add_mime_types (GtkFileDialog *dialog, const gchar *filter_name,
   GtkFileFilter *filter = gtk_file_filter_new ();
   guint i;
 
-  for (i = 0; mime_types[i]; ++i)
+  /* XXX: Windows does not support mime-types file
+   * filters, so use file extensions instead */
+  for (i = 0; mime_types[i]; ++i) {
+#ifndef G_OS_WIN32
     gtk_file_filter_add_mime_type (filter, mime_types[i]);
+#else
+    gtk_file_filter_add_suffix (filter, mime_types[i]);
+#endif
+  }
 
   gtk_file_filter_set_name (filter, filter_name);
   g_list_store_append (filters, filter);
@@ -99,7 +106,11 @@ clapper_app_file_dialog_open_files (GtkApplication *gtk_app)
   GtkFileDialog *dialog = gtk_file_dialog_new ();
 
   _dialog_add_mime_types (dialog, "Media Files",
+#ifndef G_OS_WIN32
       clapper_app_utils_get_mime_types ());
+#else
+      clapper_app_utils_get_extensions ());
+#endif
 
   gtk_file_dialog_set_modal (dialog, TRUE);
   gtk_file_dialog_set_title (dialog, "Add Files");
@@ -118,7 +129,11 @@ clapper_app_file_dialog_open_subtitles (GtkApplication *gtk_app, ClapperMediaIte
   GtkFileDialog *dialog = gtk_file_dialog_new ();
 
   _dialog_add_mime_types (dialog, "Subtitles",
+#ifndef G_OS_WIN32
       clapper_app_utils_get_subtitles_mime_types ());
+#else
+      clapper_app_utils_get_subtitles_extensions ());
+#endif
 
   gtk_file_dialog_set_modal (dialog, TRUE);
   gtk_file_dialog_set_title (dialog, "Open Subtitles");

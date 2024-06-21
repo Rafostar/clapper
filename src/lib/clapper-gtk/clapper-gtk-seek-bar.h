@@ -28,21 +28,29 @@
 #include <gtk/gtk.h>
 #include <clapper/clapper.h>
 
+#include <clapper-gtk/clapper-gtk-visibility.h>
+
 G_BEGIN_DECLS
 
 #define CLAPPER_GTK_TYPE_SEEK_BAR (clapper_gtk_seek_bar_get_type())
 #define CLAPPER_GTK_SEEK_BAR_CAST(obj) ((ClapperGtkSeekBar *)(obj))
 
+CLAPPER_GTK_API
 G_DECLARE_FINAL_TYPE (ClapperGtkSeekBar, clapper_gtk_seek_bar, CLAPPER_GTK, SEEK_BAR, GtkWidget)
 
+CLAPPER_GTK_API
 GtkWidget * clapper_gtk_seek_bar_new (void);
 
+CLAPPER_GTK_API
 void clapper_gtk_seek_bar_set_reveal_labels (ClapperGtkSeekBar *seek_bar, gboolean reveal);
 
+CLAPPER_GTK_API
 gboolean clapper_gtk_seek_bar_get_reveal_labels (ClapperGtkSeekBar *seek_bar);
 
+CLAPPER_GTK_API
 void clapper_gtk_seek_bar_set_seek_method (ClapperGtkSeekBar *seek_bar, ClapperPlayerSeekMethod method);
 
+CLAPPER_GTK_API
 ClapperPlayerSeekMethod clapper_gtk_seek_bar_get_seek_method (ClapperGtkSeekBar *seek_bar);
 
 G_END_DECLS

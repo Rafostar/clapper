@@ -23,6 +23,8 @@
 #include <gst/gst.h>
 #include <gst/video/video.h>
 
+#include "gst/plugin/clapper-gst-visibility.h"
+
 G_BEGIN_DECLS
 
 #define GST_TYPE_CLAPPER_IMPORTER               (gst_clapper_importer_get_type())
@@ -79,6 +81,7 @@ struct _GstClapperImporterClass
                                      GstVideoInfo       *v_info);
 };
 
+CLAPPER_GST_API
 GType           gst_clapper_importer_get_type                (void);
 
 GstBufferPool * gst_clapper_importer_create_pool             (GstClapperImporter *importer, GstStructure **config);

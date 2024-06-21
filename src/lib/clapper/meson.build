@@ -1,5 +1,6 @@
 clapper_dep = dependency('', required: false)
 clapper_option = get_option('clapper')
+clapper_headers_dir = join_paths(includedir, clapper_api_name, 'clapper')
 build_clapper = false
 
 clapper_pkg_reqs = [
@@ -37,6 +38,19 @@ foreach dep : clapper_deps
   endif
 endforeach
 
+visibility_conf = configuration_data()
+
+visibility_conf.set(
+  'CLAPPER_API',
+  'CLAPPER',
+)
+
+clapper_visibility_header = configure_file(
+  input: '../shared/clapper-api-visibility.h.in',
+  output: 'clapper-visibility.h',
+  configuration: visibility_conf,
+)
+
 version_conf = configuration_data()
 
 version_conf.set(
@@ -55,8 +69,6 @@ version_conf.set(
   'CLAPPER_MICRO_VERSION',
   version_array[2].to_int(),
 )
-
-clapper_headers_dir = join_paths(includedir, clapper_api_name, 'clapper')
 
 clapper_version_header = configure_file(
   input: 'clapper-version.h.in',
@@ -87,6 +99,7 @@ clapper_headers = [
   'clapper-utils.h',
   'clapper-video-stream.h',
   clapper_version_header,
+  clapper_visibility_header,
 ]
 clapper_sources = [
   'clapper.c',
@@ -115,11 +128,17 @@ clapper_c_args = [
   '-DGST_USE_UNSTABLE_API',
 ]
 
+if get_option('default_library') == 'static'
+  clapper_c_args += ['-DCLAPPER_STATIC_COMPILATION']
+endif
+
 subdir('features')
 
 clapper_enums = gnome.mkenums_simple(
   'clapper-enum-types',
   sources: clapper_headers,
+  decorator: 'CLAPPER_API',
+  header_prefix: '#include <clapper/clapper-visibility.h>',
   identifier_prefix: 'Clapper',
   symbol_prefix: 'clapper',
   install_header: true,
@@ -212,6 +231,7 @@ clapper_dep = declare_dependency(
   include_directories: clapper_conf_inc,
   dependencies: clapper_deps + clapper_features_deps,
   sources: [
+    clapper_visibility_header,
     clapper_version_header,
     clapper_features_availability_header,
     clapper_enums[1],

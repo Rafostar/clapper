@@ -25,6 +25,8 @@
 
 #include <glib.h>
 #include <glib-object.h>
+
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-stream.h>
 
 G_BEGIN_DECLS
@@ -32,20 +34,28 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_AUDIO_STREAM (clapper_audio_stream_get_type())
 #define CLAPPER_AUDIO_STREAM_CAST(obj) ((ClapperAudioStream *)(obj))
 
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperAudioStream, clapper_audio_stream, CLAPPER, AUDIO_STREAM, ClapperStream)
 
+CLAPPER_API
 gchar * clapper_audio_stream_get_codec (ClapperAudioStream *stream);
 
+CLAPPER_API
 guint clapper_audio_stream_get_bitrate (ClapperAudioStream *stream);
 
+CLAPPER_API
 gchar * clapper_audio_stream_get_sample_format (ClapperAudioStream *stream);
 
+CLAPPER_API
 gint clapper_audio_stream_get_sample_rate (ClapperAudioStream *stream);
 
+CLAPPER_API
 gint clapper_audio_stream_get_channels (ClapperAudioStream *stream);
 
+CLAPPER_API
 gchar * clapper_audio_stream_get_lang_code (ClapperAudioStream *stream);
 
+CLAPPER_API
 gchar * clapper_audio_stream_get_lang_name (ClapperAudioStream *stream);
 
 G_END_DECLS

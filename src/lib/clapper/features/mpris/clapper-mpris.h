@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>
+
+#include <clapper/clapper-visibility.h>
 #include <clapper/clapper-feature.h>
 
 G_BEGIN_DECLS
@@ -33,16 +35,22 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_MPRIS (clapper_mpris_get_type())
 #define CLAPPER_MPRIS_CAST(obj) ((ClapperMpris *)(obj))
 
+CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperMpris, clapper_mpris, CLAPPER, MPRIS, ClapperFeature)
 
+CLAPPER_API
 ClapperMpris * clapper_mpris_new (const gchar *own_name, const gchar *identity, const gchar *desktop_entry);
 
+CLAPPER_API
 void clapper_mpris_set_queue_controllable (ClapperMpris *mpris, gboolean controllable);
 
+CLAPPER_API
 gboolean clapper_mpris_get_queue_controllable (ClapperMpris *mpris);
 
+CLAPPER_API
 void clapper_mpris_set_fallback_art_url (ClapperMpris *mpris, const gchar *art_url);
 
+CLAPPER_API
 gchar * clapper_mpris_get_fallback_art_url (ClapperMpris *mpris);
 
 G_END_DECLS

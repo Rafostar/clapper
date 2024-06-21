@@ -26,6 +26,14 @@ G_BEGIN_DECLS
 
 typedef void (* ClapperAppUtilsIterRanks) (const gchar *feature_name, GstRank rank, gboolean from_env, gpointer user_data);
 
+#ifdef G_OS_WIN32
+G_GNUC_INTERNAL
+const gchar *const * clapper_app_utils_get_extensions (void);
+
+G_GNUC_INTERNAL
+const gchar *const * clapper_app_utils_get_subtitles_extensions (void);
+#endif
+
 G_GNUC_INTERNAL
 const gchar *const * clapper_app_utils_get_mime_types (void);
 

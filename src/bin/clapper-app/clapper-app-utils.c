@@ -23,6 +23,30 @@
 #include "clapper-app-utils.h"
 #include "clapper-app-media-item-box.h"
 
+/* Useful only on Windows */
+#ifdef G_OS_WIN32
+const gchar *const *
+clapper_app_utils_get_extensions (void)
+{
+  static const gchar *const all_extensions[] = {
+    "avi", "claps", "m2ts", "mkv", "mov",
+    "mp4", "webm", "wmv", NULL
+  };
+
+  return all_extensions;
+}
+
+const gchar *const *
+clapper_app_utils_get_subtitles_extensions (void)
+{
+  static const gchar *const subs_extensions[] = {
+    "srt", "vtt", NULL
+  };
+
+  return subs_extensions;
+}
+#endif
+
 const gchar *const *
 clapper_app_utils_get_mime_types (void)
 {
