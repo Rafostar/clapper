@@ -828,23 +828,39 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
     g_free (name);
     g_free (details);
   } else if (gst_message_has_name (msg, "GstCacheDownloadComplete")) {
+    ClapperMediaItem *downloaded_item = NULL;
     const GstStructure *structure;
     const gchar *location;
     guint signal_id;
 
-    if (G_UNLIKELY (player->played_item == NULL))
+    GST_OBJECT_LOCK (player);
+
+    /* Short video might be fully downloaded before playback starts */
+    if (player->pending_item)
+      downloaded_item = gst_object_ref (player->pending_item);
+    else if (player->played_item)
+      downloaded_item = gst_object_ref (player->played_item);
+
+    GST_OBJECT_UNLOCK (player);
+
+    if (G_UNLIKELY (downloaded_item == NULL)) {
+      GST_WARNING_OBJECT (player, "Download completed without media item set");
       return;
+    }
 
     structure = gst_message_get_structure (msg);
     location = gst_structure_get_string (structure, "location");
     signal_id = g_signal_lookup ("download-complete", CLAPPER_TYPE_PLAYER);
 
-    GST_INFO_OBJECT (player, "Download complete: %s", location);
-    clapper_media_item_set_cache_location (player->played_item, location);
+    GST_INFO_OBJECT (player, "Download of %" GST_PTR_FORMAT
+        " complete: %s", downloaded_item, location);
+    clapper_media_item_set_cache_location (downloaded_item, location);
 
     clapper_app_bus_post_object_desc_signal (player->app_bus,
         GST_OBJECT_CAST (player), signal_id,
-        GST_OBJECT_CAST (player->played_item), location);
+        GST_OBJECT_CAST (downloaded_item), location);
+
+    gst_object_unref (downloaded_item);
   }
 }
 
