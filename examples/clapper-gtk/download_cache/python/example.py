@@ -12,7 +12,7 @@ import shutil
 Clapper.init(None)
 
 download_dir = GLib.build_filenamev([GLib.get_user_cache_dir(), "example_download_dir", None])
-print('Using ceche directory: {0}'.format(download_dir))
+print('Using cache directory: {0}'.format(download_dir))
 
 def on_download_complete(player, item, location):
     # Media downloaded. Data from this file is still used for current playback (including seeking).
