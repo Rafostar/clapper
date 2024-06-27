@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.MediaItem:title</title>
+  <title>Clapper.MediaItem:cache-location</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.MediaItem:title"/>
-  <meta property="og:description" content="Reference for property Clapper.MediaItem:title"/>
-  <meta name="twitter:title" content="Clapper.MediaItem:title"/>
-  <meta name="twitter:description" content="Reference for property Clapper.MediaItem:title"/>
+  <meta property="og:title" content="Clapper.MediaItem:cache-location"/>
+  <meta property="og:description" content="Reference for property Clapper.MediaItem:cache-location"/>
+  <meta name="twitter:title" content="Clapper.MediaItem:cache-location"/>
+  <meta name="twitter:description" content="Reference for property Clapper.MediaItem:cache-location"/>
 
 
   
@@ -89,7 +89,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property"href="property.MediaItem.cache-location.html">cache-location</a>
+    <a class="property current"href="property.MediaItem.cache-location.html">cache-location</a>
   
     <a class="property"href="property.MediaItem.container-format.html">container-format</a>
   
@@ -101,7 +101,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.MediaItem.timeline.html">timeline</a>
   
-    <a class="property current"href="property.MediaItem.title.html">title</a>
+    <a class="property"href="property.MediaItem.title.html">title</a>
   
     <a class="property"href="property.MediaItem.uri.html">uri</a>
   
@@ -119,12 +119,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Property</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a>:title</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a>:cache-location</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration">
@@ -133,7 +133,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property title: utf8 [ read ]</code></pre>
+        <pre><code>property cache-location: utf8 [ write, construct-only ]</code></pre>
       </div>
     </div>
 
@@ -142,19 +142,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L687">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L676">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Media&nbsp;title.</p>
+        <p>Media downloaded cache file&nbsp;location.</p>
       </div>
 
       <div class="docblock">
         <p>
           Type:<code>gchar*</code></p>
         
-        
+        <p>Available since: 0.8</p>
         
       </div>
 
@@ -163,8 +163,6 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <table>
         
           <tr><td>Default value</td><td>NULL</td></tr>
-        
-          <tr><td>Getter method</td><td><a href="method.MediaItem.get_title.html"><code>clapper_media_item_get_title()</code></a></td></tr>
         
         </table>
       </div>
@@ -179,10 +177,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
       <div class="docblock">
       <table>
-        <tr><td>Readable</td><td><b>yes</b></td></tr>
-        <tr><td>Writable</td><td><b>no</b></td></tr>
+        <tr><td>Readable</td><td><b>no</b></td></tr>
+        <tr><td>Writable</td><td><b>yes</b></td></tr>
         <tr><td>Construct</td><td><b>no</b></td></tr>
-        <tr><td>Construct only</td><td><b>no</b></td></tr>
+        <tr><td>Construct only</td><td><b>yes</b></td></tr>
       </table>
       </div>
     </div>

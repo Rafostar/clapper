@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.MediaItem.new</title>
+  <title>Clapper.MediaItem.new_cached</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.MediaItem.new"/>
-  <meta property="og:description" content="Reference for Clapper.MediaItem.new"/>
-  <meta name="twitter:title" content="Clapper.MediaItem.new"/>
-  <meta name="twitter:description" content="Reference for Clapper.MediaItem.new"/>
+  <meta property="og:title" content="Clapper.MediaItem.new_cached"/>
+  <meta property="og:description" content="Reference for Clapper.MediaItem.new_cached"/>
+  <meta name="twitter:title" content="Clapper.MediaItem.new_cached"/>
+  <meta name="twitter:description" content="Reference for Clapper.MediaItem.new_cached"/>
 
 
   
@@ -89,9 +89,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Constructors</h5>
   <div class="links">
   
-    <a class="method current" href="ctor.MediaItem.new.html">new</a>
+    <a class="method" href="ctor.MediaItem.new.html">new</a>
   
-    <a class="method" href="ctor.MediaItem.new_cached.html">new_cached</a>
+    <a class="method current" href="ctor.MediaItem.new_cached.html">new_cached</a>
   
     <a class="method" href="ctor.MediaItem.new_from_file.html">new_from_file</a>
   
@@ -109,26 +109,27 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Constructor</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a><span class="sep"></span>new</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a><span class="sep"></span>new_cached</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This constructor will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration" style="display:flex;">
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.h#L43">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.h#L49">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <pre><code><div class="highlight"><pre><span></span><span class="n">ClapperMediaItem</span><span class="o">*</span>
-<span class="n">clapper_media_item_new</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">uri</span>
+<span class="n">clapper_media_item_new_cached</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">uri</span><span class="p">,</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">location</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -140,24 +141,23 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L80">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L147">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Creates new <code>ClapperMediaItem</code> from <span class="caps">URI</span>.</p>
-<p>Use one of the <span class="caps">URI</span> protocols supported by plugins in <code>GStreamer</code>
-installation. For local files you can use either &#8220;file&#8221; protocol
-or <a href="ctor.MediaItem.new_from_file.html"><code>clapper_media_item_new_from_file()</code></a>&nbsp;method.</p>
-<p>It is considered a programmer error trying to create new media item from
-invalid <span class="caps">URI</span>. If <span class="caps">URI</span> is valid, but unsupported by installed plugins on user
-system, <a href="class.Player.html"><code>ClapperPlayer</code></a> will emit a <a href="signal.Player.missing-plugin.html"><code>ClapperPlayer::missing-plugin</code></a>
-signal upon&nbsp;playback.</p>
+        <p>Same as <a href="ctor.MediaItem.new.html"><code>clapper_media_item_new()</code></a>, but allows to provide
+a location of a cache file where particular media at <code>uri</code>
+is supposed to be&nbsp;found.</p>
+<p>File at <code>location</code> existence will be checked upon starting playback
+of created item. If cache file is not found, media item <code>uri</code> will be
+used as fallback. In this case when <a href="property.Player.download-enabled.html"><code>ClapperPlayer:download-enabled</code></a>
+is set to <code>TRUE</code>, item will be downloaded and cached again if&nbsp;possible.</p>
       </div>
 
       <div class="docblock">
         
-        
+        <p>Available since: 0.8</p>
         
         
         
@@ -192,6 +192,23 @@ signal upon&nbsp;playback.</p>
             
             <tr><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
             <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
+            </table>
+          </dd>
+          
+          <dt class="arg-name"><code>location</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>const gchar*</code></p>
+            <p>A path to downloaded&nbsp;file.</p>
+            <table>
+            
+            <tr><td>The argument can be <code>NULL</code>.</td></tr>
+            
+            
+            
+            
+            
+            <tr><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+            <tr><td>The value is a platform-native string, using the preferred OS encoding on Unix and UTF-8 on Windows.</td></tr>
             </table>
           </dd>
           
