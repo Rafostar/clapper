@@ -46,6 +46,9 @@ CLAPPER_API
 ClapperMediaItem * clapper_media_item_new_from_file (GFile *file);
 
 CLAPPER_API
+ClapperMediaItem * clapper_media_item_new_cached (const gchar *uri, const gchar *location);
+
+CLAPPER_API
 guint clapper_media_item_get_id (ClapperMediaItem *item);
 
 CLAPPER_API

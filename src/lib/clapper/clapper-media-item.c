@@ -62,6 +62,7 @@ enum
   PROP_ID,
   PROP_URI,
   PROP_SUBURI,
+  PROP_CACHE_LOCATION,
   PROP_TITLE,
   PROP_CONTAINER_FORMAT,
   PROP_DURATION,
@@ -139,6 +140,35 @@ clapper_media_item_new_from_file (GFile *file)
   item = clapper_media_item_new (uri);
 
   g_free (uri);
+
+  return item;
+}
+
+/**
+ * clapper_media_item_new_cached:
+ * @uri: a media URI
+ * @location: (type filename) (nullable): a path to downloaded file
+ *
+ * Same as [ctor@Clapper.MediaItem.new], but allows to provide
+ * a location of a cache file where particular media at @uri
+ * is supposed to be found.
+ *
+ * File at @location existence will be checked upon starting playback
+ * of created item. If cache file is not found, media item @uri will be
+ * used as fallback. In this case when [property@Clapper.Player:download-enabled]
+ * is set to %TRUE, item will be downloaded and cached again if possible.
+ *
+ * Returns: (transfer full): a new #ClapperMediaItem.
+ *
+ * Since: 0.8
+ */
+ClapperMediaItem *
+clapper_media_item_new_cached (const gchar *uri, const gchar *location)
+{
+  ClapperMediaItem *item = clapper_media_item_new (uri);
+
+  if (G_LIKELY (item != NULL) && location)
+    clapper_media_item_set_cache_location (item, location);
 
   return item;
 }
@@ -452,8 +482,8 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
   gst_object_unref (player);
 }
 
-/* XXX: Must be set from player thread */
-inline void
+/* XXX: Must be set from player thread or upon construction */
+void
 clapper_media_item_set_cache_location (ClapperMediaItem *self, const gchar *location)
 {
   g_free (self->cache_uri);
@@ -560,6 +590,9 @@ clapper_media_item_set_property (GObject *object, guint prop_id,
     case PROP_SUBURI:
       clapper_media_item_set_suburi (self, g_value_get_string (value));
       break;
+    case PROP_CACHE_LOCATION:
+      clapper_media_item_set_cache_location (self, g_value_get_string (value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -639,6 +672,17 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
   param_specs[PROP_SUBURI] = g_param_spec_string ("suburi",
       NULL, NULL, NULL,
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperMediaItem:cache-location:
+   *
+   * Media downloaded cache file location.
+   *
+   * Since: 0.8
+   */
+  param_specs[PROP_CACHE_LOCATION] = g_param_spec_string ("cache-location",
+      NULL, NULL, NULL,
+      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperMediaItem:title:
