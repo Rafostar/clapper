@@ -167,7 +167,7 @@ clapper_media_item_new_cached (const gchar *uri, const gchar *location)
 {
   ClapperMediaItem *item = clapper_media_item_new (uri);
 
-  if (G_LIKELY (item != NULL) && location)
+  if (location && G_LIKELY (item != NULL))
     clapper_media_item_set_cache_location (item, location);
 
   return item;
@@ -486,9 +486,13 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
 void
 clapper_media_item_set_cache_location (ClapperMediaItem *self, const gchar *location)
 {
-  g_free (self->cache_uri);
-  self->cache_uri = g_filename_to_uri (location, NULL, NULL);
-  GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"", self->cache_uri);
+  g_clear_pointer (&self->cache_uri, g_free);
+
+  if (location)
+    self->cache_uri = g_filename_to_uri (location, NULL, NULL);
+
+  GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"",
+      GST_STR_NULL (self->cache_uri));
 }
 
 /* XXX: Can only be read from player thread.
@@ -509,9 +513,7 @@ clapper_media_item_get_playback_uri (ClapperMediaItem *self)
       return self->cache_uri;
 
     /* Do not test file existence next time */
-    GST_DEBUG_OBJECT (self, "Cleared cache URI for non-existing file: \"%s\"",
-        self->cache_uri);
-    g_clear_pointer (&self->cache_uri, g_free);
+    clapper_media_item_set_cache_location (self, NULL);
   }
 
   return self->uri;
