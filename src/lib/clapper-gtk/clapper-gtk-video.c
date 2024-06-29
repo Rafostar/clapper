@@ -1108,6 +1108,11 @@ _fading_overlay_revealed_cb (GtkRevealer *revealer,
  *
  * Creates a new #ClapperGtkVideo instance.
  *
+ * Newly created video widget will also set some default GStreamer elements
+ * on its [class@Clapper.Player]. This includes Clapper own video sink and
+ * a "scaletempo" element as audio filter. Both can still be changed after
+ * construction by setting corresponding player properties.
+ *
  * Returns: a new video #GtkWidget.
  */
 GtkWidget *
@@ -1397,7 +1402,7 @@ static void
 clapper_gtk_video_constructed (GObject *object)
 {
   ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (object);
-  GstElement *vsink = gst_element_factory_make ("clappersink", NULL);
+  GstElement *afilter, *vsink;
   ClapperQueue *queue;
 
   self->player = clapper_player_new ();
@@ -1407,6 +1412,8 @@ clapper_gtk_video_constructed (GObject *object)
       G_CALLBACK (_player_state_changed_cb), self);
   g_signal_connect (self->player, "notify::video-sink",
       G_CALLBACK (_video_sink_changed_cb), self);
+
+  vsink = gst_element_factory_make ("clappersink", NULL);
 
   /* FIXME: This is a temporary workaround for lack
    * of DMA_DRM negotiation support in sink itself */
@@ -1422,9 +1429,13 @@ clapper_gtk_video_constructed (GObject *object)
         vsink = bin;
       }
     }
+
+    clapper_player_set_video_sink (self->player, vsink);
   }
 
-  clapper_player_set_video_sink (self->player, vsink);
+  afilter = gst_element_factory_make ("scaletempo", NULL);
+  if (G_LIKELY (afilter != NULL))
+    clapper_player_set_audio_filter (self->player, afilter);
 
   g_signal_connect (self->player, "error",
       G_CALLBACK (_player_error_cb), self);
