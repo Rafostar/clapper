@@ -18,7 +18,7 @@
             <property name="halign">start</property>
             <property name="valign">center</property>
             <property name="transition-type">crossfade</property>
-            <property name="transition-duration">500</property>
+            <property name="transition-duration">300</property>
             <property name="visible">false</property>
             <signal name="notify::child-revealed" handler="revealer_revealed_cb"/>
             <child>
@@ -86,7 +86,7 @@
                             <property name="halign">start</property>
                             <property name="valign">fill</property>
                             <property name="transition-type">slide-right</property>
-                            <property name="transition-duration" bind-source="progress_revealer" bind-property="transition-duration" bind-flags="sync-create"/>
+                            <property name="transition-duration">200</property>
                             <property name="reveal-child" bind-source="progress_revealer" bind-property="reveal-child" bind-flags="invert-boolean">false</property>
                             <child>
                               <object class="GtkLabel" id="progress_label">
@@ -113,7 +113,7 @@
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="transition-type">crossfade</property>
-            <property name="transition-duration">500</property>
+            <property name="transition-duration">300</property>
             <signal name="notify::child-revealed" handler="revealer_revealed_cb"/>
             <child>
               <object class="ClapperGtkContainer">
