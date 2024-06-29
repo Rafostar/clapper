@@ -1,8 +1,5 @@
 /* Adwaita OSD background color is unacceptable:
  * https://gitlab.gnome.org/GNOME/libadwaita/-/issues/454 */
-clapper-gtk-video windowcontrols.osd {
-  background-color: transparent;
-}
 clapper-gtk-video menubutton.osd,
 clapper-gtk-video button.osd,
 clapper-gtk-video box.osd,
@@ -22,7 +19,9 @@ clapper-gtk-video button.osd:active,
 clapper-gtk-video windowcontrols.osd button:active image {
   background-color: rgba(82,82,82,0.8);
 }
-clapper-gtk-video box.osd listview.osd {
+clapper-gtk-video box.osd listview.osd,
+clapper-gtk-video windowcontrols.osd,
+clapper-gtk-video clapper-gtk-status.osd {
   background-color: transparent;
 }
 
