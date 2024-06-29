@@ -6,6 +6,9 @@
     <property name="adaptive-width">560</property>
     <property name="adaptive-height">400</property>
     <signal name="adapt" handler="adapt_cb"/>
+    <style>
+      <class name="osd"/>
+    </style>
     <child>
       <object class="GtkBox" id="status_box">
         <property name="orientation">vertical</property>
