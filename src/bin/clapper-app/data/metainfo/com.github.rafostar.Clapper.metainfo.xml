@@ -59,6 +59,11 @@
     <category>Video</category>
   </categories>
   <releases>
+    <release version="0.6.1" date="2024-07-01">
+      <description>
+        <p>Bug fixes and translation updates</p>
+      </description>
+    </release>
     <release version="0.6.0" date="2024-04-22">
       <description>
         <p>
