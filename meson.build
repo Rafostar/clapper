@@ -146,6 +146,8 @@ summary('introspection', build_gir ? 'Yes' : 'No', section: 'Build')
 summary('vapi', build_vapi ? 'Yes' : 'No', section: 'Build')
 summary('doc', build_doc  ? 'Yes' : 'No', section: 'Build')
 
-foreach name : clapper_possible_features
-  summary(name, clapper_available_features.contains(name) ? 'Yes' : 'No', section: 'Features')
-endforeach
+if build_clapper
+  foreach name : clapper_possible_features
+    summary(name, clapper_available_features.contains(name) ? 'Yes' : 'No', section: 'Features')
+  endforeach
+endif
