@@ -32,16 +32,16 @@ def on_activate(app):
     video.props.player.props.queue.set_progression_mode(Clapper.QueueProgressionMode.CAROUSEL)
     video.props.player.set_autoplay(True)
 
+    # Assemble window
+    video.add_fading_overlay(controls)
+    win.set_child(video)
+    win.present()
+
     # Create and add media for playback
     item_1 = Clapper.MediaItem(uri='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')
     item_2 = Clapper.MediaItem(uri='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4')
     video.props.player.props.queue.add_item(item_1)
     video.props.player.props.queue.add_item(item_2)
-
-    # Assemble window
-    video.add_fading_overlay(controls)
-    win.set_child(video)
-    win.present()
 
 # Create a new application
 app = Adw.Application(application_id='com.example.ClapperDownloadCache')

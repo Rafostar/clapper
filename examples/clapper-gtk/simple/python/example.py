@@ -24,9 +24,6 @@ def on_activate(app):
     # more than simply inverting fullscreen on the whole window).
     video.connect('toggle-fullscreen', on_toggle_fullscreen, win)
 
-    # Enable autoplay
-    video.props.player.set_autoplay(True)
-
     # Create and add media for playback. First added media item to empty
     # playback queue will be automatically selected.
     item = Clapper.MediaItem(uri='http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')
@@ -36,6 +33,9 @@ def on_activate(app):
     video.add_fading_overlay(controls)
     win.set_child(video)
     win.present()
+
+    # Start playback
+    video.props.player.play()
 
 # Create a new application
 app = Adw.Application(application_id='com.example.ClapperSimple')
