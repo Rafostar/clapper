@@ -34,18 +34,23 @@
   <screenshots>
     <screenshot type="default">
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_01.png</image>
+      <caption>Modern player with minimalist look</caption>
     </screenshot>
     <screenshot>
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_02.png</image>
+      <caption>See actual title of what you are watching</caption>
     </screenshot>
     <screenshot>
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png</image>
+      <caption>Queue multiple media in any order you like</caption>
     </screenshot>
     <screenshot>
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_04.png</image>
+      <caption>Play either local or network content</caption>
     </screenshot>
     <screenshot>
       <image type="source">https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_05.png</image>
+      <caption>Enjoy adaptive UI that fits any screen size</caption>
     </screenshot>
   </screenshots>
   <!-- Linux Phone Apps parses categories from XML -->
@@ -258,7 +263,7 @@
       </description>
     </release>
   </releases>
-  <content_rating type="oars-1.1" />
+  <content_rating type="oars-1.1"/>
   <branding>
     <color type="primary" scheme_preference="light">#8484ee</color>
     <color type="primary" scheme_preference="dark">#1a1a74</color>
