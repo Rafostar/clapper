@@ -11,14 +11,14 @@ desktop environment using [GTK4](https://www.gtk.org/) toolkit, it has a clean a
 This application aim is to offer all the essentials features you'd expect from a video player in a simple form.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png">
+  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_01.png">
 </p>
 
 Clapper uses a playback queue where you can add multiple media files. Think of it like a playlist that you can build.
 You can easily reorder items or remove them from the queue with a simple drag and drop operation.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_04.png">
+  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png">
 </p>
 
 ### Components
