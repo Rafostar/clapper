@@ -11,14 +11,14 @@ desktop environment using [GTK4](https://www.gtk.org/) toolkit, it has a clean a
 This application aim is to offer all the essentials features you'd expect from a video player in a simple form.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png">
+  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_01.png">
 </p>
 
 Clapper uses a playback queue where you can add multiple media files. Think of it like a playlist that you can build.
 You can easily reorder items or remove them from the queue with a simple drag and drop operation.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_04.png">
+  <img src="https://raw.githubusercontent.com/wiki/Rafostar/clapper/media/screenshot_03.png">
 </p>
 
 ### Components
@@ -30,6 +30,8 @@ Both libraries support *GObject Introspection* bindings. A simple application ex
 
 Above libraries are licensed under `LGPL-2.1-or-later`. You are free to use them in your own projects as long as you comply with license terms.
 Please note that until version 1.0 they should be considered as an unstable API (some things may change without prior notice).
+
+Clapper `Vala` bindings are part of this repo, while `Rust` bindings can be found [here](https://gitlab.gnome.org/JanGernert/clapper-rs).
 
 ## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
@@ -48,9 +50,13 @@ Those are automatically built on each git commit, thus are considered unstable.
 
 ## Installation from Source Code
 ```sh
-meson builddir --prefix=/usr/local
-sudo meson install -C builddir
+meson setup builddir
+cd builddir
+meson compile
+sudo meson install
 ```
+
+If you want to compile app as `Flatpak`, remember to clone this repo with `--recurse-submodules` option.
 
 ## Questions?
 Feel free to ask me any questions. Come and talk on Matrix: [#clapper-player:matrix.org](https://matrix.to/#/#clapper-player:matrix.org)
@@ -66,5 +72,6 @@ so if your language is not available, please contact me first.
 Many thanks to [sp1ritCS](https://github.com/sp1ritCS) for creating and maintaining package build files.
 Big thanks to [bridadan](https://github.com/bridadan) and [Uniformbuffer3](https://github.com/Uniformbuffer3) for helping
 with testing V4L2 and NVDEC hardware acceleration methods.
+Also words of appreciation for [JanGernert](https://gitlab.gnome.org/JanGernert) who made and is sharing Clapper Rust bindings.
 
 Thanks a lot to all the people who are supporting the development with their anonymous donations through [Liberapay](https://liberapay.com/Clapper/). I :heart: U.
