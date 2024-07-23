@@ -1583,7 +1583,7 @@ clapper_gtk_video_class_init (ClapperGtkVideoClass *klass)
    */
   param_specs[PROP_FADE_DELAY] = g_param_spec_uint ("fade-delay",
       NULL, NULL, 1, G_MAXUINT, DEFAULT_FADE_DELAY,
-      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperGtkVideo:touch-fade-delay:
@@ -1593,7 +1593,7 @@ clapper_gtk_video_class_init (ClapperGtkVideoClass *klass)
    */
   param_specs[PROP_TOUCH_FADE_DELAY] = g_param_spec_uint ("touch-fade-delay",
       NULL, NULL, 1, G_MAXUINT, DEFAULT_TOUCH_FADE_DELAY,
-      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperGtkVideo:auto-inhibit:
