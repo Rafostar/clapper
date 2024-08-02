@@ -1065,7 +1065,7 @@ _player_missing_plugin_cb (ClapperPlayer *player, const gchar *name,
 {
   /* Some media files have custom/proprietary metadata,
    * it should be safe to simply ignore these */
-  if (g_str_has_prefix (name, "meta/"))
+  if (strstr (name, "meta/") != NULL)
     return;
 
   /* XXX: Playbin2 seems to not emit state change here,
