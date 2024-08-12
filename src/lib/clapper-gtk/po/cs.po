@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-08-12 06:56\n"
+"PO-Revision-Date: 2024-08-12 08:36\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -46,21 +46,21 @@ msgstr "Ztlumit"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Resetovat"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
-msgstr ""
+msgstr "Nepřehratelný Obsah"
 
 #. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
 #: src/lib/clapper-gtk/clapper-gtk-status.c:89
 #, c-format
 msgid "Your GStreamer installation is missing a plugin: %s"
-msgstr ""
+msgstr "Vaší instalaci GStreamer chybí plugin: %s"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:90
 msgid "Missing Plugin"
-msgstr ""
+msgstr "Chybějící Plugin"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
@@ -73,9 +73,9 @@ msgstr "Kanály"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Žádná média"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
+msgstr "Neznámý název"
 
