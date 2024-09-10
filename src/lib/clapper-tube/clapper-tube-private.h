@@ -19,13 +19,21 @@
 
 #pragma once
 
-#include <glib.h>
+#include <clapper-tube/clapper-tube.h>
 
-#include "clapper-tube-extractor.h"
+#define __CLAPPER_TUBE_INTERNAL_INSIDE__
+
+#include "clapper-tube/clapper-tube-internal-visibility.h"
+#include "clapper-tube/clapper-tube-client-private.h"
 
 G_BEGIN_DECLS
 
-G_GNUC_INTERNAL
-ClapperTubeHarvest * clapper_tube_extractor_run (ClapperTubeExtractor *extractor);
+CLAPPER_TUBE_INTERNAL_API
+gboolean clapper_tube_init_check (void);
+
+CLAPPER_TUBE_INTERNAL_API
+const gchar *const * clapper_tube_get_supported_schemes (void);
 
 G_END_DECLS
+
+#undef __CLAPPER_TUBE_INTERNAL_INSIDE__

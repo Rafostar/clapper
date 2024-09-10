@@ -24,6 +24,6 @@
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-void clapper_tube_config_debug_init (void);
+void clapper_tube_config_init_internal (void);
 
 G_END_DECLS

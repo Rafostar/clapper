@@ -17,6 +17,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
+/**
+ * ClapperTubeExtractor:
+ *
+ * A base class for creating extractor modules.
+ */
+
 #include "clapper-tube-extractor.h"
 #include "clapper-tube-harvest-private.h"
 #include "../shared/clapper-shared-utils-private.h"
@@ -24,22 +30,24 @@
 #define GST_CAT_DEFAULT clapper_tube_extractor_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
+typedef struct _ClapperTubeExtractorPrivate ClapperTubeExtractorPrivate;
+
 struct _ClapperTubeExtractorPrivate
 {
   GUri *uri;
+  ClapperTubeHarvest *harvest;
 };
 
 #define parent_class clapper_tube_extractor_parent_class
-G_DEFINE_TYPE_WITH_CODE (ClapperTubeExtractor, clapper_tube_extractor, CLAPPER_TYPE_THREADED_OBJECT,
+G_DEFINE_TYPE_WITH_CODE (ClapperTubeExtractor, clapper_tube_extractor, GST_TYPE_OBJECT,
     G_ADD_PRIVATE (ClapperTubeExtractor));
 
-typedef struct
+enum
 {
-  ClapperTubeExtractor *extractor;
-  GUri *uri;
-  GCancellable *cancellable;
-  GError **error;
-} ClapperTubeExtractorData;
+  SIGNAL_TAGS_UPDATED,
+  SIGNAL_TOC_UPDATED,
+  SIGNAL_LAST
+};
 
 /**
  * clapper_tube_extractor_error_quark:
@@ -52,7 +60,7 @@ G_DEFINE_QUARK (clapper-tube-extractor-error-quark, clapper_tube_extractor_error
 
 /**
  * clapper_tube_extractor_get_uri:
- * @website: a #ClapperTubeExtractor
+ * @extractor: a #ClapperTubeExtractor
  *
  * Returns: (transfer none): current requested URI.
  */
@@ -70,13 +78,14 @@ clapper_tube_extractor_get_uri (ClapperTubeExtractor *self)
 
 /**
  * clapper_tube_extractor_set_uri:
- * @website: a #ClapperTubeExtractor
+ * @extractor: a #ClapperTubeExtractor
  * @uri: a media source URI
  *
  * Sets new URI for handling. URI cannot be %NULL.
  *
- * After setting new URI, [vfunc@ClapperTube.Extractor::extract] should
- * return %FALSE which will trigger another extractor query for updated URI.
+ * After setting new URI, [vfunc@ClapperTube.Extractor.extract] should
+ * return [enum@ClapperTube.Flow.RESTART] which will trigger another
+ * extractor query for updated URI.
  */
 void
 clapper_tube_extractor_set_uri (ClapperTubeExtractor *self, GUri *uri)
@@ -94,57 +103,62 @@ clapper_tube_extractor_set_uri (ClapperTubeExtractor *self, GUri *uri)
   priv->uri = g_uri_ref (uri);
 }
 
-static gpointer
-clapper_tube_extractor_run_in_thread (ClapperTubeExtractorData *data)
+/**
+ * clapper_tube_extractor_get_harvest:
+ * @extractor: a #ClapperTubeExtractor
+ *
+ * Returns: (transfer none): a #ClapperTubeHarvest.
+ */
+ClapperTubeHarvest *
+clapper_tube_extractor_get_harvest (ClapperTubeExtractor *self)
 {
-  ClapperTubeExtractorClass *extractor_class = CLAPPER_TUBE_EXTRACTOR_GET_CLASS (data->extractor);
-  ClapperTubeHarvest *harvest = NULL;
+  ClapperTubeExtractorPrivate *priv;
 
-  /* Cancelled during thread switching */
-  if (g_cancellable_is_cancelled (data->cancellable))
-    return NULL;
+  g_return_val_if_fail (CLAPPER_TUBE_IS_EXTRACTOR (self), NULL);
 
-  harvest = clapper_tube_harvest_new ();
+  priv = clapper_tube_extractor_get_instance_private (self);
 
-  clapper_tube_extractor_set_uri (data->extractor, data->uri);
-  extractor_class->extract (data->extractor, harvest, data->cancellable, data->error);
-
-  /* Extraction error or cancelled in middle of it */
-  if (*data->error != NULL || g_cancellable_is_cancelled (data->cancellable))
-    gst_clear_object (&harvest);
-
-  return harvest;
+  return priv->harvest;
 }
 
-ClapperTubeHarvest *
-clapper_tube_extractor_run (ClapperTubeExtractor *self, GUri *uri,
-    GCancellable *cancellable, GError **error)
+/**
+ * clapper_tube_extractor_emit_harvest_updated:
+ * @extractor: a #ClapperTubeExtractor
+ *
+ * A convenience function that will emit [signal@ClapperTube.Extractor::tags-updated]
+ * with current harvest.
+ *
+ * Use this if @extractor updates its tags, toc or request-headers after
+ * initial extraction. Useful for dealing with live sources where
+ * e.g. media title changes during playback.
+ */
+void
+clapper_tube_extractor_emit_harvest_updated (ClapperTubeExtractor *self)
 {
-  ClapperTubeExtractorData *data = g_new (ClapperTubeExtractorData, 1);
+  ClapperTubeExtractorPrivate *priv;
 
-  data->extractor = self;
-  data->uri = uri;
-  data->cancellable = cancellable;
-  data->error = error;
+  g_return_if_fail (CLAPPER_TUBE_IS_EXTRACTOR (self));
 
-  return CLAPPER_TUBE_HARVEST_CAST (clapper_shared_utils_context_invoke_sync_full (
-      clapper_threaded_object_get_context (CLAPPER_THREADED_OBJECT_CAST (self)),
-      (GThreadFunc) clapper_tube_extractor_run,
-      data, (GDestroyNotify) g_free));
+  priv = clapper_tube_extractor_get_instance_private (self);
+
+  g_signal_emit (G_OBJECT (self), signals[SIGNAL_HARVEST_UPDATED], 0, priv->harvest);
 }
 
 static void
 clapper_tube_extractor_init (ClapperTubeExtractor *self)
 {
+  ClapperTubeExtractorPrivate *priv = clapper_tube_extractor_get_instance_private (self);
+
+  priv->harvest = clapper_tube_harvest_new ();
 }
 
-static gboolean
-clapper_tube_extractor_extract (ClapperTubeExtractor *self, ClapperTubeHarvest *harvest,
+static ClapperTubeFlow
+clapper_tube_extractor_extract (ClapperTubeExtractor *self,
     GCancellable *cancellable, GError **error)
 {
   GST_ERROR_OBJECT (self, "Extraction is not implemented!");
 
-  return CLAPPER_TUBE_EXTRACTION_FAILED;
+  return CLAPPER_TUBE_FLOW_ERROR;
 }
 
 static void
@@ -158,6 +172,8 @@ clapper_tube_extractor_finalize (GObject *object)
   if (priv->uri)
     g_uri_unref (priv->uri);
 
+  gst_object_unref (priv->harvest);
+
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
@@ -169,6 +185,18 @@ clapper_tube_extractor_class_init (ClapperTubeExtractorClass *klass)
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappertubeextractor", 0,
       "Clapper Tube Extractor");
+
+  /**
+   * ClapperTubeExtractor::harvest-updated:
+   * @extractor: a #ClapperTubeExtractor
+   * @harvest: a #ClapperTubeHarvest
+   *
+   * Implementations emit this signal when harvest tags, toc or request-headers
+   * at a later point (after initial extraction).
+   */
+  signals[SIGNAL_HARVEST_UPDATED] = g_signal_new ("harvest-updated",
+      G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+      0, NULL, NULL, NULL, G_TYPE_NONE, 1, CLAPPER_TUBE_TYPE_HARVEST);
 
   gobject_class->finalize = clapper_tube_extractor_finalize;
 

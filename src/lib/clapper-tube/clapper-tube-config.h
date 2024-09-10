@@ -31,16 +31,7 @@
 G_BEGIN_DECLS
 
 CLAPPER_TUBE_API
-gchar * clapper_tube_config_obtain_config_dir_path (void);
-
-CLAPPER_TUBE_API
-gchar * clapper_tube_config_obtain_config_file_path (const gchar *file_name);
-
-CLAPPER_TUBE_API
-GFile * clapper_tube_config_obtain_config_dir (void);
-
-CLAPPER_TUBE_API
-GFile * clapper_tube_config_obtain_config_dir_file (const gchar *file_name);
+const gchar * clapper_tube_config_get_dir_path (void);
 
 CLAPPER_TUBE_API
 gchar ** clapper_tube_config_read_plugin_hosts_file (const gchar *file_name);

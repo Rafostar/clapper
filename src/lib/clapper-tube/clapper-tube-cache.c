@@ -20,6 +20,8 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <gio/gio.h>
+#include <gst/gst.h>
 
 #include "clapper-tube-cache.h"
 #include "clapper-tube-cache-private.h"
@@ -90,7 +92,7 @@ typedef struct
   GPtrArray *plugins;
 } ClapperTubeCachePluginDirData;
 
-/* Plugins cache data and mutex protecting it */
+/* Mutex protecting IO and plugins data */
 static GMutex cache_lock;
 static GPtrArray *plugins_cache = NULL;
 
@@ -158,10 +160,9 @@ clapper_tube_cache_take_dir_data (ClapperTubeCachePluginDirData *data)
 }
 
 static void
-clapper_tube_cache_clear (void)
+clapper_tube_cache_remove_content (void)
 {
-  while (plugins_cache->len > 0)
-    g_ptr_array_remove_index (plugins_cache, plugins_cache->len - 1);
+  g_ptr_array_remove_range (plugins_cache, 0, plugins_cache->len);
 }
 
 static void
@@ -271,7 +272,7 @@ clapper_tube_cache_get_file_mod_time (GFileInfo *info)
 }
 
 static gboolean
-clapper_tube_cache_prepare (GCancellable *cancellable, GError **error)
+clapper_tube_cache_prepare (GError **error)
 {
   GFile *db_dir;
   gchar *db_path;
@@ -281,19 +282,7 @@ clapper_tube_cache_prepare (GCancellable *cancellable, GError **error)
   db_dir = g_file_new_for_path (db_path);
   g_free (db_path);
 
-  if (!g_file_query_exists (db_dir, cancellable)) {
-    if (g_cancellable_is_cancelled (cancellable)) {
-      g_set_error (error, G_IO_ERROR,
-          G_IO_ERROR_CANCELLED,
-          "Operation was cancelled");
-      goto finish;
-    }
-    if (!g_file_make_directory (db_dir, cancellable, error))
-      goto finish;
-  }
-  res = TRUE;
-
-finish:
+  res = (g_file_query_exists (db_dir, NULL) || g_file_make_directory (db_dir, NULL, error));
   g_object_unref (db_dir);
 
   return res;
@@ -374,13 +363,13 @@ finish:
 
 static void
 clapper_tube_cache_enumerate_configs (GFile *dir, gint64 *config_mod_time,
-    guint *config_n_files, GCancellable *cancellable, GError **error)
+    guint *config_n_files, GError **error)
 {
   GFileEnumerator *dir_enum;
 
   dir_enum = g_file_enumerate_children (dir,
       G_FILE_ATTRIBUTE_TIME_MODIFIED,
-      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, cancellable, error);
+      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, error);
   if (!dir_enum)
     return;
 
@@ -389,7 +378,7 @@ clapper_tube_cache_enumerate_configs (GFile *dir, gint64 *config_mod_time,
     gint64 file_mod_time;
 
     if (!g_file_enumerator_iterate (dir_enum, &info,
-        NULL, cancellable, error) || !info)
+        NULL, NULL, error) || !info)
       break;
 
     if (config_n_files)
@@ -405,42 +394,26 @@ clapper_tube_cache_enumerate_configs (GFile *dir, gint64 *config_mod_time,
 }
 
 static gboolean
-clapper_tube_cache_read_config (FILE *file, GCancellable *cancellable,
-    GError **error)
+clapper_tube_cache_read_config (FILE *file, GError **error)
 {
   GFile *dir;
-  gchar *config_dir_path;
   gint64 config_mod_time, latest_time = 0;
   guint config_n_files, n_files = 0;
 
   read_file_to_ptr (file, &config_mod_time, sizeof (gint64));
   read_file_to_ptr (file, &config_n_files, sizeof (guint));
 
-  config_dir_path = clapper_tube_config_obtain_config_dir_path ();
-  GST_DEBUG ("Config dir path: %s", config_dir_path);
-
-  dir = g_file_new_for_path (config_dir_path);
-  g_free (config_dir_path);
+  dir = g_file_new_for_path (clapper_tube_config_get_dir_path ());
 
   /* Leaves latest_time as zero when config dir does not exists.
    * This allows to detect if dir was removed/created since last usage. */
-  if (g_file_query_exists (dir, cancellable)) {
-    clapper_tube_cache_enumerate_configs (dir, &latest_time, &n_files,
-        cancellable, error);
-  }
+  if (g_file_query_exists (dir, NULL))
+    clapper_tube_cache_enumerate_configs (dir, &latest_time, &n_files, error);
+
   g_object_unref (dir);
 
   if (error && *error != NULL)
     return FALSE;
-
-  if (g_cancellable_is_cancelled (cancellable)) {
-    if (error && *error == NULL) {
-      g_set_error (error, G_IO_ERROR,
-          G_IO_ERROR_CANCELLED,
-          "Operation was cancelled");
-    }
-    return FALSE;
-  }
 
   GST_DEBUG ("Config compared, mod_time: %"
       G_GINT64_FORMAT " %s %" G_GINT64_FORMAT ", n_files: %u %s %u",
@@ -451,32 +424,21 @@ clapper_tube_cache_read_config (FILE *file, GCancellable *cancellable,
 }
 
 static gboolean
-clapper_tube_cache_write_config (FILE *file, GCancellable *cancellable,
-    GError **error)
+clapper_tube_cache_write_config (FILE *file, GError **error)
 {
   GFile *dir;
   gint64 config_mod_time = 0;
   guint config_n_files = 0;
 
-  dir = clapper_tube_config_obtain_config_dir ();
+  dir = g_file_new_for_path (clapper_tube_config_get_dir_path ());
 
-  if (g_file_query_exists (dir, cancellable)) {
-    clapper_tube_cache_enumerate_configs (dir, &config_mod_time, &config_n_files,
-      cancellable, error);
-  }
+  if (g_file_query_exists (dir, NULL))
+    clapper_tube_cache_enumerate_configs (dir, &config_mod_time, &config_n_files, error);
+
   g_object_unref (dir);
 
   if (error && *error != NULL)
     return FALSE;
-
-  if (g_cancellable_is_cancelled (cancellable)) {
-    if (error && *error == NULL) {
-      g_set_error (error, G_IO_ERROR,
-          G_IO_ERROR_CANCELLED,
-          "Operation was cancelled");
-    }
-    return FALSE;
-  }
 
   GST_DEBUG ("Writing config dir data, config_mod_time: %"
       G_GINT64_FORMAT ", config_n_files: %u",
@@ -490,16 +452,14 @@ clapper_tube_cache_write_config (FILE *file, GCancellable *cancellable,
 
 static void
 clapper_tube_cache_enumerate_plugins (GFile *dir, GPtrArray *modules,
-    gint64 *mod_time, guint *n_plugins, GCancellable *cancellable,
-    GError **error)
+    gint64 *mod_time, guint *n_plugins, GError **error)
 {
   GFileEnumerator *dir_enum;
 
-  dir_enum = g_file_enumerate_children (dir,
+  if (!(dir_enum = g_file_enumerate_children (dir,
       G_FILE_ATTRIBUTE_STANDARD_NAME ","
       G_FILE_ATTRIBUTE_TIME_MODIFIED,
-      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, cancellable, error);
-  if (!dir_enum)
+      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, error)))
     return;
 
   while (TRUE) {
@@ -508,12 +468,12 @@ clapper_tube_cache_enumerate_plugins (GFile *dir, GPtrArray *modules,
     const gchar *module_name;
 
     if (!g_file_enumerator_iterate (dir_enum, &info,
-        NULL, cancellable, error) || !info)
+        NULL, NULL, error) || !info)
       break;
 
     module_name = g_file_info_get_name (info);
 
-    if (!clapper_tube_loader_name_is_plugin (module_name))
+    if (!g_str_has_suffix (module_name, "." G_MODULE_SUFFIX))
       continue;
 
     if (modules)
@@ -532,7 +492,7 @@ clapper_tube_cache_enumerate_plugins (GFile *dir, GPtrArray *modules,
 
 static gboolean
 clapper_tube_cache_read_plugins_compat (FILE *file,
-    const gchar *dir_path, GCancellable *cancellable, GError **error)
+    const gchar *dir_path, GError **error)
 {
   GFile *dir;
   gchar *cache_dir_path;
@@ -560,8 +520,7 @@ clapper_tube_cache_read_plugins_compat (FILE *file,
   read_file_to_ptr (file, &cache_mod_time, sizeof (gint64));
   read_file_to_ptr (file, &cache_n_plugins, sizeof (guint));
 
-  clapper_tube_cache_enumerate_plugins (dir, NULL, &latest_time, &n_plugins,
-      cancellable, error);
+  clapper_tube_cache_enumerate_plugins (dir, NULL, &latest_time, &n_plugins, error);
   g_object_unref (dir);
 
   changed = (cache_mod_time != latest_time
@@ -579,7 +538,7 @@ clapper_tube_cache_read_plugins_compat (FILE *file,
     GST_DEBUG ("Reading plugins compat data for dir: %s", cache_dir_path);
     dir_data = clapper_tube_cache_plugin_dir_data_new_take (cache_dir_path);
 
-    for (i = 0; i < cache_n_plugins; i++) {
+    for (i = 0; i < cache_n_plugins; ++i) {
       ClapperTubeCachePluginCompatData *data;
       gchar *module_name;
       guint n_schemes, n_hosts, j;
@@ -588,7 +547,7 @@ clapper_tube_cache_read_plugins_compat (FILE *file,
       data = clapper_tube_cache_plugin_compat_data_new_take (module_name);
 
       read_file_to_ptr (file, &n_schemes, sizeof (guint));
-      for (j = 0; j < n_schemes; j++) {
+      for (j = 0; j < n_schemes; ++j) {
         gchar *scheme;
 
         scheme = read_next_string (file);
@@ -596,7 +555,7 @@ clapper_tube_cache_read_plugins_compat (FILE *file,
       }
 
       read_file_to_ptr (file, &n_hosts, sizeof (guint));
-      for (j = 0; j < n_hosts; j++) {
+      for (j = 0; j < n_hosts; ++j) {
         gchar *host;
 
         host = read_next_string (file);
@@ -620,7 +579,7 @@ fail:
 
 static gboolean
 clapper_tube_cache_write_plugins_compat (FILE *file,
-    const gchar *dir_path, GCancellable *cancellable, GError **error)
+    const gchar *dir_path, GError **error)
 {
   GFile *dir;
   GPtrArray *module_names;
@@ -638,8 +597,7 @@ clapper_tube_cache_write_plugins_compat (FILE *file,
   write_string (file, dir_path);
 
   module_names = g_ptr_array_new_with_free_func ((GDestroyNotify) g_free);
-  clapper_tube_cache_enumerate_plugins (dir, module_names, &mod_time, &n_plugins,
-      cancellable, error);
+  clapper_tube_cache_enumerate_plugins (dir, module_names, &mod_time, &n_plugins, error);
 
   GST_DEBUG ("Writing plugin dir data, mod_time: %"
       G_GINT64_FORMAT ", n_plugins: %u", mod_time, n_plugins);
@@ -649,7 +607,7 @@ clapper_tube_cache_write_plugins_compat (FILE *file,
 
   dir_data = clapper_tube_cache_plugin_dir_data_new (dir_path);
 
-  for (i = 0; i < module_names->len; i++) {
+  for (i = 0; i < module_names->len; ++i) {
     ClapperTubeCachePluginCompatData *data;
     gchar *module_path;
     guint j;
@@ -678,7 +636,7 @@ clapper_tube_cache_write_plugins_compat (FILE *file,
     data = clapper_tube_cache_plugin_compat_data_new (module_name);
 
     if (write_n_elems (file, plugin_schemes)) {
-      for (j = 0; plugin_schemes[j]; j++) {
+      for (j = 0; plugin_schemes[j]; ++j) {
         GST_DEBUG ("Supported scheme: %s", plugin_schemes[j]);
 
         write_string (file, plugin_schemes[j]);
@@ -686,7 +644,7 @@ clapper_tube_cache_write_plugins_compat (FILE *file,
       }
     }
     if (write_n_elems (file, plugin_hosts)) {
-      for (j = 0; plugin_hosts[j]; j++) {
+      for (j = 0; plugin_hosts[j]; ++j) {
         GST_DEBUG ("Supported host: %s", plugin_hosts[j]);
 
         write_string (file, plugin_hosts[j]);
@@ -703,132 +661,40 @@ clapper_tube_cache_write_plugins_compat (FILE *file,
   return success;
 }
 
-void
-clapper_tube_cache_init (GCancellable *cancellable, GError **error)
-{
-  FILE *file;
-  gboolean success = FALSE;
-  guint i;
-
-  g_mutex_lock (&cache_lock);
-
-  if (plugins_cache) {
-    g_mutex_unlock (&cache_lock);
-    return;
-  }
-
-  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappertubecache", 0,
-      "Clapper Tube Cache");
-  clapper_tube_config_debug_init ();
-
-  GST_DEBUG ("Initializing cache");
-  plugins_cache = g_ptr_array_new_with_free_func (
-      (GDestroyNotify) clapper_tube_cache_plugin_dir_data_free);
-
-  if (!clapper_tube_cache_prepare (cancellable, error))
-    goto finish;
-
-  file = clapper_tube_cache_open_read (CLAPPER_TUBE_CACHE_BASENAME);
-  if (file) {
-    if (clapper_tube_cache_read_config (file, cancellable, error)) {
-      gchar **dir_paths;
-
-      dir_paths = clapper_tube_loader_obtain_plugin_dir_paths ();
-
-      for (i = 0; dir_paths[i]; i++) {
-        if (!(success = clapper_tube_cache_read_plugins_compat (file, dir_paths[i],
-            cancellable, error))) {
-          clapper_tube_cache_clear ();
-          break;
-        }
-      }
-
-      g_strfreev (dir_paths);
-    }
-
-    fclose (file);
-  }
-
-  if (g_cancellable_is_cancelled (cancellable)
-      || (error && *error != NULL))
-    goto finish;
-
-  if (!success) {
-    GST_DEBUG ("Plugin cache needs rewriting");
-
-    file = clapper_tube_cache_open_write (CLAPPER_TUBE_CACHE_BASENAME);
-    if (!file) {
-      /* FIXME: Can we recover somehow? */
-      g_assert_not_reached ();
-    }
-
-    if ((success = clapper_tube_cache_write_config (file, cancellable, error))) {
-      gchar **dir_paths;
-
-      dir_paths = clapper_tube_loader_obtain_plugin_dir_paths ();
-
-      for (i = 0; dir_paths[i]; i++) {
-        if (!(success = clapper_tube_cache_write_plugins_compat (file, dir_paths[i],
-            cancellable, error))) {
-          clapper_tube_cache_clear ();
-          break;
-        }
-      }
-
-      g_strfreev (dir_paths);
-    }
-
-    fclose (file);
-    GST_DEBUG ("Plugin cache %srewritten", success ? "" : "could not be ");
-  }
-
-finish:
-  if (success) {
-    GST_DEBUG ("Initialized cache");
-  } else {
-    g_ptr_array_unref (plugins_cache);
-    plugins_cache = NULL;
-
-    GST_DEBUG ("Could not initialize cache");
-  }
-
-  g_mutex_unlock (&cache_lock);
-}
-
-static gpointer
-_obtain_supported_schemes (G_GNUC_UNUSED gpointer data)
+gchar **
+clapper_tube_cache_create_supported_schemes (void)
 {
   GPtrArray *arr;
   gchar **schemes;
   guint i;
 
-  clapper_tube_cache_init (NULL, NULL);
-
-  if (!plugins_cache)
+  /* Plugin cache should be already initialized
+   * before this function is called */
+  if (G_UNLIKELY (!plugins_cache))
     return NULL;
 
   arr = g_ptr_array_new ();
 
-  for (i = 0; i < plugins_cache->len; i++) {
+  for (i = 0; i < plugins_cache->len; ++i) {
     ClapperTubeCachePluginDirData *dir_data;
     guint j;
 
     dir_data = g_ptr_array_index (plugins_cache, i);
 
-    for (j = 0; j < dir_data->plugins->len; j++) {
+    for (j = 0; j < dir_data->plugins->len; ++j) {
       ClapperTubeCachePluginCompatData *data;
       guint k;
 
       data = g_ptr_array_index (dir_data->plugins, j);
 
-      for (k = 0; k < data->schemes->len; k++) {
+      for (k = 0; k < data->schemes->len; ++k) {
         const gchar *plugin_scheme;
         gboolean present = FALSE;
         guint l;
 
         plugin_scheme = g_ptr_array_index (data->schemes, k);
 
-        for (l = 0; l < arr->len; l++) {
+        for (l = 0; l < arr->len; ++l) {
           if ((present = strcmp (g_ptr_array_index (arr, l), plugin_scheme) == 0))
             break;
         }
@@ -841,7 +707,7 @@ _obtain_supported_schemes (G_GNUC_UNUSED gpointer data)
 
   schemes = g_new0 (gchar *, arr->len + 1);
 
-  for (i = 0; i < arr->len; i++)
+  for (i = 0; i < arr->len; ++i)
     schemes[i] = g_ptr_array_index (arr, i);
 
   g_ptr_array_unref (arr);
@@ -849,13 +715,88 @@ _obtain_supported_schemes (G_GNUC_UNUSED gpointer data)
   return schemes;
 }
 
-const gchar *const *
-clapper_tube_cache_get_supported_schemes (void)
+/* Should be run only once with a global mutex taken */
+gboolean
+clapper_tube_cache_init (GError **error)
 {
-  static GOnce schemes_once = G_ONCE_INIT;
+  FILE *file;
+  gboolean success = FALSE;
+  guint i;
 
-  g_once (&schemes_once, _obtain_supported_schemes, NULL);
-  return (const gchar *const *) schemes_once.retval;
+  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappertubecache", 0,
+      "Clapper Tube Cache");
+
+  GST_INFO ("Initializing cache");
+  plugins_cache = g_ptr_array_new_with_free_func (
+      (GDestroyNotify) clapper_tube_cache_plugin_dir_data_free);
+
+  if (!clapper_tube_cache_prepare (error))
+    goto finish;
+
+  file = clapper_tube_cache_open_read (CLAPPER_TUBE_CACHE_BASENAME);
+  if (file) {
+    if (clapper_tube_cache_read_config (file, error)) {
+      gchar **dir_paths;
+
+      dir_paths = clapper_tube_loader_obtain_plugin_dir_paths ();
+
+      for (i = 0; dir_paths[i]; ++i) {
+        if (!(success = clapper_tube_cache_read_plugins_compat (file, dir_paths[i], error))) {
+          /* Since we failed at some index, remove everything that was added prior to it */
+          clapper_tube_cache_remove_content ();
+          break;
+        }
+      }
+
+      g_strfreev (dir_paths);
+    }
+
+    fclose (file);
+  }
+
+  if (error && *error != NULL)
+    goto finish;
+
+  if (!success) {
+    GST_INFO ("Plugin cache needs rewriting");
+
+    file = clapper_tube_cache_open_write (CLAPPER_TUBE_CACHE_BASENAME);
+    if (!file) {
+      /* FIXME: Can we recover somehow? */
+      g_assert_not_reached ();
+    }
+
+    if ((success = clapper_tube_cache_write_config (file, error))) {
+      gchar **dir_paths;
+
+      dir_paths = clapper_tube_loader_obtain_plugin_dir_paths ();
+
+      for (i = 0; dir_paths[i]; ++i) {
+        if (!(success = clapper_tube_cache_write_plugins_compat (file, dir_paths[i], error))) {
+          /* Since we failed at some index, remove everything that was added prior to it */
+          clapper_tube_cache_remove_content ();
+          break;
+        }
+      }
+
+      g_strfreev (dir_paths);
+    }
+
+    fclose (file);
+    GST_INFO ("Plugin cache %srewritten", success ? "" : "could not be ");
+  }
+
+finish:
+  if (success) {
+    GST_INFO ("Initialized cache");
+  } else {
+    g_ptr_array_unref (plugins_cache);
+    plugins_cache = NULL;
+
+    GST_ERROR ("Could not initialize cache");
+  }
+
+  return success;
 }
 
 GPtrArray *
@@ -884,21 +825,21 @@ clapper_tube_cache_find_plugins_for_uri (GUri *guri)
   GST_DEBUG ("Cache query, scheme: \"%s\", host: \"%s\"",
       scheme, host + offset);
 
-  for (i = 0; i < plugins_cache->len; i++) {
+  for (i = 0; i < plugins_cache->len; ++i) {
     ClapperTubeCachePluginDirData *dir_data;
     guint j;
 
     dir_data = g_ptr_array_index (plugins_cache, i);
     GST_DEBUG ("Searching in cached dir: %s", dir_data->dir_path);
 
-    for (j = 0; j < dir_data->plugins->len; j++) {
+    for (j = 0; j < dir_data->plugins->len; ++j) {
       ClapperTubeCachePluginCompatData *data;
       gboolean plausible = FALSE;
       guint k;
 
       data = g_ptr_array_index (dir_data->plugins, j);
 
-      for (k = 0; k < data->schemes->len; k++) {
+      for (k = 0; k < data->schemes->len; ++k) {
         const gchar *plugin_scheme;
 
         plugin_scheme = g_ptr_array_index (data->schemes, k);
@@ -915,7 +856,7 @@ clapper_tube_cache_find_plugins_for_uri (GUri *guri)
         /* Disallow http(s) with no hosts */
         plausible = FALSE;
 
-        for (k = 0; k < data->hosts->len; k++) {
+        for (k = 0; k < data->hosts->len; ++k) {
           const gchar *plugin_host;
 
           plugin_host = g_ptr_array_index (data->hosts, k);

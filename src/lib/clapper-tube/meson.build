@@ -4,25 +4,17 @@ clappertube_api_name = meson.project_name() + '-tube' + clapper_version_suffix
 clappertube_plugins_dir = join_paths(prefix, libdir, clappertube_api_name)
 build_clappertube = false
 
-clappertube_pkg_reqs = [
-  'glib-2.0',
-  'gobject-2.0',
-  'gio-2.0',
-  'gstreamer-1.0',
-  'gstreamer-base-1.0',
-  'gstreamer-tag-1.0',
-]
-
 if clappertube_option.disabled()
   subdir_done()
 endif
 
 clappertube_deps = [
+  clapper_dep,
   glib_dep,
   gobject_dep,
   gio_dep,
+  libsoup_dep,
   gst_dep,
-  clapper_dep,
 ]
 gstclappertube_deps = [
   glib_dep,
@@ -65,6 +57,19 @@ clappertube_visibility_header = configure_file(
   configuration: visibility_conf,
 )
 
+internal_visibility_conf = configuration_data()
+
+internal_visibility_conf.set(
+  'CLAPPER_API',
+  'CLAPPER_TUBE_INTERNAL',
+)
+
+clappertube_internal_visibility_header = configure_file(
+  input: '../shared/clapper-api-visibility.h.in',
+  output: 'clapper-tube-internal-visibility.h',
+  configuration: internal_visibility_conf,
+)
+
 version_conf = configuration_data()
 
 version_conf.set(
@@ -98,16 +103,30 @@ clappertube_conf_inc = [
 
 clappertube_headers = [
   'clapper-tube.h',
+  'clapper-tube-enums.h',
+  'clapper-tube-cache.h',
+  'clapper-tube-config.h',
+  'clapper-tube-extractor.h',
   'clapper-tube-harvest.h',
+  'clapper-tube-web-extractor.h',
   clappertube_version_header,
   clappertube_visibility_header,
 ]
 clappertube_sources = [
+  'clapper-tube.c',
+  'clapper-tube-cache.c',
+  'clapper-tube-client.c',
+  'clapper-tube-config.c',
+  'clapper-tube-extractor.c',
   'clapper-tube-harvest.c',
+  'clapper-tube-loader.c',
+  'clapper-tube-web-extractor.c',
+  '../shared/clapper-shared-utils.c',
 ]
 clappertube_c_args = [
   '-DG_LOG_DOMAIN="ClapperTube"',
   '-DCLAPPER_TUBE_COMPILATION',
+  '-DCLAPPER_TUBE_INTERNAL_COMPILATION',
 ]
 
 if get_option('default_library') == 'static'
@@ -116,9 +135,20 @@ endif
 
 clappertube_headers_dir = join_paths(includedir, clapper_api_name, 'clapper-tube')
 
+clappertube_enums = gnome.mkenums_simple(
+  'clapper-tube-enum-types',
+  sources: clappertube_headers,
+  decorator: 'CLAPPER_TUBE_API',
+  header_prefix: '#include <clapper-tube/clapper-tube-visibility.h>',
+  identifier_prefix: 'ClapperTube',
+  symbol_prefix: 'clapper_tube',
+  install_header: true,
+  install_dir: clappertube_headers_dir,
+)
+
 clappertube_lib = library(
   clappertube_api_name,
-  clappertube_sources,
+  clappertube_sources + clappertube_enums,
   dependencies: clappertube_deps,
   include_directories: clappertube_conf_inc,
   c_args: clappertube_c_args,
@@ -135,6 +165,7 @@ if build_gir
     sources: [
       clappertube_sources,
       clappertube_headers,
+      clappertube_enums,
     ],
     extra_args: [
       gir_init_section,
@@ -150,9 +181,11 @@ if build_gir
     export_packages: clappertube_api_name,
     install: true,
     includes: [
+      clapper_gir[0],
       'GLib-2.0',
       'GObject-2.0',
       'Gio-2.0',
+      'Soup-3.0',
       'Gst-1.0',
       'GstTag-1.0',
     ],
@@ -168,8 +201,9 @@ if build_vapi
   else
     gnome.generate_vapi(clappertube_api_name,
       sources: clappertube_gir[0],
-      packages: clappertube_pkg_reqs + [
+      packages: clapper_pkg_reqs + [
         clapper_vapi,
+        'libsoup-3.0',
       ],
       install: true,
     )
@@ -182,8 +216,15 @@ pkgconfig.generate(clappertube_lib,
   name: meson.project_name() + '-tube',
   version: meson.project_version(),
   description: 'Clapper Tube library',
-  requires: clappertube_pkg_reqs + [
+  requires: [
     clapper_lib,
+    'glib-2.0',
+    'gobject-2.0',
+    'gio-2.0',
+    'libsoup-3.0',
+    'gstreamer-1.0',
+    'gstreamer-base-1.0',
+    'gstreamer-tag-1.0',
   ],
 )
 
@@ -193,7 +234,9 @@ clappertube_dep = declare_dependency(
   dependencies: clappertube_deps,
   sources: [
     clappertube_visibility_header,
+    clappertube_internal_visibility_header,
     clappertube_version_header,
+    clappertube_enums[1],
   ],
 )
 

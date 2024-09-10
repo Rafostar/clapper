@@ -34,6 +34,7 @@ struct _ClapperTubeHarvest
 
   GstCaps *caps;
   GstBuffer *buffer;
+  gsize buf_size;
 
   /* props */
   GstTagList *tags;
@@ -64,6 +65,26 @@ clapper_tube_harvest_new (void)
   gst_object_ref_sink (harvest);
 
   return harvest;
+}
+
+gboolean
+clapper_tube_harvest_unpack (ClapperTubeHarvest *self,
+    GstBuffer **buffer, gsize *buf_size, GstCaps **caps)
+{
+  /* Not filled or already unpacked */
+  if (!self->buffer || self->buf_size == 0 || !self->caps)
+    return FALSE;
+
+  buffer = self->buffer;
+  self->buffer = NULL;
+
+  buf_size = self->buf_size;
+  self->buf_size = 0;
+
+  caps = self->caps;
+  self->caps = NULL;
+
+  return TRUE;
 }
 
 /**
@@ -112,6 +133,7 @@ clapper_tube_harvest_fill (ClapperTubeHarvest *self, gchar *data)
   }
 
   self->buffer = gst_buffer_new_wrapped (data, len);
+  self->buf_size = len;
   self->caps = gst_caps_new_simple (media_type,
       "source", G_TYPE_STRING, "clapper-tube", NULL);
 
@@ -124,7 +146,7 @@ clapper_tube_harvest_fill (ClapperTubeHarvest *self, gchar *data)
  *
  * Get media tags.
  *
- * Returns: (transfer none) (nullable): a #GstTagList
+ * Returns: (transfer none): a #GstTagList
  */
 GstTagList *
 clapper_tube_harvest_get_tags (ClapperTubeHarvest *self)
@@ -140,7 +162,7 @@ clapper_tube_harvest_get_tags (ClapperTubeHarvest *self)
  *
  * Get media table of contents.
  *
- * Returns: (transfer none) (nullable): a #GstToc
+ * Returns: (transfer none): a #GstToc
  */
 GstToc *
 clapper_tube_harvest_get_toc (ClapperTubeHarvest *self)
@@ -156,7 +178,7 @@ clapper_tube_harvest_get_toc (ClapperTubeHarvest *self)
  *
  * Get request headers to be used when streaming.
  *
- * Returns: (transfer none) (nullable): a #GstStructure
+ * Returns: (transfer none): a #GstStructure
  */
 GstStructure *
 clapper_tube_harvest_get_request_headers (ClapperTubeHarvest *self)

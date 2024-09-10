@@ -20,14 +20,15 @@
 #include "config.h"
 
 #include <gst/gst.h>
-#include <gmodule.h>
+
+#include "../clapper-tube-private.h"
 
 static gboolean
 plugin_init (GstPlugin *plugin)
 {
-  gboolean res = FALSE;
+  //gboolean res = FALSE;
 
-  if (!g_module_supported ())
+  if (!clapper_tube_init_check ())
     return FALSE;
 
   gst_plugin_add_dependency_simple (plugin,

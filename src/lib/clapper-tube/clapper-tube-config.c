@@ -19,85 +19,38 @@
 
 #include "config.h"
 
+#include <gst/gst.h>
+
 #include "clapper-tube-config.h"
 #include "clapper-tube-config-private.h"
 
 #define GST_CAT_DEFAULT clapper_tube_config_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
+static gchar *_config_dir = NULL;
+
 void
-clapper_tube_config_debug_init (void)
+clapper_tube_config_init_internal (void)
 {
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappertubeconfig", 0,
       "Clapper Tube Config");
+
+  _config_dir = g_build_filename (g_get_user_config_dir (),
+      CLAPPER_TUBE_API_NAME, NULL);
 }
 
 /**
- * clapper_tube_config_obtain_config_dir_path:
+ * clapper_tube_config_get_dir_path:
  *
- * Obtains a complete filename leading to clapper tube config
+ * Get a complete filename leading to Clapper Tube config
  * folder within user config directory.
  *
- * Returns: (transfer full): filename of config directory.
+ * Returns: (transfer none) (type filename): filename of config directory.
  */
-gchar *
-clapper_tube_config_obtain_config_dir_path (void)
+const gchar *
+clapper_tube_config_get_dir_path (void)
 {
-  return clapper_tube_config_obtain_config_file_path (NULL);
-}
-
-/**
- * clapper_tube_config_obtain_config_file_path:
- * @file_name: name of the config file
- *
- * Obtains a complete filename leading to a file within
- * clapper tube config directory.
- *
- * Returns: (transfer full): filename of config file.
- */
-gchar *
-clapper_tube_config_obtain_config_file_path (const gchar *file_name)
-{
-  /* file_name can be NULL here */
-
-  return g_build_filename (g_get_user_config_dir (),
-      GTUBER_API_NAME, file_name, NULL);
-}
-
-/**
- * clapper_tube_config_obtain_config_dir:
- *
- * Obtains a #GFile from path leading to clapper tube config directory.
- *
- * Returns: (transfer full): a #GFile from clapper tube config directory.
- */
-GFile *
-clapper_tube_config_obtain_config_dir (void)
-{
-  return clapper_tube_config_obtain_config_dir_file (NULL);
-}
-
-/**
- * clapper_tube_config_obtain_config_dir_file:
- * @file_name: name of the config file
- *
- * Obtains a #GFile from file within clapper tube config directory.
- *
- * Returns: (transfer full): a #GFile from file within clapper tube config directory.
- */
-GFile *
-clapper_tube_config_obtain_config_dir_file (const gchar *file_name)
-{
-  GFile *file;
-  gchar *path;
-
-  /* file_name can be NULL here */
-
-  path = clapper_tube_config_obtain_config_file_path (file_name);
-  file = g_file_new_for_path (path);
-  g_free (path);
-
-  return file;
+  return _config_dir;
 }
 
 /**
@@ -117,7 +70,7 @@ clapper_tube_config_read_plugin_hosts_file (const gchar *file_name)
 
   g_return_val_if_fail (file_name != NULL, NULL);
 
-  file_path = clapper_tube_config_obtain_config_file_path (file_name);
+  file_path = g_build_filename (_config_dir, file_name, NULL);
   file = g_file_new_for_path (file_path);
   GST_DEBUG ("Reading hosts file: %s", file_path);
 
@@ -200,7 +153,7 @@ clapper_tube_config_read_plugin_hosts_file_with_prepend (const gchar *file_name,
   va_end (args);
 
   if ((file_hosts = clapper_tube_config_read_plugin_hosts_file (file_name))) {
-    g_strv_builder_addv (builder, file_hosts);
+    g_strv_builder_addv (builder, (const gchar **) file_hosts);
     g_strfreev (file_hosts);
   }
 

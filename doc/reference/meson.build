@@ -13,6 +13,9 @@ endif
 if build_clapper
   subdir('clapper')
 endif
+if build_clappertube
+  subdir('clapper-tube')
+endif
 if build_clappergtk
   subdir('clapper-gtk')
 endif

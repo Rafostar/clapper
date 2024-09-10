@@ -77,6 +77,9 @@ gmodule_dep = dependency('gmodule-2.0',
   version: glib_req,
   required: false,
 )
+libsoup_dep = dependency('libsoup-3.0',
+  required: false,
+)
 gtk4_dep = dependency('gtk4',
   version: gtk4_req,
   required: false,

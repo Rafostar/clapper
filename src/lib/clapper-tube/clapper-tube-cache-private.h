@@ -20,17 +20,16 @@
 #pragma once
 
 #include <glib.h>
-#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-void clapper_tube_cache_init (GCancellable *cancellable, GError **error);
+gboolean clapper_tube_cache_init (GError **error);
 
 G_GNUC_INTERNAL
 GPtrArray * clapper_tube_cache_find_plugins_for_uri (GUri *guri);
 
 G_GNUC_INTERNAL
-const gchar *const * clapper_tube_cache_get_supported_schemes (void);
+gchar ** clapper_tube_cache_create_supported_schemes (void);
 
 G_END_DECLS

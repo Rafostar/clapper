@@ -19,16 +19,22 @@
 
 #pragma once
 
-#define __CLAPPER_TUBE_INSIDE__
+#include <glib.h>
 
-#include <clapper-tube/clapper-tube-enums.h>
-#include <clapper-tube/clapper-tube-version.h>
+#include "clapper-tube-extractor.h"
 
-#include <clapper-tube/clapper-tube-cache.h>
-#include <clapper-tube/clapper-tube-config.h>
-#include <clapper-tube/clapper-tube-harvest.h>
+G_BEGIN_DECLS
 
-#include <clapper-tube/clapper-tube-extractor.h>
-#include <clapper-tube/clapper-tube-web-extractor.h>
+G_GNUC_INTERNAL
+void clapper_tube_loader_init_internal (void);
 
-#undef __CLAPPER_TUBE_INSIDE__
+G_GNUC_INTERNAL
+ClapperTubeExtractor * clapper_tube_loader_get_extractor_for_uri (GUri *guri);
+
+G_GNUC_INTERNAL
+gboolean clapper_tube_loader_check_plugin_compat (const gchar *module_path, const gchar *const **schemes, const gchar *const **hosts);
+
+G_GNUC_INTERNAL
+gchar ** clapper_tube_loader_obtain_plugin_dir_paths (void);
+
+G_END_DECLS

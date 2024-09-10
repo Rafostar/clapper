@@ -5,7 +5,7 @@ if feature_option.disabled()
 endif
 
 feature_deps = [
-  dependency('libsoup-3.0', required: false),
+  libsoup_dep,
   dependency('microdns', version: '>= 0.2.0', required: false),
 ]
 foreach dep : feature_deps

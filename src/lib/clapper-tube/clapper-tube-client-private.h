@@ -19,16 +19,26 @@
 
 #pragma once
 
-#define __CLAPPER_TUBE_INSIDE__
+#include <glib.h>
+#include <glib-object.h>
+#include <gio/gio.h>
+#include <clapper/clapper.h>
 
-#include <clapper-tube/clapper-tube-enums.h>
-#include <clapper-tube/clapper-tube-version.h>
+#include "clapper-tube-internal-visibility.h"
+#include "clapper-tube-harvest.h"
 
-#include <clapper-tube/clapper-tube-cache.h>
-#include <clapper-tube/clapper-tube-config.h>
-#include <clapper-tube/clapper-tube-harvest.h>
+G_BEGIN_DECLS
 
-#include <clapper-tube/clapper-tube-extractor.h>
-#include <clapper-tube/clapper-tube-web-extractor.h>
+#define CLAPPER_TUBE_TYPE_CLIENT (clapper_tube_client_get_type())
+#define CLAPPER_TUBE_CLIENT_CAST(obj) ((ClapperTubeClient *)(obj))
 
-#undef __CLAPPER_TUBE_INSIDE__
+CLAPPER_TUBE_INTERNAL_API
+G_DECLARE_FINAL_TYPE (ClapperTubeClient, clapper_tube_client, CLAPPER_TUBE, CLIENT, ClapperThreadedObject)
+
+CLAPPER_TUBE_INTERNAL_API
+ClapperTubeHarvest * clapper_tube_client_run (ClapperTubeClient *client, GUri *uri, GCancellable *cancellable, GError **error);
+
+CLAPPER_TUBE_INTERNAL_API
+void clapper_tube_client_stop (ClapperTubeClient *client);
+
+G_END_DECLS

@@ -28,6 +28,19 @@
 G_BEGIN_DECLS
 
 /**
+ * ClapperTubeFlow:
+ * @CLAPPER_TUBE_FLOW_OK: continue parsing.
+ * @CLAPPER_TUBE_FLOW_ERROR: give up.
+ * @CLAPPER_TUBE_FLOW_RESTART: restart extraction.
+ */
+typedef enum
+{
+  CLAPPER_TUBE_FLOW_OK = 0,
+  CLAPPER_TUBE_FLOW_ERROR,
+  CLAPPER_TUBE_FLOW_RESTART,
+} ClapperTubeFlow;
+
+/**
  * ClapperTubeExtractorError:
  * @CLAPPER_TUBE_EXTRACTOR_ERROR_FAILED: could not perform extraction.
  * @CLAPPER_TUBE_EXTRACTOR_ERROR_OTHER: some other error occured.

@@ -26,7 +26,6 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gst/gst.h>
-#include <clapper/clapper.h>
 
 #include <clapper-tube/clapper-tube-visibility.h>
 #include <clapper-tube/clapper-tube-enums.h>
@@ -41,7 +40,7 @@ G_BEGIN_DECLS
 #define CLAPPER_TUBE_EXTRACTOR_ERROR (clapper_tube_extractor_error_quark ())
 
 CLAPPER_TUBE_API
-G_DECLARE_DERIVABLE_TYPE (ClapperTubeExtractor, clapper_tube_extractor, CLAPPER_TUBE, EXTRACTOR, ClapperThreadedObject)
+G_DECLARE_DERIVABLE_TYPE (ClapperTubeExtractor, clapper_tube_extractor, CLAPPER_TUBE, EXTRACTOR, GstObject)
 
 /**
  * CLAPPER_TUBE_EXTRACTOR_DECLARE:
@@ -123,7 +122,7 @@ const gchar *const *extractor_get_hosts (void) {                                
 
 /**
  * CLAPPER_TUBE_EXTRACTOR_EXPORT_HOSTS_FROM_FILE_WITH_FALLBACK:
- * @lower: lowercase name of the website, with multiple words separated by `_`.
+ * @lower: lowercase name of the extractor, with multiple words separated by `_`.
  * @...: %NULL terminated list of supported hosts.
  *
  * Convenient macro that exports extractor supported hosts from
@@ -142,7 +141,7 @@ const gchar *const *extractor_get_hosts (void) {                                
 
 /**
  * CLAPPER_TUBE_EXTRACTOR_EXPORT_HOSTS_FROM_FILE_WITH_PREPEND:
- * @lower: lowercase name of the website, with multiple words separated by `_`.
+ * @lower: lowercase name of the extractor, with multiple words separated by `_`.
  * @...: %NULL terminated list of supported hosts.
  *
  * Convenient macro that exports extractor supported hosts from
@@ -167,20 +166,19 @@ const gchar *const *extractor_get_hosts (void) {                               \
  */
 struct _ClapperTubeExtractorClass
 {
-  ClapperThreadedObjectClass parent_class;
+  GstObjectClass parent_class;
 
   /**
    * ClapperTubeExtractorClass::extract:
    * @extractor: a #ClapperTubeExtractor
-   * @harvest: a #ClapperTubeHarvest
    * @cancellable: a #GCancellable object
    * @error: a #GError
    *
    * Extract data and fill harvest.
    *
-   * Returns: %TRUE on success, %FALSE otherwise.
+   * Returns: a #ClapperTubeFlow of extraction.
    */
-  gboolean (* extract) (ClapperTubeExtractor *extractor, ClapperTubeHarvest *harvest, GCancellable *cancellable, GError **error);
+  ClapperTubeFlow (* extract) (ClapperTubeExtractor *extractor, GCancellable *cancellable, GError **error);
 
   /*< private >*/
   gpointer padding[4];
@@ -194,5 +192,8 @@ GUri * clapper_tube_extractor_get_uri (ClapperTubeExtractor *extractor);
 
 CLAPPER_TUBE_API
 void clapper_tube_extractor_set_uri (ClapperTubeExtractor *extractor, GUri *uri);
+
+CLAPPER_TUBE_API
+ClapperTubeHarvest * clapper_tube_extractor_get_harvest (ClapperTubeExtractor *extractor);
 
 G_END_DECLS
