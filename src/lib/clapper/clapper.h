@@ -28,6 +28,7 @@
 
 #include <clapper/clapper-audio-stream.h>
 #include <clapper/clapper-feature.h>
+#include <clapper/clapper-harvest.h>
 #include <clapper/clapper-marker.h>
 #include <clapper/clapper-media-item.h>
 #include <clapper/clapper-player.h>
@@ -40,13 +41,22 @@
 #include <clapper/clapper-utils.h>
 #include <clapper/clapper-video-stream.h>
 
+#include <clapper/clapper-extractable.h>
+#include <clapper/clapper-playlistable.h>
+
 #include <clapper/features/clapper-features-availability.h>
 
 #if CLAPPER_HAVE_DISCOVERER
 #include <clapper/features/discoverer/clapper-discoverer.h>
 #endif
+#if CLAPPER_HAVE_EXTRACTOR
+#include <clapper/features/extractor/clapper-extractor.h>
+#endif
 #if CLAPPER_HAVE_MPRIS
 #include <clapper/features/mpris/clapper-mpris.h>
+#endif
+#if CLAPPER_HAVE_PLAYLIST_PARSER
+#include <clapper/features/playlist-parser/clapper-playlist-parser.h>
 #endif
 #if CLAPPER_HAVE_SERVER
 #include <clapper/features/server/clapper-server.h>

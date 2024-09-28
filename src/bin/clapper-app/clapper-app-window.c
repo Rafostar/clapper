@@ -1228,7 +1228,8 @@ clapper_app_window_constructed (GObject *object)
     { "show-help-overlay", show_help_overlay, NULL, NULL, NULL },
   };
 
-#if (CLAPPER_HAVE_MPRIS || CLAPPER_HAVE_SERVER || CLAPPER_HAVE_DISCOVERER)
+#if (CLAPPER_HAVE_MPRIS || CLAPPER_HAVE_SERVER || CLAPPER_HAVE_DISCOVERER \
+    || CLAPPER_HAVE_PLAYLIST_PARSER || CLAPPER_HAVE_EXTRACTOR)
   ClapperFeature *feature = NULL;
 #endif
 #if CLAPPER_HAVE_MPRIS
@@ -1259,6 +1260,18 @@ clapper_app_window_constructed (GObject *object)
 
 #if CLAPPER_HAVE_DISCOVERER
   feature = CLAPPER_FEATURE (clapper_discoverer_new ());
+  clapper_player_add_feature (player, feature);
+  gst_object_unref (feature);
+#endif
+
+#if CLAPPER_HAVE_PLAYLIST_PARSER
+  feature = CLAPPER_FEATURE (clapper_playlist_parser_new ());
+  clapper_player_add_feature (player, feature);
+  gst_object_unref (feature);
+#endif
+
+#if CLAPPER_HAVE_EXTRACTOR
+  feature = CLAPPER_FEATURE (clapper_extractor_new ());
   clapper_player_add_feature (player, feature);
   gst_object_unref (feature);
 #endif

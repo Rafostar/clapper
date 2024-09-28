@@ -23,41 +23,21 @@
 #error "Only <clapper/clapper.h> can be included directly."
 #endif
 
-/**
- * CLAPPER_HAVE_DISCOVERER:
- *
- * Check if Clapper was compiled with Discoverer feature.
- */
-#define CLAPPER_HAVE_DISCOVERER (@CLAPPER_HAVE_DISCOVERER@)
+#include <glib.h>
+#include <glib-object.h>
 
-/**
- * CLAPPER_HAVE_EXTRACTOR:
- *
- * Check if Clapper was compiled with Extractor feature.
- *
- * Since: 0.8
- */
-#define CLAPPER_HAVE_EXTRACTOR (@CLAPPER_HAVE_EXTRACTOR@)
+#include <clapper/clapper-visibility.h>
+#include <clapper/clapper-feature.h>
 
-/**
- * CLAPPER_HAVE_MPRIS:
- *
- * Check if Clapper was compiled with MPRIS feature.
- */
-#define CLAPPER_HAVE_MPRIS (@CLAPPER_HAVE_MPRIS@)
+G_BEGIN_DECLS
 
-/**
- * CLAPPER_HAVE_PLAYLIST_PARSER:
- *
- * Check if Clapper was compiled with Playlist Parser feature.
- *
- * Since: 0.8
- */
-#define CLAPPER_HAVE_PLAYLIST_PARSER (@CLAPPER_HAVE_PLAYLIST_PARSER@)
+#define CLAPPER_TYPE_EXTRACTOR (clapper_extractor_get_type())
+#define CLAPPER_EXTRACTOR_CAST(obj) ((ClapperExtractor *)(obj))
 
-/**
- * CLAPPER_HAVE_SERVER:
- *
- * Check if Clapper was compiled with Server feature.
- */
-#define CLAPPER_HAVE_SERVER (@CLAPPER_HAVE_SERVER@)
+CLAPPER_API
+G_DECLARE_FINAL_TYPE (ClapperExtractor, clapper_extractor, CLAPPER, EXTRACTOR, ClapperFeature)
+
+CLAPPER_API
+ClapperExtractor * clapper_extractor_new (void);
+
+G_END_DECLS

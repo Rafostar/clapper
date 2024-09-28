@@ -1,4 +1,4 @@
-/*
+/* Clapper Playback Library
  * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -23,41 +23,30 @@
 #error "Only <clapper/clapper.h> can be included directly."
 #endif
 
-/**
- * CLAPPER_HAVE_DISCOVERER:
- *
- * Check if Clapper was compiled with Discoverer feature.
- */
-#define CLAPPER_HAVE_DISCOVERER (@CLAPPER_HAVE_DISCOVERER@)
+#include <glib.h>
+#include <glib-object.h>
+#include <gst/gst.h>
+#include <gst/tag/tag.h>
 
-/**
- * CLAPPER_HAVE_EXTRACTOR:
- *
- * Check if Clapper was compiled with Extractor feature.
- *
- * Since: 0.8
- */
-#define CLAPPER_HAVE_EXTRACTOR (@CLAPPER_HAVE_EXTRACTOR@)
+#include <clapper/clapper-visibility.h>
 
-/**
- * CLAPPER_HAVE_MPRIS:
- *
- * Check if Clapper was compiled with MPRIS feature.
- */
-#define CLAPPER_HAVE_MPRIS (@CLAPPER_HAVE_MPRIS@)
+G_BEGIN_DECLS
 
-/**
- * CLAPPER_HAVE_PLAYLIST_PARSER:
- *
- * Check if Clapper was compiled with Playlist Parser feature.
- *
- * Since: 0.8
- */
-#define CLAPPER_HAVE_PLAYLIST_PARSER (@CLAPPER_HAVE_PLAYLIST_PARSER@)
+#define CLAPPER_TYPE_HARVEST (clapper_harvest_get_type())
+#define CLAPPER_HARVEST_CAST(obj) ((ClapperHarvest *)(obj))
 
-/**
- * CLAPPER_HAVE_SERVER:
- *
- * Check if Clapper was compiled with Server feature.
- */
-#define CLAPPER_HAVE_SERVER (@CLAPPER_HAVE_SERVER@)
+G_DECLARE_FINAL_TYPE (ClapperHarvest, clapper_harvest, CLAPPER, HARVEST, GstObject)
+
+CLAPPER_API
+gboolean clapper_harvest_fill (ClapperHarvest *harvest, gchar *data);
+
+CLAPPER_API
+GstTagList * clapper_harvest_get_tags (ClapperHarvest *harvest);
+
+CLAPPER_API
+GstToc * clapper_harvest_get_toc (ClapperHarvest *harvest);
+
+CLAPPER_API
+GstStructure * clapper_harvest_get_request_headers (ClapperHarvest *harvest);
+
+G_END_DECLS
