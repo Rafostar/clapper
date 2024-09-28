@@ -39,7 +39,7 @@ if is_linux
            type: 'desktop',
          po_dir: '../po',
         install: true,
-    install_dir: get_option('datadir') / 'applications'
+    install_dir: join_paths(prefix, datadir, 'applications')
   )
   desktop_utils = find_program('desktop-file-validate', required: false)
   if desktop_utils.found()
