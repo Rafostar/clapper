@@ -41,10 +41,20 @@ option('discoverer',
   value: 'auto',
   description: 'Build Clapper Discoverer feature'
 )
+option('extractor',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper Extractor feature'
+)
 option('mpris',
   type: 'feature',
   value: 'auto',
   description: 'Build Clapper MPRIS feature'
+)
+option('playlist-parser',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper Playlist Parser feature'
 )
 option('server',
   type: 'feature',

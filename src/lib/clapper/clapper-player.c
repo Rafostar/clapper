@@ -767,7 +767,20 @@ _element_setup_cb (GstElement *playbin, GstElement *element, ClapperPlayer *self
 
   GST_INFO_OBJECT (self, "Element setup: %s", GST_OBJECT_NAME (factory));
 
-  if (strcmp (GST_OBJECT_NAME (factory), "downloadbuffer") == 0) {
+  if (strcmp (GST_OBJECT_NAME (factory), "clapperextractorsrc") == 0) {
+/*
+    GST_OBJECT_LOCK (self);
+    if (!self->plugins_manager) {
+      self->plugins_manager = clapper_plugins_manager_new (void);
+      clapper_player_set_have_plugins (self, TRUE);
+    }
+    GST_OBJECT_UNLOCK (self);
+
+    g_object_set (element,
+        "plugins-manager", self->plugins_manager,
+        NULL);
+*/
+  } else if (strcmp (GST_OBJECT_NAME (factory), "downloadbuffer") == 0) {
     gchar *download_template;
 
     /* Only set props if we have download template */
