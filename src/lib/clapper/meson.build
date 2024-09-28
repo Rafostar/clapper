@@ -1,6 +1,7 @@
 clapper_dep = dependency('', required: false)
 clapper_option = get_option('clapper')
 clapper_headers_dir = join_paths(includedir, clapper_api_name, 'clapper')
+clapper_addons_dir = join_paths(clapper_libdir, 'addons')
 build_clapper = false
 
 clapper_pkg_reqs = [
@@ -37,6 +38,14 @@ foreach dep : clapper_deps
     subdir_done()
   endif
 endforeach
+
+clapper_cdata = configuration_data()
+clapper_cdata.set('CLAPPER_ADDONS_PATH', '"@0@"'.format(clapper_addons_dir))
+
+configure_file(
+  output: 'config.h',
+  configuration: clapper_cdata,
+)
 
 visibility_conf = configuration_data()
 
@@ -86,7 +95,10 @@ clapper_headers = [
   'clapper.h',
   'clapper-enums.h',
   'clapper-audio-stream.h',
+  'clapper-extension.h',
+  'clapper-extractor.h',
   'clapper-feature.h',
+  'clapper-harvest.h',
   'clapper-marker.h',
   'clapper-media-item.h',
   'clapper-player.h',
@@ -105,9 +117,12 @@ clapper_sources = [
   'clapper.c',
   'clapper-app-bus.c',
   'clapper-audio-stream.c',
+  'clapper-extension.c',
+  'clapper-extractor.c',
   'clapper-feature.c',
   'clapper-features-bus.c',
   'clapper-features-manager.c',
+  'clapper-harvest.c',
   'clapper-marker.c',
   'clapper-media-item.c',
   'clapper-playbin-bus.c',

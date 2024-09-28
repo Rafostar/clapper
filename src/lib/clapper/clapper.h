@@ -27,7 +27,10 @@
 #include <clapper/clapper-version.h>
 
 #include <clapper/clapper-audio-stream.h>
+#include <clapper/clapper-extension.h>
+#include <clapper/clapper-extractor.h>
 #include <clapper/clapper-feature.h>
+#include <clapper/clapper-harvest.h>
 #include <clapper/clapper-marker.h>
 #include <clapper/clapper-media-item.h>
 #include <clapper/clapper-player.h>
@@ -42,6 +45,9 @@
 
 #include <clapper/features/clapper-features-availability.h>
 
+#if CLAPPER_HAVE_ADDONS_LOADER
+#include <clapper/features/addons-loader/clapper-addons-loader.h>
+#endif
 #if CLAPPER_HAVE_DISCOVERER
 #include <clapper/features/discoverer/clapper-discoverer.h>
 #endif

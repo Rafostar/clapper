@@ -23,32 +23,21 @@
 #error "Only <clapper/clapper.h> can be included directly."
 #endif
 
-/**
- * CLAPPER_HAVE_ADDONS_LOADER:
- *
- * Check if Clapper was compiled with Addons loader feature.
- *
- * Since: 0.8
- */
-#define CLAPPER_HAVE_ADDONS_LOADER (@CLAPPER_HAVE_ADDONS_LOADER@)
+#include <glib.h>
+#include <glib-object.h>
 
-/**
- * CLAPPER_HAVE_DISCOVERER:
- *
- * Check if Clapper was compiled with Discoverer feature.
- */
-#define CLAPPER_HAVE_DISCOVERER (@CLAPPER_HAVE_DISCOVERER@)
+#include <clapper/clapper-visibility.h>
+#include <clapper/clapper-feature.h>
 
-/**
- * CLAPPER_HAVE_MPRIS:
- *
- * Check if Clapper was compiled with MPRIS feature.
- */
-#define CLAPPER_HAVE_MPRIS (@CLAPPER_HAVE_MPRIS@)
+G_BEGIN_DECLS
 
-/**
- * CLAPPER_HAVE_SERVER:
- *
- * Check if Clapper was compiled with Server feature.
- */
-#define CLAPPER_HAVE_SERVER (@CLAPPER_HAVE_SERVER@)
+#define CLAPPER_TYPE_ADDONS_LOADER (clapper_addons_loader_get_type())
+#define CLAPPER_ADDONS_LOADER_CAST(obj) ((ClapperAddonsLoader *)(obj))
+
+CLAPPER_API
+G_DECLARE_FINAL_TYPE (ClapperAddonsLoader, clapper_addons_loader, CLAPPER, ADDONS_LOADER, ClapperFeature)
+
+CLAPPER_API
+ClapperAddonsLoader * clapper_addons_loader_new (void);
+
+G_END_DECLS

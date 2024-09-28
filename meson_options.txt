@@ -36,6 +36,11 @@ option('doc',
 )
 
 # Features
+option('addons-loader',
+  type: 'feature',
+  value: 'auto',
+  description: 'Build Clapper Addons Loader feature'
+)
 option('discoverer',
   type: 'feature',
   value: 'auto',

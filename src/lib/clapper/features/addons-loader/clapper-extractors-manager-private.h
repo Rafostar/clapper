@@ -1,4 +1,4 @@
-/*
+/* Clapper Playback Library
  * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -19,36 +19,16 @@
 
 #pragma once
 
-#if !defined(__CLAPPER_INSIDE__) && !defined(CLAPPER_COMPILATION)
-#error "Only <clapper/clapper.h> can be included directly."
-#endif
+#include "clapper-threaded-object.h"
 
-/**
- * CLAPPER_HAVE_ADDONS_LOADER:
- *
- * Check if Clapper was compiled with Addons loader feature.
- *
- * Since: 0.8
- */
-#define CLAPPER_HAVE_ADDONS_LOADER (@CLAPPER_HAVE_ADDONS_LOADER@)
+G_BEGIN_DECLS
 
-/**
- * CLAPPER_HAVE_DISCOVERER:
- *
- * Check if Clapper was compiled with Discoverer feature.
- */
-#define CLAPPER_HAVE_DISCOVERER (@CLAPPER_HAVE_DISCOVERER@)
+#define CLAPPER_TYPE_EXTRACTORS_MANAGER (clapper_extractors_manager_get_type())
+#define CLAPPER_EXTRACTORS_MANAGER_CAST(obj) ((ClapperExtractorsManager *)(obj))
 
-/**
- * CLAPPER_HAVE_MPRIS:
- *
- * Check if Clapper was compiled with MPRIS feature.
- */
-#define CLAPPER_HAVE_MPRIS (@CLAPPER_HAVE_MPRIS@)
+G_DECLARE_FINAL_TYPE (ClapperExtractorsManager, clapper_extractors_manager, CLAPPER, EXTRACTORS_MANAGER, ClapperThreadedObject)
 
-/**
- * CLAPPER_HAVE_SERVER:
- *
- * Check if Clapper was compiled with Server feature.
- */
-#define CLAPPER_HAVE_SERVER (@CLAPPER_HAVE_SERVER@)
+G_GNUC_INTERNAL
+ClapperExtractorsManager * clapper_extractors_manager_get_default (void);
+
+G_END_DECLS

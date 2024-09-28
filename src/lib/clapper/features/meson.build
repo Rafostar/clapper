@@ -7,6 +7,7 @@ clapper_available_features = []
 features_availability_conf = configuration_data()
 
 clapper_possible_features = [
+  'addons-loader',
   'discoverer',
   'mpris',
   'server',
@@ -14,7 +15,7 @@ clapper_possible_features = [
 foreach feature_name : clapper_possible_features
   subdir(feature_name)
   features_availability_conf.set(
-    'CLAPPER_HAVE_@0@'.format(feature_name.to_upper()),
+    'CLAPPER_HAVE_@0@'.format(feature_name.replace('-', '_').to_upper()),
     clapper_available_features.contains(feature_name) ? 'TRUE' : 'FALSE'
   )
 endforeach
