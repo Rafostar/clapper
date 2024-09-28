@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include <gst/tag/tag.h>
+
 #include "clapper-player.h"
 #include "clapper-queue.h"
 #include "clapper-enums.h"
@@ -52,6 +54,11 @@ struct _ClapperPlayer
   /* Will eventually become our "played_item", can be set from
    * different thread, thus needs a lock */
   ClapperMediaItem *pending_item;
+
+  /* Pending tags/toc that arrive before stream start.
+   * To be applied to "played_item", thus no lock needed. */
+  GstTagList *pending_tags;
+  GstToc *pending_toc;
 
   GstElement *playbin;
 

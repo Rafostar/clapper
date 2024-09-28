@@ -1,6 +1,8 @@
 clapper_dep = dependency('', required: false)
 clapper_option = get_option('clapper')
 clapper_headers_dir = join_paths(includedir, clapper_api_name, 'clapper')
+clapper_enhancers_dir = join_paths(clapper_libdir, 'enhancers')
+clapper_with_enhancers_loader = false
 build_clapper = false
 
 clapper_pkg_reqs = [
@@ -37,6 +39,27 @@ foreach dep : clapper_deps
     subdir_done()
   endif
 endforeach
+
+# libpeas is an optional dependency
+enhancers_option = get_option('enhancers-loader')
+clapper_with_enhancers_loader = (not enhancers_option.disabled() and peas_dep.found())
+
+if not clapper_with_enhancers_loader and enhancers_option.enabled()
+  error('enhancers-loader option was enabled, but required dependencies were not found')
+endif
+
+config_h = configuration_data()
+config_h.set_quoted('PACKAGE', meson.project_name())
+config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
+config_h.set_quoted('PACKAGE_ORIGIN', 'https://github.com/Rafostar/clapper')
+config_h.set_quoted('PLUGIN_DESC', 'Clapper elements')
+config_h.set_quoted('PLUGIN_LICENSE', 'LGPL')
+config_h.set_quoted('CLAPPER_ENHANCERS_PATH', clapper_enhancers_dir)
+
+configure_file(
+  output: 'config.h',
+  configuration: config_h,
+)
 
 visibility_conf = configuration_data()
 
@@ -86,7 +109,9 @@ clapper_headers = [
   'clapper.h',
   'clapper-enums.h',
   'clapper-audio-stream.h',
+  'clapper-extractable.h',
   'clapper-feature.h',
+  'clapper-harvest.h',
   'clapper-marker.h',
   'clapper-media-item.h',
   'clapper-player.h',
@@ -105,9 +130,11 @@ clapper_sources = [
   'clapper.c',
   'clapper-app-bus.c',
   'clapper-audio-stream.c',
+  'clapper-extractable.c',
   'clapper-feature.c',
   'clapper-features-bus.c',
   'clapper-features-manager.c',
+  'clapper-harvest.c',
   'clapper-marker.c',
   'clapper-media-item.c',
   'clapper-playbin-bus.c',
@@ -120,6 +147,8 @@ clapper_sources = [
   'clapper-timeline.c',
   'clapper-utils.c',
   'clapper-video-stream.c',
+  'gst/clapper-plugin.c',
+  'gst/clapper-uri-list-demux.c',
   '../shared/clapper-shared-utils.c',
 ]
 clapper_c_args = [
@@ -131,6 +160,36 @@ clapper_c_args = [
 if get_option('default_library') == 'static'
   clapper_c_args += ['-DCLAPPER_STATIC_COMPILATION']
 endif
+
+clapper_possible_functionalities = [
+  'enhancers-loader',
+]
+clapper_available_functionalities = []
+
+if clapper_with_enhancers_loader
+  clapper_deps += peas_dep
+  clapper_sources += [
+    'clapper-enhancers-loader.c',
+    'gst/clapper-enhancer-src.c',
+    'gst/clapper-enhancer-director.c',
+  ]
+  clapper_available_functionalities += 'enhancers-loader'
+endif
+
+functionalities_availability_conf = configuration_data()
+
+foreach functionality_name : clapper_possible_functionalities
+  functionalities_availability_conf.set(
+    'CLAPPER_WITH_@0@'.format(functionality_name.replace('-', '_').to_upper()),
+    clapper_available_functionalities.contains(functionality_name) ? 'TRUE' : 'FALSE'
+  )
+endforeach
+
+clapper_headers += configure_file(
+  input: 'clapper-functionalities-availability.h.in',
+  output: 'clapper-functionalities-availability.h',
+  configuration: functionalities_availability_conf,
+)
 
 subdir('features')
 
@@ -205,7 +264,7 @@ if build_vapi
       sources: clapper_gir[0],
       packages: clapper_pkg_reqs,
       metadata_dirs: [
-        join_paths (meson.current_source_dir(), 'metadata')
+        join_paths(meson.current_source_dir(), 'metadata')
       ],
       install: true,
     )
@@ -213,7 +272,9 @@ if build_vapi
 endif
 
 clapper_pkgconfig_variables = [
+  'enhancersdir=${libdir}/' + clapper_api_name + '/enhancers',
   'features=' + ' '.join(clapper_available_features),
+  'functionalities=' + ' '.join(clapper_available_functionalities),
 ]
 
 pkgconfig.generate(clapper_lib,

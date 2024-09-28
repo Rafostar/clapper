@@ -35,6 +35,13 @@ option('doc',
   description: 'Build documentation'
 )
 
+# Functionalities
+option('enhancers-loader',
+  type: 'feature',
+  value: 'enabled',
+  description: 'Ability to load libpeas based plugins that enhance capabilities'
+)
+
 # Features
 option('discoverer',
   type: 'feature',

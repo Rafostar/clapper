@@ -30,6 +30,12 @@
 #include "clapper-stream-private.h"
 #include "clapper-stream-list-private.h"
 
+#include "clapper-functionalities-availability.h"
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+#include "gst/clapper-enhancer-src-private.h"
+#endif
+
 #define GST_CAT_DEFAULT clapper_playbin_bus_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -869,6 +875,7 @@ _handle_tag_msg (GstMessage *msg, ClapperPlayer *player)
 {
   GstObject *src = GST_MESSAGE_SRC (msg);
   GstTagList *tags = NULL;
+  gboolean from_enhancer_src;
 
   /* Tag messages should only be posted by sink elements */
   if (G_UNLIKELY (!src))
@@ -879,8 +886,21 @@ _handle_tag_msg (GstMessage *msg, ClapperPlayer *player)
   GST_LOG_OBJECT (player, "Got tags from element: %s: %" GST_PTR_FORMAT,
       GST_OBJECT_NAME (src), tags);
 
-  if (G_LIKELY (player->played_item != NULL))
+#if CLAPPER_WITH_ENHANCERS_LOADER
+  from_enhancer_src = CLAPPER_IS_ENHANCER_SRC (src);
+#else
+  from_enhancer_src = FALSE;
+#endif
+
+  /* ClapperEnhancerSrc determines tags before stream start */
+  if (from_enhancer_src) {
+    if (player->pending_tags) {
+      gst_tag_list_unref (player->pending_tags);
+    }
+    player->pending_tags = gst_tag_list_ref (tags);
+  } else if (G_LIKELY (player->played_item != NULL)) {
     clapper_media_item_update_from_tag_list (player->played_item, tags, player);
+  }
 
   gst_tag_list_unref (tags);
 }
@@ -890,11 +910,10 @@ _handle_toc_msg (GstMessage *msg, ClapperPlayer *player)
 {
   GstObject *src = GST_MESSAGE_SRC (msg);
   GstToc *toc = NULL;
-  ClapperTimeline *timeline;
-  gboolean updated = FALSE;
+  gboolean from_enhancer_src, updated = FALSE;
 
-  /* TOC messages should only be posted by sink elements after start */
-  if (G_UNLIKELY (!src || !player->played_item))
+  /* TOC messages should only be posted by sink elements */
+  if (G_UNLIKELY (!src))
     return;
 
   /* Either new TOC was found or previous one was updated */
@@ -904,11 +923,27 @@ _handle_toc_msg (GstMessage *msg, ClapperPlayer *player)
       " from element: %s, updated: %s",
       toc, GST_OBJECT_NAME (src), (updated) ? "yes" : "no");
 
-  timeline = clapper_media_item_get_timeline (player->played_item);
+#if CLAPPER_WITH_ENHANCERS_LOADER
+  from_enhancer_src = CLAPPER_IS_ENHANCER_SRC (src);
+#else
+  from_enhancer_src = FALSE;
+#endif
 
-  if (clapper_timeline_set_toc (timeline, toc, updated)) {
-    clapper_app_bus_post_refresh_timeline (player->app_bus,
-        GST_OBJECT_CAST (player->played_item));
+  /* ClapperEnhancerSrc determines TOC before stream start */
+  if (from_enhancer_src) {
+    if (player->pending_toc) {
+      gst_toc_unref (player->pending_toc);
+    }
+    player->pending_toc = gst_toc_ref (toc);
+  } else if (G_LIKELY (player->played_item != NULL)) {
+    ClapperTimeline *timeline;
+
+    timeline = clapper_media_item_get_timeline (player->played_item);
+
+    if (clapper_timeline_set_toc (timeline, toc, updated)) {
+      clapper_app_bus_post_refresh_timeline (player->app_bus,
+          GST_OBJECT_CAST (player->played_item));
+    }
   }
 
   gst_toc_unref (toc);
@@ -1035,6 +1070,26 @@ _handle_stream_start_msg (GstMessage *msg, ClapperPlayer *player)
   /* With playbin2 we update all decoders at once after stream start */
   if (!player->use_playbin3)
     clapper_player_playbin_update_current_decoders (player);
+
+  if (player->pending_tags) {
+    if (G_LIKELY (player->played_item != NULL))
+      clapper_media_item_update_from_tag_list (player->played_item, player->pending_tags, player);
+
+    gst_clear_tag_list (&player->pending_tags);
+  }
+  if (player->pending_toc) {
+    if (G_LIKELY (player->played_item != NULL)) {
+      ClapperTimeline *timeline = clapper_media_item_get_timeline (player->played_item);
+
+      if (clapper_timeline_set_toc (timeline, player->pending_toc, FALSE)) {
+        clapper_app_bus_post_refresh_timeline (player->app_bus,
+            GST_OBJECT_CAST (player->played_item));
+      }
+    }
+
+    gst_toc_unref (player->pending_toc);
+    player->pending_toc = NULL;
+  }
 }
 
 static inline void

@@ -17,6 +17,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "config.h"
+
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
@@ -25,6 +27,11 @@
 #include "clapper-playbin-bus-private.h"
 #include "clapper-app-bus-private.h"
 #include "clapper-features-bus-private.h"
+#include "gst/clapper-plugin-private.h"
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+#include "clapper-enhancers-loader-private.h"
+#endif
 
 static gboolean is_initialized = FALSE;
 static GMutex init_lock;
@@ -43,6 +50,22 @@ clapper_init_check_internal (int *argc, char **argv[])
   clapper_playbin_bus_initialize ();
   clapper_app_bus_initialize ();
   clapper_features_bus_initialize ();
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+  clapper_enhancers_loader_initialize ();
+#endif
+
+  gst_plugin_register_static (
+      GST_VERSION_MAJOR,
+      GST_VERSION_MINOR,
+      PACKAGE "internal",
+      PLUGIN_DESC,
+      (GstPluginInitFunc) clapper_gst_plugin_init,
+      PACKAGE_VERSION,
+      PLUGIN_LICENSE,
+      PACKAGE,
+      PACKAGE,
+      PACKAGE_ORIGIN);
 
   is_initialized = TRUE;
 
@@ -91,4 +114,53 @@ gboolean
 clapper_init_check (int *argc, char **argv[])
 {
   return clapper_init_check_internal (argc, argv);
+}
+
+/**
+ * clapper_enhancer_check:
+ * @iface_type: an interface #GType
+ * @scheme: an URI scheme
+ * @host: (nullable): an URI host
+ * @name: (out) (optional) (transfer none): return location for found enhancer name
+ *
+ * Check if an enhancer of @type is available for given @scheme and @host.
+ *
+ * A check that compares requested capabilites of all available Clapper enhancers,
+ * thus it is fast but does not guarantee that the found one will succeed. Please note
+ * that this function will always return %FALSE if Clapper was built without enhancers
+ * loader functionality. To check that, use [const@Clapper.WITH_ENHANCERS_LOADER].
+ *
+ * This function can be used to quickly determine early if Clapper will at least try to
+ * handle URI and with one of its enhancers and which one.
+ *
+ * Example:
+ *
+ * ```c
+ * gboolean supported = clapper_enhancer_check (CLAPPER_TYPE_EXTRACTABLE, "https", "example.com", NULL);
+ * ```
+ *
+ * For self hosted services a custom URI @scheme without @host can be used. Enhancers should announce
+ * support for such schemes by defining them in their plugin info files.
+ *
+ * ```c
+ * gboolean supported = clapper_enhancer_check (CLAPPER_TYPE_EXTRACTABLE, "example", NULL, NULL);
+ * ```
+ *
+ * Returns: whether a plausible enhancer was found.
+ *
+ * Since: 0.8
+ */
+gboolean
+clapper_enhancer_check (GType iface_type, const gchar *scheme, const gchar *host, const gchar **name)
+{
+  gboolean success = FALSE;
+
+  g_return_val_if_fail (G_TYPE_IS_INTERFACE (iface_type), FALSE);
+  g_return_val_if_fail (scheme != NULL, FALSE);
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+  success = clapper_enhancers_loader_check (iface_type, scheme, host, name);
+#endif
+
+  return success;
 }

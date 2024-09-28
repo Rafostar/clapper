@@ -729,6 +729,13 @@ clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
 
   GST_OBJECT_UNLOCK (self);
 
+  gst_clear_tag_list (&self->pending_tags);
+
+  if (self->pending_toc) {
+    gst_toc_unref (self->pending_toc);
+    self->pending_toc = NULL;
+  }
+
   /* Emit notify when we are not going to be disposed */
   if (!pending_dispose) {
     /* Clear current decoders (next item might not have video/audio track) */
