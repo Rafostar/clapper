@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-04-12 18:47\n"
+"PO-Revision-Date: 2024-10-05 11:34\n"
 "Last-Translator: \n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
@@ -20,21 +20,21 @@ msgstr ""
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Audio"
-msgstr ""
+msgstr "Lyd"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Subtitles"
-msgstr ""
+msgstr "Undertekstning"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
 msgid "Show Subtitles"
-msgstr ""
+msgstr "Vis undertekster"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
