@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-10-05 11:34\n"
+"PO-Revision-Date: 2024-10-05 12:47\n"
 "Last-Translator: \n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
@@ -24,7 +24,7 @@ msgstr "Codec"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
-msgstr ""
+msgstr "Kanaler"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:36
 msgid "Sample Format"
@@ -88,7 +88,7 @@ msgstr "Avslutt"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
-msgstr "Media"
+msgstr "Medium"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
@@ -141,12 +141,12 @@ msgstr "Søk fremover"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 msgid "Double tap (right side) | Scroll right"
-msgstr "Dobbelttrykk (på høyre side) | Skroll til høyre"
+msgstr "Dobbelttrykk (på høyre side) | Rull til høyre"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Double tap (left side) | Scroll left"
-msgstr "Dobbelttrykk (på venstre side) | Skroll til venstre"
+msgstr "Dobbelttrykk (på venstre side) | Rull til venstre"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
@@ -266,7 +266,7 @@ msgstr "Undertekstingsstrømmer"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
-msgstr "Start ved å legge til mediaer i avspillingskøen"
+msgstr "Start ved å legge til medier i avspillingskøen"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
@@ -331,7 +331,7 @@ msgstr "Synkroniseringsforskyvning i sekunder mellom lyd- og videostrømmene"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
-msgstr "Synkroniseringsforskyvning i sekunder mellom untertekstings- og videostrømmene"
+msgstr "Synkroniseringsforskyvning i sekunder mellom untertekst- og videostrømmene"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
