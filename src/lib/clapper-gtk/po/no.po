@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-10-05 11:34\n"
+"PO-Revision-Date: 2024-10-05 12:47\n"
 "Last-Translator: \n"
 "Language-Team: Norwegian\n"
 "Language: no_NO\n"
@@ -38,44 +38,44 @@ msgstr "Vis undertekster"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
-msgstr ""
+msgstr "Åpne…"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
 msgid "Mute"
-msgstr ""
+msgstr "Demp"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Tilbakestill"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
-msgstr ""
+msgstr "Uavspillelig innhold"
 
 #. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
 #: src/lib/clapper-gtk/clapper-gtk-status.c:89
 #, c-format
 msgid "Your GStreamer installation is missing a plugin: %s"
-msgstr ""
+msgstr "GStreamer-innstallasjon din mangler et tillegg: %s"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:90
 msgid "Missing Plugin"
-msgstr ""
+msgstr "Manglende tillegg"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
 msgid "Undetermined"
-msgstr ""
+msgstr "Ubestemt"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 msgid "Channels"
-msgstr ""
+msgstr "Kanaler"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Ingen medier"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
+msgstr "Ukjent tittel"
 
