@@ -1,3 +1,4 @@
+src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in
 src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui
 src/bin/clapper-app/ui/clapper-app-headerbar.ui
 src/bin/clapper-app/ui/clapper-app-help-overlay.ui
