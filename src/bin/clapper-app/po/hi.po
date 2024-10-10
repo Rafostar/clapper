@@ -3,467 +3,467 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-08-11 15:57\n"
+"PO-Revision-Date: 2024-07-09 18:54\n"
 "Last-Translator: \n"
-"Language-Team: Russian\n"
-"Language: ru_RU\n"
+"Language-Team: Hindi\n"
+"Language: hi_IN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: clapper\n"
 "X-Crowdin-Project-ID: 473374\n"
-"X-Crowdin-Language: ru\n"
+"X-Crowdin-Language: hi\n"
 "X-Crowdin-File: /master/src/bin/clapper-app/po/clapper-app.pot\n"
 "X-Crowdin-File-ID: 48\n"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
 msgid "Codec"
-msgstr "Кодек"
+msgstr "कोडेक"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
-msgstr "Каналы"
+msgstr "चैनल"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:36
 msgid "Sample Format"
-msgstr "Формат семпла"
+msgstr "सैंपल प्रारूप"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:46
 msgid "Sample Rate"
-msgstr "Частота дискретизации"
+msgstr "सैंपल दर"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:58
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:51
 msgid "Bitrate"
-msgstr "Битрейт"
+msgstr "बिटरेट"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
 msgid "Language"
-msgstr "Язык"
+msgstr "भाषा"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
 msgid "Preferences"
-msgstr "Параметры"
+msgstr "प्राथमिकताएं"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
-msgstr "Сочетания клавиш"
+msgstr "कीबोर्ड शॉर्टकट"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
 msgid "About Clapper"
-msgstr "О приложении"
+msgstr "क्लैपर के बारे में"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
-msgstr "Общие"
+msgstr "सामान्य"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "Show shortcuts"
-msgstr "Комбинации клавиш"
+msgstr "शॉर्टकट दिखाएं"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
-msgstr "Открыть настройки"
+msgstr "प्राथमिकताएं खोलें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Toggle fullscreen"
-msgstr "Включить полноэкранный режим"
+msgstr "पूर्णस्क्रीन टॉगल करें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:26
 msgid "Double tap | Double click"
-msgstr "Двойное нажатие | Двойной клик"
+msgstr "डबल टैप | डबल क्लिक"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Quit"
-msgstr "Выйти из приложения"
+msgstr "बंद करें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
-msgstr "Медиа"
+msgstr "मीडिया"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
-msgstr "Добавить файлы…"
+msgstr "फाइलें जोड़ें…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
-msgstr "Открыть по ссылке…"
+msgstr "यूआरआई जोड़ें…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Queue"
-msgstr "Дорожка"
+msgstr "कतार"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:61
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 msgid "Next item"
-msgstr "Следующий элемент"
+msgstr "अगला मद"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:75
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
 msgid "Previous item"
-msgstr "Предыдущий элемент"
+msgstr "पिछला मद"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:88
 msgid "Change progression mode"
-msgstr "Изменить режим повтора"
+msgstr "प्रगति मोड बदलें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:96
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
-msgstr "Воспроизведение"
+msgstr "प्लेबैक"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:99
 msgid "Toggle play"
-msgstr "Управление воспроизведением"
+msgstr "चजाना टॉगल करें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
 msgid "Tap | Left click"
-msgstr "Тап | Левая кнопка мыши"
+msgstr "टैप | बायां क्लिक"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 msgid "Seek forward"
-msgstr "Перемотка вперед"
+msgstr "आगे तलाशें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 msgid "Double tap (right side) | Scroll right"
-msgstr "Двойной тап (правая сторона) | Скролл вправо"
+msgstr "डबल टैप (दायीं ओर) | दाएं स्क्रॉल करें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Double tap (left side) | Scroll left"
-msgstr "Двойной тап (левая сторона) | Скролл влево"
+msgstr "डबल टैप (बायीं ओर) | बाएं स्क्रॉल करें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
 msgid "Seek backward"
-msgstr "Перемотка назад"
+msgstr "पीछे तलाशें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:138
 msgid "Volume up"
-msgstr "Увеличить громкость"
+msgstr "आवाज बढ़ाएं"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
 msgid "Scroll up"
-msgstr "Скролл вверх"
+msgstr "ऊपर स्क्रॉल"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
 msgid "Volume down"
-msgstr "Уменьшить громкость"
+msgstr "आवाज घटाएं"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:146
 msgid "Scroll down"
-msgstr "Скролл вниз"
+msgstr "नीचे स्क्रॉल"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:152
 msgid "Toggle mute"
-msgstr "Отключить звук"
+msgstr "मूक टॉगल करें"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Speed up"
-msgstr "Ускорить"
+msgstr "गति बढ़ाएं"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Speed down"
-msgstr "Замедлить"
+msgstr "गति घटाएं"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:178
 msgid "Next chapter"
-msgstr "Следующая глава"
+msgstr "अगला अध्याय"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:185
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:192
 msgid "Previous chapter"
-msgstr "Предыдущая глава"
+msgstr "पिछला अध्याय"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
-msgstr "Информация"
+msgstr "जानकारी"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
 msgid "Title"
-msgstr "Заголовок"
+msgstr "शीर्षक"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
 msgid "Container Format"
-msgstr "Формат контейнера"
+msgstr "कंटेनर प्रारूप"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:63
 msgid "Duration"
-msgstr "Длительность"
+msgstr "अवधि"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:81
 msgid "Streams"
-msgstr "Потоки"
+msgstr "स्ट्रीम"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:36
 msgid "Video"
-msgstr "Видео"
+msgstr "वीडियो"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:107
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:80
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:39
 msgid "Audio"
-msgstr "Аудио"
+msgstr "ऑडियो"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:130
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:100
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:42
 msgid "Subtitles"
-msgstr "Субтитры"
+msgstr "उपशीर्षक"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
-msgstr "Воспроизведение видео"
+msgstr "वीडियो प्लेबैक"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:158
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:199
 msgid "Decoder"
-msgstr "Декодер"
+msgstr "डिकोडर"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:170
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:211
 msgid "Filter"
-msgstr "Фильтр"
+msgstr "फिल्टर"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr "Приемник"
+msgstr "सिंक"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
-msgstr "Воспроизведение звука"
+msgstr "ऑडियो प्लेबैक"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:247
 msgid "Video Streams"
-msgstr "Видеопотоки"
+msgstr "वीडियो स्ट्रीम"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:290
 msgid "Audio Streams"
-msgstr "Аудиопотоки"
+msgstr "ऑडियो स्ट्रीम"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:333
 msgid "Subtitle Streams"
-msgstr "Потоки субтитров"
+msgstr "उपशीर्षक स्ट्रीम"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
-msgstr "Начните с добавления медиа в очередь воспроизведения"
+msgstr "प्लेबैक कतार में मीडिया जोड़कर प्रारंभ करें"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr "Перемотка"
+msgstr "तलाश"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
-msgstr "Метод"
+msgstr "विधि"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr "Предпочтительный метод, используемый для поиска"
+msgstr "तलाशने की वरीय विधि"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
-msgstr "Значение"
+msgstr "मान"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
-msgstr "Значение, используемое для поиска вперед/назад"
+msgstr "आगे/पीछे तलाशने हेतु मान"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
-msgstr "Ед. изм"
+msgstr "इकाई"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
-msgstr "Единица поиска вперёд/назад"
+msgstr "आगे/पीछे तलाशने हेतु मान की इकाई"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
-msgstr "Секунды"
+msgstr "सेकंड"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:52
 msgid "Minute"
-msgstr "Минуты"
+msgstr "मिनट"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:53
 msgid "Percentage"
-msgstr "Проценты"
+msgstr "प्रतिशत"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
 msgid "Features"
-msgstr "Дополнительные настройки"
+msgstr "विशेषताएं"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:66
 msgid "Server"
-msgstr "Сервер"
+msgstr "सर्वर"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Control player remotely"
-msgstr "Удаленное управление плеером"
+msgstr "प्लेयर को रिमोट से नियंत्रित करें"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:83
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:103
 msgid "Offset"
-msgstr "Задержка"
+msgstr "ऑफसेट"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 msgid "Synchronisation offset in seconds between the audio and video streams"
-msgstr "Задержка синхронизации в секундах между аудио- и видеопотоками"
+msgstr "ऑडियो और वीडियो स्ट्रीम के बीच सेकंड में समन्वयन ऑफसेट"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
-msgstr "Задержка синхронизации в секундах между потоком субтитров и видеопотоком"
+msgstr "उपशीर्षक और वीडियो स्ट्रीम के बीच सेकंड में समन्वयन ऑफसेट"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
-msgstr "Шрифт по умолчанию"
+msgstr "तयशुदा फॉन्ट"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
-msgstr "Шрифт, используемый для субтитров, если не указан какой именно"
+msgstr "उपशीर्षकों हेतु प्रयुक्त टेक्स्ट फॉन्ट जब मीडिया स्पष्ट रूप से निर्दिष्ट नहीं करता है"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:137
 msgid "Tweaks"
-msgstr "Твики"
+msgstr "ट्विक्स"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:144
 msgid "Plugin ranking"
-msgstr "Рейтинг плагинов"
+msgstr "प्लगइन रैंकिंग"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "Изменить ранги плагинов GStreamer по умолчанию"
+msgstr "GStreamer प्लगइन्स की तयशुदा रैंक बदलें"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
 msgid "Plugin Ranking"
-msgstr "Ранжирование плагинов"
+msgstr "प्लगइन रैंकिंग"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:182
 msgid "Available plugins"
-msgstr "Доступные плагины"
+msgstr "उपलब्ध प्लगइन"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr "Выберите плагин и его функцию, чтобы переопределить ранжирование. Когда несколько элементов имеют схожие возможности, предпочтение имеет один с наибольшим значением."
+msgstr "रैंक को ओवरराइड करने के लिए प्लगइन और उसकी खासियत चुनें। जब कई तत्वों में समान क्षमताएं होती हैं, तो सबसे अधिक मान वाले को प्राथमिकता दी जाती है।"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
-msgstr "Плагин"
+msgstr "प्लगइन"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:195
 msgid "Plugin feature"
-msgstr "Настройка плагина"
+msgstr "प्लगइन सुविधा"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:213
 msgid "Add override"
-msgstr "Добавить переопределение"
+msgstr "ओवरराइड जोड़ें"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:229
 msgid "Rank overrides"
-msgstr "Переопределение ранжирования"
+msgstr "रैंक ओवरराइड"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
 msgid "Add"
-msgstr "Добавить"
+msgstr "जोड़ें"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr "Прогресс очереди"
+msgstr "कतार प्रगति"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
-msgstr "Открыть по ссылке"
+msgstr "यूआरआई जोड़ें"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
-msgstr "Вставьте URI, который будет добавлен в очередь воспроизведения"
+msgstr "प्लेबैक कतार में जोड़ने के लिए यूआरआई डालें"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
-msgstr "Введите URI"
+msgstr "यहां यूआरआई दर्ज करें या छोड़ें"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:22
 msgid "Cancel"
-msgstr "Отмена"
+msgstr "रद्द करें"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr "Разрешение"
+msgstr "रिजोल्यूशन"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr "Частота кадров"
+msgstr "फ्रेमरेट"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr "Формат пикселей"
+msgstr "पिक्सल प्रारूप"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
 msgid "translator-credits"
-msgstr "Игорь Дятлов"
+msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
-msgstr "Аппаратное"
+msgstr "हार्डवेयर"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Software"
-msgstr "Программное"
+msgstr "सॉफ्टवेयर"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
-msgstr "Точный"
+msgstr "सटीक"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
-msgstr "Обычная"
+msgstr "साधारण"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:445
 msgid "Fast"
-msgstr "Быстрый"
+msgstr "तेज"
 
 #: src/bin/clapper-app/clapper-app-utils.c:66
 msgid "No progression"
-msgstr "Нет прогрессии"
+msgstr "प्रगति नहीं"
 
 #: src/bin/clapper-app/clapper-app-utils.c:67
 msgid "Consecutive"
-msgstr "Последовательно"
+msgstr "लगातार"
 
 #: src/bin/clapper-app/clapper-app-utils.c:68
 msgid "Repeat item"
-msgstr "Повторить элемент"
+msgstr "मद दोहराएं"
 
 #: src/bin/clapper-app/clapper-app-utils.c:69
 msgid "Carousel"
-msgstr "Повтор очереди"
+msgstr "कैरोसेल"
 
 #: src/bin/clapper-app/clapper-app-utils.c:70
 msgid "Shuffle"
-msgstr "Случайно"
+msgstr "शफल"
 
 #: src/bin/clapper-app/clapper-app-window.c:828
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr "Перетащите на строку заголовка, чтобы воспроизвести сейчас или где-нибудь ещё, чтобы попасть в очередь."
+msgstr "अभी चलाने के लिए शीर्षक पट्टी पर छोड़ें या कतार में लगाने के लिए कहीं और छोड़ें।"
 
