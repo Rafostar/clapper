@@ -35,6 +35,12 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Unfullscreen</property>
+                <property name="accelerator">Escape</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
                 <property name="title" translatable="yes">Auto window resize</property>
                 <property name="subtitle" translatable="yes">Middle click</property>
                 <property name="accelerator">&lt;Super&gt;r</property>

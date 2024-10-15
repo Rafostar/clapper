@@ -1066,6 +1066,17 @@ toggle_fullscreen (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+unfullscreen (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  GtkWindow *window = GTK_WINDOW (user_data);
+
+  if (gtk_window_is_fullscreen (window)) {
+    ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (window);
+    video_toggle_fullscreen_cb (CLAPPER_GTK_VIDEO_CAST (self->video), self);
+  }
+}
+
+static void
 auto_resize (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   _resize_window (CLAPPER_APP_WINDOW_CAST (user_data));
@@ -1224,6 +1235,7 @@ clapper_app_window_constructed (GObject *object)
 
   static const GActionEntry win_entries[] = {
     { "toggle-fullscreen", toggle_fullscreen, NULL, NULL, NULL },
+    { "unfullscreen", unfullscreen, NULL, NULL, NULL },
     { "auto-resize", auto_resize, NULL, NULL, NULL },
     { "show-help-overlay", show_help_overlay, NULL, NULL, NULL },
   };
