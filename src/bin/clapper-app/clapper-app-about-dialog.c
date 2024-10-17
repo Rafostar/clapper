@@ -22,29 +22,24 @@
 #include <clapper/clapper.h>
 #include <adwaita.h>
 
-#include "clapper-app-about-window.h"
+#include "clapper-app-about-dialog.h"
 
 GtkWidget *
-clapper_app_about_window_new (GtkApplication *gtk_app)
+clapper_app_about_dialog_new (void)
 {
-  AdwAboutWindow *about;
-  GtkWindow *window;
+  AdwAboutDialog *about;
   GString *string;
   gchar *gst_ver, *debug_info;
 
-  about = ADW_ABOUT_WINDOW (adw_about_window_new_from_appdata (
+  about = ADW_ABOUT_DIALOG (adw_about_dialog_new_from_appdata (
       CLAPPER_APP_RESOURCE_PREFIX "/data/metainfo/" CLAPPER_APP_ID ".metainfo.xml",
       NULL));
-  window = gtk_application_get_active_window (gtk_app);
-
-  gtk_window_set_modal (GTK_WINDOW (about), TRUE);
-  gtk_window_set_transient_for (GTK_WINDOW (about), window);
 
   /* Also show development versions */
-  adw_about_window_set_version (about, CLAPPER_VERSION_S);
+  adw_about_dialog_set_version (about, CLAPPER_VERSION_S);
 
   /* TRANSLATORS: Put your name(s) here for credits or leave untranslated */
-  adw_about_window_set_translator_credits (about, _("translator-credits"));
+  adw_about_dialog_set_translator_credits (about, _("translator-credits"));
 
   string = g_string_new (NULL);
 
@@ -66,7 +61,7 @@ clapper_app_about_window_new (GtkApplication *gtk_app)
   g_free (gst_ver);
 
   debug_info = g_string_free_and_steal (string);
-  adw_about_window_set_debug_info (about, debug_info);
+  adw_about_dialog_set_debug_info (about, debug_info);
   g_free (debug_info);
 
   return GTK_WIDGET (about);

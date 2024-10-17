@@ -25,30 +25,28 @@
 #include "clapper-app-utils.h"
 
 static void
-_entry_text_changed_cb (GtkEntry *entry,
-    GParamSpec *pspec G_GNUC_UNUSED, AdwMessageDialog *dialog)
+_entry_text_changed_cb (AdwEntryRow *entry,
+    GParamSpec *pspec G_GNUC_UNUSED, AdwAlertDialog *dialog)
 {
-  GtkEntryBuffer *buffer = gtk_entry_get_buffer (entry);
-  guint text_length = gtk_entry_buffer_get_length (buffer);
+  const gchar *text = gtk_editable_get_text (GTK_EDITABLE (entry));
   gboolean enabled = FALSE;
 
-  if (text_length > 0) {
-    const gchar *text = gtk_entry_buffer_get_text (buffer);
-    enabled = (text && gst_uri_is_valid (text));
+  if (text && *text != '\0') {
+    enabled = gst_uri_is_valid (text);
   }
 
-  adw_message_dialog_set_response_enabled (dialog, "add", enabled);
+  adw_alert_dialog_set_response_enabled (dialog, "add", enabled);
 }
 
 static void
-_open_uri_cb (AdwMessageDialog *dialog, GAsyncResult *result, GtkApplication *gtk_app)
+_open_uri_cb (AdwAlertDialog *dialog, GAsyncResult *result, GtkApplication *gtk_app)
 {
-  const gchar *response = adw_message_dialog_choose_finish (dialog, result);
+  const gchar *response = adw_alert_dialog_choose_finish (dialog, result);
 
   if (strcmp (response, "add") == 0) {
-    GtkWidget *extra_child = adw_message_dialog_get_extra_child (dialog);
-    GtkEntryBuffer *buffer = gtk_entry_get_buffer (GTK_ENTRY (extra_child));
-    const gchar *text = gtk_entry_buffer_get_text (buffer);
+    GtkWidget *extra_child = adw_alert_dialog_get_extra_child (dialog);
+    AdwEntryRow *entry_row = ADW_ENTRY_ROW (gtk_list_box_get_row_at_index (GTK_LIST_BOX (extra_child), 0));
+    const gchar *text = gtk_editable_get_text (GTK_EDITABLE (entry_row));
     GFile **files = NULL;
     gint n_files = 0;
 
@@ -60,16 +58,15 @@ _open_uri_cb (AdwMessageDialog *dialog, GAsyncResult *result, GtkApplication *gt
 }
 
 static void
-_read_text_cb (GdkClipboard *clipboard, GAsyncResult *result, GtkWidget *extra_child)
+_read_text_cb (GdkClipboard *clipboard, GAsyncResult *result, GtkWidget *entry_row)
 {
-  GtkEntry *entry = GTK_ENTRY (extra_child);
   GError *error = NULL;
   gchar *text = gdk_clipboard_read_text_finish (clipboard, result, &error);
 
   if (G_LIKELY (error == NULL)) {
     if (gst_uri_is_valid (text)) {
-      gtk_editable_set_text (GTK_EDITABLE (entry), text);
-      gtk_editable_select_region (GTK_EDITABLE (entry), 0, -1);
+      gtk_editable_set_text (GTK_EDITABLE (entry_row), text);
+      gtk_editable_select_region (GTK_EDITABLE (entry_row), 0, -1);
     }
   } else {
     /* Common error when clipboard is empty or has unsupported content.
@@ -89,30 +86,28 @@ clapper_app_uri_dialog_open_uri (GtkApplication *gtk_app)
 {
   GtkWindow *window = gtk_application_get_active_window (gtk_app);
   GtkBuilder *builder;
-  AdwMessageDialog *dialog;
-  GtkWidget *extra_child;
+  AdwAlertDialog *dialog;
+  GtkWidget *entry_row;
   GdkDisplay *display;
 
   builder = gtk_builder_new_from_resource (
       CLAPPER_APP_RESOURCE_PREFIX "/ui/clapper-app-uri-dialog.ui");
 
-  dialog = ADW_MESSAGE_DIALOG (gtk_builder_get_object (builder, "dialog"));
-  gtk_window_set_transient_for (GTK_WINDOW (dialog), window);
+  dialog = ADW_ALERT_DIALOG (gtk_builder_get_object (builder, "dialog"));
+  entry_row = GTK_WIDGET (gtk_builder_get_object (builder, "entry_row"));
 
-  extra_child = adw_message_dialog_get_extra_child (dialog);
-
-  g_signal_connect (GTK_ENTRY (extra_child), "notify::text",
+  g_signal_connect (GTK_EDITABLE (entry_row), "notify::text",
       G_CALLBACK (_entry_text_changed_cb), dialog);
 
   if ((display = gdk_display_get_default ())) {
     GdkClipboard *clipboard = gdk_display_get_clipboard (display);
 
     gdk_clipboard_read_text_async (clipboard, NULL,
-        (GAsyncReadyCallback) _read_text_cb, extra_child);
+        (GAsyncReadyCallback) _read_text_cb, entry_row);
   }
 
   /* NOTE: Dialog will automatically unref itself after response */
-  adw_message_dialog_choose (dialog, NULL,
+  adw_alert_dialog_choose (dialog, GTK_WIDGET (window), NULL,
       (GAsyncReadyCallback) _open_uri_cb,
       gtk_app);
 
