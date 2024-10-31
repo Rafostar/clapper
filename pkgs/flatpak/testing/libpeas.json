@@ -1,0 +1,21 @@
+{
+    "name": "libpeas",
+    "buildsystem": "meson",
+    "config-opts": [
+        "--wrap-mode=nodownload",
+        "-Dgjs=false",
+        "-Dlua51=false",
+        "-Dintrospection=false"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://download.gnome.org/sources/libpeas/2.0/libpeas-2.0.5.tar.xz",
+            "sha256": "376f2f73d731b54e13ddbab1d91b6382cf6a980524def44df62add15489de6dd",
+            "x-checker-data": {
+                "type": "gnome",
+                "name": "libpeas"
+            }
+        }
+    ]
+}
