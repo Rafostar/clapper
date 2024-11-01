@@ -28,6 +28,7 @@ jobs:
     - name: Build
       run: |
         meson setup builddir -Dauto_features=enabled \
+          -Denhancers-loader=disabled \
           -Dclapper-app=disabled -Dvapi=disabled -Ddoc=true \
           -Dglimporter=auto -Dgluploader=auto -Drawimporter=auto
         cd builddir
