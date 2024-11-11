@@ -85,6 +85,11 @@ libadwaita_dep = dependency('libadwaita-1',
   required: false,
 )
 
+# Optional
+peas_dep = dependency('libpeas-2',
+  required: false,
+)
+
 cc = meson.get_compiler('c')
 libm = cc.find_library('m', required: false)
 
@@ -147,6 +152,9 @@ summary('vapi', build_vapi ? 'Yes' : 'No', section: 'Build')
 summary('doc', build_doc  ? 'Yes' : 'No', section: 'Build')
 
 if build_clapper
+  foreach name : clapper_possible_functionalities
+    summary(name, clapper_available_functionalities.contains(name)  ? 'Yes' : 'No', section: 'Functionalities')
+  endforeach
   foreach name : clapper_possible_features
     summary(name, clapper_available_features.contains(name) ? 'Yes' : 'No', section: 'Features')
   endforeach

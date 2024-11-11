@@ -19,6 +19,9 @@
 
 #pragma once
 
+#include <glib.h>
+#include <glib-object.h>
+
 #define __CLAPPER_INSIDE__
 
 #include <clapper/clapper-visibility.h>
@@ -28,6 +31,7 @@
 
 #include <clapper/clapper-audio-stream.h>
 #include <clapper/clapper-feature.h>
+#include <clapper/clapper-harvest.h>
 #include <clapper/clapper-marker.h>
 #include <clapper/clapper-media-item.h>
 #include <clapper/clapper-player.h>
@@ -40,6 +44,9 @@
 #include <clapper/clapper-utils.h>
 #include <clapper/clapper-video-stream.h>
 
+#include <clapper/clapper-extractable.h>
+
+#include <clapper/clapper-functionalities-availability.h>
 #include <clapper/features/clapper-features-availability.h>
 
 #if CLAPPER_HAVE_DISCOVERER
@@ -59,6 +66,9 @@ void clapper_init (int *argc, char **argv[]);
 
 CLAPPER_API
 gboolean clapper_init_check (int *argc, char **argv[]);
+
+CLAPPER_API
+gboolean clapper_enhancer_check (GType iface_type, const gchar *scheme, const gchar *host, const gchar **name);
 
 G_END_DECLS
 

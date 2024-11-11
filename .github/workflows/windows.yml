@@ -35,6 +35,7 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gst-plugins-bad
           mingw-w64-${{ matrix.arch }}-gst-plugins-ugly
           mingw-w64-${{ matrix.arch }}-gst-libav
+          mingw-w64-${{ matrix.arch }}-libpeas2
           mingw-w64-${{ matrix.arch }}-libsoup3
           mingw-w64-${{ matrix.arch }}-libmicrodns
           mingw-w64-${{ matrix.arch }}-gtk4

@@ -41,7 +41,8 @@
         "flathub/lib/uchardet.json",
         "flathub/lib/libmicrodns.json",
         "flathub/gstreamer-1.0/gstreamer.json",
-        "testing/gtuber.json",
+        "testing/yt-dlp.json",
+        "testing/libpeas.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
@@ -54,7 +55,8 @@
                     "path": "../../."
                 }
             ]
-        }
+        },
+        "testing/clapper-enhancers.json"
     ],
     "cleanup-commands": [
         "mkdir -p /app/lib/ffmpeg",
