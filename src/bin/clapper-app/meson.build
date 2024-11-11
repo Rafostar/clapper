@@ -54,7 +54,7 @@ configure_file(
 )
 
 clapperapp_sources = [
-  'clapper-app-about-window.c',
+  'clapper-app-about-dialog.c',
   'clapper-app-application.c',
   'clapper-app-file-dialog.c',
   'clapper-app-headerbar.c',
