@@ -87,6 +87,9 @@ struct _ClapperPlayer
   gboolean pending_eos; // when pausing due to EOS
   gint eos; // atomic integer
 
+  /* Set adaptive props immediately */
+  GstElement *adaptive_demuxer;
+
   /* Playbin2 compat */
   gint n_video, n_audio, n_text;
 
@@ -104,6 +107,9 @@ struct _ClapperPlayer
   gboolean subtitles_enabled;
   gchar *download_dir;
   gboolean download_enabled;
+  guint start_bitrate;
+  guint min_bitrate;
+  guint max_bitrate;
   gdouble audio_offset;
   gdouble subtitle_offset;
 };
