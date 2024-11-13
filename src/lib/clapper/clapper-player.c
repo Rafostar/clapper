@@ -2133,7 +2133,7 @@ clapper_player_thread_start (ClapperThreadedObject *threaded_object)
     if (!(env = g_getenv ("CLAPPER_USE_PLAYBIN3"))) // Clapper override
       env = g_getenv ("GST_CLAPPER_USE_PLAYBIN3"); // compat
 
-  self->use_playbin3 = (env && g_str_has_prefix (env, "1"));
+  self->use_playbin3 = (!env || g_str_has_prefix (env, "1"));
   playbin_str = (self->use_playbin3) ? "playbin3" : "playbin";
 
   if (!(self->playbin = gst_element_factory_make (playbin_str, NULL))) {
