@@ -110,6 +110,7 @@ struct _ClapperPlayer
   guint start_bitrate;
   guint min_bitrate;
   guint max_bitrate;
+  guint bandwidth;
   gdouble audio_offset;
   gdouble subtitle_offset;
 };

@@ -97,6 +97,7 @@ enum
   PROP_ADAPTIVE_START_BITRATE,
   PROP_ADAPTIVE_MIN_BITRATE,
   PROP_ADAPTIVE_MAX_BITRATE,
+  PROP_ADAPTIVE_BANDWIDTH,
   PROP_AUDIO_OFFSET,
   PROP_SUBTITLE_OFFSET,
   PROP_SUBTITLE_FONT_DESC,
@@ -716,6 +717,27 @@ clapper_player_playbin_update_current_decoders (ClapperPlayer *self)
     GST_DEBUG_OBJECT (self, "Active audio decoder not found");
 }
 
+static void
+_adaptive_demuxer_bandwidth_changed_cb (GstElement *adaptive_demuxer,
+    GParamSpec *pspec G_GNUC_UNUSED, ClapperPlayer *self)
+{
+  guint bandwidth = 0;
+  gboolean changed;
+
+  g_object_get (adaptive_demuxer, "current-bandwidth", &bandwidth, NULL);
+
+  GST_OBJECT_LOCK (self);
+  if ((changed = bandwidth != self->bandwidth))
+    self->bandwidth = bandwidth;
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    GST_LOG_OBJECT (self, "Adaptive bandwidth: %u", bandwidth);
+    clapper_app_bus_post_prop_notify (self->app_bus,
+        GST_OBJECT_CAST (self), param_specs[PROP_ADAPTIVE_BANDWIDTH]);
+  }
+}
+
 void
 clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
 {
@@ -731,7 +753,11 @@ clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
     gst_clear_object (&self->audio_decoder);
   }
 
-  gst_clear_object (&self->adaptive_demuxer);
+  if (self->adaptive_demuxer) {
+    g_signal_handlers_disconnect_by_func (self->adaptive_demuxer,
+        _adaptive_demuxer_bandwidth_changed_cb, self);
+    gst_clear_object (&self->adaptive_demuxer);
+  }
 
   GST_OBJECT_UNLOCK (self);
 
@@ -803,7 +829,17 @@ _element_setup_cb (GstElement *playbin, GstElement *element, ClapperPlayer *self
     min_bitrate = self->min_bitrate;
     max_bitrate = self->max_bitrate;
 
+    if (self->adaptive_demuxer) {
+      g_signal_handlers_disconnect_by_func (self->adaptive_demuxer,
+          _adaptive_demuxer_bandwidth_changed_cb, self);
+    }
+
     gst_object_replace ((GstObject **) &self->adaptive_demuxer, GST_OBJECT_CAST (element));
+
+    if (self->adaptive_demuxer) {
+      g_signal_connect (self->adaptive_demuxer, "notify::current-bandwidth",
+          G_CALLBACK (_adaptive_demuxer_bandwidth_changed_cb), self);
+    }
 
     GST_OBJECT_UNLOCK (self);
 
@@ -1860,6 +1896,31 @@ clapper_player_get_adaptive_max_bitrate (ClapperPlayer *self)
 }
 
 /**
+ * clapper_player_get_adaptive_bandwidth:
+ * @player: a #ClapperPlayer
+ *
+ * Get last fragment download bandwidth (bits/s) during
+ * adaptive streaming.
+ *
+ * Returns: the adaptive bandwidth.
+ *
+ * Since: 0.8
+ */
+guint
+clapper_player_get_adaptive_bandwidth (ClapperPlayer *self)
+{
+  guint bandwidth;
+
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), 0);
+
+  GST_OBJECT_LOCK (self);
+  bandwidth = self->bandwidth;
+  GST_OBJECT_UNLOCK (self);
+
+  return bandwidth;
+}
+
+/**
  * clapper_player_set_audio_offset:
  * @player: a #ClapperPlayer
  * @offset: a decimal audio offset (in seconds)
@@ -2365,6 +2426,9 @@ clapper_player_get_property (GObject *object, guint prop_id,
     case PROP_ADAPTIVE_MAX_BITRATE:
       g_value_set_uint (value, clapper_player_get_adaptive_max_bitrate (self));
       break;
+    case PROP_ADAPTIVE_BANDWIDTH:
+      g_value_set_uint (value, clapper_player_get_adaptive_bandwidth (self));
+      break;
     case PROP_AUDIO_OFFSET:
       g_value_set_double (value, clapper_player_get_audio_offset (self));
       break;
@@ -2734,6 +2798,23 @@ clapper_player_class_init (ClapperPlayerClass *klass)
   param_specs[PROP_ADAPTIVE_MAX_BITRATE] = g_param_spec_uint ("adaptive-max-bitrate",
       NULL, NULL, 0, G_MAXUINT, 0,
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:adaptive-bandwidth:
+   *
+   * Last fragment download bandwidth (bits/s) during adaptive streaming.
+   *
+   * This property only changes when adaptive streaming and later stays
+   * at the last value until streaming some adaptive content again.
+   *
+   * Apps can use this to determine and set an optimal value for
+   * [property@Clapper.Player:adaptive-start-bitrate].
+   *
+   * Since: 0.8
+   */
+  param_specs[PROP_ADAPTIVE_BANDWIDTH] = g_param_spec_uint ("adaptive-bandwidth",
+      NULL, NULL, 0, G_MAXUINT, 0,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperPlayer:audio-offset:

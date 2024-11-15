@@ -166,6 +166,9 @@ CLAPPER_API
 guint clapper_player_get_adaptive_max_bitrate (ClapperPlayer *player);
 
 CLAPPER_API
+guint clapper_player_get_adaptive_bandwidth (ClapperPlayer *player);
+
+CLAPPER_API
 void clapper_player_set_audio_offset (ClapperPlayer *player, gdouble offset);
 
 CLAPPER_API
