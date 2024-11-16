@@ -726,6 +726,11 @@ _adaptive_demuxer_bandwidth_changed_cb (GstElement *adaptive_demuxer,
 
   g_object_get (adaptive_demuxer, "current-bandwidth", &bandwidth, NULL);
 
+  /* Skip uncalculated bandwidth from
+   * new adaptive demuxer instance */
+  if (bandwidth == 0)
+    return;
+
   GST_OBJECT_LOCK (self);
   if ((changed = bandwidth != self->bandwidth))
     self->bandwidth = bandwidth;
