@@ -144,6 +144,8 @@ clapper_app_apply_options_to_window (ClapperAppWindow *dest_window, GVariantDict
     clapper_player_set_mute (dest_player, option_bool);
   if (clapper_app_options_get ("speed", "d", options, src_player_obj, settings, &option_dbl))
     clapper_player_set_speed (dest_player, PERCENTAGE_ROUND (CLAMP (option_dbl, 0.05, 2.0)));
+  if (clapper_app_options_get ("adaptive-start-bitrate", "i", options, src_player_obj, settings, &option_int))
+    clapper_player_set_adaptive_start_bitrate (dest_player, option_int);
   if (clapper_app_options_get ("progression-mode", "i", options, src_queue_obj, settings, &option_int))
     clapper_queue_set_progression_mode (clapper_player_get_queue (dest_player), CLAMP (option_int, 0, 4));
   if (clapper_app_options_get ("subtitles-enabled", "b", NULL, src_player_obj, settings, &option_bool))
@@ -196,6 +198,8 @@ _store_settings_from_window (ClapperAppApplication *self, ClapperAppWindow *app_
   g_settings_set_double (self->settings, "volume", clapper_player_get_volume (player));
   g_settings_set_boolean (self->settings, "mute", clapper_player_get_mute (player));
   g_settings_set_double (self->settings, "speed", clapper_player_get_speed (player));
+  g_settings_set_int (self->settings, "adaptive-start-bitrate",
+      CLAMP (clapper_player_get_adaptive_bandwidth (player) * 0.8, 0, G_MAXINT));
   g_settings_set_boolean (self->settings, "subtitles-enabled", clapper_player_get_subtitles_enabled (player));
   g_settings_set_int (self->settings, "progression-mode", clapper_queue_get_progression_mode (queue));
 
@@ -676,6 +680,7 @@ clapper_app_application_constructed (GObject *object)
     { "enqueue", 0, 0, G_OPTION_ARG_NONE, NULL, _("Add media to queue in primary application instance"), NULL },
     { "volume", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Audio volume to set (0 - 2.0 range)"), NULL },
     { "speed", 0, 0, G_OPTION_ARG_DOUBLE, NULL, _("Playback speed to set (0.05 - 2.0 range)"), NULL },
+    { "adaptive-start-bitrate", 0, 0, G_OPTION_ARG_INT, NULL, _("Initial bitrate for adaptive streaming"), NULL },
     { "progression-mode", 0, 0, G_OPTION_ARG_INT, NULL, _("Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"), NULL },
     { "fullscreen", 'f', 0, G_OPTION_ARG_NONE, NULL, _("Set window to be fullscreen"), NULL },
     { "video-filter", 0, 0, G_OPTION_ARG_STRING, NULL, _("Video filter to use (\"none\" to disable)"), NULL },

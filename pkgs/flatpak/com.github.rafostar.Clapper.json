@@ -1,11 +1,11 @@
 {
     "app-id": "com.github.rafostar.Clapper",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "45",
+    "runtime-version": "47",
     "sdk": "org.gnome.Sdk",
     "add-extensions": {
         "org.freedesktop.Platform.ffmpeg-full": {
-            "version": "23.08",
+            "version": "24.08",
             "directory": "lib/ffmpeg",
             "add-ld-path": ".",
             "no-autodownload": false,
@@ -40,15 +40,12 @@
         "flathub/lib/libass.json",
         "flathub/lib/uchardet.json",
         "flathub/lib/libmicrodns.json",
-        "flathub/gstreamer-1.0/gstreamer.json",
+        "testing/gstreamer_stable.json",
         "testing/yt-dlp.json",
         "testing/libpeas.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
-            "config-opts": [
-                "-Dc_args=\"-DHAVE_GST_PATCHES=1\""
-            ],
             "sources": [
                 {
                     "type": "dir",

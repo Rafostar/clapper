@@ -148,6 +148,27 @@ CLAPPER_API
 gboolean clapper_player_get_download_enabled (ClapperPlayer *player);
 
 CLAPPER_API
+void clapper_player_set_adaptive_start_bitrate (ClapperPlayer *player, guint bitrate);
+
+CLAPPER_API
+guint clapper_player_get_adaptive_start_bitrate (ClapperPlayer *player);
+
+CLAPPER_API
+void clapper_player_set_adaptive_min_bitrate (ClapperPlayer *player, guint bitrate);
+
+CLAPPER_API
+guint clapper_player_get_adaptive_min_bitrate (ClapperPlayer *player);
+
+CLAPPER_API
+void clapper_player_set_adaptive_max_bitrate (ClapperPlayer *player, guint bitrate);
+
+CLAPPER_API
+guint clapper_player_get_adaptive_max_bitrate (ClapperPlayer *player);
+
+CLAPPER_API
+guint clapper_player_get_adaptive_bandwidth (ClapperPlayer *player);
+
+CLAPPER_API
 void clapper_player_set_audio_offset (ClapperPlayer *player, gdouble offset);
 
 CLAPPER_API

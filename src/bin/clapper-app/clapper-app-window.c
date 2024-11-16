@@ -151,6 +151,15 @@ _queue_current_item_changed_cb (ClapperQueue *queue,
   gst_clear_object (&current_item);
 }
 
+static void
+_player_adaptive_bandwidth_changed_cb (ClapperPlayer *player,
+    GParamSpec *pspec G_GNUC_UNUSED, gpointer *user_data G_GNUC_UNUSED)
+{
+  /* Do not take whole bandwidth */
+  clapper_player_set_adaptive_start_bitrate (player,
+      clapper_player_get_adaptive_bandwidth (player) * 0.8);
+}
+
 static gboolean
 _get_seek_method_mapping (GValue *value,
     GVariant *variant, gpointer user_data G_GNUC_UNUSED)
@@ -1280,10 +1289,12 @@ clapper_app_window_constructed (GObject *object)
 
   clapper_player_set_autoplay (player, TRUE);
 
-  /* No need to also call this here, as item is selected
+  /* No need to also call these here, as they only change
    * after application window is contructed */
   g_signal_connect (queue, "notify::current-item",
       G_CALLBACK (_queue_current_item_changed_cb), self);
+  g_signal_connect (player, "notify::adaptive-bandwidth",
+      G_CALLBACK (_player_adaptive_bandwidth_changed_cb), NULL);
 
   g_settings_bind (self->settings, "audio-offset",
       player, "audio-offset", G_SETTINGS_BIND_GET);

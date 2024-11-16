@@ -49,6 +49,10 @@
       <default>1.0</default>
       <summary>Stores last speed value to apply on startup</summary>
     </key>
+    <key name="adaptive-start-bitrate" type="i">
+      <default>1600000</default>
+      <summary>Stores initial adaptive streaming bitrate to apply on startup</summary>
+    </key>
     <key name="progression-mode" type="i">
       <default>1</default>
       <summary>Stores last queue progression mode used to apply on startup</summary>
