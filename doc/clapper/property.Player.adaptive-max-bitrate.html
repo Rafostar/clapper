@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Player:current-audio-decoder</title>
+  <title>Clapper.Player:adaptive-max-bitrate</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.Player:current-audio-decoder"/>
-  <meta property="og:description" content="Reference for property Clapper.Player:current-audio-decoder"/>
-  <meta name="twitter:title" content="Clapper.Player:current-audio-decoder"/>
-  <meta name="twitter:description" content="Reference for property Clapper.Player:current-audio-decoder"/>
+  <meta property="og:title" content="Clapper.Player:adaptive-max-bitrate"/>
+  <meta property="og:description" content="Reference for property Clapper.Player:adaptive-max-bitrate"/>
+  <meta name="twitter:title" content="Clapper.Player:adaptive-max-bitrate"/>
+  <meta name="twitter:description" content="Reference for property Clapper.Player:adaptive-max-bitrate"/>
 
 
   
@@ -91,7 +91,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.Player.adaptive-bandwidth.html">adaptive-bandwidth</a>
   
-    <a class="property"href="property.Player.adaptive-max-bitrate.html">adaptive-max-bitrate</a>
+    <a class="property current"href="property.Player.adaptive-max-bitrate.html">adaptive-max-bitrate</a>
   
     <a class="property"href="property.Player.adaptive-min-bitrate.html">adaptive-min-bitrate</a>
   
@@ -109,7 +109,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.Player.autoplay.html">autoplay</a>
   
-    <a class="property current"href="property.Player.current-audio-decoder.html">current-audio-decoder</a>
+    <a class="property"href="property.Player.current-audio-decoder.html">current-audio-decoder</a>
   
     <a class="property"href="property.Player.current-video-decoder.html">current-video-decoder</a>
   
@@ -159,12 +159,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Property</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a>:current-audio-decoder</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a>:adaptive-max-bitrate</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration">
@@ -173,7 +173,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property current-audio-decoder: Gst.Element [ read ]</code></pre>
+        <pre><code>property adaptive-max-bitrate: guint [ read, write ]</code></pre>
       </div>
     </div>
 
@@ -182,19 +182,24 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L2676">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L2790">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Currently used audio&nbsp;decoder.</p>
+        <p>A maximal allowed bitrate (bits/s) during adaptive streaming
+such as <span class="caps">DASH</span> or <span class="caps">HLS</span> (<code>0</code> for&nbsp;unlimited).</p>
+<p>Setting this will prevent streaming from entering qualities with
+higher bandwidth than the one set. When set together with
+<a href="property.Player.adaptive-min-bitrate.html"><code>ClapperPlayer:adaptive-min-bitrate</code></a> it can be used to
+enforce some specific&nbsp;quality.</p>
       </div>
 
       <div class="docblock">
         <p>
-          Type:<a href="javascript:void(0)" data-link="class.Element.html" data-namespace="Gst" class="external"><code>GstElement</code></a></p>
+          Type:<code>guint</code></p>
         
-        
+        <p>Available since: 0.8</p>
         
       </div>
 
@@ -202,7 +207,11 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Getter method</td><td><a href="method.Player.get_current_audio_decoder.html"><code>clapper_player_get_current_audio_decoder()</code></a></td></tr>
+          <tr><td>Default value</td><td>0</td></tr>
+        
+          <tr><td>Getter method</td><td><a href="method.Player.get_adaptive_max_bitrate.html"><code>clapper_player_get_adaptive_max_bitrate()</code></a></td></tr>
+        
+          <tr><td>Setter method</td><td><a href="method.Player.set_adaptive_max_bitrate.html"><code>clapper_player_set_adaptive_max_bitrate()</code></a></td></tr>
         
         </table>
       </div>
@@ -218,7 +227,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       <table>
         <tr><td>Readable</td><td><b>yes</b></td></tr>
-        <tr><td>Writable</td><td><b>no</b></td></tr>
+        <tr><td>Writable</td><td><b>yes</b></td></tr>
         <tr><td>Construct</td><td><b>no</b></td></tr>
         <tr><td>Construct only</td><td><b>no</b></td></tr>
       </table>

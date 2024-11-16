@@ -109,6 +109,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.add_feature.html">add_feature</a>
   
+    <a class="method" href="method.Player.get_adaptive_bandwidth.html">get_adaptive_bandwidth</a>
+  
+    <a class="method" href="method.Player.get_adaptive_max_bitrate.html">get_adaptive_max_bitrate</a>
+  
+    <a class="method" href="method.Player.get_adaptive_min_bitrate.html">get_adaptive_min_bitrate</a>
+  
+    <a class="method" href="method.Player.get_adaptive_start_bitrate.html">get_adaptive_start_bitrate</a>
+  
     <a class="method" href="method.Player.get_audio_enabled.html">get_audio_enabled</a>
   
     <a class="method" href="method.Player.get_audio_filter.html">get_audio_filter</a>
@@ -165,6 +173,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.seek_custom.html">seek_custom</a>
   
+    <a class="method" href="method.Player.set_adaptive_max_bitrate.html">set_adaptive_max_bitrate</a>
+  
+    <a class="method" href="method.Player.set_adaptive_min_bitrate.html">set_adaptive_min_bitrate</a>
+  
+    <a class="method" href="method.Player.set_adaptive_start_bitrate.html">set_adaptive_start_bitrate</a>
+  
     <a class="method" href="method.Player.set_audio_enabled.html">set_audio_enabled</a>
   
     <a class="method" href="method.Player.set_audio_filter.html">set_audio_filter</a>
@@ -208,6 +222,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Properties</h5>
   <div class="links">
+  
+    <a class="property" href="property.Player.adaptive-bandwidth.html">adaptive-bandwidth</a>
+  
+    <a class="property" href="property.Player.adaptive-max-bitrate.html">adaptive-max-bitrate</a>
+  
+    <a class="property" href="property.Player.adaptive-min-bitrate.html">adaptive-min-bitrate</a>
+  
+    <a class="property" href="property.Player.adaptive-start-bitrate.html">adaptive-start-bitrate</a>
   
     <a class="property" href="property.Player.audio-enabled.html">audio-enabled</a>
   
@@ -515,6 +537,47 @@ that operate on a single thread like (but not limited to) <span class="caps">GTK
         </div>
       
         <div class="">
+          <h6><a href="method.Player.get_adaptive_bandwidth.html">clapper_player_get_adaptive_bandwidth</a></h6>
+          <div class="docblock">
+            <p>Get last fragment download bandwidth (bits/s) during
+adaptive&nbsp;streaming.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_adaptive_max_bitrate.html">clapper_player_get_adaptive_max_bitrate</a></h6>
+          <div class="docblock">
+            <p>Get currently set maximal bitrate (bits/s) for adaptive&nbsp;streaming.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_adaptive_min_bitrate.html">clapper_player_get_adaptive_min_bitrate</a></h6>
+          <div class="docblock">
+            <p>Get currently set minimal bitrate (bits/s) for adaptive&nbsp;streaming.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.get_adaptive_start_bitrate.html">clapper_player_get_adaptive_start_bitrate</a></h6>
+          <div class="docblock">
+            <p>Get currently set initial bitrate (bits/s) for adaptive&nbsp;streaming.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.get_audio_enabled.html">clapper_player_get_audio_enabled</a></h6>
           <div class="docblock">
             <p>Get whether audio stream is&nbsp;enabled.</p>
@@ -795,6 +858,39 @@ that operate on a single thread like (but not limited to) <span class="caps">GTK
         </div>
       
         <div class="">
+          <h6><a href="method.Player.set_adaptive_max_bitrate.html">clapper_player_set_adaptive_max_bitrate</a></h6>
+          <div class="docblock">
+            <p>Set maximal bitrate to select for adaptive streaming
+such as <span class="caps">DASH</span> or <span class="caps">HLS</span>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_adaptive_min_bitrate.html">clapper_player_set_adaptive_min_bitrate</a></h6>
+          <div class="docblock">
+            <p>Set minimal bitrate to select for adaptive streaming
+such as <span class="caps">DASH</span> or <span class="caps">HLS</span>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Player.set_adaptive_start_bitrate.html">clapper_player_set_adaptive_start_bitrate</a></h6>
+          <div class="docblock">
+            <p>Set initial bitrate to select when starting adaptive
+streaming such as <span class="caps">DASH</span> or <span class="caps">HLS</span>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.Player.set_audio_enabled.html">clapper_player_set_audio_enabled</a></h6>
           <div class="docblock">
             <p>Set whether enable audio&nbsp;stream.</p>
@@ -1022,6 +1118,49 @@ that operate on a single thread like (but not limited to) <span class="caps">GTK
 
       
       <div class="docblock">
+      
+        <div class="">
+          <h6><a href="property.Player.adaptive-bandwidth.html">Clapper.Player:adaptive-bandwidth</a></h6>
+          <div class="docblock">
+            <p>Last fragment download bandwidth (bits/s) during adaptive&nbsp;streaming.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.adaptive-max-bitrate.html">Clapper.Player:adaptive-max-bitrate</a></h6>
+          <div class="docblock">
+            <p>A maximal allowed bitrate (bits/s) during adaptive streaming
+such as <span class="caps">DASH</span> or <span class="caps">HLS</span> (<code>0</code> for&nbsp;unlimited).</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.adaptive-min-bitrate.html">Clapper.Player:adaptive-min-bitrate</a></h6>
+          <div class="docblock">
+            <p>A minimal allowed bitrate (bits/s) during adaptive streaming
+such as <span class="caps">DASH</span> or <span class="caps">HLS</span>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.Player.adaptive-start-bitrate.html">Clapper.Player:adaptive-start-bitrate</a></h6>
+          <div class="docblock">
+            <p>An initial bitrate (bits/s) to select during
+starting adaptive streaming such as <span class="caps">DASH</span> or <span class="caps">HLS</span>.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+          </div>
+        </div>
       
         <div class="">
           <h6><a href="property.Player.audio-enabled.html">Clapper.Player:audio-enabled</a></h6>

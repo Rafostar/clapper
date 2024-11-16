@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Player.get_position</title>
+  <title>Clapper.Player.set_adaptive_min_bitrate</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Player.get_position"/>
-  <meta priority="og:description" content="Reference for Clapper.Player.get_position"/>
-  <meta name="twitter:title" content="Clapper.Player.get_position"/>
-  <meta name="twitter:description" content="Reference for Clapper.Player.get_position"/>
+  <meta priority="og:title" content="Clapper.Player.set_adaptive_min_bitrate"/>
+  <meta priority="og:description" content="Reference for Clapper.Player.set_adaptive_min_bitrate"/>
+  <meta name="twitter:title" content="Clapper.Player.set_adaptive_min_bitrate"/>
+  <meta name="twitter:description" content="Reference for Clapper.Player.set_adaptive_min_bitrate"/>
 
 
   
@@ -121,7 +121,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.get_mute.html">get_mute</a>
   
-    <a class="method current" href="method.Player.get_position.html">get_position</a>
+    <a class="method" href="method.Player.get_position.html">get_position</a>
   
     <a class="method" href="method.Player.get_queue.html">get_queue</a>
   
@@ -157,7 +157,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.set_adaptive_max_bitrate.html">set_adaptive_max_bitrate</a>
   
-    <a class="method" href="method.Player.set_adaptive_min_bitrate.html">set_adaptive_min_bitrate</a>
+    <a class="method current" href="method.Player.set_adaptive_min_bitrate.html">set_adaptive_min_bitrate</a>
   
     <a class="method" href="method.Player.set_adaptive_start_bitrate.html">set_adaptive_start_bitrate</a>
   
@@ -209,12 +209,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a><span class="sep"></span>get_position</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a><span class="sep"></span>set_adaptive_min_bitrate</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
@@ -222,14 +222,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.h#L67">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.h#L157">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">gdouble</span>
-<span class="n">clapper_player_get_position</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">player</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="n">clapper_player_set_adaptive_min_bitrate</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">player</span><span class="p">,</span>
+<span class="w">  </span><span class="n">guint</span><span class="w"> </span><span class="n">bitrate</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -241,18 +242,18 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L1182">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L1817">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get the current player playback&nbsp;position.</p>
-<p>The returned value is in seconds as a decimal&nbsp;number.</p>
+        <p>Set minimal bitrate to select for adaptive streaming
+such as <span class="caps">DASH</span> or <span class="caps">HLS</span>.</p>
       </div>
 
       <div class="docblock">
         
-        
+        <p>Available since: 0.8</p>
         
         
         
@@ -264,7 +265,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Gets property</td><td><a href="property.Player.position.html"><code>Clapper.Player:position</code></a></td></tr>
+          <tr><td>Sets property</td><td><a href="property.Player.adaptive-min-bitrate.html"><code>Clapper.Player:adaptive-min-bitrate</code></a></td></tr>
         
         </table>
       </div>
@@ -272,21 +273,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     
-
-    
-    <div class="return-value toggle-wrapper">
-      <h4 id="return-value">
-        Return value
-        <a href="#return-value" class="anchor"></a>
+    <div class="parameters toggle-wrapper">
+      <h4 id="parameters">
+        Parameters
+        <a href="#parameters" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <div class="returns">
-          <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>gdouble</code></p>
-            <p>The position of the&nbsp;player.</p>
-          </div>
-          <div>
+        <dl class="arguments">
+          
+          <dt class="arg-name"><code>bitrate</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>guint</code></p>
+            <p>A bitrate to set&nbsp;(bits/s).</p>
             <table>
             
             
@@ -294,11 +293,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             
             
+            
+            
+            
             </table>
-          </div>
-        </div>
+          </dd>
+          
+
+          
+        </dl>
       </div>
     </div>
+    
+
     
 
   </section>
