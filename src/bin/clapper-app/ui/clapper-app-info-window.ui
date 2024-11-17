@@ -232,6 +232,16 @@
                                 </child>
                               </object>
                             </child>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="halign">center</property>
+                                <property name="label" translatable="yes">Show Pipeline</property>
+                                <property name="action-name">app.pipeline</property>
+                                <style>
+                                  <class name="pill"/>
+                                </style>
+                              </object>
+                            </child>
                           </object>
                         </child>
                       </object>

@@ -15,6 +15,10 @@ clapperapp_deps = [
   libadwaita_dep,
   glib_dep,
   gobject_dep,
+  libm,
+  dependency('libcgraph', required: false),
+  dependency('libgvc', required: false),
+  dependency('librsvg-2.0', version: '>= 2.52', required: false),
 ]
 
 foreach dep : clapperapp_deps
@@ -61,6 +65,8 @@ clapperapp_sources = [
   'clapper-app-info-window.c',
   'clapper-app-list-item-utils.c',
   'clapper-app-media-item-box.c',
+  'clapper-app-pipeline-viewer.c',
+  'clapper-app-pipeline-window.c',
   'clapper-app-preferences-window.c',
   'clapper-app-property-row.c',
   'clapper-app-queue-list.c',

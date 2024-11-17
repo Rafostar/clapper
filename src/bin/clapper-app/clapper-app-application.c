@@ -27,6 +27,7 @@
 #include "clapper-app-file-dialog.h"
 #include "clapper-app-uri-dialog.h"
 #include "clapper-app-info-window.h"
+#include "clapper-app-pipeline-window.h"
 #include "clapper-app-preferences-window.h"
 #include "clapper-app-about-window.h"
 #include "clapper-app-utils.h"
@@ -379,6 +380,32 @@ show_info (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+show_pipeline (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  GtkApplication *gtk_app = GTK_APPLICATION (user_data);
+  GtkWidget *pipeline_window;
+  GtkWindow *window;
+  ClapperPlayer *player;
+
+  window = gtk_application_get_active_window (gtk_app);
+
+  /* Already open */
+  if (CLAPPER_APP_IS_PIPELINE_WINDOW (window))
+    return;
+
+  while (window && !CLAPPER_APP_IS_WINDOW (window))
+    window = gtk_window_get_transient_for (window);
+
+  if (G_UNLIKELY (window == NULL))
+    return;
+
+  player = clapper_app_window_get_player (CLAPPER_APP_WINDOW (window));
+
+  pipeline_window = clapper_app_pipeline_window_new (gtk_app, player);
+  gtk_window_present (GTK_WINDOW (pipeline_window));
+}
+
+static void
 show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   GtkApplication *gtk_app = GTK_APPLICATION (user_data);
@@ -694,6 +721,7 @@ clapper_app_application_constructed (GObject *object)
     { "add-uri", add_uri, NULL, NULL, NULL },
     { "new-window", new_window, NULL, NULL, NULL },
     { "info", show_info, NULL, NULL, NULL },
+    { "pipeline", show_pipeline, NULL, NULL, NULL },
     { "preferences", show_preferences, NULL, NULL, NULL },
     { "about", show_about, NULL, NULL, NULL },
   };
@@ -702,6 +730,7 @@ clapper_app_application_constructed (GObject *object)
     { "app.add-uri", { "<Control>u", NULL, NULL }},
     { "app.new-window", { "<Control>n", NULL, NULL }},
     { "app.info", { "<Control>i", NULL, NULL }},
+    { "app.pipeline", { "<Control><Shift>p", NULL, NULL }},
     { "app.preferences", { "<Control>comma", NULL, NULL }},
     { "app.about", { "F1", NULL, NULL }},
     { "win.toggle-fullscreen", { "F11", "f", NULL }},

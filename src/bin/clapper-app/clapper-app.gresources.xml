@@ -7,6 +7,7 @@
     <file preprocess="xml-stripblanks">ui/clapper-app-headerbar.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-app-help-overlay.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-app-info-window.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-app-pipeline-window.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-app-queue-list.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-app-queue-list-item.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-app-queue-progression-item.ui</file>
