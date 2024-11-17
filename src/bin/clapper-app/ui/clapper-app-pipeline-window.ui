@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="clapper-app">
+  <template class="ClapperAppPipelineWindow" parent="AdwWindow">
+    <property name="title" translatable="yes">Pipeline</property>
+    <property name="width-request">280</property>
+    <property name="height-request">280</property>
+    <property name="default-width">1400</property>
+    <property name="default-height">720</property>
+    <property name="modal">true</property>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <child>
+              <object class="ClapperAppPipelineViewer" id="pipeline_viewer"/>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+    <style>
+      <class name="pipeline"/>
+    </style>
+  </template>
+</interface>

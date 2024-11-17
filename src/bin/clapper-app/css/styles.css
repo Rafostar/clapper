@@ -18,6 +18,10 @@ window.info .subcontent streamlist preferencesgroup {
   margin-bottom: 8px;
 }
 
+window.pipeline scrolledwindow {
+  background-color: white;
+}
+
 window.preferences .subcontent {
   margin: 16px;
 }
