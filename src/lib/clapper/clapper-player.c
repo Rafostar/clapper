@@ -2186,6 +2186,28 @@ clapper_player_add_feature (ClapperPlayer *self, ClapperFeature *feature)
   clapper_features_manager_add_feature (self->features_manager, feature, GST_OBJECT (self));
 }
 
+/**
+ * clapper_player_make_pipeline_graph:
+ * @player: a #ClapperPlayer
+ * @details: a #GstDebugGraphDetails level
+ *
+ * Make current #GStreamer pipeline graph in `graphviz` dot format.
+ *
+ * Applications can use tools like `graphviz` to display returned
+ * data or just save it to a file as-is for the user to do it manually.
+ *
+ * Returns: (transfer full): current pipeline description in dot format.
+ *
+ * Since: 0.8
+ */
+gchar *
+clapper_player_make_pipeline_graph (ClapperPlayer *self, GstDebugGraphDetails details)
+{
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  return gst_debug_bin_to_dot_data (GST_BIN (self->playbin), details);
+}
+
 static void
 clapper_player_thread_start (ClapperThreadedObject *threaded_object)
 {
