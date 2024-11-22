@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-04-21 20:51\n"
+"PO-Revision-Date: 2024-11-02 16:21\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -94,7 +94,7 @@ msgstr "Ortam"
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
-msgstr "Dosyya Ekle…"
+msgstr "Dosya Ekle…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65

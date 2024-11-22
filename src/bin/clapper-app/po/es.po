@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-04-21 20:51\n"
+"PO-Revision-Date: 2024-11-08 12:11\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
 msgid "Codec"
-msgstr ""
+msgstr "Códec"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
@@ -28,21 +28,21 @@ msgstr "Canales"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:36
 msgid "Sample Format"
-msgstr ""
+msgstr "Formato de muestreo"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:46
 msgid "Sample Rate"
-msgstr ""
+msgstr "Frecuencia de muestreo"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:58
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:51
 msgid "Bitrate"
-msgstr ""
+msgstr "Tasa de bits"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
@@ -52,7 +52,7 @@ msgstr "Preferencias"
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Atajos de teclado"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
@@ -71,11 +71,11 @@ msgstr "Mostrar atajos"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
-msgstr ""
+msgstr "Abrir preferencias"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Toggle fullscreen"
-msgstr "Fijar a pantalla completa"
+msgstr "Alternar pantalla completa"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:26
 msgid "Double tap | Double click"
@@ -83,28 +83,28 @@ msgstr "Doble toque | Doble clic "
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Quit"
-msgstr "Renunciar"
+msgstr "Salir"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
-msgstr "Media"
+msgstr "Medios"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
-msgstr ""
+msgstr "Agregar archivos…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
-msgstr ""
+msgstr "Agregar enlace URI…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Queue"
-msgstr ""
+msgstr "Cola"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:61
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
@@ -118,68 +118,68 @@ msgstr "Elemento anterior"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:88
 msgid "Change progression mode"
-msgstr ""
+msgstr "Cambiar modo de progresión"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:96
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
-msgstr "Reproducir"
+msgstr "Reproducción"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:99
 msgid "Toggle play"
-msgstr "Fijar a reproducir"
+msgstr "Alternar reproducción"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
 msgid "Tap | Left click"
-msgstr ""
+msgstr "Un toque | Clic izquierdo"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 msgid "Seek forward"
-msgstr "Buscar siguiente"
+msgstr "Avanzar"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 msgid "Double tap (right side) | Scroll right"
-msgstr ""
+msgstr "Dos toques (lado derecho) | Derecha"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Double tap (left side) | Scroll left"
-msgstr ""
+msgstr "Dos toques (lado izquierdo) | Izquierda"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
 msgid "Seek backward"
-msgstr "Buscar anterior"
+msgstr "Retroceder"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:138
 msgid "Volume up"
-msgstr "Volumen +"
+msgstr "Subir volumen"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
 msgid "Scroll up"
-msgstr ""
+msgstr "Arriba"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
 msgid "Volume down"
-msgstr "Volumen -"
+msgstr "Bajar volumen"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:146
 msgid "Scroll down"
-msgstr ""
+msgstr "Abajo"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:152
 msgid "Toggle mute"
-msgstr "Fijar a mudo"
+msgstr "Alternar silencio"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Speed up"
-msgstr ""
+msgstr "Acelerar"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Speed down"
-msgstr ""
+msgstr "Ralentizar"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:178
@@ -193,7 +193,7 @@ msgstr "Capítulo anterior"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
-msgstr ""
+msgstr "Información"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
@@ -202,20 +202,20 @@ msgstr "Título"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
 msgid "Container Format"
-msgstr ""
+msgstr "Formato de contenedor"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:63
 msgid "Duration"
-msgstr ""
+msgstr "Duración"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:81
 msgid "Streams"
-msgstr ""
+msgstr "Transmisiones"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:36
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:107
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:80
@@ -231,54 +231,54 @@ msgstr "Subtítulos"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
-msgstr ""
+msgstr "Reproducción de video"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:158
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:199
 msgid "Decoder"
-msgstr ""
+msgstr "Decodificador"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:170
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:211
 msgid "Filter"
-msgstr ""
+msgstr "Filtro"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr ""
+msgstr "Salida"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
-msgstr ""
+msgstr "Reproducción de audio"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:247
 msgid "Video Streams"
-msgstr ""
+msgstr "Transmisiones de vídeo"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:290
 msgid "Audio Streams"
-msgstr ""
+msgstr "Transmisiones de audio"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:333
 msgid "Subtitle Streams"
-msgstr ""
+msgstr "Transmisiones de subtítulos"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
-msgstr ""
+msgstr "Comienza por agregar medios a la cola de reproducción"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr "Buscando"
+msgstr "Navegación"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
-msgstr ""
+msgstr "Método"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr ""
+msgstr "Método preferido para desplazarse por la línea de tiempo"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
@@ -286,7 +286,7 @@ msgstr "Valor"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
-msgstr ""
+msgstr "Valor usado para navegar hacia adelante/atrás"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
@@ -294,7 +294,7 @@ msgstr "Unidad"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
-msgstr ""
+msgstr "Unidad del valor usado al avanzar/retroceder en la navegación"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
@@ -310,7 +310,7 @@ msgstr "Porcentaje"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
 msgid "Features"
-msgstr ""
+msgstr "Características"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:66
 msgid "Server"
@@ -318,28 +318,28 @@ msgstr "Servidor"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Control player remotely"
-msgstr "Controlar el reproductor remotamente"
+msgstr "Controlar el reproductor de forma remota"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:83
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:103
 msgid "Offset"
-msgstr ""
+msgstr "Compensación"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 msgid "Synchronisation offset in seconds between the audio and video streams"
-msgstr ""
+msgstr "Desfase de sincronización en segundos entre las secuencias de audio y video"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
-msgstr ""
+msgstr "Desfase de sincronización en segundos entre las secuencias de subtítulos y video"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
-msgstr "Fuente por defecto"
+msgstr "Fuente predeterminada"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
-msgstr ""
+msgstr "Fuente de texto utilizada para los subtítulos cuando el medio no especifica una explícitamente"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:137
 msgid "Tweaks"
@@ -347,60 +347,60 @@ msgstr "Retoques"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:144
 msgid "Plugin ranking"
-msgstr "Rango de enchufes"
+msgstr "Prioridades de complementos"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "Altera los rangos predeterminados de los enchufes de GStreamer"
+msgstr "Altera las prioridades predeterminadas de los complementos de GStreamer"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
 msgid "Plugin Ranking"
-msgstr ""
+msgstr "Prioridades de complementos"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:182
 msgid "Available plugins"
-msgstr ""
+msgstr "Complementos disponibles"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
+msgstr "Selecciona un complemento y su característica para sobrescribir su prioridad. Cuando varios elementos tienen capacidades similares, se prefiere el que tenga el valor más alto."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
-msgstr ""
+msgstr "Complemento"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:195
 msgid "Plugin feature"
-msgstr ""
+msgstr "Característica del complemento"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:213
 msgid "Add override"
-msgstr ""
+msgstr "Agregar excepción"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:229
 msgid "Rank overrides"
-msgstr ""
+msgstr "Excepciones de prioridades"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
 msgid "Add"
-msgstr ""
+msgstr "Agregar"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr ""
+msgstr "Progresión de la cola"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
-msgstr ""
+msgstr "Agregar enlace URI"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
+msgstr "Inserta un enlace URI para agregarlo a la cola de reproducción"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
-msgstr "Introducir la URI"
+msgstr "Introduce o arrastra aquí el enlace URI"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:22
 msgid "Cancel"
@@ -408,32 +408,33 @@ msgstr "Cancelar"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr ""
+msgstr "Resolución"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr ""
+msgstr "Fotogramas por segundo"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr ""
+msgstr "Formato de píxel"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:43
 msgid "translator-credits"
-msgstr "carlosgonz"
+msgstr "Mihai Pantazi\n"
+"carlosgonz"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
-msgstr ""
+msgstr "Hardware"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
-msgstr "Precisión"
+msgstr "Preciso"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
@@ -445,25 +446,25 @@ msgstr "Rápido"
 
 #: src/bin/clapper-app/clapper-app-utils.c:66
 msgid "No progression"
-msgstr ""
+msgstr "Sin progresión"
 
 #: src/bin/clapper-app/clapper-app-utils.c:67
 msgid "Consecutive"
-msgstr ""
+msgstr "Consecutivo"
 
 #: src/bin/clapper-app/clapper-app-utils.c:68
 msgid "Repeat item"
-msgstr ""
+msgstr "Repetir elemento"
 
 #: src/bin/clapper-app/clapper-app-utils.c:69
 msgid "Carousel"
-msgstr ""
+msgstr "Carrusel"
 
 #: src/bin/clapper-app/clapper-app-utils.c:70
 msgid "Shuffle"
-msgstr ""
+msgstr "Aleatorio"
 
 #: src/bin/clapper-app/clapper-app-window.c:828
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
+msgstr "Suéltalo sobre la barra de título para reproducir ahora o en cualquier otro lugar para agregar a la cola."
 
