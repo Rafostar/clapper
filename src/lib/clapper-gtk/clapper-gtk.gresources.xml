@@ -9,6 +9,7 @@
     <file preprocess="xml-stripblanks">ui/clapper-gtk-stream-list-item.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-title-header.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-video.ui</file>
+    <file preprocess="xml-stripblanks">ui/clapper-gtk-video-placeholder.ui</file>
     <file compressed="true">css/styles.css</file>
   </gresource>
 </gresources>
