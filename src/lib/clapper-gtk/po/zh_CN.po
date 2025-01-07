@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-05-20 10:17\n"
+"POT-Creation-Date: 2025-01-07 19:03+0100\n"
+"PO-Revision-Date: 2025-01-07 18:32\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -18,17 +18,17 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Video"
 msgstr "视频"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Audio"
 msgstr "音频"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:230
 msgid "Subtitles"
 msgstr "字幕"
 
@@ -47,6 +47,14 @@ msgstr "静音"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
 msgstr "重置"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
+msgid "External video output"
+msgstr ""
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
+msgid "Used video sink cannot be embedded within application window"
+msgstr ""
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
