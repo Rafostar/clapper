@@ -34,12 +34,12 @@ is_windows = ['windows'].contains(host_machine.system())
 
 if is_linux
   desktop_file = i18n.merge_file(
-          input: 'applications/com.github.rafostar.Clapper.desktop.in',
-         output: 'com.github.rafostar.Clapper.desktop',
-           type: 'desktop',
-         po_dir: '../po',
-        install: true,
-    install_dir: join_paths(prefix, datadir, 'applications')
+    input: 'applications/com.github.rafostar.Clapper.desktop.in',
+    output: 'com.github.rafostar.Clapper.desktop',
+    type: 'desktop',
+    po_dir: '../po',
+    install: true,
+    install_dir: join_paths(prefix, datadir, 'applications'),
   )
   desktop_utils = find_program('desktop-file-validate', required: false)
   if desktop_utils.found()
