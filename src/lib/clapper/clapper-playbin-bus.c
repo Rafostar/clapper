@@ -755,7 +755,7 @@ _handle_stream_change_msg (GstMessage *msg,
           && player->current_state >= GST_STATE_PAUSED) {
         /* XXX: I am not sure if we "officially" need to flush seek after select
          * streams, but as of GStreamer 1.22 it doesn't work otherwise. */
-        _perform_flush_seek (player);
+        player->pending_flush = TRUE;
       }
       g_list_free (list);
     }
@@ -1020,6 +1020,13 @@ _handle_streams_selected_msg (GstMessage *msg, ClapperPlayer *player)
     /* In playbin2 we do not know real stream IDs, so
      * we iterate in search for all active ones */
     clapper_player_playbin_update_current_decoders (player);
+  }
+
+  if (player->pending_flush) {
+    player->pending_flush = FALSE;
+
+    if (player->current_state >= GST_STATE_PAUSED)
+      _perform_flush_seek (player);
   }
 }
 

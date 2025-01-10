@@ -751,6 +751,7 @@ clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
   GST_DEBUG_OBJECT (self, "Reset");
 
   self->had_error = FALSE;
+  self->pending_flush = FALSE;
   gst_clear_object (&self->played_item);
 
   if (pending_dispose) {

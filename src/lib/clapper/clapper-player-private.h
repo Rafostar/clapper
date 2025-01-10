@@ -85,6 +85,7 @@ struct _ClapperPlayer
   gboolean seeking; // during seek operation
   gboolean speed_changing; // during rate change operation
   gboolean pending_eos; // when pausing due to EOS
+  gboolean pending_flush; // after another stream selection
   gint eos; // atomic integer
 
   /* Set adaptive props immediately */
