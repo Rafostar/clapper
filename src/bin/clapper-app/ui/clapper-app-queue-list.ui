@@ -183,5 +183,11 @@
         <attribute name="action">app.add-uri</attribute>
       </item>
     </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Clear Queue</attribute>
+        <attribute name="action">app.clear-queue</attribute>
+      </item>
+    </section>
   </menu>
 </interface>

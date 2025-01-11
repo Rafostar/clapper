@@ -334,6 +334,23 @@ add_uri (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+clear_queue (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  GtkApplication *gtk_app = GTK_APPLICATION (user_data);
+  GtkWindow *window = gtk_application_get_active_window (gtk_app);
+  ClapperPlayer *player;
+  ClapperQueue *queue;
+
+  while (window && !CLAPPER_APP_IS_WINDOW (window))
+    window = gtk_window_get_transient_for (window);
+
+  player = clapper_app_window_get_player (CLAPPER_APP_WINDOW (window));
+  queue = clapper_player_get_queue (player);
+
+  clapper_queue_clear (queue);
+}
+
+static void
 new_window (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   GtkApplication *gtk_app = GTK_APPLICATION (user_data);
@@ -692,6 +709,7 @@ clapper_app_application_constructed (GObject *object)
   static const GActionEntry app_actions[] = {
     { "add-files", add_files, NULL, NULL, NULL },
     { "add-uri", add_uri, NULL, NULL, NULL },
+    { "clear-queue", clear_queue, NULL, NULL, NULL },
     { "new-window", new_window, NULL, NULL, NULL },
     { "info", show_info, NULL, NULL, NULL },
     { "preferences", show_preferences, NULL, NULL, NULL },
