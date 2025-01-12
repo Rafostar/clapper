@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-11 14:36\n"
+"PO-Revision-Date: 2025-01-12 13:02\n"
 "Last-Translator: \n"
 "Language-Team: Finnish\n"
 "Language: fi_FI\n"
@@ -24,21 +24,21 @@ msgstr ""
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
-msgstr ""
+msgstr "Multimediasoitin"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
 msgid "Play videos and music"
-msgstr ""
+msgstr "Toista videoita ja musiikkia"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr ""
+msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;elokuva;sarja;soittolista;levy;albumi;musiikki;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "Uusi ikkuna"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -90,7 +90,7 @@ msgstr "Yleiset"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "Uusi ikkuna"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -118,7 +118,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
 msgid "Middle click"
-msgstr ""
+msgstr "Hiiren keskinappi"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
@@ -431,7 +431,7 @@ msgstr "Jonon eteneminen"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "Tyhjennä jono"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
@@ -468,7 +468,7 @@ msgstr "Jiri Grönroos"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
-msgstr ""
+msgstr "Luo uusi ikkuna"
 
 #: src/bin/clapper-app/clapper-app-application.c:697
 msgid "Add media to queue in primary application instance"
@@ -492,7 +492,7 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-application.c:702
 msgid "Set window to be fullscreen"
-msgstr ""
+msgstr "Aseta ikkuna koko näytön tilaan"
 
 #: src/bin/clapper-app/clapper-app-application.c:703
 msgid "Video filter to use (\"none\" to disable)"
