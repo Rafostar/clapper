@@ -23,8 +23,124 @@
 #include "clapper-app-utils.h"
 #include "clapper-app-media-item-box.h"
 
-/* Useful only on Windows */
 #ifdef G_OS_WIN32
+#include <windows.h>
+#ifdef HAVE_WIN_PROCESS_THREADS_API
+#include <processthreadsapi.h>
+#endif
+#ifdef HAVE_WIN_TIME_API
+#include <timeapi.h>
+#endif
+#endif
+
+#define GST_CAT_DEFAULT clapper_app_utils_debug
+GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+
+void
+clapper_app_utils_debug_init (void)
+{
+  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperapputils", 0,
+      "Clapper App Utils");
+}
+
+/* Windows specific functions */
+#ifdef G_OS_WIN32
+
+/*
+ * clapper_app_utils_win_enforce_hi_res_clock:
+ *
+ * Enforce high resolution clock by explicitly disabling Windows
+ * timer resolution power throttling. When disabled, system remembers
+ * and honors any previous timer resolution request by the process.
+ *
+ * By default, Windows 11 may automatically ignore the timer
+ * resolution requests in certain scenarios.
+ */
+void
+clapper_app_utils_win_enforce_hi_res_clock (void)
+{
+#ifdef HAVE_WIN_PROCESS_THREADS_API
+  PROCESS_POWER_THROTTLING_STATE PowerThrottling;
+  RtlZeroMemory (&PowerThrottling, sizeof (PowerThrottling));
+  gboolean success;
+
+  PowerThrottling.Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION;
+  PowerThrottling.ControlMask = PROCESS_POWER_THROTTLING_IGNORE_TIMER_RESOLUTION;
+  PowerThrottling.StateMask = 0; // Always honor timer resolution requests
+
+  success = (gboolean) SetProcessInformation(
+      GetCurrentProcess (),
+      ProcessPowerThrottling,
+      &PowerThrottling,
+      sizeof (PowerThrottling));
+
+  /* Not an error. Older Windows does not have this functionality, but
+   * also honor hi-res clock by default anyway, so do not print then. */
+  GST_INFO ("Windows hi-res clock support is %senforced",
+      (success) ? "" : "NOT ");
+#endif
+}
+
+/*
+ * clapper_app_utils_win_hi_res_clock_start:
+ *
+ * Start Windows high resolution clock which will improve
+ * accuracy of various Windows timer APIs and precision
+ * of #GstSystemClock during playback.
+ *
+ * On Windows 10 version 2004 (and older), this function affects
+ * a global Windows setting. On any other (newer) version this
+ * will only affect a single process.
+ *
+ * Returns: Timer resolution period value.
+ */
+guint
+clapper_app_utils_win_hi_res_clock_start (void)
+{
+  guint resolution = 0;
+
+#ifdef HAVE_WIN_TIME_API
+  TIMECAPS time_caps;
+  MMRESULT res;
+
+  if ((res = timeGetDevCaps (&time_caps, sizeof (TIMECAPS))) != TIMERR_NOERROR) {
+    GST_WARNING ("Could not query timer resolution, code: %u", res);
+    return 0;
+  }
+
+  resolution = MIN (MAX (time_caps.wPeriodMin, 1), time_caps.wPeriodMax);
+
+  if ((res = timeBeginPeriod (resolution)) != TIMERR_NOERROR) {
+    GST_WARNING ("Could not request timer resolution, code: %u", res);
+    return 0;
+  }
+
+  GST_INFO ("Started Windows hi-res clock, precision: %ums", resolution);
+#endif
+
+  return resolution;
+}
+
+/*
+ * clapper_app_utils_win_hi_res_clock_stop:
+ * @resolution: started resolution value (non-zero)
+ *
+ * Stop previously started Microsoft Windows high resolution clock.
+ */
+void
+clapper_app_utils_win_hi_res_clock_stop (guint resolution)
+{
+#ifdef HAVE_WIN_TIME_API
+  MMRESULT res;
+
+  if ((res = timeEndPeriod (resolution)) == TIMERR_NOERROR)
+    GST_INFO ("Stopped Windows hi-res clock");
+  else
+    GST_ERROR ("Could not stop hi-res clock, code: %u", res);
+#endif
+}
+
+/* Extensions are used only on Windows */
 const gchar *const *
 clapper_app_utils_get_extensions (void)
 {
@@ -45,7 +161,7 @@ clapper_app_utils_get_subtitles_extensions (void)
 
   return subs_extensions;
 }
-#endif
+#endif // G_OS_WIN32
 
 const gchar *const *
 clapper_app_utils_get_mime_types (void)
