@@ -80,6 +80,22 @@ clapperapp_c_args = [
   '-DGST_USE_UNSTABLE_API',
 ]
 
+is_windows = ['windows'].contains(host_machine.system())
+
+if is_windows
+  clapperapp_c_args += ['-D_WIN32_WINNT=_WIN32_WINNT_WIN8']
+  kernel32_dep = cc.find_library('kernel32', required: false)
+  if kernel32_dep.found() and cc.has_header('processthreadsapi.h')
+    clapperapp_deps += kernel32_dep
+    clapperapp_c_args += ['-DHAVE_WIN_PROCESS_THREADS_API']
+  endif
+  winmm_dep = cc.find_library('winmm', required: false)
+  if winmm_dep.found() and cc.has_header('timeapi.h')
+    clapperapp_deps += winmm_dep
+    clapperapp_c_args += ['-DHAVE_WIN_TIME_API']
+  endif
+endif
+
 executable(
   meson.project_name(),
   clapperapp_sources,
@@ -90,7 +106,7 @@ executable(
   install_dir: bindir,
   win_subsystem: 'windows',
 )
-if ['windows'].contains(host_machine.system())
+if is_windows
   executable(
     meson.project_name() + '-console',
     clapperapp_sources,

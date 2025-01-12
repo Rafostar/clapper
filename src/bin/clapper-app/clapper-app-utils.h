@@ -26,7 +26,18 @@ G_BEGIN_DECLS
 
 typedef void (* ClapperAppUtilsIterRanks) (const gchar *feature_name, GstRank rank, gboolean from_env, gpointer user_data);
 
+void clapper_app_utils_debug_init (void);
+
 #ifdef G_OS_WIN32
+G_GNUC_INTERNAL
+void clapper_app_utils_win_enforce_hi_res_clock (void);
+
+G_GNUC_INTERNAL
+guint clapper_app_utils_win_hi_res_clock_start (void);
+
+G_GNUC_INTERNAL
+void clapper_app_utils_win_hi_res_clock_stop (guint resolution);
+
 G_GNUC_INTERNAL
 const gchar *const * clapper_app_utils_get_extensions (void);
 

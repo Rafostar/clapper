@@ -26,6 +26,7 @@
 
 #include "clapper-app-application.h"
 #include "clapper-app-types.h"
+#include "clapper-app-utils.h"
 
 gint
 main (gint argc, gchar **argv)
@@ -34,7 +35,13 @@ main (gint argc, gchar **argv)
   GApplication *application;
   gint status;
 
+#ifdef G_OS_WIN32
+  guint resolution = 0;
+#endif
+
+#ifndef G_OS_WIN32
   g_setenv ("GSK_RENDERER", "gl", FALSE);
+#endif
 
   setlocale (LC_ALL, "");
   if (!(clapper_ldir = g_getenv ("CLAPPER_APP_OVERRIDE_LOCALEDIR")))
@@ -48,13 +55,24 @@ main (gint argc, gchar **argv)
   adw_init ();
 
   clapper_app_types_init ();
+  clapper_app_utils_debug_init ();
 
   g_set_application_name ("Clapper");
+
+#ifdef G_OS_WIN32
+  clapper_app_utils_win_enforce_hi_res_clock ();
+  resolution = clapper_app_utils_win_hi_res_clock_start ();
+#endif
 
   application = clapper_app_application_new ();
 
   status = g_application_run (application, argc, argv);
   g_object_unref (application);
+
+#ifdef G_OS_WIN32
+  if (resolution > 0)
+    clapper_app_utils_win_hi_res_clock_stop (resolution);
+#endif
 
   return status;
 }
