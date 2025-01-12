@@ -39,7 +39,9 @@ main (gint argc, gchar **argv)
   guint resolution = 0;
 #endif
 
+#ifndef G_OS_WIN32
   g_setenv ("GSK_RENDERER", "gl", FALSE);
+#endif
 
   setlocale (LC_ALL, "");
   if (!(clapper_ldir = g_getenv ("CLAPPER_APP_OVERRIDE_LOCALEDIR")))
