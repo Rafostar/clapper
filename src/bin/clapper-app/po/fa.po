@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-13 14:39\n"
+"PO-Revision-Date: 2025-01-13 15:41\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -81,7 +81,7 @@ msgstr "میان‌برهای صفحه‌کلید"
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
 msgid "About Clapper"
-msgstr "دربارهٔ کلپِر"
+msgstr "دربارهٔ تخته‌نشان"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
@@ -431,7 +431,7 @@ msgstr "پیشرفت صف"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "پاک‌سازی صف"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
@@ -469,47 +469,47 @@ msgstr "سجاد موسوی نژاد <ssmns@outlook.com>\n"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
-msgstr ""
+msgstr "ایجاد پنجره‌ای جدید"
 
 #: src/bin/clapper-app/clapper-app-application.c:697
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "افزودن رسانه به صف نمونهٔ اصلی برنامه"
 
 #: src/bin/clapper-app/clapper-app-application.c:698
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr ""
+msgstr "حجم صدای تنظیمی (بازهٔ 0 تا 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:699
 msgid "Playback speed to set (0.05 - 2.0 range)"
-msgstr ""
+msgstr "سرعت پخش تنظیمی (بازهٔ 0.05 تا 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:700
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "نرخ بیت نخستین برای جریان سازوار"
 
 #: src/bin/clapper-app/clapper-app-application.c:701
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "حالت نخستین پیشرفت صف (0=هیچ، 1=متوالی، 2=تکرار مورد، 3=چرخ‌فلک، 4=بر زدن)"
 
 #: src/bin/clapper-app/clapper-app-application.c:702
 msgid "Set window to be fullscreen"
-msgstr ""
+msgstr "تنظیم پنجره به تمام‌صفحه"
 
 #: src/bin/clapper-app/clapper-app-application.c:703
 msgid "Video filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "پالایهٔ ویدیویی برای استفاده (none برای از کار انداختن)"
 
 #: src/bin/clapper-app/clapper-app-application.c:704
 msgid "Audio filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "پالایهٔ صوتی برای استفاده (none برای از کار انداختن)"
 
 #: src/bin/clapper-app/clapper-app-application.c:705
 msgid "Video sink to use"
-msgstr ""
+msgstr "دستگاه ویدیویی برای استفاده"
 
 #: src/bin/clapper-app/clapper-app-application.c:706
 msgid "Audio sink to use"
-msgstr ""
+msgstr "دستگاه صوتی برای استفاده"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
