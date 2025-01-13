@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 19:52+0200\n"
+"POT-Creation-Date: 2025-01-07 19:03+0100\n"
 "PO-Revision-Date: 2024-04-12 19:44\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
@@ -18,17 +18,17 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Video"
 msgstr "Video"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Audio"
 msgstr "Audio"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:230
 msgid "Subtitles"
 msgstr "Untertitel"
 
@@ -47,6 +47,14 @@ msgstr "Stummschalten"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
 msgstr "Zurücksetzen"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
+msgid "External video output"
+msgstr "Externe Videoausgabe"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
+msgid "Used video sink cannot be embedded within application window"
+msgstr "Der verwendete Videoabfluss kann nicht in einem Anwendungsfenster eingebettet werden"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
@@ -78,4 +86,3 @@ msgstr "Keine Medien"
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
 msgstr "Unbekannter Titel"
-
