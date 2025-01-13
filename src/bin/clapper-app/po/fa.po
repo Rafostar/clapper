@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-11 14:36\n"
+"PO-Revision-Date: 2025-01-13 14:39\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -20,25 +20,25 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "تخته‌نشان"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
-msgstr ""
+msgstr "پخش کنندهٔ چندرسانه‌ای"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
 msgid "Play videos and music"
-msgstr ""
+msgstr "پخش ویدیو و آهنگ"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr ""
+msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;ویدیو;فیلم;کلیپ;سریتال;پخش;تلویزیون;آلبوم;آهنگ;گنوم;کلاکت;کلپر;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "پنجرهٔ جدید"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -90,7 +90,7 @@ msgstr "عمومی"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "پنجرهٔ جدید"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -110,15 +110,15 @@ msgstr "دو بار ضربه | دو بار کلیک"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Unfullscreen"
-msgstr ""
+msgstr "ناتمام‌صفحه"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Auto window resize"
-msgstr ""
+msgstr "تغییر اندازهٔ خودکار پنجره"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
 msgid "Middle click"
-msgstr ""
+msgstr "کلیک وسط"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
