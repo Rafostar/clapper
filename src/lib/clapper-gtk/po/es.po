@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-11-07 22:31\n"
+"POT-Creation-Date: 2025-01-07 19:03+0100\n"
+"PO-Revision-Date: 2025-01-11 17:41\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -18,17 +18,17 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Video"
-msgstr "Video"
+msgstr "Vídeo"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Audio"
 msgstr "Audio"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:230
 msgid "Subtitles"
 msgstr "Subtítulos"
 
@@ -47,6 +47,14 @@ msgstr "Silenciar"
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
 msgstr "Restablecer"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
+msgid "External video output"
+msgstr "Salida de vídeo externa"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
+msgid "Used video sink cannot be embedded within application window"
+msgstr "La salida de vídeo utilizada no se puede mostrar en la ventana de la aplicación"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"

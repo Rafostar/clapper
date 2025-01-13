@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-11-02 16:21\n"
+"POT-Creation-Date: 2025-01-11 15:22+0100\n"
+"PO-Revision-Date: 2025-01-11 22:52\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -16,6 +16,29 @@ msgstr ""
 "X-Crowdin-Language: tr\n"
 "X-Crowdin-File: /master/src/bin/clapper-app/po/clapper-app.pot\n"
 "X-Crowdin-File-ID: 48\n"
+
+#. Translators: Do NOT translate app name!
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
+msgid "Clapper"
+msgstr "Clapper"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
+msgid "Multimedia Player"
+msgstr "Çoklu Ortam Oynatıcı"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
+msgid "Play videos and music"
+msgstr "Videoları ve müzikleri oynat"
+
+#. Translators: Search terms to find this application. Do NOT translate the semicolons!
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
+msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
+msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;Vidyo;Klip;Dizi;Oynatıcı;Oynatma Listesi;Çalma Listesi;Disk;Albüm;Müzik;"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+msgid "New Window"
+msgstr "Yeni Pencere"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -44,18 +67,18 @@ msgstr "Bit Hızı"
 msgid "Language"
 msgstr "Dil"
 
-#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:189
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:193
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
 msgstr "Klavye Kısayolları"
 
 #. TRANSLATORS: Please do not translate application name
-#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
 msgid "About Clapper"
 msgstr "Clapper Hakkında"
@@ -66,128 +89,144 @@ msgid "General"
 msgstr "Genel"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
-msgid "Show shortcuts"
-msgstr "Kısayolları göster"
+msgid "New window"
+msgstr "Yeni pencere"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
 msgstr "Tercihleri aç"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
+msgid "Show shortcuts"
+msgstr "Kısayolları göster"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Toggle fullscreen"
 msgstr "Tam ekranı aç/kapat"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:26
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Double tap | Double click"
 msgstr "Çift dokun | Çift tıkla"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
+msgid "Unfullscreen"
+msgstr "Tam ekrandan çık"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
+msgid "Auto window resize"
+msgstr "Kendiliğinden pencereyi yeniden boyutlandır"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
+msgid "Middle click"
+msgstr "Orta tıklama"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
 msgstr "Çık"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:59
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
 msgstr "Ortam"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:62
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
 msgstr "Dosya Ekle…"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
 msgstr "URI Ekle…"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:76
 msgid "Queue"
 msgstr "Kuyruk"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:61
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:80
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:87
 msgid "Next item"
 msgstr "Sonraki öğe"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:75
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:94
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:101
 msgid "Previous item"
 msgstr "Önceki öğe"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:88
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 msgid "Change progression mode"
 msgstr "İlerleme kipini değiştir"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:96
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
 msgstr "Oynatma"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:99
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:118
 msgid "Toggle play"
 msgstr "Oynatmayı başlat/durdur"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:119
 msgid "Tap | Left click"
 msgstr "Dokunma | Sol tık"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:126
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:134
 msgid "Seek forward"
 msgstr "İleri sar"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:127
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:151
 msgid "Double tap (right side) | Scroll right"
 msgstr "İki kez dokunma (sağ taraf) | Sağa kaydır"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:135
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:143
 msgid "Double tap (left side) | Scroll left"
 msgstr "İki kez dokunma (sol taraf) | Sola kaydır"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:142
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:150
 msgid "Seek backward"
 msgstr "Geri sar"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:138
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Volume up"
 msgstr "Sesi artır"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Scroll up"
 msgstr "Yukarı kaydır"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Volume down"
 msgstr "Sesi kıs"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:146
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:165
 msgid "Scroll down"
 msgstr "Aşağı kaydır"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:152
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Toggle mute"
 msgstr "Sesi kapat/aç"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Speed up"
 msgstr "Hızlandır"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:183
 msgid "Speed down"
 msgstr "Yavaşlat"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:178
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:190
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:197
 msgid "Next chapter"
 msgstr "Sonraki parça"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:185
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:192
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:204
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:211
 msgid "Previous chapter"
 msgstr "Önceki parça"
 
@@ -390,6 +429,10 @@ msgstr "Ekle"
 msgid "Queue progression"
 msgstr "Kuyruk ilerlemesi"
 
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
+msgid "Clear Queue"
+msgstr "Kuyruğu Temizle"
+
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
 msgstr "URI Ekle"
@@ -419,9 +462,53 @@ msgid "Pixel Format"
 msgstr "Piksel Biçimi"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
-#: src/bin/clapper-app/clapper-app-about-window.c:43
+#: src/bin/clapper-app/clapper-app-about-window.c:47
 msgid "translator-credits"
 msgstr "Clapper Çevirilerine Katkıda Bulunan Herkese Çok Teşekkür Ederiz"
+
+#: src/bin/clapper-app/clapper-app-application.c:696
+msgid "Create a new window"
+msgstr "Yeni pencere oluştur"
+
+#: src/bin/clapper-app/clapper-app-application.c:697
+msgid "Add media to queue in primary application instance"
+msgstr "Birincil uygulama örneğinde kuyruğa ortam ekle"
+
+#: src/bin/clapper-app/clapper-app-application.c:698
+msgid "Audio volume to set (0 - 2.0 range)"
+msgstr "Ayarlanacak ses düzeyi (0 - 2.0 arası)"
+
+#: src/bin/clapper-app/clapper-app-application.c:699
+msgid "Playback speed to set (0.05 - 2.0 range)"
+msgstr "Ayarlanacak oynatma hızı (0.05 - 2.0 arası)"
+
+#: src/bin/clapper-app/clapper-app-application.c:700
+msgid "Initial bitrate for adaptive streaming"
+msgstr "Uyarlanabilir akış için başlangıç bit hızı"
+
+#: src/bin/clapper-app/clapper-app-application.c:701
+msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
+msgstr "İlk kuyruk ilerleme kipi (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
+
+#: src/bin/clapper-app/clapper-app-application.c:702
+msgid "Set window to be fullscreen"
+msgstr "Pencereyi tam ekran olarak ayarla"
+
+#: src/bin/clapper-app/clapper-app-application.c:703
+msgid "Video filter to use (\"none\" to disable)"
+msgstr "Kullanılacak video süzgeci (devre dışı bırakmak için \"none\")"
+
+#: src/bin/clapper-app/clapper-app-application.c:704
+msgid "Audio filter to use (\"none\" to disable)"
+msgstr "Kullanılacak ses süzgeci (devre dışı bırakmak için \"none\")"
+
+#: src/bin/clapper-app/clapper-app-application.c:705
+msgid "Video sink to use"
+msgstr "Kullanılacak video alıcısı"
+
+#: src/bin/clapper-app/clapper-app-application.c:706
+msgid "Audio sink to use"
+msgstr "Kullanılacak ses alıcısı"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
@@ -443,27 +530,27 @@ msgstr "Normal"
 msgid "Fast"
 msgstr "Hızlı"
 
-#: src/bin/clapper-app/clapper-app-utils.c:66
+#: src/bin/clapper-app/clapper-app-utils.c:90
 msgid "No progression"
 msgstr "İlerleme yok"
 
-#: src/bin/clapper-app/clapper-app-utils.c:67
+#: src/bin/clapper-app/clapper-app-utils.c:91
 msgid "Consecutive"
 msgstr "Ardaşık"
 
-#: src/bin/clapper-app/clapper-app-utils.c:68
+#: src/bin/clapper-app/clapper-app-utils.c:92
 msgid "Repeat item"
 msgstr "Ögeyi Yinele"
 
-#: src/bin/clapper-app/clapper-app-utils.c:69
+#: src/bin/clapper-app/clapper-app-utils.c:93
 msgid "Carousel"
 msgstr "Karosel"
 
-#: src/bin/clapper-app/clapper-app-utils.c:70
+#: src/bin/clapper-app/clapper-app-utils.c:94
 msgid "Shuffle"
 msgstr "Karıştır"
 
-#: src/bin/clapper-app/clapper-app-window.c:828
+#: src/bin/clapper-app/clapper-app-window.c:1036
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr "Şimdi oynatmak için başlık çubuğuna ya da sıraya eklemek için başka bir yere bırakın."
 

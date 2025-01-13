@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-21 20:22+0200\n"
-"PO-Revision-Date: 2024-09-07 11:10\n"
+"POT-Creation-Date: 2025-01-11 15:22+0100\n"
+"PO-Revision-Date: 2025-01-13 15:41\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -16,6 +16,29 @@ msgstr ""
 "X-Crowdin-Language: fa\n"
 "X-Crowdin-File: /master/src/bin/clapper-app/po/clapper-app.pot\n"
 "X-Crowdin-File-ID: 48\n"
+
+#. Translators: Do NOT translate app name!
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
+msgid "Clapper"
+msgstr "تخته‌نشان"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
+msgid "Multimedia Player"
+msgstr "پخش کنندهٔ چندرسانه‌ای"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
+msgid "Play videos and music"
+msgstr "پخش ویدیو و آهنگ"
+
+#. Translators: Search terms to find this application. Do NOT translate the semicolons!
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
+msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
+msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;ویدیو;فیلم;کلیپ;سریتال;پخش;تلویزیون;آلبوم;آهنگ;گنوم;کلاکت;کلپر;"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+msgid "New Window"
+msgstr "پنجرهٔ جدید"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -44,21 +67,21 @@ msgstr "نرخ بیت"
 msgid "Language"
 msgstr "زبان"
 
-#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:189
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
 msgid "Preferences"
 msgstr "ترجیحات"
 
-#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:187
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:193
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
 msgstr "میان‌برهای صفحه‌کلید"
 
 #. TRANSLATORS: Please do not translate application name
-#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:194
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
 msgid "About Clapper"
-msgstr "دربارهٔ کلپِر"
+msgstr "دربارهٔ تخته‌نشان"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
@@ -66,128 +89,144 @@ msgid "General"
 msgstr "عمومی"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
-msgid "Show shortcuts"
-msgstr "نمایش میان‌برها"
+msgid "New window"
+msgstr "پنجرهٔ جدید"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
 msgstr "گشودن ترجیحات"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
+msgid "Show shortcuts"
+msgstr "نمایش میان‌برها"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Toggle fullscreen"
 msgstr "تغییر حالت تمام‌صفحه"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:26
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Double tap | Double click"
 msgstr "دو بار ضربه | دو بار کلیک"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
+msgid "Unfullscreen"
+msgstr "ناتمام‌صفحه"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
+msgid "Auto window resize"
+msgstr "تغییر اندازهٔ خودکار پنجره"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
+msgid "Middle click"
+msgstr "کلیک وسط"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
 msgstr "خروج"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:40
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:59
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
 msgstr "رسانه"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:43
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:62
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
 msgstr "افزودن پرونده‌ها…"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:49
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
 msgstr "افزودن نشانی…"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:76
 msgid "Queue"
 msgstr "صف"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:61
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:80
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:87
 msgid "Next item"
 msgstr "مورد بعدی"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:75
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:94
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:101
 msgid "Previous item"
 msgstr "مورد قبل"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:88
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 msgid "Change progression mode"
 msgstr "تغییر خالت پیشرفت"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:96
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
 msgstr "بازپخش"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:99
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:118
 msgid "Toggle play"
 msgstr "تغییر پخش"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:119
 msgid "Tap | Left click"
 msgstr "ضربه |‌ کلیک راست"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:126
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:134
 msgid "Seek forward"
 msgstr "پیمایش به جلو"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:108
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:127
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:151
 msgid "Double tap (right side) | Scroll right"
 msgstr "دوبار ضربه (سمت راست) |‌ لغزش راست"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:116
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:135
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:143
 msgid "Double tap (left side) | Scroll left"
 msgstr "دوبار ضربه (سمت چپ) |‌ لغزش چپ"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:123
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:131
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:142
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:150
 msgid "Seek backward"
 msgstr "پیمایش به عقب"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:138
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Volume up"
 msgstr "افزایش صدا"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:139
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Scroll up"
 msgstr "لغزش به بالا"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:145
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Volume down"
 msgstr "کاهش صدا"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:146
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:165
 msgid "Scroll down"
 msgstr "لغزش به پایین"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:152
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Toggle mute"
 msgstr "تغییر وضعیت بیصدا"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Speed up"
 msgstr "سرعت بخشیدن"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:183
 msgid "Speed down"
 msgstr "کاهش سرعت"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:178
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:190
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:197
 msgid "Next chapter"
 msgstr "فصل بعدی"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:185
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:192
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:204
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:211
 msgid "Previous chapter"
 msgstr "بخش قبلی"
 
@@ -390,6 +429,10 @@ msgstr "افزودن"
 msgid "Queue progression"
 msgstr "پیشرفت صف"
 
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
+msgid "Clear Queue"
+msgstr "پاک‌سازی صف"
+
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
 msgstr "افزودن نشانی"
@@ -419,10 +462,54 @@ msgid "Pixel Format"
 msgstr "قالب پیکسلی"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
-#: src/bin/clapper-app/clapper-app-about-window.c:43
+#: src/bin/clapper-app/clapper-app-about-window.c:47
 msgid "translator-credits"
 msgstr "سجاد موسوی نژاد <ssmns@outlook.com>\n"
 "دانیال بهزادی <dani.behzi@ubuntu.com>"
+
+#: src/bin/clapper-app/clapper-app-application.c:696
+msgid "Create a new window"
+msgstr "ایجاد پنجره‌ای جدید"
+
+#: src/bin/clapper-app/clapper-app-application.c:697
+msgid "Add media to queue in primary application instance"
+msgstr "افزودن رسانه به صف نمونهٔ اصلی برنامه"
+
+#: src/bin/clapper-app/clapper-app-application.c:698
+msgid "Audio volume to set (0 - 2.0 range)"
+msgstr "حجم صدای تنظیمی (بازهٔ 0 تا 2.0)"
+
+#: src/bin/clapper-app/clapper-app-application.c:699
+msgid "Playback speed to set (0.05 - 2.0 range)"
+msgstr "سرعت پخش تنظیمی (بازهٔ 0.05 تا 2.0)"
+
+#: src/bin/clapper-app/clapper-app-application.c:700
+msgid "Initial bitrate for adaptive streaming"
+msgstr "نرخ بیت نخستین برای جریان سازوار"
+
+#: src/bin/clapper-app/clapper-app-application.c:701
+msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
+msgstr "حالت نخستین پیشرفت صف (0=هیچ، 1=متوالی، 2=تکرار مورد، 3=چرخ‌فلک، 4=بر زدن)"
+
+#: src/bin/clapper-app/clapper-app-application.c:702
+msgid "Set window to be fullscreen"
+msgstr "تنظیم پنجره به تمام‌صفحه"
+
+#: src/bin/clapper-app/clapper-app-application.c:703
+msgid "Video filter to use (\"none\" to disable)"
+msgstr "پالایهٔ ویدیویی برای استفاده (none برای از کار انداختن)"
+
+#: src/bin/clapper-app/clapper-app-application.c:704
+msgid "Audio filter to use (\"none\" to disable)"
+msgstr "پالایهٔ صوتی برای استفاده (none برای از کار انداختن)"
+
+#: src/bin/clapper-app/clapper-app-application.c:705
+msgid "Video sink to use"
+msgstr "دستگاه ویدیویی برای استفاده"
+
+#: src/bin/clapper-app/clapper-app-application.c:706
+msgid "Audio sink to use"
+msgstr "دستگاه صوتی برای استفاده"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
@@ -444,27 +531,27 @@ msgstr "معمولی"
 msgid "Fast"
 msgstr "تند"
 
-#: src/bin/clapper-app/clapper-app-utils.c:66
+#: src/bin/clapper-app/clapper-app-utils.c:90
 msgid "No progression"
 msgstr "بدون پیشرفت"
 
-#: src/bin/clapper-app/clapper-app-utils.c:67
+#: src/bin/clapper-app/clapper-app-utils.c:91
 msgid "Consecutive"
 msgstr "متوالی"
 
-#: src/bin/clapper-app/clapper-app-utils.c:68
+#: src/bin/clapper-app/clapper-app-utils.c:92
 msgid "Repeat item"
 msgstr "تکرار مورد"
 
-#: src/bin/clapper-app/clapper-app-utils.c:69
+#: src/bin/clapper-app/clapper-app-utils.c:93
 msgid "Carousel"
 msgstr "چرخ فلک"
 
-#: src/bin/clapper-app/clapper-app-utils.c:70
+#: src/bin/clapper-app/clapper-app-utils.c:94
 msgid "Shuffle"
 msgstr "بر زدن"
 
-#: src/bin/clapper-app/clapper-app-window.c:828
+#: src/bin/clapper-app/clapper-app-window.c:1036
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr "انداختن روی نوار عنوان برای پخش اکنون یا هر جای دیگری برای صف کردن."
 

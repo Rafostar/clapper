@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 19:52+0200\n"
-"PO-Revision-Date: 2024-09-07 11:10\n"
+"POT-Creation-Date: 2025-01-07 19:03+0100\n"
+"PO-Revision-Date: 2025-01-13 15:41\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -18,17 +18,17 @@ msgstr ""
 "X-Crowdin-File-ID: 46\n"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:227
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Video"
 msgstr "ویدیو"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Audio"
 msgstr "صدا"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
-#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
+#: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:230
 msgid "Subtitles"
 msgstr "زیرنویس‌ها"
 
@@ -48,9 +48,17 @@ msgstr "خموش"
 msgid "Reset"
 msgstr "بازنشانی"
 
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
+msgid "External video output"
+msgstr "خروجی ویدیویی خارجی"
+
+#: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
+msgid "Used video sink cannot be embedded within application window"
+msgstr "دستگاه ویدیویی استفاده شده نمی‌تواند درون پنجرهٔ برنامه تعبیه شود"
+
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
-msgstr "محتوای غیر قابل پخش"
+msgstr "محتوای غیرقابل پخش"
 
 #. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
 #: src/lib/clapper-gtk/clapper-gtk-status.c:89
