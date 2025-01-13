@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-13 17:42\n"
+"PO-Revision-Date: 2025-01-13 18:01\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -110,7 +110,7 @@ msgstr "Doppelt tippen bzw. klicken"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Unfullscreen"
-msgstr ""
+msgstr "Vollbildmodus deaktivieren"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Auto window resize"
@@ -431,7 +431,7 @@ msgstr "Warteschlangenwiedergabe"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "Warteschlange leeren"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
