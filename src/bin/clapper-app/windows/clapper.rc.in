@@ -1,0 +1,56 @@
+/* Clapper Application
+ * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include <windows.h>
+
+#define VER_CLAPPERVERSION @VER_CLAPPERVERSION@
+#define VER_NONE 0x0L
+
+MAIN_ICON ICON "clapper.ico"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VER_CLAPPERVERSION
+PRODUCTVERSION VER_CLAPPERVERSION
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+FILEFLAGS VER_NONE
+FILEOS VOS__WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VER_NONE
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    BEGIN
+      VALUE "CompanyName", "Rafostar"
+      VALUE "FileDescription", @CLAPPER_APP_NAME@
+      VALUE "FileVersion", @PACKAGE_VERSION@
+      VALUE "InternalName", @PACKAGE@
+      VALUE "LegalCopyright", "Copyright (C) Rafal Dziegiel"
+      VALUE "OriginalFilename", @CLAPPER_EXE@
+      VALUE "ProductName", @CLAPPER_APP_NAME@
+      VALUE "ProductVersion", @PACKAGE_VERSION@
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252
+  END
+END
+
+#ifdef __MINGW32__
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "clapper.exe.manifest"
+#endif
