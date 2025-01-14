@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-11 14:36\n"
+"PO-Revision-Date: 2025-01-14 14:33\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -20,25 +20,25 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "Clapper"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
-msgstr ""
+msgstr "Reprodutor multimédia"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
 msgid "Play videos and music"
-msgstr ""
+msgstr "Reproduzir vídeos e música"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr ""
+msgstr "Vídeo;Filme;Clip;Leitor;Reprodutor;Playlist;Lista de reprodução;DVD;TV;Disco;Música;GNOME;Clapper;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "Nova Janela"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -90,7 +90,7 @@ msgstr "Geral"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "Nova janela"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -110,11 +110,11 @@ msgstr "Toque duplo | Clique duplo"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Unfullscreen"
-msgstr ""
+msgstr "Sair de ecrã inteiro"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Auto window resize"
-msgstr ""
+msgstr "Redimensionamento automático da janela"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
 msgid "Middle click"
