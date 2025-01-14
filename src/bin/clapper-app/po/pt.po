@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-14 14:33\n"
+"PO-Revision-Date: 2025-01-14 14:46\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese\n"
 "Language: pt_PT\n"
@@ -118,7 +118,7 @@ msgstr "Redimensionamento automático da janela"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
 msgid "Middle click"
-msgstr ""
+msgstr "Clique com o botão do meio"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
@@ -285,7 +285,7 @@ msgstr "Filtro"
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr "Pia"
+msgstr "Saída"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
@@ -431,7 +431,7 @@ msgstr "Progresso da fila de espera"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "Limpar fila de espera"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
@@ -468,47 +468,47 @@ msgstr "Hugo Carvalho <hugokarvalho@hotmail.com>"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
-msgstr ""
+msgstr "Cria uma nova janela"
 
 #: src/bin/clapper-app/clapper-app-application.c:697
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "Adicionar ficheiros à fila de espera na instância da aplicação principal"
 
 #: src/bin/clapper-app/clapper-app-application.c:698
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr ""
+msgstr "Volume de áudio a definir (intervalo 0 - 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:699
 msgid "Playback speed to set (0.05 - 2.0 range)"
-msgstr ""
+msgstr "Velocidade de reprodução a definir (0.05 - intervalo 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:700
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "Taxa de bits inicial para streaming adaptável"
 
 #: src/bin/clapper-app/clapper-app-application.c:701
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "Modo de progressão inicial da fila de espera (0=nenhum, 1=consecutivo, 2=repetição de itens, 3=carrossel, 4=aleatório)"
 
 #: src/bin/clapper-app/clapper-app-application.c:702
 msgid "Set window to be fullscreen"
-msgstr ""
+msgstr "Definir janela para ecrã inteiro"
 
 #: src/bin/clapper-app/clapper-app-application.c:703
 msgid "Video filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Filtro de vídeo a utilizar (\"nenhum\" para desativar)"
 
 #: src/bin/clapper-app/clapper-app-application.c:704
 msgid "Audio filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Filtro de áudio a utilizar (\"nenhum\" para desativar)"
 
 #: src/bin/clapper-app/clapper-app-application.c:705
 msgid "Video sink to use"
-msgstr ""
+msgstr "A saída de vídeo a utilizar"
 
 #: src/bin/clapper-app/clapper-app-application.c:706
 msgid "Audio sink to use"
-msgstr ""
+msgstr "A saída de áudio a utilizar"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
