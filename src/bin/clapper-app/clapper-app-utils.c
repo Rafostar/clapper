@@ -61,8 +61,9 @@ clapper_app_utils_win_enforce_hi_res_clock (void)
 {
 #ifdef HAVE_WIN_PROCESS_THREADS_API
   PROCESS_POWER_THROTTLING_STATE PowerThrottling;
-  RtlZeroMemory (&PowerThrottling, sizeof (PowerThrottling));
   gboolean success;
+
+  RtlZeroMemory (&PowerThrottling, sizeof (PowerThrottling));
 
   PowerThrottling.Version = PROCESS_POWER_THROTTLING_CURRENT_VERSION;
   PowerThrottling.ControlMask = PROCESS_POWER_THROTTLING_IGNORE_TIMER_RESOLUTION;
