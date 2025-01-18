@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-11 14:35\n"
+"PO-Revision-Date: 2025-01-18 08:08\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "Clapper"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
