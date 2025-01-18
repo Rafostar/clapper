@@ -181,7 +181,7 @@
                                   <object class="ClapperAppPropertyRow">
                                     <property name="title" translatable="yes">Sink</property>
                                     <binding name="subtitle">
-                                      <closure type="gchararray" function="playback_element_name_closure">
+                                      <closure type="gchararray" function="playback_sink_closure">
                                         <lookup name="video-sink" type="ClapperPlayer">
                                           <lookup name="player">ClapperAppInfoWindow</lookup>
                                         </lookup>
@@ -222,7 +222,7 @@
                                   <object class="ClapperAppPropertyRow">
                                     <property name="title" translatable="yes">Sink</property>
                                     <binding name="subtitle">
-                                      <closure type="gchararray" function="playback_element_name_closure">
+                                      <closure type="gchararray" function="playback_sink_closure">
                                         <lookup name="audio-sink" type="ClapperPlayer">
                                           <lookup name="player">ClapperAppInfoWindow</lookup>
                                         </lookup>
