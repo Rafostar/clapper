@@ -130,6 +130,7 @@ endif
 
 subdir('src')
 subdir('doc')
+subdir('pkgs')
 
 meson.add_devenv(devenv)
 

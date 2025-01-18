@@ -82,9 +82,20 @@ jobs:
         find $BUILD_PREFIX/lib/clapper-0.0/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
         find $BUILD_PREFIX/lib/gstreamer-1.0/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
         find $BUILD_PREFIX/lib/gio/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
+    - name: Cleanup
+      run: |
+        BUILD_PREFIX="$GITHUB_WORKSPACE/clapper-win-${{ matrix.arch }}"
+
+        rm -rf $BUILD_PREFIX/include
+        rm -rf $BUILD_PREFIX/lib/pkgconfig
+    - name: Installer
+      uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
+      with:
+        path: builddir/pkgs/windows-installer/clapper.iss
+        options: /O+
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: clapper-win-${{ matrix.arch }}
-        path: clapper-win-${{ matrix.arch }}
+        path: builddir/pkgs/windows-installer/InstallerOutput/Clapper*.exe
         if-no-files-found: error

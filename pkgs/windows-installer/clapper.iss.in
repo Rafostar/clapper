@@ -1,0 +1,31 @@
+[Setup]
+AppName=Clapper
+AppVersion=@CLAPPER_APP_VERSION@
+AppVerName=Clapper @CLAPPER_APP_VERSION@
+VersionInfoVersion=@CLAPPER_APP_VERSION@.0
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+WizardStyle=modern
+DefaultDirName={autopf}\Clapper
+DefaultGroupName=Clapper
+DisableProgramGroupPage=yes
+ChangesAssociations=yes
+Compression=lzma2
+SolidCompression=yes
+OutputDir=InstallerOutput
+OutputBaseFilename=Clapper_@CLAPPER_APP_VERSION@
+SetupIconFile=@PROJECT_ROOT@\src\bin\clapper-app\windows\clapper.ico
+LicenseFile=@PROJECT_ROOT@\COPYING-GPL
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
+[Files]
+Source: "@CLAPPER_APP_DEST@\*"; DestDir: "{app}"; Flags: recursesubdirs replacesameversion
+
+[Icons]
+Name: "{autoprograms}\Clapper"; Filename: "{app}\bin\clapper.exe"
+Name: "{autodesktop}\Clapper"; Filename: "{app}\bin\clapper.exe"; Tasks: desktopicon
+
+[Registry]
+@CLAPPER_APP_REG_ENTRIES@

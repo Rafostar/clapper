@@ -94,6 +94,7 @@ if is_windows
     clapperapp_deps += winmm_dep
     clapperapp_c_args += ['-DHAVE_WIN_TIME_API']
   endif
+  subdir('windows')
 endif
 
 executable(
