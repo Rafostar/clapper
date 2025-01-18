@@ -574,6 +574,8 @@ popover_map_cb (GtkWidget *widget, ClapperGtkExtraMenuButton *self)
 
   GST_TRACE_OBJECT (self, "Popover map");
 
+  gtk_widget_set_can_focus (widget, TRUE);
+
   if (G_UNLIKELY (self->player == NULL))
     return;
 
@@ -607,6 +609,11 @@ popover_unmap_cb (GtkWidget *widget, ClapperGtkExtraMenuButton *self)
   ClapperQueue *queue;
 
   GST_TRACE_OBJECT (self, "Popover unmap");
+
+  /* Drop focus after popover is closed. Fixes issue
+   * with keyboard shortcuts not working when closed
+   * while within submenu */
+  gtk_widget_set_can_focus (widget, FALSE);
 
   if (G_UNLIKELY (self->player == NULL))
     return;
