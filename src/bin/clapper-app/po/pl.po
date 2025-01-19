@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-11 14:36\n"
+"PO-Revision-Date: 2025-01-19 14:18\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -20,25 +20,25 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "Clapper"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
-msgstr ""
+msgstr "Odtwarzacz multimedialny"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
 msgid "Play videos and music"
-msgstr ""
+msgstr "Odtwarzaj filmy i muzykę"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr ""
+msgstr "Wideo;Film;Clip;Serie;Odtwarzacz;Playlista;DVD;TV;CD;Album;Muzyka;GNOME;Clapper;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "Nowe okno"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -90,7 +90,7 @@ msgstr "Główne"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "Nowe okno"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -110,15 +110,15 @@ msgstr "Podwójne dotknięcie | Podwójne kliknięcie"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Unfullscreen"
-msgstr ""
+msgstr "Opuść pełny ekran"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Auto window resize"
-msgstr ""
+msgstr "Dostosuj rozmiar okna"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
 msgid "Middle click"
-msgstr ""
+msgstr "Środkowy przycisk myszy"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
@@ -431,7 +431,7 @@ msgstr "Progresja kolejki"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "Wyczyść kolejkę"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
 msgid "Add URI"
@@ -468,47 +468,47 @@ msgstr "Rafał Dzięgiel <rafostar.github@gmail.com>"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
-msgstr ""
+msgstr "Utwórz nowe okno"
 
 #: src/bin/clapper-app/clapper-app-application.c:697
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "Dodaj media do kolejki w głównej instancji aplikacji"
 
 #: src/bin/clapper-app/clapper-app-application.c:698
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr ""
+msgstr "Głośność dźwięku do ustawienia (zakres 0 - 2,0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:699
 msgid "Playback speed to set (0.05 - 2.0 range)"
-msgstr ""
+msgstr "Prędkość odtwarzania do ustawienia (0,05 - zakres 2,0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:700
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "Początkowy bitrate dla adaptacyjnego odtwarzania"
 
 #: src/bin/clapper-app/clapper-app-application.c:701
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "Początkowy tryb progresji kolejki (0=brak, 1=po kolei, 2=powtarzaj rzecz, 3=karuzela, 4=losowo)"
 
 #: src/bin/clapper-app/clapper-app-application.c:702
 msgid "Set window to be fullscreen"
-msgstr ""
+msgstr "Ustaw okno jako pełnoekranowe"
 
 #: src/bin/clapper-app/clapper-app-application.c:703
 msgid "Video filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Filtr wideo do użycia (\"none\" aby wyłączyć)"
 
 #: src/bin/clapper-app/clapper-app-application.c:704
 msgid "Audio filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Filtr wideo do użycia (\"none\" aby wyłączyć)"
 
 #: src/bin/clapper-app/clapper-app-application.c:705
 msgid "Video sink to use"
-msgstr ""
+msgstr "Zlew wideo do użycia"
 
 #: src/bin/clapper-app/clapper-app-application.c:706
 msgid "Audio sink to use"
-msgstr ""
+msgstr "Zlew audio do użycia"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
