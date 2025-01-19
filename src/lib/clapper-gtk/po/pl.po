@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-07 19:03+0100\n"
-"PO-Revision-Date: 2025-01-07 18:32\n"
+"PO-Revision-Date: 2025-01-19 14:18\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -50,11 +50,11 @@ msgstr "Reset"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
 msgid "External video output"
-msgstr ""
+msgstr "Zewnętrzne wyjście wideo"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
 msgid "Used video sink cannot be embedded within application window"
-msgstr ""
+msgstr "Użyty zlew wideo nie może być osadzony w oknie aplikacji"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
