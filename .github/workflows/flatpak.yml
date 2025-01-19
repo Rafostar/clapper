@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 600
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-45
+      image: bilelmoussaoui/flatpak-github-actions:gnome-47
       options: --privileged
     strategy:
       matrix:
@@ -33,9 +33,16 @@ jobs:
       with:
         platforms: arm64
     - name: Build
-      uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v6
+      uses: flatpak/flatpak-github-actions/flatpak-builder@master
       with:
         bundle: com.github.rafostar.Clapper.flatpak
         manifest-path: pkgs/flatpak/com.github.rafostar.Clapper.json
         cache-key: flatpak-builder-${{ github.sha }}
         arch: ${{ matrix.arch }}
+        upload-artifact: false
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: clapper-flatpak-${{ matrix.arch }}
+        path: com.github.rafostar.Clapper.flatpak
+        if-no-files-found: error

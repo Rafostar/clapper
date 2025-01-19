@@ -89,6 +89,48 @@ playback_decoder_closure (ClapperAppInfoWindow *self, GstElement *decoder)
   return text;
 }
 
+static gchar *
+playback_sink_closure (ClapperAppInfoWindow *self, GstElement *sink)
+{
+  GstElementFactory *factory;
+  GParamSpec *pspec;
+  gchar *text, *el_name, *child_name = NULL;
+
+  if (!sink || !(factory = gst_element_get_factory (sink)))
+    return NULL;
+
+  el_name = gst_object_get_name (GST_OBJECT_CAST (factory));
+
+  /* We want to show actual sink if it is configurable
+   * through a property (e.g. sink of "glsinkbin") */
+  if (GST_IS_BIN (sink)
+      && ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (sink), "video-sink"))
+      || (pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (sink), "sink")))
+      && pspec->value_type == GST_TYPE_ELEMENT) {
+    GstElement *child = NULL;
+    GstElementFactory *child_factory;
+
+    g_object_get (sink, pspec->name, &child, NULL);
+
+    if (child) {
+      if ((child_factory = gst_element_get_factory (child)))
+        child_name = gst_object_get_name (GST_OBJECT_CAST (child_factory));
+
+      gst_object_unref (child);
+    }
+  }
+
+  if (child_name) {
+    text = g_strdup_printf ("%s + %s", el_name, child_name);
+    g_free (el_name);
+    g_free (child_name);
+  } else {
+    text = el_name;
+  }
+
+  return text;
+}
+
 static GtkSelectionModel *
 create_no_selection_closure (ClapperAppInfoWindow *self, ClapperStreamList *stream_list)
 {
@@ -218,6 +260,7 @@ clapper_app_info_window_class_init (ClapperAppInfoWindowClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, media_duration_closure);
   gtk_widget_class_bind_template_callback (widget_class, playback_element_name_closure);
   gtk_widget_class_bind_template_callback (widget_class, playback_decoder_closure);
+  gtk_widget_class_bind_template_callback (widget_class, playback_sink_closure);
   gtk_widget_class_bind_template_callback (widget_class, create_no_selection_closure);
   gtk_widget_class_bind_template_callback (widget_class, has_streams_closure);
 }

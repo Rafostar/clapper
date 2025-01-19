@@ -53,6 +53,19 @@ configure_file(
   configuration: config_h,
 )
 
+visibility_conf = configuration_data()
+
+visibility_conf.set(
+  'CLAPPER_API',
+  'CLAPPER_APP_INTERNAL',
+)
+
+configure_file(
+  input: '../../lib/shared/clapper-api-visibility.h.in',
+  output: 'clapper-app-internal-visibility.h',
+  configuration: visibility_conf,
+)
+
 clapperapp_sources = [
   'clapper-app-about-window.c',
   'clapper-app-application.c',
@@ -77,6 +90,7 @@ clapperapp_sources = [
 ]
 clapperapp_c_args = [
   '-DG_LOG_DOMAIN="ClapperApp"',
+  '-DCLAPPER_APP_INTERNAL_COMPILATION',
   '-DGST_USE_UNSTABLE_API',
 ]
 

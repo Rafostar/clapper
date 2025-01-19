@@ -21,18 +21,26 @@
 #include <gtk/gtk.h>
 #include <clapper/clapper.h>
 
+#include "clapper-app-internal-visibility.h"
+
 G_BEGIN_DECLS
 
+CLAPPER_APP_INTERNAL_API
 gchar * clapper_app_list_item_make_stream_group_title (GtkListItem *list_item, ClapperStream *stream);
 
+CLAPPER_APP_INTERNAL_API
 gchar * clapper_app_list_item_make_resolution (GtkListItem *list_item, gint width, gint height);
 
+CLAPPER_APP_INTERNAL_API
 gchar * clapper_app_list_item_make_bitrate (GtkListItem *list_item, guint value);
 
+CLAPPER_APP_INTERNAL_API
 gchar * clapper_app_list_item_convert_int (GtkListItem *list_item, gint value);
 
+CLAPPER_APP_INTERNAL_API
 gchar * clapper_app_list_item_convert_uint (GtkListItem *list_item, guint value);
 
+CLAPPER_APP_INTERNAL_API
 gchar * clapper_app_list_item_convert_double (GtkListItem *list_item, gdouble value);
 
 G_END_DECLS
