@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-19 08:52\n"
+"PO-Revision-Date: 2025-01-19 10:03\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -106,7 +106,7 @@ msgstr "切换全屏"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Double tap | Double click"
-msgstr "轻击两次 | 双击"
+msgstr "双击 | 鼠标双击"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Unfullscreen"
@@ -148,7 +148,7 @@ msgstr "队列"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:80
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:87
 msgid "Next item"
-msgstr "下一项"
+msgstr "下一集"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:94
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:101
