@@ -22,6 +22,11 @@
 #include <gst/gst.h>
 #include <libpeas.h>
 
+#ifdef G_OS_WIN32
+#include <windows.h>
+static HMODULE _enhancers_dll_handle = NULL;
+#endif
+
 #include "clapper-enhancers-loader-private.h"
 
 #define ENHANCER_INTERFACES "X-Interfaces"
@@ -44,13 +49,29 @@ void
 clapper_enhancers_loader_initialize (void)
 {
   const gchar *enhancers_path;
-  gchar **dir_paths;
+  gchar **dir_paths, *custom_path = NULL;
   guint i;
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperenhancersloader", 0,
       "Clapper Enhancer Loader");
 
   enhancers_path = g_getenv ("CLAPPER_ENHANCERS_PATH");
+
+#ifdef G_OS_WIN32
+  if (!enhancers_path || *enhancers_path == '\0') {
+    gchar *win_base_dir;
+
+    win_base_dir = g_win32_get_package_installation_directory_of_module (
+        _enhancers_dll_handle);
+    /* FIXME: Avoid hardcoded major version */
+    custom_path = g_build_filename (win_base_dir,
+        "lib", "clapper-0.0", "enhancers", NULL);
+    enhancers_path = custom_path; // assign temporarily
+
+    g_free (win_base_dir);
+  }
+#endif
+
   if (!enhancers_path || *enhancers_path == '\0')
     enhancers_path = CLAPPER_ENHANCERS_PATH;
 
@@ -83,6 +104,8 @@ clapper_enhancers_loader_initialize (void)
 
     GST_INFO ("Clapper enhancers initialized, found: %u", n_items);
   }
+
+  g_free (custom_path);
 }
 
 static inline gboolean
