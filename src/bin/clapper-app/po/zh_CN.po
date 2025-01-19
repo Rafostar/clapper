@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-12 13:02\n"
+"PO-Revision-Date: 2025-01-19 08:52\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "Clapper"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
@@ -153,7 +153,7 @@ msgstr "下一项"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:94
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:101
 msgid "Previous item"
-msgstr "上一项"
+msgstr "上一集"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 msgid "Change progression mode"
@@ -162,7 +162,7 @@ msgstr "切换播放模式"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
-msgstr "回放"
+msgstr "播放"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:118
 msgid "Toggle play"
@@ -321,7 +321,7 @@ msgstr "快进/快退的偏好方式"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
-msgstr "值"
+msgstr "数值"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
