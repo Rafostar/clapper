@@ -84,12 +84,18 @@ clapper_enhancers_loader_initialize (void)
   peas_engine_enable_loader (_engine, "python");
   peas_engine_enable_loader (_engine, "gjs");
 
+load_enhancers:
   dir_paths = g_strsplit (enhancers_path, G_SEARCHPATH_SEPARATOR_S, 0);
 
   for (i = 0; dir_paths[i]; ++i)
     peas_engine_add_search_path (_engine, dir_paths[i], NULL);
 
   g_strfreev (dir_paths);
+
+  /* Support loading additional enhancers from non-default directory */
+  enhancers_path = g_getenv ("CLAPPER_ENHANCERS_EXTRA_PATH");
+  if (enhancers_path && *enhancers_path != '\0')
+    goto load_enhancers;
 
   if (gst_debug_category_get_threshold (GST_CAT_DEFAULT) >= GST_LEVEL_INFO) {
     GListModel *list = (GListModel *) _engine;
