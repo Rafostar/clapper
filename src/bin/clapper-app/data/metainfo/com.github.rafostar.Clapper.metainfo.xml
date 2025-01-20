@@ -59,6 +59,22 @@
     <category>Video</category>
   </categories>
   <releases>
+    <release version="0.8.0" date="2025-01-20">
+      <description>
+        <p>Changes:</p>
+        <ul>
+          <li>Now uses playbin3 by default</li>
+          <li>Added more command line options - including ability to set custom GStreamer filter and sink elements</li>
+          <li>Support for creating multiple application windows</li>
+          <li>Added menu option to clear playback queue</li>
+          <li>Auto resize window to match aspect ratio with middle click or keyboard shortcut</li>
+          <li>Added unfullscreen with Escape key</li>
+          <li>Brand new libpeas based plugin system</li>
+          <li>Remember and restore optimal bitrate (video quality) when starting adaptive streaming</li>
+          <li>Other various improvements and bug fixes</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.6.1" date="2024-07-01">
       <description>
         <p>Bug fixes and translation updates</p>
