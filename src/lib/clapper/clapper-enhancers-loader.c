@@ -40,6 +40,18 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 static PeasEngine *_engine = NULL;
 static GMutex load_lock;
 
+static inline void
+_import_enhancers (const gchar *enhancers_path)
+{
+  gchar **dir_paths = g_strsplit (enhancers_path, G_SEARCHPATH_SEPARATOR_S, 0);
+  guint i;
+
+  for (i = 0; dir_paths[i]; ++i)
+    peas_engine_add_search_path (_engine, dir_paths[i], NULL);
+
+  g_strfreev (dir_paths);
+}
+
 /*
  * clapper_enhancers_loader_initialize:
  *
@@ -49,8 +61,7 @@ void
 clapper_enhancers_loader_initialize (void)
 {
   const gchar *enhancers_path;
-  gchar **dir_paths, *custom_path = NULL;
-  guint i;
+  gchar *custom_path = NULL;
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperenhancersloader", 0,
       "Clapper Enhancer Loader");
@@ -84,22 +95,18 @@ clapper_enhancers_loader_initialize (void)
   peas_engine_enable_loader (_engine, "python");
   peas_engine_enable_loader (_engine, "gjs");
 
-load_enhancers:
-  dir_paths = g_strsplit (enhancers_path, G_SEARCHPATH_SEPARATOR_S, 0);
-
-  for (i = 0; dir_paths[i]; ++i)
-    peas_engine_add_search_path (_engine, dir_paths[i], NULL);
-
-  g_strfreev (dir_paths);
+  _import_enhancers (enhancers_path);
 
   /* Support loading additional enhancers from non-default directory */
   enhancers_path = g_getenv ("CLAPPER_ENHANCERS_EXTRA_PATH");
-  if (enhancers_path && *enhancers_path != '\0')
-    goto load_enhancers;
+  if (enhancers_path && *enhancers_path != '\0') {
+    GST_INFO ("Enhancers extra path: \"%s\"", enhancers_path);
+    _import_enhancers (enhancers_path);
+  }
 
   if (gst_debug_category_get_threshold (GST_CAT_DEFAULT) >= GST_LEVEL_INFO) {
     GListModel *list = (GListModel *) _engine;
-    guint n_items = g_list_model_get_n_items (list);
+    guint i, n_items = g_list_model_get_n_items (list);
 
     for (i = 0; i < n_items; ++i) {
       PeasPluginInfo *info = (PeasPluginInfo *) g_list_model_get_item (list, i);
