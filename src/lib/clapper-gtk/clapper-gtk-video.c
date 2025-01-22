@@ -977,20 +977,24 @@ _get_widget_from_video_sink (GstElement *vsink)
   GParamSpec *pspec;
 
   if ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (vsink), "widget"))
-      && pspec->value_type == GTK_TYPE_WIDGET) {
+      && g_type_is_a (pspec->value_type, GTK_TYPE_WIDGET)) {
     GST_DEBUG ("Video sink provides a widget");
     g_object_get (vsink, "widget", &widget, NULL);
   } else if ((pspec = g_object_class_find_property (G_OBJECT_GET_CLASS (vsink), "paintable"))
-      && pspec->value_type == GDK_TYPE_PAINTABLE) {
-    GdkPaintable *paintable = NULL;
+      && g_type_is_a (pspec->value_type, G_TYPE_OBJECT)) {
+    GObject *paintable = NULL;
 
     GST_DEBUG ("Video sink provides a paintable");
     g_object_get (vsink, "paintable", &paintable, NULL);
 
-    widget = g_object_ref_sink (gtk_picture_new ());
-    gtk_picture_set_paintable (GTK_PICTURE (widget), paintable);
+    if (G_LIKELY (paintable != NULL)) {
+      if (GDK_IS_PAINTABLE (paintable)) {
+        widget = g_object_ref_sink (gtk_picture_new ());
+        gtk_picture_set_paintable (GTK_PICTURE (widget), GDK_PAINTABLE (paintable));
+      }
 
-    g_object_unref (paintable);
+      g_object_unref (paintable);
+    }
   }
 
   return widget;
