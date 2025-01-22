@@ -1036,6 +1036,19 @@ _video_sink_changed_cb (ClapperPlayer *player,
     gst_object_unref (vsink);
   }
 
+#ifndef G_OS_WIN32
+  if (widget) {
+    GtkWidget *offload = gtk_graphics_offload_new (widget);
+
+    gtk_graphics_offload_set_black_background (GTK_GRAPHICS_OFFLOAD (offload), TRUE);
+
+    GST_DEBUG_OBJECT (self, "Sink widget is placed within graphics offload");
+
+    g_object_unref (widget);
+    widget = g_object_ref_sink (offload);
+  }
+#endif
+
   if (!widget) {
     GST_DEBUG_OBJECT (self, "No widget from video sink, using placeholder");
     widget = g_object_ref_sink (clapper_gtk_video_placeholder_new ());
