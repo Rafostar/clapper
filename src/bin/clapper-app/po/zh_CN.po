@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-23 19:12\n"
+"PO-Revision-Date: 2025-01-23 20:18\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -33,12 +33,12 @@ msgstr "播放视频和音乐"
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr ""
+msgstr "视频;影片;电影;短片;连续剧;播放器;播放列表;数字光盘;电视;光盘;专辑;音乐;GNOME;Clapper;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "新建窗口"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -90,7 +90,7 @@ msgstr "常规​​​​​"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "新建窗口"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -285,7 +285,7 @@ msgstr "过滤器"
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr "Sink"
+msgstr "接收器"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
@@ -309,11 +309,11 @@ msgstr "添加媒体到播放队列即可开始"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr "定位播放"
+msgstr "快进/快退"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
-msgstr "快进/快退方式"
+msgstr "方式"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
@@ -465,7 +465,8 @@ msgstr "像素格式"
 #: src/bin/clapper-app/clapper-app-about-window.c:47
 msgid "translator-credits"
 msgstr "刘韬\n"
-"Tommy He"
+"Tommy He\n"
+"demo_007"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
@@ -473,7 +474,7 @@ msgstr "新建一个窗口"
 
 #: src/bin/clapper-app/clapper-app-application.c:697
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "向主应用程序实例播放列队添加媒体"
 
 #: src/bin/clapper-app/clapper-app-application.c:698
 msgid "Audio volume to set (0 - 2.0 range)"
@@ -485,31 +486,31 @@ msgstr "设置播放速度(范围 0.05 - 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:700
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "自适性流的初始比特率"
 
 #: src/bin/clapper-app/clapper-app-application.c:701
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "初始播放列队模式 (0=单集, 1=连续, 2=单机循环, 3=队列循环, 4=随机)"
 
 #: src/bin/clapper-app/clapper-app-application.c:702
 msgid "Set window to be fullscreen"
-msgstr "设置窗口为全屏"
+msgstr "窗口全屏"
 
 #: src/bin/clapper-app/clapper-app-application.c:703
 msgid "Video filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "视频过滤器(\"none\"为禁用)"
 
 #: src/bin/clapper-app/clapper-app-application.c:704
 msgid "Audio filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "音频过滤器(\"none\"为禁用)"
 
 #: src/bin/clapper-app/clapper-app-application.c:705
 msgid "Video sink to use"
-msgstr ""
+msgstr "视频接收器"
 
 #: src/bin/clapper-app/clapper-app-application.c:706
 msgid "Audio sink to use"
-msgstr ""
+msgstr "音频接收器"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
