@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-19 10:03\n"
+"PO-Revision-Date: 2025-01-23 19:12\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -477,7 +477,7 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-application.c:698
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr "设置音量 (范围 0 - 2.0)"
+msgstr "设置音量(范围 0 - 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:699
 msgid "Playback speed to set (0.05 - 2.0 range)"
