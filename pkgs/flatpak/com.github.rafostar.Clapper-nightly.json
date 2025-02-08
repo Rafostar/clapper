@@ -14,6 +14,13 @@
             "add-ld-path": ".",
             "no-autodownload": false,
             "autodelete": false
+        },
+        "com.github.rafostar.Clapper.Enhancers": {
+            "versions": "master;test;stable",
+            "directory": "extensions/clapper/enhancers",
+            "add-ld-path": "lib",
+            "no-autodownload": false,
+            "autodelete": false
         }
     },
     "command": "clapper",
@@ -31,7 +38,9 @@
         "--filesystem=xdg-run/gvfsd",
         "--own-name=org.mpris.MediaPlayer2.Clapper.*",
         "--talk-name=org.gtk.vfs.*",
-        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0"
+        "--env=GST_PLUGIN_SYSTEM_PATH=/app/lib/gstreamer-1.0",
+        "--env=CLAPPER_ENHANCERS_PATH=/app/extensions/clapper/enhancers/plugins",
+        "--env=PYTHONPATH=/app/extensions/clapper/enhancers/python/site-packages"
     ],
     "build-options": {
         "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm18/bin",
@@ -53,11 +62,10 @@
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
         "flathub/lib/libmicrodns.json",
+        "flathub/lib/libpeas.json",
         "testing/dav1d.json",
         "testing/gstreamer.json",
         "testing/gst-plugins-rs.json",
-        "testing/yt-dlp.json",
-        "testing/libpeas.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
@@ -67,11 +75,11 @@
                     "path": "../../."
                 }
             ]
-        },
-        "testing/clapper-enhancers.json"
+        }
     ],
     "cleanup-commands": [
         "mkdir -p /app/lib/ffmpeg",
+        "mkdir -p /app/extensions/clapper/enhancers",
         "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
 }
