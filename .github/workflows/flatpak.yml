@@ -10,28 +10,29 @@ name: "Flatpak"
 jobs:
   flatpak:
     name: "Flatpak"
-    runs-on: ubuntu-latest
-    timeout-minutes: 600
-    container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-47
-      options: --privileged
     strategy:
       matrix:
-        arch: [x86_64, aarch64]
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+        include:
+        - os: ubuntu-24.04
+          arch: x86_64
+        - os: ubuntu-24.04-arm
+          arch: aarch64
       fail-fast: false
+    runs-on: ${{ matrix.os }}
+    container:
+      image: registry.fedoraproject.org/fedora
+      options: --privileged
     steps:
+    - name: Prepare
+      run: |
+        dnf install -y git git-lfs dbus-daemon flatpak flatpak-builder libappstream-glib ccache zstd xorg-x11-server-Xvfb
+        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        flatpak --system install -y --noninteractive flathub org.flatpak.Builder
     - name: Checkout
       uses: actions/checkout@v4
       with:
         submodules: recursive
-    - name: Install Docker
-      run: |
-        dnf -y install docker
-    - name: Setup QEMU
-      id: qemu
-      uses: docker/setup-qemu-action@v3
-      with:
-        platforms: arm64
     - name: Build
       uses: flatpak/flatpak-github-actions/flatpak-builder@master
       with:
