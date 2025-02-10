@@ -12,7 +12,7 @@ StartupNotify=true
 Terminal=false
 Type=Application
 # Translators: Search terms to find this application. Do NOT translate the semicolons!
-Keywords=Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;
+Keywords=Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;
 # Translators: Do NOT translate or transliterate this text (these are enum types)!
 X-Purism-FormFactor=Workstation;Mobile;
 Actions=new-window;
