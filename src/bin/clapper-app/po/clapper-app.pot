@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper-app\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-11 15:22+0100\n"
+"POT-Creation-Date: 2025-02-15 12:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,9 +32,7 @@ msgstr ""
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
-msgid ""
-"Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;"
-"Clapper;"
+msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
 msgstr ""
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
@@ -537,23 +535,23 @@ msgstr ""
 msgid "Fast"
 msgstr ""
 
-#: src/bin/clapper-app/clapper-app-utils.c:90
+#: src/bin/clapper-app/clapper-app-utils.c:207
 msgid "No progression"
 msgstr ""
 
-#: src/bin/clapper-app/clapper-app-utils.c:91
+#: src/bin/clapper-app/clapper-app-utils.c:208
 msgid "Consecutive"
 msgstr ""
 
-#: src/bin/clapper-app/clapper-app-utils.c:92
+#: src/bin/clapper-app/clapper-app-utils.c:209
 msgid "Repeat item"
 msgstr ""
 
-#: src/bin/clapper-app/clapper-app-utils.c:93
+#: src/bin/clapper-app/clapper-app-utils.c:210
 msgid "Carousel"
 msgstr ""
 
-#: src/bin/clapper-app/clapper-app-utils.c:94
+#: src/bin/clapper-app/clapper-app-utils.c:211
 msgid "Shuffle"
 msgstr ""
 
