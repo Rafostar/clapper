@@ -6,6 +6,7 @@
     <property name="close-response">cancel</property>
     <property name="default-response">add</property>
     <property name="follows-content-size">false</property>
+    <property name="content-width">420</property>
     <property name="extra-child">
       <object class="GtkListBox">
         <property name="selection-mode">none</property>
