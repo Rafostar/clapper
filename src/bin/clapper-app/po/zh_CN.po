@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-23 20:18\n"
+"POT-Creation-Date: 2025-02-15 12:47+0100\n"
+"PO-Revision-Date: 2025-02-15 12:11\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -32,8 +32,8 @@ msgstr "播放视频和音乐"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
-msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr "视频;影片;电影;短片;连续剧;播放器;播放列表;数字光盘;电视;光盘;专辑;音乐;GNOME;Clapper;"
+msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
+msgstr ""
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
@@ -532,23 +532,23 @@ msgstr "标准"
 msgid "Fast"
 msgstr "快速"
 
-#: src/bin/clapper-app/clapper-app-utils.c:90
+#: src/bin/clapper-app/clapper-app-utils.c:207
 msgid "No progression"
 msgstr "单集"
 
-#: src/bin/clapper-app/clapper-app-utils.c:91
+#: src/bin/clapper-app/clapper-app-utils.c:208
 msgid "Consecutive"
 msgstr "连续"
 
-#: src/bin/clapper-app/clapper-app-utils.c:92
+#: src/bin/clapper-app/clapper-app-utils.c:209
 msgid "Repeat item"
 msgstr "单集循环"
 
-#: src/bin/clapper-app/clapper-app-utils.c:93
+#: src/bin/clapper-app/clapper-app-utils.c:210
 msgid "Carousel"
 msgstr "队列循环"
 
-#: src/bin/clapper-app/clapper-app-utils.c:94
+#: src/bin/clapper-app/clapper-app-utils.c:211
 msgid "Shuffle"
 msgstr "随机"
 
