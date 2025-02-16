@@ -10,7 +10,7 @@ src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui
 src/bin/clapper-app/ui/clapper-app-uri-dialog.ui
 src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui
 
-src/bin/clapper-app/clapper-app-about-window.c
+src/bin/clapper-app/clapper-app-about-dialog.c
 src/bin/clapper-app/clapper-app-application.c
 src/bin/clapper-app/clapper-app-info-window.c
 src/bin/clapper-app/clapper-app-list-item-utils.c
