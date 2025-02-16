@@ -94,6 +94,17 @@ clapperapp_c_args = [
   '-DGST_USE_UNSTABLE_API',
 ]
 
+pp_option = get_option('pipeline-preview')
+
+if not pp_option.disabled()
+  if cgraph_dep.found() and gvc_dep.found()
+    clapperapp_c_args += ['-DHAVE_GRAPHVIZ']
+    clapperapp_deps += [cgraph_dep, gvc_dep]
+  elif pp_option.enabled()
+    error('pipeline-preview option was enabled, but required dependencies were not found')
+  endif
+endif
+
 is_windows = ['windows'].contains(host_machine.system())
 
 if is_windows

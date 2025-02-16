@@ -23,6 +23,11 @@
 #include "clapper-app-utils.h"
 #include "clapper-app-media-item-box.h"
 
+#ifdef HAVE_GRAPHVIZ
+#include <graphviz/cgraph.h>
+#include <graphviz/gvc.h>
+#endif
+
 #ifdef G_OS_WIN32
 #include <windows.h>
 #ifdef HAVE_WIN_PROCESS_THREADS_API
@@ -526,4 +531,92 @@ clapper_app_utils_make_element (const gchar *string)
   }
 
   return gst_element_factory_make (string, NULL);
+}
+
+#ifdef HAVE_GRAPHVIZ
+static GFile *
+_create_tmp_subdir (const gchar *subdir)
+{
+  GFile *tmp_dir;
+  GError *error = NULL;
+
+  tmp_dir = g_file_new_build_filename (
+      g_get_tmp_dir (), "." CLAPPER_APP_ID, subdir, NULL);
+
+  if (!g_file_make_directory_with_parents (tmp_dir, NULL, &error)) {
+    if (error->domain != G_IO_ERROR || error->code != G_IO_ERROR_EXISTS) {
+      GST_ERROR ("Could not create temp dir, reason: %s",
+          GST_STR_NULL (error->message));
+      g_clear_object (&tmp_dir); // return NULL
+    }
+    g_error_free (error);
+  }
+
+  return tmp_dir;
+}
+#endif
+
+GFile *
+clapper_app_utils_create_pipeline_svg_file (ClapperPlayer *player, GError **error)
+{
+  GFile *tmp_file = NULL;
+
+#ifdef HAVE_GRAPHVIZ
+  GFile *tmp_subdir;
+  Agraph_t *graph;
+  GVC_t *gvc;
+  gchar *path, *template, *dot_data, *img_data = NULL;
+  gint fd;
+  guint size = 0;
+
+  tmp_subdir = _create_tmp_subdir ("pipelines");
+  if (G_UNLIKELY (tmp_subdir == NULL))
+    return NULL;
+
+  path = g_file_get_path (tmp_subdir);
+  g_object_unref (tmp_subdir);
+
+  template = g_build_filename (path, "pipeline-XXXXXX.svg", NULL);
+  g_free (path);
+
+  fd = g_mkstemp (template); // Modifies template to actual filename
+
+  if (G_UNLIKELY (fd == -1)) {
+    g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
+        "Could not open temp file for writing");
+    g_free (template);
+
+    return NULL;
+  }
+
+  dot_data = clapper_player_make_pipeline_graph (player, GST_DEBUG_GRAPH_SHOW_ALL);
+  graph = agmemread (dot_data);
+
+  gvc = gvContext ();
+  gvLayout (gvc, graph, "dot");
+  gvRenderData (gvc, graph, "svg", &img_data, &size);
+
+  agclose (graph);
+  gvFreeContext (gvc);
+  g_free (dot_data);
+
+  if (write (fd, img_data, size) != -1) {
+    tmp_file = g_file_new_for_path (template);
+  } else {
+    g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
+        "Could not write data to temp file");
+  }
+
+  /* Always close the file IO */
+  if (G_UNLIKELY (close (fd) == -1))
+    GST_ERROR ("Could not close temp file!");
+
+  g_free (img_data);
+  g_free (template);
+#else
+  g_set_error (error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
+      "Cannot create graph file when compiled without Graphviz");
+#endif
+
+  return tmp_file;
 }

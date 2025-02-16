@@ -89,6 +89,12 @@ libadwaita_dep = dependency('libadwaita-1',
 peas_dep = dependency('libpeas-2',
   required: false,
 )
+cgraph_dep = dependency('libcgraph',
+  required: false,
+)
+gvc_dep = dependency('libgvc',
+  required: false,
+)
 
 cc = meson.get_compiler('c')
 libm = cc.find_library('m', required: false)

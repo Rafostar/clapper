@@ -84,4 +84,7 @@ void clapper_app_utils_iterate_plugin_feature_ranks (GSettings *settings, Clappe
 G_GNUC_INTERNAL
 GstElement * clapper_app_utils_make_element (const gchar *string);
 
+G_GNUC_INTERNAL
+GFile * clapper_app_utils_create_pipeline_svg_file (ClapperPlayer *player, GError **error);
+
 G_END_DECLS

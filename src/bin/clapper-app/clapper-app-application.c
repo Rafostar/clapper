@@ -396,6 +396,59 @@ show_info (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
+_show_pipeline_cb (GtkFileLauncher *launcher,
+    GAsyncResult *res, gpointer user_data G_GNUC_UNUSED)
+{
+  GError *error = NULL;
+
+  if (!gtk_file_launcher_launch_finish (launcher, res, &error)) {
+    if (error->domain != GTK_DIALOG_ERROR || error->code != GTK_DIALOG_ERROR_DISMISSED) {
+      GST_ERROR ("Could not launch pipeline preview, reason: %s",
+          GST_STR_NULL (error->message));
+    }
+    g_error_free (error);
+  }
+}
+
+static void
+show_pipeline (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  GtkApplication *gtk_app = GTK_APPLICATION (user_data);
+  GtkWindow *window;
+  GtkFileLauncher *launcher;
+  GFile *svg_file;
+  GError *error = NULL;
+
+  window = gtk_application_get_active_window (gtk_app);
+
+  while (window && !CLAPPER_APP_IS_WINDOW (window))
+    window = gtk_window_get_transient_for (window);
+
+  if (G_UNLIKELY (window == NULL))
+    return;
+
+  if (!(svg_file = clapper_app_utils_create_pipeline_svg_file (
+      clapper_app_window_get_player (CLAPPER_APP_WINDOW (window)), &error))) {
+    GST_ERROR ("Could not create pipeline graph file, reason: %s",
+        GST_STR_NULL (error->message));
+    g_error_free (error);
+
+    return;
+  }
+
+  launcher = gtk_file_launcher_new (svg_file);
+  g_object_unref (svg_file);
+
+#if GTK_CHECK_VERSION(4,12,0)
+  gtk_file_launcher_set_always_ask (launcher, TRUE);
+#endif
+
+  gtk_file_launcher_launch (launcher, window, NULL,
+      (GAsyncReadyCallback) _show_pipeline_cb, NULL);
+  g_object_unref (launcher);
+}
+
+static void
 show_about (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   GtkApplication *gtk_app = GTK_APPLICATION (user_data);
@@ -712,6 +765,7 @@ clapper_app_application_constructed (GObject *object)
     { "clear-queue", clear_queue, NULL, NULL, NULL },
     { "new-window", new_window, NULL, NULL, NULL },
     { "info", show_info, NULL, NULL, NULL },
+    { "pipeline", show_pipeline, NULL, NULL, NULL },
     { "preferences", show_preferences, NULL, NULL, NULL },
     { "about", show_about, NULL, NULL, NULL },
   };
@@ -720,6 +774,7 @@ clapper_app_application_constructed (GObject *object)
     { "app.add-uri", { "<Control>u", NULL, NULL }},
     { "app.new-window", { "<Control>n", NULL, NULL }},
     { "app.info", { "<Control>i", NULL, NULL }},
+    { "app.pipeline", { "<Control><Shift>p", NULL, NULL }},
     { "app.preferences", { "<Control>comma", NULL, NULL }},
     { "app.about", { "F1", NULL, NULL }},
     { "win.toggle-fullscreen", { "F11", "f", NULL }},
