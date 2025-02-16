@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="clapper-app">
-  <object class="AdwMessageDialog" id="dialog">
-    <property name="modal">true</property>
-    <property name="width-request">420</property>
+  <object class="AdwAlertDialog" id="dialog">
     <property name="heading" translatable="yes">Add URI</property>
     <property name="body" translatable="yes">Insert an URI to be added to playback queue</property>
     <property name="close-response">cancel</property>
     <property name="default-response">add</property>
+    <property name="follows-content-size">false</property>
+    <property name="content-width">420</property>
     <property name="extra-child">
-      <object class="GtkEntry">
-        <property name="halign">fill</property>
-        <property name="valign">center</property>
-        <property name="hexpand">true</property>
-        <property name="activates-default">true</property>
-        <property name="truncate-multiline">true</property>
-        <property name="input-purpose">url</property>
-        <property name="placeholder-text" translatable="yes">Enter or drop URI here</property>
+      <object class="GtkListBox">
+        <property name="selection-mode">none</property>
+        <style>
+          <class name="boxed-list"/>
+        </style>
+        <child>
+          <object class="AdwEntryRow" id="entry_row">
+            <property name="halign">fill</property>
+            <property name="valign">center</property>
+            <property name="hexpand">true</property>
+            <property name="activates-default">true</property>
+            <property name="input-purpose">url</property>
+            <property name="title" translatable="yes">Enter or drop URI here</property>
+          </object>
+        </child>
       </object>
     </property>
     <responses>
