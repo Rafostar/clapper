@@ -74,5 +74,7 @@ main (gint argc, gchar **argv)
     clapper_app_utils_win_hi_res_clock_stop (resolution);
 #endif
 
+  clapper_app_utils_delete_tmp_dir ();
+
   return status;
 }

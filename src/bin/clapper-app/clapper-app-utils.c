@@ -533,6 +533,19 @@ clapper_app_utils_make_element (const gchar *string)
   return gst_element_factory_make (string, NULL);
 }
 
+/*
+ * _get_tmp_dir:
+ * @subdir: (nullable): an optional subdirectory
+ *
+ * Returns: (transfer full): a newly constructed #GFile
+ */
+static inline GFile *
+_get_tmp_dir (const gchar *subdir)
+{
+  return g_file_new_build_filename (
+      g_get_tmp_dir (), "." CLAPPER_APP_ID, subdir, NULL);
+}
+
 #ifdef HAVE_GRAPHVIZ
 static GFile *
 _create_tmp_subdir (const gchar *subdir)
@@ -540,8 +553,7 @@ _create_tmp_subdir (const gchar *subdir)
   GFile *tmp_dir;
   GError *error = NULL;
 
-  tmp_dir = g_file_new_build_filename (
-      g_get_tmp_dir (), "." CLAPPER_APP_ID, subdir, NULL);
+  tmp_dir = _get_tmp_dir (subdir);
 
   if (!g_file_make_directory_with_parents (tmp_dir, NULL, &error)) {
     if (error->domain != G_IO_ERROR || error->code != G_IO_ERROR_EXISTS) {
@@ -619,4 +631,54 @@ clapper_app_utils_create_pipeline_svg_file (ClapperPlayer *player, GError **erro
 #endif
 
   return tmp_file;
+}
+
+static gboolean
+_delete_dir_recursive (GFile *dir, GError **error)
+{
+  GFileEnumerator *dir_enum;
+
+  if ((dir_enum = g_file_enumerate_children (dir,
+      G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE,
+      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, error))) {
+    while (TRUE) {
+      GFileInfo *info = NULL;
+      GFile *child = NULL;
+
+      if (!g_file_enumerator_iterate (dir_enum, &info,
+          &child, NULL, error) || !info)
+        break;
+
+      if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+        if (!_delete_dir_recursive (child, error))
+          break;
+      } else if (!g_file_delete (child, NULL, error)) {
+        break;
+      }
+    }
+
+    g_object_unref (dir_enum);
+  }
+
+  if (*error != NULL)
+    return FALSE;
+
+  return g_file_delete (dir, NULL, error);
+}
+
+void
+clapper_app_utils_delete_tmp_dir (void)
+{
+  GFile *tmp_dir = _get_tmp_dir (NULL);
+  GError *error = NULL;
+
+  if (!_delete_dir_recursive (tmp_dir, &error)) {
+    if (error->domain != G_IO_ERROR || error->code != G_IO_ERROR_NOT_FOUND) {
+      GST_ERROR ("Could not remove temp dir, reason: %s",
+          GST_STR_NULL (error->message));
+    }
+    g_error_free (error);
+  }
+
+  g_object_unref (tmp_dir);
 }

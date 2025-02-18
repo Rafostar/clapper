@@ -87,4 +87,7 @@ GstElement * clapper_app_utils_make_element (const gchar *string);
 G_GNUC_INTERNAL
 GFile * clapper_app_utils_create_pipeline_svg_file (ClapperPlayer *player, GError **error);
 
+G_GNUC_INTERNAL
+void clapper_app_utils_delete_tmp_dir (void);
+
 G_END_DECLS
