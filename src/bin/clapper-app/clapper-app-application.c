@@ -41,6 +41,7 @@ struct _ClapperAppApplication
   GtkApplication parent;
 
   GSettings *settings;
+  GCancellable *cancellable;
 
   gboolean need_init_state;
 };
@@ -60,6 +61,12 @@ struct ClapperPluginData
   guint skip_version[3];
   struct ClapperPluginFeatureData features[10];
 };
+
+typedef struct
+{
+  ClapperAppApplication *app;
+  guint id;
+} ClapperAppWindowData;
 
 typedef struct
 {
@@ -396,7 +403,7 @@ show_info (GSimpleAction *action, GVariant *param, gpointer user_data)
 }
 
 static void
-_show_pipeline_cb (GtkFileLauncher *launcher,
+_launch_pipeline_cb (GtkFileLauncher *launcher,
     GAsyncResult *res, gpointer user_data G_GNUC_UNUSED)
 {
   GError *error = NULL;
@@ -411,13 +418,51 @@ _show_pipeline_cb (GtkFileLauncher *launcher,
 }
 
 static void
-show_pipeline (GSimpleAction *action, GVariant *param, gpointer user_data)
+_show_pipeline_cb (GObject *source G_GNUC_UNUSED,
+    GAsyncResult *res, ClapperAppWindowData *win_data)
 {
-  GtkApplication *gtk_app = GTK_APPLICATION (user_data);
+  GTask *task = G_TASK (res);
   GtkWindow *window;
-  GtkFileLauncher *launcher;
   GFile *svg_file;
   GError *error = NULL;
+
+  svg_file = (GFile *) g_task_propagate_pointer (task, &error);
+
+  if (error) {
+    if (error->domain != G_IO_ERROR || error->code != G_IO_ERROR_CANCELLED) {
+      GST_ERROR ("Could not create pipeline graph file, reason: %s",
+          GST_STR_NULL (error->message));
+    }
+    g_error_free (error);
+    g_free (win_data);
+
+    return;
+  }
+
+  if ((window = gtk_application_get_window_by_id (
+      GTK_APPLICATION (win_data->app), win_data->id))) {
+    GtkFileLauncher *launcher = gtk_file_launcher_new (svg_file);
+
+#if GTK_CHECK_VERSION(4,12,0)
+    gtk_file_launcher_set_always_ask (launcher, TRUE);
+#endif
+
+    gtk_file_launcher_launch (launcher, window, NULL,
+        (GAsyncReadyCallback) _launch_pipeline_cb, NULL);
+    g_object_unref (launcher);
+  }
+
+  g_object_unref (svg_file);
+  g_free (win_data);
+}
+
+static void
+show_pipeline (GSimpleAction *action, GVariant *param, gpointer user_data)
+{
+  ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (user_data);
+  GtkApplication *gtk_app = GTK_APPLICATION (self);
+  GtkWindow *window;
+  ClapperAppWindowData *win_data;
 
   window = gtk_application_get_active_window (gtk_app);
 
@@ -427,25 +472,19 @@ show_pipeline (GSimpleAction *action, GVariant *param, gpointer user_data)
   if (G_UNLIKELY (window == NULL))
     return;
 
-  if (!(svg_file = clapper_app_utils_create_pipeline_svg_file (
-      clapper_app_window_get_player (CLAPPER_APP_WINDOW (window)), &error))) {
-    GST_ERROR ("Could not create pipeline graph file, reason: %s",
-        GST_STR_NULL (error->message));
-    g_error_free (error);
-
-    return;
+  if (self->cancellable) {
+    g_cancellable_cancel (self->cancellable);
+    g_object_unref (self->cancellable);
   }
+  self->cancellable = g_cancellable_new ();
 
-  launcher = gtk_file_launcher_new (svg_file);
-  g_object_unref (svg_file);
+  win_data = g_new (ClapperAppWindowData, 1);
+  win_data->app = self;
+  win_data->id = gtk_application_window_get_id (GTK_APPLICATION_WINDOW (window));
 
-#if GTK_CHECK_VERSION(4,12,0)
-  gtk_file_launcher_set_always_ask (launcher, TRUE);
-#endif
-
-  gtk_file_launcher_launch (launcher, window, NULL,
-      (GAsyncReadyCallback) _show_pipeline_cb, NULL);
-  g_object_unref (launcher);
+  clapper_app_utils_create_pipeline_svg_file_async (
+      clapper_app_window_get_player (CLAPPER_APP_WINDOW (window)),
+      self->cancellable, (GAsyncReadyCallback) _show_pipeline_cb, win_data);
 }
 
 static void
@@ -810,6 +849,19 @@ clapper_app_application_constructed (GObject *object)
 }
 
 static void
+clapper_app_application_dispose (GObject *object)
+{
+  ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (object);
+
+  if (self->cancellable) {
+    g_cancellable_cancel (self->cancellable);
+    g_clear_object (&self->cancellable);
+  }
+
+  G_OBJECT_CLASS (parent_class)->dispose (object);
+}
+
+static void
 clapper_app_application_finalize (GObject *object)
 {
   ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (object);
@@ -832,6 +884,7 @@ clapper_app_application_class_init (ClapperAppApplicationClass *klass)
       "Clapper App Application");
 
   gobject_class->constructed = clapper_app_application_constructed;
+  gobject_class->dispose = clapper_app_application_dispose;
   gobject_class->finalize = clapper_app_application_finalize;
 
   gtk_application_class->window_removed = clapper_app_application_window_removed;
