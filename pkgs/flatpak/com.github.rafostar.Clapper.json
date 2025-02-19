@@ -51,6 +51,7 @@
         "flathub/lib/libmicrodns.json",
         "flathub/lib/libpeas.json",
         "flathub/gstreamer-1.0/gstreamer.json",
+        "testing/graphviz.json",
         {
             "name": "clapper",
             "buildsystem": "meson",
