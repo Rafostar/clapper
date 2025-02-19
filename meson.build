@@ -166,3 +166,8 @@ if build_clapper
     summary(name, clapper_available_features.contains(name) ? 'Yes' : 'No', section: 'Features')
   endforeach
 endif
+if build_clapperapp
+  foreach name : clapperapp_possible_functionalities
+    summary(name, clapperapp_available_functionalities.contains(name)  ? 'Yes' : 'No', section: 'Functionalities')
+  endforeach
+endif
