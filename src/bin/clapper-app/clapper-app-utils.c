@@ -542,8 +542,10 @@ clapper_app_utils_make_element (const gchar *string)
 static inline GFile *
 _get_tmp_dir (const gchar *subdir)
 {
+  /* XXX: System tmp directory does not work within containers such as Flatpak
+   * for our usage with file launcher, so make our own temp in app data dir */
   return g_file_new_build_filename (
-      g_get_tmp_dir (), "." CLAPPER_APP_ID, subdir, NULL);
+      g_get_user_data_dir (), CLAPPER_APP_ID, "tmp", subdir, NULL);
 }
 
 #ifdef HAVE_GRAPHVIZ
