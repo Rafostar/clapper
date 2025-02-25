@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-15 12:47+0100\n"
-"PO-Revision-Date: 2025-02-15 12:11\n"
+"PO-Revision-Date: 2025-02-25 20:33\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -20,25 +20,25 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "Clapper"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
-msgstr ""
+msgstr "Проигрыватель мультимедиа"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
 msgid "Play videos and music"
-msgstr ""
+msgstr "Воспроизведение видео и музыки"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
-msgstr ""
+msgstr "Видео;Фильм;Фильм;Клип;Серий;Плейлист;DVD;ТВ;Диск;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "Новое Окно"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
@@ -90,7 +90,7 @@ msgstr "Общие"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "Новое окно"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
@@ -110,15 +110,15 @@ msgstr "Двойное нажатие | Двойной клик"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Unfullscreen"
-msgstr ""
+msgstr "Выйти из полноэкранного режима"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Auto window resize"
-msgstr ""
+msgstr "Автоматически изменять размер окна"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
 msgid "Middle click"
-msgstr ""
+msgstr "Клик колёсиком"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
@@ -468,19 +468,19 @@ msgstr "Игорь Дятлов"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
-msgstr ""
+msgstr "Создать новое окно"
 
 #: src/bin/clapper-app/clapper-app-application.c:697
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "Добавить контент в очередь в основной экземпляр приложения"
 
 #: src/bin/clapper-app/clapper-app-application.c:698
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr ""
+msgstr "Установить громкость звука (диапазон 0 - 2,0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:699
 msgid "Playback speed to set (0.05 - 2.0 range)"
-msgstr ""
+msgstr "Установить скорость воспроизведения (диапазон 0,05 - 2,0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:700
 msgid "Initial bitrate for adaptive streaming"
@@ -492,7 +492,7 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-application.c:702
 msgid "Set window to be fullscreen"
-msgstr ""
+msgstr "Запустить в полноэкранном окне"
 
 #: src/bin/clapper-app/clapper-app-application.c:703
 msgid "Video filter to use (\"none\" to disable)"
