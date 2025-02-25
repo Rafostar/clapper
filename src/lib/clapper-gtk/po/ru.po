@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-07 19:03+0100\n"
-"PO-Revision-Date: 2025-01-07 18:32\n"
+"PO-Revision-Date: 2025-02-25 20:33\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -50,11 +50,11 @@ msgstr "Сброс"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
 msgid "External video output"
-msgstr ""
+msgstr "Внешний источник видео"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
 msgid "Used video sink cannot be embedded within application window"
-msgstr ""
+msgstr "Используемый видеосигнал не может быть встроен в окно приложения"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
