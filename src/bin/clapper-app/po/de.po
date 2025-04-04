@@ -374,7 +374,7 @@ msgstr "Versatz zwischen der Untertitel- und Videospur (in Sekunden)"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
-msgstr "Standartschriftart"
+msgstr "Standardschriftart"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
