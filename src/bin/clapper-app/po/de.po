@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-15 12:47+0100\n"
-"PO-Revision-Date: 2025-02-15 12:10\n"
+"PO-Revision-Date: 2025-04-11 18:29\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -374,7 +374,7 @@ msgstr "Versatz zwischen der Untertitel- und Videospur (in Sekunden)"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
-msgstr "Standartschriftart"
+msgstr "Standardschriftart"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
