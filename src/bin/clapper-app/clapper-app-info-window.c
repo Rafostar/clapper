@@ -36,6 +36,8 @@ struct _ClapperAppInfoWindow
   GtkWidget *astreams_list;
   GtkWidget *sstreams_list;
 
+  GtkWidget *pipeline_button;
+
   ClapperPlayer *player;
 };
 
@@ -174,6 +176,10 @@ clapper_app_info_window_init (ClapperAppInfoWindow *self)
   gtk_widget_remove_css_class (self->vstreams_list, "view");
   gtk_widget_remove_css_class (self->astreams_list, "view");
   gtk_widget_remove_css_class (self->sstreams_list, "view");
+
+#ifdef HAVE_GRAPHVIZ
+  gtk_widget_set_visible (self->pipeline_button, TRUE);
+#endif
 }
 
 static void
@@ -256,6 +262,7 @@ clapper_app_info_window_class_init (ClapperAppInfoWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, ClapperAppInfoWindow, vstreams_list);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppInfoWindow, astreams_list);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppInfoWindow, sstreams_list);
+  gtk_widget_class_bind_template_child (widget_class, ClapperAppInfoWindow, pipeline_button);
 
   gtk_widget_class_bind_template_callback (widget_class, media_duration_closure);
   gtk_widget_class_bind_template_callback (widget_class, playback_element_name_closure);

@@ -89,6 +89,12 @@ libadwaita_dep = dependency('libadwaita-1',
 peas_dep = dependency('libpeas-2',
   required: false,
 )
+cgraph_dep = dependency('libcgraph',
+  required: false,
+)
+gvc_dep = dependency('libgvc',
+  required: false,
+)
 
 cc = meson.get_compiler('c')
 libm = cc.find_library('m', required: false)
@@ -158,5 +164,10 @@ if build_clapper
   endforeach
   foreach name : clapper_possible_features
     summary(name, clapper_available_features.contains(name) ? 'Yes' : 'No', section: 'Features')
+  endforeach
+endif
+if build_clapperapp
+  foreach name : clapperapp_possible_functionalities
+    summary(name, clapperapp_available_functionalities.contains(name)  ? 'Yes' : 'No', section: 'Functionalities')
   endforeach
 endif

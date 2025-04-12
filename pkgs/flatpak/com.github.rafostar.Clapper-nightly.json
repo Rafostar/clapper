@@ -66,6 +66,7 @@
         "testing/dav1d.json",
         "testing/gstreamer.json",
         "testing/gst-plugins-rs.json",
+        "testing/graphviz.json",
         {
             "name": "clapper",
             "buildsystem": "meson",

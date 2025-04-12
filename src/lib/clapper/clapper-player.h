@@ -204,4 +204,7 @@ void clapper_player_seek_custom (ClapperPlayer *player, gdouble position, Clappe
 CLAPPER_API
 void clapper_player_add_feature (ClapperPlayer *player, ClapperFeature *feature);
 
+CLAPPER_API
+gchar * clapper_player_make_pipeline_graph (ClapperPlayer *player, GstDebugGraphDetails details);
+
 G_END_DECLS
