@@ -325,6 +325,19 @@ _assemble_initial_state (GtkWindow *window)
 }
 
 static void
+_show_error_dialog (GError *error, GtkWindow *parent)
+{
+  AdwDialog *dialog;
+
+  dialog = adw_alert_dialog_new ("Error", error->message);
+  adw_alert_dialog_add_response (ADW_ALERT_DIALOG (dialog), "close", _("Close"));
+  adw_alert_dialog_set_default_response (ADW_ALERT_DIALOG (dialog), "close");
+  adw_alert_dialog_set_close_response (ADW_ALERT_DIALOG (dialog), "close");
+
+  adw_dialog_present (dialog, GTK_WIDGET (parent));
+}
+
+static void
 add_files (GSimpleAction *action, GVariant *param, gpointer user_data)
 {
   GtkApplication *gtk_app = GTK_APPLICATION (user_data);
@@ -404,17 +417,24 @@ show_info (GSimpleAction *action, GVariant *param, gpointer user_data)
 
 static void
 _launch_pipeline_cb (GtkFileLauncher *launcher,
-    GAsyncResult *res, gpointer user_data G_GNUC_UNUSED)
+    GAsyncResult *res, ClapperAppWindowData *win_data)
 {
   GError *error = NULL;
 
   if (!gtk_file_launcher_launch_finish (launcher, res, &error)) {
     if (error->domain != GTK_DIALOG_ERROR || error->code != GTK_DIALOG_ERROR_DISMISSED) {
+      GtkWindow *window;
+
       GST_ERROR ("Could not launch pipeline preview, reason: %s",
           GST_STR_NULL (error->message));
+
+      if ((window = gtk_application_get_window_by_id (
+          GTK_APPLICATION (win_data->app), win_data->id)))
+        _show_error_dialog (error, window);
     }
     g_error_free (error);
   }
+  g_free (win_data);
 }
 
 static void
@@ -427,11 +447,15 @@ _show_pipeline_cb (GObject *source G_GNUC_UNUSED,
   GError *error = NULL;
 
   svg_file = (GFile *) g_task_propagate_pointer (task, &error);
+  window = gtk_application_get_window_by_id (
+      GTK_APPLICATION (win_data->app), win_data->id);
 
   if (error) {
     if (error->domain != G_IO_ERROR || error->code != G_IO_ERROR_CANCELLED) {
       GST_ERROR ("Could not create pipeline graph file, reason: %s",
           GST_STR_NULL (error->message));
+      if (window)
+        _show_error_dialog (error, window);
     }
     g_error_free (error);
     g_free (win_data);
@@ -439,8 +463,7 @@ _show_pipeline_cb (GObject *source G_GNUC_UNUSED,
     return;
   }
 
-  if ((window = gtk_application_get_window_by_id (
-      GTK_APPLICATION (win_data->app), win_data->id))) {
+  if (window) {
     GtkFileLauncher *launcher = gtk_file_launcher_new (svg_file);
 
 #if GTK_CHECK_VERSION(4,12,0)
@@ -448,12 +471,13 @@ _show_pipeline_cb (GObject *source G_GNUC_UNUSED,
 #endif
 
     gtk_file_launcher_launch (launcher, window, NULL,
-        (GAsyncReadyCallback) _launch_pipeline_cb, NULL);
+        (GAsyncReadyCallback) _launch_pipeline_cb, win_data);
     g_object_unref (launcher);
+  } else {
+    g_free (win_data);
   }
 
   g_object_unref (svg_file);
-  g_free (win_data);
 }
 
 static void
