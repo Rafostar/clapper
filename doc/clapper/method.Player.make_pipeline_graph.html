@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Player.get_download_dir</title>
+  <title>Clapper.Player.make_pipeline_graph</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Player.get_download_dir"/>
-  <meta priority="og:description" content="Reference for Clapper.Player.get_download_dir"/>
-  <meta name="twitter:title" content="Clapper.Player.get_download_dir"/>
-  <meta name="twitter:description" content="Reference for Clapper.Player.get_download_dir"/>
+  <meta priority="og:title" content="Clapper.Player.make_pipeline_graph"/>
+  <meta priority="og:description" content="Reference for Clapper.Player.make_pipeline_graph"/>
+  <meta name="twitter:title" content="Clapper.Player.make_pipeline_graph"/>
+  <meta name="twitter:description" content="Reference for Clapper.Player.make_pipeline_graph"/>
 
 
   
@@ -115,7 +115,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.get_current_video_decoder.html">get_current_video_decoder</a>
   
-    <a class="method current" href="method.Player.get_download_dir.html">get_download_dir</a>
+    <a class="method" href="method.Player.get_download_dir.html">get_download_dir</a>
   
     <a class="method" href="method.Player.get_download_enabled.html">get_download_enabled</a>
   
@@ -147,7 +147,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.get_volume.html">get_volume</a>
   
-    <a class="method" href="method.Player.make_pipeline_graph.html">make_pipeline_graph</a>
+    <a class="method current" href="method.Player.make_pipeline_graph.html">make_pipeline_graph</a>
   
     <a class="method" href="method.Player.pause.html">pause</a>
   
@@ -211,12 +211,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a><span class="sep"></span>get_download_dir</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a><span class="sep"></span>make_pipeline_graph</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p><span class="emblem available">since: 0.8</span></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
@@ -224,14 +224,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.h#L142">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.h#L208">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="n">gchar</span><span class="o">*</span>
-<span class="n">clapper_player_get_download_dir</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">player</span>
+<span class="n">clapper_player_make_pipeline_graph</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">player</span><span class="p">,</span>
+<span class="w">  </span><span class="n">GstDebugGraphDetails</span><span class="w"> </span><span class="n">details</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -243,17 +244,19 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L1673">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L2190">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get path to a directory set for media&nbsp;downloads.</p>
+        <p>Make current <code>GStreamer</code> pipeline graph in <code>graphviz</code> dot&nbsp;format.</p>
+<p>Applications can use tools like <code>graphviz</code> to display returned
+data or just save it to a file as-is for the user to do it&nbsp;manually.</p>
       </div>
 
       <div class="docblock">
         
-        <p>Available since: 0.8</p>
+        <p>Available since: 0.10</p>
         
         
         
@@ -261,17 +264,43 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
       </div>
 
-      
-      <div class="docblock">
-        <table>
-        
-          <tr><td>Gets property</td><td><a href="property.Player.download-dir.html"><code>Clapper.Player:download-dir</code></a></td></tr>
-        
-        </table>
-      </div>
       
     </div>
 
+    
+    <div class="parameters toggle-wrapper">
+      <h4 id="parameters">
+        Parameters
+        <a href="#parameters" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <dl class="arguments">
+          
+
+          
+          <dt class="arg-name"><code>details</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="flags.DebugGraphDetails.html" data-namespace="Gst" class="external"><code>GstDebugGraphDetails</code></a></p>
+            <p>A <code>GstDebugGraphDetails</code> level.</p>
+            <table>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            </table>
+          </dd>
+          
+
+          
+        </dl>
+      </div>
+    </div>
     
 
     
@@ -285,8 +314,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <div class="returns">
           <div class="arg-description">
             <p><em>Type:</em>&nbsp;<code>gchar*</code></p>
-            <p>The path of a directory
-  set for media downloads or <code>NULL</code> if no directory was set&nbsp;yet.</p>
+            <p>Current pipeline description in dot&nbsp;format.</p>
           </div>
           <div>
             <table>
@@ -294,8 +322,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             
             <tr><td title="transfer: full">The caller of the method takes ownership of the returned data, and is responsible for freeing it.</td></tr>
-            <tr><td>The return value can be <code>NULL</code>.</td></tr>
-            <tr><td>The value is a platform-native string, using the preferred OS encoding on Unix and UTF-8 on Windows.</td></tr>
+            
+            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
             </table>
           </div>
         </div>
