@@ -27,12 +27,14 @@
 #include "clapper-playbin-bus-private.h"
 #include "clapper-app-bus-private.h"
 #include "clapper-features-bus-private.h"
+#include "clapper-enhancer-proxy-list-private.h"
 #include "gst/clapper-plugin-private.h"
 
 #if CLAPPER_WITH_ENHANCERS_LOADER
 #include "clapper-enhancers-loader-private.h"
 #endif
 
+static ClapperEnhancerProxyList *_proxies = NULL;
 static gboolean is_initialized = FALSE;
 static GMutex init_lock;
 
@@ -51,8 +53,10 @@ clapper_init_check_internal (int *argc, char **argv[])
   clapper_app_bus_initialize ();
   clapper_features_bus_initialize ();
 
+  _proxies = clapper_enhancer_proxy_list_new_named ("global-proxy-list");
+
 #if CLAPPER_WITH_ENHANCERS_LOADER
-  clapper_enhancers_loader_initialize ();
+  clapper_enhancers_loader_initialize (_proxies);
 #endif
 
   gst_plugin_register_static (
@@ -149,18 +153,75 @@ clapper_init_check (int *argc, char **argv[])
  * Returns: whether a plausible enhancer was found.
  *
  * Since: 0.8
+ *
+ * Deprecated: 0.10: Use list of enhancer proxies from [func@Clapper.get_global_enhancer_proxies] or
+ *   [property@Clapper.Player:enhancer-proxies] and check if any proxy matches your search criteria.
  */
 gboolean
 clapper_enhancer_check (GType iface_type, const gchar *scheme, const gchar *host, const gchar **name)
 {
-  gboolean success = FALSE;
+  gboolean is_https;
+  guint i, n_proxies;
 
   g_return_val_if_fail (G_TYPE_IS_INTERFACE (iface_type), FALSE);
   g_return_val_if_fail (scheme != NULL, FALSE);
 
-#if CLAPPER_WITH_ENHANCERS_LOADER
-  success = clapper_enhancers_loader_check (iface_type, scheme, host, name);
-#endif
+  if (host) {
+    /* Strip common subdomains, so plugins do not
+     * have to list all combinations */
+    if (g_str_has_prefix (host, "www."))
+      host += 4;
+    else if (g_str_has_prefix (host, "m."))
+      host += 2;
+  }
 
-  return success;
+  /* Whether "http(s)" scheme is used */
+  is_https = (g_str_has_prefix (scheme, "http")
+      && (scheme[4] == '\0' || (scheme[4] == 's' && scheme[5] == '\0')));
+
+  if (!host && is_https)
+    return FALSE;
+
+  n_proxies = clapper_enhancer_proxy_list_get_n_proxies (_proxies);
+  for (i = 0; i < n_proxies; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (_proxies, i);
+
+    if (clapper_enhancer_proxy_target_has_interface (proxy, iface_type)
+        && clapper_enhancer_proxy_extra_data_lists_value (proxy, "X-Schemes", scheme)
+        && (!is_https || clapper_enhancer_proxy_extra_data_lists_value (proxy, "X-Hosts", host))) {
+      if (name)
+        *name = clapper_enhancer_proxy_get_friendly_name (proxy);
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/**
+ * clapper_get_global_enhancer_proxies:
+ *
+ * Get a list of available enhancers in the form of [class@Clapper.EnhancerProxy] objects.
+ *
+ * This returns a global list of enhancer proxy objects. You can use it to inspect
+ * available enhancers without creating a new player instance.
+ *
+ * Remember to initialize Clapper library before using this function.
+ *
+ * Only enhancer properties with [flags@Clapper.EnhancerParamFlags.GLOBAL] flag can be
+ * set on proxies in this list. These are meant to be set ONLY by users, not applications
+ * as they carry over to all player instances (possibly including other apps). Applications
+ * should instead be changing properties with [flags@Clapper.EnhancerParamFlags.LOCAL] flag
+ * set from individual proxy lists from [property@Clapper.Player:enhancer-proxies] which
+ * will affect only that single player instance given list belongs to.
+ *
+ * Returns: (transfer none): a global #ClapperEnhancerProxyList of enhancer proxies.
+ *
+ * Since: 0.10
+ */
+ClapperEnhancerProxyList *
+clapper_get_global_enhancer_proxies (void)
+{
+  return _proxies;
 }

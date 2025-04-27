@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,24 +20,22 @@
 #pragma once
 
 #include <glib.h>
-#include <glib-object.h>
-#include <gio/gio.h>
 
-#include "../clapper-threaded-object.h"
-#include "../clapper-harvest.h"
+#include "clapper-enhancer-proxy-list.h"
+#include "clapper-enhancer-proxy.h"
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_ENHANCER_DIRECTOR (clapper_enhancer_director_get_type())
-#define CLAPPER_ENHANCER_DIRECTOR_CAST(obj) ((ClapperEnhancerDirector *)(obj))
+G_GNUC_INTERNAL
+ClapperEnhancerProxyList * clapper_enhancer_proxy_list_new_named (const gchar *name);
 
 G_GNUC_INTERNAL
-G_DECLARE_FINAL_TYPE (ClapperEnhancerDirector, clapper_enhancer_director, CLAPPER, ENHANCER_DIRECTOR, ClapperThreadedObject)
+void clapper_enhancer_proxy_list_take_proxy (ClapperEnhancerProxyList *list, ClapperEnhancerProxy *proxy);
 
 G_GNUC_INTERNAL
-ClapperEnhancerDirector * clapper_enhancer_director_new (void);
+void clapper_enhancer_proxy_list_fill_from_global_proxies (ClapperEnhancerProxyList *list);
 
 G_GNUC_INTERNAL
-ClapperHarvest * clapper_enhancer_director_extract (ClapperEnhancerDirector *director, GList *filtered_proxies, GUri *uri, GCancellable *cancellable, GError **error);
+void clapper_enhancer_proxy_list_sort (ClapperEnhancerProxyList *list);
 
 G_END_DECLS

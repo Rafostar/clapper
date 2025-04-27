@@ -30,6 +30,8 @@
 #include <clapper/clapper-version.h>
 
 #include <clapper/clapper-audio-stream.h>
+#include <clapper/clapper-enhancer-proxy.h>
+#include <clapper/clapper-enhancer-proxy-list.h>
 #include <clapper/clapper-feature.h>
 #include <clapper/clapper-harvest.h>
 #include <clapper/clapper-marker.h>
@@ -67,8 +69,11 @@ void clapper_init (int *argc, char **argv[]);
 CLAPPER_API
 gboolean clapper_init_check (int *argc, char **argv[]);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 gboolean clapper_enhancer_check (GType iface_type, const gchar *scheme, const gchar *host, const gchar **name);
+
+CLAPPER_API
+ClapperEnhancerProxyList * clapper_get_global_enhancer_proxies (void);
 
 G_END_DECLS
 

@@ -49,6 +49,7 @@
 #include "clapper-video-stream-private.h"
 #include "clapper-audio-stream-private.h"
 #include "clapper-subtitle-stream-private.h"
+#include "clapper-enhancer-proxy-list-private.h"
 #include "clapper-enums-private.h"
 #include "clapper-utils-private.h"
 #include "../shared/clapper-shared-utils-private.h"
@@ -77,6 +78,7 @@ enum
   PROP_VIDEO_STREAMS,
   PROP_AUDIO_STREAMS,
   PROP_SUBTITLE_STREAMS,
+  PROP_ENHANCER_PROXIES,
   PROP_AUTOPLAY,
   PROP_POSITION,
   PROP_SPEED,
@@ -814,7 +816,11 @@ _element_setup_cb (GstElement *playbin, GstElement *element, ClapperPlayer *self
   factory_name = g_intern_static_string (GST_OBJECT_NAME (factory));
   GST_INFO_OBJECT (self, "Element setup: %s", factory_name);
 
-  if (factory_name == g_intern_static_string ("downloadbuffer")) {
+  if (factory_name == g_intern_static_string ("clapperenhancersrc")) {
+    g_object_set (element,
+        "enhancer-proxies", self->enhancer_proxies,
+        NULL);
+  } else if (factory_name == g_intern_static_string ("downloadbuffer")) {
     gchar *download_template;
 
     /* Only set props if we have download template */
@@ -1127,6 +1133,24 @@ clapper_player_get_subtitle_streams (ClapperPlayer *self)
   g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
 
   return self->subtitle_streams;
+}
+
+/**
+ * clapper_player_get_enhancer_proxies:
+ * @player: a #ClapperPlayer
+ *
+ * Get a list of available enhancers in the form of [class@Clapper.EnhancerProxy] objects.
+ *
+ * Returns: (transfer none): a #ClapperEnhancerProxyList of enhancer proxies.
+ *
+ * Since: 0.10
+ */
+ClapperEnhancerProxyList *
+clapper_player_get_enhancer_proxies (ClapperPlayer *self)
+{
+  g_return_val_if_fail (CLAPPER_IS_PLAYER (self), NULL);
+
+  return self->enhancer_proxies;
 }
 
 /**
@@ -2297,6 +2321,11 @@ clapper_player_init (ClapperPlayer *self)
   self->subtitle_streams = clapper_stream_list_new ();
   gst_object_set_parent (GST_OBJECT_CAST (self->subtitle_streams), GST_OBJECT_CAST (self));
 
+  self->enhancer_proxies = clapper_enhancer_proxy_list_new_named (NULL);
+  gst_object_set_parent (GST_OBJECT_CAST (self->enhancer_proxies), GST_OBJECT_CAST (self));
+
+  clapper_enhancer_proxy_list_fill_from_global_proxies (self->enhancer_proxies);
+
   self->position_query = gst_query_new_position (GST_FORMAT_TIME);
 
   self->current_state = GST_STATE_NULL;
@@ -2363,6 +2392,9 @@ clapper_player_finalize (GObject *object)
   gst_object_unparent (GST_OBJECT_CAST (self->subtitle_streams));
   gst_object_unref (self->subtitle_streams);
 
+  gst_object_unparent (GST_OBJECT_CAST (self->enhancer_proxies));
+  gst_object_unref (self->enhancer_proxies);
+
   gst_query_unref (self->position_query);
 
   gst_clear_object (&self->collection);
@@ -2393,6 +2425,9 @@ clapper_player_get_property (GObject *object, guint prop_id,
       break;
     case PROP_SUBTITLE_STREAMS:
       g_value_set_object (value, clapper_player_get_subtitle_streams (self));
+      break;
+    case PROP_ENHANCER_PROXIES:
+      g_value_set_object (value, clapper_player_get_enhancer_proxies (self));
       break;
     case PROP_AUTOPLAY:
       g_value_set_boolean (value, clapper_player_get_autoplay (self));
@@ -2591,6 +2626,20 @@ clapper_player_class_init (ClapperPlayerClass *klass)
    */
   param_specs[PROP_SUBTITLE_STREAMS] = g_param_spec_object ("subtitle-streams",
       NULL, NULL, CLAPPER_TYPE_STREAM_LIST,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperPlayer:enhancer-proxies:
+   *
+   * List of available enhancers in the form of [class@Clapper.EnhancerProxy] objects.
+   *
+   * Use these to inspect available enhancers on the system and configure
+   * their properties on a per player instance basis.
+   *
+   * Since: 0.10
+   */
+  param_specs[PROP_ENHANCER_PROXIES] = g_param_spec_object ("enhancer-proxies",
+      NULL, NULL, CLAPPER_TYPE_ENHANCER_PROXY_LIST,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
