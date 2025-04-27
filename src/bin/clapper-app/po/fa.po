@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-11 15:22+0100\n"
-"PO-Revision-Date: 2025-01-13 15:41\n"
+"POT-Creation-Date: 2025-02-15 12:47+0100\n"
+"PO-Revision-Date: 2025-02-15 13:14\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -32,8 +32,8 @@ msgstr "پخش ویدیو و آهنگ"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
-msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;"
-msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;Album;Music;GNOME;Clapper;ویدیو;فیلم;کلیپ;سریتال;پخش;تلویزیون;آلبوم;آهنگ;گنوم;کلاکت;کلپر;"
+msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
+msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;ویدیو;فیلم;کلیپ;سریال;نمایش;پخش;دی‌وی‌دی;تلویزیون;دیسک;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
@@ -531,23 +531,23 @@ msgstr "معمولی"
 msgid "Fast"
 msgstr "تند"
 
-#: src/bin/clapper-app/clapper-app-utils.c:90
+#: src/bin/clapper-app/clapper-app-utils.c:207
 msgid "No progression"
 msgstr "بدون پیشرفت"
 
-#: src/bin/clapper-app/clapper-app-utils.c:91
+#: src/bin/clapper-app/clapper-app-utils.c:208
 msgid "Consecutive"
 msgstr "متوالی"
 
-#: src/bin/clapper-app/clapper-app-utils.c:92
+#: src/bin/clapper-app/clapper-app-utils.c:209
 msgid "Repeat item"
 msgstr "تکرار مورد"
 
-#: src/bin/clapper-app/clapper-app-utils.c:93
+#: src/bin/clapper-app/clapper-app-utils.c:210
 msgid "Carousel"
 msgstr "چرخ فلک"
 
-#: src/bin/clapper-app/clapper-app-utils.c:94
+#: src/bin/clapper-app/clapper-app-utils.c:211
 msgid "Shuffle"
 msgstr "بر زدن"
 
