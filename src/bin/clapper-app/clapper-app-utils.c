@@ -23,6 +23,11 @@
 #include "clapper-app-utils.h"
 #include "clapper-app-media-item-box.h"
 
+#ifdef HAVE_GRAPHVIZ
+#include <graphviz/cgraph.h>
+#include <graphviz/gvc.h>
+#endif
+
 #ifdef G_OS_WIN32
 #include <windows.h>
 #ifdef HAVE_WIN_PROCESS_THREADS_API
@@ -526,4 +531,179 @@ clapper_app_utils_make_element (const gchar *string)
   }
 
   return gst_element_factory_make (string, NULL);
+}
+
+/*
+ * _get_tmp_dir:
+ * @subdir: (nullable): an optional subdirectory
+ *
+ * Returns: (transfer full): a newly constructed #GFile
+ */
+static inline GFile *
+_get_tmp_dir (const gchar *subdir)
+{
+  /* XXX: System tmp directory does not work within containers such as Flatpak
+   * for our usage with file launcher, so make our own temp in app data dir */
+  return g_file_new_build_filename (
+      g_get_user_data_dir (), CLAPPER_APP_ID, "tmp", subdir, NULL);
+}
+
+#ifdef HAVE_GRAPHVIZ
+static GFile *
+_create_tmp_subdir (const gchar *subdir, GCancellable *cancellable, GError **error)
+{
+  GFile *tmp_dir;
+  GError *my_error = NULL;
+
+  tmp_dir = _get_tmp_dir (subdir);
+
+  if (!g_file_make_directory_with_parents (tmp_dir, cancellable, &my_error)) {
+    if (my_error->domain != G_IO_ERROR || my_error->code != G_IO_ERROR_EXISTS) {
+      *error = g_error_copy (my_error);
+      g_clear_object (&tmp_dir); // return NULL
+    }
+    g_error_free (my_error);
+  }
+
+  return tmp_dir;
+}
+#endif
+
+static void
+_create_pipeline_svg_file_in_thread (GTask *task, GObject *source G_GNUC_UNUSED,
+    ClapperPlayer *player, GCancellable *cancellable)
+{
+  GFile *tmp_file = NULL;
+  GError *error = NULL;
+
+#ifdef HAVE_GRAPHVIZ
+  GFile *tmp_subdir;
+  Agraph_t *graph;
+  GVC_t *gvc;
+  gchar *path, *template = NULL, *dot_data = NULL, *img_data = NULL;
+  gint fd;
+  guint size = 0;
+
+  if (!(tmp_subdir = _create_tmp_subdir ("pipelines", cancellable, &error)))
+    goto finish;
+
+  path = g_file_get_path (tmp_subdir);
+  g_object_unref (tmp_subdir);
+
+  template = g_build_filename (path, "pipeline-XXXXXX.svg", NULL);
+  g_free (path);
+
+  fd = g_mkstemp (template); // Modifies template to actual filename
+
+  if (G_UNLIKELY (fd == -1)) {
+    g_set_error (&error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
+        "Could not open temp file for writing");
+    goto finish;
+  }
+
+  dot_data = clapper_player_make_pipeline_graph (player, GST_DEBUG_GRAPH_SHOW_ALL);
+
+  if (g_cancellable_is_cancelled (cancellable))
+    goto close_and_finish;
+
+  graph = agmemread (dot_data);
+
+  gvc = gvContext ();
+  gvLayout (gvc, graph, "dot");
+  gvRenderData (gvc, graph, "svg", &img_data, &size);
+
+  agclose (graph);
+  gvFreeContext (gvc);
+
+  if (g_cancellable_is_cancelled (cancellable))
+    goto close_and_finish;
+
+  if (write (fd, img_data, size) != -1) {
+    tmp_file = g_file_new_for_path (template);
+  } else {
+    g_set_error (&error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
+        "Could not write data to temp file");
+  }
+
+close_and_finish:
+  /* Always close the file IO */
+  if (G_UNLIKELY (close (fd) == -1))
+    GST_ERROR ("Could not close temp file!");
+
+finish:
+  g_free (template);
+  g_free (dot_data);
+  g_free (img_data);
+#else
+  g_set_error (&error, G_FILE_ERROR, G_FILE_ERROR_FAILED,
+      "Cannot create graph file when compiled without Graphviz");
+#endif
+
+  if (tmp_file)
+    g_task_return_pointer (task, tmp_file, (GDestroyNotify) g_object_unref);
+  else
+    g_task_return_error (task, error);
+}
+
+void
+clapper_app_utils_create_pipeline_svg_file_async (ClapperPlayer *player,
+    GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+  GTask *task;
+
+  task = g_task_new (NULL, cancellable, callback, user_data);
+  g_task_set_task_data (task, gst_object_ref (player), (GDestroyNotify) gst_object_unref);
+  g_task_run_in_thread (task, (GTaskThreadFunc) _create_pipeline_svg_file_in_thread);
+
+  g_object_unref (task);
+}
+
+static gboolean
+_delete_dir_recursive (GFile *dir, GError **error)
+{
+  GFileEnumerator *dir_enum;
+
+  if ((dir_enum = g_file_enumerate_children (dir,
+      G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE,
+      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, error))) {
+    while (TRUE) {
+      GFileInfo *info = NULL;
+      GFile *child = NULL;
+
+      if (!g_file_enumerator_iterate (dir_enum, &info,
+          &child, NULL, error) || !info)
+        break;
+
+      if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+        if (!_delete_dir_recursive (child, error))
+          break;
+      } else if (!g_file_delete (child, NULL, error)) {
+        break;
+      }
+    }
+
+    g_object_unref (dir_enum);
+  }
+
+  if (*error != NULL)
+    return FALSE;
+
+  return g_file_delete (dir, NULL, error);
+}
+
+void
+clapper_app_utils_delete_tmp_dir (void)
+{
+  GFile *tmp_dir = _get_tmp_dir (NULL);
+  GError *error = NULL;
+
+  if (!_delete_dir_recursive (tmp_dir, &error)) {
+    if (error->domain != G_IO_ERROR || error->code != G_IO_ERROR_NOT_FOUND) {
+      GST_ERROR ("Could not remove temp dir, reason: %s",
+          GST_STR_NULL (error->message));
+    }
+    g_error_free (error);
+  }
+
+  g_object_unref (tmp_dir);
 }

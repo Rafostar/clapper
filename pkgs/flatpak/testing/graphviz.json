@@ -1,0 +1,38 @@
+{
+    "name": "graphviz",
+    "buildsystem": "autotools",
+    "config-opts": [
+        "--without-x",
+        "--without-gtk",
+        "--without-gtkgl",
+        "--without-gtkglext",
+        "--without-gdk",
+        "--without-gdk-pixbuf",
+        "--without-qt",
+        "--disable-static",
+        "--disable-sharp",
+        "--disable-go",
+        "--disable-guile",
+        "--disable-java",
+        "--disable-javascript",
+        "--disable-lua",
+        "--disable-perl",
+        "--disable-php",
+        "--disable-python",
+        "--disable-r",
+        "--disable-ruby",
+        "--disable-tcl"
+    ],
+    "cleanup": [
+        "/bin",
+        "/share/man",
+        "/share/graphviz"
+    ],
+    "sources": [
+        {
+            "type": "archive",
+            "url": "https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/12.2.1/graphviz-12.2.1.tar.gz",
+            "sha256": "242bc18942eebda6db4039f108f387ec97856fc91ba47f21e89341c34b554df8"
+        }
+    ]
+}

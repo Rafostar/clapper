@@ -41,6 +41,11 @@ option('enhancers-loader',
   value: 'enabled',
   description: 'Ability to load libpeas based plugins that enhance capabilities'
 )
+option('pipeline-preview',
+  type: 'feature',
+  value: 'auto',
+  description: 'Ability to preview GStreamer pipeline in clapper-app'
+)
 
 # Features
 option('discoverer',
