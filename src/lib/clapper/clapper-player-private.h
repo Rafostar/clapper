@@ -47,6 +47,8 @@ struct _ClapperPlayer
   ClapperFeaturesManager *features_manager;
   gint have_features; // atomic integer
 
+  ClapperEnhancerProxyList *enhancer_proxies;
+
   /* This is different from queue current item as it is used/changed only
    * on player thread, so we can always update correct item without lock */
   ClapperMediaItem *played_item;

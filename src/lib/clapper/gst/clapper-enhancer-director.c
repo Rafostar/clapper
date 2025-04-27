@@ -20,10 +20,16 @@
 #include <gst/gst.h>
 
 #include "clapper-enhancer-director-private.h"
-#include "../clapper-enhancers-loader-private.h"
+#include "../clapper-enhancer-proxy-private.h"
 #include "../clapper-extractable-private.h"
 #include "../clapper-harvest-private.h"
 #include "../../shared/clapper-shared-utils-private.h"
+
+#include "../clapper-functionalities-availability.h"
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+#include "../clapper-enhancers-loader-private.h"
+#endif
 
 #define GST_CAT_DEFAULT clapper_enhancer_director_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -38,6 +44,8 @@ G_DEFINE_TYPE (ClapperEnhancerDirector, clapper_enhancer_director, CLAPPER_TYPE_
 
 typedef struct
 {
+  ClapperEnhancerDirector *director;
+  GList *filtered_proxies;
   GUri *uri;
   GCancellable *cancellable;
   GError **error;
@@ -46,37 +54,61 @@ typedef struct
 static gpointer
 clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 {
-  ClapperExtractable *extractable = NULL;
-  ClapperHarvest *harvest = clapper_harvest_new ();
+  ClapperEnhancerDirector *self = data->director;
+  GList *el;
+  ClapperHarvest *harvest = NULL;
   gboolean success = FALSE, cached = FALSE;
+
+  GST_DEBUG_OBJECT (self, "Extraction start");
 
   /* Cancelled during thread switching */
   if (g_cancellable_is_cancelled (data->cancellable))
-    goto finish;
+    return NULL;
 
   /* TODO: Cache lookup */
   if (cached) {
-    // success = fill harvest from cache
-    goto finish;
+    // if ((success = fill harvest from cache))
+    //   return harvest;
   }
 
-  extractable = CLAPPER_EXTRACTABLE_CAST (clapper_enhancers_loader_create_enhancer_for_uri (
-      CLAPPER_TYPE_EXTRACTABLE, data->uri));
+  GST_DEBUG_OBJECT (self, "Enhancer proxies for URI: %u",
+      g_list_length (data->filtered_proxies));
 
-  /* Check just before extract */
-  if (g_cancellable_is_cancelled (data->cancellable))
-    goto finish;
+  for (el = data->filtered_proxies; el; el = g_list_next (el)) {
+    ClapperEnhancerProxy *proxy = CLAPPER_ENHANCER_PROXY_CAST (el->data);
+    ClapperExtractable *extractable = NULL;
 
-  success = clapper_extractable_extract (extractable, data->uri,
-      harvest, data->cancellable, data->error);
+    /* Check just before extract */
+    if (g_cancellable_is_cancelled (data->cancellable))
+      break;
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+    extractable = CLAPPER_EXTRACTABLE_CAST (
+        clapper_enhancers_loader_create_enhancer (proxy, CLAPPER_TYPE_EXTRACTABLE));
+#endif
+
+    if (G_LIKELY (extractable != NULL)) {
+      clapper_enhancer_proxy_apply_current_config_to_enhancer (proxy, (GObject *) extractable);
+
+      harvest = clapper_harvest_new (); // fresh harvest for each extractable
+
+      success = clapper_extractable_extract (extractable, data->uri,
+          harvest, data->cancellable, data->error);
+      gst_object_unref (extractable);
+
+      /* We are done with extractable, but keep its harvest */
+      if (success)
+        break;
+
+      /* Clear harvest and try again with next enhancer */
+      g_clear_object (&harvest);
+    }
+  }
 
   /* Cancelled during extract */
-  if (g_cancellable_is_cancelled (data->cancellable)) {
+  if (g_cancellable_is_cancelled (data->cancellable))
     success = FALSE;
-    goto finish;
-  }
 
-finish:
   if (success) {
     if (!cached) {
       /* TODO: Store in cache */
@@ -94,7 +126,7 @@ finish:
     }
   }
 
-  gst_clear_object (&extractable);
+  GST_DEBUG_OBJECT (self, "Extraction finish");
 
   return harvest;
 }
@@ -116,11 +148,14 @@ clapper_enhancer_director_new (void)
 }
 
 ClapperHarvest *
-clapper_enhancer_director_extract (ClapperEnhancerDirector *self, GUri *uri,
+clapper_enhancer_director_extract (ClapperEnhancerDirector *self,
+    GList *filtered_proxies, GUri *uri,
     GCancellable *cancellable, GError **error)
 {
   ClapperEnhancerDirectorData *data = g_new (ClapperEnhancerDirectorData, 1);
 
+  data->director = self;
+  data->filtered_proxies = filtered_proxies;
   data->uri = uri;
   data->cancellable = cancellable;
   data->error = error;
