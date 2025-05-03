@@ -1,10 +1,11 @@
-appstream_util = find_program('appstream-util', required: false)
-if appstream_util.found()
+appstream_cli = find_program('appstreamcli', required: false)
+if appstream_cli.found()
   test('Validate appstream file',
-    appstream_util,
+    appstream_cli,
     args: [
-      'validate-relax',
-      '--nonet',
+      'validate',
+      '--no-net',
+      '--explain',
       join_paths(meson.current_source_dir(), 'metainfo', 'com.github.rafostar.Clapper.metainfo.xml'),
     ]
   )
