@@ -34,8 +34,6 @@ static HMODULE _enhancers_dll_handle = NULL;
 // Supported interfaces
 #include "clapper-extractable.h"
 
-#define ENHANCER_INTERFACES "X-Interfaces"
-
 #define GST_CAT_DEFAULT clapper_enhancers_loader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -137,12 +135,14 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
     }
 
     if (G_LIKELY (filled)) {
-      GST_INFO ("Found enhancer: %s (%s)", clapper_enhancer_proxy_get_friendly_name (proxy),
-          clapper_enhancer_proxy_get_extra_data (proxy, ENHANCER_INTERFACES));
+      GST_INFO ("Found enhancer: \"%s\" (%s)",
+          clapper_enhancer_proxy_get_friendly_name (proxy),
+          clapper_enhancer_proxy_get_module_name (proxy));
       clapper_enhancer_proxy_list_take_proxy (proxies, proxy);
     } else {
-      GST_WARNING ("Enhancer \"%s\" init failed, skipping it",
-          clapper_enhancer_proxy_get_friendly_name (proxy));
+      GST_WARNING ("Enhancer init failed: \"%s\" (%s)",
+          clapper_enhancer_proxy_get_friendly_name (proxy),
+          clapper_enhancer_proxy_get_module_name (proxy));
       gst_object_unref (proxy);
     }
   }
