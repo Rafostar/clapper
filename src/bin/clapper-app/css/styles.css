@@ -21,10 +21,10 @@ window.info .subcontent streamlist preferencesgroup {
 window.preferences .subcontent {
   margin: 16px;
 }
-window.preferences .pluginssubpage .subcontent popover {
+window.preferences .configsubpage .subcontent popover {
   min-width: 264px;
 }
-window.preferences .pluginssubpage .subcontent button.pill {
+window.preferences .configsubpage .subcontent button.pill {
   margin-top: 8px;
   margin-bottom: 8px;
 }

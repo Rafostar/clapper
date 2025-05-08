@@ -138,6 +138,24 @@
         <property name="icon-name">applications-engineering-symbolic</property>
         <child>
           <object class="AdwPreferencesGroup">
+            <property name="title" translatable="no">Clapper</property>
+            <child>
+              <object class="AdwActionRow">
+                <property name="title" translatable="yes">Enhancers</property>
+                <property name="subtitle" translatable="yes">Browse and configure properties of available enhancers</property>
+                <property name="activatable">true</property>
+                <signal name="activated" handler="enhancers_config_activated_cb"/>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
             <property name="title" translatable="no">GStreamer</property>
             <child>
               <object class="AdwActionRow">
@@ -160,6 +178,124 @@
       <class name="preferences"/>
     </style>
   </template>
+  <object class="AdwNavigationPage" id="enhancers_subpage">
+    <property name="title" translatable="yes">Clapper Enhancers</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar"/>
+        </child>
+        <property name="content">
+          <object class="GtkScrolledWindow">
+            <child>
+              <object class="AdwClamp">
+                <style>
+                  <class name="subcontent"/>
+                </style>
+                <child>
+                  <object class="GtkStack" id="enhancers_stack">
+                    <child>
+                      <object class="GtkBox" id="browse_enhancers_page">
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="AdwPreferencesGroup">
+                            <property name="title" translatable="yes">Available enhancers</property>
+                            <property name="description" translatable="yes">Select an enhancer plugin to view its information and properties to configure.</property>
+                            <child>
+                              <object class="AdwComboRow" id="enhancers_combo_row">
+                                <property name="title" translatable="yes">Enhancer</property>
+                                <property name="enable-search">true</property>
+                                <property name="expression">
+                                  <lookup type="ClapperEnhancerProxy" name="friendly-name"/>
+                                </property>
+                                <signal name="notify::selected" handler="selected_enhancer_changed_cb"/>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <binding name="visible">
+                              <closure type="gboolean" function="list_has_selection_closure">
+                                <lookup name="selected">enhancers_combo_row</lookup>
+                              </closure>
+                            </binding>
+                            <child>
+                              <object class="AdwPreferencesGroup">
+                                <property name="title" translatable="yes">Information</property>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Module</property>
+                                    <binding name="subtitle">
+                                      <lookup name="module-name" type="ClapperEnhancerProxy">
+                                        <lookup name="selected-item">enhancers_combo_row</lookup>
+                                      </lookup>
+                                    </binding>
+                                    <style>
+                                      <class name="property"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Description</property>
+                                    <binding name="subtitle">
+                                      <lookup name="description" type="ClapperEnhancerProxy">
+                                        <lookup name="selected-item">enhancers_combo_row</lookup>
+                                      </lookup>
+                                    </binding>
+                                    <style>
+                                      <class name="property"/>
+                                    </style>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="AdwActionRow">
+                                    <property name="title" translatable="yes">Version</property>
+                                    <binding name="subtitle">
+                                      <lookup name="version" type="ClapperEnhancerProxy">
+                                        <lookup name="selected-item">enhancers_combo_row</lookup>
+                                      </lookup>
+                                    </binding>
+                                    <style>
+                                      <class name="property"/>
+                                    </style>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="AdwPreferencesGroup" id="enhancer_config_group">
+                                <property name="title" translatable="yes">Properties</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="AdwStatusPage" id="no_enhancers_page">
+                        <property name="vexpand">true</property>
+                        <property name="hexpand">true</property>
+                        <property name="icon-name">edit-find-symbolic</property>
+                        <property name="title" translatable="yes">No Clapper Enhancers Found</property>
+                        <property name="description" translatable="yes">Install some to add more cool functionalities to the player!</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+    <signal name="unrealize" handler="plugin_ranking_unrealize_cb"/>
+    <style>
+      <class name="configsubpage"/>
+    </style>
+  </object>
   <object class="AdwNavigationPage" id="plugins_subpage">
     <property name="title" translatable="yes">Plugin Ranking</property>
     <property name="child">
@@ -240,7 +376,7 @@
     </property>
     <signal name="unrealize" handler="plugin_ranking_unrealize_cb"/>
     <style>
-      <class name="pluginssubpage"/>
+      <class name="configsubpage"/>
     </style>
   </object>
 </interface>

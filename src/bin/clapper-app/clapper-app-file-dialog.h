@@ -19,6 +19,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <adwaita.h>
 #include <clapper/clapper.h>
 
 G_BEGIN_DECLS
@@ -28,5 +29,11 @@ void clapper_app_file_dialog_open_files (GtkApplication *gtk_app);
 
 G_GNUC_INTERNAL
 void clapper_app_file_dialog_open_subtitles (GtkApplication *gtk_app, ClapperMediaItem *item);
+
+G_GNUC_INTERNAL
+void clapper_app_file_dialog_select_prefs_file (GtkApplication *gtk_app, AdwActionRow *action_row);
+
+G_GNUC_INTERNAL
+void clapper_app_file_dialog_select_prefs_dir (GtkApplication *gtk_app, AdwActionRow *action_row);
 
 G_END_DECLS
