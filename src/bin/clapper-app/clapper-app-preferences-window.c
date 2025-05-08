@@ -23,6 +23,7 @@
 
 #include "clapper-app-preferences-window.h"
 #include "clapper-app-application.h"
+#include "clapper-app-file-dialog.h"
 #include "clapper-app-utils.h"
 
 #define GST_CAT_DEFAULT clapper_app_preferences_window_debug
@@ -41,12 +42,18 @@ struct _ClapperAppPreferencesWindow
   AdwSpinRow *subtitle_offset_spin_row;
   GtkFontDialogButton *font_dialog_button;
 
+  AdwNavigationPage *enhancers_subpage;
+  AdwComboRow *enhancers_combo_row;
+  AdwPreferencesGroup *enhancer_config_group;
+
   AdwNavigationPage *plugins_subpage;
   AdwComboRow *plugins_combo_row;
   AdwComboRow *features_combo_row;
   AdwPreferencesGroup *overrides_group;
 
   GSettings *settings;
+
+  GList *enhancer_pspec_rows;
 
   GList *features;
   GtkStringList *plugins_list;
@@ -75,6 +82,227 @@ enum
 };
 
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
+
+static void
+enhancer_pspec_reset_button_clicked_cb (GtkButton *button, GtkWidget *row)
+{
+  GParamSpec *pspec = g_object_get_data (G_OBJECT (row), "enhancer-pspec");
+
+  if (ADW_IS_SWITCH_ROW (row)) {
+    adw_switch_row_set_active (ADW_SWITCH_ROW (row),
+        ((GParamSpecBoolean *) pspec)->default_value);
+  } else if (ADW_IS_SPIN_ROW (row)) {
+    gdouble def;
+
+    switch (pspec->value_type) {
+      case G_TYPE_INT:{
+        def = ((GParamSpecInt *) pspec)->default_value;
+        break;
+      }
+      case G_TYPE_UINT:{
+        def = ((GParamSpecUInt *) pspec)->default_value;
+        break;
+      }
+      case G_TYPE_DOUBLE:{
+        def = ((GParamSpecDouble *) pspec)->default_value;
+        break;
+      }
+      default:
+        goto fail;
+    }
+
+    adw_spin_row_set_value (ADW_SPIN_ROW (row), def);
+  } else if (ADW_IS_ENTRY_ROW (row)) {
+    gtk_editable_set_text (GTK_EDITABLE (row), ((GParamSpecString *) pspec)->default_value);
+  } else if (ADW_IS_ACTION_ROW (row)) {
+    adw_action_row_set_subtitle (ADW_ACTION_ROW (row),
+        ((GParamSpecString *) pspec)->default_value);
+  } else {
+    goto fail;
+  }
+
+  return;
+
+fail:
+  GST_ERROR ("Could not restore default \"%s\" property value!", pspec->name);
+}
+
+static void
+file_selection_row_activated_cb (AdwActionRow *action_row, GParamSpec *pspec)
+{
+  GtkApplication *gtk_app;
+  GtkWidget *window;
+
+  if (!(window = gtk_widget_get_ancestor (GTK_WIDGET (action_row), GTK_TYPE_WINDOW))) {
+    GST_ERROR ("Could not get a hold of parent window");
+    return;
+  }
+
+  gtk_app = gtk_window_get_application (GTK_WINDOW (window));
+
+  if (pspec->flags & CLAPPER_ENHANCER_PARAM_FILEPATH)
+    clapper_app_file_dialog_select_prefs_file (gtk_app, action_row);
+  else
+    clapper_app_file_dialog_select_prefs_dir (gtk_app, action_row);
+}
+
+static gboolean
+_add_enhancer_config_row (ClapperAppPreferencesWindow *self, GParamSpec *pspec,
+    GSettings *enhancer_settings)
+{
+  GtkWidget *row = NULL, *reset_button;
+  const gchar *bind_prop = NULL;
+
+  switch (pspec->value_type) {
+    case G_TYPE_BOOLEAN:{
+      row = adw_switch_row_new ();
+      break;
+    }
+    case G_TYPE_INT:{
+      GParamSpecInt *p = (GParamSpecInt *) pspec;
+      row = adw_spin_row_new_with_range (p->minimum, p->maximum, 1);
+      break;
+    }
+    case G_TYPE_UINT:{
+      GParamSpecUInt *p = (GParamSpecUInt *) pspec;
+      row = adw_spin_row_new_with_range (p->minimum, p->maximum, 1);
+      break;
+    }
+    case G_TYPE_DOUBLE:{
+      GParamSpecDouble *p = (GParamSpecDouble *) pspec;
+      row = adw_spin_row_new_with_range (p->minimum, p->maximum, 0.25);
+      break;
+    }
+    case G_TYPE_STRING:{
+      if (pspec->flags & (CLAPPER_ENHANCER_PARAM_FILEPATH | CLAPPER_ENHANCER_PARAM_DIRPATH)) {
+        GtkWidget *image;
+
+        image = gtk_image_new_from_icon_name ("document-open-symbolic");
+        gtk_widget_set_margin_end (image, 10); // matches other rows
+
+        row = adw_action_row_new ();
+        adw_action_row_add_suffix (ADW_ACTION_ROW (row), image);
+        adw_action_row_set_activatable_widget (ADW_ACTION_ROW (row), image);
+
+        g_signal_connect (row, "activated",
+            G_CALLBACK (file_selection_row_activated_cb), pspec);
+      } else {
+        row = adw_entry_row_new ();
+      }
+      break;
+    }
+    default:
+      g_warning ("Unsupported enhancer \"%s\" property type: %s",
+          pspec->name, g_type_name (pspec->value_type));
+      return FALSE;
+  }
+
+  reset_button = gtk_button_new_from_icon_name ("view-refresh-symbolic");
+  gtk_widget_set_tooltip_text (reset_button, _("Restore default"));
+  g_object_set_data (G_OBJECT (row), "enhancer-pspec", pspec);
+
+  gtk_widget_set_halign (reset_button, GTK_ALIGN_CENTER);
+  gtk_widget_set_valign (reset_button, GTK_ALIGN_CENTER);
+  gtk_widget_add_css_class (reset_button, "circular");
+
+  gtk_widget_set_tooltip_text (row, g_param_spec_get_blurb (pspec));
+  gtk_widget_add_css_class (row, "property");
+
+  adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), g_param_spec_get_nick (pspec));
+
+  if (ADW_IS_SWITCH_ROW (row)) {
+    bind_prop = "active";
+  } else if (ADW_IS_SPIN_ROW (row)) {
+    bind_prop = "value";
+    adw_spin_row_set_numeric (ADW_SPIN_ROW (row), TRUE);
+  } else if (ADW_IS_ENTRY_ROW (row)) {
+    bind_prop = "text";
+  } else if (ADW_IS_ACTION_ROW (row)) {
+    bind_prop = "subtitle";
+  } else {
+    g_assert_not_reached ();
+    return FALSE;
+  }
+
+  if (ADW_IS_ENTRY_ROW (row))
+    adw_entry_row_add_prefix (ADW_ENTRY_ROW (row), reset_button);
+  else if (ADW_IS_ACTION_ROW (row))
+    adw_action_row_add_prefix (ADW_ACTION_ROW (row), reset_button);
+
+  g_settings_bind (enhancer_settings, pspec->name, row, bind_prop, G_SETTINGS_BIND_DEFAULT);
+
+  g_signal_connect (reset_button, "clicked",
+      G_CALLBACK (enhancer_pspec_reset_button_clicked_cb), row);
+
+  adw_preferences_group_add (self->enhancer_config_group, row);
+  self->enhancer_pspec_rows = g_list_append (self->enhancer_pspec_rows, row);
+
+  return TRUE;
+}
+
+static void
+selected_enhancer_changed_cb (AdwComboRow *combo_row,
+    GParamSpec *pspec G_GNUC_UNUSED, ClapperAppPreferencesWindow *self)
+{
+  guint selected = adw_combo_row_get_selected (combo_row);
+
+  /* Remove old rows */
+  if (self->enhancer_pspec_rows) {
+    GList *el;
+
+    for (el = self->enhancer_pspec_rows; el; el = g_list_next (el))
+      adw_preferences_group_remove (self->enhancer_config_group, GTK_WIDGET (el->data));
+
+    g_clear_list (&self->enhancer_pspec_rows, NULL);
+  }
+
+  /* Add new rows */
+  if (selected != GTK_INVALID_LIST_POSITION) {
+    ClapperEnhancerProxyList *proxies = clapper_get_global_enhancer_proxies ();
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, selected);
+    GParamSpec **pspecs;
+    guint n_pspecs;
+    gboolean has_props = FALSE;
+
+    if ((pspecs = clapper_enhancer_proxy_get_target_properties (proxy, &n_pspecs))) {
+      GSettings *enhancer_settings = NULL;
+      guint i;
+
+      for (i = 0; i < n_pspecs; ++i) {
+        if (pspecs[i]->flags & CLAPPER_ENHANCER_PARAM_GLOBAL) {
+          if (!enhancer_settings)
+            enhancer_settings = clapper_enhancer_proxy_get_settings (proxy);
+          if (enhancer_settings)
+            has_props |= _add_enhancer_config_row (self, pspecs[i], enhancer_settings);
+        }
+      }
+
+      g_clear_object (&enhancer_settings);
+    }
+
+    if (!has_props) {
+      GtkWidget *row = adw_action_row_new ();
+
+      adw_preferences_row_set_title (ADW_PREFERENCES_ROW (row), _("No configurable properties"));
+      adw_preferences_group_add (self->enhancer_config_group, row);
+      self->enhancer_pspec_rows = g_list_append (self->enhancer_pspec_rows, row);
+    }
+  }
+}
+
+static void
+enhancers_config_activated_cb (AdwActionRow *action_row, ClapperAppPreferencesWindow *self)
+{
+  /* If no model set yet */
+  if (!adw_combo_row_get_model (self->enhancers_combo_row)) {
+    adw_combo_row_set_model (self->enhancers_combo_row, G_LIST_MODEL (clapper_get_global_enhancer_proxies ()));
+    adw_combo_row_set_selected (self->enhancers_combo_row, GTK_INVALID_LIST_POSITION);
+
+    GST_DEBUG ("Populated names combo row in enhancers subpage");
+  }
+
+  adw_preferences_window_push_subpage (ADW_PREFERENCES_WINDOW (self), self->enhancers_subpage);
+}
 
 /* Sort by plugin name and if the same, sort by element name */
 static gint
@@ -543,6 +771,7 @@ clapper_app_preferences_window_finalize (GObject *object)
 
   g_object_unref (self->settings);
 
+  g_clear_list (&self->enhancer_pspec_rows, NULL);
   g_clear_object (&self->plugins_list);
 
   if (self->features)
@@ -598,12 +827,19 @@ clapper_app_preferences_window_class_init (ClapperAppPreferencesWindowClass *kla
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, subtitle_offset_spin_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, font_dialog_button);
 
+  gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, enhancers_subpage);
+  gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, enhancers_combo_row);
+  gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, enhancer_config_group);
+
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, plugins_subpage);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, plugins_combo_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, features_combo_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, overrides_group);
 
   gtk_widget_class_bind_template_callback (widget_class, seek_method_name_closure);
+
+  gtk_widget_class_bind_template_callback (widget_class, enhancers_config_activated_cb);
+  gtk_widget_class_bind_template_callback (widget_class, selected_enhancer_changed_cb);
 
   gtk_widget_class_bind_template_callback (widget_class, plugin_ranking_activated_cb);
   gtk_widget_class_bind_template_callback (widget_class, plugin_ranking_unrealize_cb);
