@@ -75,9 +75,8 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
 
     win_base_dir = g_win32_get_package_installation_directory_of_module (
         _enhancers_dll_handle);
-    /* FIXME: Avoid hardcoded major version */
     custom_path = g_build_filename (win_base_dir,
-        "lib", "clapper-0.0", "enhancers", NULL);
+        "lib", CLAPPER_API_NAME, "enhancers", NULL);
     enhancers_path = custom_path; // assign temporarily
 
     g_free (win_base_dir);
