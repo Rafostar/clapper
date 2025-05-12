@@ -39,6 +39,9 @@ G_GNUC_INTERNAL
 gboolean clapper_enhancer_proxy_fill_from_instance (ClapperEnhancerProxy *proxy, GObject *enhancer);
 
 G_GNUC_INTERNAL
+void clapper_enhancer_proxy_export_to_cache (ClapperEnhancerProxy *proxy);
+
+G_GNUC_INTERNAL
 GObject * clapper_enhancer_proxy_get_peas_info (ClapperEnhancerProxy *proxy);
 
 G_GNUC_INTERNAL

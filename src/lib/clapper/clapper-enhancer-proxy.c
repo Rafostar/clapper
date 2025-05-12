@@ -45,6 +45,7 @@
 
 #include "clapper.h"
 #include "clapper-enhancer-proxy-private.h"
+#include "clapper-cache-private.h"
 #include "clapper-extractable.h"
 #include "clapper-enums.h"
 
@@ -308,21 +309,183 @@ _init_schema (ClapperEnhancerProxy *self)
   GST_OBJECT_UNLOCK (self);
 }
 
+static inline gchar *
+_build_cache_filename (ClapperEnhancerProxy *self)
+{
+  return g_build_filename (g_get_user_cache_dir (), CLAPPER_API_NAME,
+      "enhancers", self->module_name, "cache.bin", NULL);
+}
+
 gboolean
 clapper_enhancer_proxy_fill_from_cache (ClapperEnhancerProxy *self)
 {
-  GST_FIXME_OBJECT (self, "Implement enhancer proxy caching");
+  GMappedFile *mapped_file;
+  GError *error = NULL;
+  gchar *filename;
+  const gchar *data;
+  guint i;
+
+  filename = _build_cache_filename (self);
+  mapped_file = clapper_cache_open (filename, &data, &error);
+  g_free (filename);
+
+  if (!mapped_file) {
+    /* No error if cache disabled or version mismatch */
+    if (error) {
+      if (error->domain == G_FILE_ERROR && error->code == G_FILE_ERROR_NOENT)
+        GST_DEBUG_OBJECT (self, "No cache file found");
+      else
+        GST_ERROR_OBJECT (self, "Could not restore from cache, reason: %s", error->message);
+
+      g_error_free (error);
+    }
+
+    return FALSE;
+  }
+
+  /* Plugin version check */
+  if (g_strcmp0 (clapper_cache_read_string (&data), self->version) != 0)
+    return FALSE; // not an error
+
+  /* Restore Interfaces */
+  if ((self->n_ifaces = clapper_cache_read_uint (&data)) > 0) {
+    self->ifaces = g_new (GType, self->n_ifaces);
+    for (i = 0; i < self->n_ifaces; ++i) {
+      if (G_UNLIKELY ((self->ifaces[i] = clapper_cache_read_iface (&data)) == 0))
+        goto abort_reading;
+    }
+  }
+
+  /* Restore ParamSpecs */
+  if ((self->n_pspecs = clapper_cache_read_uint (&data)) > 0) {
+    self->pspecs = g_new (GParamSpec *, self->n_pspecs);
+    for (i = 0; i < self->n_pspecs; ++i) {
+      if (G_UNLIKELY ((self->pspecs[i] = clapper_cache_read_pspec (&data)) == NULL))
+        goto abort_reading;
+    }
+  }
+
+  g_mapped_file_unref (mapped_file);
+
+  GST_DEBUG_OBJECT (self, "Filled proxy \"%s\" from cache, n_ifaces: %u, n_pspecs: %u",
+      self->friendly_name, self->n_ifaces, self->n_pspecs);
+
+  return TRUE;
+
+abort_reading:
+  GST_ERROR_OBJECT (self, "Cache file is corrupted or invalid");
+
+  g_free (self->ifaces);
+  self->n_ifaces = 0;
+
+  for (i = 0; i < self->n_pspecs; ++i) {
+    g_clear_pointer (&self->pspecs[i], g_param_spec_unref);
+  }
+  g_free (self->pspecs);
+  self->n_pspecs = 0;
+
+  g_mapped_file_unref (mapped_file);
 
   return FALSE;
+}
+
+void
+clapper_enhancer_proxy_export_to_cache (ClapperEnhancerProxy *self)
+{
+  GByteArray *bytes;
+  GError *error = NULL;
+  gchar *filename;
+  gboolean data_ok = TRUE;
+  guint i;
+
+  bytes = clapper_cache_create ();
+
+  /* If cache disabled */
+  if (G_UNLIKELY (bytes == NULL))
+    return;
+
+  filename = _build_cache_filename (self);
+  GST_TRACE_OBJECT (self, "Exporting data to cache file: \"%s\"", filename);
+
+  /* Store version */
+  clapper_cache_store_string (bytes, self->version);
+
+  /* Store Interfaces */
+  clapper_cache_store_uint (bytes, self->n_ifaces);
+  for (i = 0; i < self->n_ifaces; ++i) {
+    /* This should never happen, as we only store Clapper interfaces */
+    if (G_UNLIKELY (!(data_ok = clapper_cache_store_iface (bytes, self->ifaces[i])))) {
+      g_warning ("Cannot cache enhancer \"%s\" (%s), as it contains"
+          " unsupported interface type \"%s\"",
+          self->friendly_name, self->module_name, g_type_name (self->ifaces[i]));
+      break;
+    }
+  }
+
+  if (data_ok) {
+    /* Store ParamSpecs */
+    clapper_cache_store_uint (bytes, self->n_pspecs);
+    for (i = 0; i < self->n_pspecs; ++i) {
+      /* Can happen if someone writes an enhancer with unsupported
+       * param spec type with ClapperEnhancerParamFlags set */
+      if (G_UNLIKELY (!(data_ok = clapper_cache_store_pspec (bytes, self->pspecs[i])))) {
+        g_warning ("Cannot cache enhancer \"%s\" (%s), as it contains"
+            " property \"%s\" of unsupported type",
+            self->friendly_name, self->module_name, self->pspecs[i]->name);
+        break;
+      }
+    }
+  }
+
+  if (data_ok && clapper_cache_write (filename, bytes, &error)) {
+    GST_TRACE_OBJECT (self, "Successfully exported data to cache file");
+  } else if (error) {
+    GST_ERROR_OBJECT (self, "Could not cache data, reason: %s", error->message);
+    g_error_free (error);
+  }
+
+  g_free (filename);
+  g_byte_array_free (bytes, TRUE);
 }
 
 gboolean
 clapper_enhancer_proxy_fill_from_instance (ClapperEnhancerProxy *self, GObject *enhancer)
 {
-  self->ifaces = g_type_interfaces (G_OBJECT_TYPE (enhancer), &self->n_ifaces);
-  self->pspecs = g_object_class_list_properties (G_OBJECT_GET_CLASS (enhancer), &self->n_pspecs);
+  GType enhancer_types[1] = { CLAPPER_TYPE_EXTRACTABLE };
+  GType *ifaces;
+  GParamSpec **pspecs;
+  GParamFlags enhancer_flags;
+  guint i, j, n, write_index = 0;
 
-  GST_DEBUG_OBJECT (self, "Filled proxy \"%s\", n_ifaces: %u, n_pspecs: %u",
+  /* Filter to only Clapper interfaces */
+  ifaces = g_type_interfaces (G_OBJECT_TYPE (enhancer), &n);
+  for (i = 0; i < n; ++i) {
+    for (j = 0; j < G_N_ELEMENTS (enhancer_types); ++j) {
+      if (ifaces[i] == enhancer_types[j]) {
+        ifaces[write_index++] = ifaces[i];
+        break; // match found, do next iface
+      }
+    }
+  }
+
+  /* Resize memory */
+  self->n_ifaces = write_index;
+  self->ifaces = g_realloc (ifaces, self->n_ifaces * sizeof (GType));
+
+  /* Filter to only Clapper param specs */
+  write_index = 0;
+  pspecs = g_object_class_list_properties (G_OBJECT_GET_CLASS (enhancer), &n);
+  enhancer_flags = (CLAPPER_ENHANCER_PARAM_GLOBAL | CLAPPER_ENHANCER_PARAM_LOCAL);
+  for (i = 0; i < n; ++i) {
+    if (pspecs[i]->flags & enhancer_flags)
+      pspecs[write_index++] = g_param_spec_ref (pspecs[i]);
+  }
+
+  /* Resize memory */
+  self->n_pspecs = write_index;
+  self->pspecs = g_realloc (pspecs, self->n_pspecs * sizeof (GParamSpec *));
+
+  GST_DEBUG_OBJECT (self, "Filled proxy \"%s\" from instance, n_ifaces: %u, n_pspecs: %u",
       self->friendly_name, self->n_ifaces, self->n_pspecs);
 
   return TRUE;
@@ -925,14 +1088,20 @@ static void
 clapper_enhancer_proxy_finalize (GObject *object)
 {
   ClapperEnhancerProxy *self = CLAPPER_ENHANCER_PROXY_CAST (object);
+  guint i;
 
   GST_TRACE_OBJECT (self, "Finalize");
 
   g_object_unref (self->peas_info);
   g_free (self->ifaces);
+
+  for (i = 0; i < self->n_pspecs; ++i) {
+    g_param_spec_unref (self->pspecs[i]);
+  }
   g_free (self->pspecs);
-  g_clear_pointer (&self->schema, g_settings_schema_unref);
+
   gst_clear_structure (&self->local_config);
+  g_clear_pointer (&self->schema, g_settings_schema_unref);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

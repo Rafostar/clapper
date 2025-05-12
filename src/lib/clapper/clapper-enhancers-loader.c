@@ -128,7 +128,7 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
           filled = clapper_enhancer_proxy_fill_from_instance (proxy, enhancer);
           g_object_unref (enhancer);
 
-          GST_FIXME_OBJECT (proxy, "Save enhancer proxy data to cache");
+          clapper_enhancer_proxy_export_to_cache (proxy);
           break;
         }
       }

@@ -23,6 +23,7 @@
 #include <gst/pbutils/pbutils.h>
 
 #include "clapper.h"
+#include "clapper-cache-private.h"
 #include "clapper-utils-private.h"
 #include "clapper-playbin-bus-private.h"
 #include "clapper-app-bus-private.h"
@@ -48,6 +49,7 @@ clapper_init_check_internal (int *argc, char **argv[])
 
   gst_pb_utils_init ();
 
+  clapper_cache_initialize ();
   clapper_utils_initialize ();
   clapper_playbin_bus_initialize ();
   clapper_app_bus_initialize ();
