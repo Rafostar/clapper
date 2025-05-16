@@ -97,6 +97,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     <a href="#enums">Enumerations</a>
   
   
+    <a href="#bitfields">Bitfields</a>
+  
   
   
   
@@ -365,6 +367,26 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           </tr>
           
           <tr class="section-item">
+            <td><a title="EnhancerProxy" class="symbol" href="class.EnhancerProxy.html">EnhancerProxy</a></td>
+            
+            <td class="docblock-summary">
+            <p>An intermediary between player and enhancer&nbsp;plugin.</p>
+            <p><span class="emblem available-next" title="This symbol will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="EnhancerProxyList" class="symbol" href="class.EnhancerProxyList.html">EnhancerProxyList</a></td>
+            
+            <td class="docblock-summary">
+            <p>A list of enhancer&nbsp;proxies.</p>
+            <p><span class="emblem available-next" title="This symbol will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </td>
+            
+          </tr>
+          
+          <tr class="section-item">
             <td><a title="Feature" class="symbol" href="class.Feature.html">Feature</a></td>
             
             <td class="docblock-summary">
@@ -620,6 +642,33 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   </section>
   
   
+  <section>
+    <div class="toggle-wrapper default-hide">
+      <h4 id="bitfields" class="section-header" style="display:flex;">
+        Bitfields
+        <a href="#bitfields" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table style="display:block;">
+          <tbody>
+          
+          <tr class="section-item">
+            <td><a title="EnhancerParamFlags" class="symbol" href="flags.EnhancerParamFlags.html">EnhancerParamFlags</a></td>
+            
+            <td class="docblock-summary">
+            <p>Additional <code>GParamFlags</code> to be set in enhancer plugins&nbsp;implementations.</p>
+            <p><span class="emblem available-next" title="This symbol will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </td>
+            
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
   
   
   
@@ -639,7 +688,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             <td class="docblock-summary">
             <p>Check if an enhancer of <code>type</code> is available for given <code>scheme</code> and <code>host</code>.</p>
-            <p><span class="emblem available">since: 0.8</span></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;<span class="emblem available">since: 0.8</span></p>
+            </td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="get_global_enhancer_proxies" class="symbol" href="func.get_global_enhancer_proxies.html">get_global_enhancer_proxies</a></td>
+            
+            <td class="docblock-summary">
+            <p>Get a list of available enhancers in the form of <code>ClapperEnhancerProxy</code> objects.</p>
+            <p><span class="emblem available-next" title="This symbol will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
             </td>
             
           </tr>
@@ -726,6 +785,26 @@ terminating on failure it returns <code>FALSE</code>.</p>
           
           <tr class="section-item">
             <td><a title="ENCODE_VERSION" class="symbol" href="func.ENCODE_VERSION.html">ENCODE_VERSION</a></td>
+            
+            <td class="docblock-summary">
+            
+            <p></p>
+            </td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="ENHANCER_PROXY_CAST" class="symbol" href="func.ENHANCER_PROXY_CAST.html">ENHANCER_PROXY_CAST</a></td>
+            
+            <td class="docblock-summary">
+            
+            <p></p>
+            </td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="ENHANCER_PROXY_LIST_CAST" class="symbol" href="func.ENHANCER_PROXY_LIST_CAST.html">ENHANCER_PROXY_LIST_CAST</a></td>
             
             <td class="docblock-summary">
             
