@@ -54,6 +54,8 @@ config_h.set_quoted('PACKAGE_VERSION', meson.project_version())
 config_h.set_quoted('PACKAGE_ORIGIN', 'https://github.com/Rafostar/clapper')
 config_h.set_quoted('PLUGIN_DESC', 'Clapper elements')
 config_h.set_quoted('PLUGIN_LICENSE', 'LGPL')
+config_h.set_quoted('CLAPPER_API_NAME', clapper_api_name)
+config_h.set_quoted('CLAPPER_ENHANCERS_ID', 'com.github.rafostar.Clapper.Enhancers')
 config_h.set_quoted('CLAPPER_ENHANCERS_PATH', clapper_enhancers_dir)
 
 configure_file(
@@ -109,6 +111,9 @@ clapper_headers = [
   'clapper.h',
   'clapper-enums.h',
   'clapper-audio-stream.h',
+  'clapper-basic-functions.h',
+  'clapper-enhancer-proxy.h',
+  'clapper-enhancer-proxy-list.h',
   'clapper-extractable.h',
   'clapper-feature.h',
   'clapper-harvest.h',
@@ -127,9 +132,12 @@ clapper_headers = [
   clapper_visibility_header,
 ]
 clapper_sources = [
-  'clapper.c',
   'clapper-app-bus.c',
   'clapper-audio-stream.c',
+  'clapper-basic-functions.c',
+  'clapper-cache.c',
+  'clapper-enhancer-proxy.c',
+  'clapper-enhancer-proxy-list.c',
   'clapper-extractable.c',
   'clapper-feature.c',
   'clapper-features-bus.c',
@@ -148,6 +156,8 @@ clapper_sources = [
   'clapper-utils.c',
   'clapper-video-stream.c',
   'gst/clapper-plugin.c',
+  'gst/clapper-enhancer-src.c',
+  'gst/clapper-enhancer-director.c',
   'gst/clapper-uri-list-demux.c',
   '../shared/clapper-shared-utils.c',
 ]
@@ -170,8 +180,6 @@ if clapper_with_enhancers_loader
   clapper_deps += peas_dep
   clapper_sources += [
     'clapper-enhancers-loader.c',
-    'gst/clapper-enhancer-src.c',
-    'gst/clapper-enhancer-director.c',
   ]
   clapper_available_functionalities += 'enhancers-loader'
 endif

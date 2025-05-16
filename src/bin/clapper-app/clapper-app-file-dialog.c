@@ -73,6 +73,43 @@ _open_subtitles_cb (GtkFileDialog *dialog, GAsyncResult *result, ClapperMediaIte
 }
 
 static void
+_on_select_file_dir_finish (GFile *file, AdwActionRow *action_row, GError *error)
+{
+  if (G_LIKELY (error == NULL)) {
+    gchar *path = g_file_get_path (file);
+
+    adw_action_row_set_subtitle (action_row, path);
+    g_free (path);
+  } else {
+    if (error->domain != GTK_DIALOG_ERROR || error->code != GTK_DIALOG_ERROR_DISMISSED) {
+      g_printerr ("Error: %s\n",
+          (error->message) ? error->message : "Could not open file dialog");
+    }
+    g_error_free (error);
+  }
+  g_clear_object (&file);
+  g_object_unref (action_row); // Borrowed reference
+}
+
+static void
+_select_file_cb (GtkFileDialog *dialog, GAsyncResult *result, AdwActionRow *action_row)
+{
+  GError *error = NULL;
+  GFile *file = gtk_file_dialog_open_finish (dialog, result, &error);
+
+  _on_select_file_dir_finish (file, action_row, error);
+}
+
+static void
+_select_dir_cb (GtkFileDialog *dialog, GAsyncResult *result, AdwActionRow *action_row)
+{
+  GError *error = NULL;
+  GFile *file = gtk_file_dialog_select_folder_finish (dialog, result, &error);
+
+  _on_select_file_dir_finish (file, action_row, error);
+}
+
+static void
 _dialog_add_mime_types (GtkFileDialog *dialog, const gchar *filter_name,
     const gchar *const *mime_types)
 {
@@ -141,6 +178,38 @@ clapper_app_file_dialog_open_subtitles (GtkApplication *gtk_app, ClapperMediaIte
   gtk_file_dialog_open (dialog, window, NULL,
       (GAsyncReadyCallback) _open_subtitles_cb,
       gst_object_ref (item));
+
+  g_object_unref (dialog);
+}
+
+void
+clapper_app_file_dialog_select_prefs_file (GtkApplication *gtk_app, AdwActionRow *action_row)
+{
+  GtkWindow *window = gtk_application_get_active_window (gtk_app);
+  GtkFileDialog *dialog = gtk_file_dialog_new ();
+
+  gtk_file_dialog_set_modal (dialog, TRUE);
+  gtk_file_dialog_set_title (dialog, "Select File");
+
+  gtk_file_dialog_open (dialog, window, NULL,
+      (GAsyncReadyCallback) _select_file_cb,
+      g_object_ref (action_row));
+
+  g_object_unref (dialog);
+}
+
+void
+clapper_app_file_dialog_select_prefs_dir (GtkApplication *gtk_app, AdwActionRow *action_row)
+{
+  GtkWindow *window = gtk_application_get_active_window (gtk_app);
+  GtkFileDialog *dialog = gtk_file_dialog_new ();
+
+  gtk_file_dialog_set_modal (dialog, TRUE);
+  gtk_file_dialog_set_title (dialog, "Select Folder");
+
+  gtk_file_dialog_select_folder (dialog, window, NULL,
+      (GAsyncReadyCallback) _select_dir_cb,
+      g_object_ref (action_row));
 
   g_object_unref (dialog);
 }

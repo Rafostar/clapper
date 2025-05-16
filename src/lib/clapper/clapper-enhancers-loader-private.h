@@ -22,21 +22,15 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "clapper-enhancer-proxy-list.h"
+#include "clapper-enhancer-proxy.h"
+
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-void clapper_enhancers_loader_initialize (void);
+void clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies);
 
 G_GNUC_INTERNAL
-gboolean clapper_enhancers_loader_has_enhancers (GType iface_type);
-
-G_GNUC_INTERNAL
-gchar ** clapper_enhancers_loader_get_schemes (GType iface_type);
-
-G_GNUC_INTERNAL
-gboolean clapper_enhancers_loader_check (GType iface_type, const gchar *scheme, const gchar *host, const gchar **name);
-
-G_GNUC_INTERNAL
-GObject * clapper_enhancers_loader_create_enhancer_for_uri (GType iface_type, GUri *uri);
+GObject * clapper_enhancers_loader_create_enhancer (ClapperEnhancerProxy *proxy, GType iface_type);
 
 G_END_DECLS

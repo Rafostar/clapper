@@ -31,6 +31,7 @@
 #include <clapper/clapper-threaded-object.h>
 #include <clapper/clapper-queue.h>
 #include <clapper/clapper-stream-list.h>
+#include <clapper/clapper-enhancer-proxy-list.h>
 #include <clapper/clapper-feature.h>
 #include <clapper/clapper-enums.h>
 
@@ -56,6 +57,9 @@ ClapperStreamList * clapper_player_get_audio_streams (ClapperPlayer *player);
 
 CLAPPER_API
 ClapperStreamList * clapper_player_get_subtitle_streams (ClapperPlayer *player);
+
+CLAPPER_API
+ClapperEnhancerProxyList * clapper_player_get_enhancer_proxies (ClapperPlayer *player);
 
 CLAPPER_API
 void clapper_player_set_autoplay (ClapperPlayer *player, gboolean enabled);

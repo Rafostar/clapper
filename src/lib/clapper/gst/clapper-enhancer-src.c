@@ -22,12 +22,17 @@
 #include "clapper-enhancer-src-private.h"
 #include "clapper-enhancer-director-private.h"
 
-#include "../clapper-extractable-private.h"
+#include "../clapper-basic-functions.h"
+#include "../clapper-enhancer-proxy.h"
+#include "../clapper-enhancer-proxy-list.h"
+#include "../clapper-extractable.h"
 #include "../clapper-harvest-private.h"
-#include "../clapper-enhancers-loader-private.h"
 
 #define GST_CAT_DEFAULT clapper_enhancer_src_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
+
+#define CHECK_SCHEME_IS_HTTPS(scheme) (g_str_has_prefix (scheme, "http") \
+    && (scheme[4] == '\0' || (scheme[4] == 's' && scheme[5] == '\0')))
 
 struct _ClapperEnhancerSrc
 {
@@ -40,12 +45,15 @@ struct _ClapperEnhancerSrc
 
   gchar *uri;
   GUri *guri;
+
+  ClapperEnhancerProxyList *enhancer_proxies;
 };
 
 enum
 {
   PROP_0,
   PROP_URI,
+  PROP_ENHANCER_PROXIES,
   PROP_LAST
 };
 
@@ -62,10 +70,172 @@ clapper_enhancer_src_uri_handler_get_type (GType type)
   return GST_URI_SRC;
 }
 
-static gpointer
-_get_schemes_once (gpointer user_data G_GNUC_UNUSED)
+/*
+ * _make_schemes:
+ *
+ * Make supported schemes array for a given interface type.
+ * The returned array consists of unique strings (no duplicates).
+ *
+ * Returns: (transfer full): all supported schemes by enhancers of @iface_type.
+ */
+static gchar **
+_make_schemes (gpointer user_data G_GNUC_UNUSED)
 {
-  return clapper_enhancers_loader_get_schemes (CLAPPER_TYPE_EXTRACTABLE);
+  ClapperEnhancerProxyList *proxies = clapper_get_global_enhancer_proxies ();
+  GSList *found_schemes = NULL, *fs;
+  gchar **schemes_strv;
+  guint i, n_schemes, n_proxies = clapper_enhancer_proxy_list_get_n_proxies (proxies);
+
+  GST_DEBUG ("Checking for supported URI schemes");
+
+  for (i = 0; i < n_proxies; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, i);
+    const gchar *schemes;
+
+    if (clapper_enhancer_proxy_target_has_interface (proxy, CLAPPER_TYPE_EXTRACTABLE)
+        && (schemes = clapper_enhancer_proxy_get_extra_data (proxy, "X-Schemes"))) {
+      gchar **tmp_strv;
+      gint j;
+
+      tmp_strv = g_strsplit (schemes, ";", 0);
+
+      for (j = 0; tmp_strv[j]; ++j) {
+        const gchar *scheme = tmp_strv[j];
+
+        if (!found_schemes || !g_slist_find_custom (found_schemes,
+            scheme, (GCompareFunc) strcmp)) {
+          found_schemes = g_slist_append (found_schemes, g_strdup (scheme));
+          GST_INFO ("Found supported URI scheme: \"%s\"", scheme);
+        }
+      }
+
+      g_strfreev (tmp_strv);
+    }
+  }
+
+  n_schemes = g_slist_length (found_schemes);
+  schemes_strv = g_new0 (gchar *, n_schemes + 1);
+
+  fs = found_schemes;
+  for (i = 0; i < n_schemes; ++i) {
+    schemes_strv[i] = fs->data;
+    fs = fs->next;
+  }
+
+  GST_DEBUG ("Total found URI schemes: %u", n_schemes);
+
+  /* Since string pointers were taken,
+   * free list without content */
+  g_slist_free (found_schemes);
+
+  return schemes_strv;
+}
+
+static inline const gchar *
+_host_fixup (const gchar *host)
+{
+  /* Strip common subdomains, so plugins do not
+   * have to list all combinations */
+  if (g_str_has_prefix (host, "www."))
+    host += 4;
+  else if (g_str_has_prefix (host, "m."))
+    host += 2;
+
+  return host;
+}
+
+/*
+ * _enhancer_check_for_uri:
+ * @self: a #ClapperEnhancerSrc
+ * @uri: a #GUri
+ *
+ * Check whether there is at least one enhancer for @uri in global list.
+ * This is used to reject URI early, thus making playbin choose different
+ * source element. It uses global list, since at this stage element is not
+ * yet placed within pipeline, so it cannot get proxies from player.
+ *
+ * Returns: whether at least one enhancer advertises support for given URI.
+ */
+static gboolean
+_enhancer_check_for_uri (ClapperEnhancerSrc *self, GUri *uri)
+{
+  ClapperEnhancerProxyList *proxies = clapper_get_global_enhancer_proxies ();
+  gboolean is_https;
+  guint i, n_proxies;
+  const gchar *scheme = g_uri_get_scheme (uri);
+  const gchar *host = g_uri_get_host (uri);
+
+  if (host)
+    host = _host_fixup (host);
+
+  GST_INFO_OBJECT (self, "Enhancer check, scheme: \"%s\", host: \"%s\"",
+      scheme, GST_STR_NULL (host));
+
+  /* Whether "http(s)" scheme is used */
+  is_https = CHECK_SCHEME_IS_HTTPS (scheme);
+
+  if (!host && is_https)
+    return FALSE;
+
+  n_proxies = clapper_enhancer_proxy_list_get_n_proxies (proxies);
+  for (i = 0; i < n_proxies; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, i);
+
+    if (clapper_enhancer_proxy_target_has_interface (proxy, CLAPPER_TYPE_EXTRACTABLE)
+        && clapper_enhancer_proxy_extra_data_lists_value (proxy, "X-Schemes", scheme)
+        && (!is_https || clapper_enhancer_proxy_extra_data_lists_value (proxy, "X-Hosts", host)))
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
+/*
+ * _filter_enhancers_for_uri:
+ * @self: a #ClapperEnhancerSrc
+ * @proxies: a #ClapperEnhancerProxyList
+ * @uri: a #GUri
+ *
+ * Finds all enhancer proxies of target implementing "Extractable"
+ * interface, which advertise support for given @uri.
+ *
+ * Returns: (transfer full): A sublist in the form of #GList with proxies.
+ */
+static GList *
+_filter_enhancers_for_uri (ClapperEnhancerSrc *self,
+    ClapperEnhancerProxyList *proxies, GUri *uri)
+{
+  GList *sublist = NULL;
+  guint i, n_proxies;
+  gboolean is_https;
+  const gchar *scheme = g_uri_get_scheme (uri);
+  const gchar *host = g_uri_get_host (uri);
+
+  if (host)
+    host = _host_fixup (host);
+
+  GST_INFO_OBJECT (self, "Enhancer filter, scheme: \"%s\", host: \"%s\"",
+      scheme, GST_STR_NULL (host));
+
+  /* Whether "http(s)" scheme is used */
+  is_https = CHECK_SCHEME_IS_HTTPS (scheme);
+
+  if (!host && is_https)
+    return NULL;
+
+  n_proxies = clapper_enhancer_proxy_list_get_n_proxies (proxies);
+  for (i = 0; i < n_proxies; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, i);
+
+    if (clapper_enhancer_proxy_target_has_interface (proxy, CLAPPER_TYPE_EXTRACTABLE)
+        && clapper_enhancer_proxy_extra_data_lists_value (proxy, "X-Schemes", scheme)
+        && (!is_https || clapper_enhancer_proxy_extra_data_lists_value (proxy, "X-Hosts", host))) {
+      sublist = g_list_append (sublist, gst_object_ref (proxy));
+      break;
+    }
+  }
+
+  return sublist;
 }
 
 static const gchar *const *
@@ -73,7 +243,7 @@ clapper_enhancer_src_uri_handler_get_protocols (GType type)
 {
   static GOnce schemes_once = G_ONCE_INIT;
 
-  g_once (&schemes_once, _get_schemes_once, NULL);
+  g_once (&schemes_once, (GThreadFunc) _make_schemes, NULL);
   return (const gchar *const *) schemes_once.retval;
 }
 
@@ -130,8 +300,7 @@ clapper_enhancer_src_uri_handler_set_uri (GstURIHandler *handler,
     return FALSE;
   }
 
-  if (!clapper_enhancers_loader_check (CLAPPER_TYPE_EXTRACTABLE,
-      g_uri_get_scheme (guri), g_uri_get_host (guri), NULL)) {
+  if (!_enhancer_check_for_uri (self, guri)) {
     g_set_error (error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI,
         "None of the available enhancers can handle this URI");
     g_uri_unref (guri);
@@ -296,6 +465,8 @@ static GstFlowReturn
 clapper_enhancer_src_create (GstPushSrc *push_src, GstBuffer **outbuf)
 {
   ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (push_src);
+  ClapperEnhancerProxyList *proxies;
+  GList *filtered_proxies;
   GUri *guri;
   GCancellable *cancellable;
   ClapperHarvest *harvest;
@@ -316,12 +487,28 @@ clapper_enhancer_src_create (GstPushSrc *push_src, GstBuffer **outbuf)
     self->director = clapper_enhancer_director_new ();
 
   GST_OBJECT_LOCK (self);
+
+  if (G_LIKELY (self->enhancer_proxies != NULL)) {
+    GST_INFO_OBJECT (self, "Using enhancer proxies: %" GST_PTR_FORMAT, self->enhancer_proxies);
+    proxies = gst_object_ref (self->enhancer_proxies);
+  } else {
+    /* Compat for old ClapperDiscoverer feature that does not set this property */
+    GST_WARNING_OBJECT (self, "Falling back to using global enhancer proxy list!");
+    proxies = gst_object_ref (clapper_get_global_enhancer_proxies ());
+  }
+
   guri = g_uri_ref (self->guri);
   cancellable = g_object_ref (self->cancellable);
+
   GST_OBJECT_UNLOCK (self);
 
-  harvest = clapper_enhancer_director_extract (self->director, guri, cancellable, &error);
+  filtered_proxies = _filter_enhancers_for_uri (self, proxies, guri);
+  gst_object_unref (proxies);
 
+  harvest = clapper_enhancer_director_extract (self->director,
+      filtered_proxies, guri, cancellable, &error);
+
+  g_clear_list (&filtered_proxies, gst_object_unref);
   g_uri_unref (guri);
   g_object_unref (cancellable);
 
@@ -386,6 +573,16 @@ clapper_enhancer_src_query (GstBaseSrc *base_src, GstQuery *query)
 }
 
 static void
+clapper_enhancer_src_set_enhancer_proxies (ClapperEnhancerSrc *self,
+    ClapperEnhancerProxyList *enhancer_proxies)
+{
+  GST_OBJECT_LOCK (self);
+  gst_object_replace ((GstObject **) &self->enhancer_proxies,
+      GST_OBJECT_CAST (enhancer_proxies));
+  GST_OBJECT_UNLOCK (self);
+}
+
+static void
 clapper_enhancer_src_init (ClapperEnhancerSrc *self)
 {
   self->cancellable = g_cancellable_new ();
@@ -413,6 +610,7 @@ clapper_enhancer_src_finalize (GObject *object)
   g_clear_object (&self->cancellable);
   g_free (self->uri);
   g_clear_pointer (&self->guri, g_uri_unref);
+  gst_clear_object (&self->enhancer_proxies);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -433,6 +631,9 @@ clapper_enhancer_src_set_property (GObject *object, guint prop_id,
       }
       break;
     }
+    case PROP_ENHANCER_PROXIES:
+      clapper_enhancer_src_set_enhancer_proxies (self, g_value_get_object (value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -484,6 +685,10 @@ clapper_enhancer_src_class_init (ClapperEnhancerSrcClass *klass)
   param_specs[PROP_URI] = g_param_spec_string ("uri",
       "URI", "URI", NULL,
       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  param_specs[PROP_ENHANCER_PROXIES] = g_param_spec_object ("enhancer-proxies",
+      NULL, NULL, CLAPPER_TYPE_ENHANCER_PROXY_LIST,
+      G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 

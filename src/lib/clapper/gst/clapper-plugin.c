@@ -21,31 +21,53 @@
 
 #include <gst/gst.h>
 
+#include "../clapper-basic-functions.h"
+#include "../clapper-enhancer-proxy.h"
+#include "../clapper-enhancer-proxy-list.h"
+#include "../clapper-extractable.h"
+
 #include "clapper-plugin-private.h"
-#include "../clapper-functionalities-availability.h"
-
-#if CLAPPER_WITH_ENHANCERS_LOADER
 #include "clapper-enhancer-src-private.h"
-#include "../clapper-extractable-private.h"
-#include "../clapper-enhancers-loader-private.h"
-#endif
-
 #include "clapper-uri-list-demux-private.h"
+
+/*
+ * clapper_gst_plugin_has_enhancers:
+ * @iface_type: an interface #GType
+ *
+ * Check if any enhancer implementing given interface type is available.
+ *
+ * Returns: whether any enhancer was found.
+ */
+static gboolean
+clapper_gst_plugin_has_enhancers (ClapperEnhancerProxyList *proxies, GType iface_type)
+{
+  guint i, n_proxies = clapper_enhancer_proxy_list_get_n_proxies (proxies);
+
+  for (i = 0; i < n_proxies; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, i);
+
+    if (clapper_enhancer_proxy_target_has_interface (proxy, iface_type))
+      return TRUE;
+  }
+
+  return FALSE;
+}
 
 gboolean
 clapper_gst_plugin_init (GstPlugin *plugin)
 {
   gboolean res = FALSE;
+  ClapperEnhancerProxyList *global_proxies;
 
-#if CLAPPER_WITH_ENHANCERS_LOADER
   gst_plugin_add_dependency_simple (plugin,
       "CLAPPER_ENHANCERS_PATH", CLAPPER_ENHANCERS_PATH, NULL,
       GST_PLUGIN_DEPENDENCY_FLAG_PATHS_ARE_DEFAULT_ONLY);
 
+  global_proxies = clapper_get_global_enhancer_proxies ();
+
   /* Avoid registering an URI handler without schemes */
-  if (clapper_enhancers_loader_has_enhancers (CLAPPER_TYPE_EXTRACTABLE))
+  if (clapper_gst_plugin_has_enhancers (global_proxies, CLAPPER_TYPE_EXTRACTABLE))
     res |= GST_ELEMENT_REGISTER (clapperenhancersrc, plugin);
-#endif
 
   res |= GST_ELEMENT_REGISTER (clapperurilistdemux, plugin);
 

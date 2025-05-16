@@ -127,4 +127,28 @@ typedef enum
   CLAPPER_DISCOVERER_DISCOVERY_NONCURRENT,
 } ClapperDiscovererDiscoveryMode;
 
+/* NOTE: GStreamer uses param flags 8-16, so start with 17. */
+/**
+ * ClapperEnhancerParamFlags:
+ * @CLAPPER_ENHANCER_PARAM_GLOBAL: Use this flag for enhancer properties that should have global access scope.
+ *   Such are meant for application `USER` to configure.
+ * @CLAPPER_ENHANCER_PARAM_LOCAL: Use this flag for enhancer properties that should have local access scope.
+ *   Such are meant for `APPLICATION` to configure.
+ * @CLAPPER_ENHANCER_PARAM_FILEPATH: Use this flag for enhancer properties that store string with a file path.
+ *   Applications can use this as a hint to show file selection instead of a text entry.
+ * @CLAPPER_ENHANCER_PARAM_DIRPATH: Use this flag for enhancer properties that store string with a directory path.
+ *   Applications can use this as a hint to show directory selection instead of a text entry.
+ *
+ * Additional [flags@GObject.ParamFlags] to be set in enhancer plugins implementations.
+ *
+ * Since: 0.10
+ */
+typedef enum
+{
+  CLAPPER_ENHANCER_PARAM_GLOBAL = 1 << 17,
+  CLAPPER_ENHANCER_PARAM_LOCAL = 1 << 18,
+  CLAPPER_ENHANCER_PARAM_FILEPATH = 1 << 19,
+  CLAPPER_ENHANCER_PARAM_DIRPATH = 1 << 20,
+} ClapperEnhancerParamFlags;
+
 G_END_DECLS

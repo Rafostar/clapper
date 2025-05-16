@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,18 +20,22 @@
 #pragma once
 
 #include <glib.h>
-#include <glib-object.h>
-#include <gst/gst.h>
-#include <gst/gstbin.h>
+
+#include "clapper-enhancer-proxy-list.h"
+#include "clapper-enhancer-proxy.h"
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_URI_LIST_DEMUX (clapper_uri_list_demux_get_type())
-#define CLAPPER_URI_LIST_DEMUX_CAST(obj) ((ClapperUriListDemux *)(obj))
+G_GNUC_INTERNAL
+ClapperEnhancerProxyList * clapper_enhancer_proxy_list_new_named (const gchar *name);
 
 G_GNUC_INTERNAL
-G_DECLARE_FINAL_TYPE (ClapperUriListDemux, clapper_uri_list_demux, CLAPPER, URI_LIST_DEMUX, GstBin)
+void clapper_enhancer_proxy_list_take_proxy (ClapperEnhancerProxyList *list, ClapperEnhancerProxy *proxy);
 
-GST_ELEMENT_REGISTER_DECLARE (clapperurilistdemux)
+G_GNUC_INTERNAL
+void clapper_enhancer_proxy_list_fill_from_global_proxies (ClapperEnhancerProxyList *list);
+
+G_GNUC_INTERNAL
+void clapper_enhancer_proxy_list_sort (ClapperEnhancerProxyList *list);
 
 G_END_DECLS

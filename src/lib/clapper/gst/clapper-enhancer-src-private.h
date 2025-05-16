@@ -20,6 +20,7 @@
 #pragma once
 
 #include <glib.h>
+#include <glib-object.h>
 #include <gst/gst.h>
 #include <gst/base/gstpushsrc.h>
 
