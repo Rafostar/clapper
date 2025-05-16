@@ -111,6 +111,7 @@ clapper_headers = [
   'clapper.h',
   'clapper-enums.h',
   'clapper-audio-stream.h',
+  'clapper-basic-functions.h',
   'clapper-enhancer-proxy.h',
   'clapper-enhancer-proxy-list.h',
   'clapper-extractable.h',
@@ -131,9 +132,9 @@ clapper_headers = [
   clapper_visibility_header,
 ]
 clapper_sources = [
-  'clapper.c',
   'clapper-app-bus.c',
   'clapper-audio-stream.c',
+  'clapper-basic-functions.c',
   'clapper-cache.c',
   'clapper-enhancer-proxy.c',
   'clapper-enhancer-proxy-list.c',

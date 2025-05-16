@@ -27,7 +27,7 @@
 
 #include <gio/gio.h>
 
-#include "clapper.h"
+#include "clapper-basic-functions.h"
 #include "clapper-enhancer-proxy-list-private.h"
 #include "clapper-enhancer-proxy-private.h"
 

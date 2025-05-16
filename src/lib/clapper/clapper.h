@@ -19,9 +19,6 @@
 
 #pragma once
 
-#include <glib.h>
-#include <glib-object.h>
-
 #define __CLAPPER_INSIDE__
 
 #include <clapper/clapper-visibility.h>
@@ -30,6 +27,7 @@
 #include <clapper/clapper-version.h>
 
 #include <clapper/clapper-audio-stream.h>
+#include <clapper/clapper-basic-functions.h>
 #include <clapper/clapper-enhancer-proxy.h>
 #include <clapper/clapper-enhancer-proxy-list.h>
 #include <clapper/clapper-feature.h>
@@ -60,21 +58,5 @@
 #if CLAPPER_HAVE_SERVER
 #include <clapper/features/server/clapper-server.h>
 #endif
-
-G_BEGIN_DECLS
-
-CLAPPER_API
-void clapper_init (int *argc, char **argv[]);
-
-CLAPPER_API
-gboolean clapper_init_check (int *argc, char **argv[]);
-
-CLAPPER_DEPRECATED
-gboolean clapper_enhancer_check (GType iface_type, const gchar *scheme, const gchar *host, const gchar **name);
-
-CLAPPER_API
-ClapperEnhancerProxyList * clapper_get_global_enhancer_proxies (void);
-
-G_END_DECLS
 
 #undef __CLAPPER_INSIDE__

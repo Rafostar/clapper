@@ -43,8 +43,9 @@
 
 #include <gobject/gvaluecollector.h>
 
-#include "clapper.h"
 #include "clapper-enhancer-proxy-private.h"
+#include "clapper-enhancer-proxy-list.h"
+#include "clapper-basic-functions.h"
 #include "clapper-cache-private.h"
 #include "clapper-extractable.h"
 #include "clapper-enums.h"

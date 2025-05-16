@@ -21,10 +21,13 @@
 
 #include <gst/gst.h>
 
-#include "../clapper.h"
-#include "clapper-enhancer-src-private.h"
+#include "../clapper-basic-functions.h"
+#include "../clapper-enhancer-proxy.h"
+#include "../clapper-enhancer-proxy-list.h"
+#include "../clapper-extractable.h"
 
 #include "clapper-plugin-private.h"
+#include "clapper-enhancer-src-private.h"
 #include "clapper-uri-list-demux-private.h"
 
 /*

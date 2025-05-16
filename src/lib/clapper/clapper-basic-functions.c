@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,7 @@
 #include <gst/gst.h>
 #include <gst/pbutils/pbutils.h>
 
-#include "clapper.h"
+#include "clapper-basic-functions.h"
 #include "clapper-cache-private.h"
 #include "clapper-utils-private.h"
 #include "clapper-playbin-bus-private.h"
@@ -30,6 +30,8 @@
 #include "clapper-features-bus-private.h"
 #include "clapper-enhancer-proxy-list-private.h"
 #include "gst/clapper-plugin-private.h"
+
+#include "clapper-functionalities-availability.h"
 
 #if CLAPPER_WITH_ENHANCERS_LOADER
 #include "clapper-enhancers-loader-private.h"

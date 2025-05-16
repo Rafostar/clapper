@@ -22,9 +22,10 @@
 #include "clapper-enhancer-src-private.h"
 #include "clapper-enhancer-director-private.h"
 
-#include "../clapper.h"
-#include "../clapper-enhancer-proxy-list-private.h"
-#include "../clapper-extractable-private.h"
+#include "../clapper-basic-functions.h"
+#include "../clapper-enhancer-proxy.h"
+#include "../clapper-enhancer-proxy-list.h"
+#include "../clapper-extractable.h"
 #include "../clapper-harvest-private.h"
 
 #define GST_CAT_DEFAULT clapper_enhancer_src_debug
