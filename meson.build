@@ -11,7 +11,7 @@ project('clapper', 'c',
 glib_req = '>= 2.76.0'
 gst_req = '>= 1.24.0'
 gtk4_req = '>= 4.10.0'
-adw_req = '>= 1.4.0'
+adw_req = '>= 1.5.0'
 
 clapper_version = meson.project_version().split('-')[0]
 version_array = clapper_version.split('.')
