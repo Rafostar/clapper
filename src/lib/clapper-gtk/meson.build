@@ -176,7 +176,6 @@ if build_gir
       clappergtk_enums,
     ],
     extra_args: [
-      gir_init_section,
       '--quiet',
       '--warn-all',
       '-DCLAPPER_GTK_COMPILATION',
