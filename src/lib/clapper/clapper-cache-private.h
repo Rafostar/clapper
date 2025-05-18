@@ -40,10 +40,16 @@ G_GNUC_INTERNAL
 guint clapper_cache_read_uint (const gchar **data);
 
 G_GNUC_INTERNAL
+gint64 clapper_cache_read_int64 (const gchar **data);
+
+G_GNUC_INTERNAL
 gdouble clapper_cache_read_double (const gchar **data);
 
 G_GNUC_INTERNAL
 const gchar * clapper_cache_read_string (const gchar **data);
+
+G_GNUC_INTERNAL
+const guint8 * clapper_cache_read_data (const gchar **data, gsize *size);
 
 G_GNUC_INTERNAL
 GType clapper_cache_read_enum (const gchar **data);
@@ -70,10 +76,16 @@ G_GNUC_INTERNAL
 void clapper_cache_store_uint (GByteArray *bytes, guint val);
 
 G_GNUC_INTERNAL
+void clapper_cache_store_int64 (GByteArray *bytes, gint64 val);
+
+G_GNUC_INTERNAL
 void clapper_cache_store_double (GByteArray *bytes, gdouble val);
 
 G_GNUC_INTERNAL
 void clapper_cache_store_string (GByteArray *bytes, const gchar *val);
+
+G_GNUC_INTERNAL
+void clapper_cache_store_data (GByteArray *bytes, const guint8 *val, gsize val_size);
 
 G_GNUC_INTERNAL
 void clapper_cache_store_enum (GByteArray *bytes, GType enum_type);

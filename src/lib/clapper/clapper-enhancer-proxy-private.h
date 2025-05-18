@@ -21,6 +21,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gst/gst.h>
 
 #include "clapper-enhancer-proxy.h"
 
@@ -45,6 +46,9 @@ G_GNUC_INTERNAL
 GObject * clapper_enhancer_proxy_get_peas_info (ClapperEnhancerProxy *proxy);
 
 G_GNUC_INTERNAL
-void clapper_enhancer_proxy_apply_current_config_to_enhancer (ClapperEnhancerProxy *proxy, GObject *enhancer);
+GstStructure * clapper_enhancer_proxy_make_current_config (ClapperEnhancerProxy *proxy);
+
+G_GNUC_INTERNAL
+void clapper_enhancer_proxy_apply_config_to_enhancer (ClapperEnhancerProxy *proxy, const GstStructure *config, GObject *enhancer);
 
 G_END_DECLS

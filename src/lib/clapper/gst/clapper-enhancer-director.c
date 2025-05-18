@@ -57,7 +57,7 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
   ClapperEnhancerDirector *self = data->director;
   GList *el;
   ClapperHarvest *harvest = NULL;
-  gboolean success = FALSE, cached = FALSE;
+  gboolean success = FALSE;
 
   GST_DEBUG_OBJECT (self, "Extraction start");
 
@@ -65,22 +65,22 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
   if (g_cancellable_is_cancelled (data->cancellable))
     return NULL;
 
-  /* TODO: Cache lookup */
-  if (cached) {
-    // if ((success = fill harvest from cache))
-    //   return harvest;
-  }
-
   GST_DEBUG_OBJECT (self, "Enhancer proxies for URI: %u",
       g_list_length (data->filtered_proxies));
 
   for (el = data->filtered_proxies; el; el = g_list_next (el)) {
     ClapperEnhancerProxy *proxy = CLAPPER_ENHANCER_PROXY_CAST (el->data);
     ClapperExtractable *extractable = NULL;
+    GstStructure *config;
 
-    /* Check just before extract */
-    if (g_cancellable_is_cancelled (data->cancellable))
+    harvest = clapper_harvest_new (); // fresh harvest for each iteration
+    config = clapper_enhancer_proxy_make_current_config (proxy);
+
+    if ((success = clapper_harvest_fill_from_cache (harvest, proxy, config, data->uri))
+        || g_cancellable_is_cancelled (data->cancellable)) { // Check before extract
+      gst_clear_structure (&config);
       break;
+    }
 
 #if CLAPPER_WITH_ENHANCERS_LOADER
     extractable = CLAPPER_EXTRACTABLE_CAST (
@@ -88,32 +88,32 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 #endif
 
     if (G_LIKELY (extractable != NULL)) {
-      clapper_enhancer_proxy_apply_current_config_to_enhancer (proxy, (GObject *) extractable);
-
-      harvest = clapper_harvest_new (); // fresh harvest for each extractable
+      clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) extractable);
 
       success = clapper_extractable_extract (extractable, data->uri,
           harvest, data->cancellable, data->error);
       gst_object_unref (extractable);
 
-      /* We are done with extractable, but keep its harvest */
-      if (success)
-        break;
+      /* We are done with extractable, but keep harvest and try to cache it */
+      if (success) {
+        if (!g_cancellable_is_cancelled (data->cancellable))
+          clapper_harvest_export_to_cache (harvest, proxy, config, data->uri);
 
-      /* Clear harvest and try again with next enhancer */
-      g_clear_object (&harvest);
+        gst_clear_structure (&config);
+        break;
+      }
     }
+
+    /* Cleanup to try again with next enhancer */
+    g_clear_object (&harvest);
+    gst_clear_structure (&config);
   }
 
-  /* Cancelled during extract */
+  /* Cancelled during extraction or exporting to cache */
   if (g_cancellable_is_cancelled (data->cancellable))
     success = FALSE;
 
-  if (success) {
-    if (!cached) {
-      /* TODO: Store in cache */
-    }
-  } else {
+  if (!success) {
     gst_clear_object (&harvest);
 
     /* Ensure we have some error set on failure */
