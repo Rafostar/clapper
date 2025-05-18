@@ -50,6 +50,8 @@ struct _ClapperHarvest
 
   guint16 n_chapters;
   guint16 n_tracks;
+
+  gint64 exp_epoch;
 };
 
 #define parent_class clapper_harvest_parent_class
@@ -411,6 +413,65 @@ clapper_harvest_headers_set_value (ClapperHarvest *self, const gchar *key, const
 
   GST_DEBUG_OBJECT (self, "Set header, \"%s\": \"%s\"", key, g_value_get_string (value));
   gst_structure_set_value (self->headers, key, value);
+}
+
+/**
+ * clapper_harvest_set_expiration_date_utc:
+ * @harvest: a #ClapperHarvest
+ * @date_utc: a #GDateTime in UTC time
+ *
+ * Set date in UTC time until harvested content is expected
+ * to stay alive.
+ *
+ * This is used for harvest caching, so next time user requests to
+ * play the same URI, recently harvested data can be reused without
+ * the need to run [vfunc@Clapper.Extractable.extract] again.
+ *
+ * Since: 0.10
+ */
+void
+clapper_harvest_set_expiration_date_utc (ClapperHarvest *self, GDateTime *date_utc)
+{
+  g_return_if_fail (CLAPPER_IS_HARVEST (self));
+  g_return_if_fail (date_utc != NULL);
+
+  self->exp_epoch = g_date_time_to_unix (date_utc);
+  GST_DEBUG_OBJECT (self, "Expiration epoch: %" G_GINT64_FORMAT, self->exp_epoch);
+}
+
+/**
+ * clapper_harvest_set_expiration_seconds:
+ * @harvest: a #ClapperHarvest
+ * @seconds: time in seconds until expiration
+ *
+ * Set amount of seconds for how long harvested content is
+ * expected to stay alive.
+ *
+ * Alternative function to [method@Clapper.Harvest.set_expiration_date_utc],
+ * but takes time as number in seconds from now.
+ *
+ * It is safe to pass zero or negative number to this function in
+ * case when calculating time manually and it already expired.
+ *
+ * Since: 0.10
+ */
+void
+clapper_harvest_set_expiration_seconds (ClapperHarvest *self, gdouble seconds)
+{
+  GDateTime *date, *date_epoch;
+
+  g_return_if_fail (CLAPPER_IS_HARVEST (self));
+
+  GST_DEBUG_OBJECT (self, "Set expiration seconds: %.3lfs", seconds);
+
+  date = g_date_time_new_now_utc ();
+  date_epoch = g_date_time_add_seconds (date, seconds);
+  g_date_time_unref (date);
+
+  self->exp_epoch = g_date_time_to_unix (date_epoch);
+  g_date_time_unref (date_epoch);
+
+  GST_DEBUG_OBJECT (self, "Expiration epoch: %" G_GINT64_FORMAT, self->exp_epoch);
 }
 
 static void
