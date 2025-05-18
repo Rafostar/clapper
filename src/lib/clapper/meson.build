@@ -55,7 +55,6 @@ config_h.set_quoted('PACKAGE_ORIGIN', 'https://github.com/Rafostar/clapper')
 config_h.set_quoted('PLUGIN_DESC', 'Clapper elements')
 config_h.set_quoted('PLUGIN_LICENSE', 'LGPL')
 config_h.set_quoted('CLAPPER_API_NAME', clapper_api_name)
-config_h.set_quoted('CLAPPER_ENHANCERS_ID', 'com.github.rafostar.Clapper.Enhancers')
 config_h.set_quoted('CLAPPER_ENHANCERS_PATH', clapper_enhancers_dir)
 
 configure_file(
