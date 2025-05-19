@@ -345,8 +345,10 @@ clapper_enhancer_proxy_fill_from_cache (ClapperEnhancerProxy *self)
   }
 
   /* Plugin version check */
-  if (g_strcmp0 (clapper_cache_read_string (&data), self->version) != 0)
+  if (g_strcmp0 (clapper_cache_read_string (&data), self->version) != 0) {
+    g_mapped_file_unref (mapped_file);
     return FALSE; // not an error
+  }
 
   /* Restore Interfaces */
   if ((self->n_ifaces = clapper_cache_read_uint (&data)) > 0) {
