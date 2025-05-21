@@ -52,7 +52,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (ClapperThreadedObject, clapper_threaded_object, GST_
  * Useful when you want to invoke object thread to do some
  * action in it from a different thread.
  *
- * Returns: a #GMainContext of the object used thread.
+ * Returns: (transfer none): a #GMainContext of the object used thread.
  */
 GMainContext *
 clapper_threaded_object_get_context (ClapperThreadedObject *self)
