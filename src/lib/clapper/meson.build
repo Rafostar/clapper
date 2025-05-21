@@ -155,7 +155,7 @@ clapper_sources = [
   'clapper-utils.c',
   'clapper-video-stream.c',
   'gst/clapper-plugin.c',
-  'gst/clapper-enhancer-src.c',
+  'gst/clapper-extractable-src.c',
   'gst/clapper-enhancer-director.c',
   'gst/clapper-uri-list-demux.c',
   '../shared/clapper-shared-utils.c',

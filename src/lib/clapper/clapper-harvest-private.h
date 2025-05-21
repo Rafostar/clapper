@@ -23,6 +23,7 @@
 #include <gst/tag/tag.h>
 
 #include "clapper-harvest.h"
+#include "clapper-enhancer-proxy.h"
 
 G_BEGIN_DECLS
 
@@ -31,5 +32,11 @@ ClapperHarvest * clapper_harvest_new (void);
 
 G_GNUC_INTERNAL
 gboolean clapper_harvest_unpack (ClapperHarvest *harvest, GstBuffer **buffer, gsize *buf_size, GstCaps **caps, GstTagList **tags, GstToc **toc, GstStructure **headers);
+
+G_GNUC_INTERNAL
+gboolean clapper_harvest_fill_from_cache (ClapperHarvest *harvest, ClapperEnhancerProxy *proxy, const GstStructure *config, GUri *uri);
+
+G_GNUC_INTERNAL
+void clapper_harvest_export_to_cache (ClapperHarvest *harvest, ClapperEnhancerProxy *proxy, const GstStructure *config, GUri *uri);
 
 G_END_DECLS

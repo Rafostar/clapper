@@ -816,7 +816,7 @@ _element_setup_cb (GstElement *playbin, GstElement *element, ClapperPlayer *self
   factory_name = g_intern_static_string (GST_OBJECT_NAME (factory));
   GST_INFO_OBJECT (self, "Element setup: %s", factory_name);
 
-  if (factory_name == g_intern_static_string ("clapperenhancersrc")) {
+  if (factory_name == g_intern_static_string ("clapperextractablesrc")) {
     g_object_set (element,
         "enhancer-proxies", self->enhancer_proxies,
         NULL);

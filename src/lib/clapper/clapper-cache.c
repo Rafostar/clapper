@@ -45,6 +45,12 @@ clapper_cache_initialize (void)
   }
 }
 
+gboolean
+clapper_cache_is_disabled (void)
+{
+  return cache_disabled;
+}
+
 GMappedFile *
 clapper_cache_open (const gchar *filename, const gchar **data, GError **error)
 {
@@ -111,6 +117,15 @@ clapper_cache_read_uint (const gchar **data)
   return val;
 }
 
+inline gint64
+clapper_cache_read_int64 (const gchar **data)
+{
+  gint64 val = *(const gint64 *) *data;
+  *data += sizeof (gint64);
+
+  return val;
+}
+
 inline gdouble
 clapper_cache_read_double (const gchar **data)
 {
@@ -132,6 +147,22 @@ clapper_cache_read_string (const gchar **data)
   }
 
   return str;
+}
+
+inline const guint8 *
+clapper_cache_read_data (const gchar **data, gsize *size)
+{
+  const guint8 *val = NULL;
+
+  *size = *(const gsize *) *data;
+  *data += sizeof (gsize);
+
+  if (G_LIKELY (*size > 0)) {
+    val = (const guint8 *) *data;
+    *data += *size;
+  }
+
+  return val;
 }
 
 inline GType
@@ -333,6 +364,12 @@ clapper_cache_store_uint (GByteArray *bytes, guint val)
 }
 
 inline void
+clapper_cache_store_int64 (GByteArray *bytes, gint64 val)
+{
+  g_byte_array_append (bytes, (const guint8 *) &val, sizeof (gint64));
+}
+
+inline void
 clapper_cache_store_double (GByteArray *bytes, gdouble val)
 {
   g_byte_array_append (bytes, (const guint8 *) &val, sizeof (gdouble));
@@ -347,6 +384,14 @@ clapper_cache_store_string (GByteArray *bytes, const gchar *val)
   clapper_cache_store_boolean (bytes, is_null);
   if (!is_null)
     g_byte_array_append (bytes, (const guint8 *) val, strlen (val) + 1);
+}
+
+inline void
+clapper_cache_store_data (GByteArray *bytes, const guint8 *val, gsize val_size)
+{
+  g_byte_array_append (bytes, (const guint8 *) &val_size, sizeof (gsize));
+  if (G_LIKELY (val_size > 0))
+    g_byte_array_append (bytes, val, val_size);
 }
 
 inline void

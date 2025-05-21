@@ -61,4 +61,10 @@ void clapper_harvest_headers_set (ClapperHarvest *harvest, const gchar *key, ...
 CLAPPER_API
 void clapper_harvest_headers_set_value (ClapperHarvest *harvest, const gchar *key, const GValue *value);
 
+CLAPPER_API
+void clapper_harvest_set_expiration_date_utc (ClapperHarvest *harvest, GDateTime *date_utc);
+
+CLAPPER_API
+void clapper_harvest_set_expiration_seconds (ClapperHarvest *harvest, gdouble seconds);
+
 G_END_DECLS

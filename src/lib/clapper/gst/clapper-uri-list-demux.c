@@ -193,7 +193,7 @@ _feature_filter (GstPluginFeature *feature, const gchar *search_proto)
   feature_name = gst_plugin_feature_get_name (feature);
 
   /* Do not loop endlessly creating our own sources and demuxers */
-  if (!feature_name || strcmp (feature_name, "clapperenhancersrc") == 0)
+  if (!feature_name || strcmp (feature_name, "clapperextractablesrc") == 0)
     return FALSE;
 
   protocols = gst_element_factory_get_uri_protocols (factory);

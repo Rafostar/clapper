@@ -26,12 +26,12 @@
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_ENHANCER_SRC (clapper_enhancer_src_get_type())
-#define CLAPPER_ENHANCER_SRC_CAST(obj) ((ClapperEnhancerSrc *)(obj))
+#define CLAPPER_TYPE_EXTRACTABLE_SRC (clapper_extractable_src_get_type())
+#define CLAPPER_EXTRACTABLE_SRC_CAST(obj) ((ClapperExtractableSrc *)(obj))
 
 G_GNUC_INTERNAL
-G_DECLARE_FINAL_TYPE (ClapperEnhancerSrc, clapper_enhancer_src, CLAPPER, ENHANCER_SRC, GstPushSrc)
+G_DECLARE_FINAL_TYPE (ClapperExtractableSrc, clapper_extractable_src, CLAPPER, EXTRACTABLE_SRC, GstPushSrc)
 
-GST_ELEMENT_REGISTER_DECLARE (clapperenhancersrc)
+GST_ELEMENT_REGISTER_DECLARE (clapperextractablesrc)
 
 G_END_DECLS

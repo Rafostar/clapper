@@ -31,7 +31,11 @@
  * https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/2867
  */
 
+#include "config.h"
+
 #include "clapper-harvest-private.h"
+#include "clapper-cache-private.h"
+#include "clapper-utils.h"
 
 #define GST_CAT_DEFAULT clapper_harvest_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -50,6 +54,8 @@ struct _ClapperHarvest
 
   guint16 n_chapters;
   guint16 n_tracks;
+
+  gint64 exp_epoch;
 };
 
 #define parent_class clapper_harvest_parent_class
@@ -119,6 +125,302 @@ clapper_harvest_unpack (ClapperHarvest *self,
   return TRUE;
 }
 
+/* Custom implementation due to the lack of TOC serialization in GStreamer */
+static void
+_harvest_fill_toc_from_cache (ClapperHarvest *self, const gchar **data)
+{
+  guint i, n_entries;
+
+  n_entries = clapper_cache_read_uint (data);
+  for (i = 0; i < n_entries; ++i) {
+    guint j, n_subentries;
+
+    n_subentries = clapper_cache_read_uint (data);
+    for (j = 0; j < n_subentries; ++j) {
+      GstTocEntryType type;
+      const gchar *title;
+      gdouble start, end;
+
+      type = (GstTocEntryType) clapper_cache_read_int (data);
+      title = clapper_cache_read_string (data);
+      start = clapper_cache_read_double (data);
+      end = clapper_cache_read_double (data);
+
+      clapper_harvest_toc_add (self, type, title, start, end);
+    }
+  }
+}
+
+static void
+_harvest_store_toc_to_cache (ClapperHarvest *self, GByteArray *bytes)
+{
+  GList *list = NULL, *el;
+  guint n_entries = 0;
+
+  if (self->toc) {
+    list = gst_toc_get_entries (self->toc);
+    n_entries = g_list_length (list);
+  }
+  clapper_cache_store_uint (bytes, n_entries);
+
+  for (el = list; el; el = g_list_next (el)) {
+    const GstTocEntry *entry = (const GstTocEntry *) el->data;
+    GList *subentries, *sub_el;
+    guint n_subentries;
+
+    subentries = gst_toc_entry_get_sub_entries (entry);
+    n_subentries = g_list_length (subentries);
+
+    clapper_cache_store_uint (bytes, n_subentries);
+
+    for (sub_el = subentries; sub_el; sub_el = g_list_next (sub_el)) {
+      const GstTocEntry *subentry = (const GstTocEntry *) sub_el->data;
+      GstTagList *tags;
+      gint64 start = 0, end = 0;
+      gdouble start_dbl, end_dbl;
+      const gchar *title = NULL;
+
+      clapper_cache_store_int (bytes, (gint) gst_toc_entry_get_entry_type (subentry));
+
+      if ((tags = gst_toc_entry_get_tags (subentry)))
+        gst_tag_list_peek_string_index (tags, GST_TAG_TITLE, 0, &title);
+
+      clapper_cache_store_string (bytes, title);
+
+      gst_toc_entry_get_start_stop_times (subentry, &start, &end);
+      start_dbl = ((gdouble) start) / GST_SECOND;
+      end_dbl = (end >= 0) ? ((gdouble) end) / GST_SECOND : -1;
+
+      clapper_cache_store_double (bytes, start_dbl);
+      clapper_cache_store_double (bytes, end_dbl);
+    }
+  }
+}
+
+static inline gchar *
+_build_cache_filename (ClapperEnhancerProxy *proxy, GUri *uri)
+{
+  gchar *uri_str = g_uri_to_string (uri);
+  gchar name[15];
+
+  g_snprintf (name, sizeof (name), "%u.bin", g_str_hash (uri_str));
+  g_free (uri_str);
+
+  return g_build_filename (g_get_user_cache_dir (), CLAPPER_API_NAME,
+      "enhancers", clapper_enhancer_proxy_get_module_name (proxy),
+      "harvests", name, NULL);
+}
+
+/* NOTE: On failure, this function must not modify harvest! */
+gboolean
+clapper_harvest_fill_from_cache (ClapperHarvest *self, ClapperEnhancerProxy *proxy,
+    const GstStructure *config, GUri *uri)
+{
+  GMappedFile *mapped_file;
+  GstStructure *config_cached = NULL;
+  GError *error = NULL;
+  gchar *filename;
+  const gchar *data, *read_str;
+  const guint8 *buf_data;
+  guint8 *buf_copy;
+  gsize buf_size;
+  gint64 epoch_cached, epoch_now = 0;
+  gdouble exp_seconds;
+  gboolean changed, read_ok = FALSE;
+
+  filename = _build_cache_filename (proxy, uri);
+  GST_DEBUG_OBJECT (self, "Importing harvest from cache file: \"%s\"", filename);
+  mapped_file = clapper_cache_open (filename, &data, &error);
+  g_free (filename);
+
+  if (!mapped_file) {
+    /* No error if cache disabled or version mismatch */
+    if (error) {
+      if (error->domain == G_FILE_ERROR && error->code == G_FILE_ERROR_NOENT)
+        GST_DEBUG_OBJECT (self, "No cached harvest found");
+      else
+        GST_ERROR_OBJECT (self, "Could not use cached harvest, reason: %s", error->message);
+
+      g_error_free (error);
+    }
+
+    return FALSE;
+  }
+
+  /* Plugin version check */
+  if (g_strcmp0 (clapper_cache_read_string (&data),
+      clapper_enhancer_proxy_get_version (proxy)) != 0)
+    goto finish; // no error printing here
+
+  if (G_LIKELY ((epoch_cached = clapper_cache_read_int64 (&data)) > 0)) {
+    GDateTime *date = g_date_time_new_now_utc ();
+    epoch_now = g_date_time_to_unix (date);
+    g_date_time_unref (date);
+  }
+
+  /* Check if expired */
+  if ((exp_seconds = (gdouble) (epoch_cached - epoch_now)) <= 0) {
+    GST_DEBUG_OBJECT (self, "Cached harvest expired"); // expiration is not an error
+    goto finish;
+  }
+  GST_DEBUG_OBJECT (self, "Cached harvest expiration in %" CLAPPER_TIME_FORMAT,
+      CLAPPER_TIME_ARGS (exp_seconds));
+
+  /* Read last used config to generate cache data */
+  if ((read_str = clapper_cache_read_string (&data)))
+    config_cached = gst_structure_from_string (read_str, NULL);
+
+  /* Compare used config when cache was generated to the current one */
+  changed = (config_cached && config)
+      ? !gst_structure_is_equal (config_cached, config)
+      : (config_cached != config);
+
+  gst_clear_structure (&config_cached);
+
+  if (changed) {
+    GST_DEBUG_OBJECT (self, "Enhancer config differs from the last time");
+    goto finish;
+  }
+
+  /* Read media type */
+  read_str = clapper_cache_read_string (&data);
+  if (G_UNLIKELY (read_str == NULL)) {
+    GST_ERROR_OBJECT (self, "Could not read media type from cache file");
+    goto finish;
+  }
+
+  /* Read buffer data */
+  buf_data = clapper_cache_read_data (&data, &buf_size);
+  if (G_UNLIKELY (buf_data == NULL)) {
+    GST_ERROR_OBJECT (self, "Could not read buffer data from cache");
+    goto finish;
+  }
+
+  /* Fill harvest */
+  buf_copy = g_memdup2 (buf_data, buf_size);
+  if (!clapper_harvest_fill (self, read_str, buf_copy, buf_size))
+    goto finish;
+
+  /* Read tags */
+  read_str = clapper_cache_read_string (&data);
+  if (read_str && (self->tags = gst_tag_list_new_from_string (read_str))) {
+    GST_LOG_OBJECT (self, "Read %s", read_str);
+    gst_tag_list_set_scope (self->tags, GST_TAG_SCOPE_GLOBAL);
+  }
+
+  /* Read TOC */
+  _harvest_fill_toc_from_cache (self, &data);
+
+  /* Read headers */
+  read_str = clapper_cache_read_string (&data);
+  if (read_str && (self->headers = gst_structure_from_string (read_str, NULL)))
+    GST_LOG_OBJECT (self, "Read %s", read_str);
+
+  read_ok = TRUE;
+
+finish:
+  g_mapped_file_unref (mapped_file);
+
+  if (!read_ok)
+    return FALSE;
+
+  GST_DEBUG_OBJECT (self, "Filled harvest from cache");
+  return TRUE;
+}
+
+void
+clapper_harvest_export_to_cache (ClapperHarvest *self, ClapperEnhancerProxy *proxy,
+    const GstStructure *config, GUri *uri)
+{
+  GByteArray *bytes;
+  const GstStructure *caps_structure;
+  gchar *filename, *temp_str = NULL;
+  gboolean data_ok = TRUE;
+
+  /* No caching if no expiration date set */
+  if (self->exp_epoch <= 0)
+    return;
+
+  /* Might happen if extractor extract function implementation
+   * returns %TRUE without filling harvest properly */
+  if (G_UNLIKELY (self->caps == NULL || self->buffer == NULL))
+    return; // no data to cache
+
+  bytes = clapper_cache_create ();
+
+  /* If cache disabled */
+  if (G_UNLIKELY (bytes == NULL))
+    return;
+
+  filename = _build_cache_filename (proxy, uri);
+  GST_DEBUG_OBJECT (self, "Exporting harvest to cache file: \"%s\"", filename);
+
+  /* Store enhancer version that generated harvest */
+  clapper_cache_store_string (bytes, clapper_enhancer_proxy_get_version (proxy));
+
+  /* Store expiration date */
+  clapper_cache_store_int64 (bytes, self->exp_epoch);
+
+  /* Store config used to generate harvest */
+  if (config)
+    temp_str = gst_structure_to_string (config);
+  clapper_cache_store_string (bytes, temp_str); // NULL when no config
+  g_clear_pointer (&temp_str, g_free);
+
+  /* Store media type */
+  caps_structure = gst_caps_get_structure (self->caps, 0);
+  if (G_LIKELY (caps_structure != NULL)) {
+    clapper_cache_store_string (bytes, gst_structure_get_name (caps_structure));
+  } else {
+    GST_ERROR_OBJECT (self, "Cannot cache empty caps");
+    data_ok = FALSE;
+  }
+
+  if (G_LIKELY (data_ok)) {
+    GstMemory *mem;
+    GstMapInfo map_info;
+
+    /* Store buffer data */
+    mem = gst_buffer_peek_memory (self->buffer, 0);
+    if (G_LIKELY (gst_memory_map (mem, &map_info, GST_MAP_READ))) {
+      clapper_cache_store_data (bytes, map_info.data, map_info.size);
+      gst_memory_unmap (mem, &map_info);
+    } else {
+      GST_ERROR_OBJECT (self, "Could not map harvest buffer for reading");
+      data_ok = FALSE;
+    }
+  }
+
+  if (G_LIKELY (data_ok)) {
+    GError *error = NULL;
+
+    /* Store tags */
+    if (self->tags)
+      temp_str = gst_tag_list_to_string (self->tags);
+    clapper_cache_store_string (bytes, temp_str);
+    g_clear_pointer (&temp_str, g_free);
+
+    /* Store TOC */
+    _harvest_store_toc_to_cache (self, bytes);
+
+    /* Store headers */
+    if (self->headers)
+      temp_str = gst_structure_to_string (self->headers);
+    clapper_cache_store_string (bytes, temp_str);
+    g_clear_pointer (&temp_str, g_free);
+
+    if (clapper_cache_write (filename, bytes, &error)) {
+      GST_DEBUG_OBJECT (self, "Successfully exported harvest to cache file");
+    } else if (error) {
+      GST_ERROR_OBJECT (self, "Could not cache harvest, reason: %s", error->message);
+      g_error_free (error);
+    }
+  }
+
+  g_free (filename);
+  g_byte_array_free (bytes, TRUE);
+}
+
 /**
  * clapper_harvest_fill:
  * @harvest: a #ClapperHarvest
@@ -155,7 +457,7 @@ clapper_harvest_fill (ClapperHarvest *self, const gchar *media_type, gpointer da
     return FALSE;
   }
 
-  if (gst_debug_category_get_threshold (GST_CAT_DEFAULT) >= GST_LEVEL_DEBUG) {
+  if (gst_debug_category_get_threshold (GST_CAT_DEFAULT) >= GST_LEVEL_LOG) {
     gboolean is_printable = (strcmp (media_type, "application/dash+xml") == 0)
         || (strcmp (media_type, "application/x-hls") == 0)
         || (strcmp (media_type, "text/uri-list") == 0);
@@ -166,7 +468,7 @@ clapper_harvest_fill (ClapperHarvest *self, const gchar *media_type, gpointer da
       data_str = g_new0 (gchar, size + 1);
       memcpy (data_str, data, size);
 
-      GST_DEBUG_OBJECT (self, "Filled with data:\n%s", data_str);
+      GST_LOG_OBJECT (self, "Filled with data:\n%s", data_str);
 
       g_free (data_str);
     }
@@ -328,7 +630,7 @@ clapper_harvest_toc_add (ClapperHarvest *self, GstTocEntryType type,
   g_snprintf (edition, sizeof (edition), "0%i", type);
   g_snprintf (id, sizeof (id), "%s.%" G_GUINT16_FORMAT, id_prefix, nth_entry);
 
-  GST_DEBUG_OBJECT (self, "Inserting TOC %s: \"%s\""
+  GST_LOG_OBJECT (self, "Inserting TOC %s: \"%s\""
       " (%" G_GUINT64_FORMAT "-%" G_GUINT64_FORMAT ")",
       id, title, start_time, end_time);
 
@@ -380,7 +682,7 @@ clapper_harvest_headers_set (ClapperHarvest *self, const gchar *key, ...)
 
   while (key != NULL) {
     const gchar *val = va_arg (args, const gchar *);
-    GST_DEBUG_OBJECT (self, "Set header, \"%s\": \"%s\"", key, val);
+    GST_LOG_OBJECT (self, "Set header, \"%s\": \"%s\"", key, val);
     gst_structure_set (self->headers, key, G_TYPE_STRING, val, NULL);
     key = va_arg (args, const gchar *);
   }
@@ -409,8 +711,68 @@ clapper_harvest_headers_set_value (ClapperHarvest *self, const gchar *key, const
 
   _ensure_headers (self);
 
-  GST_DEBUG_OBJECT (self, "Set header, \"%s\": \"%s\"", key, g_value_get_string (value));
+  GST_LOG_OBJECT (self, "Set header, \"%s\": \"%s\"", key, g_value_get_string (value));
   gst_structure_set_value (self->headers, key, value);
+}
+
+/**
+ * clapper_harvest_set_expiration_date_utc:
+ * @harvest: a #ClapperHarvest
+ * @date_utc: a #GDateTime in UTC time
+ *
+ * Set date in UTC time until harvested content is expected
+ * to stay alive.
+ *
+ * This is used for harvest caching, so next time user requests to
+ * play the same URI, recently harvested data can be reused without
+ * the need to run [vfunc@Clapper.Extractable.extract] again.
+ *
+ * Since: 0.10
+ */
+void
+clapper_harvest_set_expiration_date_utc (ClapperHarvest *self, GDateTime *date_utc)
+{
+  g_return_if_fail (CLAPPER_IS_HARVEST (self));
+  g_return_if_fail (date_utc != NULL);
+
+  self->exp_epoch = g_date_time_to_unix (date_utc);
+  GST_LOG_OBJECT (self, "Expiration epoch: %" G_GINT64_FORMAT, self->exp_epoch);
+}
+
+/**
+ * clapper_harvest_set_expiration_seconds:
+ * @harvest: a #ClapperHarvest
+ * @seconds: time in seconds until expiration
+ *
+ * Set amount of seconds for how long harvested content is
+ * expected to stay alive.
+ *
+ * Alternative function to [method@Clapper.Harvest.set_expiration_date_utc],
+ * but takes time as number in seconds from now.
+ *
+ * It is safe to pass zero or negative number to this function in
+ * case when calculating time manually and it already expired.
+ *
+ * Since: 0.10
+ */
+void
+clapper_harvest_set_expiration_seconds (ClapperHarvest *self, gdouble seconds)
+{
+  GDateTime *date, *date_epoch;
+
+  g_return_if_fail (CLAPPER_IS_HARVEST (self));
+
+  GST_LOG_OBJECT (self, "Set expiration in %" CLAPPER_TIME_FORMAT,
+      CLAPPER_TIME_ARGS (seconds));
+
+  date = g_date_time_new_now_utc ();
+  date_epoch = g_date_time_add_seconds (date, seconds);
+  g_date_time_unref (date);
+
+  self->exp_epoch = g_date_time_to_unix (date_epoch);
+  g_date_time_unref (date_epoch);
+
+  GST_LOG_OBJECT (self, "Expiration epoch: %" G_GINT64_FORMAT, self->exp_epoch);
 }
 
 static void

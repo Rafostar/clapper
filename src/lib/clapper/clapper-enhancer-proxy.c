@@ -507,14 +507,17 @@ _apply_config_cb (GQuark field_id, const GValue *value, GObject *enhancer)
   return TRUE;
 }
 
-void
-clapper_enhancer_proxy_apply_current_config_to_enhancer (ClapperEnhancerProxy *self, GObject *enhancer)
+/*
+ * clapper_enhancer_proxy_make_current_config:
+ *
+ * Returns: (transfer full) (nullable): Current merged global and local config as #GstStructure.
+ */
+GstStructure *
+clapper_enhancer_proxy_make_current_config (ClapperEnhancerProxy *self)
 {
   GSettings *settings = clapper_enhancer_proxy_get_settings (self);
   GstStructure *merged_config = NULL;
   guint i;
-
-  GST_DEBUG_OBJECT (self, "Applying config to enhancer");
 
   /* Lock here to ensure consistent local config */
   GST_OBJECT_LOCK (self);
@@ -587,13 +590,14 @@ clapper_enhancer_proxy_apply_current_config_to_enhancer (ClapperEnhancerProxy *s
 
   g_clear_object (&settings);
 
-  /* Nothing if no configurable properties
-   * or all have default values */
-  if (merged_config) {
-    gst_structure_foreach (merged_config, (GstStructureForeachFunc) _apply_config_cb, enhancer);
-    gst_structure_free (merged_config);
-  }
+  return merged_config;
+}
 
+void
+clapper_enhancer_proxy_apply_config_to_enhancer (ClapperEnhancerProxy *self, const GstStructure *config, GObject *enhancer)
+{
+  GST_DEBUG_OBJECT (self, "Applying config to enhancer");
+  gst_structure_foreach (config, (GstStructureForeachFunc) _apply_config_cb, enhancer);
   GST_DEBUG_OBJECT (self, "Enhancer config applied");
 }
 
