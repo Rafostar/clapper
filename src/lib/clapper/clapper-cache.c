@@ -45,6 +45,12 @@ clapper_cache_initialize (void)
   }
 }
 
+gboolean
+clapper_cache_is_disabled (void)
+{
+  return cache_disabled;
+}
+
 GMappedFile *
 clapper_cache_open (const gchar *filename, const gchar **data, GError **error)
 {

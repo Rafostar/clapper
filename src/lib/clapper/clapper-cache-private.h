@@ -28,6 +28,9 @@ G_GNUC_INTERNAL
 void clapper_cache_initialize (void);
 
 G_GNUC_INTERNAL
+gboolean clapper_cache_is_disabled (void);
+
+G_GNUC_INTERNAL
 GMappedFile * clapper_cache_open (const gchar *filename, const gchar **data, GError **error);
 
 G_GNUC_INTERNAL
