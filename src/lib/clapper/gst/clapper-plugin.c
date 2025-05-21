@@ -27,7 +27,7 @@
 #include "../clapper-extractable.h"
 
 #include "clapper-plugin-private.h"
-#include "clapper-enhancer-src-private.h"
+#include "clapper-extractable-src-private.h"
 #include "clapper-uri-list-demux-private.h"
 
 /*
@@ -67,7 +67,7 @@ clapper_gst_plugin_init (GstPlugin *plugin)
 
   /* Avoid registering an URI handler without schemes */
   if (clapper_gst_plugin_has_enhancers (global_proxies, CLAPPER_TYPE_EXTRACTABLE))
-    res |= GST_ELEMENT_REGISTER (clapperenhancersrc, plugin);
+    res |= GST_ELEMENT_REGISTER (clapperextractablesrc, plugin);
 
   res |= GST_ELEMENT_REGISTER (clapperurilistdemux, plugin);
 

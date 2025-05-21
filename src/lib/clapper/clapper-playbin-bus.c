@@ -29,12 +29,7 @@
 #include "clapper-timeline-private.h"
 #include "clapper-stream-private.h"
 #include "clapper-stream-list-private.h"
-
-#include "clapper-functionalities-availability.h"
-
-#if CLAPPER_WITH_ENHANCERS_LOADER
-#include "gst/clapper-enhancer-src-private.h"
-#endif
+#include "gst/clapper-extractable-src-private.h"
 
 #define GST_CAT_DEFAULT clapper_playbin_bus_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -875,7 +870,6 @@ _handle_tag_msg (GstMessage *msg, ClapperPlayer *player)
 {
   GstObject *src = GST_MESSAGE_SRC (msg);
   GstTagList *tags = NULL;
-  gboolean from_enhancer_src;
 
   /* Tag messages should only be posted by sink elements */
   if (G_UNLIKELY (!src))
@@ -886,14 +880,8 @@ _handle_tag_msg (GstMessage *msg, ClapperPlayer *player)
   GST_LOG_OBJECT (player, "Got tags from element: %s: %" GST_PTR_FORMAT,
       GST_OBJECT_NAME (src), tags);
 
-#if CLAPPER_WITH_ENHANCERS_LOADER
-  from_enhancer_src = CLAPPER_IS_ENHANCER_SRC (src);
-#else
-  from_enhancer_src = FALSE;
-#endif
-
-  /* ClapperEnhancerSrc determines tags before stream start */
-  if (from_enhancer_src) {
+  /* ClapperExtractableSrc determines tags before stream start */
+  if (CLAPPER_IS_EXTRACTABLE_SRC (src)) {
     if (player->pending_tags) {
       gst_tag_list_unref (player->pending_tags);
     }
@@ -910,7 +898,7 @@ _handle_toc_msg (GstMessage *msg, ClapperPlayer *player)
 {
   GstObject *src = GST_MESSAGE_SRC (msg);
   GstToc *toc = NULL;
-  gboolean from_enhancer_src, updated = FALSE;
+  gboolean updated = FALSE;
 
   /* TOC messages should only be posted by sink elements */
   if (G_UNLIKELY (!src))
@@ -923,14 +911,8 @@ _handle_toc_msg (GstMessage *msg, ClapperPlayer *player)
       " from element: %s, updated: %s",
       toc, GST_OBJECT_NAME (src), (updated) ? "yes" : "no");
 
-#if CLAPPER_WITH_ENHANCERS_LOADER
-  from_enhancer_src = CLAPPER_IS_ENHANCER_SRC (src);
-#else
-  from_enhancer_src = FALSE;
-#endif
-
-  /* ClapperEnhancerSrc determines TOC before stream start */
-  if (from_enhancer_src) {
+  /* ClapperExtractableSrc determines TOC before stream start */
+  if (CLAPPER_IS_EXTRACTABLE_SRC (src)) {
     if (player->pending_toc) {
       gst_toc_unref (player->pending_toc);
     }

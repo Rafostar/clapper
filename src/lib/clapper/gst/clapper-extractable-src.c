@@ -19,7 +19,7 @@
 
 #include "config.h"
 
-#include "clapper-enhancer-src-private.h"
+#include "clapper-extractable-src-private.h"
 #include "clapper-enhancer-director-private.h"
 
 #include "../clapper-basic-functions.h"
@@ -28,13 +28,13 @@
 #include "../clapper-extractable.h"
 #include "../clapper-harvest-private.h"
 
-#define GST_CAT_DEFAULT clapper_enhancer_src_debug
+#define GST_CAT_DEFAULT clapper_extractable_src_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 #define CHECK_SCHEME_IS_HTTPS(scheme) (g_str_has_prefix (scheme, "http") \
     && (scheme[4] == '\0' || (scheme[4] == 's' && scheme[5] == '\0')))
 
-struct _ClapperEnhancerSrc
+struct _ClapperExtractableSrc
 {
   GstPushSrc parent;
 
@@ -65,7 +65,7 @@ static GstStaticPadTemplate src_template = GST_STATIC_PAD_TEMPLATE ("src",
     GST_STATIC_CAPS_ANY);
 
 static GstURIType
-clapper_enhancer_src_uri_handler_get_type (GType type)
+clapper_extractable_src_uri_handler_get_type (GType type)
 {
   return GST_URI_SRC;
 }
@@ -145,19 +145,19 @@ _host_fixup (const gchar *host)
 }
 
 /*
- * _enhancer_check_for_uri:
- * @self: a #ClapperEnhancerSrc
+ * _extractable_check_for_uri:
+ * @self: a #ClapperExtractableSrc
  * @uri: a #GUri
  *
- * Check whether there is at least one enhancer for @uri in global list.
+ * Check whether there is at least one extractable enhancer for @uri in global list.
  * This is used to reject URI early, thus making playbin choose different
  * source element. It uses global list, since at this stage element is not
  * yet placed within pipeline, so it cannot get proxies from player.
  *
- * Returns: whether at least one enhancer advertises support for given URI.
+ * Returns: whether at least one extractable enhancer advertises support for given URI.
  */
 static gboolean
-_enhancer_check_for_uri (ClapperEnhancerSrc *self, GUri *uri)
+_extractable_check_for_uri (ClapperExtractableSrc *self, GUri *uri)
 {
   ClapperEnhancerProxyList *proxies = clapper_get_global_enhancer_proxies ();
   gboolean is_https;
@@ -168,7 +168,7 @@ _enhancer_check_for_uri (ClapperEnhancerSrc *self, GUri *uri)
   if (host)
     host = _host_fixup (host);
 
-  GST_INFO_OBJECT (self, "Enhancer check, scheme: \"%s\", host: \"%s\"",
+  GST_INFO_OBJECT (self, "Extractable check, scheme: \"%s\", host: \"%s\"",
       scheme, GST_STR_NULL (host));
 
   /* Whether "http(s)" scheme is used */
@@ -191,8 +191,8 @@ _enhancer_check_for_uri (ClapperEnhancerSrc *self, GUri *uri)
 }
 
 /*
- * _filter_enhancers_for_uri:
- * @self: a #ClapperEnhancerSrc
+ * _filter_extractables_for_uri:
+ * @self: a #ClapperExtractableSrc
  * @proxies: a #ClapperEnhancerProxyList
  * @uri: a #GUri
  *
@@ -202,7 +202,7 @@ _enhancer_check_for_uri (ClapperEnhancerSrc *self, GUri *uri)
  * Returns: (transfer full): A sublist in the form of #GList with proxies.
  */
 static GList *
-_filter_enhancers_for_uri (ClapperEnhancerSrc *self,
+_filter_extractables_for_uri (ClapperExtractableSrc *self,
     ClapperEnhancerProxyList *proxies, GUri *uri)
 {
   GList *sublist = NULL;
@@ -214,7 +214,7 @@ _filter_enhancers_for_uri (ClapperEnhancerSrc *self,
   if (host)
     host = _host_fixup (host);
 
-  GST_INFO_OBJECT (self, "Enhancer filter, scheme: \"%s\", host: \"%s\"",
+  GST_INFO_OBJECT (self, "Extractable filter, scheme: \"%s\", host: \"%s\"",
       scheme, GST_STR_NULL (host));
 
   /* Whether "http(s)" scheme is used */
@@ -239,7 +239,7 @@ _filter_enhancers_for_uri (ClapperEnhancerSrc *self,
 }
 
 static const gchar *const *
-clapper_enhancer_src_uri_handler_get_protocols (GType type)
+clapper_extractable_src_uri_handler_get_protocols (GType type)
 {
   static GOnce schemes_once = G_ONCE_INIT;
 
@@ -248,9 +248,9 @@ clapper_enhancer_src_uri_handler_get_protocols (GType type)
 }
 
 static gchar *
-clapper_enhancer_src_uri_handler_get_uri (GstURIHandler *handler)
+clapper_extractable_src_uri_handler_get_uri (GstURIHandler *handler)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (handler);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (handler);
   gchar *uri;
 
   GST_OBJECT_LOCK (self);
@@ -261,10 +261,10 @@ clapper_enhancer_src_uri_handler_get_uri (GstURIHandler *handler)
 }
 
 static gboolean
-clapper_enhancer_src_uri_handler_set_uri (GstURIHandler *handler,
+clapper_extractable_src_uri_handler_set_uri (GstURIHandler *handler,
     const gchar *uri, GError **error)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (handler);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (handler);
   GUri *guri;
   const gchar *const *protocols;
   gboolean supported = FALSE;
@@ -300,7 +300,7 @@ clapper_enhancer_src_uri_handler_set_uri (GstURIHandler *handler,
     return FALSE;
   }
 
-  if (!_enhancer_check_for_uri (self, guri)) {
+  if (!_extractable_check_for_uri (self, guri)) {
     g_set_error (error, GST_URI_ERROR, GST_URI_ERROR_BAD_URI,
         "None of the available enhancers can handle this URI");
     g_uri_unref (guri);
@@ -324,22 +324,22 @@ clapper_enhancer_src_uri_handler_set_uri (GstURIHandler *handler,
 static void
 _uri_handler_iface_init (GstURIHandlerInterface *iface)
 {
-  iface->get_type = clapper_enhancer_src_uri_handler_get_type;
-  iface->get_protocols = clapper_enhancer_src_uri_handler_get_protocols;
-  iface->get_uri = clapper_enhancer_src_uri_handler_get_uri;
-  iface->set_uri = clapper_enhancer_src_uri_handler_set_uri;
+  iface->get_type = clapper_extractable_src_uri_handler_get_type;
+  iface->get_protocols = clapper_extractable_src_uri_handler_get_protocols;
+  iface->get_uri = clapper_extractable_src_uri_handler_get_uri;
+  iface->set_uri = clapper_extractable_src_uri_handler_set_uri;
 }
 
-#define parent_class clapper_enhancer_src_parent_class
-G_DEFINE_TYPE_WITH_CODE (ClapperEnhancerSrc, clapper_enhancer_src, GST_TYPE_PUSH_SRC,
+#define parent_class clapper_extractable_src_parent_class
+G_DEFINE_TYPE_WITH_CODE (ClapperExtractableSrc, clapper_extractable_src, GST_TYPE_PUSH_SRC,
     G_IMPLEMENT_INTERFACE (GST_TYPE_URI_HANDLER, _uri_handler_iface_init));
-GST_ELEMENT_REGISTER_DEFINE (clapperenhancersrc, "clapperenhancersrc",
-    512, CLAPPER_TYPE_ENHANCER_SRC);
+GST_ELEMENT_REGISTER_DEFINE (clapperextractablesrc, "clapperextractablesrc",
+    512, CLAPPER_TYPE_EXTRACTABLE_SRC);
 
 static gboolean
-clapper_enhancer_src_start (GstBaseSrc *base_src)
+clapper_extractable_src_start (GstBaseSrc *base_src)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (base_src);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (base_src);
   gboolean can_start;
 
   GST_DEBUG_OBJECT (self, "Start");
@@ -358,9 +358,9 @@ clapper_enhancer_src_start (GstBaseSrc *base_src)
 }
 
 static gboolean
-clapper_enhancer_src_stop (GstBaseSrc *base_src)
+clapper_extractable_src_stop (GstBaseSrc *base_src)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (base_src);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (base_src);
 
   GST_DEBUG_OBJECT (self, "Stop");
 
@@ -370,9 +370,9 @@ clapper_enhancer_src_stop (GstBaseSrc *base_src)
 }
 
 static gboolean
-clapper_enhancer_src_get_size (GstBaseSrc *base_src, guint64 *size)
+clapper_extractable_src_get_size (GstBaseSrc *base_src, guint64 *size)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (base_src);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (base_src);
 
   if (self->buf_size > 0) {
     *size = self->buf_size;
@@ -383,15 +383,15 @@ clapper_enhancer_src_get_size (GstBaseSrc *base_src, guint64 *size)
 }
 
 static gboolean
-clapper_enhancer_src_is_seekable (GstBaseSrc *base_src)
+clapper_extractable_src_is_seekable (GstBaseSrc *base_src)
 {
   return FALSE;
 }
 
 static gboolean
-clapper_enhancer_src_unlock (GstBaseSrc *base_src)
+clapper_extractable_src_unlock (GstBaseSrc *base_src)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (base_src);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (base_src);
 
   GST_LOG_OBJECT (self, "Cancel triggered");
   g_cancellable_cancel (self->cancellable);
@@ -400,9 +400,9 @@ clapper_enhancer_src_unlock (GstBaseSrc *base_src)
 }
 
 static gboolean
-clapper_enhancer_src_unlock_stop (GstBaseSrc *base_src)
+clapper_extractable_src_unlock_stop (GstBaseSrc *base_src)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (base_src);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (base_src);
 
   GST_LOG_OBJECT (self, "Resetting cancellable");
 
@@ -414,7 +414,7 @@ clapper_enhancer_src_unlock_stop (GstBaseSrc *base_src)
 
 /* Pushes tags, toc and request headers downstream (all transfer full) */
 static void
-_push_events (ClapperEnhancerSrc *self, GstTagList *tags, GstToc *toc,
+_push_events (ClapperExtractableSrc *self, GstTagList *tags, GstToc *toc,
     GstStructure *headers, gboolean updated)
 {
   GstEvent *event;
@@ -462,9 +462,9 @@ _push_events (ClapperEnhancerSrc *self, GstTagList *tags, GstToc *toc,
 }
 
 static GstFlowReturn
-clapper_enhancer_src_create (GstPushSrc *push_src, GstBuffer **outbuf)
+clapper_extractable_src_create (GstPushSrc *push_src, GstBuffer **outbuf)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (push_src);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (push_src);
   ClapperEnhancerProxyList *proxies;
   GList *filtered_proxies;
   GUri *guri;
@@ -502,7 +502,7 @@ clapper_enhancer_src_create (GstPushSrc *push_src, GstBuffer **outbuf)
 
   GST_OBJECT_UNLOCK (self);
 
-  filtered_proxies = _filter_enhancers_for_uri (self, proxies, guri);
+  filtered_proxies = _filter_extractables_for_uri (self, proxies, guri);
   gst_object_unref (proxies);
 
   harvest = clapper_enhancer_director_extract (self->director,
@@ -554,7 +554,7 @@ _handle_uri_query (GstQuery *query)
 }
 
 static gboolean
-clapper_enhancer_src_query (GstBaseSrc *base_src, GstQuery *query)
+clapper_extractable_src_query (GstBaseSrc *base_src, GstQuery *query)
 {
   gboolean ret = FALSE;
 
@@ -573,7 +573,7 @@ clapper_enhancer_src_query (GstBaseSrc *base_src, GstQuery *query)
 }
 
 static void
-clapper_enhancer_src_set_enhancer_proxies (ClapperEnhancerSrc *self,
+clapper_extractable_src_set_enhancer_proxies (ClapperExtractableSrc *self,
     ClapperEnhancerProxyList *enhancer_proxies)
 {
   GST_OBJECT_LOCK (self);
@@ -583,15 +583,15 @@ clapper_enhancer_src_set_enhancer_proxies (ClapperEnhancerSrc *self,
 }
 
 static void
-clapper_enhancer_src_init (ClapperEnhancerSrc *self)
+clapper_extractable_src_init (ClapperExtractableSrc *self)
 {
   self->cancellable = g_cancellable_new ();
 }
 
 static void
-clapper_enhancer_src_dispose (GObject *object)
+clapper_extractable_src_dispose (GObject *object)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (object);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (object);
 
   GST_OBJECT_LOCK (self);
   g_clear_object (&self->director);
@@ -601,9 +601,9 @@ clapper_enhancer_src_dispose (GObject *object)
 }
 
 static void
-clapper_enhancer_src_finalize (GObject *object)
+clapper_extractable_src_finalize (GObject *object)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (object);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (object);
 
   GST_TRACE_OBJECT (self, "Finalize");
 
@@ -616,10 +616,10 @@ clapper_enhancer_src_finalize (GObject *object)
 }
 
 static void
-clapper_enhancer_src_set_property (GObject *object, guint prop_id,
+clapper_extractable_src_set_property (GObject *object, guint prop_id,
     const GValue *value, GParamSpec *pspec)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (object);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (object);
 
   switch (prop_id) {
     case PROP_URI:{
@@ -632,7 +632,7 @@ clapper_enhancer_src_set_property (GObject *object, guint prop_id,
       break;
     }
     case PROP_ENHANCER_PROXIES:
-      clapper_enhancer_src_set_enhancer_proxies (self, g_value_get_object (value));
+      clapper_extractable_src_set_enhancer_proxies (self, g_value_get_object (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -641,10 +641,10 @@ clapper_enhancer_src_set_property (GObject *object, guint prop_id,
 }
 
 static void
-clapper_enhancer_src_get_property (GObject *object, guint prop_id,
+clapper_extractable_src_get_property (GObject *object, guint prop_id,
     GValue *value, GParamSpec *pspec)
 {
-  ClapperEnhancerSrc *self = CLAPPER_ENHANCER_SRC_CAST (object);
+  ClapperExtractableSrc *self = CLAPPER_EXTRACTABLE_SRC_CAST (object);
 
   switch (prop_id) {
     case PROP_URI:
@@ -657,30 +657,30 @@ clapper_enhancer_src_get_property (GObject *object, guint prop_id,
 }
 
 static void
-clapper_enhancer_src_class_init (ClapperEnhancerSrcClass *klass)
+clapper_extractable_src_class_init (ClapperExtractableSrcClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
   GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBaseSrcClass *gstbasesrc_class = (GstBaseSrcClass *) klass;
   GstPushSrcClass *gstpushsrc_class = (GstPushSrcClass *) klass;
 
-  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperenhancersrc", 0,
-      "Clapper Enhancer Source");
+  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperextractablesrc", 0,
+      "Clapper Extractable Source");
 
-  gobject_class->set_property = clapper_enhancer_src_set_property;
-  gobject_class->get_property = clapper_enhancer_src_get_property;
-  gobject_class->dispose = clapper_enhancer_src_dispose;
-  gobject_class->finalize = clapper_enhancer_src_finalize;
+  gobject_class->set_property = clapper_extractable_src_set_property;
+  gobject_class->get_property = clapper_extractable_src_get_property;
+  gobject_class->dispose = clapper_extractable_src_dispose;
+  gobject_class->finalize = clapper_extractable_src_finalize;
 
-  gstbasesrc_class->start = clapper_enhancer_src_start;
-  gstbasesrc_class->stop = clapper_enhancer_src_stop;
-  gstbasesrc_class->get_size = clapper_enhancer_src_get_size;
-  gstbasesrc_class->is_seekable = clapper_enhancer_src_is_seekable;
-  gstbasesrc_class->unlock = clapper_enhancer_src_unlock;
-  gstbasesrc_class->unlock_stop = clapper_enhancer_src_unlock_stop;
-  gstbasesrc_class->query = clapper_enhancer_src_query;
+  gstbasesrc_class->start = clapper_extractable_src_start;
+  gstbasesrc_class->stop = clapper_extractable_src_stop;
+  gstbasesrc_class->get_size = clapper_extractable_src_get_size;
+  gstbasesrc_class->is_seekable = clapper_extractable_src_is_seekable;
+  gstbasesrc_class->unlock = clapper_extractable_src_unlock;
+  gstbasesrc_class->unlock_stop = clapper_extractable_src_unlock_stop;
+  gstbasesrc_class->query = clapper_extractable_src_query;
 
-  gstpushsrc_class->create = clapper_enhancer_src_create;
+  gstpushsrc_class->create = clapper_extractable_src_create;
 
   param_specs[PROP_URI] = g_param_spec_string ("uri",
       "URI", "URI", NULL,
@@ -694,7 +694,7 @@ clapper_enhancer_src_class_init (ClapperEnhancerSrcClass *klass)
 
   gst_element_class_add_static_pad_template (gstelement_class, &src_template);
 
-  gst_element_class_set_static_metadata (gstelement_class, "Clapper Enhancer Source",
-      "Source", "A source element that uses Clapper Enhancers to produce data",
+  gst_element_class_set_static_metadata (gstelement_class, "Clapper Extractable Source",
+      "Source", "A source element that uses Clapper extractable enhancers to produce data",
       "Rafał Dzięgiel <rafostar.github@gmail.com>");
 }
