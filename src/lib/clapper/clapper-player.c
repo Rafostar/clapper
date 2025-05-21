@@ -2833,7 +2833,7 @@ clapper_player_class_init (ClapperPlayerClass *klass)
    * An initial bitrate (bits/s) to select during
    * starting adaptive streaming such as DASH or HLS.
    *
-   * If value is higher than lowest available bitrate in streaming
+   * If value is lower than the lowest available bitrate in streaming
    * manifest, then lowest possible bitrate will be selected.
    *
    * Since: 0.8
