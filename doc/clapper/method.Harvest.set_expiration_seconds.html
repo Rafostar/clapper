@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Harvest.tags_add</title>
+  <title>Clapper.Harvest.set_expiration_seconds</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Harvest.tags_add"/>
-  <meta priority="og:description" content="Reference for Clapper.Harvest.tags_add"/>
-  <meta name="twitter:title" content="Clapper.Harvest.tags_add"/>
-  <meta name="twitter:description" content="Reference for Clapper.Harvest.tags_add"/>
+  <meta priority="og:title" content="Clapper.Harvest.set_expiration_seconds"/>
+  <meta priority="og:description" content="Reference for Clapper.Harvest.set_expiration_seconds"/>
+  <meta name="twitter:title" content="Clapper.Harvest.set_expiration_seconds"/>
+  <meta name="twitter:description" content="Reference for Clapper.Harvest.set_expiration_seconds"/>
 
 
   
@@ -101,9 +101,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Harvest.set_expiration_date_utc.html">set_expiration_date_utc</a>
   
-    <a class="method" href="method.Harvest.set_expiration_seconds.html">set_expiration_seconds</a>
+    <a class="method current" href="method.Harvest.set_expiration_seconds.html">set_expiration_seconds</a>
   
-    <a class="method current" href="method.Harvest.tags_add.html">tags_add</a>
+    <a class="method" href="method.Harvest.tags_add.html">tags_add</a>
   
     <a class="method" href="method.Harvest.tags_add_value.html">tags_add_value</a>
   
@@ -123,12 +123,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Harvest.html">Harvest</a><span class="sep"></span>tags_add</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Harvest.html">Harvest</a><span class="sep"></span>set_expiration_seconds</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p><span class="emblem available">since: 0.8</span></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
@@ -136,16 +136,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-harvest.h#L50">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-harvest.h#L68">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">clapper_harvest_tags_add</span><span class="w"> </span><span class="p">(</span>
+<span class="n">clapper_harvest_set_expiration_seconds</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">ClapperHarvest</span><span class="o">*</span><span class="w"> </span><span class="n">harvest</span><span class="p">,</span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span>
-<span class="w">  </span><span class="p">...</span>
+<span class="w">  </span><span class="n">gdouble</span><span class="w"> </span><span class="n">seconds</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -157,23 +156,27 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-harvest.c#L537">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-harvest.c#L742">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Append one or more tags into the tag&nbsp;list.</p>
-<p>Variable arguments should be in the form of tag and value&nbsp;pairs.</p>
+        <p>Set amount of seconds for how long harvested content is
+expected to stay&nbsp;alive.</p>
+<p>Alternative function to <a href="method.Harvest.set_expiration_date_utc.html"><code>clapper_harvest_set_expiration_date_utc()</code></a>,
+but takes time as number in seconds from&nbsp;now.</p>
+<p>It is safe to pass zero or negative number to this function in
+case when calculating time manually and it already&nbsp;expired.</p>
       </div>
 
       <div class="docblock">
         
-        <p>Available since: 0.8</p>
+        <p>Available since: 0.10</p>
         
         
-        <p>This method is not directly available to language bindings.</p>
         
-        <p>The implementation of this method is provided by <a href="method.Harvest.tags_add_value.html"><code>clapper_harvest_tags_add_value()</code></a> in language bindings.</p>
+        
+        
       </div>
 
       
@@ -191,27 +194,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           
 
           
-          <dt class="arg-name"><code>tag</code></dt>
+          <dt class="arg-name"><code>seconds</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>const gchar*</code></p>
-            <p>A name of tag to&nbsp;set.</p>
-            <table>
-            
-            
-            
-            
-            
-            
-            
-            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
-            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
-            </table>
-          </dd>
-          
-          <dt class="arg-name"><code>...</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code></code></p>
-            <p><code>NULL</code>-terminated list of&nbsp;arguments.</p>
+            <p><em>Type:</em>&nbsp;<code>gdouble</code></p>
+            <p>Time in seconds until&nbsp;expiration.</p>
             <table>
             
             
