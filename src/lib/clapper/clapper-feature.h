@@ -37,7 +37,7 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_FEATURE (clapper_feature_get_type())
 #define CLAPPER_FEATURE_CAST(obj) ((ClapperFeature *)(obj))
 
-CLAPPER_API
+CLAPPER_DEPRECATED_FOR(ClapperReactable)
 G_DECLARE_DERIVABLE_TYPE (ClapperFeature, clapper_feature, CLAPPER, FEATURE, GstObject)
 
 /**
