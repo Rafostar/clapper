@@ -36,6 +36,7 @@
 #include <clapper/clapper-media-item.h>
 #include <clapper/clapper-player.h>
 #include <clapper/clapper-queue.h>
+#include <clapper/clapper-reactable.h>
 #include <clapper/clapper-stream.h>
 #include <clapper/clapper-stream-list.h>
 #include <clapper/clapper-subtitle-stream.h>

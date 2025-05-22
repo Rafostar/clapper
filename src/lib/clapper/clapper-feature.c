@@ -30,6 +30,8 @@
  * virtual functions logic, while for controlling playback implementation
  * may call [method@Gst.Object.get_parent] to acquire a weak reference on
  * a parent [class@Clapper.Player] object feature was added to.
+ *
+ * Deprecated: 0.10: Use [iface@Clapper.Reactable] instead.
  */
 
 #include "clapper-feature.h"
