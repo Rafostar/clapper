@@ -95,7 +95,8 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 #endif
 
     if (G_LIKELY (extractable != NULL)) {
-      clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) extractable);
+      if (config)
+        clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) extractable);
 
       success = clapper_extractable_extract (extractable, data->uri,
           harvest, data->cancellable, data->error);
