@@ -174,6 +174,9 @@ of values includes <code>value</code> (works on single value lists&nbsp;too).</p
 <p>For example, when extra data in the plugin is <code>X-Schemes=https;http</code>,
 calling this function with &#8220;X-Schemes&#8221; as key and &#8220;http&#8221; as value will
 return <code>TRUE</code>.</p>
+<p>It is also safe to call this function when there is no such <code>key</code>
+in plugin info file. Use <a href="method.EnhancerProxy.get_extra_data.html"><code>clapper_enhancer_proxy_get_extra_data()</code></a>
+if you need to know whether key&nbsp;exists.</p>
       </div>
 
       <div class="docblock">
