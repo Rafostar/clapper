@@ -706,7 +706,7 @@ clapper_enhancer_proxy_get_version (ClapperEnhancerProxy *self)
  *
  * Get extra data from enhancer plugin info file specified by @key.
  *
- * External data in the plugin info file is prefixed with `X-`.
+ * Extra data in the plugin info file is prefixed with `X-`.
  * For example `X-Schemes=https`.
  *
  * Returns: (nullable): extra data value of the proxied enhancer.
@@ -739,6 +739,10 @@ clapper_enhancer_proxy_get_extra_data (ClapperEnhancerProxy *self, const gchar *
  * For example, when extra data in the plugin is `X-Schemes=https;http`,
  * calling this function with "X-Schemes" as key and "http" as value will
  * return %TRUE.
+ *
+ * It is also safe to call this function when there is no such @key
+ * in plugin info file. Use [method@Clapper.EnhancerProxy.get_extra_data]
+ * if you need to know whether key exists.
  *
  * Returns: whether list named with @key existed and contained @value.
  *
