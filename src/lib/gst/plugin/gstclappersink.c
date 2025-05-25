@@ -594,11 +594,14 @@ static gboolean
 gst_clapper_sink_start (GstBaseSink *bsink)
 {
   GstClapperSink *self = GST_CLAPPER_SINK_CAST (bsink);
+  gboolean with_clapper_gtk;
 
   GST_INFO_OBJECT (self, "Start");
 
-  if (G_UNLIKELY (!(! !gst_gtk_invoke_on_main ((GThreadFunc) (GCallback)
-      gst_clapper_sink_start_on_main, self)))) {
+  with_clapper_gtk = g_type_from_name ("ClapperGtkVideo");
+
+  if (G_UNLIKELY (!with_clapper_gtk && !(! !gst_gtk_invoke_on_main (
+      (GThreadFunc) (GCallback) gst_clapper_sink_start_on_main, self)))) {
     GST_ELEMENT_ERROR (self, RESOURCE, NOT_FOUND,
         ("GtkWidget could not be created"), (NULL));
 
