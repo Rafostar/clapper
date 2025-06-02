@@ -213,7 +213,7 @@ clapper_enhancer_proxy_copy (ClapperEnhancerProxy *src_proxy, const gchar *copy_
   copy->pspecs = g_new (GParamSpec *, copy->n_pspecs);
 
   for (i = 0; i < src_proxy->n_pspecs; ++i)
-    copy->pspecs[i] = src_proxy->pspecs[i];
+    copy->pspecs[i] = g_param_spec_ref (src_proxy->pspecs[i]);
 
   copy->scope = CLAPPER_ENHANCER_PARAM_LOCAL;
 
