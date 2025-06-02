@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gst/gst.h>
+#include <gst/tag/tag.h>
 
 #include <clapper/clapper-visibility.h>
 #include <clapper/clapper-timeline.h>
@@ -63,11 +64,17 @@ gchar * clapper_media_item_get_suburi (ClapperMediaItem *item);
 CLAPPER_API
 gchar * clapper_media_item_get_title (ClapperMediaItem *item);
 
-CLAPPER_API
+CLAPPER_DEPRECATED_FOR(clapper_media_item_get_tags)
 gchar * clapper_media_item_get_container_format (ClapperMediaItem *item);
 
 CLAPPER_API
 gdouble clapper_media_item_get_duration (ClapperMediaItem *item);
+
+CLAPPER_API
+GstTagList * clapper_media_item_get_tags (ClapperMediaItem *item);
+
+CLAPPER_API
+gboolean clapper_media_item_populate_tags (ClapperMediaItem *item, const GstTagList *tags);
 
 CLAPPER_API
 ClapperTimeline * clapper_media_item_get_timeline (ClapperMediaItem *item);
