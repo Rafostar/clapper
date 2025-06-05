@@ -161,6 +161,29 @@ clapper_enhancer_proxy_list_sort (ClapperEnhancerProxyList *self)
   g_ptr_array_sort_values (self->proxies, (GCompareFunc) _sort_values_by_name);
 }
 
+/*
+ * clapper_enhancer_proxy_list_has_proxy_with_interface:
+ * @iface_type: an interface #GType
+ *
+ * Check if any enhancer implementing given interface type is available.
+ *
+ * Returns: whether any enhancer proxy was found.
+ */
+gboolean
+clapper_enhancer_proxy_list_has_proxy_with_interface (ClapperEnhancerProxyList *self, GType iface_type)
+{
+  guint i;
+
+  for (i = 0; i < self->proxies->len; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (self, i);
+
+    if (clapper_enhancer_proxy_target_has_interface (proxy, iface_type))
+      return TRUE;
+  }
+
+  return FALSE;
+}
+
 /**
  * clapper_enhancer_proxy_list_get_proxy:
  * @list: a #ClapperEnhancerProxyList

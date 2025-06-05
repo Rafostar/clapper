@@ -149,6 +149,7 @@ clapper_sources = [
   'clapper-player.c',
   'clapper-queue.c',
   'clapper-reactable.c',
+  'clapper-reactables-manager.c',
   'clapper-stream.c',
   'clapper-stream-list.c',
   'clapper-subtitle-stream.c',

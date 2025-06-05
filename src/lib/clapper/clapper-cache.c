@@ -20,12 +20,14 @@
 #include "clapper-cache-private.h"
 #include "clapper-version.h"
 #include "clapper-extractable.h"
+#include "clapper-reactable.h"
 
 #define CLAPPER_CACHE_HEADER "CLAPPER"
 
 typedef enum
 {
   CLAPPER_CACHE_IFACE_EXTRACTABLE = 1,
+  CLAPPER_CACHE_IFACE_REACTABLE,
 } ClapperCacheIfaces;
 
 static GArray *enum_registry = NULL;
@@ -243,6 +245,8 @@ clapper_cache_read_iface (const gchar **data)
   switch (iface_id) {
     case CLAPPER_CACHE_IFACE_EXTRACTABLE:
       return CLAPPER_TYPE_EXTRACTABLE;
+    case CLAPPER_CACHE_IFACE_REACTABLE:
+      return CLAPPER_TYPE_REACTABLE;
     default:
       return 0;
   }
@@ -433,6 +437,8 @@ clapper_cache_store_iface (GByteArray *bytes, GType iface)
 
   if (iface == CLAPPER_TYPE_EXTRACTABLE)
     iface_id = CLAPPER_CACHE_IFACE_EXTRACTABLE;
+  else if (iface == CLAPPER_TYPE_REACTABLE)
+    iface_id = CLAPPER_CACHE_IFACE_REACTABLE;
   else
     return FALSE;
 

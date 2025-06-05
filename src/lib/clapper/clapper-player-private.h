@@ -27,6 +27,7 @@
 
 #include "clapper-app-bus-private.h"
 #include "clapper-features-manager-private.h"
+#include "clapper-reactables-manager-private.h"
 
 G_BEGIN_DECLS
 
@@ -46,6 +47,8 @@ struct _ClapperPlayer
 
   ClapperFeaturesManager *features_manager;
   gint have_features; // atomic integer
+
+  ClapperReactablesManager *reactables_manager;
 
   ClapperEnhancerProxyList *enhancer_proxies;
 

@@ -29,6 +29,7 @@
 #include "clapper-app-bus-private.h"
 #include "clapper-features-bus-private.h"
 #include "clapper-enhancer-proxy-list-private.h"
+#include "clapper-reactables-manager-private.h"
 #include "gst/clapper-plugin-private.h"
 
 #include "clapper-functionalities-availability.h"
@@ -56,6 +57,7 @@ clapper_init_check_internal (int *argc, char **argv[])
   clapper_playbin_bus_initialize ();
   clapper_app_bus_initialize ();
   clapper_features_bus_initialize ();
+  clapper_reactables_manager_initialize ();
 
   _proxies = clapper_enhancer_proxy_list_new_named ("global-proxy-list");
 

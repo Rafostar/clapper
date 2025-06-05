@@ -29,6 +29,8 @@
 #include "clapper-timeline-private.h"
 #include "clapper-marker-private.h"
 #include "clapper-player-private.h"
+#include "clapper-reactables-manager-private.h"
+#include "clapper-features-manager-private.h"
 
 #define GST_CAT_DEFAULT clapper_timeline_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -106,15 +108,17 @@ clapper_timeline_post_item_updated (ClapperTimeline *self)
   ClapperPlayer *player;
 
   if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self)))) {
-    ClapperFeaturesManager *features_manager;
+    ClapperMediaItem *item;
 
-    if ((features_manager = clapper_player_get_features_manager (player))) {
-      ClapperMediaItem *item;
+    if ((item = CLAPPER_MEDIA_ITEM_CAST (gst_object_get_parent (GST_OBJECT_CAST (self))))) {
+      ClapperFeaturesManager *features_manager;
 
-      if ((item = CLAPPER_MEDIA_ITEM (gst_object_get_parent (GST_OBJECT_CAST (self))))) {
+      if (player->reactables_manager)
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, item);
+      if ((features_manager = clapper_player_get_features_manager (player)))
         clapper_features_manager_trigger_item_updated (features_manager, item);
-        gst_object_unref (item);
-      }
+
+      gst_object_unref (item);
     }
 
     gst_object_unref (player);
