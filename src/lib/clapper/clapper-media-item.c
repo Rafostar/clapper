@@ -30,6 +30,7 @@
 #include "clapper-timeline-private.h"
 #include "clapper-player-private.h"
 #include "clapper-playbin-bus-private.h"
+#include "clapper-reactables-manager-private.h"
 #include "clapper-features-manager-private.h"
 #include "clapper-utils-private.h"
 
@@ -432,6 +433,8 @@ clapper_media_item_update_from_tag_list (ClapperMediaItem *self, const GstTagLis
     if (changed) {
       ClapperFeaturesManager *features_manager;
 
+      if (player->reactables_manager)
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self);
       if ((features_manager = clapper_player_get_features_manager (player)))
         clapper_features_manager_trigger_item_updated (features_manager, self);
     }
@@ -475,6 +478,8 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
   if (changed) {
     ClapperFeaturesManager *features_manager;
 
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self);
     if ((features_manager = clapper_player_get_features_manager (player)))
       clapper_features_manager_trigger_item_updated (features_manager, self);
   }

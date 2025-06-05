@@ -50,6 +50,7 @@
 #include "clapper-audio-stream-private.h"
 #include "clapper-subtitle-stream-private.h"
 #include "clapper-enhancer-proxy-list-private.h"
+#include "clapper-reactable.h"
 #include "clapper-enums-private.h"
 #include "clapper-utils-private.h"
 #include "../shared/clapper-shared-utils-private.h"
@@ -159,6 +160,8 @@ clapper_player_refresh_position (ClapperPlayer *self)
 
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_POSITION]);
+    if (self->reactables_manager)
+      clapper_reactables_manager_trigger_position_changed (self->reactables_manager, position_dbl);
     if (clapper_player_get_have_features (self))
       clapper_features_manager_trigger_position_changed (self->features_manager, position_dbl);
   }
@@ -225,6 +228,8 @@ clapper_player_handle_playbin_state_changed (ClapperPlayer *self)
 
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_STATE]);
+    if (self->reactables_manager)
+      clapper_reactables_manager_trigger_state_changed (self->reactables_manager, state);
     if (clapper_player_get_have_features (self))
       clapper_features_manager_trigger_state_changed (self->features_manager, state);
   }
@@ -256,6 +261,8 @@ clapper_player_handle_playbin_volume_changed (ClapperPlayer *self, const GValue 
 
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_VOLUME]);
+    if (self->reactables_manager)
+      clapper_reactables_manager_trigger_volume_changed (self->reactables_manager, volume);
     if (clapper_player_get_have_features (self))
       clapper_features_manager_trigger_volume_changed (self->features_manager, volume);
   }
@@ -280,6 +287,8 @@ clapper_player_handle_playbin_mute_changed (ClapperPlayer *self, const GValue *v
 
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_MUTE]);
+    if (self->reactables_manager)
+      clapper_reactables_manager_trigger_mute_changed (self->reactables_manager, mute);
     if (clapper_player_get_have_features (self))
       clapper_features_manager_trigger_mute_changed (self->features_manager, mute);
   }
@@ -400,6 +409,8 @@ clapper_player_handle_playbin_rate_changed (ClapperPlayer *self, gdouble speed)
 
     clapper_app_bus_post_prop_notify (self->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_SPEED]);
+    if (self->reactables_manager)
+      clapper_reactables_manager_trigger_speed_changed (self->reactables_manager, speed);
     if (clapper_player_get_have_features (self))
       clapper_features_manager_trigger_speed_changed (self->features_manager, speed);
   }
@@ -2326,6 +2337,13 @@ clapper_player_init (ClapperPlayer *self)
 
   clapper_enhancer_proxy_list_fill_from_global_proxies (self->enhancer_proxies);
 
+  if (clapper_enhancer_proxy_list_has_proxy_with_interface (self->enhancer_proxies, CLAPPER_TYPE_REACTABLE)) {
+    self->reactables_manager = clapper_reactables_manager_new ();
+    gst_object_set_parent (GST_OBJECT_CAST (self->reactables_manager), GST_OBJECT_CAST (self));
+
+    clapper_reactables_manager_trigger_prepare (self->reactables_manager);
+  }
+
   self->position_query = gst_query_new_position (GST_FORMAT_TIME);
 
   self->current_state = GST_STATE_NULL;
@@ -2391,6 +2409,11 @@ clapper_player_finalize (GObject *object)
 
   gst_object_unparent (GST_OBJECT_CAST (self->subtitle_streams));
   gst_object_unref (self->subtitle_streams);
+
+  if (self->reactables_manager) {
+    gst_object_unparent (GST_OBJECT_CAST (self->reactables_manager));
+    gst_object_unref (self->reactables_manager);
+  }
 
   gst_object_unparent (GST_OBJECT_CAST (self->enhancer_proxies));
   gst_object_unref (self->enhancer_proxies);

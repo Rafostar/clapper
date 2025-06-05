@@ -20,6 +20,7 @@
 #pragma once
 
 #include <glib.h>
+#include <glib-object.h>
 
 #include "clapper-enhancer-proxy-list.h"
 #include "clapper-enhancer-proxy.h"
@@ -37,5 +38,8 @@ void clapper_enhancer_proxy_list_fill_from_global_proxies (ClapperEnhancerProxyL
 
 G_GNUC_INTERNAL
 void clapper_enhancer_proxy_list_sort (ClapperEnhancerProxyList *list);
+
+G_GNUC_INTERNAL
+gboolean clapper_enhancer_proxy_list_has_proxy_with_interface (ClapperEnhancerProxyList *list, GType iface_type);
 
 G_END_DECLS

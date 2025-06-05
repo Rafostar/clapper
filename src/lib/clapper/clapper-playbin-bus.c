@@ -173,6 +173,8 @@ _update_current_duration (ClapperPlayer *player)
     if (clapper_media_item_set_duration (player->played_item, duration_dbl, player->app_bus)) {
       ClapperFeaturesManager *features_manager;
 
+      if (player->reactables_manager)
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, player->played_item);
       if ((features_manager = clapper_player_get_features_manager (player)))
         clapper_features_manager_trigger_item_updated (features_manager, player->played_item);
     }
@@ -1046,6 +1048,8 @@ _handle_stream_start_msg (GstMessage *msg, ClapperPlayer *player)
   if (G_LIKELY (changed)) {
     clapper_queue_handle_played_item_changed (player->queue, player->played_item, player->app_bus);
 
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_played_item_changed (player->reactables_manager, player->played_item);
     if (clapper_player_get_have_features (player))
       clapper_features_manager_trigger_played_item_changed (player->features_manager, player->played_item);
   }

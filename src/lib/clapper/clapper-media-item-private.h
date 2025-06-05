@@ -23,7 +23,7 @@
 #include <gst/pbutils/pbutils.h>
 
 #include "clapper-media-item.h"
-#include "clapper-player-private.h"
+#include "clapper-player.h"
 #include "clapper-app-bus-private.h"
 
 G_BEGIN_DECLS

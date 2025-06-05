@@ -23,35 +23,12 @@
 
 #include "../clapper-basic-functions.h"
 #include "../clapper-enhancer-proxy.h"
-#include "../clapper-enhancer-proxy-list.h"
+#include "../clapper-enhancer-proxy-list-private.h"
 #include "../clapper-extractable.h"
 
 #include "clapper-plugin-private.h"
 #include "clapper-extractable-src-private.h"
 #include "clapper-uri-list-demux-private.h"
-
-/*
- * clapper_gst_plugin_has_enhancers:
- * @iface_type: an interface #GType
- *
- * Check if any enhancer implementing given interface type is available.
- *
- * Returns: whether any enhancer was found.
- */
-static gboolean
-clapper_gst_plugin_has_enhancers (ClapperEnhancerProxyList *proxies, GType iface_type)
-{
-  guint i, n_proxies = clapper_enhancer_proxy_list_get_n_proxies (proxies);
-
-  for (i = 0; i < n_proxies; ++i) {
-    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, i);
-
-    if (clapper_enhancer_proxy_target_has_interface (proxy, iface_type))
-      return TRUE;
-  }
-
-  return FALSE;
-}
 
 gboolean
 clapper_gst_plugin_init (GstPlugin *plugin)
@@ -66,7 +43,7 @@ clapper_gst_plugin_init (GstPlugin *plugin)
   global_proxies = clapper_get_global_enhancer_proxies ();
 
   /* Avoid registering an URI handler without schemes */
-  if (clapper_gst_plugin_has_enhancers (global_proxies, CLAPPER_TYPE_EXTRACTABLE))
+  if (clapper_enhancer_proxy_list_has_proxy_with_interface (global_proxies, CLAPPER_TYPE_EXTRACTABLE))
     res |= GST_ELEMENT_REGISTER (clapperextractablesrc, plugin);
 
   res |= GST_ELEMENT_REGISTER (clapperurilistdemux, plugin);
