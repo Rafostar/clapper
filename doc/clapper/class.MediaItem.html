@@ -119,11 +119,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.MediaItem.get_suburi.html">get_suburi</a>
   
+    <a class="method" href="method.MediaItem.get_tags.html">get_tags</a>
+  
     <a class="method" href="method.MediaItem.get_timeline.html">get_timeline</a>
   
     <a class="method" href="method.MediaItem.get_title.html">get_title</a>
   
     <a class="method" href="method.MediaItem.get_uri.html">get_uri</a>
+  
+    <a class="method" href="method.MediaItem.populate_tags.html">populate_tags</a>
   
     <a class="method" href="method.MediaItem.set_suburi.html">set_suburi</a>
   
@@ -146,6 +150,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     <a class="property" href="property.MediaItem.id.html">id</a>
   
     <a class="property" href="property.MediaItem.suburi.html">suburi</a>
+  
+    <a class="property" href="property.MediaItem.tags.html">tags</a>
   
     <a class="property" href="property.MediaItem.timeline.html">timeline</a>
   
@@ -377,13 +383,13 @@ is supposed to be&nbsp;found.</p>
 
       <div class="docblock">
       
-        <div class="">
+        <div class="deprecated">
           <h6><a href="method.MediaItem.get_container_format.html">clapper_media_item_get_container_format</a></h6>
           <div class="docblock">
             <p>Get media item container&nbsp;format.</p>
           </div>
           <div class="docblock">
-            <p></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
           </div>
         </div>
       
@@ -418,9 +424,19 @@ is supposed to be&nbsp;found.</p>
         </div>
       
         <div class="">
+          <h6><a href="method.MediaItem.get_tags.html">clapper_media_item_get_tags</a></h6>
+          <div class="docblock">
+            <p>Get readable list of tags stored in media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.MediaItem.get_timeline.html">clapper_media_item_get_timeline</a></h6>
           <div class="docblock">
-            <p>Get the <code>ClapperTimeline</code> assosiated with <code>item</code>.</p>
+            <p>Get the <code>ClapperTimeline</code> associated with <code>item</code>.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -444,6 +460,16 @@ is supposed to be&nbsp;found.</p>
           </div>
           <div class="docblock">
             <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.MediaItem.populate_tags.html">clapper_media_item_populate_tags</a></h6>
+          <div class="docblock">
+            <p>Populate non-existing tags in <code>item</code> tag&nbsp;list.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
           </div>
         </div>
       
@@ -511,13 +537,13 @@ is supposed to be&nbsp;found.</p>
           </div>
         </div>
       
-        <div class="">
+        <div class="deprecated">
           <h6><a href="property.MediaItem.container-format.html">Clapper.MediaItem:container-format</a></h6>
           <div class="docblock">
             <p>Media container&nbsp;format.</p>
           </div>
           <div class="docblock">
-            <p></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
           </div>
         </div>
       
@@ -548,6 +574,16 @@ is supposed to be&nbsp;found.</p>
           </div>
           <div class="docblock">
             <p></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.MediaItem.tags.html">Clapper.MediaItem:tags</a></h6>
+          <div class="docblock">
+            <p>A readable list of tags stored in media&nbsp;item.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
           </div>
         </div>
       

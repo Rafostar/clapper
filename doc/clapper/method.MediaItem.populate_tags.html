@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.MediaItem.get_uri</title>
+  <title>Clapper.MediaItem.populate_tags</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.MediaItem.get_uri"/>
-  <meta priority="og:description" content="Reference for Clapper.MediaItem.get_uri"/>
-  <meta name="twitter:title" content="Clapper.MediaItem.get_uri"/>
-  <meta name="twitter:description" content="Reference for Clapper.MediaItem.get_uri"/>
+  <meta priority="og:title" content="Clapper.MediaItem.populate_tags"/>
+  <meta priority="og:description" content="Reference for Clapper.MediaItem.populate_tags"/>
+  <meta name="twitter:title" content="Clapper.MediaItem.populate_tags"/>
+  <meta name="twitter:description" content="Reference for Clapper.MediaItem.populate_tags"/>
 
 
   
@@ -103,9 +103,9 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.MediaItem.get_title.html">get_title</a>
   
-    <a class="method current" href="method.MediaItem.get_uri.html">get_uri</a>
+    <a class="method" href="method.MediaItem.get_uri.html">get_uri</a>
   
-    <a class="method" href="method.MediaItem.populate_tags.html">populate_tags</a>
+    <a class="method current" href="method.MediaItem.populate_tags.html">populate_tags</a>
   
     <a class="method" href="method.MediaItem.set_suburi.html">set_suburi</a>
   
@@ -123,12 +123,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a><span class="sep"></span>get_uri</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a><span class="sep"></span>populate_tags</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
@@ -136,14 +136,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.h#L56">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.h#L77">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span>
-<span class="n">clapper_media_item_get_uri</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">gboolean</span>
+<span class="n">clapper_media_item_populate_tags</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span><span class="p">,</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">GstTagList</span><span class="o">*</span><span class="w"> </span><span class="n">tags</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -155,17 +156,26 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L201">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L522">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get the <span class="caps">URI</span> of <code>ClapperMediaItem</code>.</p>
+        <p>Populate non-existing tags in <code>item</code> tag&nbsp;list.</p>
+<p>Passed <code>tags</code> must use <a href="javascript:void(0)" data-namespace="Gst" data-link="enum.TagScope.html#global" class="external"><code>GST_TAG_SCOPE_GLOBAL</code></a>&nbsp;scope.</p>
+<p>Note that tags are automatically determined during media playback
+and those take precedence. This function can be useful if an app can
+determine some tags that are not in media metadata or for filling
+item with some initial/cached tags to display in <span class="caps">UI</span> before&nbsp;playback.</p>
+<p>When a tag already exists in the tag list (was populated) this
+function will not overwrite it. If you really need to permanently
+override some tags in media, you can use <code>taginject</code> element as
+player video/audio filter&nbsp;instead.</p>
       </div>
 
       <div class="docblock">
         
-        
+        <p>Available since: 0.10</p>
         
         
         
@@ -173,17 +183,43 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
       </div>
 
-      
-      <div class="docblock">
-        <table>
-        
-          <tr><td>Gets property</td><td><a href="property.MediaItem.uri.html"><code>Clapper.MediaItem:uri</code></a></td></tr>
-        
-        </table>
-      </div>
       
     </div>
 
+    
+    <div class="parameters toggle-wrapper">
+      <h4 id="parameters">
+        Parameters
+        <a href="#parameters" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <dl class="arguments">
+          
+
+          
+          <dt class="arg-name"><code>tags</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="struct.TagList.html" data-namespace="Gst" class="external"><code>GstTagList</code></a></p>
+            <p>A <code>GstTagList</code> of <span class="caps">GLOBAL</span>&nbsp;scope.</p>
+            <table>
+            
+            
+            
+            
+            
+            
+            
+            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
+            
+            </table>
+          </dd>
+          
+
+          
+        </dl>
+      </div>
+    </div>
     
 
     
@@ -196,17 +232,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <div class="returns">
           <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>const gchar*</code></p>
-            <p>An <span class="caps">URI</span> of <code>ClapperMediaItem</code>.</p>
+            <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
+            <p>Whether at least one tag got&nbsp;updated.</p>
           </div>
           <div>
             <table>
             
             
             
-            <tr><td title="transfer: none">The returned data is owned by the instance.</td></tr>
             
-            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
+            
+            
             </table>
           </div>
         </div>

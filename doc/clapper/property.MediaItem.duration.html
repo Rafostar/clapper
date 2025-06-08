@@ -99,6 +99,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.MediaItem.suburi.html">suburi</a>
   
+    <a class="property"href="property.MediaItem.tags.html">tags</a>
+  
     <a class="property"href="property.MediaItem.timeline.html">timeline</a>
   
     <a class="property"href="property.MediaItem.title.html">title</a>
@@ -142,12 +144,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L707">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L904">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <p>Media duration as a decimal number in&nbsp;seconds.</p>
+<p>This might be a different value compared to <code>duration</code> from
+<a href="property.MediaItem.tags.html"><code>ClapperMediaItem:tags</code></a>, as this value is updated
+during decoding instead of being a fixed value from&nbsp;metadata.</p>
       </div>
 
       <div class="docblock">

@@ -99,6 +99,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.MediaItem.suburi.html">suburi</a>
   
+    <a class="property"href="property.MediaItem.tags.html">tags</a>
+  
     <a class="property"href="property.MediaItem.timeline.html">timeline</a>
   
     <a class="property current"href="property.MediaItem.title.html">title</a>
@@ -142,12 +144,15 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L689">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L880">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <p>Media&nbsp;title.</p>
+<p>This might be a different string compared to <code>title</code> from
+<a href="property.MediaItem.tags.html"><code>ClapperMediaItem:tags</code></a>, as this gives parsed
+title from file name/<span class="caps">URI</span> as fallback when no <code>title</code> tag.</p>
       </div>
 
       <div class="docblock">
