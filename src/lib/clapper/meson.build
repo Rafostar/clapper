@@ -235,6 +235,7 @@ if build_gir
       clapper_enums,
     ],
     extra_args: [
+      gir_init_section,
       '--quiet',
       '--warn-all',
       '-DCLAPPER_COMPILATION',

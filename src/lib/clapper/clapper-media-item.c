@@ -43,6 +43,7 @@ struct _ClapperMediaItem
   gchar *uri;
   gchar *suburi;
 
+  GstTagList *tags;
   ClapperTimeline *timeline;
 
   guint id;
@@ -56,6 +57,13 @@ struct _ClapperMediaItem
   gboolean used;
 };
 
+typedef struct
+{
+  ClapperMediaItem *item;
+  gboolean changed;
+  gboolean from_user;
+} ClapperMediaItemTagIterData;
+
 enum
 {
   PROP_0,
@@ -63,6 +71,7 @@ enum
   PROP_URI,
   PROP_SUBURI,
   PROP_CACHE_LOCATION,
+  PROP_TAGS,
   PROP_TITLE,
   PROP_CONTAINER_FORMAT,
   PROP_DURATION,
@@ -111,8 +120,8 @@ clapper_media_item_new (const gchar *uri)
 
   /* FIXME: Set initial container format from file extension parsing */
 
-  GST_TRACE_OBJECT (item, "New media item, ID: %u, URI: %s, title: %s",
-      item->id, item->uri, item->title);
+  GST_TRACE_OBJECT (item, "New media item, ID: %u, URI: \"%s\", title: \"%s\"",
+      item->id, item->uri, GST_STR_NULL (item->title));
 
   return item;
 }
@@ -258,27 +267,6 @@ clapper_media_item_get_suburi (ClapperMediaItem *self)
   return suburi;
 }
 
-static gboolean
-clapper_media_item_take_title (ClapperMediaItem *self, gchar *title,
-    ClapperAppBus *app_bus)
-{
-  gboolean changed;
-
-  GST_OBJECT_LOCK (self);
-  if ((changed = g_strcmp0 (self->title, title) != 0)) {
-    g_free (self->title);
-    self->title = title;
-  }
-  GST_OBJECT_UNLOCK (self);
-
-  if (changed)
-    clapper_app_bus_post_prop_notify (app_bus, GST_OBJECT_CAST (self), param_specs[PROP_TITLE]);
-  else
-    g_free (title);
-
-  return changed;
-}
-
 /**
  * clapper_media_item_get_title:
  * @item: a #ClapperMediaItem
@@ -305,25 +293,24 @@ clapper_media_item_get_title (ClapperMediaItem *self)
   return title;
 }
 
-static gboolean
-clapper_media_item_take_container_format (ClapperMediaItem *self, gchar *container_format,
-    ClapperAppBus *app_bus)
+static inline gboolean
+_refresh_tag_prop_unlocked (ClapperMediaItem *self, const gchar *tag,
+    gboolean from_user, gchar **tag_ptr)
 {
-  gboolean changed;
+  const gchar *string;
 
-  GST_OBJECT_LOCK (self);
-  if ((changed = g_strcmp0 (self->container_format, container_format) != 0)) {
-    g_free (self->container_format);
-    self->container_format = container_format;
-  }
-  GST_OBJECT_UNLOCK (self);
+  if ((*tag_ptr && from_user) // if already set, user cannot modify it
+      || !gst_tag_list_peek_string_index (self->tags, tag, 0, &string) // guarantees non-empty string
+      || (g_strcmp0 (*tag_ptr, string) == 0))
+    return FALSE;
 
-  if (changed)
-    clapper_app_bus_post_prop_notify (app_bus, GST_OBJECT_CAST (self), param_specs[PROP_CONTAINER_FORMAT]);
-  else
-    g_free (container_format);
+  GST_LOG_OBJECT (self, "Tag prop \"%s\" update: \"%s\" -> \"%s\"",
+      tag, GST_STR_NULL (*tag_ptr), string);
 
-  return changed;
+  g_free (*tag_ptr);
+  *tag_ptr = g_strdup (string);
+
+  return TRUE;
 }
 
 /**
@@ -333,6 +320,8 @@ clapper_media_item_take_container_format (ClapperMediaItem *self, gchar *contain
  * Get media item container format.
  *
  * Returns: (transfer full) (nullable): media container format.
+ *
+ * Deprecated: 0.10: Get `container-format` from [property@Clapper.MediaItem:tags] instead.
  */
 gchar *
 clapper_media_item_get_container_format (ClapperMediaItem *self)
@@ -390,10 +379,206 @@ clapper_media_item_get_duration (ClapperMediaItem *self)
 }
 
 /**
+ * clapper_media_item_get_tags:
+ * @item: a #ClapperMediaItem
+ *
+ * Get readable list of tags stored in media item.
+ *
+ * Returns: (transfer full): a #GstTagList.
+ *
+ * Since: 0.10
+ */
+GstTagList *
+clapper_media_item_get_tags (ClapperMediaItem *self)
+{
+  GstTagList *tags = NULL;
+
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), NULL);
+
+  GST_OBJECT_LOCK (self);
+  tags = gst_tag_list_ref (self->tags);
+  GST_OBJECT_UNLOCK (self);
+
+  return tags;
+}
+
+static void
+_tags_replace_func (const GstTagList *tags, const gchar *tag, ClapperMediaItemTagIterData *data)
+{
+  ClapperMediaItem *self = data->item;
+  guint index = 0;
+  gboolean replace = FALSE;
+
+  while (TRUE) {
+    const GValue *old_value = gst_tag_list_get_value_index (self->tags, tag, index);
+    const GValue *new_value = gst_tag_list_get_value_index (tags, tag, index);
+
+    /* Number of old values is the same or greater and
+     * all values until this iteration were the same */
+    if (!new_value)
+      break;
+
+    /* A wild new tag appeared */
+    if (!old_value) {
+      replace = TRUE;
+      break;
+    }
+
+    /* Users can only set non-existing tags */
+    if (data->from_user)
+      break;
+
+    /* Check with tolerance for doubles */
+    if (G_VALUE_TYPE (old_value) == G_TYPE_DOUBLE
+        && G_VALUE_TYPE (new_value) == G_TYPE_DOUBLE) {
+      gdouble old_dbl, new_dbl;
+
+      old_dbl = g_value_get_double (old_value);
+      new_dbl = g_value_get_double (new_value);
+
+      if ((replace = !G_APPROX_VALUE (old_dbl, new_dbl, FLT_EPSILON)))
+        break;
+    } else if (gst_value_compare (old_value, new_value) != GST_VALUE_EQUAL) {
+      replace = TRUE;
+      break;
+    }
+
+    ++index;
+  }
+
+  if (replace) {
+    const GValue *value;
+    index = 0;
+
+    GST_LOG_OBJECT (self, "Replacing \"%s\" tag value", tag);
+
+    /* Ensure writable, but only when replacing something */
+    if (!data->changed) {
+      self->tags = gst_tag_list_make_writable (self->tags);
+      data->changed = TRUE;
+    }
+
+    /* Replace first tag value (so it becomes sole member) */
+    value = gst_tag_list_get_value_index (tags, tag, index);
+    gst_tag_list_add_value (self->tags, GST_TAG_MERGE_REPLACE, tag, value);
+
+    /* Append any remaining tags (so next time we iterate indexes will match) */
+    while ((value = gst_tag_list_get_value_index (tags, tag, ++index)))
+      gst_tag_list_add_value (self->tags, GST_TAG_MERGE_APPEND, tag, value);
+  }
+}
+
+static gboolean
+clapper_media_item_insert_tags_internal (ClapperMediaItem *self, const GstTagList *tags,
+    ClapperAppBus *app_bus, gboolean from_user)
+{
+  ClapperMediaItemTagIterData data;
+  gboolean title_changed = FALSE, cont_changed = FALSE;
+
+  GST_OBJECT_LOCK (self);
+
+  data.item = self;
+  data.changed = FALSE;
+  data.from_user = from_user;
+
+  if (G_LIKELY (tags != self->tags))
+    gst_tag_list_foreach (tags, (GstTagForeachFunc) _tags_replace_func, &data);
+
+  if (data.changed) {
+    title_changed = _refresh_tag_prop_unlocked (self, GST_TAG_TITLE,
+        from_user, &self->title);
+    cont_changed = _refresh_tag_prop_unlocked (self, GST_TAG_CONTAINER_FORMAT,
+        from_user, &self->container_format);
+  }
+
+  GST_OBJECT_UNLOCK (self);
+
+  if (!data.changed)
+    return FALSE;
+
+  if (app_bus) {
+    GstObject *src = GST_OBJECT_CAST (self);
+
+    clapper_app_bus_post_prop_notify (app_bus, src, param_specs[PROP_TAGS]);
+
+    if (title_changed)
+      clapper_app_bus_post_prop_notify (app_bus, src, param_specs[PROP_TITLE]);
+    if (cont_changed)
+      clapper_app_bus_post_prop_notify (app_bus, src, param_specs[PROP_CONTAINER_FORMAT]);
+  } else {
+    GObject *src = G_OBJECT (self);
+
+    clapper_utils_prop_notify_on_main_sync (src, param_specs[PROP_TAGS]);
+
+    if (title_changed)
+      clapper_utils_prop_notify_on_main_sync (src, param_specs[PROP_TITLE]);
+    if (cont_changed)
+      clapper_utils_prop_notify_on_main_sync (src, param_specs[PROP_CONTAINER_FORMAT]);
+  }
+
+  return TRUE;
+}
+
+/**
+ * clapper_media_item_populate_tags:
+ * @item: a #ClapperMediaItem
+ * @tags: a #GstTagList of GLOBAL scope
+ *
+ * Populate non-existing tags in @item tag list.
+ *
+ * Passed @tags must use [enum@Gst.TagScope.GLOBAL] scope.
+ *
+ * Note that tags are automatically determined during media playback
+ * and those take precedence. This function can be useful if an app can
+ * determine some tags that are not in media metadata or for filling
+ * item with some initial/cached tags to display in UI before playback.
+ *
+ * When a tag already exists in the tag list (was populated) this
+ * function will not overwrite it. If you really need to permanently
+ * override some tags in media, you can use `taginject` element as
+ * player video/audio filter instead.
+ *
+ * Returns: whether at least one tag got updated.
+ *
+ * Since: 0.10
+ */
+gboolean
+clapper_media_item_populate_tags (ClapperMediaItem *self, const GstTagList *tags)
+{
+  ClapperPlayer *player;
+  ClapperAppBus *app_bus = NULL;
+  gboolean changed;
+
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), FALSE);
+  g_return_val_if_fail (tags != NULL, FALSE);
+
+  if (G_UNLIKELY (gst_tag_list_get_scope (tags) != GST_TAG_SCOPE_GLOBAL)) {
+    g_warning ("Cannot populate media item tags using a list with non-global tag scope");
+    return FALSE;
+  }
+
+  if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self))))
+    app_bus = player->app_bus;
+
+  changed = clapper_media_item_insert_tags_internal (self, tags, app_bus, TRUE);
+
+  if (changed && player) {
+    ClapperFeaturesManager *features_manager;
+
+    if ((features_manager = clapper_player_get_features_manager (player)))
+      clapper_features_manager_trigger_item_updated (features_manager, self);
+  }
+
+  gst_clear_object (&player);
+
+  return changed;
+}
+
+/**
  * clapper_media_item_get_timeline:
  * @item: a #ClapperMediaItem
  *
- * Get the [class@Clapper.Timeline] assosiated with @item.
+ * Get the [class@Clapper.Timeline] associated with @item.
  *
  * Returns: (transfer none): a #ClapperTimeline of item.
  */
@@ -405,21 +590,6 @@ clapper_media_item_get_timeline (ClapperMediaItem *self)
   return self->timeline;
 }
 
-static gboolean
-clapper_media_item_update_from_container_tags (ClapperMediaItem *self, const GstTagList *tags,
-    ClapperAppBus *app_bus)
-{
-  gchar *string = NULL;
-  gboolean changed = FALSE;
-
-  if (gst_tag_list_get_string (tags, GST_TAG_CONTAINER_FORMAT, &string))
-    changed |= clapper_media_item_take_container_format (self, string, app_bus);
-  if (gst_tag_list_get_string (tags, GST_TAG_TITLE, &string))
-    changed |= clapper_media_item_take_title (self, string, app_bus);
-
-  return changed;
-}
-
 void
 clapper_media_item_update_from_tag_list (ClapperMediaItem *self, const GstTagList *tags,
     ClapperPlayer *player)
@@ -427,7 +597,7 @@ clapper_media_item_update_from_tag_list (ClapperMediaItem *self, const GstTagLis
   GstTagScope scope = gst_tag_list_get_scope (tags);
 
   if (scope == GST_TAG_SCOPE_GLOBAL) {
-    gboolean changed = clapper_media_item_update_from_container_tags (self, tags, player->app_bus);
+    gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE);
 
     if (changed) {
       ClapperFeaturesManager *features_manager;
@@ -459,7 +629,7 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
       GstDiscovererContainerInfo *cinfo = (GstDiscovererContainerInfo *) sinfo;
 
       if ((tags = gst_discoverer_container_info_get_tags (cinfo)))
-        changed |= clapper_media_item_update_from_container_tags (self, tags, player->app_bus);
+        changed |= clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE);
     }
     gst_discoverer_stream_info_unref (sinfo);
   }
@@ -542,6 +712,9 @@ clapper_media_item_get_used (ClapperMediaItem *self)
 static void
 clapper_media_item_init (ClapperMediaItem *self)
 {
+  self->tags = gst_tag_list_new_empty ();
+  gst_tag_list_set_scope (self->tags, GST_TAG_SCOPE_GLOBAL);
+
   self->timeline = clapper_timeline_new ();
   gst_object_set_parent (GST_OBJECT_CAST (self->timeline), GST_OBJECT_CAST (self));
 }
@@ -570,6 +743,8 @@ clapper_media_item_finalize (GObject *object)
   g_free (self->uri);
   g_free (self->title);
   g_free (self->container_format);
+
+  gst_tag_list_unref (self->tags);
 
   gst_object_unparent (GST_OBJECT_CAST (self->timeline));
   gst_object_unref (self->timeline);
@@ -616,6 +791,9 @@ clapper_media_item_get_property (GObject *object, guint prop_id,
       break;
     case PROP_SUBURI:
       g_value_take_string (value, clapper_media_item_get_suburi (self));
+      break;
+    case PROP_TAGS:
+      g_value_take_boxed (value, clapper_media_item_get_tags (self));
       break;
     case PROP_TITLE:
       g_value_take_string (value, clapper_media_item_get_title (self));
@@ -687,9 +865,26 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
       G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
+   * ClapperMediaItem:tags:
+   *
+   * A readable list of tags stored in media item.
+   *
+   * Since: 0.10
+   */
+  param_specs[PROP_TAGS] = g_param_spec_boxed ("tags",
+      NULL, NULL, GST_TYPE_TAG_LIST,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /* FIXME: 1.0: Consider rename to e.g. "(menu/display)-title"
+   * and also make it non-nullable (return URI as final fallback) */
+  /**
    * ClapperMediaItem:title:
    *
    * Media title.
+   *
+   * This might be a different string compared to `title` from
+   * [property@Clapper.MediaItem:tags], as this gives parsed
+   * title from file name/URI as fallback when no `title` tag.
    */
   param_specs[PROP_TITLE] = g_param_spec_string ("title",
       NULL, NULL, NULL,
@@ -699,15 +894,21 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
    * ClapperMediaItem:container-format:
    *
    * Media container format.
+   *
+   * Deprecated: 0.10: Get `container-format` from [property@Clapper.MediaItem:tags] instead.
    */
   param_specs[PROP_CONTAINER_FORMAT] = g_param_spec_string ("container-format",
       NULL, NULL, NULL,
-      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS | G_PARAM_DEPRECATED);
 
   /**
    * ClapperMediaItem:duration:
    *
    * Media duration as a decimal number in seconds.
+   *
+   * This might be a different value compared to `duration` from
+   * [property@Clapper.MediaItem:tags], as this value is updated
+   * during decoding instead of being a fixed value from metadata.
    */
   param_specs[PROP_DURATION] = g_param_spec_double ("duration",
       NULL, NULL, 0, G_MAXDOUBLE, 0,

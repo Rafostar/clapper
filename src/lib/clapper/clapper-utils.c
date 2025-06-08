@@ -39,6 +39,12 @@ typedef struct
   ClapperUtilsQueueAlterMethod method;
 } ClapperUtilsQueueAlterData;
 
+typedef struct
+{
+  GObject *object;
+  GParamSpec *pspec;
+} ClapperUtilsPropNotifyData;
+
 void
 clapper_utils_initialize (void)
 {
@@ -67,6 +73,27 @@ static void
 clapper_utils_queue_alter_data_free (ClapperUtilsQueueAlterData *data)
 {
   GST_TRACE ("Freeing queue alter data: %p", data);
+
+  g_free (data);
+}
+
+static ClapperUtilsPropNotifyData *
+clapper_utils_prop_notify_data_new (GObject *object, GParamSpec *pspec)
+{
+  ClapperUtilsPropNotifyData *data = g_new (ClapperUtilsPropNotifyData, 1);
+
+  data->object = object;
+  data->pspec = pspec;
+
+  GST_TRACE ("Created prop notify data: %p", data);
+
+  return data;
+}
+
+static void
+clapper_utils_prop_notify_data_free (ClapperUtilsPropNotifyData *data)
+{
+  GST_TRACE ("Freeing prop notify data: %p", data);
 
   g_free (data);
 }
@@ -106,6 +133,15 @@ clapper_utils_queue_alter_on_main (ClapperUtilsQueueAlterData *data)
       g_assert_not_reached ();
       break;
   }
+
+  return NULL;
+}
+
+static gpointer
+clapper_utils_prop_notify_on_main (ClapperUtilsPropNotifyData *data)
+{
+  GST_DEBUG ("Prop notify invoked");
+  g_object_notify_by_pspec (data->object, data->pspec);
 
   return NULL;
 }
@@ -153,6 +189,27 @@ clapper_utils_queue_clear_on_main_sync (ClapperQueue *queue)
   ClapperUtilsQueueAlterData *data = clapper_utils_queue_alter_data_new (queue,
       NULL, NULL, CLAPPER_UTILS_QUEUE_ALTER_CLEAR);
   clapper_utils_queue_alter_invoke_on_main_sync_take (data);
+}
+
+void
+clapper_utils_prop_notify_on_main_sync (GObject *object, GParamSpec *pspec)
+{
+  ClapperUtilsPropNotifyData *data;
+
+  if (g_main_context_is_owner (g_main_context_default ())) { // already in main thread
+    g_object_notify_by_pspec (object, pspec);
+    return;
+  }
+
+  data = clapper_utils_prop_notify_data_new (object, pspec);
+
+  GST_DEBUG ("Invoking prop notify on main...");
+
+  clapper_shared_utils_context_invoke_sync_full (g_main_context_default (),
+      (GThreadFunc) clapper_utils_prop_notify_on_main, data,
+      (GDestroyNotify) clapper_utils_prop_notify_data_free);
+
+  GST_DEBUG ("Prop notify invoke finished");
 }
 
 gchar *
