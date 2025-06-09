@@ -202,7 +202,6 @@ clapper_reactable_queue_clear_sync (ClapperReactable *self)
   ClapperQueue *queue;
 
   g_return_if_fail (CLAPPER_IS_REACTABLE (self));
-  g_return_if_fail (CLAPPER_IS_MEDIA_ITEM (item));
 
   CLAPPER_REACTABLE_DO_WITH_QUEUE (self, &queue, {
     clapper_utils_queue_clear_on_main_sync (queue);
