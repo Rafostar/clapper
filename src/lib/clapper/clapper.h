@@ -45,6 +45,7 @@
 #include <clapper/clapper-video-stream.h>
 
 #include <clapper/clapper-extractable.h>
+#include <clapper/clapper-reactable.h>
 
 #include <clapper/clapper-functionalities-availability.h>
 #include <clapper/features/clapper-features-availability.h>

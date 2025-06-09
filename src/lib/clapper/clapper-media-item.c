@@ -30,6 +30,7 @@
 #include "clapper-timeline-private.h"
 #include "clapper-player-private.h"
 #include "clapper-playbin-bus-private.h"
+#include "clapper-reactables-manager-private.h"
 #include "clapper-features-manager-private.h"
 #include "clapper-utils-private.h"
 
@@ -470,7 +471,7 @@ _tags_replace_func (const GstTagList *tags, const gchar *tag, ClapperMediaItemTa
 
 static gboolean
 clapper_media_item_insert_tags_internal (ClapperMediaItem *self, const GstTagList *tags,
-    ClapperAppBus *app_bus, gboolean from_user)
+    ClapperAppBus *app_bus, gboolean from_user, ClapperReactableItemUpdatedFlags *flags)
 {
   ClapperMediaItemTagIterData data;
   gboolean title_changed = FALSE, cont_changed = FALSE;
@@ -485,8 +486,12 @@ clapper_media_item_insert_tags_internal (ClapperMediaItem *self, const GstTagLis
     gst_tag_list_foreach (tags, (GstTagForeachFunc) _tags_replace_func, &data);
 
   if (data.changed) {
-    title_changed = _refresh_tag_prop_unlocked (self, GST_TAG_TITLE,
-        from_user, &self->title);
+    *flags |= CLAPPER_REACTABLE_ITEM_UPDATED_TAGS;
+
+    if ((title_changed = _refresh_tag_prop_unlocked (self, GST_TAG_TITLE,
+        from_user, &self->title))) {
+      *flags |= CLAPPER_REACTABLE_ITEM_UPDATED_TITLE;
+    }
     cont_changed = _refresh_tag_prop_unlocked (self, GST_TAG_CONTAINER_FORMAT,
         from_user, &self->container_format);
   }
@@ -547,6 +552,7 @@ clapper_media_item_populate_tags (ClapperMediaItem *self, const GstTagList *tags
 {
   ClapperPlayer *player;
   ClapperAppBus *app_bus = NULL;
+  ClapperReactableItemUpdatedFlags flags = 0;
   gboolean changed;
 
   g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), FALSE);
@@ -560,11 +566,13 @@ clapper_media_item_populate_tags (ClapperMediaItem *self, const GstTagList *tags
   if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self))))
     app_bus = player->app_bus;
 
-  changed = clapper_media_item_insert_tags_internal (self, tags, app_bus, TRUE);
+  changed = clapper_media_item_insert_tags_internal (self, tags, app_bus, TRUE, &flags);
 
   if (changed && player) {
     ClapperFeaturesManager *features_manager;
 
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self, flags);
     if ((features_manager = clapper_player_get_features_manager (player)))
       clapper_features_manager_trigger_item_updated (features_manager, self);
   }
@@ -597,11 +605,14 @@ clapper_media_item_update_from_tag_list (ClapperMediaItem *self, const GstTagLis
   GstTagScope scope = gst_tag_list_get_scope (tags);
 
   if (scope == GST_TAG_SCOPE_GLOBAL) {
-    gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE);
+    ClapperReactableItemUpdatedFlags flags = 0;
+    gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE, &flags);
 
     if (changed) {
       ClapperFeaturesManager *features_manager;
 
+      if (player->reactables_manager)
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self, flags);
       if ((features_manager = clapper_player_get_features_manager (player)))
         clapper_features_manager_trigger_item_updated (features_manager, self);
     }
@@ -614,6 +625,7 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
   ClapperPlayer *player;
   GstDiscovererStreamInfo *sinfo;
   GstClockTime duration;
+  ClapperReactableItemUpdatedFlags flags = 0;
   gdouble val_dbl;
   gboolean changed = FALSE;
 
@@ -629,7 +641,7 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
       GstDiscovererContainerInfo *cinfo = (GstDiscovererContainerInfo *) sinfo;
 
       if ((tags = gst_discoverer_container_info_get_tags (cinfo)))
-        changed |= clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE);
+        changed |= clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE, &flags);
     }
     gst_discoverer_stream_info_unref (sinfo);
   }
@@ -640,11 +652,16 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
     duration = 0;
 
   val_dbl = (gdouble) duration / GST_SECOND;
-  changed |= clapper_media_item_set_duration (self, val_dbl, player->app_bus);
+  if (clapper_media_item_set_duration (self, val_dbl, player->app_bus)) {
+    changed = TRUE;
+    flags |= CLAPPER_REACTABLE_ITEM_UPDATED_DURATION;
+  }
 
   if (changed) {
     ClapperFeaturesManager *features_manager;
 
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self, flags);
     if ((features_manager = clapper_player_get_features_manager (player)))
       clapper_features_manager_trigger_item_updated (features_manager, self);
   }

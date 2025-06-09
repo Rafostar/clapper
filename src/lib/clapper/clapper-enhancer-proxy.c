@@ -48,6 +48,9 @@
 #include "clapper-basic-functions.h"
 #include "clapper-cache-private.h"
 #include "clapper-extractable.h"
+#include "clapper-reactable.h"
+#include "clapper-player-private.h"
+#include "clapper-utils-private.h"
 #include "clapper-enums.h"
 
 #include "clapper-functionalities-availability.h"
@@ -454,7 +457,7 @@ clapper_enhancer_proxy_export_to_cache (ClapperEnhancerProxy *self)
 gboolean
 clapper_enhancer_proxy_fill_from_instance (ClapperEnhancerProxy *self, GObject *enhancer)
 {
-  GType enhancer_types[1] = { CLAPPER_TYPE_EXTRACTABLE };
+  const GType enhancer_types[] = { CLAPPER_TYPE_EXTRACTABLE, CLAPPER_TYPE_REACTABLE };
   GType *ifaces;
   GParamSpec **pspecs;
   GParamFlags enhancer_flags;
@@ -500,6 +503,18 @@ clapper_enhancer_proxy_get_peas_info (ClapperEnhancerProxy *self)
   return self->peas_info;
 }
 
+gboolean
+clapper_enhancer_proxy_has_locally_set (ClapperEnhancerProxy *self, const gchar *property_name)
+{
+  gboolean has_field;
+
+  GST_OBJECT_LOCK (self);
+  has_field = (self->local_config && gst_structure_has_field (self->local_config, property_name));
+  GST_OBJECT_UNLOCK (self);
+
+  return has_field;
+}
+
 static gboolean
 _apply_config_cb (GQuark field_id, const GValue *value, GObject *enhancer)
 {
@@ -527,6 +542,7 @@ clapper_enhancer_proxy_make_current_config (ClapperEnhancerProxy *self)
 
     /* Using "has_field", as set value might be %NULL */
     if ((pspec->flags & CLAPPER_ENHANCER_PARAM_LOCAL)
+        && self->local_config
         && gst_structure_has_field (self->local_config, pspec->name)) {
       if (!merged_config)
         merged_config = gst_structure_new_empty (CONFIG_STRUCTURE_NAME);
@@ -540,44 +556,13 @@ clapper_enhancer_proxy_make_current_config (ClapperEnhancerProxy *self)
       GVariant *def = g_settings_get_default_value (settings, pspec->name);
 
       if (!g_variant_equal (val, def)) {
-        if (!merged_config)
-          merged_config = gst_structure_new_empty (CONFIG_STRUCTURE_NAME);
+        GValue value = G_VALUE_INIT;
 
-        switch (pspec->value_type) {
-          case G_TYPE_BOOLEAN:
-            gst_structure_set (merged_config, pspec->name,
-                pspec->value_type, g_variant_get_boolean (val), NULL);
-            break;
-          case G_TYPE_INT:
-            gst_structure_set (merged_config, pspec->name,
-                pspec->value_type, g_variant_get_int32 (val), NULL);
-            break;
-          case G_TYPE_UINT:
-            gst_structure_set (merged_config, pspec->name,
-                pspec->value_type, g_variant_get_uint32 (val), NULL);
-            break;
-          case G_TYPE_DOUBLE:
-            gst_structure_set (merged_config, pspec->name,
-                pspec->value_type, g_variant_get_double (val), NULL);
-            break;
-          case G_TYPE_STRING:
-            gst_structure_set (merged_config, pspec->name,
-                pspec->value_type, g_variant_get_string (val, NULL), NULL);
-            break;
-          default:{
-            if (G_IS_PARAM_SPEC_ENUM (pspec)) {
-              gst_structure_set (merged_config, pspec->name,
-                  G_TYPE_INT, g_variant_get_int32 (val), NULL);
-              break;
-            } else if (G_IS_PARAM_SPEC_FLAGS (pspec)) {
-              gst_structure_set (merged_config, pspec->name,
-                  G_TYPE_UINT, g_variant_get_uint32 (val), NULL);
-              break;
-            }
-            GST_ERROR_OBJECT (self, "Unsupported enhancer \"%s\" setting type: %s",
-                pspec->name, g_type_name (pspec->value_type));
-            break;
-          }
+        if (G_LIKELY (clapper_utils_set_value_from_variant (&value, val))) {
+          if (!merged_config)
+            merged_config = gst_structure_new_empty (CONFIG_STRUCTURE_NAME);
+
+          gst_structure_take_value (merged_config, pspec->name, &value);
         }
       }
 
@@ -947,6 +932,20 @@ _structure_take_value_by_pspec (ClapperEnhancerProxy *self,
   return FALSE;
 }
 
+static void
+_trigger_reactable_configure_take (ClapperEnhancerProxy *self, GstStructure *structure)
+{
+  ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
+
+  if (G_LIKELY (player != NULL)) {
+    clapper_reactables_manager_trigger_configure_take_config (
+        player->reactables_manager, self, structure);
+    gst_object_unref (player);
+  } else {
+    gst_structure_free (structure);
+  }
+}
+
 /**
  * clapper_enhancer_proxy_set_locally:
  * @proxy: a #ClapperEnhancerProxy
@@ -1017,10 +1016,10 @@ clapper_enhancer_proxy_set_locally (ClapperEnhancerProxy *self, const gchar *fir
 
   _update_local_config_from_structure (self, structure);
 
-  /* TODO: _post_local_config instead of free if managed
-   * (for when managed interfaces are implemented) */
-
-  gst_structure_free (structure);
+  if (clapper_enhancer_proxy_target_has_interface (self, CLAPPER_TYPE_REACTABLE))
+    _trigger_reactable_configure_take (self, structure);
+  else
+    gst_structure_free (structure);
 }
 
 /**
@@ -1084,10 +1083,10 @@ clapper_enhancer_proxy_set_locally_with_table (ClapperEnhancerProxy *self, GHash
 
   _update_local_config_from_structure (self, structure);
 
-  /* TODO: _post_local_config instead of free if managed
-   * (for when managed interfaces are implemented) */
-
-  gst_structure_free (structure);
+  if (clapper_enhancer_proxy_target_has_interface (self, CLAPPER_TYPE_REACTABLE))
+    _trigger_reactable_configure_take (self, structure);
+  else
+    gst_structure_free (structure);
 }
 
 static void

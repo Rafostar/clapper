@@ -29,6 +29,8 @@
 #include "clapper-media-item-private.h"
 #include "clapper-player-private.h"
 #include "clapper-playbin-bus-private.h"
+#include "clapper-reactables-manager-private.h"
+#include "clapper-features-manager-private.h"
 
 #define CLAPPER_QUEUE_GET_REC_LOCK(obj) (&CLAPPER_QUEUE_CAST(obj)->rec_lock)
 #define CLAPPER_QUEUE_REC_LOCK(obj) g_rec_mutex_lock (CLAPPER_QUEUE_GET_REC_LOCK(obj))
@@ -132,15 +134,27 @@ _announce_model_update (ClapperQueue *self, guint index, guint removed, guint ad
   if (removed != added) {
     ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
 
-    if (player && clapper_player_get_have_features (player)) {
-      if (added == 1) // addition
-        clapper_features_manager_trigger_queue_item_added (player->features_manager, changed_item, index);
-      else if (removed == 1) // removal
-        clapper_features_manager_trigger_queue_item_removed (player->features_manager, changed_item, index);
-      else if (removed > 1 && added == 0) // queue cleared
-        clapper_features_manager_trigger_queue_cleared (player->features_manager);
-      else
+    if (player) {
+      gboolean have_features = clapper_player_get_have_features (player);
+
+      if (added == 1) { // addition
+        if (player->reactables_manager)
+          clapper_reactables_manager_trigger_queue_item_added (player->reactables_manager, changed_item, index);
+        if (have_features)
+          clapper_features_manager_trigger_queue_item_added (player->features_manager, changed_item, index);
+      } else if (removed == 1) { // removal
+        if (player->reactables_manager)
+          clapper_reactables_manager_trigger_queue_item_removed (player->reactables_manager, changed_item, index);
+        if (have_features)
+          clapper_features_manager_trigger_queue_item_removed (player->features_manager, changed_item, index);
+      } else if (removed > 1 && added == 0) { // queue cleared
+        if (player->reactables_manager)
+          clapper_reactables_manager_trigger_queue_cleared (player->reactables_manager);
+        if (have_features)
+          clapper_features_manager_trigger_queue_cleared (player->features_manager);
+      } else {
         g_assert_not_reached ();
+      }
     }
 
     gst_clear_object (&player);
@@ -160,6 +174,8 @@ _announce_reposition (ClapperQueue *self, guint before, guint after)
   GST_DEBUG_OBJECT (self, "Announcing item reposition: %u -> %u", before, after);
 
   if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self)))) {
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_queue_item_repositioned (player->reactables_manager, before, after);
     if (clapper_player_get_have_features (player))
       clapper_features_manager_trigger_queue_item_repositioned (player->features_manager, before, after);
 
@@ -989,6 +1005,8 @@ clapper_queue_set_progression_mode (ClapperQueue *self, ClapperQueueProgressionM
 
     clapper_app_bus_post_prop_notify (player->app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_PROGRESSION_MODE]);
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_queue_progression_changed (player->reactables_manager, mode);
     if (clapper_player_get_have_features (player))
       clapper_features_manager_trigger_queue_progression_changed (player->features_manager, mode);
 

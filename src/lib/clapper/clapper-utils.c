@@ -271,3 +271,59 @@ clapper_utils_title_from_uri (const gchar *uri)
 
   return title;
 }
+
+gboolean
+clapper_utils_set_value_from_variant (GValue *value, GVariant *variant)
+{
+  const gchar *var_type = g_variant_get_type_string (variant);
+  GType val_type;
+
+  switch (var_type[0]) {
+    case 'b':
+      val_type = G_TYPE_BOOLEAN;
+      break;
+    case 'i':
+      val_type = G_TYPE_INT;
+      break;
+    case 'u':
+      val_type = G_TYPE_UINT;
+      break;
+    case 'd':
+      val_type = G_TYPE_DOUBLE;
+      break;
+    case 's':
+      val_type = G_TYPE_STRING;
+      break;
+    default:
+      goto error;
+  }
+
+  g_value_init (value, val_type);
+
+  switch (val_type) {
+    case G_TYPE_BOOLEAN:
+      g_value_set_boolean (value, g_variant_get_boolean (variant));
+      break;
+    case G_TYPE_INT:
+      g_value_set_int (value, g_variant_get_int32 (variant));
+      break;
+    case G_TYPE_UINT:
+      g_value_set_uint (value, g_variant_get_uint32 (variant));
+      break;
+    case G_TYPE_DOUBLE:
+      g_value_set_double (value, g_variant_get_double (variant));
+      break;
+    case G_TYPE_STRING:
+      g_value_set_string (value, g_variant_get_string (variant, NULL));
+      break;
+    default:
+      g_assert_not_reached ();
+      break;
+  }
+
+  return TRUE;
+
+error:
+  GST_ERROR ("Unsupported conversion for variant type: %s", var_type);
+  return FALSE;
+}
