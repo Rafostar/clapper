@@ -271,7 +271,8 @@ clapper_reactables_manager_handle_event (ClapperReactablesManager *self, const G
       case _EVENT (ITEM_UPDATED):
         if (reactable_iface->item_updated) {
           reactable_iface->item_updated (data->reactable,
-              CLAPPER_MEDIA_ITEM_CAST (g_value_get_object (value)));
+              CLAPPER_MEDIA_ITEM_CAST (g_value_get_object (value)),
+              g_value_get_flags (extra_value));
         }
         break;
       case _EVENT (QUEUE_ITEM_ADDED):
@@ -428,9 +429,9 @@ clapper_reactables_manager_trigger_played_item_changed (ClapperReactablesManager
 }
 
 void
-clapper_reactables_manager_trigger_item_updated (ClapperReactablesManager *self, ClapperMediaItem *item)
+clapper_reactables_manager_trigger_item_updated (ClapperReactablesManager *self, ClapperMediaItem *item, ClapperReactableItemUpdatedFlags _flags)
 {
-  _BUS_POST_EVENT_SINGLE (_EVENT (ITEM_UPDATED), object, CLAPPER_TYPE_MEDIA_ITEM, item);
+  _BUS_POST_EVENT_DUAL (_EVENT (ITEM_UPDATED), object, CLAPPER_TYPE_MEDIA_ITEM, item, flags, CLAPPER_TYPE_REACTABLE_ITEM_UPDATED_FLAGS, _flags);
 }
 
 void

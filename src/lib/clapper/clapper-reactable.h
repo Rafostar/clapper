@@ -130,6 +130,7 @@ struct _ClapperReactableInterface
    * ClapperReactableInterface::item_updated:
    * @reactable: a #ClapperReactable
    * @item: a #ClapperMediaItem that was updated
+   * @flags: flags informing which properties were updated
    *
    * An item in queue got updated.
    *
@@ -140,7 +141,7 @@ struct _ClapperReactableInterface
    *
    * Since: 0.10
    */
-  void (* item_updated) (ClapperReactable *reactable, ClapperMediaItem *item);
+  void (* item_updated) (ClapperReactable *reactable, ClapperMediaItem *item, ClapperReactableItemUpdatedFlags flags);
 
   /**
    * ClapperReactableInterface::queue_item_added:

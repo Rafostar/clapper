@@ -113,8 +113,10 @@ clapper_timeline_post_item_updated (ClapperTimeline *self)
     if ((item = CLAPPER_MEDIA_ITEM_CAST (gst_object_get_parent (GST_OBJECT_CAST (self))))) {
       ClapperFeaturesManager *features_manager;
 
-      if (player->reactables_manager)
-        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, item);
+      if (player->reactables_manager) {
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, item,
+            CLAPPER_REACTABLE_ITEM_UPDATED_TIMELINE);
+      }
       if ((features_manager = clapper_player_get_features_manager (player)))
         clapper_features_manager_trigger_item_updated (features_manager, item);
 

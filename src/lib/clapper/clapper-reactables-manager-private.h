@@ -62,7 +62,7 @@ G_GNUC_INTERNAL
 void clapper_reactables_manager_trigger_played_item_changed (ClapperReactablesManager *manager, ClapperMediaItem *item);
 
 G_GNUC_INTERNAL
-void clapper_reactables_manager_trigger_item_updated (ClapperReactablesManager *manager, ClapperMediaItem *item);
+void clapper_reactables_manager_trigger_item_updated (ClapperReactablesManager *manager, ClapperMediaItem *item, ClapperReactableItemUpdatedFlags flags);
 
 G_GNUC_INTERNAL
 void clapper_reactables_manager_trigger_queue_item_added (ClapperReactablesManager *manager, ClapperMediaItem *item, guint index);

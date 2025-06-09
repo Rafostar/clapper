@@ -173,8 +173,10 @@ _update_current_duration (ClapperPlayer *player)
     if (clapper_media_item_set_duration (player->played_item, duration_dbl, player->app_bus)) {
       ClapperFeaturesManager *features_manager;
 
-      if (player->reactables_manager)
-        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, player->played_item);
+      if (player->reactables_manager) {
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, player->played_item,
+            CLAPPER_REACTABLE_ITEM_UPDATED_DURATION);
+      }
       if ((features_manager = clapper_player_get_features_manager (player)))
         clapper_features_manager_trigger_item_updated (features_manager, player->played_item);
     }
