@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-15 12:47+0100\n"
-"PO-Revision-Date: 2025-06-14 15:48\n"
+"PO-Revision-Date: 2025-06-14 17:10\n"
 "Last-Translator: \n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
@@ -20,30 +20,30 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Clapper"
-msgstr ""
+msgstr "كلابر"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Multimedia Player"
-msgstr ""
+msgstr "مشغل وسائط متعددة"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
 msgid "Play videos and music"
-msgstr ""
+msgstr "شغِّل الفيديوهات والموسيقى"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
-msgstr ""
+msgstr "الفيديوهات;الفيلم;الأفلام;المقطع;المقاطع;المسلسلات;المشغلات;قائمة تشغيل;DVD;دي في دي;التلفاز;القرص;Clapper;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "نافذة جديدة"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
 msgid "Codec"
-msgstr ""
+msgstr "المرماز"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
@@ -65,23 +65,23 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
 msgid "Language"
-msgstr ""
+msgstr "اللغة"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:189
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
 msgid "Preferences"
-msgstr "الإعدادات"
+msgstr "التفضيلات"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:193
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "اختصارات لوحة المفاتيح"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
 msgid "About Clapper"
-msgstr "حول Clapper"
+msgstr "عَنْ «كلابر»"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
@@ -90,19 +90,19 @@ msgstr "عام"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "نافذة جديدة"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
-msgstr ""
+msgstr "افتح التفضيلات"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Show shortcuts"
-msgstr "إظهار الاختصارات"
+msgstr "أظهِر الاختصارات"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Toggle fullscreen"
-msgstr "تبديل ملء الشاشة"
+msgstr "بدِّل ملء الشاشة"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
 msgid "Double tap | Double click"
@@ -122,7 +122,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Quit"
-msgstr "خروج"
+msgstr "اخرج"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:59
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
@@ -133,13 +133,13 @@ msgstr "الوسائط"
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
-msgstr ""
+msgstr "أضِف ملفات…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
-msgstr ""
+msgstr "أضِف URI…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:76
 msgid "Queue"
@@ -148,12 +148,12 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:80
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:87
 msgid "Next item"
-msgstr "المحتوى التالي"
+msgstr "العنصر التالي"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:94
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:101
 msgid "Previous item"
-msgstr "المحتوى السابق"
+msgstr "العنصر السابق"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 msgid "Change progression mode"
@@ -162,11 +162,11 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
 msgid "Playback"
-msgstr "المشغل"
+msgstr "التشغيل"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:118
 msgid "Toggle play"
-msgstr "بَدْءّ / إيقاف"
+msgstr "بدِّل التشغيل"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:119
 msgid "Tap | Left click"
@@ -175,7 +175,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:126
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:134
 msgid "Seek forward"
-msgstr "التقدم للأمام"
+msgstr "تقدَم للأمام"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:127
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:151
@@ -190,11 +190,11 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:142
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:150
 msgid "Seek backward"
-msgstr "الرجوع للوراء"
+msgstr "عُد للوراء"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Volume up"
-msgstr "رفع مستوى الصوت"
+msgstr "ارفع شدة الصوت"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
 msgid "Scroll up"
@@ -202,7 +202,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Volume down"
-msgstr "خفض مستوى الصوت"
+msgstr "اخفض شدة الصوت"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:165
 msgid "Scroll down"
@@ -210,7 +210,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Toggle mute"
-msgstr "كتم الصوت"
+msgstr "بدِّل الكتم"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Speed up"
@@ -232,7 +232,7 @@ msgstr "الفصل السابق"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
-msgstr ""
+msgstr "معلومات"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
@@ -309,11 +309,11 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr "الوضع"
+msgstr "السعي"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
-msgstr ""
+msgstr "الطريقة"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
@@ -349,15 +349,15 @@ msgstr "النسبة المئوية"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
 msgid "Features"
-msgstr ""
+msgstr "الميزات"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:66
 msgid "Server"
-msgstr "الخادم"
+msgstr "الخادوم"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Control player remotely"
-msgstr "التحكم بالوسائط عن بعد"
+msgstr "يتحكم بالوسائط عن بعد"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:83
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:103
@@ -374,7 +374,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
 msgid "Default font"
-msgstr "الخط الافتراضي"
+msgstr "الخط المبدئي"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Text font used for subtitles when media does not explicitly specify one"
@@ -382,15 +382,15 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:137
 msgid "Tweaks"
-msgstr "تعديلات"
+msgstr "التطويعات"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:144
 msgid "Plugin ranking"
-msgstr "أعدادات الإضافات"
+msgstr "منازل الملحقات"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Alter default ranks of GStreamer plugins"
-msgstr "تغيير الأعدادات الافتراضية للأضافات GStreamer"
+msgstr "يغيِّر المنازل المبدئية لملحقات GStreamer"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
 msgid "Plugin Ranking"
@@ -443,11 +443,11 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
 msgid "Enter or drop URI here"
-msgstr "أدخل أو الصق URI هنا"
+msgstr "أدخِل أو أسقِط URI هنا"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:22
 msgid "Cancel"
-msgstr "إلغاء"
+msgstr "ألغِ"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
@@ -464,7 +464,8 @@ msgstr ""
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-window.c:47
 msgid "translator-credits"
-msgstr "Yousef Fawaz"
+msgstr "Yousef Fawaz\n"
+"أحمد النجماوي <iramosu@protonmail.com>"
 
 #: src/bin/clapper-app/clapper-app-application.c:696
 msgid "Create a new window"
@@ -512,7 +513,7 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Hardware"
-msgstr ""
+msgstr "العتاد"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:86
 msgid "Software"
@@ -520,7 +521,7 @@ msgstr ""
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:441
 msgid "Accurate"
-msgstr "دَقيق"
+msgstr "دقيق"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:443
 msgid "Normal"
