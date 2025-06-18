@@ -93,7 +93,7 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
         clapper_enhancers_loader_create_enhancer (proxy, CLAPPER_TYPE_EXTRACTABLE));
 #endif
 
-    if (G_LIKELY (extractable != NULL)) {
+    if (extractable) {
       if (config)
         clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) extractable);
 

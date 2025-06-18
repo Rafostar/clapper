@@ -43,6 +43,8 @@ struct _ClapperReactablesManager
 
   GstBus *bus;
   GPtrArray *array;
+
+  gboolean prepare_called;
 };
 
 #define parent_class clapper_reactables_manager_parent_class
@@ -74,15 +76,13 @@ enum
 
 enum
 {
-  CLAPPER_REACTABLES_MANAGER_QUARK_PREPARE = 0,
-  CLAPPER_REACTABLES_MANAGER_QUARK_CONFIGURE,
+  CLAPPER_REACTABLES_MANAGER_QUARK_CONFIGURE = 0,
   CLAPPER_REACTABLES_MANAGER_QUARK_EVENT,
   CLAPPER_REACTABLES_MANAGER_QUARK_VALUE,
   CLAPPER_REACTABLES_MANAGER_QUARK_EXTRA_VALUE
 };
 
 static ClapperBusQuark _quarks[] = {
-  {"prepare", 0},
   {"configure", 0},
   {"event", 0},
   {"value", 0},
@@ -161,7 +161,7 @@ clapper_reactables_manager_handle_prepare (ClapperReactablesManager *self)
           clapper_enhancers_loader_create_enhancer (proxy, CLAPPER_TYPE_REACTABLE));
 #endif
 
-      if (G_LIKELY (reactable != NULL)) {
+      if (reactable) {
         ClapperReactableManagerData *data;
         GstStructure *config;
 
@@ -216,11 +216,9 @@ clapper_reactables_manager_handle_configure (ClapperReactablesManager *self, con
     if (data->proxy == proxy) {
       clapper_enhancer_proxy_apply_config_to_enhancer (data->proxy,
           config, (GObject *) data->reactable);
-      return;
+      break;
     }
   }
-
-  GST_ERROR_OBJECT (self, "Triggered configure, but no matching enhancer proxy found");
 }
 
 static inline void
@@ -319,9 +317,11 @@ _bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G_GNUC_UNUSE
     GQuark quark = gst_structure_get_name_id (structure);
 
     if (quark == _QUARK (EVENT)) {
+      if (G_UNLIKELY (!self->prepare_called)) {
+        clapper_reactables_manager_handle_prepare (self);
+        self->prepare_called = TRUE;
+      }
       clapper_reactables_manager_handle_event (self, structure);
-    } else if (quark == _QUARK (PREPARE)) {
-      clapper_reactables_manager_handle_prepare (self);
     } else if (quark == _QUARK (CONFIGURE)) {
       clapper_reactables_manager_handle_configure (self, structure);
     } else {
@@ -363,15 +363,6 @@ clapper_reactables_manager_new (void)
   gst_object_ref_sink (reactables_manager);
 
   return reactables_manager;
-}
-
-void
-clapper_reactables_manager_trigger_prepare (ClapperReactablesManager *self)
-{
-  GstStructure *structure = gst_structure_new_id_empty (_QUARK (PREPARE));
-
-  gst_bus_post (self->bus, gst_message_new_application (
-      GST_OBJECT_CAST (self), structure));
 }
 
 void

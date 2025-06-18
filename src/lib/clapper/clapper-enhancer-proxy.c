@@ -86,6 +86,8 @@ struct _ClapperEnhancerProxy
   ClapperEnhancerParamFlags scope;
   GstStructure *local_config;
 
+  gboolean allowed;
+
   /* GSettings are not thread-safe,
    * so store schema instead */
   GSettingsSchema *schema;
@@ -100,6 +102,7 @@ enum
   PROP_MODULE_DIR,
   PROP_DESCRIPTION,
   PROP_VERSION,
+  PROP_TARGET_CREATION_ALLOWED,
   PROP_LAST
 };
 
@@ -228,6 +231,8 @@ clapper_enhancer_proxy_copy (ClapperEnhancerProxy *src_proxy, const gchar *copy_
 
   if (src_proxy->local_config)
     copy->local_config = gst_structure_copy (src_proxy->local_config);
+
+  copy->allowed = src_proxy->allowed;
 
   GST_OBJECT_UNLOCK (src_proxy);
 
@@ -359,6 +364,8 @@ clapper_enhancer_proxy_fill_from_cache (ClapperEnhancerProxy *self)
       if (G_UNLIKELY ((self->ifaces[i] = clapper_cache_read_iface (&data)) == 0))
         goto abort_reading;
     }
+    /* Reactable type is always last */
+    self->allowed = (self->ifaces[self->n_ifaces - 1] != CLAPPER_TYPE_REACTABLE);
   }
 
   /* Restore ParamSpecs */
@@ -456,6 +463,7 @@ clapper_enhancer_proxy_export_to_cache (ClapperEnhancerProxy *self)
 gboolean
 clapper_enhancer_proxy_fill_from_instance (ClapperEnhancerProxy *self, GObject *enhancer)
 {
+  /* NOTE: REACTABLE must be last for "allowed" to work as expected */
   const GType enhancer_types[] = { CLAPPER_TYPE_EXTRACTABLE, CLAPPER_TYPE_REACTABLE };
   GType *ifaces;
   GParamSpec **pspecs;
@@ -465,9 +473,12 @@ clapper_enhancer_proxy_fill_from_instance (ClapperEnhancerProxy *self, GObject *
   /* Filter to only Clapper interfaces */
   ifaces = g_type_interfaces (G_OBJECT_TYPE (enhancer), &n);
   for (i = 0; i < n; ++i) {
-    for (j = 0; j < G_N_ELEMENTS (enhancer_types); ++j) {
+    const guint n_types = G_N_ELEMENTS (enhancer_types);
+
+    for (j = 0; j < n_types; ++j) {
       if (ifaces[i] == enhancer_types[j]) {
         ifaces[write_index++] = ifaces[i];
+        self->allowed = (j < n_types - 1);
         break; // match found, do next iface
       }
     }
@@ -1088,6 +1099,58 @@ clapper_enhancer_proxy_set_locally_with_table (ClapperEnhancerProxy *self, GHash
     gst_structure_free (structure);
 }
 
+/**
+ * clapper_enhancer_proxy_set_target_creation_allowed:
+ * @proxy: a #ClapperEnhancerProxy
+ * @allowed: whether allowed
+ *
+ * Set whether to allow instances of proxy target to be created.
+ *
+ * See [property@Clapper.EnhancerProxy:target-creation-allowed] for
+ * detailed descripton what this does.
+ *
+ * Since: 0.10
+ */
+void
+clapper_enhancer_proxy_set_target_creation_allowed (ClapperEnhancerProxy *self, gboolean allowed)
+{
+  gboolean changed;
+
+  g_return_if_fail (CLAPPER_IS_ENHANCER_PROXY (self));
+
+  GST_OBJECT_LOCK (self);
+  if ((changed = self->allowed != allowed))
+    self->allowed = allowed;
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed)
+    g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_TARGET_CREATION_ALLOWED]);
+}
+
+/**
+ * clapper_enhancer_proxy_get_target_creation_allowed:
+ * @proxy: a #ClapperEnhancerProxy
+ *
+ * Get whether it is allowed to create instances of enhancer that this proxy targets.
+ *
+ * Returns: whether target creation is allowed.
+ *
+ * Since: 0.10
+ */
+gboolean
+clapper_enhancer_proxy_get_target_creation_allowed (ClapperEnhancerProxy *self)
+{
+  gboolean allowed;
+
+  g_return_val_if_fail (CLAPPER_IS_ENHANCER_PROXY (self), FALSE);
+
+  GST_OBJECT_LOCK (self);
+  allowed = self->allowed;
+  GST_OBJECT_UNLOCK (self);
+
+  return allowed;
+}
+
 static void
 clapper_enhancer_proxy_init (ClapperEnhancerProxy *self)
 {
@@ -1137,6 +1200,25 @@ clapper_enhancer_proxy_get_property (GObject *object, guint prop_id,
     case PROP_VERSION:
       g_value_set_string (value, clapper_enhancer_proxy_get_version (self));
       break;
+    case PROP_TARGET_CREATION_ALLOWED:
+      g_value_set_boolean (value, clapper_enhancer_proxy_get_target_creation_allowed (self));
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+  }
+}
+
+static void
+clapper_enhancer_proxy_set_property (GObject *object, guint prop_id,
+    const GValue *value, GParamSpec *pspec)
+{
+  ClapperEnhancerProxy *self = CLAPPER_ENHANCER_PROXY_CAST (object);
+
+  switch (prop_id) {
+    case PROP_TARGET_CREATION_ALLOWED:
+      clapper_enhancer_proxy_set_target_creation_allowed (self, g_value_get_boolean (value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -1152,6 +1234,7 @@ clapper_enhancer_proxy_class_init (ClapperEnhancerProxyClass *klass)
       "Clapper Enhancer Proxy");
 
   gobject_class->get_property = clapper_enhancer_proxy_get_property;
+  gobject_class->set_property = clapper_enhancer_proxy_set_property;
   gobject_class->finalize = clapper_enhancer_proxy_finalize;
 
   /**
@@ -1208,6 +1291,30 @@ clapper_enhancer_proxy_class_init (ClapperEnhancerProxyClass *klass)
   param_specs[PROP_VERSION] = g_param_spec_string ("version",
       NULL, NULL, NULL,
       G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * ClapperEnhancerProxy:target-creation-allowed:
+   *
+   * Whether to allow instances of proxy target to be created.
+   *
+   * This effectively means whether the given enhancer can be used.
+   *
+   * By default all enhancers that work on-demand such as [iface@Clapper.Extractable]
+   * are allowed while enhancers implementing [iface@Clapper.Reactable] are not.
+   *
+   * Value of this property from a `GLOBAL` [class@Clapper.EnhancerProxyList] will carry
+   * over to all newly created [class@Clapper.Player] objects, while altering this on
+   * `LOCAL` proxy list will only influence given player instance that list belongs to.
+   *
+   * Changing this property will not remove already created enhancer instances, thus
+   * it is usually best practice to allow/disallow creation of given enhancer plugin
+   * right after [class@Clapper.Player] is created (before it or its queue are used).
+   *
+   * Since: 0.10
+   */
+  param_specs[PROP_TARGET_CREATION_ALLOWED] = g_param_spec_boolean ("target-creation-allowed",
+      NULL, NULL, FALSE,
+      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 }
