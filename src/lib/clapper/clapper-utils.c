@@ -17,6 +17,7 @@
  */
 
 #include "clapper-utils-private.h"
+#include "clapper-timeline-private.h"
 #include "../shared/clapper-shared-utils-private.h"
 
 #define GST_CAT_DEFAULT clapper_utils_debug
@@ -24,19 +25,21 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 typedef enum
 {
-  CLAPPER_UTILS_QUEUE_ALTER_APPEND = 1,
-  CLAPPER_UTILS_QUEUE_ALTER_INSERT,
-  CLAPPER_UTILS_QUEUE_ALTER_REMOVE,
-  CLAPPER_UTILS_QUEUE_ALTER_CLEAR
-} ClapperUtilsQueueAlterMethod;
+  CLAPPER_UTILS_LIST_ALTER_QUEUE_APPEND = 1,
+  CLAPPER_UTILS_LIST_ALTER_QUEUE_INSERT,
+  CLAPPER_UTILS_LIST_ALTER_QUEUE_REMOVE,
+  CLAPPER_UTILS_LIST_ALTER_QUEUE_CLEAR,
+  CLAPPER_UTILS_LIST_ALTER_TIMELINE_INSERT,
+  CLAPPER_UTILS_LIST_ALTER_TIMELINE_REMOVE
+} ClapperUtilsListAlterMethod;
 
 typedef struct
 {
-  ClapperQueue *queue;
-  ClapperMediaItem *item;
-  ClapperMediaItem *after_item;
-  ClapperUtilsQueueAlterMethod method;
-} ClapperUtilsQueueAlterData;
+  GListModel *list;
+  GObject *item;
+  GObject *after_item;
+  ClapperUtilsListAlterMethod method;
+} ClapperUtilsListAlterData;
 
 typedef struct
 {
@@ -51,27 +54,26 @@ clapper_utils_initialize (void)
       "Clapper Utilities");
 }
 
-static ClapperUtilsQueueAlterData *
-clapper_utils_queue_alter_data_new (ClapperQueue *queue,
-    ClapperMediaItem *item, ClapperMediaItem *after_item,
-    ClapperUtilsQueueAlterMethod method)
+static ClapperUtilsListAlterData *
+clapper_utils_list_alter_data_new (GListModel *list, GObject *item,
+    GObject *after_item, ClapperUtilsListAlterMethod method)
 {
-  ClapperUtilsQueueAlterData *data = g_new (ClapperUtilsQueueAlterData, 1);
+  ClapperUtilsListAlterData *data = g_new (ClapperUtilsListAlterData, 1);
 
-  data->queue = queue;
+  data->list = list;
   data->item = item;
   data->after_item = after_item;
   data->method = method;
 
-  GST_TRACE ("Created queue alter data: %p", data);
+  GST_TRACE ("Created list alter data: %p", data);
 
   return data;
 }
 
 static void
-clapper_utils_queue_alter_data_free (ClapperUtilsQueueAlterData *data)
+clapper_utils_list_alter_data_free (ClapperUtilsListAlterData *data)
 {
-  GST_TRACE ("Freeing queue alter data: %p", data);
+  GST_TRACE ("Freeing list alter data: %p", data);
 
   g_free (data);
 }
@@ -98,35 +100,48 @@ clapper_utils_prop_notify_data_free (ClapperUtilsPropNotifyData *data)
 }
 
 static gpointer
-clapper_utils_queue_alter_on_main (ClapperUtilsQueueAlterData *data)
+clapper_utils_list_alter_on_main (ClapperUtilsListAlterData *data)
 {
   GST_DEBUG ("Queue alter invoked");
 
   switch (data->method) {
-    case CLAPPER_UTILS_QUEUE_ALTER_APPEND:
-      clapper_queue_add_item (data->queue, data->item);
+    case CLAPPER_UTILS_LIST_ALTER_QUEUE_APPEND:
+      clapper_queue_add_item (CLAPPER_QUEUE_CAST (data->list),
+          CLAPPER_MEDIA_ITEM_CAST (data->item));
       break;
-    case CLAPPER_UTILS_QUEUE_ALTER_INSERT:{
+    case CLAPPER_UTILS_LIST_ALTER_QUEUE_INSERT:{
       guint index;
 
       /* If we have "after_item" then we need to insert after it, otherwise prepend */
       if (data->after_item) {
-        if (clapper_queue_find_item (data->queue, data->after_item, &index))
+        if (clapper_queue_find_item (CLAPPER_QUEUE_CAST (data->list),
+              CLAPPER_MEDIA_ITEM_CAST (data->after_item), &index)) {
           index++;
-        else // If not found, just append at the end
-          index = -1;
+        } else {
+          index = -1; // if not found, just append at the end
+        }
       } else {
         index = 0;
       }
 
-      clapper_queue_insert_item (data->queue, data->item, index);
+      clapper_queue_insert_item (CLAPPER_QUEUE_CAST (data->list),
+          CLAPPER_MEDIA_ITEM_CAST (data->item), index);
       break;
     }
-    case CLAPPER_UTILS_QUEUE_ALTER_REMOVE:
-      clapper_queue_remove_item (data->queue, data->item);
+    case CLAPPER_UTILS_LIST_ALTER_QUEUE_REMOVE:
+      clapper_queue_remove_item (CLAPPER_QUEUE_CAST (data->list),
+          CLAPPER_MEDIA_ITEM_CAST (data->item));
       break;
-    case CLAPPER_UTILS_QUEUE_ALTER_CLEAR:
-      clapper_queue_clear (data->queue);
+    case CLAPPER_UTILS_LIST_ALTER_QUEUE_CLEAR:
+      clapper_queue_clear (CLAPPER_QUEUE_CAST (data->list));
+      break;
+    case CLAPPER_UTILS_LIST_ALTER_TIMELINE_INSERT:
+      clapper_timeline_insert_marker_internal (CLAPPER_TIMELINE_CAST (data->list),
+          CLAPPER_MARKER_CAST (data->item));
+      break;
+    case CLAPPER_UTILS_LIST_ALTER_TIMELINE_REMOVE:
+      clapper_timeline_remove_marker_internal (CLAPPER_TIMELINE_CAST (data->list),
+          CLAPPER_MARKER_CAST (data->item));
       break;
     default:
       g_assert_not_reached ();
@@ -146,13 +161,13 @@ clapper_utils_prop_notify_on_main (ClapperUtilsPropNotifyData *data)
 }
 
 static inline void
-clapper_utils_queue_alter_invoke_on_main_sync_take (ClapperUtilsQueueAlterData *data)
+clapper_utils_list_alter_invoke_on_main_sync_take (ClapperUtilsListAlterData *data)
 {
   GST_DEBUG ("Invoking queue alter on main...");
 
   clapper_shared_utils_context_invoke_sync_full (g_main_context_default (),
-      (GThreadFunc) clapper_utils_queue_alter_on_main, data,
-      (GDestroyNotify) clapper_utils_queue_alter_data_free);
+      (GThreadFunc) clapper_utils_list_alter_on_main, data,
+      (GDestroyNotify) clapper_utils_list_alter_data_free);
 
   GST_DEBUG ("Queue alter invoke finished");
 }
@@ -160,34 +175,56 @@ clapper_utils_queue_alter_invoke_on_main_sync_take (ClapperUtilsQueueAlterData *
 void
 clapper_utils_queue_append_on_main_sync (ClapperQueue *queue, ClapperMediaItem *item)
 {
-  ClapperUtilsQueueAlterData *data = clapper_utils_queue_alter_data_new (queue,
-      item, NULL, CLAPPER_UTILS_QUEUE_ALTER_APPEND);
-  clapper_utils_queue_alter_invoke_on_main_sync_take (data);
+  ClapperUtilsListAlterData *data = clapper_utils_list_alter_data_new (
+      (GListModel *) queue, (GObject *) item, NULL,
+      CLAPPER_UTILS_LIST_ALTER_QUEUE_APPEND);
+  clapper_utils_list_alter_invoke_on_main_sync_take (data);
 }
 
 void
 clapper_utils_queue_insert_on_main_sync (ClapperQueue *queue,
     ClapperMediaItem *item, ClapperMediaItem *after_item)
 {
-  ClapperUtilsQueueAlterData *data = clapper_utils_queue_alter_data_new (queue,
-      item, after_item, CLAPPER_UTILS_QUEUE_ALTER_INSERT);
-  clapper_utils_queue_alter_invoke_on_main_sync_take (data);
+  ClapperUtilsListAlterData *data = clapper_utils_list_alter_data_new (
+      (GListModel *) queue, (GObject *) item, (GObject *) after_item,
+      CLAPPER_UTILS_LIST_ALTER_QUEUE_INSERT);
+  clapper_utils_list_alter_invoke_on_main_sync_take (data);
 }
 
 void
 clapper_utils_queue_remove_on_main_sync (ClapperQueue *queue, ClapperMediaItem *item)
 {
-  ClapperUtilsQueueAlterData *data = clapper_utils_queue_alter_data_new (queue,
-      item, NULL, CLAPPER_UTILS_QUEUE_ALTER_REMOVE);
-  clapper_utils_queue_alter_invoke_on_main_sync_take (data);
+  ClapperUtilsListAlterData *data = clapper_utils_list_alter_data_new (
+      (GListModel *) queue, (GObject *) item, NULL,
+      CLAPPER_UTILS_LIST_ALTER_QUEUE_REMOVE);
+  clapper_utils_list_alter_invoke_on_main_sync_take (data);
 }
 
 void
 clapper_utils_queue_clear_on_main_sync (ClapperQueue *queue)
 {
-  ClapperUtilsQueueAlterData *data = clapper_utils_queue_alter_data_new (queue,
-      NULL, NULL, CLAPPER_UTILS_QUEUE_ALTER_CLEAR);
-  clapper_utils_queue_alter_invoke_on_main_sync_take (data);
+  ClapperUtilsListAlterData *data = clapper_utils_list_alter_data_new (
+      (GListModel *) queue, NULL, NULL,
+      CLAPPER_UTILS_LIST_ALTER_QUEUE_CLEAR);
+  clapper_utils_list_alter_invoke_on_main_sync_take (data);
+}
+
+void
+clapper_utils_timeline_insert_on_main_sync (ClapperTimeline *timeline, ClapperMarker *marker)
+{
+  ClapperUtilsListAlterData *data = clapper_utils_list_alter_data_new (
+      (GListModel *) timeline, (GObject *) marker, NULL,
+      CLAPPER_UTILS_LIST_ALTER_TIMELINE_INSERT);
+  clapper_utils_list_alter_invoke_on_main_sync_take (data);
+}
+
+void
+clapper_utils_timeline_remove_on_main_sync (ClapperTimeline *timeline, ClapperMarker *marker)
+{
+  ClapperUtilsListAlterData *data = clapper_utils_list_alter_data_new (
+      (GListModel *) timeline, (GObject *) marker, NULL,
+      CLAPPER_UTILS_LIST_ALTER_TIMELINE_REMOVE);
+  clapper_utils_list_alter_invoke_on_main_sync_take (data);
 }
 
 void

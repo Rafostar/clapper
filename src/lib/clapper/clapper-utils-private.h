@@ -26,6 +26,8 @@
 #include "clapper-utils.h"
 #include "clapper-queue.h"
 #include "clapper-media-item.h"
+#include "clapper-timeline.h"
+#include "clapper-marker.h"
 
 G_BEGIN_DECLS
 
@@ -43,6 +45,12 @@ void clapper_utils_queue_remove_on_main_sync (ClapperQueue *queue, ClapperMediaI
 
 G_GNUC_INTERNAL
 void clapper_utils_queue_clear_on_main_sync (ClapperQueue *queue);
+
+G_GNUC_INTERNAL
+void clapper_utils_timeline_insert_on_main_sync (ClapperTimeline *timeline, ClapperMarker *marker);
+
+G_GNUC_INTERNAL
+void clapper_utils_timeline_remove_on_main_sync (ClapperTimeline *timeline, ClapperMarker *marker);
 
 G_GNUC_INTERNAL
 void clapper_utils_prop_notify_on_main_sync (GObject *object, GParamSpec *pspec);

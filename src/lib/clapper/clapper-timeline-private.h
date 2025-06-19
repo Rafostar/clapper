@@ -34,4 +34,10 @@ gboolean clapper_timeline_set_toc (ClapperTimeline *timeline, GstToc *toc, gbool
 G_GNUC_INTERNAL
 void clapper_timeline_refresh (ClapperTimeline *timeline);
 
+G_GNUC_INTERNAL
+void clapper_timeline_insert_marker_internal (ClapperTimeline *timeline, ClapperMarker *marker);
+
+G_GNUC_INTERNAL
+void clapper_timeline_remove_marker_internal (ClapperTimeline *timeline, ClapperMarker *marker);
+
 G_END_DECLS
