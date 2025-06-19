@@ -31,8 +31,10 @@
 gint
 main (gint argc, gchar **argv)
 {
-  const gchar *clapper_ldir;
   GApplication *application;
+  ClapperEnhancerProxyList *proxies;
+  const gchar *clapper_ldir;
+  guint i, n_proxies;
   gint status;
 
 #ifdef G_OS_WIN32
@@ -63,6 +65,15 @@ main (gint argc, gchar **argv)
   clapper_app_utils_win_enforce_hi_res_clock ();
   resolution = clapper_app_utils_win_hi_res_clock_start ();
 #endif
+
+  proxies = clapper_get_global_enhancer_proxies ();
+  n_proxies = clapper_enhancer_proxy_list_get_n_proxies (proxies);
+
+  /* Allow usage of all enhancers */
+  for (i = 0; i < n_proxies; ++i) {
+    ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (proxies, i);
+    clapper_enhancer_proxy_set_target_creation_allowed (proxy, TRUE);
+  }
 
   application = clapper_app_application_new ();
 
