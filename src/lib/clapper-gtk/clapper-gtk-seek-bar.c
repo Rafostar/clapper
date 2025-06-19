@@ -395,6 +395,47 @@ _update_duration_label (ClapperGtkSeekBar *self, gdouble duration)
   gtk_adjustment_set_upper (adjustment, duration);
 }
 
+static gboolean
+_find_marks_in_widget (GtkWidget *widget, GtkWidget **top_marks, GtkWidget **bottom_marks)
+{
+  GtkWidget *child;
+
+  if (g_strcmp0 (gtk_widget_get_css_name (widget), "marks") == 0) {
+    if (gtk_widget_has_css_class (widget, "top"))
+      *top_marks = widget;
+    else if (gtk_widget_has_css_class (widget, "bottom"))
+      *bottom_marks = widget;
+
+    /* Its unexpected to have marks within marks,
+     * so do not iterate children of marks widget */
+    return (*top_marks && *bottom_marks);
+  }
+
+  child = gtk_widget_get_first_child (widget);
+
+  while (child != NULL) {
+    if (_find_marks_in_widget (child, top_marks, bottom_marks))
+      return TRUE;
+
+    child = gtk_widget_get_next_sibling (child);
+  }
+
+  return FALSE;
+}
+
+static gboolean
+_find_last_mark_in_marks (GtkWidget *marks, GtkWidget **last_mark)
+{
+  GtkWidget *widget = gtk_widget_get_last_child (marks);
+
+  if (widget && g_strcmp0 (gtk_widget_get_css_name (widget), "mark") == 0) {
+    *last_mark = widget;
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 static void
 _update_scale_marks (ClapperGtkSeekBar *self, ClapperTimeline *timeline)
 {
@@ -423,10 +464,42 @@ _update_scale_marks (ClapperGtkSeekBar *self, ClapperTimeline *timeline)
 
   for (i = 0; i < n_markers; ++i) {
     ClapperMarker *marker = clapper_timeline_get_marker (timeline, i);
+    ClapperMarkerType marker_type = clapper_marker_get_marker_type (marker);
     gdouble start = clapper_marker_get_start (marker);
 
     gtk_scale_add_mark (GTK_SCALE (self->scale), start, GTK_POS_TOP, NULL);
     gtk_scale_add_mark (GTK_SCALE (self->scale), start, GTK_POS_BOTTOM, NULL);
+
+    if (marker_type >= CLAPPER_MARKER_TYPE_CUSTOM_1) {
+      GtkWidget *top_marks = NULL, *bottom_marks = NULL;
+      GtkWidget *top_mark = NULL, *bottom_mark = NULL;
+
+      if (_find_marks_in_widget (self->scale, &top_marks, &bottom_marks)
+          && _find_last_mark_in_marks (top_marks, &top_mark)
+          && _find_last_mark_in_marks (bottom_marks, &bottom_mark)) {
+        const gchar *custom_name;
+
+        switch (marker_type) {
+          case CLAPPER_MARKER_TYPE_CUSTOM_1:
+            custom_name = "custom1";
+            break;
+          case CLAPPER_MARKER_TYPE_CUSTOM_2:
+            custom_name = "custom2";
+            break;
+          case CLAPPER_MARKER_TYPE_CUSTOM_3:
+            custom_name = "custom3";
+            break;
+          default:
+            custom_name = NULL;
+            break;
+        }
+
+        if (G_LIKELY (custom_name != NULL)) {
+          gtk_widget_add_css_class (top_mark, custom_name);
+          gtk_widget_add_css_class (bottom_mark, custom_name);
+        }
+      }
+    }
 
     gst_object_unref (marker);
   }
