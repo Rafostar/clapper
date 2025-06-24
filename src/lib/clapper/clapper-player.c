@@ -2339,8 +2339,6 @@ clapper_player_init (ClapperPlayer *self)
   if (clapper_enhancer_proxy_list_has_proxy_with_interface (self->enhancer_proxies, CLAPPER_TYPE_REACTABLE)) {
     self->reactables_manager = clapper_reactables_manager_new ();
     gst_object_set_parent (GST_OBJECT_CAST (self->reactables_manager), GST_OBJECT_CAST (self));
-
-    clapper_reactables_manager_trigger_prepare (self->reactables_manager);
   }
 
   self->position_query = gst_query_new_position (GST_FORMAT_TIME);

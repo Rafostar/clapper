@@ -54,6 +54,28 @@ _import_enhancers (const gchar *enhancers_path)
   g_strfreev (dir_paths);
 }
 
+static GObject *
+_force_create_enhancer (ClapperEnhancerProxy *proxy, GType iface_type)
+{
+  GObject *enhancer = NULL;
+  PeasPluginInfo *info = (PeasPluginInfo *) clapper_enhancer_proxy_get_peas_info (proxy);
+
+  g_mutex_lock (&load_lock);
+
+  if (!peas_plugin_info_is_loaded (info) && !peas_engine_load_plugin (_engine, info)) {
+    GST_ERROR ("Could not load enhancer: %s", peas_plugin_info_get_module_name (info));
+  } else if (!peas_engine_provides_extension (_engine, info, iface_type)) {
+    GST_LOG ("No \"%s\" enhancer in module: %s", g_type_name (iface_type),
+        peas_plugin_info_get_module_name (info));
+  } else {
+    enhancer = peas_engine_create_extension (_engine, info, iface_type, NULL);
+  }
+
+  g_mutex_unlock (&load_lock);
+
+  return enhancer;
+}
+
 /*
  * clapper_enhancers_loader_initialize:
  *
@@ -155,7 +177,7 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
 
       /* We cannot ask libpeas for "any" of our main interfaces, so try each one until found */
       for (j = 0; j < G_N_ELEMENTS (main_types); ++j) {
-        if ((enhancer = clapper_enhancers_loader_create_enhancer (proxy, main_types[j]))) {
+        if ((enhancer = _force_create_enhancer (proxy, main_types[j]))) {
           filled = clapper_enhancer_proxy_fill_from_instance (proxy, enhancer);
           g_object_unref (enhancer);
 
@@ -200,21 +222,8 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
 GObject *
 clapper_enhancers_loader_create_enhancer (ClapperEnhancerProxy *proxy, GType iface_type)
 {
-  GObject *enhancer = NULL;
-  PeasPluginInfo *info = (PeasPluginInfo *) clapper_enhancer_proxy_get_peas_info (proxy);
+  if (!clapper_enhancer_proxy_get_target_creation_allowed (proxy))
+    return NULL;
 
-  g_mutex_lock (&load_lock);
-
-  if (!peas_plugin_info_is_loaded (info) && !peas_engine_load_plugin (_engine, info)) {
-    GST_ERROR ("Could not load enhancer: %s", peas_plugin_info_get_module_name (info));
-  } else if (!peas_engine_provides_extension (_engine, info, iface_type)) {
-    GST_LOG ("No \"%s\" enhancer in module: %s", g_type_name (iface_type),
-        peas_plugin_info_get_module_name (info));
-  } else {
-    enhancer = peas_engine_create_extension (_engine, info, iface_type, NULL);
-  }
-
-  g_mutex_unlock (&load_lock);
-
-  return enhancer;
+  return _force_create_enhancer (proxy, iface_type);
 }

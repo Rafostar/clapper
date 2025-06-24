@@ -76,4 +76,10 @@ void clapper_enhancer_proxy_set_locally (ClapperEnhancerProxy *proxy, const gcha
 CLAPPER_API
 void clapper_enhancer_proxy_set_locally_with_table (ClapperEnhancerProxy *proxy, GHashTable *table);
 
+CLAPPER_API
+void clapper_enhancer_proxy_set_target_creation_allowed (ClapperEnhancerProxy *proxy, gboolean allowed);
+
+CLAPPER_API
+gboolean clapper_enhancer_proxy_get_target_creation_allowed (ClapperEnhancerProxy *proxy);
+
 G_END_DECLS

@@ -37,9 +37,6 @@ G_GNUC_INTERNAL
 ClapperReactablesManager * clapper_reactables_manager_new (void);
 
 G_GNUC_INTERNAL
-void clapper_reactables_manager_trigger_prepare (ClapperReactablesManager *manager);
-
-G_GNUC_INTERNAL
 void clapper_reactables_manager_trigger_configure_take_config (ClapperReactablesManager *manager, ClapperEnhancerProxy *proxy, GstStructure *config);
 
 G_GNUC_INTERNAL
