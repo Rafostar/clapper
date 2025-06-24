@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.EnhancerProxy.set_locally</title>
+  <title>Clapper.EnhancerProxy.get_target_creation_allowed</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.EnhancerProxy.set_locally"/>
-  <meta priority="og:description" content="Reference for Clapper.EnhancerProxy.set_locally"/>
-  <meta name="twitter:title" content="Clapper.EnhancerProxy.set_locally"/>
-  <meta name="twitter:description" content="Reference for Clapper.EnhancerProxy.set_locally"/>
+  <meta priority="og:title" content="Clapper.EnhancerProxy.get_target_creation_allowed"/>
+  <meta priority="og:description" content="Reference for Clapper.EnhancerProxy.get_target_creation_allowed"/>
+  <meta name="twitter:title" content="Clapper.EnhancerProxy.get_target_creation_allowed"/>
+  <meta name="twitter:description" content="Reference for Clapper.EnhancerProxy.get_target_creation_allowed"/>
 
 
   
@@ -103,7 +103,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.EnhancerProxy.get_settings.html">get_settings</a>
   
-    <a class="method" href="method.EnhancerProxy.get_target_creation_allowed.html">get_target_creation_allowed</a>
+    <a class="method current" href="method.EnhancerProxy.get_target_creation_allowed.html">get_target_creation_allowed</a>
   
     <a class="method" href="method.EnhancerProxy.get_target_interfaces.html">get_target_interfaces</a>
   
@@ -111,7 +111,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.EnhancerProxy.get_version.html">get_version</a>
   
-    <a class="method current" href="method.EnhancerProxy.set_locally.html">set_locally</a>
+    <a class="method" href="method.EnhancerProxy.set_locally.html">set_locally</a>
   
     <a class="method" href="method.EnhancerProxy.set_locally_with_table.html">set_locally_with_table</a>
   
@@ -133,7 +133,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.EnhancerProxy.html">EnhancerProxy</a><span class="sep"></span>set_locally</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.EnhancerProxy.html">EnhancerProxy</a><span class="sep"></span>get_target_creation_allowed</h1>
   </header>
 
   <section>
@@ -146,16 +146,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enhancer-proxy.h#L74">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enhancer-proxy.h#L83">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">clapper_enhancer_proxy_set_locally</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperEnhancerProxy</span><span class="o">*</span><span class="w"> </span><span class="n">proxy</span><span class="p">,</span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span><span class="w"> </span><span class="n">first_property_name</span><span class="p">,</span>
-<span class="w">  </span><span class="p">...</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">gboolean</span>
+<span class="n">clapper_enhancer_proxy_get_target_creation_allowed</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperEnhancerProxy</span><span class="o">*</span><span class="w"> </span><span class="n">proxy</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -167,17 +165,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enhancer-proxy.c#L959">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enhancer-proxy.c#L1130">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Configure one or more properties which have <a href="flags.EnhancerParamFlags.html#local"><code>CLAPPER_ENHANCER_PARAM_LOCAL</code></a>
-flag set on the target enhancer&nbsp;instance.</p>
-<p>Implementations can use this together with <a href="method.EnhancerProxy.get_target_properties.html"><code>clapper_enhancer_proxy_get_target_properties()</code></a>
-in order to configure local enhancer&nbsp;properties.</p>
-<p>Arguments should be <code>NULL</code> terminated list of property name and value to set
-(like <a href="javascript:void(0)" data-namespace="GObject" data-link="method.Object.set.html" class="external"><code>g_object_set()</code></a>&nbsp;arguments).</p>
+        <p>Get whether it is allowed to create instances of enhancer that this proxy&nbsp;targets.</p>
       </div>
 
       <div class="docblock">
@@ -185,30 +178,38 @@ in order to configure local enhancer&nbsp;properties.</p>
         <p>Available since: 0.10</p>
         
         
-        <p>This method is not directly available to language bindings.</p>
         
-        <p>The implementation of this method is provided by <a href="method.EnhancerProxy.set_locally_with_table.html"><code>clapper_enhancer_proxy_set_locally_with_table()</code></a> in language bindings.</p>
+        
+        
       </div>
 
+      
+      <div class="docblock">
+        <table>
+        
+          <tr><td>Gets property</td><td><a href="property.EnhancerProxy.target-creation-allowed.html"><code>Clapper.EnhancerProxy:target-creation-allowed</code></a></td></tr>
+        
+        </table>
+      </div>
       
     </div>
 
     
-    <div class="parameters toggle-wrapper">
-      <h4 id="parameters">
-        Parameters
-        <a href="#parameters" class="anchor"></a>
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <dl class="arguments">
-          
-
-          
-          <dt class="arg-name"><code>first_property_name</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>const gchar*</code></p>
-            <p>Name of the first property to&nbsp;configure.</p>
+        <div class="returns">
+          <div class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
+            <p>Whether target creation is&nbsp;allowed.</p>
+          </div>
+          <div>
             <table>
             
             
@@ -216,36 +217,11 @@ in order to configure local enhancer&nbsp;properties.</p>
             
             
             
-            
-            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
-            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
             </table>
-          </dd>
-          
-          <dt class="arg-name"><code>...</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code></code></p>
-            <p><code>NULL</code>-terminated list of&nbsp;arguments.</p>
-            <table>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            </table>
-          </dd>
-          
-
-          
-        </dl>
+          </div>
+        </div>
       </div>
     </div>
-    
-
     
 
   </section>

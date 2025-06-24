@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.EnhancerProxy:friendly-name</title>
+  <title>Clapper.EnhancerProxy:target-creation-allowed</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.EnhancerProxy:friendly-name"/>
-  <meta property="og:description" content="Reference for property Clapper.EnhancerProxy:friendly-name"/>
-  <meta name="twitter:title" content="Clapper.EnhancerProxy:friendly-name"/>
-  <meta name="twitter:description" content="Reference for property Clapper.EnhancerProxy:friendly-name"/>
+  <meta property="og:title" content="Clapper.EnhancerProxy:target-creation-allowed"/>
+  <meta property="og:description" content="Reference for property Clapper.EnhancerProxy:target-creation-allowed"/>
+  <meta name="twitter:title" content="Clapper.EnhancerProxy:target-creation-allowed"/>
+  <meta name="twitter:description" content="Reference for property Clapper.EnhancerProxy:target-creation-allowed"/>
 
 
   
@@ -91,13 +91,13 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.EnhancerProxy.description.html">description</a>
   
-    <a class="property current"href="property.EnhancerProxy.friendly-name.html">friendly-name</a>
+    <a class="property"href="property.EnhancerProxy.friendly-name.html">friendly-name</a>
   
     <a class="property"href="property.EnhancerProxy.module-dir.html">module-dir</a>
   
     <a class="property"href="property.EnhancerProxy.module-name.html">module-name</a>
   
-    <a class="property"href="property.EnhancerProxy.target-creation-allowed.html">target-creation-allowed</a>
+    <a class="property current"href="property.EnhancerProxy.target-creation-allowed.html">target-creation-allowed</a>
   
     <a class="property"href="property.EnhancerProxy.version.html">version</a>
   
@@ -115,7 +115,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Property</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.EnhancerProxy.html">EnhancerProxy</a>:friendly-name</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.EnhancerProxy.html">EnhancerProxy</a>:target-creation-allowed</h1>
   </header>
 
   <section>
@@ -129,7 +129,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property friendly-name: utf8 [ read ]</code></pre>
+        <pre><code>property target-creation-allowed: gboolean [ read, write ]</code></pre>
       </div>
     </div>
 
@@ -138,17 +138,26 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enhancer-proxy.c#L1240">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enhancer-proxy.c#L1295">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Name from enhancer plugin info&nbsp;file.</p>
+        <p>Whether to allow instances of proxy target to be&nbsp;created.</p>
+<p>This effectively means whether the given enhancer can be&nbsp;used.</p>
+<p>By default all enhancers that work on-demand such as <a href="iface.Extractable.html"><code>ClapperExtractable</code></a>
+are allowed while enhancers implementing <a href="iface.Reactable.html"><code>ClapperReactable</code></a> are&nbsp;not.</p>
+<p>Value of this property from a <code>GLOBAL</code> <a href="class.EnhancerProxyList.html"><code>ClapperEnhancerProxyList</code></a> will carry
+over to all newly created <a href="class.Player.html"><code>ClapperPlayer</code></a> objects, while altering this on
+<code>LOCAL</code> proxy list will only influence given player instance that list belongs&nbsp;to.</p>
+<p>Changing this property will not remove already created enhancer instances, thus
+it is usually best practice to allow/disallow creation of given enhancer plugin
+right after <a href="class.Player.html"><code>ClapperPlayer</code></a> is created (before it or its queue are&nbsp;used).</p>
       </div>
 
       <div class="docblock">
         <p>
-          Type:<code>gchar*</code></p>
+          Type:<code>gboolean</code></p>
         
         <p>Available since: 0.10</p>
         
@@ -158,9 +167,11 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
         <table>
         
-          <tr><td>Default value</td><td>NULL</td></tr>
+          <tr><td>Default value</td><td>FALSE</td></tr>
         
-          <tr><td>Getter method</td><td><a href="method.EnhancerProxy.get_friendly_name.html"><code>clapper_enhancer_proxy_get_friendly_name()</code></a></td></tr>
+          <tr><td>Getter method</td><td><a href="method.EnhancerProxy.get_target_creation_allowed.html"><code>clapper_enhancer_proxy_get_target_creation_allowed()</code></a></td></tr>
+        
+          <tr><td>Setter method</td><td><a href="method.EnhancerProxy.set_target_creation_allowed.html"><code>clapper_enhancer_proxy_set_target_creation_allowed()</code></a></td></tr>
         
         </table>
       </div>
@@ -176,7 +187,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       <table>
         <tr><td>Readable</td><td><b>yes</b></td></tr>
-        <tr><td>Writable</td><td><b>no</b></td></tr>
+        <tr><td>Writable</td><td><b>yes</b></td></tr>
         <tr><td>Construct</td><td><b>no</b></td></tr>
         <tr><td>Construct only</td><td><b>no</b></td></tr>
       </table>

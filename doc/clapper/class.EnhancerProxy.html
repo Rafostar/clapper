@@ -112,6 +112,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.EnhancerProxy.get_settings.html">get_settings</a>
   
+    <a class="method" href="method.EnhancerProxy.get_target_creation_allowed.html">get_target_creation_allowed</a>
+  
     <a class="method" href="method.EnhancerProxy.get_target_interfaces.html">get_target_interfaces</a>
   
     <a class="method" href="method.EnhancerProxy.get_target_properties.html">get_target_properties</a>
@@ -121,6 +123,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     <a class="method" href="method.EnhancerProxy.set_locally.html">set_locally</a>
   
     <a class="method" href="method.EnhancerProxy.set_locally_with_table.html">set_locally_with_table</a>
+  
+    <a class="method" href="method.EnhancerProxy.set_target_creation_allowed.html">set_target_creation_allowed</a>
   
     <a class="method" href="method.EnhancerProxy.target_has_interface.html">target_has_interface</a>
   
@@ -141,6 +145,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     <a class="property" href="property.EnhancerProxy.module-dir.html">module-dir</a>
   
     <a class="property" href="property.EnhancerProxy.module-name.html">module-name</a>
+  
+    <a class="property" href="property.EnhancerProxy.target-creation-allowed.html">target-creation-allowed</a>
   
     <a class="property" href="property.EnhancerProxy.version.html">version</a>
   
@@ -411,6 +417,16 @@ This value is used to uniquely identify a particular&nbsp;plugin.</p>
         </div>
       
         <div class="">
+          <h6><a href="method.EnhancerProxy.get_target_creation_allowed.html">clapper_enhancer_proxy_get_target_creation_allowed</a></h6>
+          <div class="docblock">
+            <p>Get whether it is allowed to create instances of enhancer that this proxy&nbsp;targets.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+          </div>
+        </div>
+      
+        <div class="">
           <h6><a href="method.EnhancerProxy.get_target_interfaces.html">clapper_enhancer_proxy_get_target_interfaces</a></h6>
           <div class="docblock">
             <p>Get an array of interfaces that target enhancer&nbsp;implements.</p>
@@ -456,6 +472,16 @@ flag set on the target enhancer&nbsp;instance.</p>
           <div class="docblock">
             <p>Same as <code>clapper_enhancer_proxy_set_locally()</code>, but to configure uses
 <code>GHashTable</code> with string keys and <code>GValue</code> as their&nbsp;values.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="method.EnhancerProxy.set_target_creation_allowed.html">clapper_enhancer_proxy_set_target_creation_allowed</a></h6>
+          <div class="docblock">
+            <p>Set whether to allow instances of proxy target to be&nbsp;created.</p>
           </div>
           <div class="docblock">
             <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
@@ -550,6 +576,16 @@ flag set on the target enhancer&nbsp;instance.</p>
           <h6><a href="property.EnhancerProxy.module-name.html">Clapper.EnhancerProxy:module-name</a></h6>
           <div class="docblock">
             <p>Module name from enhancer plugin info&nbsp;file.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6><a href="property.EnhancerProxy.target-creation-allowed.html">Clapper.EnhancerProxy:target-creation-allowed</a></h6>
+          <div class="docblock">
+            <p>Whether to allow instances of proxy target to be&nbsp;created.</p>
           </div>
           <div class="docblock">
             <p><span class="emblem available-next" title="This property will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
