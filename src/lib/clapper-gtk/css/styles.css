@@ -129,6 +129,15 @@ clapper-gtk-seek-bar label {
   margin-left: 2px;
   margin-right: 2px;
 }
+clapper-gtk-seek-bar scale marks .custom1 indicator {
+  color: tomato;
+}
+clapper-gtk-seek-bar scale marks .custom2 indicator {
+  color: goldenrod;
+}
+clapper-gtk-seek-bar scale marks .custom3 indicator {
+  color: limegreen;
+}
 
 clapper-gtk-extra-menu-button popover .spinsidebutton {
   min-width: 28px;

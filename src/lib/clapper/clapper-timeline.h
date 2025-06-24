@@ -38,7 +38,7 @@ CLAPPER_API
 G_DECLARE_FINAL_TYPE (ClapperTimeline, clapper_timeline, CLAPPER, TIMELINE, GstObject)
 
 CLAPPER_API
-gboolean clapper_timeline_insert_marker (ClapperTimeline *timeline, ClapperMarker *marker);
+void clapper_timeline_insert_marker (ClapperTimeline *timeline, ClapperMarker *marker);
 
 CLAPPER_API
 void clapper_timeline_remove_marker (ClapperTimeline *timeline, ClapperMarker *marker);
