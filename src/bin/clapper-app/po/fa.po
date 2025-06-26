@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-15 12:47+0100\n"
-"PO-Revision-Date: 2025-02-15 13:14\n"
+"PO-Revision-Date: 2025-05-18 14:52\n"
 "Last-Translator: \n"
 "Language-Team: Persian\n"
 "Language: fa_IR\n"
@@ -305,7 +305,7 @@ msgstr "جریان‌های زیرنویس"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
-msgstr "آغزا با افزودن رسانه به صف پخش"
+msgstr "آغاز با افزودن رسانه به صف پخش"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
@@ -402,7 +402,7 @@ msgstr "افزایه‌های موجود"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr "گزینش افزایه و ویژگیش برای پایمالی رتبه دهیش. هنگامی که چندین عنصر قابلیت‌ّای مشابهی دارند، آنی که بیش‌ترین رتبه را دارد ترجیح داده می‌شود."
+msgstr "گزینش افزایه و ویژگیش برای پایمالی رتبه دهیش. هنگامی که چندین عنصر قابلیت‌های مشابهی دارند، آنی که بیش‌ترین رتبه را دارد ترجیح داده می‌شود."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
 msgid "Plugin"
