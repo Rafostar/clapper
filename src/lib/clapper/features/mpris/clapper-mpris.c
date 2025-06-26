@@ -23,6 +23,8 @@
  *
  * Not every OS supports `MPRIS`. Use [const@Clapper.HAVE_MPRIS] macro
  * to check if Clapper API was compiled with this feature.
+ *
+ * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
  */
 
 #include "clapper-mpris.h"
@@ -1346,6 +1348,8 @@ clapper_mpris_property_changed (ClapperFeature *feature, GParamSpec *pspec)
  * Creates a new #ClapperMpris instance.
  *
  * Returns: (transfer full): a new #ClapperMpris instance.
+ *
+ * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
  */
 ClapperMpris *
 clapper_mpris_new (const gchar *own_name, const gchar *identity,
@@ -1376,6 +1380,8 @@ clapper_mpris_new (const gchar *own_name, const gchar *identity,
  *
  * You probably want to keep this disabled if your application
  * is supposed to manage what is played now and not MPRIS client.
+ *
+ * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
  */
 void
 clapper_mpris_set_queue_controllable (ClapperMpris *self, gboolean controllable)
@@ -1397,6 +1403,8 @@ clapper_mpris_set_queue_controllable (ClapperMpris *self, gboolean controllable)
  * Get whether remote `MPRIS` clients can control [class@Clapper.Queue].
  *
  * Returns: %TRUE if control over #ClapperQueue is allowed, %FALSE otherwise.
+ *
+ * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
  */
 gboolean
 clapper_mpris_get_queue_controllable (ClapperMpris *self)
@@ -1412,6 +1420,8 @@ clapper_mpris_get_queue_controllable (ClapperMpris *self)
  * @art_url: (nullable): an art URL
  *
  * Set fallback artwork to show when media does not provide one.
+ *
+ * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
  */
 void
 clapper_mpris_set_fallback_art_url (ClapperMpris *self, const gchar *art_url)
@@ -1435,6 +1445,8 @@ clapper_mpris_set_fallback_art_url (ClapperMpris *self, const gchar *art_url)
  * Get fallback art URL earlier set by user.
  *
  * Returns: (transfer full) (nullable): fallback art URL.
+ *
+ * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
  */
 gchar *
 clapper_mpris_get_fallback_art_url (ClapperMpris *self)
@@ -1611,6 +1623,8 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
    * Each #ClapperMpris instance running on the same system must have an unique name.
    *
    * Example: "org.mpris.MediaPlayer2.MyPlayer.instance123"
+   *
+   * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_OWN_NAME] = g_param_spec_string ("own-name",
       NULL, NULL, NULL,
@@ -1622,6 +1636,8 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
    * A friendly name to identify the media player.
    *
    * Example: "My Player"
+   *
+   * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_IDENTITY] = g_param_spec_string ("identity",
       NULL, NULL, NULL,
@@ -1631,6 +1647,8 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
    * ClapperMpris:desktop-entry:
    *
    * The basename of an installed .desktop file with the ".desktop" extension stripped.
+   *
+   * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_DESKTOP_ENTRY] = g_param_spec_string ("desktop-entry",
       NULL, NULL, NULL,
@@ -1640,6 +1658,8 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
    * ClapperMpris:queue-controllable:
    *
    * Whether remote MPRIS clients can control #ClapperQueue.
+   *
+   * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_QUEUE_CONTROLLABLE] = g_param_spec_boolean ("queue-controllable",
       NULL, NULL, DEFAULT_QUEUE_CONTROLLABLE,
@@ -1649,6 +1669,8 @@ clapper_mpris_class_init (ClapperMprisClass *klass)
    * ClapperMpris:fallback-art-url:
    *
    * Fallback artwork to show when media does not provide one.
+   *
+   * Deprecated: 0.10: Use MPRIS from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_FALLBACK_ART_URL] = g_param_spec_string ("fallback-art-url",
       NULL, NULL, NULL,

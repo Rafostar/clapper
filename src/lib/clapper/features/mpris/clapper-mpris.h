@@ -34,22 +34,22 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_MPRIS (clapper_mpris_get_type())
 #define CLAPPER_MPRIS_CAST(obj) ((ClapperMpris *)(obj))
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 G_DECLARE_FINAL_TYPE (ClapperMpris, clapper_mpris, CLAPPER, MPRIS, ClapperFeature)
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 ClapperMpris * clapper_mpris_new (const gchar *own_name, const gchar *identity, const gchar *desktop_entry);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 void clapper_mpris_set_queue_controllable (ClapperMpris *mpris, gboolean controllable);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 gboolean clapper_mpris_get_queue_controllable (ClapperMpris *mpris);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 void clapper_mpris_set_fallback_art_url (ClapperMpris *mpris, const gchar *art_url);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 gchar * clapper_mpris_get_fallback_art_url (ClapperMpris *mpris);
 
 G_END_DECLS
