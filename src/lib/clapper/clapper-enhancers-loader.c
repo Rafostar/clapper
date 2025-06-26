@@ -34,8 +34,6 @@ static HMODULE _enhancers_dll_handle = NULL;
 #include "clapper-extractable.h"
 #include "clapper-reactable.h"
 
-#include <clapper-functionalities-availability.h>
-
 #define GST_CAT_DEFAULT clapper_enhancers_loader_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -133,36 +131,6 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
     PeasPluginInfo *info = (PeasPluginInfo *) g_list_model_get_item ((GListModel *) _engine, i);
     ClapperEnhancerProxy *proxy;
     gboolean filled;
-
-    /* FIXME: 1.0: Remove together with features code and manager.
-     * These would clash with each other, so avoid loading these
-     * as enhancers when also compiled as part of the library. */
-#if (CLAPPER_HAVE_MPRIS || CLAPPER_HAVE_DISCOVERER || CLAPPER_HAVE_SERVER)
-    guint f_index;
-    const gchar *module_name = peas_plugin_info_get_module_name (info);
-    const gchar *ported_features[] = {
-#if CLAPPER_HAVE_MPRIS
-      "clapper-mpris",
-#endif
-#if CLAPPER_HAVE_DISCOVERER
-      "clapper-discoverer",
-#endif
-#if CLAPPER_HAVE_SERVER
-      "clapper-server",
-#endif
-    };
-
-    for (f_index = 0; f_index < G_N_ELEMENTS (ported_features); ++f_index) {
-      if (strcmp (module_name, ported_features[f_index]) == 0) {
-        GST_INFO ("Skipped \"%s\" enhancer module, since its"
-          " loaded from deprecated feature object", module_name);
-        g_clear_object (&info);
-      }
-    }
-
-    if (!info) // cleared when exists as feature
-      continue;
-#endif
 
     /* Clapper supports only 1 proxy per plugin. Each plugin can
      * ship 1 class, but it can implement more than 1 interface. */
