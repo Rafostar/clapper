@@ -1237,6 +1237,8 @@ clapper_app_window_constructed (GObject *object)
   ClapperAppWindow *self = CLAPPER_APP_WINDOW_CAST (object);
   ClapperPlayer *player = clapper_app_window_get_player (self);
   ClapperQueue *queue = clapper_player_get_queue (player);
+  ClapperEnhancerProxyList *proxies = clapper_player_get_enhancer_proxies (player);
+  ClapperEnhancerProxy *proxy;
   ClapperGtkExtraMenuButton *button;
   AdwStyleManager *manager;
 
@@ -1250,10 +1252,6 @@ clapper_app_window_constructed (GObject *object)
 #if (CLAPPER_HAVE_MPRIS || CLAPPER_HAVE_SERVER || CLAPPER_HAVE_DISCOVERER)
   ClapperFeature *feature = NULL;
 #endif
-#if (!CLAPPER_HAVE_MPRIS || !CLAPPER_HAVE_SERVER || !CLAPPER_HAVE_DISCOVERER)
-  ClapperEnhancerProxyList *proxies = clapper_player_get_enhancer_proxies (player);
-  ClapperEnhancerProxy *proxy;
-#endif
 
   gchar mpris_name[45];
   g_snprintf (mpris_name, sizeof (mpris_name),
@@ -1262,7 +1260,6 @@ clapper_app_window_constructed (GObject *object)
   self->settings = g_settings_new (CLAPPER_APP_ID);
   self->last_volume = PERCENTAGE_ROUND (g_settings_get_double (self->settings, "volume"));
 
-#if !CLAPPER_HAVE_MPRIS
   if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (proxies, "clapper-mpris"))) {
     clapper_enhancer_proxy_set_locally (proxy,
         "own-name", mpris_name,
@@ -1270,14 +1267,15 @@ clapper_app_window_constructed (GObject *object)
         "desktop-entry", CLAPPER_APP_ID,
         "queue-controllable", TRUE, NULL);
     gst_object_unref (proxy);
-  }
-#else
-  feature = CLAPPER_FEATURE (clapper_mpris_new (
-      mpris_name, CLAPPER_APP_NAME, CLAPPER_APP_ID));
-  clapper_mpris_set_queue_controllable (CLAPPER_MPRIS (feature), TRUE);
-  clapper_player_add_feature (player, feature);
-  gst_object_unref (feature);
+  } else {
+#if CLAPPER_HAVE_MPRIS
+    feature = CLAPPER_FEATURE (clapper_mpris_new (
+        mpris_name, CLAPPER_APP_NAME, CLAPPER_APP_ID));
+    clapper_mpris_set_queue_controllable (CLAPPER_MPRIS (feature), TRUE);
+    clapper_player_add_feature (player, feature);
+    gst_object_unref (feature);
 #endif
+  }
 
 #if CLAPPER_HAVE_SERVER
   feature = CLAPPER_FEATURE (clapper_server_new ());
