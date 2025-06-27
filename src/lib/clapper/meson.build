@@ -162,6 +162,7 @@ clapper_sources = [
   'gst/clapper-plugin.c',
   'gst/clapper-extractable-src.c',
   'gst/clapper-enhancer-director.c',
+  'gst/clapper-uri-base-demux.c',
   'gst/clapper-uri-list-demux.c',
   '../shared/clapper-shared-utils.c',
 ]
