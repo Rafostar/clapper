@@ -25,7 +25,9 @@
 #include "../clapper-cache-private.h"
 #include "../clapper-enhancer-proxy-private.h"
 #include "../clapper-extractable-private.h"
+#include "../clapper-playlistable-private.h"
 #include "../clapper-harvest-private.h"
+#include "../clapper-media-item.h"
 #include "../clapper-utils.h"
 #include "../../shared/clapper-shared-utils-private.h"
 
@@ -53,6 +55,7 @@ typedef struct
   ClapperEnhancerDirector *director;
   GList *filtered_proxies;
   GUri *uri;
+  GstBuffer *buffer;
   GCancellable *cancellable;
   GError **error;
 } ClapperEnhancerDirectorData;
@@ -99,7 +102,7 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 
       success = clapper_extractable_extract (extractable, data->uri,
           harvest, data->cancellable, data->error);
-      gst_object_unref (extractable);
+      g_object_unref (extractable);
 
       /* We are done with extractable, but keep harvest and try to cache it */
       if (success) {
@@ -136,6 +139,101 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
   GST_DEBUG_OBJECT (self, "Extraction finish");
 
   return harvest;
+}
+
+static gpointer
+clapper_enhancer_director_parse_in_thread (ClapperEnhancerDirectorData *data)
+{
+  ClapperEnhancerDirector *self = data->director;
+  GstMemory *mem;
+  GstMapInfo info;
+  GBytes *bytes;
+  GList *el;
+  GListStore *playlist = NULL;
+  gboolean success = FALSE;
+
+  GST_DEBUG_OBJECT (self, "Parse start");
+
+  /* Cancelled during thread switching */
+  if (g_cancellable_is_cancelled (data->cancellable))
+    return NULL;
+
+  GST_DEBUG_OBJECT (self, "Enhancer proxies for buffer: %u",
+      g_list_length (data->filtered_proxies));
+
+  mem = gst_buffer_peek_memory (data->buffer, 0);
+  if (!mem || !gst_memory_map (mem, &info, GST_MAP_READ)) {
+    g_set_error (data->error, GST_RESOURCE_ERROR,
+        GST_RESOURCE_ERROR_FAILED, "Could not read playlist buffer data");
+    return NULL;
+  }
+
+  bytes = g_bytes_new_static (info.data, info.size);
+
+  for (el = data->filtered_proxies; el; el = g_list_next (el)) {
+    ClapperEnhancerProxy *proxy = CLAPPER_ENHANCER_PROXY_CAST (el->data);
+    ClapperPlaylistable *playlistable = NULL;
+
+    if (g_cancellable_is_cancelled (data->cancellable)) // Check before loading enhancer
+      break;
+
+#if CLAPPER_WITH_ENHANCERS_LOADER
+    playlistable = CLAPPER_PLAYLISTABLE_CAST (
+        clapper_enhancers_loader_create_enhancer (proxy, CLAPPER_TYPE_PLAYLISTABLE));
+#endif
+
+    if (playlistable) {
+      GstStructure *config;
+
+      if ((config = clapper_enhancer_proxy_make_current_config (proxy))) {
+        clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) playlistable);
+        gst_structure_free (config);
+      }
+
+      if (g_cancellable_is_cancelled (data->cancellable)) { // Check before parse
+        g_object_unref (playlistable);
+        break;
+      }
+
+      playlist = g_list_store_new (CLAPPER_TYPE_MEDIA_ITEM); // fresh list store for each iteration
+
+      success = clapper_playlistable_parse (playlistable, data->uri, bytes,
+          playlist, data->cancellable, data->error);
+      g_object_unref (playlistable);
+
+      /* We are done with playlistable, but keep playlist */
+      if (success)
+        break;
+
+      /* Cleanup to try again with next enhancer */
+      g_clear_object (&playlist);
+    }
+  }
+
+  /* Unref bytes, then unmap their data */
+  g_bytes_unref (bytes);
+  gst_memory_unmap (mem, &info);
+
+  /* Cancelled during parsing */
+  if (g_cancellable_is_cancelled (data->cancellable))
+    success = FALSE;
+
+  if (!success) {
+    g_clear_object (&playlist);
+
+    /* Ensure we have some error set on failure */
+    if (*data->error == NULL) {
+      const gchar *err_msg = (g_cancellable_is_cancelled (data->cancellable))
+          ? "Playlist parsing was cancelled"
+          : "Could not parse playlist";
+      g_set_error (data->error, GST_RESOURCE_ERROR,
+          GST_RESOURCE_ERROR_FAILED, "%s", err_msg);
+    }
+  }
+
+  GST_DEBUG_OBJECT (self, "Parse finish");
+
+  return playlist;
 }
 
 static inline void
@@ -331,6 +429,7 @@ clapper_enhancer_director_extract (ClapperEnhancerDirector *self,
   data->director = self;
   data->filtered_proxies = filtered_proxies;
   data->uri = uri;
+  data->buffer = NULL;
   data->cancellable = cancellable;
   data->error = error;
 
@@ -346,6 +445,31 @@ clapper_enhancer_director_extract (ClapperEnhancerDirector *self,
     g_main_context_invoke (context, (GSourceFunc) _cache_cleanup_func, self);
 
   return harvest;
+}
+
+GListStore *
+clapper_enhancer_director_parse (ClapperEnhancerDirector *self,
+    GList *filtered_proxies, GUri *uri, GstBuffer *buffer,
+    GCancellable *cancellable, GError **error)
+{
+  ClapperEnhancerDirectorData *data = g_new (ClapperEnhancerDirectorData, 1);
+  GMainContext *context;
+  GListStore *playlist;
+
+  data->director = self;
+  data->filtered_proxies = filtered_proxies;
+  data->uri = uri;
+  data->buffer = buffer;
+  data->cancellable = cancellable;
+  data->error = error;
+
+  context = clapper_threaded_object_get_context (CLAPPER_THREADED_OBJECT_CAST (self));
+
+  playlist = (GListStore *) clapper_shared_utils_context_invoke_sync_full (context,
+      (GThreadFunc) clapper_enhancer_director_parse_in_thread,
+      data, (GDestroyNotify) g_free);
+
+  return playlist;
 }
 
 static void
