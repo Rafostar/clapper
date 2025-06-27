@@ -32,6 +32,7 @@ static HMODULE _enhancers_dll_handle = NULL;
 
 // Supported interfaces
 #include "clapper-extractable.h"
+#include "clapper-playlistable.h"
 #include "clapper-reactable.h"
 
 #define GST_CAT_DEFAULT clapper_enhancers_loader_debug
@@ -140,7 +141,7 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
      * Otherwise make an instance and fill missing data from it (slow). */
     if (!(filled = clapper_enhancer_proxy_fill_from_cache (proxy))) {
       GObject *enhancer;
-      const GType main_types[] = { CLAPPER_TYPE_EXTRACTABLE, CLAPPER_TYPE_REACTABLE };
+      const GType main_types[] = { CLAPPER_TYPE_EXTRACTABLE, CLAPPER_TYPE_PLAYLISTABLE, CLAPPER_TYPE_REACTABLE };
       guint j;
 
       /* We cannot ask libpeas for "any" of our main interfaces, so try each one until found */

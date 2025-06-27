@@ -46,11 +46,13 @@
 #include "clapper-enhancer-proxy-list.h"
 #include "clapper-basic-functions.h"
 #include "clapper-cache-private.h"
-#include "clapper-extractable.h"
-#include "clapper-reactable.h"
 #include "clapper-player-private.h"
 #include "clapper-utils-private.h"
 #include "clapper-enums.h"
+
+#include "clapper-extractable.h"
+#include "clapper-playlistable.h"
+#include "clapper-reactable.h"
 
 #include "clapper-functionalities-availability.h"
 
@@ -464,7 +466,7 @@ gboolean
 clapper_enhancer_proxy_fill_from_instance (ClapperEnhancerProxy *self, GObject *enhancer)
 {
   /* NOTE: REACTABLE must be last for "allowed" to work as expected */
-  const GType enhancer_types[] = { CLAPPER_TYPE_EXTRACTABLE, CLAPPER_TYPE_REACTABLE };
+  const GType enhancer_types[] = { CLAPPER_TYPE_EXTRACTABLE, CLAPPER_TYPE_PLAYLISTABLE, CLAPPER_TYPE_REACTABLE };
   GType *ifaces;
   GParamSpec **pspecs;
   GParamFlags enhancer_flags;
@@ -1299,7 +1301,7 @@ clapper_enhancer_proxy_class_init (ClapperEnhancerProxyClass *klass)
    *
    * This effectively means whether the given enhancer can be used.
    *
-   * By default all enhancers that work on-demand such as [iface@Clapper.Extractable]
+   * By default all enhancers that work on-demand ([iface@Clapper.Extractable], [iface@Clapper.Playlistable])
    * are allowed while enhancers implementing [iface@Clapper.Reactable] are not.
    *
    * Value of this property from a `GLOBAL` [class@Clapper.EnhancerProxyList] will carry
