@@ -21,6 +21,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>
+#include <gst/gst.h>
 
 #include "../clapper-threaded-object.h"
 #include "../clapper-harvest.h"
@@ -38,5 +39,8 @@ ClapperEnhancerDirector * clapper_enhancer_director_new (void);
 
 G_GNUC_INTERNAL
 ClapperHarvest * clapper_enhancer_director_extract (ClapperEnhancerDirector *director, GList *filtered_proxies, GUri *uri, GCancellable *cancellable, GError **error);
+
+G_GNUC_INTERNAL
+GListStore * clapper_enhancer_director_parse (ClapperEnhancerDirector *director, GList *filtered_proxies, GUri *uri, GstBuffer *buffer, GCancellable *cancellable, GError **error);
 
 G_END_DECLS
