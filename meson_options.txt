@@ -35,6 +35,12 @@ option('doc',
   description: 'Build documentation'
 )
 
+option('builtin-loaders',
+  type: 'boolean',
+  value: false,
+  description: 'Include the gst-plugin statically'
+)
+
 # Functionalities
 option('enhancers-loader',
   type: 'feature',

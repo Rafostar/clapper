@@ -234,7 +234,7 @@ gst_clapper_gl_uploader_class_init (GstClapperGLUploaderClass *klass)
 }
 
 GstClapperImporter *
-make_importer (GPtrArray *context_handlers)
+gst_clapper_gluploader_make_importer (GPtrArray *context_handlers)
 {
   GstClapperGLUploader *self;
   GstClapperContextHandler *handler;
@@ -300,7 +300,7 @@ _make_actual_caps (GstClapperGLContextHandler *gl_handler)
 }
 
 GstCaps *
-make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
+gst_clapper_gluploader_make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
   GstCaps *caps = NULL;
 
