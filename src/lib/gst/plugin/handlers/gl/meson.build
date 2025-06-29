@@ -126,13 +126,11 @@ endforeach
 
 if build_gl_ch
   gst_clapper_gl_ch_dep = declare_dependency(
-    link_with: library('gstclapperglcontexthandler',
+    link_with: static_library('gstclapperglcontexthandler',
       'gstclapperglcontexthandler.c',
       c_args: gst_clapper_plugin_args,
       include_directories: gst_plugin_conf_inc,
       dependencies: gst_plugin_gl_ch_deps,
-      version: meson.project_version(),
-      install: true,
     ),
     include_directories: gst_plugin_conf_inc,
     dependencies: gst_plugin_gl_ch_deps,

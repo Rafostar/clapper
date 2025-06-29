@@ -20,8 +20,6 @@
 #include "config.h"
 #endif
 
-#include <gmodule.h>
-
 #include "gstclapperimporterloader.h"
 #include "gstclapperimporter.h"
 #include "gstclappercontexthandler.h"
@@ -42,44 +40,38 @@ typedef GstCaps* (* MakeCaps) (gboolean is_template, GstRank *rank, GPtrArray *c
 
 typedef struct
 {
-  GModule *module;
+  const gchar *loader;
   GstCaps *caps;
   GstRank rank;
+  MakeImporter make_importer;
 } GstClapperImporterData;
 
 static void
 gst_clapper_importer_data_free (GstClapperImporterData *data)
 {
-  GST_TRACE ("Freeing importer data: %" GST_PTR_FORMAT, data);
+  GST_TRACE ("Freeing importer data for %s: %" GST_PTR_FORMAT, data->loader, data->caps);
 
   gst_clear_caps (&data->caps);
   g_free (data);
 }
 
 static GstClapperImporterData *
-_obtain_importer_data (GModule *module, gboolean is_template, GPtrArray *context_handlers)
+_obtain_importer_data (const gchar *name, MakeCaps make_caps, MakeImporter make_importer, gboolean is_template, GPtrArray *context_handlers)
 {
-  MakeCaps make_caps;
   GstClapperImporterData *data;
 
-  GST_DEBUG ("Found importer: %s", g_module_name (module));
-
-  if (!g_module_symbol (module, "make_caps", (gpointer *) &make_caps)
-      || make_caps == NULL) {
-    GST_WARNING ("Make caps function missing in importer");
-    return NULL;
-  }
+  GST_DEBUG ("Found importer: %s", name);
 
   data = g_new0 (GstClapperImporterData, 1);
-  data->module = module;
+  data->loader = name;
   data->caps = make_caps (is_template, &data->rank, context_handlers);
+  data->make_importer = make_importer;
 
-  GST_TRACE ("Created importer data: %" GST_PTR_FORMAT, data);
+  GST_TRACE ("Created importer data for %s: %" GST_PTR_FORMAT, data->loader, data->caps);
 
   if (G_UNLIKELY (!data->caps)) {
     if (!is_template) {
-      GST_ERROR ("Invalid importer without caps: %s",
-          g_module_name (data->module));
+      GST_ERROR ("Invalid importer without caps: %s", name);
     } else {
       /* When importer cannot be actually used, due to e.g. unsupported HW */
       GST_DEBUG ("No actual caps returned from importer");
@@ -92,118 +84,6 @@ _obtain_importer_data (GModule *module, gboolean is_template, GPtrArray *context
   GST_DEBUG ("Importer caps: %" GST_PTR_FORMAT, data->caps);
 
   return data;
-}
-
-static GstClapperImporter *
-_obtain_importer_internal (GModule *module, GPtrArray *context_handlers)
-{
-  MakeImporter make_importer;
-  GstClapperImporter *importer;
-
-  if (!g_module_symbol (module, "make_importer", (gpointer *) &make_importer)
-      || make_importer == NULL) {
-    GST_WARNING ("Make function missing in importer");
-    return NULL;
-  }
-
-  importer = make_importer (context_handlers);
-  GST_TRACE ("Created importer: %" GST_PTR_FORMAT, importer);
-
-  return importer;
-}
-
-static gpointer
-_obtain_available_modules_once (G_GNUC_UNUSED gpointer data)
-{
-  GPtrArray *modules;
-  GFile *dir = NULL;
-  GFileEnumerator *dir_enum;
-  GError *error = NULL;
-  const gchar *env_path = g_getenv ("CLAPPER_SINK_IMPORTER_PATH");
-
-  GST_INFO ("Preparing modules");
-
-  modules = g_ptr_array_new ();
-
-#ifdef G_OS_WIN32
-  if (!env_path || env_path[0] == '\0') {
-    gchar *win_base_dir, *dir_path;
-
-    win_base_dir = g_win32_get_package_installation_directory_of_module (
-        _importer_dll_handle);
-    dir_path = g_build_filename (win_base_dir,
-        "lib", "clapper-0.0", "gst", "plugin", "importers", NULL);
-    GST_INFO ("Win32 importers path: %s", dir_path);
-
-    dir = g_file_new_for_path (dir_path);
-
-    g_free (win_base_dir);
-    g_free (dir_path);
-  }
-#endif
-
-  if (!dir) {
-    const gchar *imp_path = (env_path && env_path[0] != '\0')
-        ? env_path : CLAPPER_SINK_IMPORTER_PATH;
-    dir = g_file_new_for_path (imp_path);
-  }
-
-  if ((dir_enum = g_file_enumerate_children (dir,
-      G_FILE_ATTRIBUTE_STANDARD_NAME,
-      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL, &error))) {
-    gchar *dir_path = g_file_get_path (dir);
-
-    while (TRUE) {
-      GFileInfo *info = NULL;
-      GModule *module;
-      gchar *module_path;
-      const gchar *module_name;
-
-      if (!g_file_enumerator_iterate (dir_enum, &info,
-          NULL, NULL, &error) || !info)
-        break;
-
-      module_name = g_file_info_get_name (info);
-
-      if (!g_str_has_suffix (module_name, G_MODULE_SUFFIX))
-        continue;
-
-      module_path = g_module_build_path (dir_path, module_name);
-      module = g_module_open (module_path, G_MODULE_BIND_LAZY);
-      g_free (module_path);
-
-      if (!module) {
-        GST_WARNING ("Could not read module: %s, reason: %s",
-            module_name, g_module_error ());
-        continue;
-      }
-
-      GST_INFO ("Found module: %s", module_name);
-      g_ptr_array_add (modules, module);
-    }
-
-    g_object_unref (dir_enum);
-    g_free (dir_path);
-  }
-
-  g_object_unref (dir);
-
-  if (error) {
-    GST_ERROR ("Could not load module, reason: %s",
-        (error->message) ? error->message : "unknown");
-    g_error_free (error);
-  }
-
-  return modules;
-}
-
-static const GPtrArray *
-gst_clapper_importer_loader_get_available_modules (void)
-{
-  static GOnce once = G_ONCE_INIT;
-
-  g_once (&once, _obtain_available_modules_once, NULL);
-  return (const GPtrArray *) once.retval;
 }
 
 static gint
@@ -220,24 +100,33 @@ _sort_importers_cb (gconstpointer a, gconstpointer b)
 static GPtrArray *
 _obtain_importers (gboolean is_template, GPtrArray *context_handlers)
 {
-  const GPtrArray *modules;
   GPtrArray *importers;
-  guint i;
 
   GST_DEBUG ("Checking %s importers",
       (is_template) ? "available" : "usable");
 
-  modules = gst_clapper_importer_loader_get_available_modules ();
   importers = g_ptr_array_new_with_free_func (
       (GDestroyNotify) gst_clapper_importer_data_free);
 
-  for (i = 0; i < modules->len; i++) {
-    GModule *module = g_ptr_array_index (modules, i);
-    GstClapperImporterData *data;
+#define _append_importer_data(importer) \
+{ \
+  GstClapperImporterData *data;  \
+  extern GstClapperImporter* gst_clapper_##importer##_make_importer (GPtrArray *context_handlers); \
+  extern GstCaps* gst_clapper_##importer##_make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers); \
+  data = _obtain_importer_data (#importer, gst_clapper_##importer##_make_caps, gst_clapper_##importer##_make_importer, is_template, context_handlers); \
+  if (data) \
+    g_ptr_array_add (importers, data); \
+}
 
-    if ((data = _obtain_importer_data (module, is_template, context_handlers)))
-      g_ptr_array_add (importers, data);
-  }
+#ifdef CLAPPER_GST_HAS_GLIMPORTER
+  _append_importer_data (glimporter)
+#endif
+#ifdef CLAPPER_GST_HAS_GLUPLOADER
+  _append_importer_data (gluploader)
+#endif
+#ifdef CLAPPER_GST_HAS_RAWIMPORTER
+  _append_importer_data (rawimporter)
+#endif
 
   g_ptr_array_sort (importers, (GCompareFunc) _sort_importers_cb);
 
@@ -347,23 +236,23 @@ gst_clapper_importer_loader_find_importer_for_caps (GstClapperImporterLoader *se
   GST_DEBUG_OBJECT (self, "Requested importer for caps: %" GST_PTR_FORMAT, caps);
   data = _get_importer_data_for_caps (self->importers, caps);
 
-  GST_LOG_OBJECT (self, "Old importer path: %s, new path: %s",
-      (self->last_module) ? g_module_name (self->last_module) : NULL,
-      (data) ? g_module_name (data->module) : NULL);
+  GST_LOG_OBJECT (self, "Old importer: %s, new: %s",
+      self->last_loader ? self->last_loader : NULL,
+      data ? data->loader : NULL);
 
   if (G_UNLIKELY (!data)) {
     gst_clear_object (importer);
     goto finish;
   }
 
-  if (*importer && (self->last_module == data->module)) {
+  if (*importer && (self->last_loader == data->loader)) {
     GST_DEBUG_OBJECT (self, "No importer change");
 
     gst_clapper_importer_set_caps (*importer, caps);
     goto finish;
   }
 
-  found_importer = _obtain_importer_internal (data->module, self->context_handlers);
+  found_importer = data->make_importer (self->context_handlers);
   gst_clear_object (importer);
 
   if (!found_importer)
@@ -374,8 +263,8 @@ gst_clapper_importer_loader_find_importer_for_caps (GstClapperImporterLoader *se
   *importer = found_importer;
 
 finish:
-  self->last_module = (*importer && data)
-      ? data->module
+  self->last_loader = (*importer && data)
+      ? data->loader
       : NULL;
 
   GST_OBJECT_UNLOCK (self);

@@ -82,13 +82,13 @@ gst_clapper_raw_importer_class_init (GstClapperRawImporterClass *klass)
 }
 
 GstClapperImporter *
-make_importer (GPtrArray *context_handlers)
+gst_clapper_rawimporter_make_importer (GPtrArray *context_handlers)
 {
   return g_object_new (GST_TYPE_CLAPPER_RAW_IMPORTER, NULL);
 }
 
 GstCaps *
-make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
+gst_clapper_rawimporter_make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
   *rank = GST_RANK_MARGINAL;
 

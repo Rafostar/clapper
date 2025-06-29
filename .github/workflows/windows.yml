@@ -79,7 +79,6 @@ jobs:
         BUILD_PREFIX="$GITHUB_WORKSPACE/clapper-win-${{ matrix.arch }}"
 
         ldd $BUILD_PREFIX/bin/clapper.exe | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
-        find $BUILD_PREFIX/lib/clapper-0.0/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
         find $BUILD_PREFIX/lib/gstreamer-1.0/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
         find $BUILD_PREFIX/lib/gio/ -name '*\.dll' -type f -exec ldd "{}" \; | grep '\/mingw.*\.dll' -o | xargs -I{} cp -n "{}" $BUILD_PREFIX/bin
     - name: Cleanup

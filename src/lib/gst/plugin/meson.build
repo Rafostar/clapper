@@ -8,7 +8,6 @@ gst_clapper_plugin_deps = [
   gst_dep,
   gst_base_dep,
   gst_video_dep,
-  gmodule_dep,
 ]
 
 build_gst_plugin = not get_option('gst-plugin').disabled()
@@ -80,13 +79,45 @@ gst_clapper_plugin_sources = [
   'gstclapperimporterloader.c',
 ]
 
+gst_clapper_sink_dep = declare_dependency(include_directories: gst_plugin_conf_inc, dependencies: gst_clapper_plugin_deps)
+subdir('handlers')
+
+gst_clapper_plugin_private_deps = []
+
+all_importers = [
+  'glimporter',
+  'gluploader',
+  'rawimporter',
+]
+
+build_glimporter = get_option('glimporter').require(build_gst_plugin and gst_clapper_gl_ch_dep.found()).allowed()
+if build_glimporter
+  gst_clapper_plugin_sources += 'importers/gstclapperglimporter.c'
+  gst_clapper_plugin_private_deps += gst_clapper_gl_ch_dep
+  gst_clapper_plugin_args += '-DCLAPPER_GST_HAS_GLIMPORTER'
+endif
+
+build_gluploader = get_option('gluploader').require(build_gst_plugin and gst_clapper_gl_ch_dep.found()).allowed()
+if build_glimporter
+  gst_clapper_plugin_sources += 'importers/gstclappergluploader.c'
+  gst_clapper_plugin_private_deps += gst_clapper_gl_ch_dep
+  gst_clapper_plugin_args += '-DCLAPPER_GST_HAS_GLUPLOADER'
+endif
+
+# No need to auto build rawimporter if we are building gluploader
+build_rawimporter = get_option('rawimporter').disable_auto_if(build_gluploader).require(build_gst_plugin).allowed()
+if build_rawimporter
+  gst_clapper_plugin_sources += 'importers/gstclapperrawimporter.c'
+  gst_clapper_plugin_args += '-DCLAPPER_GST_HAS_RAWIMPORTER'
+endif
+
 if build_gst_plugin
   gst_clapper_sink_dep = declare_dependency(
     link_with: library('gstclapper',
       gst_clapper_plugin_sources,
       c_args: gst_clapper_plugin_args,
       include_directories: gst_plugin_conf_inc,
-      dependencies: gst_clapper_plugin_deps,
+      dependencies: gst_clapper_plugin_deps + gst_clapper_plugin_private_deps,
       install: true,
       install_dir: gst_plugins_libdir,
     ),
@@ -94,6 +125,3 @@ if build_gst_plugin
     dependencies: gst_clapper_plugin_deps,
   )
 endif
-
-subdir('handlers')
-subdir('importers')
