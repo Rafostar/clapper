@@ -26,7 +26,7 @@ gst_clapper_plugin_args = [
   '-DGST_USE_UNSTABLE_API',
 ]
 
-if get_option('default_library') == 'static'
+if static_gst_plugin
   gst_clapper_plugin_args += [
     '-DGST_STATIC_COMPILATION',
     '-DCLAPPER_GST_STATIC_COMPILATION',
@@ -73,7 +73,7 @@ gst_clapper_plugin_sources = [
   'gstclappersink.c',
   'gstclapperpaintable.c',
   'gstgtkutils.c',
-  'gstplugin.c',
+  'gstclapperplugin.c',
   'gstclappercontexthandler.c',
   'gstclapperimporter.c',
   'gstclapperimporterloader.c',
@@ -113,12 +113,13 @@ endif
 
 if build_gst_plugin
   gst_clapper_sink_dep = declare_dependency(
-    link_with: library('gstclapper',
+    link_with: build_target('gstclapper',
       gst_clapper_plugin_sources,
+      target_type: static_gst_plugin ? 'static_library' : 'shared_library',
       c_args: gst_clapper_plugin_args,
       include_directories: gst_plugin_conf_inc,
       dependencies: gst_clapper_plugin_deps + gst_clapper_plugin_private_deps,
-      install: true,
+      install: not static_gst_plugin,
       install_dir: gst_plugins_libdir,
     ),
     include_directories: gst_plugin_conf_inc,

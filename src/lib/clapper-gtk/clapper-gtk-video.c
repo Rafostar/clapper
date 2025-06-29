@@ -102,6 +102,10 @@
 #include "clapper-gtk-buffering-animation-private.h"
 #include "clapper-gtk-video-placeholder-private.h"
 
+#ifdef CLAPPER_GTK_STATIC_GST_PLUGIN
+#include "gstclapperplugin.h"
+#endif
+
 #define PERCENTAGE_ROUND(a) (round ((gdouble) a / 0.01) * 0.01)
 
 #define DEFAULT_FADE_DELAY 3000
@@ -1552,6 +1556,10 @@ clapper_gtk_video_class_init (ClapperGtkVideoClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
   GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
+
+#ifdef CLAPPER_GTK_STATIC_GST_PLUGIN
+  GST_PLUGIN_STATIC_REGISTER (clapper);
+#endif
 
   GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clappergtkvideo", GST_DEBUG_FG_MAGENTA,
       "Clapper GTK Video");
