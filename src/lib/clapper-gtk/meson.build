@@ -141,6 +141,10 @@ if get_option('default_library') == 'static'
   clappergtk_c_args += ['-DCLAPPER_GTK_STATIC_COMPILATION']
 endif
 
+if static_gst_plugin
+  clappergtk_c_args += ['-DCLAPPER_GTK_STATIC_GST_PLUGIN']
+endif
+
 clappergtk_headers_dir = join_paths(includedir, clapper_api_name, 'clapper-gtk')
 
 clappergtk_enums = gnome.mkenums_simple(
@@ -176,6 +180,7 @@ if build_gir
       clappergtk_enums,
     ],
     extra_args: [
+      gir_init_section,
       '--quiet',
       '--warn-all',
       '-DCLAPPER_GTK_COMPILATION',

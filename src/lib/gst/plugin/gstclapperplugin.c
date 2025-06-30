@@ -20,20 +20,11 @@
 #include "config.h"
 #endif
 
-#include <gmodule.h>
-
 #include "gstclappersink.h"
 
 static gboolean
 plugin_init (GstPlugin *plugin)
 {
-  if (!g_module_supported ())
-    return FALSE;
-
-  gst_plugin_add_dependency_simple (plugin,
-      NULL, CLAPPER_SINK_IMPORTER_PATH, NULL,
-      GST_PLUGIN_DEPENDENCY_FLAG_NONE);
-
   return GST_ELEMENT_REGISTER (clappersink, plugin);
 }
 
