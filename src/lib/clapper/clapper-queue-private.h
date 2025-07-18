@@ -19,6 +19,7 @@
 #pragma once
 
 #include <glib.h>
+#include <gio/gio.h>
 
 #include "clapper-queue.h"
 #include "clapper-media-item.h"
@@ -30,6 +31,8 @@ G_BEGIN_DECLS
 ClapperQueue * clapper_queue_new (void);
 
 void clapper_queue_handle_played_item_changed (ClapperQueue *queue, ClapperMediaItem *played_item, ClapperAppBus *app_bus);
+
+void clapper_queue_handle_playlist (ClapperQueue *queue, ClapperMediaItem *playlist_item, GListStore *playlist);
 
 void clapper_queue_handle_about_to_finish (ClapperQueue *queue, ClapperPlayer *player);
 

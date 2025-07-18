@@ -831,6 +831,71 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
 
     g_free (name);
     g_free (details);
+  } else if (gst_message_has_name (msg, "ClapperPlaylistParsed")) {
+    ClapperMediaItem *playlist_item = NULL;
+    GListStore *playlist = NULL;
+    const GstStructure *structure = gst_message_get_structure (msg);
+    guint n_items;
+
+    /* If message contains item, use that.
+     * Otherwise assume pending item was parsed. */
+    if (gst_structure_has_field (structure, "item")) {
+      gst_structure_get (structure,
+          "item", CLAPPER_TYPE_MEDIA_ITEM, &playlist_item, NULL);
+    } else {
+      GST_OBJECT_LOCK (player);
+
+      /* Playlist is always parsed before playback starts */
+      if (player->pending_item)
+        playlist_item = gst_object_ref (player->pending_item);
+
+      GST_OBJECT_UNLOCK (player);
+    }
+
+    if (G_UNLIKELY (playlist_item == NULL)) {
+      GST_WARNING_OBJECT (player, "Playlist parsed without media item set");
+      return;
+    }
+
+    GST_INFO_OBJECT (player, "Received parsed playlist of %" GST_PTR_FORMAT
+        "(%s)", playlist_item, clapper_media_item_get_uri (playlist_item));
+
+    gst_structure_get (structure,
+        "playlist", G_TYPE_LIST_STORE, &playlist, NULL);
+
+    n_items = g_list_model_get_n_items (G_LIST_MODEL (playlist));
+
+    if (G_LIKELY (n_items > 0)) {
+      ClapperMediaItem *active_item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
+      gboolean updated;
+
+      /* Update redirect URI (must be done from player thread) */
+      updated = clapper_media_item_update_from_item (playlist_item, active_item, player);
+      gst_object_unref (active_item);
+
+      if (!updated) {
+        GstMessage *msg;
+        GError *error;
+
+        error = g_error_new (GST_RESOURCE_ERROR, GST_RESOURCE_ERROR_FAILED,
+            "Detected infinite redirection in playlist");
+        msg = gst_message_new_error (GST_OBJECT (player), error, NULL);
+
+        _handle_error_msg (msg, player);
+
+        g_error_free (error);
+        gst_message_unref (msg);
+      } else if (n_items > 1) {
+        /* Forward to append remaining items (must be done from main thread) */
+        clapper_app_bus_post_insert_playlist (player->app_bus,
+            GST_OBJECT_CAST (player),
+            GST_OBJECT_CAST (playlist_item),
+            G_OBJECT (playlist));
+      }
+    }
+
+    gst_object_unref (playlist_item);
+    g_object_unref (playlist);
   } else if (gst_message_has_name (msg, "GstCacheDownloadComplete")) {
     ClapperMediaItem *downloaded_item = NULL;
     const GstStructure *structure;
