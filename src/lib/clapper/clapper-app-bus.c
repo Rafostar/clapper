@@ -21,6 +21,7 @@
 #include "clapper-bus-private.h"
 #include "clapper-app-bus-private.h"
 #include "clapper-player-private.h"
+#include "clapper-queue-private.h"
 #include "clapper-media-item-private.h"
 #include "clapper-timeline-private.h"
 
@@ -41,6 +42,7 @@ enum
   CLAPPER_APP_BUS_STRUCTURE_PROP_NOTIFY,
   CLAPPER_APP_BUS_STRUCTURE_REFRESH_STREAMS,
   CLAPPER_APP_BUS_STRUCTURE_REFRESH_TIMELINE,
+  CLAPPER_APP_BUS_STRUCTURE_INSERT_PLAYLIST,
   CLAPPER_APP_BUS_STRUCTURE_SIMPLE_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_OBJECT_DESC_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_DESC_WITH_DETAILS_SIGNAL,
@@ -52,6 +54,7 @@ static ClapperBusQuark _structure_quarks[] = {
   {"prop-notify", 0},
   {"refresh-streams", 0},
   {"refresh-timeline", 0},
+  {"insert-playlist", 0},
   {"simple-signal", 0},
   {"object-desc-signal", 0},
   {"desc-with-details-signal", 0},
@@ -65,6 +68,7 @@ enum
   CLAPPER_APP_BUS_FIELD_PSPEC,
   CLAPPER_APP_BUS_FIELD_SIGNAL_ID,
   CLAPPER_APP_BUS_FIELD_OBJECT,
+  CLAPPER_APP_BUS_FIELD_OTHER_OBJECT,
   CLAPPER_APP_BUS_FIELD_DESC,
   CLAPPER_APP_BUS_FIELD_DETAILS,
   CLAPPER_APP_BUS_FIELD_ERROR,
@@ -76,6 +80,7 @@ static ClapperBusQuark _field_quarks[] = {
   {"pspec", 0},
   {"signal-id", 0},
   {"object", 0},
+  {"other-object", 0},
   {"desc", 0},
   {"details", 0},
   {"error", 0},
@@ -158,6 +163,36 @@ _handle_refresh_timeline_msg (GstMessage *msg, const GstStructure *structure)
   ClapperTimeline *timeline = clapper_media_item_get_timeline (item);
 
   clapper_timeline_refresh (timeline);
+}
+
+void
+clapper_app_bus_post_insert_playlist (ClapperAppBus *self, GstObject *src,
+    GstObject *playlist_item, GObject *playlist)
+{
+  GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (INSERT_PLAYLIST),
+      _FIELD_QUARK (OBJECT), GST_TYPE_OBJECT, playlist_item,
+      _FIELD_QUARK (OTHER_OBJECT), G_TYPE_OBJECT, playlist,
+      NULL);
+  gst_bus_post (GST_BUS_CAST (self), gst_message_new_application (src, structure));
+}
+
+static inline void
+_handle_insert_playlist_msg (GstMessage *msg, const GstStructure *structure)
+{
+  ClapperPlayer *player = CLAPPER_PLAYER_CAST (GST_MESSAGE_SRC (msg));
+  ClapperQueue *queue = clapper_player_get_queue (player);
+  GstObject *playlist_item;
+  GObject *playlist;
+
+  gst_structure_id_get (structure,
+      _FIELD_QUARK (OBJECT), GST_TYPE_OBJECT, &playlist_item,
+      _FIELD_QUARK (OTHER_OBJECT), G_TYPE_OBJECT, &playlist,
+      NULL);
+  clapper_queue_handle_playlist (queue,
+      CLAPPER_MEDIA_ITEM (playlist_item), G_LIST_STORE (playlist));
+
+  gst_object_unref (playlist_item);
+  g_object_unref (playlist);
 }
 
 void
@@ -285,6 +320,8 @@ clapper_app_bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G
       _handle_refresh_streams_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (REFRESH_TIMELINE))
       _handle_refresh_timeline_msg (msg, structure);
+    else if (quark == _STRUCTURE_QUARK (INSERT_PLAYLIST))
+      _handle_insert_playlist_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (SIMPLE_SIGNAL))
       _handle_simple_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (OBJECT_DESC_SIGNAL))
