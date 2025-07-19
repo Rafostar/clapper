@@ -582,7 +582,7 @@ _create_pipeline_svg_file_in_thread (GTask *task, GObject *source G_GNUC_UNUSED,
   GVC_t *gvc;
   gchar *path, *template = NULL, *dot_data = NULL, *img_data = NULL;
   gint fd;
-  guint size = 0;
+  gsize size = 0;
 
   if (!(tmp_subdir = _create_tmp_subdir ("pipelines", cancellable, &error)))
     goto finish;
