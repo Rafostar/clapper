@@ -41,6 +41,7 @@
     "modules": [
         "flathub/shared-modules/gudev/gudev.json",
         "flathub/lib/liba52.json",
+        "flathub/lib/libmpeg2.json",
         "flathub/lib/libdv.json",
         "flathub/lib/libdvdcss.json",
         "flathub/lib/libdvdread.json",
