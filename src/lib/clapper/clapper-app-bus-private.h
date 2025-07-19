@@ -44,6 +44,8 @@ void clapper_app_bus_post_refresh_streams (ClapperAppBus *app_bus, GstObject *sr
 
 void clapper_app_bus_post_refresh_timeline (ClapperAppBus *app_bus, GstObject *src);
 
+void clapper_app_bus_post_insert_playlist (ClapperAppBus *app_bus, GstObject *src, GstObject *playlist_item, GObject *playlist);
+
 void clapper_app_bus_post_simple_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id);
 
 void clapper_app_bus_post_object_desc_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, GstObject *object, const gchar *desc);

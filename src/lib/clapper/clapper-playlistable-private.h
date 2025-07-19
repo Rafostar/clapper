@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,21 +21,11 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "clapper-queue.h"
-#include "clapper-media-item.h"
-#include "clapper-player.h"
-#include "clapper-app-bus-private.h"
+#include "clapper-playlistable.h"
 
 G_BEGIN_DECLS
 
-ClapperQueue * clapper_queue_new (void);
-
-void clapper_queue_handle_played_item_changed (ClapperQueue *queue, ClapperMediaItem *played_item, ClapperAppBus *app_bus);
-
-void clapper_queue_handle_playlist (ClapperQueue *queue, ClapperMediaItem *playlist_item, GListStore *playlist);
-
-void clapper_queue_handle_about_to_finish (ClapperQueue *queue, ClapperPlayer *player);
-
-gboolean clapper_queue_handle_eos (ClapperQueue *queue, ClapperPlayer *player);
+G_GNUC_INTERNAL
+gboolean clapper_playlistable_parse (ClapperPlaylistable *playlistable, GUri *uri, GBytes *bytes, GListStore *playlist, GCancellable *cancellable, GError **error);
 
 G_END_DECLS

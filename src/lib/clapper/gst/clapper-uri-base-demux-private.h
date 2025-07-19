@@ -22,25 +22,27 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gst/gst.h>
-
-#include "../clapper-threaded-object.h"
-#include "../clapper-harvest.h"
+#include <gst/gstbin.h>
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_ENHANCER_DIRECTOR (clapper_enhancer_director_get_type())
-#define CLAPPER_ENHANCER_DIRECTOR_CAST(obj) ((ClapperEnhancerDirector *)(obj))
+#define CLAPPER_TYPE_URI_BASE_DEMUX (clapper_uri_base_demux_get_type())
+#define CLAPPER_URI_BASE_DEMUX_CAST(obj) ((ClapperUriBaseDemux *)(obj))
 
 G_GNUC_INTERNAL
-G_DECLARE_FINAL_TYPE (ClapperEnhancerDirector, clapper_enhancer_director, CLAPPER, ENHANCER_DIRECTOR, ClapperThreadedObject)
+G_DECLARE_DERIVABLE_TYPE (ClapperUriBaseDemux, clapper_uri_base_demux, CLAPPER, URI_BASE_DEMUX, GstBin)
 
-G_GNUC_INTERNAL
-ClapperEnhancerDirector * clapper_enhancer_director_new (void);
+struct _ClapperUriBaseDemuxClass
+{
+  GstBinClass parent_class;
 
-G_GNUC_INTERNAL
-ClapperHarvest * clapper_enhancer_director_extract (ClapperEnhancerDirector *director, GList *filtered_proxies, GUri *uri, GCancellable *cancellable, GError **error);
+  gboolean (* process_buffer) (ClapperUriBaseDemux *uri_bd, GstBuffer *buffer, GCancellable *cancellable);
 
-G_GNUC_INTERNAL
-GListStore * clapper_enhancer_director_parse (ClapperEnhancerDirector *director, GList *filtered_proxies, GUri *uri, GstBuffer *buffer, GCancellable *cancellable, GError **error);
+  void (* handle_caps) (ClapperUriBaseDemux *uri_bd, GstCaps *caps);
+
+  void (* handle_custom_event) (ClapperUriBaseDemux *uri_bd, GstEvent *event);
+};
+
+gboolean clapper_uri_base_demux_set_uri (ClapperUriBaseDemux *uri_bd, const gchar *uri, const gchar *blacklisted_el);
 
 G_END_DECLS

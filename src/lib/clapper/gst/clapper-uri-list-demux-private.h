@@ -21,7 +21,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <gst/gst.h>
-#include <gst/gstbin.h>
+
+#include "clapper-uri-base-demux-private.h"
 
 G_BEGIN_DECLS
 
@@ -29,7 +30,7 @@ G_BEGIN_DECLS
 #define CLAPPER_URI_LIST_DEMUX_CAST(obj) ((ClapperUriListDemux *)(obj))
 
 G_GNUC_INTERNAL
-G_DECLARE_FINAL_TYPE (ClapperUriListDemux, clapper_uri_list_demux, CLAPPER, URI_LIST_DEMUX, GstBin)
+G_DECLARE_FINAL_TYPE (ClapperUriListDemux, clapper_uri_list_demux, CLAPPER, URI_LIST_DEMUX, ClapperUriBaseDemux)
 
 GST_ELEMENT_REGISTER_DECLARE (clapperurilistdemux)
 

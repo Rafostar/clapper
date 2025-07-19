@@ -337,6 +337,42 @@ _get_next_item_unlocked (ClapperQueue *self, ClapperQueueProgressionMode mode)
   return next_item;
 }
 
+static void
+_take_item_unlocked (ClapperQueue *self, ClapperMediaItem *item, gint index)
+{
+  guint prev_length = self->items->len;
+
+  g_ptr_array_insert (self->items, index, item);
+  gst_object_set_parent (GST_OBJECT_CAST (item), GST_OBJECT_CAST (self));
+
+  /* In append we inserted at array length */
+  if (index < 0)
+    index = prev_length;
+
+  _announce_model_update (self, index, 0, 1, item);
+
+  /* If has selection and inserting before it */
+  if (self->current_index != CLAPPER_QUEUE_INVALID_POSITION
+      && (guint) index <= self->current_index) {
+    self->current_index++;
+    _announce_current_index_change (self);
+  } else if (prev_length == 0 && _replace_current_item_unlocked (self, item, 0)) {
+    /* If queue was empty, auto select first item and announce it */
+    _announce_current_item_and_index_change (self);
+  } else if (self->current_index == prev_length - 1
+      && clapper_queue_get_progression_mode (self) == CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE) {
+    ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
+    gboolean after_eos = (gboolean) g_atomic_int_get (&player->eos);
+
+    /* In consecutive progression automatically select next item
+     * if we were after EOS of last queue item */
+    if (after_eos && _replace_current_item_unlocked (self, item, index))
+      _announce_current_item_and_index_change (self);
+
+    gst_object_unref (player);
+  }
+}
+
 /*
  * For gapless we need to manually replace current item in queue when it starts
  * playing and emit notify about change, this function will do that if necessary
@@ -364,6 +400,31 @@ clapper_queue_handle_played_item_changed (ClapperQueue *self, ClapperMediaItem *
     clapper_app_bus_post_prop_notify (app_bus,
         GST_OBJECT_CAST (self), param_specs[PROP_CURRENT_INDEX]);
   }
+}
+
+/* Must be called from main thread */
+void
+clapper_queue_handle_playlist (ClapperQueue *self, ClapperMediaItem *playlist_item,
+    GListStore *playlist)
+{
+  GListModel *playlist_model = G_LIST_MODEL (playlist);
+  guint i, index, n_items = g_list_model_get_n_items (playlist_model);
+
+  CLAPPER_QUEUE_REC_LOCK (self);
+
+  /* If playlist item is still in the queue, insert
+   * remaining items after it, otherwise append */
+  if (G_LIKELY (g_ptr_array_find (self->items, playlist_item, &index)))
+    index++;
+  else
+    index = self->items->len;
+
+  for (i = 1; i < n_items; ++i) {
+    ClapperMediaItem *item = g_list_model_get_item (playlist_model, i);
+    _take_item_unlocked (self, item, index++);
+  }
+
+  CLAPPER_QUEUE_REC_UNLOCK (self);
 }
 
 void
@@ -481,39 +542,8 @@ clapper_queue_insert_item (ClapperQueue *self, ClapperMediaItem *item, gint inde
 
   CLAPPER_QUEUE_REC_LOCK (self);
 
-  if (!g_ptr_array_find (self->items, item, NULL)) {
-    guint prev_length = self->items->len;
-
-    g_ptr_array_insert (self->items, index, gst_object_ref (item));
-    gst_object_set_parent (GST_OBJECT_CAST (item), GST_OBJECT_CAST (self));
-
-    /* In append we inserted at array length */
-    if (index < 0)
-      index = prev_length;
-
-    _announce_model_update (self, index, 0, 1, item);
-
-    /* If has selection and inserting before it */
-    if (self->current_index != CLAPPER_QUEUE_INVALID_POSITION
-        && (guint) index <= self->current_index) {
-      self->current_index++;
-      _announce_current_index_change (self);
-    } else if (prev_length == 0 && _replace_current_item_unlocked (self, item, 0)) {
-      /* If queue was empty, auto select first item and announce it */
-      _announce_current_item_and_index_change (self);
-    } else if (self->current_index == prev_length - 1
-        && clapper_queue_get_progression_mode (self) == CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE) {
-      ClapperPlayer *player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self));
-      gboolean after_eos = (gboolean) g_atomic_int_get (&player->eos);
-
-      /* In consecutive progression automatically select next item
-       * if we were after EOS of last queue item */
-      if (after_eos && _replace_current_item_unlocked (self, item, index))
-        _announce_current_item_and_index_change (self);
-
-      gst_object_unref (player);
-    }
-  }
+  if (!g_ptr_array_find (self->items, item, NULL))
+    _take_item_unlocked (self, gst_object_ref (item), index);
 
   CLAPPER_QUEUE_REC_UNLOCK (self);
 }
