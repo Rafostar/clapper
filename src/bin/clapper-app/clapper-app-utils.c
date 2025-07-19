@@ -610,7 +610,16 @@ _create_pipeline_svg_file_in_thread (GTask *task, GObject *source G_GNUC_UNUSED,
 
   gvc = gvContext ();
   gvLayout (gvc, graph, "dot");
+
+#ifdef HAVE_GVC_13
   gvRenderData (gvc, graph, "svg", &img_data, &size);
+#else
+  {
+    guint tmp_size = 0; // Temporary uint to satisfy older API
+    gvRenderData (gvc, graph, "svg", &img_data, &tmp_size);
+    size = tmp_size;
+  }
+#endif
 
   agclose (graph);
   gvFreeContext (gvc);

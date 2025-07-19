@@ -105,6 +105,9 @@ if not pp_option.disabled()
   if cgraph_dep.found() and gvc_dep.found()
     clapperapp_c_args += ['-DHAVE_GRAPHVIZ']
     clapperapp_deps += [cgraph_dep, gvc_dep]
+    if gvc_dep.version().version_compare('>= 13.0.0')
+      clapperapp_c_args += ['-DHAVE_GVC_13']
+    endif
     clapperapp_available_functionalities += 'pipeline-preview'
   elif pp_option.enabled()
     error('pipeline-preview option was enabled, but required dependencies were not found')
