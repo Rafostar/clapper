@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,12 +16,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "clapper-uri-list-demux-private.h"
+#include "clapper-harvest-uri-demux-private.h"
 
-#define GST_CAT_DEFAULT clapper_uri_list_demux_debug
+#define GST_CAT_DEFAULT clapper_harvest_uri_demux_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
-struct _ClapperUriListDemux
+struct _ClapperHarvestUriDemux
 {
   ClapperUriBaseDemux parent;
 
@@ -32,12 +32,12 @@ struct _ClapperUriListDemux
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS ("text/uri-list, source=(string)clapper-harvest"));
+    GST_STATIC_CAPS ("text/x-uri, source=(string)clapper-harvest"));
 
-#define parent_class clapper_uri_list_demux_parent_class
-G_DEFINE_TYPE (ClapperUriListDemux, clapper_uri_list_demux, CLAPPER_TYPE_URI_BASE_DEMUX);
-GST_ELEMENT_REGISTER_DEFINE (clapperurilistdemux, "clapperurilistdemux",
-    512, CLAPPER_TYPE_URI_LIST_DEMUX);
+#define parent_class clapper_harvest_uri_demux_parent_class
+G_DEFINE_TYPE (ClapperHarvestUriDemux, clapper_harvest_uri_demux, CLAPPER_TYPE_URI_BASE_DEMUX);
+GST_ELEMENT_REGISTER_DEFINE (clapperharvesturidemux, "clapperharvesturidemux",
+    512, CLAPPER_TYPE_HARVEST_URI_DEMUX);
 
 static void
 _set_property (GstObject *obj, const gchar *prop_name, gpointer value)
@@ -93,10 +93,10 @@ configure_deep_element (GQuark field_id, const GValue *value, GstElement *child)
 }
 
 static void
-clapper_uri_list_demux_deep_element_added (GstBin *bin, GstBin *sub_bin, GstElement *child)
+clapper_harvest_uri_demux_deep_element_added (GstBin *bin, GstBin *sub_bin, GstElement *child)
 {
   if (GST_OBJECT_FLAG_IS_SET (child, GST_ELEMENT_FLAG_SOURCE)) {
-    ClapperUriListDemux *self = CLAPPER_URI_LIST_DEMUX_CAST (bin);
+    ClapperHarvestUriDemux *self = CLAPPER_HARVEST_URI_DEMUX_CAST (bin);
 
     g_mutex_lock (&self->lock);
 
@@ -110,7 +110,7 @@ clapper_uri_list_demux_deep_element_added (GstBin *bin, GstBin *sub_bin, GstElem
 }
 
 static gboolean
-clapper_uri_list_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
+clapper_harvest_uri_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
     GstBuffer *buffer, GCancellable *cancellable)
 {
   GstMemory *mem = gst_buffer_peek_memory (buffer, 0);
@@ -127,12 +127,12 @@ clapper_uri_list_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
 }
 
 static void
-clapper_uri_list_demux_handle_custom_event (ClapperUriBaseDemux *uri_bd, GstEvent *event)
+clapper_harvest_uri_demux_handle_custom_event (ClapperUriBaseDemux *uri_bd, GstEvent *event)
 {
   const GstStructure *structure = gst_event_get_structure (event);
 
   if (structure && gst_structure_has_name (structure, "http-headers")) {
-    ClapperUriListDemux *self = CLAPPER_URI_LIST_DEMUX_CAST (uri_bd);
+    ClapperHarvestUriDemux *self = CLAPPER_HARVEST_URI_DEMUX_CAST (uri_bd);
 
     GST_DEBUG_OBJECT (self, "Received \"http-headers\" custom event");
 
@@ -146,15 +146,15 @@ clapper_uri_list_demux_handle_custom_event (ClapperUriBaseDemux *uri_bd, GstEven
 }
 
 static void
-clapper_uri_list_demux_init (ClapperUriListDemux *self)
+clapper_harvest_uri_demux_init (ClapperHarvestUriDemux *self)
 {
   g_mutex_init (&self->lock);
 }
 
 static void
-clapper_uri_list_demux_finalize (GObject *object)
+clapper_harvest_uri_demux_finalize (GObject *object)
 {
-  ClapperUriListDemux *self = CLAPPER_URI_LIST_DEMUX_CAST (object);
+  ClapperHarvestUriDemux *self = CLAPPER_HARVEST_URI_DEMUX_CAST (object);
 
   GST_TRACE_OBJECT (self, "Finalize");
 
@@ -165,26 +165,26 @@ clapper_uri_list_demux_finalize (GObject *object)
 }
 
 static void
-clapper_uri_list_demux_class_init (ClapperUriListDemuxClass *klass)
+clapper_harvest_uri_demux_class_init (ClapperHarvestUriDemuxClass *klass)
 {
   GObjectClass *gobject_class = (GObjectClass *) klass;
   GstElementClass *gstelement_class = (GstElementClass *) klass;
   GstBinClass *gstbin_class = (GstBinClass *) klass;
   ClapperUriBaseDemuxClass *clapperuribd_class = (ClapperUriBaseDemuxClass *) klass;
 
-  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperurilistdemux", 0,
-      "Clapper URI List Demux");
+  GST_DEBUG_CATEGORY_INIT (GST_CAT_DEFAULT, "clapperharvesturidemux", 0,
+      "Clapper Harvest URI Demux");
 
-  gobject_class->finalize = clapper_uri_list_demux_finalize;
+  gobject_class->finalize = clapper_harvest_uri_demux_finalize;
 
-  gstbin_class->deep_element_added = clapper_uri_list_demux_deep_element_added;
+  gstbin_class->deep_element_added = clapper_harvest_uri_demux_deep_element_added;
 
-  clapperuribd_class->process_buffer = clapper_uri_list_demux_process_buffer;
-  clapperuribd_class->handle_custom_event = clapper_uri_list_demux_handle_custom_event;
+  clapperuribd_class->process_buffer = clapper_harvest_uri_demux_process_buffer;
+  clapperuribd_class->handle_custom_event = clapper_harvest_uri_demux_handle_custom_event;
 
   gst_element_class_add_static_pad_template (gstelement_class, &sink_template);
 
-  gst_element_class_set_static_metadata (gstelement_class, "Clapper URI List Demux",
-      "Demuxer", "A custom demuxer for URI lists",
+  gst_element_class_set_static_metadata (gstelement_class, "Clapper Harvest URI Demux",
+      "Demuxer", "A custom demuxer for harvested URI",
       "Rafał Dzięgiel <rafostar.github@gmail.com>");
 }

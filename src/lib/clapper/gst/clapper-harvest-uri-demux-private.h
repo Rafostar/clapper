@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,12 +26,12 @@
 
 G_BEGIN_DECLS
 
-#define CLAPPER_TYPE_URI_LIST_DEMUX (clapper_uri_list_demux_get_type())
-#define CLAPPER_URI_LIST_DEMUX_CAST(obj) ((ClapperUriListDemux *)(obj))
+#define CLAPPER_TYPE_HARVEST_URI_DEMUX (clapper_harvest_uri_demux_get_type())
+#define CLAPPER_HARVEST_URI_DEMUX_CAST(obj) ((ClapperHarvestUriDemux *)(obj))
 
 G_GNUC_INTERNAL
-G_DECLARE_FINAL_TYPE (ClapperUriListDemux, clapper_uri_list_demux, CLAPPER, URI_LIST_DEMUX, ClapperUriBaseDemux)
+G_DECLARE_FINAL_TYPE (ClapperHarvestUriDemux, clapper_harvest_uri_demux, CLAPPER, HARVEST_URI_DEMUX, ClapperUriBaseDemux)
 
-GST_ELEMENT_REGISTER_DECLARE (clapperurilistdemux)
+GST_ELEMENT_REGISTER_DECLARE (clapperharvesturidemux)
 
 G_END_DECLS

@@ -28,8 +28,8 @@
 
 #include "clapper-plugin-private.h"
 #include "clapper-extractable-src-private.h"
+#include "clapper-harvest-uri-demux-private.h"
 #include "clapper-playlist-demux-private.h"
-#include "clapper-uri-list-demux-private.h"
 
 gboolean
 clapper_gst_plugin_init (GstPlugin *plugin)
@@ -46,7 +46,7 @@ clapper_gst_plugin_init (GstPlugin *plugin)
   /* Avoid registering an URI handler without schemes */
   if (clapper_enhancer_proxy_list_has_proxy_with_interface (global_proxies, CLAPPER_TYPE_EXTRACTABLE)) {
     res &= (GST_ELEMENT_REGISTER (clapperextractablesrc, plugin)
-        && GST_ELEMENT_REGISTER (clapperurilistdemux, plugin));
+        && GST_ELEMENT_REGISTER (clapperharvesturidemux, plugin));
   }
 
   /* Type find will only register if there are playlistable enhancers */

@@ -163,7 +163,7 @@ clapper_sources = [
   'gst/clapper-extractable-src.c',
   'gst/clapper-enhancer-director.c',
   'gst/clapper-uri-base-demux.c',
-  'gst/clapper-uri-list-demux.c',
+  'gst/clapper-harvest-uri-demux.c',
   'gst/clapper-playlist-demux.c',
   '../shared/clapper-shared-utils.c',
 ]
