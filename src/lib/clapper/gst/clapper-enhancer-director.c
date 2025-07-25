@@ -106,9 +106,10 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 
       /* We are done with extractable, but keep harvest and try to cache it */
       if (success) {
-        if (!g_cancellable_is_cancelled (data->cancellable))
+        if (!g_cancellable_is_cancelled (data->cancellable)) {
+          clapper_harvest_set_enhancer_in_caps (harvest, proxy);
           clapper_harvest_export_to_cache (harvest, proxy, config, data->uri);
-
+        }
         gst_clear_structure (&config);
         break;
       }

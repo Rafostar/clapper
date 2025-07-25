@@ -30,6 +30,9 @@ G_GNUC_INTERNAL
 ClapperHarvest * clapper_harvest_new (void);
 
 G_GNUC_INTERNAL
+void clapper_harvest_set_enhancer_in_caps (ClapperHarvest *harvest, ClapperEnhancerProxy *proxy);
+
+G_GNUC_INTERNAL
 gboolean clapper_harvest_unpack (ClapperHarvest *harvest, GstBuffer **buffer, gsize *buf_size, GstCaps **caps, GstTagList **tags, GstToc **toc, GstStructure **headers);
 
 G_GNUC_INTERNAL
