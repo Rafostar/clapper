@@ -26,6 +26,8 @@
 #include "../clapper-playlistable.h"
 
 #define CLAPPER_PLAYLIST_MEDIA_TYPE "application/clapper-playlist"
+#define CLAPPER_CLAPS_MEDIA_TYPE "text/clapper-claps"
+#define URI_LIST_MEDIA_TYPE "text/uri-list"
 #define DATA_CHUNK_SIZE 4096
 
 #define GST_CAT_DEFAULT clapper_playlist_demux_debug
@@ -53,9 +55,10 @@ static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 static GstStaticPadTemplate sink_template = GST_STATIC_PAD_TEMPLATE ("sink",
     GST_PAD_SINK,
     GST_PAD_ALWAYS,
-    GST_STATIC_CAPS (CLAPPER_PLAYLIST_MEDIA_TYPE));
+    GST_STATIC_CAPS (CLAPPER_PLAYLIST_MEDIA_TYPE ";" CLAPPER_CLAPS_MEDIA_TYPE ";" URI_LIST_MEDIA_TYPE));
 
 static GstStaticCaps clapper_playlist_caps = GST_STATIC_CAPS (CLAPPER_PLAYLIST_MEDIA_TYPE);
+static GstStaticCaps clapper_claps_caps = GST_STATIC_CAPS (CLAPPER_CLAPS_MEDIA_TYPE);
 
 static void
 clapper_playlist_type_find (GstTypeFind *tf, ClapperEnhancerProxy *proxy)
@@ -125,13 +128,50 @@ clapper_playlist_type_find (GstTypeFind *tf, ClapperEnhancerProxy *proxy)
       CLAPPER_PLAYLIST_MEDIA_TYPE, "enhancer", G_TYPE_STRING, module_name, NULL);
 }
 
+/* Finds text file of full file paths. Claps file might also use URIs,
+ * but in that case lets GStreamer built-in type finders find that as
+ * "text/uri-list" and we will handle it with this element too. */
+static void
+clapper_claps_type_find (GstTypeFind *tf, gpointer user_data G_GNUC_UNUSED)
+{
+  const guint8 *data;
+
+  if ((data = gst_type_find_peek (tf, 0, 3))) {
+    gboolean possible;
+
+    /* Linux file path */
+    possible = (data[0] == '/' && g_ascii_isalnum (data[1]));
+
+#ifdef G_OS_WIN32
+    /* Windows file path ("C:\..." or "D:/...") */
+    if (!possible)
+      possible = (g_ascii_isalpha (data[0]) && data[1] == ':' && (data[2] == '\\' || data[2] == '/'));
+
+    /* Windows UNC Path */
+    if (!possible)
+      possible = (data[0] == '\\' && data[1] == '\\' && g_ascii_isalnum (data[2]));
+#endif
+
+    if (possible) {
+      GST_INFO ("Suggesting possible type: " CLAPPER_CLAPS_MEDIA_TYPE);
+      gst_type_find_suggest_empty_simple (tf, GST_TYPE_FIND_POSSIBLE, CLAPPER_CLAPS_MEDIA_TYPE);
+    }
+  }
+}
+
 static gboolean
 type_find_register (GstPlugin *plugin)
 {
   ClapperEnhancerProxyList *global_proxies = clapper_get_global_enhancer_proxies ();
-  GstCaps *reg_caps = NULL;
+  GstCaps *reg_caps;
   guint i, n_proxies = clapper_enhancer_proxy_list_get_n_proxies (global_proxies);
-  gboolean res = FALSE;
+  gboolean res;
+
+  reg_caps = gst_static_caps_get (&clapper_claps_caps);
+  res = gst_type_find_register (plugin, "clapper-claps",
+      GST_RANK_MARGINAL + 1, (GstTypeFindFunction) clapper_claps_type_find,
+      "claps", reg_caps, NULL, NULL);
+  gst_clear_caps (&reg_caps);
 
   for (i = 0; i < n_proxies; ++i) {
     ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (global_proxies, i);
@@ -159,6 +199,86 @@ G_DEFINE_TYPE (ClapperPlaylistDemux, clapper_playlist_demux, CLAPPER_TYPE_URI_BA
 GST_TYPE_FIND_REGISTER_DEFINE_CUSTOM (clapperplaylistdemux, type_find_register);
 GST_ELEMENT_REGISTER_DEFINE (clapperplaylistdemux, "clapperplaylistdemux",
     512, CLAPPER_TYPE_PLAYLIST_DEMUX);
+
+static GListStore *
+_parse_uri_list (ClapperPlaylistDemux *self, GUri *uri, GstBuffer *buffer,
+    GCancellable *cancellable, GError **error)
+{
+  GListStore *playlist;
+  GstMemory *mem;
+  GstMapInfo info;
+  const gchar *ptr, *end;
+
+  mem = gst_buffer_peek_memory (buffer, 0);
+  if (!mem || !gst_memory_map (mem, &info, GST_MAP_READ)) {
+    g_set_error (error, GST_RESOURCE_ERROR, GST_RESOURCE_ERROR_FAILED,
+        "Could not read URI list buffer data");
+    return NULL;
+  }
+
+  playlist = g_list_store_new (CLAPPER_TYPE_MEDIA_ITEM);
+  ptr = (gchar *) info.data;
+  end = ptr + info.size;
+
+  while (ptr < end) {
+    ClapperMediaItem *item = NULL;
+    const gchar *nl = memchr (ptr, '\n', end - ptr);
+    gsize len = nl ? nl - ptr : end - ptr;
+    gchar *line;
+
+    if (g_cancellable_is_cancelled (cancellable))
+      break;
+
+    line = g_strndup (ptr, len);
+    GST_DEBUG_OBJECT (self, "Parsing line: %s", line);
+
+    if (gst_uri_is_valid (line)) {
+      GST_DEBUG_OBJECT (self, "Found URI: %s", line);
+      item = clapper_media_item_new (line);
+    } else {
+      gchar *base_uri, *res_uri;
+
+      base_uri = g_uri_to_string (uri);
+      res_uri = g_uri_resolve_relative (base_uri, line, G_URI_FLAGS_ENCODED, error);
+      g_free (base_uri);
+
+      if (res_uri) {
+        GST_DEBUG_OBJECT (self, "Resolved URI: %s", res_uri);
+        item = clapper_media_item_new (res_uri);
+        g_free (res_uri);
+      }
+    }
+
+    g_free (line);
+
+    if (G_UNLIKELY (*error != NULL)) {
+      g_clear_object (&playlist);
+      break;
+    }
+
+    if (G_LIKELY (item != NULL))
+      g_list_store_append (playlist, (GObject *) item);
+
+    /* Advance to the next line */
+    ptr = nl ? (nl + 1) : end;
+  }
+
+  gst_memory_unmap (mem, &info);
+
+  return playlist;
+}
+
+static gboolean
+_caps_have_media_type (GstCaps *caps, const gchar *media_type)
+{
+  GstStructure *structure;
+  gboolean is_media_type = FALSE;
+
+  if (caps && (structure = gst_caps_get_structure (caps, 0)))
+    is_media_type = gst_structure_has_name (structure, media_type);
+
+  return is_media_type;
+}
 
 static void
 clapper_playlist_demux_handle_caps (ClapperUriBaseDemux *uri_bd, GstCaps *caps)
@@ -225,8 +345,6 @@ clapper_playlist_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
     GstBuffer *buffer, GCancellable *cancellable)
 {
   ClapperPlaylistDemux *self = CLAPPER_PLAYLIST_DEMUX_CAST (uri_bd);
-  ClapperEnhancerProxyList *proxies;
-  GList *filtered_proxies;
   GstPad *sink_pad;
   GstQuery *query;
   GUri *uri = NULL;
@@ -257,29 +375,42 @@ clapper_playlist_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
     return FALSE;
   }
 
-  if (!self->director)
-    self->director = clapper_enhancer_director_new ();
+  if (_caps_have_media_type (self->caps, CLAPPER_PLAYLIST_MEDIA_TYPE)) {
+    ClapperEnhancerProxyList *proxies;
+    GList *filtered_proxies;
 
-  GST_OBJECT_LOCK (self);
+    GST_OBJECT_LOCK (self);
 
-  if (G_LIKELY (self->enhancer_proxies != NULL)) {
-    GST_INFO_OBJECT (self, "Using enhancer proxies: %" GST_PTR_FORMAT, self->enhancer_proxies);
-    proxies = gst_object_ref (self->enhancer_proxies);
-  } else {
-    /* Compat for old ClapperDiscoverer feature that does not set this property */
-    GST_WARNING_OBJECT (self, "Falling back to using global enhancer proxy list!");
-    proxies = gst_object_ref (clapper_get_global_enhancer_proxies ());
+    if (G_LIKELY (self->enhancer_proxies != NULL)) {
+      GST_INFO_OBJECT (self, "Using enhancer proxies: %" GST_PTR_FORMAT, self->enhancer_proxies);
+      proxies = gst_object_ref (self->enhancer_proxies);
+    } else {
+      /* Compat for old ClapperDiscoverer feature that does not set this property */
+      GST_WARNING_OBJECT (self, "Falling back to using global enhancer proxy list!");
+      proxies = gst_object_ref (clapper_get_global_enhancer_proxies ());
+    }
+
+    GST_OBJECT_UNLOCK (self);
+
+    if (!self->director)
+      self->director = clapper_enhancer_director_new ();
+
+    filtered_proxies = _filter_playlistables (self, self->caps, proxies);
+    gst_object_unref (proxies);
+
+    playlist = clapper_enhancer_director_parse (self->director,
+        filtered_proxies, uri, buffer, cancellable, &error);
+
+    g_clear_list (&filtered_proxies, gst_object_unref);
+  } else if (_caps_have_media_type (self->caps, URI_LIST_MEDIA_TYPE)
+      || _caps_have_media_type (self->caps, CLAPPER_CLAPS_MEDIA_TYPE)) {
+    playlist = _parse_uri_list (self, uri, buffer, cancellable, &error);
+  } else { // Should never happen
+    playlist = NULL;
+    error = g_error_new (GST_RESOURCE_ERROR, GST_RESOURCE_ERROR_FAILED,
+        "Unsupported media type in caps");
   }
 
-  GST_OBJECT_UNLOCK (self);
-
-  filtered_proxies = _filter_playlistables (self, self->caps, proxies);
-  gst_object_unref (proxies);
-
-  playlist = clapper_enhancer_director_parse (self->director,
-      filtered_proxies, uri, buffer, cancellable, &error);
-
-  g_clear_list (&filtered_proxies, gst_object_unref);
   g_uri_unref (uri);
 
   if (!playlist) {
