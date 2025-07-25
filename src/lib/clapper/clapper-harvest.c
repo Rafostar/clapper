@@ -443,11 +443,15 @@ clapper_harvest_export_to_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
  *
  * Commonly used media types are:
  *
- *   * `application/dash+xml`
+ *   * `application/dash+xml` - DASH manifest
  *
- *   * `application/x-hls`
+ *   * `application/x-hls` - HLS manifest
  *
- *   * `text/uri-list`
+ *   * `text/x-uri` - direct media URI
+ *
+ *   * `text/uri-list` - playlist of URIs
+ *
+ *   * `application/clapper-playlist` - custom playlist format
  *
  * Returns: %TRUE when filled successfully, %FALSE if taken data was empty.
  *
@@ -468,6 +472,7 @@ clapper_harvest_fill (ClapperHarvest *self, const gchar *media_type, gpointer da
   if (gst_debug_category_get_threshold (GST_CAT_DEFAULT) >= GST_LEVEL_LOG) {
     gboolean is_printable = (strcmp (media_type, "application/dash+xml") == 0)
         || (strcmp (media_type, "application/x-hls") == 0)
+        || (strcmp (media_type, "text/x-uri") == 0)
         || (strcmp (media_type, "text/uri-list") == 0);
 
     if (is_printable) {
