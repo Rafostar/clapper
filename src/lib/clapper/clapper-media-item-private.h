@@ -34,6 +34,9 @@ G_GNUC_INTERNAL
 void clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDiscovererInfo *info);
 
 G_GNUC_INTERNAL
+gboolean clapper_media_item_update_from_item (ClapperMediaItem *item, ClapperMediaItem *other_item, ClapperPlayer *player);
+
+G_GNUC_INTERNAL
 gboolean clapper_media_item_set_duration (ClapperMediaItem *item, gdouble duration, ClapperAppBus *app_bus);
 
 G_GNUC_INTERNAL

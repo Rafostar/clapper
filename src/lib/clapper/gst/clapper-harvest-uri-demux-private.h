@@ -1,5 +1,5 @@
 /* Clapper Playback Library
- * Copyright (C) 2024 Rafał Dzięgiel <rafostar.github@gmail.com>
+ * Copyright (C) 2025 Rafał Dzięgiel <rafostar.github@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,23 +19,19 @@
 #pragma once
 
 #include <glib.h>
-#include <gio/gio.h>
+#include <glib-object.h>
+#include <gst/gst.h>
 
-#include "clapper-queue.h"
-#include "clapper-media-item.h"
-#include "clapper-player.h"
-#include "clapper-app-bus-private.h"
+#include "clapper-uri-base-demux-private.h"
 
 G_BEGIN_DECLS
 
-ClapperQueue * clapper_queue_new (void);
+#define CLAPPER_TYPE_HARVEST_URI_DEMUX (clapper_harvest_uri_demux_get_type())
+#define CLAPPER_HARVEST_URI_DEMUX_CAST(obj) ((ClapperHarvestUriDemux *)(obj))
 
-void clapper_queue_handle_played_item_changed (ClapperQueue *queue, ClapperMediaItem *played_item, ClapperAppBus *app_bus);
+G_GNUC_INTERNAL
+G_DECLARE_FINAL_TYPE (ClapperHarvestUriDemux, clapper_harvest_uri_demux, CLAPPER, HARVEST_URI_DEMUX, ClapperUriBaseDemux)
 
-void clapper_queue_handle_playlist (ClapperQueue *queue, ClapperMediaItem *playlist_item, GListStore *playlist);
-
-void clapper_queue_handle_about_to_finish (ClapperQueue *queue, ClapperPlayer *player);
-
-gboolean clapper_queue_handle_eos (ClapperQueue *queue, ClapperPlayer *player);
+GST_ELEMENT_REGISTER_DECLARE (clapperharvesturidemux)
 
 G_END_DECLS

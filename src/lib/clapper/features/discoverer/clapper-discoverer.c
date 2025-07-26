@@ -39,6 +39,7 @@
  */
 
 #include <gst/gst.h>
+#include <gst/tag/tag.h>
 #include <gst/pbutils/pbutils.h>
 
 #include "clapper-discoverer.h"
@@ -128,8 +129,9 @@ _run_discovery (ClapperDiscoverer *self)
   ClapperMediaItem *item;
   ClapperQueue *queue;
   ClapperDiscovererDiscoveryMode discovery_mode;
+  GstTagList *tags;
   const gchar *uri;
-  gboolean success = FALSE;
+  gboolean empty_tags, success = FALSE;
 
   if (self->pending_items->len == 0) {
     GST_DEBUG_OBJECT (self, "No more pending items");
@@ -154,6 +156,16 @@ _run_discovery (ClapperDiscoverer *self)
       && clapper_queue_item_is_current (queue, item)) {
     GST_DEBUG_OBJECT (self, "Queued %" GST_PTR_FORMAT
         " is current item, ignoring discovery", item);
+    goto finish;
+  }
+
+  tags = clapper_media_item_get_tags (item);
+  empty_tags = gst_tag_list_is_empty (tags);
+  gst_tag_list_unref (tags);
+
+  if (!empty_tags) {
+    GST_DEBUG_OBJECT (self, "Queued %" GST_PTR_FORMAT
+        " already has tags, ignoring discovery", item);
     goto finish;
   }
 

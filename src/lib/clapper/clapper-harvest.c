@@ -94,6 +94,13 @@ clapper_harvest_new (void)
   return harvest;
 }
 
+void
+clapper_harvest_set_enhancer_in_caps (ClapperHarvest *self, ClapperEnhancerProxy *proxy)
+{
+  gst_caps_set_simple (self->caps, "enhancer", G_TYPE_STRING,
+      clapper_enhancer_proxy_get_module_name (proxy), NULL);
+}
+
 gboolean
 clapper_harvest_unpack (ClapperHarvest *self,
     GstBuffer **buffer, gsize *buf_size, GstCaps **caps,
@@ -221,7 +228,6 @@ clapper_harvest_fill_from_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
   gchar *filename;
   const gchar *data, *read_str;
   const guint8 *buf_data;
-  guint8 *buf_copy;
   gsize buf_size;
   gint64 epoch_cached, epoch_now = 0;
   gdouble exp_seconds;
@@ -281,10 +287,10 @@ clapper_harvest_fill_from_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
     goto finish;
   }
 
-  /* Read media type */
+  /* Read caps */
   read_str = clapper_cache_read_string (&data);
   if (G_UNLIKELY (read_str == NULL)) {
-    GST_ERROR_OBJECT (self, "Could not read media type from cache file");
+    GST_ERROR_OBJECT (self, "Could not read caps from cache file");
     goto finish;
   }
 
@@ -296,9 +302,12 @@ clapper_harvest_fill_from_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
   }
 
   /* Fill harvest */
-  buf_copy = g_memdup2 (buf_data, buf_size);
-  if (!clapper_harvest_fill (self, read_str, buf_copy, buf_size))
+  if (!(self->caps = gst_caps_from_string (read_str))) {
+    GST_ERROR_OBJECT (self, "Could not construct caps from cache");
     goto finish;
+  }
+  self->buffer = gst_buffer_new_memdup (buf_data, buf_size);
+  self->buf_size = buf_size;
 
   /* Read tags */
   read_str = clapper_cache_read_string (&data);
@@ -332,7 +341,6 @@ clapper_harvest_export_to_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
     const GstStructure *config, GUri *uri)
 {
   GByteArray *bytes;
-  const GstStructure *caps_structure;
   gchar *filename, *temp_str = NULL;
   gboolean data_ok = TRUE;
 
@@ -366,12 +374,13 @@ clapper_harvest_export_to_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
   clapper_cache_store_string (bytes, temp_str); // NULL when no config
   g_clear_pointer (&temp_str, g_free);
 
-  /* Store media type */
-  caps_structure = gst_caps_get_structure (self->caps, 0);
-  if (G_LIKELY (caps_structure != NULL)) {
-    clapper_cache_store_string (bytes, gst_structure_get_name (caps_structure));
+  /* Store caps */
+  temp_str = gst_caps_to_string (self->caps);
+  if (G_LIKELY (temp_str != NULL)) {
+    clapper_cache_store_string (bytes, temp_str);
+    g_clear_pointer (&temp_str, g_free);
   } else {
-    GST_ERROR_OBJECT (self, "Cannot cache empty caps");
+    GST_ERROR_OBJECT (self, "Cannot cache caps");
     data_ok = FALSE;
   }
 
@@ -434,11 +443,15 @@ clapper_harvest_export_to_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
  *
  * Commonly used media types are:
  *
- *   * `application/dash+xml`
+ *   * `application/dash+xml` - DASH manifest
  *
- *   * `application/x-hls`
+ *   * `application/x-hls` - HLS manifest
  *
- *   * `text/uri-list`
+ *   * `text/x-uri` - direct media URI
+ *
+ *   * `text/uri-list` - playlist of URIs
+ *
+ *   * `application/clapper-playlist` - custom playlist format
  *
  * Returns: %TRUE when filled successfully, %FALSE if taken data was empty.
  *
@@ -459,6 +472,7 @@ clapper_harvest_fill (ClapperHarvest *self, const gchar *media_type, gpointer da
   if (gst_debug_category_get_threshold (GST_CAT_DEFAULT) >= GST_LEVEL_LOG) {
     gboolean is_printable = (strcmp (media_type, "application/dash+xml") == 0)
         || (strcmp (media_type, "application/x-hls") == 0)
+        || (strcmp (media_type, "text/x-uri") == 0)
         || (strcmp (media_type, "text/uri-list") == 0);
 
     if (is_printable) {

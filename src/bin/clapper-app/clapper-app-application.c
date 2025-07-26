@@ -642,18 +642,6 @@ clapper_app_application_command_line (GApplication *app, GApplicationCommandLine
   return EXIT_SUCCESS;
 }
 
-static gboolean
-_is_claps_file (GFile *file)
-{
-  gchar *basename = g_file_get_basename (file);
-  gboolean is_claps;
-
-  is_claps = (basename && g_str_has_suffix (basename, ".claps"));
-  g_free (basename);
-
-  return is_claps;
-}
-
 static void
 add_item_from_file (GFile *file, ClapperQueue *queue)
 {
@@ -664,51 +652,6 @@ add_item_from_file (GFile *file, ClapperQueue *queue)
   clapper_queue_add_item (queue, item);
 
   gst_object_unref (item);
-}
-
-static void
-add_items_from_claps_file (GFile *file, ClapperQueue *queue)
-{
-  GDataInputStream *dstream = NULL;
-  GFileInputStream *stream;
-  GError *error = NULL;
-  gchar *line;
-
-  if (!(stream = g_file_read (file, NULL, &error)))
-    goto finish;
-
-  dstream = g_data_input_stream_new (G_INPUT_STREAM (stream));
-
-  while ((line = g_data_input_stream_read_line (
-      dstream, NULL, NULL, &error))) {
-    g_strstrip (line);
-
-    if (strlen (line) > 0) {
-      GFile *tmp_file = gst_uri_is_valid (line)
-          ? g_file_new_for_uri (line)
-          : g_file_new_for_path (line);
-
-      if (_is_claps_file (tmp_file))
-        add_items_from_claps_file (tmp_file, queue);
-      else
-        add_item_from_file (tmp_file, queue);
-
-      g_object_unref (tmp_file);
-    }
-
-    g_free (line);
-  }
-
-finish:
-  if (error) {
-    GST_ERROR ("Could not read \".claps\" file, reason: %s", error->message);
-    g_error_free (error);
-  }
-  if (stream) {
-    g_input_stream_close (G_INPUT_STREAM (stream), NULL, NULL);
-    g_object_unref (stream);
-  }
-  g_clear_object (&dstream);
 }
 
 static void
@@ -779,12 +722,8 @@ clapper_app_application_open (GApplication *app,
   if (!handled) {
     gint i;
 
-    for (i = 0; i < n_files; ++i) {
-      if (_is_claps_file (files[i]))
-        add_items_from_claps_file (files[i], queue);
-      else
-        add_item_from_file (files[i], queue);
-    }
+    for (i = 0; i < n_files; ++i)
+      add_item_from_file (files[i], queue);
   }
 
   add_only = (g_strcmp0 (hint, "add-only") == 0);

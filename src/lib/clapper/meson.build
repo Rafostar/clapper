@@ -119,6 +119,7 @@ clapper_headers = [
   'clapper-marker.h',
   'clapper-media-item.h',
   'clapper-player.h',
+  'clapper-playlistable.h',
   'clapper-queue.h',
   'clapper-reactable.h',
   'clapper-stream.h',
@@ -147,6 +148,7 @@ clapper_sources = [
   'clapper-media-item.c',
   'clapper-playbin-bus.c',
   'clapper-player.c',
+  'clapper-playlistable.c',
   'clapper-queue.c',
   'clapper-reactable.c',
   'clapper-reactables-manager.c',
@@ -160,7 +162,9 @@ clapper_sources = [
   'gst/clapper-plugin.c',
   'gst/clapper-extractable-src.c',
   'gst/clapper-enhancer-director.c',
-  'gst/clapper-uri-list-demux.c',
+  'gst/clapper-uri-base-demux.c',
+  'gst/clapper-harvest-uri-demux.c',
+  'gst/clapper-playlist-demux.c',
   '../shared/clapper-shared-utils.c',
 ]
 clapper_c_args = [
