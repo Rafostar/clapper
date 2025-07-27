@@ -11,6 +11,8 @@ gir_init_section = '--add-init-section=extern void gst_init(gint*,gchar**);' + \
   'g_setenv("GST_PLUGIN_SYSTEM_PATH_1_0", "", TRUE);' + \
   'gst_init(NULL,NULL);'
 
+static_gst_plugin = get_option('builtin-loaders')
+
 subdir('gst')
 subdir('clapper')
 subdir('clapper-gtk')

@@ -34,7 +34,7 @@ struct _GstClapperImporterLoader
 {
   GstObject parent;
 
-  GModule *last_module;
+  const gchar *last_loader;
 
   GPtrArray *importers;
   GPtrArray *context_handlers;

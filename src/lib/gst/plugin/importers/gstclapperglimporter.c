@@ -99,7 +99,7 @@ gst_clapper_gl_importer_class_init (GstClapperGLImporterClass *klass)
 }
 
 GstClapperImporter *
-make_importer (GPtrArray *context_handlers)
+gst_clapper_glimporter_make_importer (GPtrArray *context_handlers)
 {
   GstClapperGLImporter *self;
   GstClapperContextHandler *handler;
@@ -117,7 +117,7 @@ make_importer (GPtrArray *context_handlers)
 }
 
 GstCaps *
-make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
+gst_clapper_glimporter_make_caps (gboolean is_template, GstRank *rank, GPtrArray *context_handlers)
 {
   *rank = GST_RANK_SECONDARY;
 
