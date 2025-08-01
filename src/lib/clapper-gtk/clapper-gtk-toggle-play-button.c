@@ -83,7 +83,7 @@ static void
 clapper_gtk_toggle_play_button_init (ClapperGtkTogglePlayButton *self)
 {
   gtk_button_set_icon_name (GTK_BUTTON (self), PLAY_ICON_NAME);
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (self), "video.toggle-play");
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (self), "av.toggle-play");
 }
 
 static void

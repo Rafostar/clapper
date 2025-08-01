@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="clapper-gtk">
-  <template class="ClapperGtkVideo" parent="GtkWidget">
+  <template class="ClapperGtkVideo" parent="ClapperGtkAv">
     <child type="overlay">
       <object class="ClapperGtkStatus" id="status">
         <property name="halign">center</property>

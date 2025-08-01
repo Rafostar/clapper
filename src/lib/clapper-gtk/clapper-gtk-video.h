@@ -27,6 +27,7 @@
 #include <gtk/gtk.h>
 #include <clapper/clapper.h>
 
+#include <clapper-gtk/clapper-gtk-av.h>
 #include <clapper-gtk/clapper-gtk-visibility.h>
 
 G_BEGIN_DECLS
@@ -35,7 +36,7 @@ G_BEGIN_DECLS
 #define CLAPPER_GTK_VIDEO_CAST(obj) ((ClapperGtkVideo *)(obj))
 
 CLAPPER_GTK_API
-G_DECLARE_FINAL_TYPE (ClapperGtkVideo, clapper_gtk_video, CLAPPER_GTK, VIDEO, GtkWidget)
+G_DECLARE_FINAL_TYPE (ClapperGtkVideo, clapper_gtk_video, CLAPPER_GTK, VIDEO, ClapperGtkAv)
 
 CLAPPER_GTK_API
 GtkWidget * clapper_gtk_video_new (void);
