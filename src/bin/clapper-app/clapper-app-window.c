@@ -1198,6 +1198,7 @@ clapper_app_window_init (ClapperAppWindow *self)
   GtkSettings *settings;
   GtkWidget *dummy_titlebar;
   gint distance = 0;
+  GtkWindowGroup *group;
 
   gtk_widget_set_size_request (GTK_WIDGET (self),
       MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT);
@@ -1229,6 +1230,11 @@ clapper_app_window_init (ClapperAppWindow *self)
 
   gtk_drop_target_set_gtypes (self->drop_target,
       (GType[3]) { GDK_TYPE_FILE_LIST, G_TYPE_FILE, G_TYPE_STRING }, 3);
+
+  /* Add to window group */
+  group = gtk_window_group_new ();
+  gtk_window_group_add_window (group, GTK_WINDOW (self));
+  g_object_unref (group);
 }
 
 static void
