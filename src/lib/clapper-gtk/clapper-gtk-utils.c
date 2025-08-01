@@ -21,7 +21,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "clapper-gtk-utils-private.h"
-#include "clapper-gtk-video.h"
+#include "clapper-gtk-av.h"
 
 static gboolean initialized = FALSE;
 
@@ -29,18 +29,18 @@ static gboolean initialized = FALSE;
  * clapper_gtk_get_player_from_ancestor:
  * @widget: a #GtkWidget
  *
- * Get [class@Clapper.Player] used by [class@ClapperGtk.Video] ancestor of @widget.
+ * Get [class@Clapper.Player] used by [class@ClapperGtk.Av] ancestor of @widget.
  *
  * This utility is a convenience wrapper for calling [method@Gtk.Widget.get_ancestor]
- * of type `CLAPPER_GTK_TYPE_VIDEO` and [method@ClapperGtk.Video.get_player] with
+ * of type `CLAPPER_GTK_TYPE_AV` and [method@ClapperGtk.Av.get_player] with
  * additional %NULL checking and type casting.
  *
  * This is meant to be used mainly for custom widget development as an easy access to the
  * underlying parent [class@Clapper.Player] object. If you want to get the player from
- * [class@ClapperGtk.Video] widget itself, use [method@ClapperGtk.Video.get_player] instead.
+ * [class@ClapperGtk.Av] widget itself, use [method@ClapperGtk.Av.get_player] instead.
  *
  * Rememeber that this function will return %NULL when widget does not have
- * a [class@ClapperGtk.Video] ancestor in widget hierarchy (widget is not yet placed).
+ * a [class@ClapperGtk.Av] ancestor in widget hierarchy (widget is not yet placed).
  *
  * Returns: (transfer none) (nullable): a #ClapperPlayer from ancestor of a @widget.
  */
@@ -52,8 +52,8 @@ clapper_gtk_get_player_from_ancestor (GtkWidget *widget)
 
   g_return_val_if_fail (GTK_IS_WIDGET (widget), NULL);
 
-  if ((parent = gtk_widget_get_ancestor (widget, CLAPPER_GTK_TYPE_VIDEO)))
-    player = clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (parent));
+  if ((parent = gtk_widget_get_ancestor (widget, CLAPPER_GTK_TYPE_AV)))
+    player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (parent));
 
   return player;
 }
