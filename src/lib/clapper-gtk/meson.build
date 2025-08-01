@@ -90,6 +90,7 @@ clappergtk_conf_inc = [
 
 clappergtk_headers = [
   'clapper-gtk.h',
+  'clapper-gtk-av.h',
   'clapper-gtk-enums.h',
   'clapper-gtk-billboard.h',
   'clapper-gtk-container.h',
@@ -109,6 +110,7 @@ clappergtk_headers = [
   clappergtk_visibility_header,
 ]
 clappergtk_sources = [
+  'clapper-gtk-av.c',
   'clapper-gtk-billboard.c',
   'clapper-gtk-buffering-animation.c',
   'clapper-gtk-buffering-paintable.c',
