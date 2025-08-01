@@ -82,7 +82,7 @@ clapper_gtk_next_item_button_init (ClapperGtkNextItemButton *self)
 {
   gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
   gtk_button_set_icon_name (GTK_BUTTON (self), "media-skip-forward-symbolic");
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (self), "video.next-item");
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (self), "av.next-item");
 }
 
 static void
