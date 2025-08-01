@@ -21,7 +21,7 @@
  *
  * A base class for GTK audio and video widgets.
  *
- * See [class@ClapperGtk.Video].
+ * See its descendants: [class@ClapperGtk.Audio] and [class@ClapperGtk.Video].
  *
  * # Actions
  *
