@@ -231,7 +231,7 @@ video_map_cb (GtkWidget *widget, ClapperAppWindow *self)
 
   GST_TRACE_OBJECT (self, "Video map");
 
-  player = clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (self->video));
+  player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self->video));
 
   g_signal_connect (player, "notify::volume",
       G_CALLBACK (_player_volume_changed_cb), self);
@@ -252,7 +252,7 @@ video_unmap_cb (GtkWidget *widget, ClapperAppWindow *self)
 
   GST_TRACE_OBJECT (self, "Video unmap");
 
-  player = clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (self->video));
+  player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self->video));
 
   g_signal_handlers_disconnect_by_func (player, _player_volume_changed_cb, self);
   g_signal_handlers_disconnect_by_func (player, _player_speed_changed_cb, self);
@@ -524,7 +524,7 @@ drag_update_cb (GtkGestureDrag *drag,
 static inline void
 _alter_volume (ClapperAppWindow *self, gdouble dy)
 {
-  ClapperPlayer *player = clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (self->video));
+  ClapperPlayer *player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self->video));
   gdouble volume = clapper_player_get_volume (player);
 
   /* We do not want for volume to change too suddenly */
@@ -547,7 +547,7 @@ _alter_volume (ClapperAppWindow *self, gdouble dy)
 static inline void
 _alter_speed (ClapperAppWindow *self, gdouble dx)
 {
-  ClapperPlayer *player = clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (self->video));
+  ClapperPlayer *player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self->video));
   gdouble speed = clapper_player_get_speed (player);
 
   speed -= dx * 0.02;
@@ -571,8 +571,7 @@ _begin_seek_operation (ClapperAppWindow *self)
   if (self->seeking)
     return FALSE;
 
-  player = clapper_gtk_video_get_player (
-      CLAPPER_GTK_VIDEO_CAST (self->video));
+  player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self->video));
   queue = clapper_player_get_queue (player);
   current_item = clapper_queue_get_current_item (queue);
 
@@ -600,8 +599,8 @@ static void
 _end_seek_operation (ClapperAppWindow *self)
 {
   if (self->seeking && self->current_duration > 0) {
-    ClapperPlayer *player = clapper_gtk_video_get_player (
-        CLAPPER_GTK_VIDEO_CAST (self->video));
+    ClapperPlayer *player = clapper_gtk_av_get_player (
+        CLAPPER_GTK_AV_CAST (self->video));
 
     clapper_player_seek_custom (player, self->pending_position,
         g_settings_get_int (self->settings, "seek-method"));
@@ -764,8 +763,8 @@ _handle_seek_key_press (ClapperAppWindow *self, gboolean forward)
 static void
 _handle_chapter_key_press (ClapperAppWindow *self, gboolean forward)
 {
-  ClapperPlayer *player = clapper_gtk_video_get_player (
-      CLAPPER_GTK_VIDEO_CAST (self->video));
+  ClapperPlayer *player = clapper_gtk_av_get_player (
+      CLAPPER_GTK_AV_CAST (self->video));
   ClapperQueue *queue = clapper_player_get_queue (player);
   ClapperMediaItem *current_item = clapper_queue_get_current_item (queue);
   ClapperTimeline *timeline;
@@ -855,8 +854,8 @@ _handle_chapter_key_press (ClapperAppWindow *self, gboolean forward)
 static void
 _handle_item_key_press (ClapperAppWindow *self, gboolean forward)
 {
-  ClapperPlayer *player = clapper_gtk_video_get_player (
-      CLAPPER_GTK_VIDEO_CAST (self->video));
+  ClapperPlayer *player = clapper_gtk_av_get_player (
+      CLAPPER_GTK_AV_CAST (self->video));
   ClapperQueue *queue = clapper_player_get_queue (player);
   guint prev_index, index;
 
@@ -887,8 +886,8 @@ _handle_speed_key_press (ClapperAppWindow *self, gboolean forward)
 static inline void
 _handle_progression_key_press (ClapperAppWindow *self)
 {
-  ClapperPlayer *player = clapper_gtk_video_get_player (
-      CLAPPER_GTK_VIDEO_CAST (self->video));
+  ClapperPlayer *player = clapper_gtk_av_get_player (
+      CLAPPER_GTK_AV_CAST (self->video));
   ClapperQueue *queue = clapper_player_get_queue (player);
   ClapperQueueProgressionMode mode;
   const gchar *icon = NULL, *label = NULL;
@@ -1123,7 +1122,7 @@ clapper_app_window_get_video (ClapperAppWindow *self)
 ClapperPlayer *
 clapper_app_window_get_player (ClapperAppWindow *self)
 {
-  return clapper_gtk_video_get_player (CLAPPER_GTK_VIDEO_CAST (self->video));
+  return clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self->video));
 }
 
 ClapperAppWindowExtraOptions *
