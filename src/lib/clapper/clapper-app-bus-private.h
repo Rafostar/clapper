@@ -52,6 +52,8 @@ void clapper_app_bus_post_object_desc_signal (ClapperAppBus *app_bus, GstObject 
 
 void clapper_app_bus_post_desc_with_details_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, const gchar *desc, const gchar *details);
 
+void clapper_app_bus_post_message_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, GstMessage *msg);
+
 void clapper_app_bus_post_error_signal (ClapperAppBus *app_bus, GstObject *src, guint signal_id, GError *error, const gchar *debug_info);
 
 G_END_DECLS
