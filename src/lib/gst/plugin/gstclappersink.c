@@ -411,24 +411,18 @@ gst_clapper_sink_navigation_send_event (GstNavigation *navigation,
 {
   GstClapperSink *sink = GST_CLAPPER_SINK_CAST (navigation);
   GstEvent *event;
+  GstPad *pad;
 
   GST_TRACE_OBJECT (sink, "Navigation event: %" GST_PTR_FORMAT, structure);
-  event = gst_event_new_navigation (structure);
+  event = gst_event_new_navigation (structure); // transfer full
+  pad = gst_pad_get_peer (GST_VIDEO_SINK_PAD (sink));
 
-  if (G_LIKELY (event)) {
-    GstPad *pad;
+  if (G_LIKELY (pad != NULL)) {
+    if (!gst_pad_send_event (pad, event)) // transfer full
+      GST_LOG_OBJECT (sink, "Upstream did not handle navigation event");
 
-    pad = gst_pad_get_peer (GST_VIDEO_SINK_PAD (sink));
-
-    if (G_LIKELY (pad)) {
-      if (!gst_pad_send_event (pad, gst_event_ref (event))) {
-        /* If upstream didn't handle the event we'll post a message with it
-         * for the application in case it wants to do something with it */
-        gst_element_post_message (GST_ELEMENT_CAST (sink),
-            gst_navigation_message_new_event (GST_OBJECT_CAST (sink), event));
-      }
-      gst_object_unref (pad);
-    }
+    gst_object_unref (pad);
+  } else {
     gst_event_unref (event);
   }
 }
