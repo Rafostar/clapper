@@ -137,13 +137,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property" href="property.Video.auto-inhibit.html">auto-inhibit</a>
-  
     <a class="property" href="property.Video.fade-delay.html">fade-delay</a>
-  
-    <a class="property" href="property.Video.inhibited.html">inhibited</a>
-  
-    <a class="property" href="property.Video.player.html">player</a>
   
     <a class="property" href="property.Video.touch-fade-delay.html">touch-fade-delay</a>
   
@@ -202,7 +196,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
           
         </h4>
 
-        <pre><code>final class ClapperGtk.Video : Gtk.Widget
+        <pre><code>final class ClapperGtk.Video : ClapperGtk.Av
   implements Gtk.Accessible, Gtk.Buildable, Gtk.ConstraintTarget {
   /* No available fields */
 }</pre></code>
@@ -210,8 +204,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <div class="docblock">
           <p>A ready to be used <span class="caps">GTK</span> video widget implementing Clapper <span class="caps">API</span>.</p>
 <p><code>ClapperGtkVideo</code> is the main widget exposed by <code>ClapperGtk</code> <span class="caps">API</span>. It both displays
-videos played by <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> (exposed as its property) and manages
-revealing and fading of any additional widgets overlaid on top of&nbsp;it.</p>
+videos played by <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> (exposed as <a href="property.Av.player.html"><code>ClapperGtkAv:player</code></a> property)
+and manages revealing and fading of any additional widgets overlaid on top of&nbsp;it.</p>
 <p>Other widgets provided by <code>ClapperGtk</code> library, once placed anywhere on video
 (including nesting within another widget like <a href="javascript:void(0)" data-namespace="Gtk" data-link="class.Box.html" class="external"><code>GtkBox</code></a>) will automatically
 control <code>ClapperGtkVideo</code> they were overlaid on top of. This allows to freely create
@@ -219,7 +213,7 @@ custom playback control panels best suited for specific application. Additionall
 pre-made widgets such as <a href="class.SimpleControls.html"><code>ClapperGtkSimpleControls</code></a> are also&nbsp;available.</p>
 <h1 id="basic-usage">Basic usage<a class="md-anchor" href="#basic-usage" title="Permanent link"></a></h1>
 <p>A typical use case is to embed video widget as part of your app where video playback
-is needed. Get the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> belonging to the video widget and start adding
+is needed. Get the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Player.html" class="external"><code>ClapperPlayer</code></a> belonging to the <span class="caps">AV</span> widget and start adding
 new <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.MediaItem.html" class="external"><code>ClapperMediaItem</code></a> items to the <a href="javascript:void(0)" data-namespace="Clapper" data-link="class.Queue.html" class="external"><code>ClapperQueue</code></a> for playback.
 For more information please refer to the Clapper playback library&nbsp;documentation.</p>
 <p><code>ClapperGtkVideo</code> can automatically take care of revealing and later fading overlaid
@@ -228,26 +222,8 @@ content when interacting with the video. To do this, simply add your widgets wit
 on top of video (or take care of visibility within overlaid widget itself) you can add
 it to the video as a normal overlay with <a href="method.Video.add_overlay.html"><code>clapper_gtk_video_add_overlay()</code></a>.</p>
 <h1 id="actions">Actions<a class="md-anchor" href="#actions" title="Permanent link"></a></h1>
-<p><code>ClapperGtkVideo</code> defines a set of built-in&nbsp;actions:</p>
-<div class="codehilite"><pre><span></span><code><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.toggle-play&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">toggle play/pause</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.play&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">start/resume playback</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.pause&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pause playback</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.stop&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stop playback</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.seek&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seek to position (variant &quot;d&quot;)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.seek-custom&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">seek to position using seek method (variant &quot;(di)&quot;)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.toggle-mute&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">toggle mute state</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.set-mute&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set mute state (variant &quot;b&quot;)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.volume-up&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">increase volume by 2%</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.volume-down&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">decrease volume by 2%</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.set-volume&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set volume to specified value (variant &quot;d&quot;)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.speed-up&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">increase speed (from 0.05x - 2x range to nearest quarter)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.speed-down&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">decrease speed (from 0.05x - 2x range to nearest quarter)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.set-speed&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">set speed to specified value (variant &quot;d&quot;)</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.previous-item&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select previous item in queue</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.next-item&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select next item in queue</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;video.select-item&quot;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">select item at specified index in queue (variant &quot;u&quot;)</span>
-</code></pre></div>
-
+<p>You can use built-in actions of parent <a href="class.Av.html"><code>ClapperGtkAv</code></a>.
+See its documentation, for the list of available&nbsp;ones.</p>
 <h1 id="clappergtkvideo-as-gtkbuildable">ClapperGtkVideo as GtkBuildable<a class="md-anchor" href="#clappergtkvideo-as-gtkbuildable" title="Permanent link"></a></h1>
 <p><code>ClapperGtkVideo</code> implementation of the <a href="javascript:void(0)" data-namespace="Gtk" data-link="iface.Buildable.html" class="external"><code>GtkBuildable</code></a> interface supports
 placing children as either normal overlay by specifying <code>overlay</code> or a fading
@@ -288,9 +264,9 @@ Position of overlaid content is determined by <code>valign/halign</code> propert
         <!-- Generated by graphviz version 12.2.1 (20241206.2353)
  -->
 <!-- Title: hierarchy Pages: 1 -->
-<svg width="403pt" height="332pt"
- viewBox="0.00 0.00 402.88 332.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 328)">
+<svg width="403pt" height="404pt"
+ viewBox="0.00 0.00 402.88 404.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 400)">
 <title>hierarchy</title>
 <!-- this -->
 <g id="node1" class="node">
@@ -302,88 +278,102 @@ Position of overlaid content is determined by <code>valign/halign</code> propert
 </g>
 </g>
 <!-- implements_0 -->
-<g id="node5" class="node">
+<g id="node6" class="node">
 <title>implements_0</title>
-<g id="a_node5"><a xlink:title="Gtk.Accessible">
+<g id="a_node6"><a xlink:title="Gtk.Accessible">
 <polygon fill="none" stroke="black" points="107.5,-36 0,-36 0,0 107.5,0 107.5,-36"/>
 <text text-anchor="middle" x="53.75" y="-14.45" font-family="sans-serif" font-size="14.00">GtkAccessible</text>
 </a>
 </g>
 </g>
 <!-- this&#45;&#45;implements_0 -->
-<g id="edge4" class="edge">
+<g id="edge5" class="edge">
 <title>this&#45;&#45;implements_0</title>
 <path fill="none" stroke="black" stroke-dasharray="1,5" d="M145.28,-71.52C126.51,-60.74 102.53,-46.99 83.83,-36.26"/>
 </g>
 <!-- implements_1 -->
-<g id="node6" class="node">
+<g id="node7" class="node">
 <title>implements_1</title>
-<g id="a_node6"><a xlink:title="Gtk.Buildable">
+<g id="a_node7"><a xlink:title="Gtk.Buildable">
 <polygon fill="none" stroke="black" points="226.12,-36 125.38,-36 125.38,0 226.12,0 226.12,-36"/>
 <text text-anchor="middle" x="175.75" y="-14.45" font-family="sans-serif" font-size="14.00">GtkBuildable</text>
 </a>
 </g>
 </g>
 <!-- this&#45;&#45;implements_1 -->
-<g id="edge5" class="edge">
+<g id="edge6" class="edge">
 <title>this&#45;&#45;implements_1</title>
 <path fill="none" stroke="black" stroke-dasharray="1,5" d="M175.75,-71.7C175.75,-60.85 175.75,-46.92 175.75,-36.1"/>
 </g>
 <!-- implements_2 -->
-<g id="node7" class="node">
+<g id="node8" class="node">
 <title>implements_2</title>
-<g id="a_node7"><a xlink:title="Gtk.ConstraintTarget">
+<g id="a_node8"><a xlink:title="Gtk.ConstraintTarget">
 <polygon fill="none" stroke="black" points="394.88,-36 244.62,-36 244.62,0 394.88,0 394.88,-36"/>
 <text text-anchor="middle" x="319.75" y="-14.45" font-family="sans-serif" font-size="14.00">GtkConstraintTarget</text>
 </a>
 </g>
 </g>
 <!-- this&#45;&#45;implements_2 -->
-<g id="edge6" class="edge">
+<g id="edge7" class="edge">
 <title>this&#45;&#45;implements_2</title>
 <path fill="none" stroke="black" stroke-dasharray="1,5" d="M211.72,-71.52C233.87,-60.74 262.17,-46.99 284.24,-36.26"/>
 </g>
 <!-- ancestor_0 -->
-<g id="node2" class="node">
+<g id="node2" class="node link">
 <title>ancestor_0</title>
-<g id="a_node2"><a xlink:title="Gtk.Widget">
-<path fill="none" stroke="black" d="M201.75,-180C201.75,-180 149.75,-180 149.75,-180 143.75,-180 137.75,-174 137.75,-168 137.75,-168 137.75,-156 137.75,-156 137.75,-150 143.75,-144 149.75,-144 149.75,-144 201.75,-144 201.75,-144 207.75,-144 213.75,-150 213.75,-156 213.75,-156 213.75,-168 213.75,-168 213.75,-174 207.75,-180 201.75,-180"/>
-<text text-anchor="middle" x="175.75" y="-155.82" font-family="Times,serif" font-size="14.00">GtkWidget</text>
+<g id="a_node2"><a xlink:href="class.Av.html" xlink:title="ClapperGtkAv">
+<path fill="none" stroke="black" d="M211.12,-180C211.12,-180 140.38,-180 140.38,-180 134.38,-180 128.38,-174 128.38,-168 128.38,-168 128.38,-156 128.38,-156 128.38,-150 134.38,-144 140.38,-144 140.38,-144 211.12,-144 211.12,-144 217.12,-144 223.12,-150 223.12,-156 223.12,-156 223.12,-168 223.12,-168 223.12,-174 217.12,-180 211.12,-180"/>
+<text text-anchor="middle" x="175.75" y="-155.82" font-family="Times,serif" font-size="14.00">ClapperGtkAv</text>
 </a>
 </g>
 </g>
 <!-- ancestor_0&#45;&#45;this -->
-<g id="edge3" class="edge">
+<g id="edge4" class="edge">
 <title>ancestor_0&#45;&#45;this</title>
 <path fill="none" stroke="black" d="M175.75,-143.7C175.75,-132.85 175.75,-118.92 175.75,-108.1"/>
 </g>
 <!-- ancestor_1 -->
 <g id="node3" class="node">
 <title>ancestor_1</title>
-<g id="a_node3"><a xlink:title="GObject.InitiallyUnowned">
-<path fill="none" stroke="black" d="M224.25,-252C224.25,-252 127.25,-252 127.25,-252 121.25,-252 115.25,-246 115.25,-240 115.25,-240 115.25,-228 115.25,-228 115.25,-222 121.25,-216 127.25,-216 127.25,-216 224.25,-216 224.25,-216 230.25,-216 236.25,-222 236.25,-228 236.25,-228 236.25,-240 236.25,-240 236.25,-246 230.25,-252 224.25,-252"/>
-<text text-anchor="middle" x="175.75" y="-227.82" font-family="Times,serif" font-size="14.00">GInitiallyUnowned</text>
+<g id="a_node3"><a xlink:title="Gtk.Widget">
+<path fill="none" stroke="black" d="M201.75,-252C201.75,-252 149.75,-252 149.75,-252 143.75,-252 137.75,-246 137.75,-240 137.75,-240 137.75,-228 137.75,-228 137.75,-222 143.75,-216 149.75,-216 149.75,-216 201.75,-216 201.75,-216 207.75,-216 213.75,-222 213.75,-228 213.75,-228 213.75,-240 213.75,-240 213.75,-246 207.75,-252 201.75,-252"/>
+<text text-anchor="middle" x="175.75" y="-227.82" font-family="Times,serif" font-size="14.00">GtkWidget</text>
 </a>
 </g>
 </g>
 <!-- ancestor_1&#45;&#45;ancestor_0 -->
-<g id="edge2" class="edge">
+<g id="edge3" class="edge">
 <title>ancestor_1&#45;&#45;ancestor_0</title>
 <path fill="none" stroke="black" d="M175.75,-215.7C175.75,-204.85 175.75,-190.92 175.75,-180.1"/>
 </g>
 <!-- ancestor_2 -->
 <g id="node4" class="node">
 <title>ancestor_2</title>
-<g id="a_node4"><a xlink:title="GObject.Object">
-<path fill="none" stroke="black" d="M194.62,-324C194.62,-324 156.88,-324 156.88,-324 150.88,-324 144.88,-318 144.88,-312 144.88,-312 144.88,-300 144.88,-300 144.88,-294 150.88,-288 156.88,-288 156.88,-288 194.62,-288 194.62,-288 200.62,-288 206.62,-294 206.62,-300 206.62,-300 206.62,-312 206.62,-312 206.62,-318 200.62,-324 194.62,-324"/>
-<text text-anchor="middle" x="175.75" y="-299.82" font-family="Times,serif" font-size="14.00">GObject</text>
+<g id="a_node4"><a xlink:title="GObject.InitiallyUnowned">
+<path fill="none" stroke="black" d="M224.25,-324C224.25,-324 127.25,-324 127.25,-324 121.25,-324 115.25,-318 115.25,-312 115.25,-312 115.25,-300 115.25,-300 115.25,-294 121.25,-288 127.25,-288 127.25,-288 224.25,-288 224.25,-288 230.25,-288 236.25,-294 236.25,-300 236.25,-300 236.25,-312 236.25,-312 236.25,-318 230.25,-324 224.25,-324"/>
+<text text-anchor="middle" x="175.75" y="-299.82" font-family="Times,serif" font-size="14.00">GInitiallyUnowned</text>
 </a>
 </g>
 </g>
 <!-- ancestor_2&#45;&#45;ancestor_1 -->
-<g id="edge1" class="edge">
+<g id="edge2" class="edge">
 <title>ancestor_2&#45;&#45;ancestor_1</title>
 <path fill="none" stroke="black" d="M175.75,-287.7C175.75,-276.85 175.75,-262.92 175.75,-252.1"/>
+</g>
+<!-- ancestor_3 -->
+<g id="node5" class="node">
+<title>ancestor_3</title>
+<g id="a_node5"><a xlink:title="GObject.Object">
+<path fill="none" stroke="black" d="M194.62,-396C194.62,-396 156.88,-396 156.88,-396 150.88,-396 144.88,-390 144.88,-384 144.88,-384 144.88,-372 144.88,-372 144.88,-366 150.88,-360 156.88,-360 156.88,-360 194.62,-360 194.62,-360 200.62,-360 206.62,-366 206.62,-372 206.62,-372 206.62,-384 206.62,-384 206.62,-390 200.62,-396 194.62,-396"/>
+<text text-anchor="middle" x="175.75" y="-371.82" font-family="Times,serif" font-size="14.00">GObject</text>
+</a>
+</g>
+</g>
+<!-- ancestor_3&#45;&#45;ancestor_2 -->
+<g id="edge1" class="edge">
+<title>ancestor_3&#45;&#45;ancestor_2</title>
+<path fill="none" stroke="black" d="M175.75,-359.7C175.75,-348.85 175.75,-334.92 175.75,-324.1"/>
 </g>
 </g>
 </svg>
@@ -401,6 +391,10 @@ Position of overlaid content is determined by <code>valign/halign</code> propert
 
       <div class="docblock">
         <ul>
+        
+          
+          <li class="class"><a href="class.Av.html" title="Av">ClapperGtkAv</a></li>
+          
         
           
           <li class="class"><a class="external" href="javascript:void(0)" data-link="class.Widget.html" data-namespace="Gtk">GtkWidget</a></li>
@@ -505,13 +499,13 @@ Useful when placing widgets such as playback controls&nbsp;panels.</p>
           </div>
         </div>
       
-        <div class="">
+        <div class="deprecated">
           <h6><a href="method.Video.get_auto_inhibit.html">clapper_gtk_video_get_auto_inhibit</a></h6>
           <div class="docblock">
             <p>Get whether automatic session inhibit is&nbsp;enabled.</p>
           </div>
           <div class="docblock">
-            <p></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
           </div>
         </div>
       
@@ -525,24 +519,24 @@ Useful when placing widgets such as playback controls&nbsp;panels.</p>
           </div>
         </div>
       
-        <div class="">
+        <div class="deprecated">
           <h6><a href="method.Video.get_inhibited.html">clapper_gtk_video_get_inhibited</a></h6>
           <div class="docblock">
             <p>Get whether session is currently inhibited by
-<code>ClapperGtkVideo:auto-inhibit</code>.</p>
+<code>ClapperGtkAv:auto-inhibit</code>.</p>
           </div>
           <div class="docblock">
-            <p></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
           </div>
         </div>
       
-        <div class="">
+        <div class="deprecated">
           <h6><a href="method.Video.get_player.html">clapper_gtk_video_get_player</a></h6>
           <div class="docblock">
             <p>Get <code>ClapperPlayer</code> used by this <code>ClapperGtkVideo</code> instance.</p>
           </div>
           <div class="docblock">
-            <p></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
           </div>
         </div>
       
@@ -557,14 +551,14 @@ when revealed using touch&nbsp;device.</p>
           </div>
         </div>
       
-        <div class="">
+        <div class="deprecated">
           <h6><a href="method.Video.set_auto_inhibit.html">clapper_gtk_video_set_auto_inhibit</a></h6>
           <div class="docblock">
             <p>Set whether video should try to automatically inhibit session
 from idling (and possibly screen going black) when video is&nbsp;playing.</p>
           </div>
           <div class="docblock">
-            <p></p>
+            <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
           </div>
         </div>
       
@@ -591,6 +585,44 @@ when using&nbsp;touchscreen.</p>
       
       </div>
 
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-methods">
+          <h5 style="display:block;">Methods inherited from <a href="class.Av.html">ClapperGtkAv</a> (4)</h5><div class="docblock">
+          
+            <h6><a href="method.Av.get_auto_inhibit.html">clapper_gtk_av_get_auto_inhibit</a></h6><div class="docblock">
+              <p>Get whether automatic session inhibit is&nbsp;enabled.</p>
+            </div>
+            <div class="docblock">
+              <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </div>
+            
+            <h6><a href="method.Av.get_inhibited.html">clapper_gtk_av_get_inhibited</a></h6><div class="docblock">
+              <p>Get whether session is currently inhibited by
+<code>ClapperGtkAv:auto-inhibit</code>.</p>
+            </div>
+            <div class="docblock">
+              <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </div>
+            
+            <h6><a href="method.Av.get_player.html">clapper_gtk_av_get_player</a></h6><div class="docblock">
+              <p>Get <code>ClapperPlayer</code> used by this <code>ClapperGtkAv</code> instance.</p>
+            </div>
+            <div class="docblock">
+              <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </div>
+            
+            <h6><a href="method.Av.set_auto_inhibit.html">clapper_gtk_av_set_auto_inhibit</a></h6><div class="docblock">
+              <p>Set whether widget should try to automatically inhibit session
+from idling (and possibly screen going black) when media is&nbsp;playing.</p>
+            </div>
+            <div class="docblock">
+              <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+            </div>
+            
+          </div>
+        </div>
+        
       
         
         <div class="toggle-wrapper default-hide ancestor-methods"><h5 style="display:block;">Methods inherited from <a class="external" href="javascript:void(0)" data-link="class.Widget.html" data-namespace="Gtk">GtkWidget</a> (164)</h5>
@@ -715,39 +747,9 @@ when using&nbsp;touchscreen.</p>
       <div class="docblock">
       
         <div class="">
-          <h6><a href="property.Video.auto-inhibit.html">ClapperGtk.Video:auto-inhibit</a></h6>
-          <div class="docblock">
-            <p>Try to automatically inhibit session when video is&nbsp;playing.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-        <div class="">
           <h6><a href="property.Video.fade-delay.html">ClapperGtk.Video:fade-delay</a></h6>
           <div class="docblock">
             <p>A delay in milliseconds before trying to fade all fading&nbsp;overlays.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-        <div class="">
-          <h6><a href="property.Video.inhibited.html">ClapperGtk.Video:inhibited</a></h6>
-          <div class="docblock">
-            <p>Get whether session is currently inhibited by the&nbsp;video.</p>
-          </div>
-          <div class="docblock">
-            <p></p>
-          </div>
-        </div>
-      
-        <div class="">
-          <h6><a href="property.Video.player.html">ClapperGtk.Video:player</a></h6>
-          <div class="docblock">
-            <p>A <code>ClapperPlayer</code> used by&nbsp;video.</p>
           </div>
           <div class="docblock">
             <p></p>
@@ -768,6 +770,35 @@ after revealed using&nbsp;touchscreen.</p>
       </div>
       
 
+      
+        
+        <div class="toggle-wrapper default-hide ancestor-properties">
+          <h5 style="display:block;">Properties inherited from <a href="class.Av.html">ClapperGtkAv</a> (3)</h5><div class="docblock">
+          
+            <h6><a href="property.Av.auto-inhibit.html">ClapperGtk.Av:auto-inhibit</a></h6><div class="docblock">
+              <p>Try to automatically inhibit session when media is&nbsp;playing.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+            
+            <h6><a href="property.Av.inhibited.html">ClapperGtk.Av:inhibited</a></h6><div class="docblock">
+              <p>Get whether session is currently inhibited by&nbsp;playback.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+            
+            <h6><a href="property.Av.player.html">ClapperGtk.Av:player</a></h6><div class="docblock">
+              <p>A <code>ClapperPlayer</code> used by&nbsp;widget.</p>
+            </div>
+            <div class="docblock">
+              <p></p>
+            </div>
+            
+          </div>
+        </div>
+        
       
         
         <div class="toggle-wrapper default-hide ancestor-properties"><h5 style="display:block;">Properties inherited from <a class="external" href="javascript:void(0)" data-link="class.Widget.html" data-namespace="Gtk">GtkWidget</a> (35)</h5>
@@ -948,6 +979,8 @@ on screen side for touchscreen&nbsp;devices.</p>
 
       
         
+      
+        
         <div class="toggle-wrapper default-hide ancestor-signals"><h5 style="display:block;">Signals inherited from <a class="external" href="javascript:void(0)" data-link="class.Widget.html" data-namespace="Gtk">GtkWidget</a> (13)</h5>
           <div class="docblock">
           <h6><a class="external" href="javascript:void(0)" data-namespace="Gtk" data-link="signal.Widget.destroy.html">GtkWidget::destroy</a></h6>
@@ -1030,7 +1063,7 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
 
       <div class="docblock">
         <pre><code>struct ClapperGtkVideoClass {
-  GtkWidgetClass parent_class;
+  ClapperGtkAvClass parent_class;
   
 }</code></pre>
       </div>
@@ -1045,7 +1078,7 @@ its value set through g_object_set_property(), g_object_set(), et&nbsp;al.</p>
 
         <dl class="members">
         
-          <dt><code>parent_class: GtkWidgetClass</code></dt>
+          <dt><code>parent_class: ClapperGtkAvClass</code></dt>
           <dd><p>No description available.</p></dd>
         
         </dd>
