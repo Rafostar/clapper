@@ -22,6 +22,8 @@
 #error "Only <clapper-gtk/clapper-gtk.h> can be included directly."
 #endif
 
+#include <glib.h>
+
 /**
  * CLAPPER_GTK_MAJOR_VERSION:
  *
@@ -73,3 +75,15 @@
     (CLAPPER_GTK_MAJOR_VERSION == (major) && CLAPPER_GTK_MINOR_VERSION > (minor)) || \
     (CLAPPER_GTK_MAJOR_VERSION == (major) && CLAPPER_GTK_MINOR_VERSION == (minor) && \
     CLAPPER_GTK_MICRO_VERSION >= (micro)))
+
+G_BEGIN_DECLS
+
+guint clapper_gtk_get_major_version (void);
+
+guint clapper_gtk_get_minor_version (void);
+
+guint clapper_gtk_get_micro_version (void);
+
+const gchar * clapper_gtk_get_version_s (void);
+
+G_END_DECLS

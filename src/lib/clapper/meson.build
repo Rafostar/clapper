@@ -158,6 +158,7 @@ clapper_sources = [
   'clapper-threaded-object.c',
   'clapper-timeline.c',
   'clapper-utils.c',
+  'clapper-version.c',
   'clapper-video-stream.c',
   'gst/clapper-plugin.c',
   'gst/clapper-extractable-src.c',

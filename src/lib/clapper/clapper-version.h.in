@@ -22,6 +22,8 @@
 #error "Only <clapper/clapper.h> can be included directly."
 #endif
 
+#include <glib.h>
+
 /**
  * CLAPPER_MAJOR_VERSION:
  *
@@ -73,3 +75,15 @@
     (CLAPPER_MAJOR_VERSION == (major) && CLAPPER_MINOR_VERSION > (minor)) || \
     (CLAPPER_MAJOR_VERSION == (major) && CLAPPER_MINOR_VERSION == (minor) && \
     CLAPPER_MICRO_VERSION >= (micro)))
+
+G_BEGIN_DECLS
+
+guint clapper_get_major_version (void);
+
+guint clapper_get_minor_version (void);
+
+guint clapper_get_micro_version (void);
+
+const gchar * clapper_get_version_s (void);
+
+G_END_DECLS
