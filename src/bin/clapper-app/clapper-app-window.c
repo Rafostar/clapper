@@ -863,7 +863,7 @@ _handle_item_key_press (ClapperAppWindow *self, gboolean forward)
 
   prev_index = clapper_queue_get_current_index (queue);
   gtk_widget_activate_action (self->video,
-      (forward) ? "video.next-item" : "video.previous-item", NULL);
+      (forward) ? "av.next-item" : "av.previous-item", NULL);
   index = clapper_queue_get_current_index (queue);
 
   /* Notify only when changed */
@@ -880,7 +880,7 @@ _handle_speed_key_press (ClapperAppWindow *self, gboolean forward)
   forward ^= (gtk_widget_get_default_direction () == GTK_TEXT_DIR_RTL);
 
   gtk_widget_activate_action (self->video,
-      (forward) ? "video.speed-up" : "video.speed-down", NULL);
+      (forward) ? "av.speed-up" : "av.speed-down", NULL);
 }
 
 static inline void
@@ -907,11 +907,11 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
   switch (keyval) {
     case GDK_KEY_Up:
       if ((state & GDK_MODIFIER_MASK) == 0)
-        gtk_widget_activate_action (self->video, "video.volume-up", NULL);
+        gtk_widget_activate_action (self->video, "av.volume-up", NULL);
       break;
     case GDK_KEY_Down:
       if ((state & GDK_MODIFIER_MASK) == 0)
-        gtk_widget_activate_action (self->video, "video.volume-down", NULL);
+        gtk_widget_activate_action (self->video, "av.volume-down", NULL);
       break;
     case GDK_KEY_Left:
       if ((state & GDK_MODIFIER_MASK) == 0) {
@@ -942,7 +942,7 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
     case GDK_KEY_space:
     case GDK_KEY_k:
       if (!self->key_held && (state & GDK_MODIFIER_MASK) == 0)
-        gtk_widget_activate_action (self->video, "video.toggle-play", NULL);
+        gtk_widget_activate_action (self->video, "av.toggle-play", NULL);
       break;
     case GDK_KEY_less:
       if (!self->key_held) // Needs seek (action is slow)
@@ -954,7 +954,7 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
       break;
     case GDK_KEY_m:
       if (!self->key_held && (state & GDK_MODIFIER_MASK) == 0)
-        gtk_widget_activate_action (self->video, "video.toggle-mute", NULL);
+        gtk_widget_activate_action (self->video, "av.toggle-mute", NULL);
       break;
     case GDK_KEY_p:
       if (!self->key_held && (state & GDK_MODIFIER_MASK) == 0)
