@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.ENCODE_VERSION</title>
+  <title>ClapperGtk.get_micro_version</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -19,14 +19,14 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   <meta property="og:image:width" content="256"/>
   <meta property="og:image:height" content="256"/>
   <meta property="og:image:secure_url" content="clapper-logo.svg"/>
-  <meta property="og:image:alt" content="Clapper-0.0"/>
+  <meta property="og:image:alt" content="ClapperGtk-0.0"/>
   
 
   
-  <meta property="og:title" content="Clapper.ENCODE_VERSION"/>
-  <meta property="og:description" content="Reference for Clapper.ENCODE_VERSION"/>
-  <meta name="twitter:title" content="Clapper.ENCODE_VERSION"/>
-  <meta name="twitter:description" content="Reference for Clapper.ENCODE_VERSION"/>
+  <meta property="og:title" content="ClapperGtk.get_micro_version"/>
+  <meta property="og:description" content="Reference for ClapperGtk.get_micro_version"/>
+  <meta name="twitter:title" content="ClapperGtk.get_micro_version"/>
+  <meta name="twitter:description" content="Reference for ClapperGtk.get_micro_version"/>
 
 
   
@@ -35,7 +35,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
   
   
-  <link rel="search" type="application/opensearchdescription+xml" title="Clapper" href="opensearch.xml">
+  <link rel="search" type="application/opensearchdescription+xml" title="ClapperGtk" href="opensearch.xml">
   
   
 
@@ -72,7 +72,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </div>
       
       <div class="section namespace">
-        <h3><a href="index.html">Clapper</a></h3>
+        <h3><a href="index.html">ClapperGtk</a></h3>
         <p>API Version: 0.0</p>
         
         <p>Library Version: 0.9.1</p>
@@ -81,7 +81,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       
 
 <div class="section">
-  <h5>Function Macros</h5>
+  <h5>Functions</h5>
   <div class="links">
   
   </div>
@@ -98,28 +98,27 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Function Macro</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span>ENCODE_VERSION</h1>
+    <h3>Function </h3>
+    <h1><a href="index.html">ClapperGtk</a><span class="sep"></span>get_micro_version</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This function will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration" style="display:flex;">
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-version.h#L62">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-version.h#L85">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define CLAPPER_ENCODE_VERSION (</span>
-<span class="w">  </span><span class="n">major</span><span class="p">,</span>
-<span class="w">  </span><span class="n">minor</span><span class="p">,</span>
-<span class="w">  </span><span class="n">micro</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">guint</span>
+<span class="n">clapper_gtk_get_micro_version</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="kt">void</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -131,18 +130,23 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper-gtk/clapper-gtk-version.c#L59">[src]</a>
+        
       </h4>
 
       <div class="docblock">
-        <p>No description available.</p>
+        <p>ClapperGtk runtime micro version&nbsp;component</p>
+<p>This returns the ClapperGtk library version your code is
+running against unlike <a href="const.MICRO_VERSION.html"><code>CLAPPER_GTK_MICRO_VERSION</code></a>
+which represents compile time&nbsp;version.</p>
       </div>
 
       <div class="docblock">
         
+        <p>Available since: 0.10</p>
         
         
         
-        <p>This function is not directly available to language bindings.</p>
         
         
       </div>
@@ -151,19 +155,21 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     
-    <div class="parameters toggle-wrapper">
-      <h4 id="parameters">
-        Parameters
-        <a href="#parameters" class="anchor"></a>
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <dl class="arguments">
-          
-          <dt class="arg-name"><code>major</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>-</code></p>
-            <p>No description available.</p>
+        <div class="returns">
+          <div class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>guint</code></p>
+            <p>The micro version number of the ClapperGtk&nbsp;library.</p>
+          </div>
+          <div>
             <table>
             
             
@@ -171,53 +177,11 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             
             
-            
-            
-            
             </table>
-          </dd>
-          
-          <dt class="arg-name"><code>minor</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>-</code></p>
-            <p>No description available.</p>
-            <table>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            </table>
-          </dd>
-          
-          <dt class="arg-name"><code>micro</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>-</code></p>
-            <p>No description available.</p>
-            <table>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            </table>
-          </dd>
-          
-
-          
-        </dl>
+          </div>
+        </div>
       </div>
     </div>
-    
-
     
   </section>
 </section>

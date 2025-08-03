@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.ENCODE_VERSION</title>
+  <title>Clapper.get_version_s</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.ENCODE_VERSION"/>
-  <meta property="og:description" content="Reference for Clapper.ENCODE_VERSION"/>
-  <meta name="twitter:title" content="Clapper.ENCODE_VERSION"/>
-  <meta name="twitter:description" content="Reference for Clapper.ENCODE_VERSION"/>
+  <meta property="og:title" content="Clapper.get_version_s"/>
+  <meta property="og:description" content="Reference for Clapper.get_version_s"/>
+  <meta name="twitter:title" content="Clapper.get_version_s"/>
+  <meta name="twitter:description" content="Reference for Clapper.get_version_s"/>
 
 
   
@@ -81,7 +81,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       
 
 <div class="section">
-  <h5>Function Macros</h5>
+  <h5>Functions</h5>
   <div class="links">
   
   </div>
@@ -98,28 +98,27 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Function Macro</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span>ENCODE_VERSION</h1>
+    <h3>Function </h3>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span>get_version_s</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This function will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration" style="display:flex;">
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-version.h#L62">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-version.h#L87">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define CLAPPER_ENCODE_VERSION (</span>
-<span class="w">  </span><span class="n">major</span><span class="p">,</span>
-<span class="w">  </span><span class="n">minor</span><span class="p">,</span>
-<span class="w">  </span><span class="n">micro</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="n">gchar</span><span class="o">*</span>
+<span class="n">clapper_get_version_s</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="kt">void</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -131,18 +130,23 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-version.c#L78">[src]</a>
+        
       </h4>
 
       <div class="docblock">
-        <p>No description available.</p>
+        <p>Clapper runtime version as&nbsp;string</p>
+<p>This returns the Clapper library version your code is
+running against unlike <a href="const.VERSION_S.html"><code>CLAPPER_VERSION_S</code></a>
+which represents compile time&nbsp;version.</p>
       </div>
 
       <div class="docblock">
         
+        <p>Available since: 0.10</p>
         
         
         
-        <p>This function is not directly available to language bindings.</p>
         
         
       </div>
@@ -151,73 +155,33 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     
-    <div class="parameters toggle-wrapper">
-      <h4 id="parameters">
-        Parameters
-        <a href="#parameters" class="anchor"></a>
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <dl class="arguments">
-          
-          <dt class="arg-name"><code>major</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>-</code></p>
-            <p>No description available.</p>
+        <div class="returns">
+          <div class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>const gchar*</code></p>
+            <p>The version of the Clapper library as&nbsp;string.</p>
+          </div>
+          <div>
             <table>
             
             
             
+            <tr><td title="transfer: none">The data is owned by the called function.</td></tr>
             
-            
-            
-            
-            
-            
+            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
             </table>
-          </dd>
-          
-          <dt class="arg-name"><code>minor</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>-</code></p>
-            <p>No description available.</p>
-            <table>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            </table>
-          </dd>
-          
-          <dt class="arg-name"><code>micro</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>-</code></p>
-            <p>No description available.</p>
-            <table>
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            </table>
-          </dd>
-          
-
-          
-        </dl>
+          </div>
+        </div>
       </div>
     </div>
-    
-
     
   </section>
 </section>
