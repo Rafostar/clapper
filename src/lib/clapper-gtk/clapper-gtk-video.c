@@ -22,8 +22,8 @@
  * A ready to be used GTK video widget implementing Clapper API.
  *
  * #ClapperGtkVideo is the main widget exposed by `ClapperGtk` API. It both displays
- * videos played by [class@Clapper.Player] (exposed as its property) and manages
- * revealing and fading of any additional widgets overlaid on top of it.
+ * videos played by [class@Clapper.Player] (exposed as [property@ClapperGtk.Av:player] property)
+ * and manages revealing and fading of any additional widgets overlaid on top of it.
  *
  * Other widgets provided by `ClapperGtk` library, once placed anywhere on video
  * (including nesting within another widget like [class@Gtk.Box]) will automatically
@@ -34,7 +34,7 @@
  * # Basic usage
  *
  * A typical use case is to embed video widget as part of your app where video playback
- * is needed. Get the [class@Clapper.Player] belonging to the video widget and start adding
+ * is needed. Get the [class@Clapper.Player] belonging to the AV widget and start adding
  * new [class@Clapper.MediaItem] items to the [class@Clapper.Queue] for playback.
  * For more information please refer to the Clapper playback library documentation.
  *
@@ -46,27 +46,8 @@
  *
  * # Actions
  *
- * #ClapperGtkVideo defines a set of built-in actions:
- *
- * ```yaml
- * - "video.toggle-play": toggle play/pause
- * - "video.play": start/resume playback
- * - "video.pause": pause playback
- * - "video.stop": stop playback
- * - "video.seek": seek to position (variant "d")
- * - "video.seek-custom": seek to position using seek method (variant "(di)")
- * - "video.toggle-mute": toggle mute state
- * - "video.set-mute": set mute state (variant "b")
- * - "video.volume-up": increase volume by 2%
- * - "video.volume-down": decrease volume by 2%
- * - "video.set-volume": set volume to specified value (variant "d")
- * - "video.speed-up": increase speed (from 0.05x - 2x range to nearest quarter)
- * - "video.speed-down": decrease speed (from 0.05x - 2x range to nearest quarter)
- * - "video.set-speed": set speed to specified value (variant "d")
- * - "video.previous-item": select previous item in queue
- * - "video.next-item": select next item in queue
- * - "video.select-item": select item at specified index in queue (variant "u")
- * ```
+ * You can use built-in actions of parent [class@ClapperGtk.Av].
+ * See its documentation, for the list of available ones.
  *
  * # ClapperGtkVideo as GtkBuildable
  *
@@ -93,8 +74,6 @@
 
 #include "config.h"
 
-#include <math.h>
-
 #include "clapper-gtk-enums.h"
 #include "clapper-gtk-video.h"
 #include "clapper-gtk-lead-container.h"
@@ -102,11 +81,8 @@
 #include "clapper-gtk-buffering-animation-private.h"
 #include "clapper-gtk-video-placeholder-private.h"
 
-#define PERCENTAGE_ROUND(a) (round ((gdouble) a / 0.01) * 0.01)
-
 #define DEFAULT_FADE_DELAY 3000
 #define DEFAULT_TOUCH_FADE_DELAY 5000
-#define DEFAULT_AUTO_INHIBIT FALSE
 
 #define MIN_MOTION_DELAY 100000
 
@@ -115,7 +91,7 @@ GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
 struct _ClapperGtkVideo
 {
-  GtkWidget parent;
+  ClapperGtkAv parent;
 
   GtkWidget *overlay;
   GtkWidget *status;
@@ -125,10 +101,8 @@ struct _ClapperGtkVideo
   GtkGesture *click_gesture;
 
   /* Props */
-  ClapperPlayer *player;
   guint fade_delay;
   guint touch_fade_delay;
-  gboolean auto_inhibit;
 
   GPtrArray *overlays;
   GPtrArray *fading_overlays;
@@ -139,8 +113,6 @@ struct _ClapperGtkVideo
   gulong notify_revealed_id;
   guint fade_timeout;
   gboolean reveal, revealed;
-
-  guint inhibit_cookie;
 
   /* Current pointer coords and type */
   gdouble x, y;
@@ -174,17 +146,14 @@ _buildable_iface_init (GtkBuildableIface *iface)
 }
 
 #define parent_class clapper_gtk_video_parent_class
-G_DEFINE_TYPE_WITH_CODE (ClapperGtkVideo, clapper_gtk_video, GTK_TYPE_WIDGET,
+G_DEFINE_TYPE_WITH_CODE (ClapperGtkVideo, clapper_gtk_video, CLAPPER_GTK_TYPE_AV,
     G_IMPLEMENT_INTERFACE (GTK_TYPE_BUILDABLE, _buildable_iface_init))
 
 enum
 {
   PROP_0,
-  PROP_PLAYER,
   PROP_FADE_DELAY,
   PROP_TOUCH_FADE_DELAY,
-  PROP_AUTO_INHIBIT,
-  PROP_INHIBITED,
   PROP_LAST
 };
 
@@ -195,209 +164,111 @@ enum
   SIGNAL_LAST
 };
 
-static gboolean provider_added = FALSE;
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 static guint signals[SIGNAL_LAST] = { 0, };
+
+/* FIXME: 1.0: Remove these compat actions, since they were moved to base class */
 
 static void
 toggle_play_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  switch (clapper_player_get_state (player)) {
-    case CLAPPER_PLAYER_STATE_PLAYING:
-      clapper_player_pause (player);
-      break;
-    case CLAPPER_PLAYER_STATE_STOPPED:
-    case CLAPPER_PLAYER_STATE_PAUSED:
-      clapper_player_play (player);
-      break;
-    default:
-      break;
-  }
+  gtk_widget_activate_action_variant (widget, "av.toggle-play", parameter);
 }
 
 static void
 play_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  clapper_player_play (player);
+  gtk_widget_activate_action_variant (widget, "av.play", parameter);
 }
 
 static void
 pause_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  clapper_player_pause (player);
+  gtk_widget_activate_action_variant (widget, "av.pause", parameter);
 }
 
 static void
 stop_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  clapper_player_stop (player);
+  gtk_widget_activate_action_variant (widget, "av.stop", parameter);
 }
 
 static void
 seek_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble position = g_variant_get_double (parameter);
-
-  clapper_player_seek (player, position);
+  gtk_widget_activate_action_variant (widget, "av.seek", parameter);
 }
 
 static void
 seek_custom_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  ClapperPlayerSeekMethod method = CLAPPER_PLAYER_SEEK_METHOD_NORMAL;
-  gdouble position = 0;
-
-  g_variant_get (parameter, "(di)", &position, &method);
-  clapper_player_seek_custom (player, position, method);
+  gtk_widget_activate_action_variant (widget, "av.seek-custom", parameter);
 }
 
 static void
 toggle_mute_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  clapper_player_set_mute (player, !clapper_player_get_mute (player));
+  gtk_widget_activate_action_variant (widget, "av.toggle-mute", parameter);
 }
 
 static void
 set_mute_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gboolean mute = g_variant_get_boolean (parameter);
-
-  clapper_player_set_mute (player, mute);
+  gtk_widget_activate_action_variant (widget, "av.set-mute", parameter);
 }
 
 static void
 volume_up_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble volume = (clapper_player_get_volume (player) + 0.02);
-
-  if (volume > 2.0)
-    volume = 2.0;
-
-  clapper_player_set_volume (player, PERCENTAGE_ROUND (volume));
+  gtk_widget_activate_action_variant (widget, "av.volume-up", parameter);
 }
 
 static void
 volume_down_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble volume = (clapper_player_get_volume (player) - 0.02);
-
-  if (volume < 0)
-    volume = 0;
-
-  clapper_player_set_volume (player, PERCENTAGE_ROUND (volume));
+  gtk_widget_activate_action_variant (widget, "av.volume-down", parameter);
 }
 
 static void
 set_volume_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble volume = g_variant_get_double (parameter);
-
-  clapper_player_set_volume (player, volume);
+  gtk_widget_activate_action_variant (widget, "av.set-volume", parameter);
 }
 
 static void
 speed_up_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble dest, speed = clapper_player_get_speed (player);
-
-  if (speed >= 2.0)
-    return;
-
-  dest = 0.25;
-  while (speed >= dest)
-    dest += 0.25;
-
-  if (dest > 2.0)
-    dest = 2.0;
-
-  clapper_player_set_speed (player, dest);
+  gtk_widget_activate_action_variant (widget, "av.speed-up", parameter);
 }
 
 static void
 speed_down_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble dest, speed = clapper_player_get_speed (player);
-
-  if (speed <= 0.05)
-    return;
-
-  dest = 2.0;
-  while (speed <= dest)
-    dest -= 0.25;
-
-  if (dest < 0.05)
-    dest = 0.05;
-
-  clapper_player_set_speed (player, dest);
+  gtk_widget_activate_action_variant (widget, "av.speed-down", parameter);
 }
 
 static void
 set_speed_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  gdouble speed = g_variant_get_double (parameter);
-
-  clapper_player_set_speed (player, speed);
+  gtk_widget_activate_action_variant (widget, "av.set-speed", parameter);
 }
 
 static void
 previous_item_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  clapper_queue_select_previous_item (clapper_player_get_queue (player));
+  gtk_widget_activate_action_variant (widget, "av.previous-item", parameter);
 }
 
 static void
 next_item_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-
-  clapper_queue_select_next_item (clapper_player_get_queue (player));
+  gtk_widget_activate_action_variant (widget, "av.next-item", parameter);
 }
 
 static void
 select_item_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *parameter)
 {
-  ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
-  ClapperPlayer *player = clapper_gtk_video_get_player (self);
-  guint index = g_variant_get_uint32 (parameter);
-
-  clapper_queue_select_index (clapper_player_get_queue (player), index);
+  gtk_widget_activate_action_variant (widget, "av.select-item", parameter);
 }
 
 static void
@@ -871,73 +742,6 @@ touch_released_cb (GtkGestureClick *click, gint n_press,
     _reset_fade_timeout (self);
 }
 
-static void
-_ensure_css_provider (void)
-{
-  GdkDisplay *display;
-
-  if (provider_added)
-    return;
-
-  display = gdk_display_get_default ();
-
-  if (G_LIKELY (display != NULL)) {
-    GtkCssProvider *provider = gtk_css_provider_new ();
-    gtk_css_provider_load_from_resource (provider,
-        CLAPPER_GTK_RESOURCE_PREFIX "/css/styles.css");
-
-    gtk_style_context_add_provider_for_display (display,
-        (GtkStyleProvider *) provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION - 1);
-    g_object_unref (provider);
-
-    provider_added = TRUE;
-  }
-}
-
-static inline void
-_set_inhibit_session (ClapperGtkVideo *self, gboolean inhibit)
-{
-  GtkRoot *root;
-  GApplication *app;
-  gboolean inhibited = (self->inhibit_cookie != 0);
-
-  if (inhibited == inhibit)
-    return;
-
-  GST_DEBUG_OBJECT (self, "Trying to %sinhibit session...", (inhibit) ? "" : "un");
-
-  root = gtk_widget_get_root (GTK_WIDGET (self));
-
-  if (!root && !GTK_IS_WINDOW (root)) {
-    GST_WARNING_OBJECT (self, "Cannot %sinhibit session "
-        "without root window", (inhibit) ? "" : "un");
-    return;
-  }
-
-  /* NOTE: Not using application from window prop,
-   * as it goes away early when unrooting */
-  app = g_application_get_default ();
-
-  if (!app && !GTK_IS_APPLICATION (app)) {
-    GST_WARNING_OBJECT (self, "Cannot %sinhibit session "
-        "without window application set", (inhibit) ? "" : "un");
-    return;
-  }
-
-  if (inhibited) {
-    gtk_application_uninhibit (GTK_APPLICATION (app), self->inhibit_cookie);
-    self->inhibit_cookie = 0;
-  }
-  if (inhibit) {
-    self->inhibit_cookie = gtk_application_inhibit (GTK_APPLICATION (app),
-        GTK_WINDOW (root), GTK_APPLICATION_INHIBIT_IDLE,
-        "Video is playing");
-  }
-
-  GST_DEBUG_OBJECT (self, "Session %sinhibited", (inhibit) ? "" : "un");
-  g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_INHIBITED]);
-}
-
 static inline void
 _set_buffering_animation_enabled (ClapperGtkVideo *self, gboolean enabled)
 {
@@ -962,9 +766,6 @@ _player_state_changed_cb (ClapperPlayer *player,
     GParamSpec *pspec G_GNUC_UNUSED, ClapperGtkVideo *self)
 {
   ClapperPlayerState state = clapper_player_get_state (player);
-
-  if (self->auto_inhibit)
-    _set_inhibit_session (self, state == CLAPPER_PLAYER_STATE_PLAYING);
 
   _set_buffering_animation_enabled (self, state == CLAPPER_PLAYER_STATE_BUFFERING);
 }
@@ -1106,7 +907,7 @@ _fading_overlay_revealed_cb (GtkRevealer *revealer,
  *
  * Creates a new #ClapperGtkVideo instance.
  *
- * Newly created video widget will also set some default GStreamer elements
+ * Newly created video widget will also have set some default GStreamer elements
  * on its [class@Clapper.Player]. This includes Clapper own video sink and
  * a "scaletempo" element as audio filter. Both can still be changed after
  * construction by setting corresponding player properties.
@@ -1187,19 +988,21 @@ clapper_gtk_video_add_fading_overlay (ClapperGtkVideo *self, GtkWidget *widget)
 }
 
 /**
- * clapper_gtk_video_get_player:
+ * clapper_gtk_video_get_player: (skip)
  * @video: a #ClapperGtkVideo
  *
  * Get #ClapperPlayer used by this #ClapperGtkVideo instance.
  *
  * Returns: (transfer none): a #ClapperPlayer used by video.
+ *
+ * Deprecated: 0.10: Use [method@ClapperGtk.Av.get_player] instead.
  */
 ClapperPlayer *
 clapper_gtk_video_get_player (ClapperGtkVideo *self)
 {
   g_return_val_if_fail (CLAPPER_GTK_IS_VIDEO (self), NULL);
 
-  return self->player;
+  return clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self));
 }
 
 /**
@@ -1275,60 +1078,58 @@ clapper_gtk_video_get_touch_fade_delay (ClapperGtkVideo *self)
 }
 
 /**
- * clapper_gtk_video_set_auto_inhibit:
+ * clapper_gtk_video_set_auto_inhibit: (skip)
  * @video: a #ClapperGtkVideo
  * @inhibit: whether to enable automatic session inhibit
  *
  * Set whether video should try to automatically inhibit session
  * from idling (and possibly screen going black) when video is playing.
+ *
+ * Deprecated: 0.10: Use [method@ClapperGtk.Av.set_auto_inhibit] instead.
  */
 void
 clapper_gtk_video_set_auto_inhibit (ClapperGtkVideo *self, gboolean inhibit)
 {
   g_return_if_fail (CLAPPER_GTK_IS_VIDEO (self));
 
-  if (self->auto_inhibit != inhibit) {
-    self->auto_inhibit = inhibit;
-
-    /* Uninhibit if we were auto inhibited earlier */
-    if (!self->auto_inhibit)
-      _set_inhibit_session (self, FALSE);
-
-    g_object_notify_by_pspec (G_OBJECT (self), param_specs[PROP_AUTO_INHIBIT]);
-  }
+  clapper_gtk_av_set_auto_inhibit (CLAPPER_GTK_AV_CAST (self), inhibit);
 }
 
 /**
- * clapper_gtk_video_get_auto_inhibit:
+ * clapper_gtk_video_get_auto_inhibit: (skip)
  * @video: a #ClapperGtkVideo
  *
  * Get whether automatic session inhibit is enabled.
  *
  * Returns: %TRUE if enabled, %FALSE otherwise.
+ *
+ * Deprecated: 0.10: Use [method@ClapperGtk.Av.get_auto_inhibit] instead.
  */
 gboolean
 clapper_gtk_video_get_auto_inhibit (ClapperGtkVideo *self)
 {
   g_return_val_if_fail (CLAPPER_GTK_IS_VIDEO (self), FALSE);
 
-  return self->auto_inhibit;
+  return clapper_gtk_av_get_auto_inhibit (CLAPPER_GTK_AV_CAST (self));
 }
 
 /**
- * clapper_gtk_video_get_inhibited:
+ * clapper_gtk_video_get_inhibited: (skip)
  * @video: a #ClapperGtkVideo
  *
  * Get whether session is currently inhibited by
- * [property@ClapperGtk.Video:auto-inhibit].
+ * [property@ClapperGtk.Av:auto-inhibit].
  *
  * Returns: %TRUE if inhibited, %FALSE otherwise.
+ *
+ * Deprecated: 0.10: Use [method@ClapperGtk.Av.get_inhibited] instead.
  */
 gboolean
 clapper_gtk_video_get_inhibited (ClapperGtkVideo *self)
 {
   g_return_val_if_fail (CLAPPER_GTK_IS_VIDEO (self), FALSE);
 
-  return (self->inhibit_cookie != 0);
+  return clapper_gtk_av_get_inhibited (CLAPPER_GTK_AV_CAST (self));
 }
 
 static void
@@ -1336,8 +1137,6 @@ clapper_gtk_video_root (GtkWidget *widget)
 {
   ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (widget);
   GtkRoot *root;
-
-  _ensure_css_provider ();
 
   GTK_WIDGET_CLASS (parent_class)->root (widget);
 
@@ -1349,11 +1148,6 @@ clapper_gtk_video_root (GtkWidget *widget)
     g_signal_connect (window, "notify::is-active",
         G_CALLBACK (_window_is_active_cb), self);
     _window_is_active_cb (window, NULL, self);
-  }
-
-  if (self->auto_inhibit) {
-    ClapperPlayerState state = clapper_player_get_state (self->player);
-    _set_inhibit_session (self, state == CLAPPER_PLAYER_STATE_PLAYING);
   }
 }
 
@@ -1367,8 +1161,6 @@ clapper_gtk_video_unroot (GtkWidget *widget)
     g_signal_handlers_disconnect_by_func (GTK_WINDOW (root),
         _window_is_active_cb, self);
   }
-
-  _set_inhibit_session (self, FALSE);
 
   GTK_WIDGET_CLASS (parent_class)->unroot (widget);
 }
@@ -1385,7 +1177,6 @@ clapper_gtk_video_init (ClapperGtkVideo *self)
 
   self->fade_delay = DEFAULT_FADE_DELAY;
   self->touch_fade_delay = DEFAULT_TOUCH_FADE_DELAY;
-  self->auto_inhibit = DEFAULT_AUTO_INHIBIT;
 
   /* Ensure private types */
   g_type_ensure (CLAPPER_GTK_TYPE_STATUS);
@@ -1400,15 +1191,18 @@ static void
 clapper_gtk_video_constructed (GObject *object)
 {
   ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (object);
-  GstElement *afilter, *vsink;
+  GstElement *vsink;
+  ClapperPlayer *player;
   ClapperQueue *queue;
 
-  self->player = clapper_player_new ();
-  queue = clapper_player_get_queue (self->player);
+  G_OBJECT_CLASS (parent_class)->constructed (object);
 
-  g_signal_connect (self->player, "notify::state",
+  player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self));
+  queue = clapper_player_get_queue (player);
+
+  g_signal_connect (player, "notify::state",
       G_CALLBACK (_player_state_changed_cb), self);
-  g_signal_connect (self->player, "notify::video-sink",
+  g_signal_connect (player, "notify::video-sink",
       G_CALLBACK (_video_sink_changed_cb), self);
 
   vsink = gst_element_factory_make ("clappersink", NULL);
@@ -1428,28 +1222,23 @@ clapper_gtk_video_constructed (GObject *object)
       }
     }
 
-    clapper_player_set_video_sink (self->player, vsink);
+    clapper_player_set_video_sink (player, vsink);
   }
 
-  afilter = gst_element_factory_make ("scaletempo", NULL);
-  if (G_LIKELY (afilter != NULL))
-    clapper_player_set_audio_filter (self->player, afilter);
-
-  g_signal_connect (self->player, "error",
+  g_signal_connect (player, "error",
       G_CALLBACK (_player_error_cb), self);
-  g_signal_connect (self->player, "missing-plugin",
+  g_signal_connect (player, "missing-plugin",
       G_CALLBACK (_player_missing_plugin_cb), self);
 
   g_signal_connect (queue, "notify::current-item",
       G_CALLBACK (_queue_current_item_changed_cb), self);
-
-  G_OBJECT_CLASS (parent_class)->constructed (object);
 }
 
 static void
 clapper_gtk_video_dispose (GObject *object)
 {
   ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (object);
+  ClapperPlayer *player;
 
   if (self->notify_revealed_id != 0) {
     GtkRevealer *revealer = GTK_REVEALER (g_ptr_array_index (self->fading_overlays, 0));
@@ -1460,18 +1249,20 @@ clapper_gtk_video_dispose (GObject *object)
 
   g_clear_handle_id (&self->fade_timeout, g_source_remove);
 
+  player = clapper_gtk_av_get_player (CLAPPER_GTK_AV_CAST (self));
+
   /* Something else might still be holding a reference on the player,
    * thus we should disconnect everything before disposing template */
-  if (self->player) {
-    ClapperQueue *queue = clapper_player_get_queue (self->player);
+  if (player) { // NULL if dispose run multiple times
+    ClapperQueue *queue = clapper_player_get_queue (player);
 
-    g_signal_handlers_disconnect_by_func (self->player,
+    g_signal_handlers_disconnect_by_func (player,
         _player_state_changed_cb, self);
-    g_signal_handlers_disconnect_by_func (self->player,
+    g_signal_handlers_disconnect_by_func (player,
         _video_sink_changed_cb, self);
-    g_signal_handlers_disconnect_by_func (self->player,
+    g_signal_handlers_disconnect_by_func (player,
         _player_error_cb, self);
-    g_signal_handlers_disconnect_by_func (self->player,
+    g_signal_handlers_disconnect_by_func (player,
         _player_missing_plugin_cb, self);
 
     g_signal_handlers_disconnect_by_func (queue,
@@ -1481,7 +1272,6 @@ clapper_gtk_video_dispose (GObject *object)
   gtk_widget_dispose_template (GTK_WIDGET (object), CLAPPER_GTK_TYPE_VIDEO);
 
   g_clear_pointer (&self->overlay, gtk_widget_unparent);
-  gst_clear_object (&self->player);
 
   G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -1504,20 +1294,11 @@ clapper_gtk_video_get_property (GObject *object, guint prop_id,
   ClapperGtkVideo *self = CLAPPER_GTK_VIDEO_CAST (object);
 
   switch (prop_id) {
-    case PROP_PLAYER:
-      g_value_set_object (value, clapper_gtk_video_get_player (self));
-      break;
     case PROP_FADE_DELAY:
       g_value_set_uint (value, clapper_gtk_video_get_fade_delay (self));
       break;
     case PROP_TOUCH_FADE_DELAY:
       g_value_set_uint (value, clapper_gtk_video_get_touch_fade_delay (self));
-      break;
-    case PROP_AUTO_INHIBIT:
-      g_value_set_boolean (value, clapper_gtk_video_get_auto_inhibit (self));
-      break;
-    case PROP_INHIBITED:
-      g_value_set_boolean (value, clapper_gtk_video_get_inhibited (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1537,9 +1318,6 @@ clapper_gtk_video_set_property (GObject *object, guint prop_id,
       break;
     case PROP_TOUCH_FADE_DELAY:
       clapper_gtk_video_set_touch_fade_delay (self, g_value_get_uint (value));
-      break;
-    case PROP_AUTO_INHIBIT:
-      clapper_gtk_video_set_auto_inhibit (self, g_value_get_boolean (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1566,15 +1344,6 @@ clapper_gtk_video_class_init (ClapperGtkVideoClass *klass)
   gobject_class->finalize = clapper_gtk_video_finalize;
 
   /**
-   * ClapperGtkVideo:player:
-   *
-   * A #ClapperPlayer used by video.
-   */
-  param_specs[PROP_PLAYER] = g_param_spec_object ("player",
-      NULL, NULL, CLAPPER_TYPE_PLAYER,
-      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
-
-  /**
    * ClapperGtkVideo:fade-delay:
    *
    * A delay in milliseconds before trying to fade all fading overlays.
@@ -1592,24 +1361,6 @@ clapper_gtk_video_class_init (ClapperGtkVideoClass *klass)
   param_specs[PROP_TOUCH_FADE_DELAY] = g_param_spec_uint ("touch-fade-delay",
       NULL, NULL, 1, G_MAXUINT, DEFAULT_TOUCH_FADE_DELAY,
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
-
-  /**
-   * ClapperGtkVideo:auto-inhibit:
-   *
-   * Try to automatically inhibit session when video is playing.
-   */
-  param_specs[PROP_AUTO_INHIBIT] = g_param_spec_boolean ("auto-inhibit",
-      NULL, NULL, DEFAULT_AUTO_INHIBIT,
-      G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
-
-  /**
-   * ClapperGtkVideo:inhibited:
-   *
-   * Get whether session is currently inhibited by the video.
-   */
-  param_specs[PROP_INHIBITED] = g_param_spec_boolean ("inhibited",
-      NULL, NULL, FALSE,
-      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperGtkVideo::toggle-fullscreen:
@@ -1642,6 +1393,8 @@ clapper_gtk_video_class_init (ClapperGtkVideoClass *klass)
 
   g_object_class_install_properties (gobject_class, PROP_LAST, param_specs);
 
+  /* FIXME: 1.0: Remove these actions, since they were moved to
+   * base class AV widget, but are here for compat reasons. */
   gtk_widget_class_install_action (widget_class, "video.toggle-play", NULL, toggle_play_action_cb);
   gtk_widget_class_install_action (widget_class, "video.play", NULL, play_action_cb);
   gtk_widget_class_install_action (widget_class, "video.pause", NULL, pause_action_cb);

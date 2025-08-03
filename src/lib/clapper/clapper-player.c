@@ -111,6 +111,7 @@ enum
   SIGNAL_SEEK_DONE,
   SIGNAL_DOWNLOAD_COMPLETE,
   SIGNAL_MISSING_PLUGIN,
+  SIGNAL_MESSAGE,
   SIGNAL_WARNING,
   SIGNAL_ERROR,
   SIGNAL_LAST
@@ -2984,6 +2985,28 @@ clapper_player_class_init (ClapperPlayerClass *klass)
   signals[SIGNAL_MISSING_PLUGIN] = g_signal_new ("missing-plugin",
       G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
       0, NULL, NULL, NULL, G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
+
+  /**
+   * ClapperPlayer::message:
+   * @player: a #ClapperPlayer
+   * @msg: a #GstMessage
+   *
+   * Allows for applications to receive element messages posted
+   * on the underlaying pipeline bus.
+   *
+   * This is a detailed signal. Connect to it via `message::name`
+   * to only receive messages with a certain `name`.
+   *
+   * Player will only forward messages to the main app thread (from which
+   * this signal is emitted) that have a matching signal handler, thus
+   * it is more efficient to listen only for specific messages instead
+   * of connecting to simply `message` with no details (without message name).
+   *
+   * Since: 0.10
+   */
+  signals[SIGNAL_MESSAGE] = g_signal_new ("message", G_TYPE_FROM_CLASS (klass),
+      G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS | G_SIGNAL_DETAILED,
+      0, NULL, NULL, NULL, G_TYPE_NONE, 1, GST_TYPE_MESSAGE);
 
   /**
    * ClapperPlayer::warning:

@@ -930,6 +930,11 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
         GST_OBJECT_CAST (downloaded_item), location);
 
     gst_object_unref (downloaded_item);
+  } else {
+    guint signal_id = g_signal_lookup ("message", CLAPPER_TYPE_PLAYER);
+
+    clapper_app_bus_post_message_signal (player->app_bus,
+        GST_OBJECT_CAST (player), signal_id, msg);
   }
 }
 

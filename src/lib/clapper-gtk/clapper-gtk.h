@@ -23,6 +23,8 @@
 #include <clapper-gtk/clapper-gtk-enums.h>
 #include <clapper-gtk/clapper-gtk-version.h>
 
+#include <clapper-gtk/clapper-gtk-audio.h>
+#include <clapper-gtk/clapper-gtk-av.h>
 #include <clapper-gtk/clapper-gtk-billboard.h>
 #include <clapper-gtk/clapper-gtk-container.h>
 #include <clapper-gtk/clapper-gtk-extra-menu-button.h>

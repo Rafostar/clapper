@@ -46,6 +46,7 @@ enum
   CLAPPER_APP_BUS_STRUCTURE_SIMPLE_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_OBJECT_DESC_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_DESC_WITH_DETAILS_SIGNAL,
+  CLAPPER_APP_BUS_STRUCTURE_MESSAGE_SIGNAL,
   CLAPPER_APP_BUS_STRUCTURE_ERROR_SIGNAL
 };
 
@@ -58,6 +59,7 @@ static ClapperBusQuark _structure_quarks[] = {
   {"simple-signal", 0},
   {"object-desc-signal", 0},
   {"desc-with-details-signal", 0},
+  {"message", 0},
   {"error-signal", 0},
   {NULL, 0}
 };
@@ -277,6 +279,53 @@ _handle_desc_with_details_signal_msg (GstMessage *msg, const GstStructure *struc
 }
 
 void
+clapper_app_bus_post_message_signal (ClapperAppBus *self,
+    GstObject *src, guint signal_id, GstMessage *msg)
+{
+  /* Check for any "message" signal connection */
+  if (g_signal_handler_find (src, G_SIGNAL_MATCH_ID,
+      signal_id, 0, NULL, NULL, NULL) != 0) {
+    const GstStructure *structure = gst_message_get_structure (msg);
+    GQuark detail;
+
+    if (G_UNLIKELY (structure == NULL))
+      return;
+
+    detail = g_quark_from_string (gst_structure_get_name (structure));
+
+    /* If specific detail is connected or ALL "message" handler */
+    if (g_signal_handler_find (src, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DETAIL,
+        signal_id, detail, NULL, NULL, NULL) != 0
+        || g_signal_handler_find (src, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_DETAIL,
+        signal_id, 0, NULL, NULL, NULL) != 0) {
+      GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (MESSAGE_SIGNAL),
+          _FIELD_QUARK (SIGNAL_ID), G_TYPE_UINT, signal_id,
+          _FIELD_QUARK (DETAILS), G_TYPE_UINT, detail,
+          _FIELD_QUARK (OBJECT), GST_TYPE_MESSAGE, msg,
+          NULL);
+      gst_bus_post (GST_BUS_CAST (self), gst_message_new_application (src, structure));
+    }
+  }
+}
+
+static inline void
+_handle_message_signal_msg (GstMessage *msg, const GstStructure *structure)
+{
+  guint signal_id = 0;
+  GQuark detail = 0;
+  GstMessage *fwd_message = NULL;
+
+  gst_structure_id_get (structure,
+      _FIELD_QUARK (SIGNAL_ID), G_TYPE_UINT, &signal_id,
+      _FIELD_QUARK (DETAILS), G_TYPE_UINT, &detail,
+      _FIELD_QUARK (OBJECT), GST_TYPE_MESSAGE, &fwd_message,
+      NULL);
+  g_signal_emit (_MESSAGE_SRC_GOBJECT (msg), signal_id, detail, fwd_message);
+
+  gst_message_unref (fwd_message);
+}
+
+void
 clapper_app_bus_post_error_signal (ClapperAppBus *self,
     GstObject *src, guint signal_id,
     GError *error, const gchar *debug_info)
@@ -326,6 +375,8 @@ clapper_app_bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G
       _handle_simple_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (OBJECT_DESC_SIGNAL))
       _handle_object_desc_signal_msg (msg, structure);
+    else if (quark == _STRUCTURE_QUARK (MESSAGE_SIGNAL))
+      _handle_message_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (ERROR_SIGNAL))
       _handle_error_signal_msg (msg, structure);
     else if (quark == _STRUCTURE_QUARK (DESC_WITH_DETAILS_SIGNAL))

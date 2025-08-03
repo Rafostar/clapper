@@ -82,7 +82,7 @@ clapper_gtk_previous_item_button_init (ClapperGtkPreviousItemButton *self)
 {
   gtk_widget_set_sensitive (GTK_WIDGET (self), FALSE);
   gtk_button_set_icon_name (GTK_BUTTON (self), "media-skip-backward-symbolic");
-  gtk_actionable_set_action_name (GTK_ACTIONABLE (self), "video.previous-item");
+  gtk_actionable_set_action_name (GTK_ACTIONABLE (self), "av.previous-item");
 }
 
 static void
