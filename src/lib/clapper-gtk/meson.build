@@ -131,6 +131,7 @@ clappergtk_sources = [
   'clapper-gtk-toggle-fullscreen-button.c',
   'clapper-gtk-toggle-play-button.c',
   'clapper-gtk-utils.c',
+  'clapper-gtk-version.c',
   'clapper-gtk-video.c',
   'clapper-gtk-video-placeholder.c',
   clappergtk_resources,
