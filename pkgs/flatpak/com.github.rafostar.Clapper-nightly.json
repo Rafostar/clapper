@@ -16,7 +16,7 @@
             "autodelete": false
         },
         "com.github.rafostar.Clapper.Enhancers": {
-            "versions": "master;test;stable",
+            "versions": "stable;test;master",
             "directory": "extensions/clapper/enhancers",
             "add-ld-path": "lib",
             "no-autodownload": false,
