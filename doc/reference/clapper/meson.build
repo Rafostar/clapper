@@ -6,6 +6,14 @@ clapper_toml = configure_file(
   install_dir: join_paths(datadir, 'doc', 'clapper'),
 )
 
+extra_md_files = [
+  'clapper-enhancers.md',
+  'extractable-enhancers.md',
+  'playlistable-enhancers.md',
+  'reactable-enhancers.md',
+  'migrating-to-010.md',
+]
+
 custom_target('clapper-doc',
   input: [
     clapper_toml,
@@ -23,6 +31,7 @@ custom_target('clapper-doc',
     '--content-dir=@0@'.format(meson.current_source_dir()),
     '@INPUT1@',
   ],
+  depend_files: extra_md_files,
   build_by_default: true,
   install: true,
   install_dir: join_paths(datadir, 'doc'),

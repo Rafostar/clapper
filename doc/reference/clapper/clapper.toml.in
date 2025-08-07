@@ -66,6 +66,11 @@ base_url = "https://github.com/Rafostar/clapper/tree/master/"
 [extra]
 # The same order will be used when generating the index
 content_files = [
+  "clapper-enhancers.md",
+  "extractable-enhancers.md",
+  "playlistable-enhancers.md",
+  "reactable-enhancers.md",
+  "migrating-to-010.md",
 ]
 content_images = [
   "images/clapper-logo.svg",
