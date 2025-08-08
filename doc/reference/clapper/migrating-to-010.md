@@ -10,8 +10,8 @@ Old [class@Clapper.Feature] objects (including `mpris`, `discoverer` and `server
 reasons, but all apps using them are advised to migrate to enhancer plugins which already surpassed former
 ones in what can be achieved with them.
 
-Since these are now in the form of plugins scanned during init, one of the differences is that you now check
-their availablity at runtime instead of compile time like before.
+Since these are in the form of plugins scanned during init, one of the differences is that you now check
+their availability at runtime instead of compile time like before.
 
 Something like this:
 
