@@ -104,8 +104,8 @@ used via <a href="class.EnhancerProxy.html"><code>ClapperEnhancerProxy</code></a
 <p>Old <a href="class.Feature.html"><code>ClapperFeature</code></a> objects (including <code>mpris</code>, <code>discoverer</code> and <code>server</code>) are left for compatibility
 reasons, but all apps using them are advised to migrate to enhancer plugins which already surpassed former
 ones in what can be achieved with&nbsp;them.</p>
-<p>Since these are now in the form of plugins scanned during init, one of the differences is that you now check
-their availablity at runtime instead of compile time like&nbsp;before.</p>
+<p>Since these are in the form of plugins scanned during init, one of the differences is that you now check
+their availability at runtime instead of compile time like&nbsp;before.</p>
 <p>Something like&nbsp;this:</p>
 <div class="codehilite"><pre><span></span><code><span class="cp">#if CLAPPER_HAVE_MPRIS</span>
 <span class="w">  </span><span class="n">ClapperFeature</span><span class="w"> </span><span class="o">*</span><span class="n">feature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CLAPPER_FEATURE</span><span class="w"> </span><span class="p">(</span><span class="n">clapper_mpris_new</span><span class="w"> </span><span class="p">(</span>
