@@ -6,6 +6,10 @@ clappergtk_toml = configure_file(
   install_dir: join_paths(datadir, 'doc', 'clapper-gtk'),
 )
 
+extra_md_files = [
+  'migrating-to-010.md',
+]
+
 custom_target('clapper-gtk-doc',
   input: [
     clappergtk_toml,
@@ -24,6 +28,7 @@ custom_target('clapper-gtk-doc',
     '--content-dir=@0@'.format(meson.current_source_dir()),
     '@INPUT1@',
   ],
+  depend_files: extra_md_files,
   build_by_default: true,
   install: true,
   install_dir: join_paths(datadir, 'doc'),
