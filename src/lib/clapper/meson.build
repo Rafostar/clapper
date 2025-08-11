@@ -172,6 +172,7 @@ clapper_c_args = [
   '-DG_LOG_DOMAIN="Clapper"',
   '-DCLAPPER_COMPILATION',
   '-DGST_USE_UNSTABLE_API',
+  '-DG_SETTINGS_ENABLE_BACKEND',
 ]
 
 if get_option('default_library') == 'static'
