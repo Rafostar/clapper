@@ -41,6 +41,7 @@
 #include "config.h"
 
 #include <gobject/gvaluecollector.h>
+#include <gio/gsettingsbackend.h>
 
 #include "clapper-enhancer-proxy-private.h"
 #include "clapper-enhancer-proxy-list.h"
@@ -896,8 +897,18 @@ clapper_enhancer_proxy_get_settings (ClapperEnhancerProxy *self)
   /* Try to lazy load schemas */
   _init_schema (self);
 
-  if (self->schema)
-    settings = g_settings_new_full (self->schema, NULL, NULL);
+  if (self->schema) {
+    GSettingsBackend *backend;
+    gchar *filename;
+
+    filename = g_build_filename (g_get_user_config_dir (),
+        CLAPPER_API_NAME, "enhancers", "keyfile", NULL);
+    backend = g_keyfile_settings_backend_new (filename, "/", NULL);
+    g_free (filename);
+
+    settings = g_settings_new_full (self->schema, backend, NULL);
+    g_object_unref (backend);
+  }
 
   return settings;
 }
