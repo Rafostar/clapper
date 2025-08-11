@@ -30,9 +30,9 @@ Each enhancer is a `libpeas` compatible module. As such it follows its requireme
 writing plugins and is a [class@GObject.Object] sublass implementing one or more of interfaces
 that Clapper library provides.
 
-Due to the plugins nature, written enhancer can be either submitted to the main [Clapper Enhancers
-repository](https://github.com/Rafostar/clapper-enhancers) when it seems useful for more than a single
-application. Alternatively, it can be shipped as part your application. Users can also write their
+Due to plugins nature, written enhancer can be either submitted to the main [Clapper Enhancers
+repository](https://github.com/Rafostar/clapper-enhancers) when it seems useful for more than
+a single application or it can be shipped as part your application. Users can also write their
 own/custom local enhancer plugins.
 
 ### Loading Enhancers
@@ -82,11 +82,11 @@ Some enhancers might want to expose some configuration. For this cases they shou
 They should include one or more of [flags@Clapper.EnhancerParamFlags].
 Properties in object can have `global`, `local`, neither or both flags at once.
 
-The ones with [Clapper.EnhancerParamFlags.GLOBAL] are for user to configure. They should
+The ones with [flags@Clapper.EnhancerParamFlags.GLOBAL] are for user to configure. They should
 be exposed (ideally in the UI) and used for things that make sense to be set for all
 applications at once (e.g. supported media codec by user device, preferred language, etc.).
 
-On the other hand, properties with [Clapper.EnhancerParamFlags.LOCAL] are for application scope
+On the other hand, properties with [flags@Clapper.EnhancerParamFlags.LOCAL] are for application scope
 usage only. They never carry over to other apps, nor they can be set on global enhancers list.
 Instead they are configured per player instance.
 
@@ -95,19 +95,20 @@ Clapper will never access them, as such they can be of any type (not limited to 
 This also makes properties that are already installed in base classes of subclassed object
 not appear in the UI.
 
-When both flags are set, property will initially use globally set value by user while still
-allowing application to override this value locally per player instance.
+When both flags are set, property will initially use globally set value while still
+allowing application to override it content locally per player instance.
 
-Extra flags like [Clapper.EnhancerParamFlags.FILEPATH] and [Clapper.EnhancerParamFlags.DIRPATH]
+Extra flags like [flags@Clapper.EnhancerParamFlags.FILEPATH] and [flags@Clapper.EnhancerParamFlags.DIRPATH]
 can be used (usually with `string` type of property) in order to let application know that this
 field holds a file/directory path and allow it to present file selection dialog to the user instead
 of text entry.
 
 ### Configuring Enhancers
 
-Applications browse properties of enhancer via [method@Clapper.EnhancerProxy.get_target_properties]
-which returns a list of [class@GObject.ParamSpec]. By inspecting their `flags` application can know
-whether property is `global`, `local` or both.
+Applications can browse properties of enhancer via [method@Clapper.EnhancerProxy.get_target_properties]
+which returns a list of [class@GObject.ParamSpec]. By inspecting their `flags` they can know whether
+property is `global`, `local` or both. Properties without any of these 2 flags set (internal ones)
+will not appear on this list.
 
 Use [method@Clapper.EnhancerProxy.get_settings] to get a [class@Gio.Settings] with `global` properties
 to read and write (note that only users should be able to change them, thus you might want to bind these
@@ -116,7 +117,7 @@ list or the player one.
 
 Use [method@Clapper.EnhancerProxy.set_locally] to set `local` properties. These are meant for applications
 to freely customize as they please. Remember that you can only set them on a enhancer proxy object belonging
-to some player instance and not the global one.
+to some player instance and not the global list.
 
 ### Plugin Info File
 
@@ -151,3 +152,29 @@ in the requirements of each one in their documentation pages that are listed in 
 If you are using Clapper as part of a `Flatpak` application, you can get all the enhancers from their main repo as an extension
 (info [here](https://github.com/flathub/com.github.rafostar.Clapper?tab=readme-ov-file#comgithubrafostarclapperenhancers)),
 thus you do not need to build them yourself.
+
+### Configuration Sharing in Flatpak
+
+In native system packages/installations where property with [flags@Clapper.EnhancerParamFlags.GLOBAL] flag is set
+for an enhancer, all apps get the same config values. In sandbox however, default permissions prevent access
+to config of these properties, thus setting them will only affect [class@Clapper.Player] instances in this
+particular application. Keep this in mind when writing your own enhancer plugin.
+
+You can allow configuration sharing in `Flatpak` by adding below permission to each application that uses
+Clapper Enhancers plugins (including Clapper itself):
+
+```sh
+--filesystem=xdg-config/clapper-0.0/enhancers:create
+```
+
+This can be done manually through either `sudo flatpak override` or tools such as
+[Flatseal](https://flathub.org/apps/com.github.tchx84.Flatseal).
+
+When this permission is set, users can configure enhancers from within Clapper application
+preferences in cases when a 3rd party app does not have any UI to configure them.
+
+Please note that when doing so, any properties storing file/directory paths as values also
+need a permission override from user to access this specific file/directory. A good practice is
+to create a single directory for such files and allow all `Flatpak` with enhancers to access
+this directory (including subdirectories) or just store them somewhere in allowed above
+user config directory (usually: `~/.config/clapper-0.0/enhancers`).
