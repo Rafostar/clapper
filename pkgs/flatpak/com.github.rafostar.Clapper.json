@@ -1,16 +1,9 @@
 {
     "app-id": "com.github.rafostar.Clapper",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "47",
+    "runtime-version": "49",
     "sdk": "org.gnome.Sdk",
     "add-extensions": {
-        "org.freedesktop.Platform.ffmpeg-full": {
-            "version": "24.08",
-            "directory": "lib/ffmpeg",
-            "add-ld-path": ".",
-            "no-autodownload": false,
-            "autodelete": false
-        },
         "com.github.rafostar.Clapper.Enhancers": {
             "versions": "stable;test;master",
             "directory": "extensions/clapper/enhancers",
@@ -64,7 +57,6 @@
         }
     ],
     "cleanup-commands": [
-        "mkdir -p /app/lib/ffmpeg",
         "mkdir -p /app/extensions/clapper/enhancers",
         "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]

@@ -72,7 +72,6 @@
         }
     ],
     "cleanup-commands": [
-        "mkdir -p /app/lib/ffmpeg",
         "mkdir -p /app/extensions/clapper/enhancers",
         "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
