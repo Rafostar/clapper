@@ -72,7 +72,25 @@
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
-        "flathub/lib/uchardet.json",
+        {
+            "name": "uchardet",
+            "buildsystem": "cmake",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_INSTALL_LIBDIR=lib",
+                "-DBUILD_STATIC=OFF",
+                "-DBUILD_BINARY=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.freedesktop.org/uchardet/uchardet",
+                    "branch": "master",
+                    "commit": "06029ec3340cdf6bf9a6a537dafb3f39eda0560e"
+                }
+            ]
+        },
         "flathub/lib/libmicrodns.json",
         "flathub/lib/libpeas.json",
         "flathub/gstreamer-1.0/gstreamer.json",
