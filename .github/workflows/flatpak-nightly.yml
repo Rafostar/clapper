@@ -25,8 +25,8 @@ jobs:
         dnf install -y git git-lfs dbus-daemon flatpak flatpak-builder libappstream-glib ccache zstd xorg-x11-server-Xvfb
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         flatpak remote-add --if-not-exists gnome-nightly https://nightly.gnome.org/gnome-nightly.flatpakrepo
-        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.rust-stable/${{ matrix.arch }}/24.08
-        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.llvm18/${{ matrix.arch }}/24.08
+        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.rust-stable/${{ matrix.arch }}/25.08
+        flatpak --system install -y --noninteractive flathub org.freedesktop.Sdk.Extension.llvm21/${{ matrix.arch }}/25.08
         flatpak --system install -y --noninteractive flathub org.flatpak.Builder
     - name: Checkout
       uses: actions/checkout@v4
