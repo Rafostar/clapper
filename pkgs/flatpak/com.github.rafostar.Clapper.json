@@ -35,7 +35,39 @@
         "flathub/shared-modules/gudev/gudev.json",
         "flathub/lib/liba52.json",
         "flathub/lib/libmpeg2.json",
-        "flathub/lib/libdv.json",
+        {
+            "name": "libdv",
+            "config-opts": [
+                "--enable-shared",
+                "--disable-static"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://downloads.sourceforge.net/libdv/libdv-1.0.0.tar.gz",
+                    "sha256": "a305734033a9c25541a59e8dd1c254409953269ea7c710c39e540bd8853389ba"
+                },
+                {
+                    "type": "file",
+                    "url": "https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.guess?id=a2287c3041a3f2a204eb942e09c015eab00dc7dd",
+                    "sha256": "50205cf3ec5c7615b17f937a0a57babf4ec5cd0aade3d7b3cccbe5f1bf91a7ef",
+                    "dest-filename": "config.guess"
+                },
+                {
+                    "type": "file",
+                    "url": "https://cgit.git.savannah.gnu.org/cgit/config.git/plain/config.sub?id=a2287c3041a3f2a204eb942e09c015eab00dc7dd",
+                    "sha256": "26b852f75a637448360a956931439f7e818bf63150eaadb9b85484347628d1fd",
+                    "dest-filename": "config.sub"
+                },
+                {
+                    "type": "script",
+                    "commands": [
+                        "autoreconf -fiv"
+                    ],
+                    "dest-filename": "autogen.sh"
+                }
+            ]
+        },
         "flathub/lib/libdvdcss.json",
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
