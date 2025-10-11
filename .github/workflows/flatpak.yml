@@ -36,7 +36,8 @@ jobs:
     - name: Remove gstreamer ffmpeg-full patch
       run: |
         rm -f pkgs/flatpak/flathub/gstreamer-1.0/gst-libav-stop-caching-codecs.patch
-        jq 'del(.sources[] | select(.path == "gst-libav-stop-caching-codecs.patch"))' pkgs/flatpak/flathub/gstreamer-1.0/gstreamer.json > pkgs/flatpak/flathub/gstreamer-1.0/gstreamer.json
+        jq 'del(.sources[] | select(.path == "gst-libav-stop-caching-codecs.patch"))' pkgs/flatpak/flathub/gstreamer-1.0/gstreamer.json > pkgs/flatpak/flathub/gstreamer-1.0/gstreamer.json.tmp
+        mv pkgs/flatpak/flathub/gstreamer-1.0/gstreamer.json.tmp pkgs/flatpak/flathub/gstreamer-1.0/gstreamer.json
     - name: Build
       uses: flatpak/flatpak-github-actions/flatpak-builder@master
       with:
