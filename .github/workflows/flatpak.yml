@@ -26,7 +26,7 @@ jobs:
     steps:
     - name: Prepare
       run: |
-        dnf install -y git git-lfs dbus-daemon flatpak flatpak-builder libappstream-glib ccache zstd xorg-x11-server-Xvfb
+        dnf install -y jq git git-lfs dbus-daemon flatpak flatpak-builder libappstream-glib ccache zstd xorg-x11-server-Xvfb
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         flatpak --system install -y --noninteractive flathub org.flatpak.Builder
     - name: Checkout
