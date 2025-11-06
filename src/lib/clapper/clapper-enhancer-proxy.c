@@ -95,6 +95,10 @@ struct _ClapperEnhancerProxy
    * so store schema instead */
   GSettingsSchema *schema;
   gboolean schema_init_done;
+
+  GArray *jobs;
+  GMutex job_lock;
+  GCond job_cond;
 };
 
 enum
@@ -597,6 +601,75 @@ clapper_enhancer_proxy_apply_config_to_enhancer (ClapperEnhancerProxy *self, con
   GST_DEBUG_OBJECT (self, "Applying config to enhancer");
   gst_structure_foreach (config, (GstStructureForeachFunc) _apply_config_cb, enhancer);
   GST_DEBUG_OBJECT (self, "Enhancer config applied");
+}
+
+/* Needs a "job_lock" */
+static gboolean
+_find_job_unlocked (ClapperEnhancerProxy *self, guint job_id, guint *index)
+{
+  guint i;
+
+  for (i = 0; i < self->jobs->len; ++i) {
+    guint *stored_id = &g_array_index (self->jobs, guint, i);
+
+    if (job_id == *stored_id) {
+      if (index)
+        *index = i;
+
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
+/*
+ * clapper_enhancer_proxy_await_job_start:
+ *
+ * Can be used to prevent starting a job with the same ID concurrently,
+ * while allowing to do that for unique IDs.
+ *
+ * After each start, `clapper_enhancer_proxy_remove_job` must be
+ * called when job is considered to be done.
+ */
+void
+clapper_enhancer_proxy_await_job_start (ClapperEnhancerProxy *self, guint job_id)
+{
+  GST_LOG_OBJECT (self, "Requested job ID: %u", job_id);
+
+  GST_OBJECT_LOCK (self);
+  if (!self->jobs) {
+    self->jobs = g_array_new (FALSE, FALSE, sizeof (guint));
+    g_mutex_init (&self->job_lock);
+    g_cond_init (&self->job_cond);
+  }
+  GST_OBJECT_UNLOCK (self);
+
+  g_mutex_lock (&self->job_lock);
+
+  while (_find_job_unlocked (self, job_id, NULL))
+    g_cond_wait (&self->job_cond, &self->job_lock);
+
+  g_array_append_val (self->jobs, job_id);
+  GST_LOG_OBJECT (self, "Added job ID: %u", job_id);
+
+  g_mutex_unlock (&self->job_lock);
+}
+
+void
+clapper_enhancer_proxy_remove_job (ClapperEnhancerProxy *self, guint job_id)
+{
+  guint index;
+
+  g_mutex_lock (&self->job_lock);
+  if (G_LIKELY (_find_job_unlocked (self, job_id, &index))) {
+    g_array_remove_index_fast (self->jobs, index);
+    GST_LOG_OBJECT (self, "Removed job ID: %u", job_id);
+    g_cond_broadcast (&self->job_cond);
+  } else {
+    GST_ERROR_OBJECT (self, "Requested removal of nonexistent job ID: %u", job_id);
+  }
+  g_mutex_unlock (&self->job_lock);
 }
 
 /**
@@ -1187,6 +1260,12 @@ clapper_enhancer_proxy_finalize (GObject *object)
 
   gst_clear_structure (&self->local_config);
   g_clear_pointer (&self->schema, g_settings_schema_unref);
+
+  if (self->jobs) {
+    g_array_unref (self->jobs);
+    g_mutex_clear (&self->job_lock);
+    g_cond_clear (&self->job_cond);
+  }
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

@@ -66,6 +66,8 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
   ClapperEnhancerDirector *self = data->director;
   GList *el;
   ClapperHarvest *harvest = NULL;
+  gchar *uri_str;
+  guint job_id;
   gboolean success = FALSE;
 
   GST_DEBUG_OBJECT (self, "Extraction start");
@@ -74,13 +76,28 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
   if (g_cancellable_is_cancelled (data->cancellable))
     return NULL;
 
-  GST_DEBUG_OBJECT (self, "Enhancer proxies for URI: %u",
-      g_list_length (data->filtered_proxies));
+  uri_str = g_uri_to_string (data->uri);
+  job_id = g_str_hash (uri_str);
+
+  GST_DEBUG_OBJECT (self, "Extracting URI: \"%s\", compatible enhancers: %u",
+      uri_str, g_list_length (data->filtered_proxies));
+  g_free (uri_str);
 
   for (el = data->filtered_proxies; el; el = g_list_next (el)) {
     ClapperEnhancerProxy *proxy = CLAPPER_ENHANCER_PROXY_CAST (el->data);
     ClapperExtractable *extractable = NULL;
     GstStructure *config;
+
+    /* Ensures that we do not start extraction of the same URI concurrently.
+     * If given job is already running, blocks here until finished.
+     * Afterwards we try to read extracted data from cache. */
+    clapper_enhancer_proxy_await_job_start (proxy, job_id);
+
+    /* Cancelled during waiting for usage access */
+    if (g_cancellable_is_cancelled (data->cancellable)) {
+      clapper_enhancer_proxy_remove_job (proxy, job_id);
+      break;
+    }
 
     harvest = clapper_harvest_new (); // fresh harvest for each iteration
     config = clapper_enhancer_proxy_make_current_config (proxy);
@@ -88,6 +105,7 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
     if ((success = clapper_harvest_fill_from_cache (harvest, proxy, config, data->uri))
         || g_cancellable_is_cancelled (data->cancellable)) { // Check before extract
       gst_clear_structure (&config);
+      clapper_enhancer_proxy_remove_job (proxy, job_id);
       break;
     }
 
@@ -111,9 +129,12 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
           clapper_harvest_export_to_cache (harvest, proxy, config, data->uri);
         }
         gst_clear_structure (&config);
+        clapper_enhancer_proxy_remove_job (proxy, job_id);
         break;
       }
     }
+
+    clapper_enhancer_proxy_remove_job (proxy, job_id);
 
     /* Cleanup to try again with next enhancer */
     g_clear_object (&harvest);
