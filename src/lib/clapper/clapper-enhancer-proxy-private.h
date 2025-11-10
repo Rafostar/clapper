@@ -53,4 +53,10 @@ GstStructure * clapper_enhancer_proxy_make_current_config (ClapperEnhancerProxy 
 G_GNUC_INTERNAL
 void clapper_enhancer_proxy_apply_config_to_enhancer (ClapperEnhancerProxy *proxy, const GstStructure *config, GObject *enhancer);
 
+G_GNUC_INTERNAL
+void clapper_enhancer_proxy_await_job_start (ClapperEnhancerProxy *proxy, guint job_id);
+
+G_GNUC_INTERNAL
+void clapper_enhancer_proxy_remove_job (ClapperEnhancerProxy *proxy, guint job_id);
+
 G_END_DECLS
