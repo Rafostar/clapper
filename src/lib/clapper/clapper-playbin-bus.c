@@ -327,7 +327,7 @@ clapper_playbin_bus_post_set_play_flag (GstBus *bus,
     ClapperPlayerPlayFlags flag, gboolean enabled)
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (SET_PLAY_FLAG),
-      _FIELD_QUARK (FLAG), G_TYPE_FLAGS, flag,
+      _FIELD_QUARK (FLAG), G_TYPE_UINT, flag,
       _FIELD_QUARK (VALUE), G_TYPE_BOOLEAN, enabled,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
@@ -338,10 +338,10 @@ _handle_set_play_flag_msg (GstMessage *msg, const GstStructure *structure, Clapp
 {
   ClapperPlayerPlayFlags flag = 0;
   gboolean enabled, enable = FALSE;
-  gint flags = 0;
+  guint flags = 0;
 
   gst_structure_id_get (structure,
-      _FIELD_QUARK (FLAG), G_TYPE_FLAGS, &flag,
+      _FIELD_QUARK (FLAG), G_TYPE_UINT, &flag,
       _FIELD_QUARK (VALUE), G_TYPE_BOOLEAN, &enable,
       NULL);
 
@@ -404,7 +404,7 @@ clapper_playbin_bus_post_seek (GstBus *bus, gdouble position, ClapperPlayerSeekM
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (SEEK),
       _FIELD_QUARK (POSITION), G_TYPE_INT64, (gint64) (position * GST_SECOND),
-      _FIELD_QUARK (SEEK_METHOD), G_TYPE_ENUM, seek_method,
+      _FIELD_QUARK (SEEK_METHOD), G_TYPE_INT, seek_method,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
 }
@@ -424,7 +424,7 @@ _handle_seek_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer 
 
   gst_structure_id_get (structure,
       _FIELD_QUARK (POSITION), G_TYPE_INT64, &position,
-      _FIELD_QUARK (SEEK_METHOD), G_TYPE_ENUM, &seek_method,
+      _FIELD_QUARK (SEEK_METHOD), G_TYPE_INT, &seek_method,
       NULL);
 
   /* If we are starting playback, do a seek after preroll */
@@ -648,7 +648,7 @@ clapper_playbin_bus_post_current_item_change (GstBus *bus, ClapperMediaItem *cur
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (CURRENT_ITEM_CHANGE),
       _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, current_item,
-      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_ENUM, mode,
+      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_INT, mode,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
 }
@@ -661,7 +661,7 @@ _handle_current_item_change_msg (GstMessage *msg, const GstStructure *structure,
 
   gst_structure_id_get (structure,
       _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, &current_item,
-      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_ENUM, &mode,
+      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_INT, &mode,
       NULL);
 
   player->pending_position = 0; // We store pending position for played item, so reset
