@@ -210,4 +210,7 @@ void clapper_player_add_feature (ClapperPlayer *player, ClapperFeature *feature)
 CLAPPER_API
 gchar * clapper_player_make_pipeline_graph (ClapperPlayer *player, GstDebugGraphDetails details);
 
+CLAPPER_API
+void clapper_player_post_message (ClapperPlayer *player, GstMessage *msg, ClapperPlayerMessageDestination destination);
+
 G_END_DECLS

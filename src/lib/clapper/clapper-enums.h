@@ -55,6 +55,21 @@ typedef enum
 } ClapperPlayerSeekMethod;
 
 /**
+ * ClapperPlayerMessageDestination:
+ * @CLAPPER_PLAYER_MESSAGE_DESTINATION_PLAYER: Messaging from application or reactable enhancers to the player itself.
+ * @CLAPPER_PLAYER_MESSAGE_DESTINATION_REACTABLES: Messaging from application to the reactable enhancers.
+ * @CLAPPER_PLAYER_MESSAGE_DESTINATION_APPLICATION: Messaging from reactable enhancers to the application.
+ *
+ * Since: 0.10
+ */
+typedef enum
+{
+  CLAPPER_PLAYER_MESSAGE_DESTINATION_PLAYER = 0,
+  CLAPPER_PLAYER_MESSAGE_DESTINATION_REACTABLES,
+  CLAPPER_PLAYER_MESSAGE_DESTINATION_APPLICATION,
+} ClapperPlayerMessageDestination;
+
+/**
  * ClapperQueueProgressionMode:
  * @CLAPPER_QUEUE_PROGRESSION_NONE: Queue will not change current item after playback finishes.
  * @CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE: Queue selects items one after another until the end.

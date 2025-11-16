@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <gst/gst.h>
+
 #include "clapper-enums.h"
 #include "clapper-threaded-object.h"
 #include "clapper-enhancer-proxy.h"
@@ -35,6 +37,9 @@ void clapper_reactables_manager_initialize (void);
 
 G_GNUC_INTERNAL
 ClapperReactablesManager * clapper_reactables_manager_new (void);
+
+G_GNUC_INTERNAL
+void clapper_reactables_manager_post_message (ClapperReactablesManager *manager, GstMessage *msg);
 
 G_GNUC_INTERNAL
 void clapper_reactables_manager_trigger_configure_take_config (ClapperReactablesManager *manager, ClapperEnhancerProxy *proxy, GstStructure *config);

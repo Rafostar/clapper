@@ -2245,6 +2245,56 @@ clapper_player_make_pipeline_graph (ClapperPlayer *self, GstDebugGraphDetails de
   return gst_debug_bin_to_dot_data (GST_BIN (self->playbin), details);
 }
 
+/**
+ * clapper_player_post_message:
+ * @player: a #ClapperPlayer
+ * @msg: (transfer full): a #GstMessage
+ * @destination: a #ClapperPlayerMessageDestination
+ *
+ * Allows sending custom messages to the desired @destination.
+ *
+ * This functionality can be used for communication with enhancers implementing
+ * [iface@Clapper.Reactable] interface. Useful for applications to send custom messages
+ * to enhacers that can react to them and/or for enhancers development to send events
+ * from them to the applications. It can also be used for sending specific messages
+ * from application or enhancers to the player itself.
+ *
+ * Messages send to the application can be received by connecting a
+ * [signal@Clapper.Player::message] signal handler. Inspection of message source
+ * object can be done to determine who send given message.
+ *
+ * Since: 0.10
+ */
+void
+clapper_player_post_message (ClapperPlayer *self, GstMessage *msg,
+    ClapperPlayerMessageDestination destination)
+{
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+  g_return_if_fail (GST_IS_MESSAGE (msg));
+
+  switch (destination) {
+    case CLAPPER_PLAYER_MESSAGE_DESTINATION_PLAYER:
+      clapper_playbin_bus_post_user_message (self->bus, msg);
+      return; // Message taken
+    case CLAPPER_PLAYER_MESSAGE_DESTINATION_REACTABLES:
+      if (self->reactables_manager) {
+        clapper_reactables_manager_post_message (self->reactables_manager, msg);
+        return; // Message taken
+      }
+      break;
+    case CLAPPER_PLAYER_MESSAGE_DESTINATION_APPLICATION:
+      clapper_app_bus_post_message_signal (self->app_bus,
+          GST_OBJECT_CAST (self), signals[SIGNAL_MESSAGE], msg);
+      break; // Above function does not take message (unref needed)
+    default:
+      g_assert_not_reached ();
+      break;
+  }
+
+  /* Unref when not taken */
+  gst_message_unref (msg);
+}
+
 static void
 clapper_player_thread_start (ClapperThreadedObject *threaded_object)
 {
