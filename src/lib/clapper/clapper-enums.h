@@ -119,6 +119,8 @@ typedef enum
  * @CLAPPER_DISCOVERER_DISCOVERY_NONCURRENT: Only run discovery on an item if it is not a currently selected item in [class@Clapper.Queue].
  *   This mode is optimal when application always plays (or at least goes into paused) after selecting item from queue.
  *   It will skip discovery of such items since they will be discovered by [class@Clapper.Player] anyway.
+ *
+ * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
  */
 typedef enum
 {
