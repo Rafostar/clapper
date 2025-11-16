@@ -814,7 +814,7 @@ clapper_media_item_constructed (GObject *object)
     self->uri = g_strdup ("file://");
 
   self->title = clapper_utils_title_from_uri (self->uri);
-  self->title_is_parsed = (self->title != NULL);
+  self->title_is_parsed = TRUE;
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
 }
