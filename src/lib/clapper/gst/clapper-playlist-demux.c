@@ -309,15 +309,31 @@ _filter_playlistables (ClapperPlaylistDemux *self, GstCaps *caps, ClapperEnhance
 static inline gboolean
 _handle_playlist (ClapperPlaylistDemux *self, GListStore *playlist, GCancellable *cancellable)
 {
-  ClapperMediaItem *item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
+  ClapperMediaItem *item;
+  GstStructure *structure;
   const gchar *uri;
   gboolean success;
+
+  if (g_cancellable_is_cancelled (cancellable)) {
+    GST_ELEMENT_ERROR (self, RESOURCE, OPEN_READ,
+        ("Playlist parsing was cancelled"), (NULL));
+    return FALSE;
+  }
+
+  item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
 
   if (G_UNLIKELY (item == NULL)) {
     GST_ELEMENT_ERROR (self, RESOURCE, OPEN_READ,
         ("This playlist appears to be empty"), (NULL));
     return FALSE;
   }
+
+  /* Post playlist before setting an URI, so it arrives
+   * before eventual error (e.g. non-existing file) */
+  structure = gst_structure_new ("ClapperPlaylistParsed",
+      "playlist", G_TYPE_LIST_STORE, playlist, NULL);
+  gst_element_post_message (GST_ELEMENT_CAST (self),
+      gst_message_new_element (GST_OBJECT_CAST (self), structure));
 
   uri = clapper_media_item_get_uri (item);
   success = clapper_uri_base_demux_set_uri (CLAPPER_URI_BASE_DEMUX_CAST (self), uri, NULL);
@@ -327,14 +343,6 @@ _handle_playlist (ClapperPlaylistDemux *self, GListStore *playlist, GCancellable
     GST_ELEMENT_ERROR (self, RESOURCE, OPEN_READ,
         ("Resolved item URI was rejected"), (NULL));
     return FALSE;
-  }
-
-  if (!g_cancellable_is_cancelled (cancellable)) {
-    GstStructure *structure = gst_structure_new ("ClapperPlaylistParsed",
-        "playlist", G_TYPE_LIST_STORE, playlist, NULL);
-
-    gst_element_post_message (GST_ELEMENT_CAST (self),
-        gst_message_new_element (GST_OBJECT_CAST (self), structure));
   }
 
   return TRUE;
