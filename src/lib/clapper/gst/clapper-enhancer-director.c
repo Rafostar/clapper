@@ -60,6 +60,8 @@ typedef struct
   GError **error;
 } ClapperEnhancerDirectorData;
 
+static GMutex cleanup_lock;
+
 static gpointer
 clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 {
@@ -356,6 +358,11 @@ _cache_cleanup_func (ClapperEnhancerDirector *self)
   const gchar *data;
   gint64 since_cleanup, epoch_now, epoch_last = 0;
 
+  if (!g_mutex_trylock (&cleanup_lock)) {
+    GST_LOG_OBJECT (self, "Cache cleanup is already running");
+    return G_SOURCE_REMOVE;
+  }
+
   date = g_date_time_new_now_utc ();
   epoch_now = g_date_time_to_unix (date);
   g_date_time_unref (date);
@@ -418,6 +425,7 @@ _cache_cleanup_func (ClapperEnhancerDirector *self)
         CLAPPER_TIME_FORMAT " ago", CLAPPER_TIME_ARGS (since_cleanup));
   }
 
+  g_mutex_unlock (&cleanup_lock);
   g_free (filename);
 
   return G_SOURCE_REMOVE;
