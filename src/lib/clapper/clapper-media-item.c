@@ -54,6 +54,7 @@ struct _ClapperMediaItem
   /* Whether using title from URI */
   gboolean title_is_parsed;
 
+  GType redirects_src_type;
   gchar *redirect_uri;
   gchar *cache_uri;
 
@@ -684,6 +685,8 @@ static inline gboolean
 clapper_media_item_set_redirect_uri (ClapperMediaItem *self, const gchar *redirect_uri,
     GstObject *redirect_src)
 {
+  GType src_type;
+
   /* Safety checks */
   if (G_UNLIKELY (!redirect_uri)) {
     GST_ERROR_OBJECT (self, "Received redirect request without an URI set");
@@ -691,6 +694,18 @@ clapper_media_item_set_redirect_uri (ClapperMediaItem *self, const gchar *redire
   }
   if (G_UNLIKELY (!redirect_src)) {
     GST_ERROR_OBJECT (self, "Received redirect request without source object set");
+    return FALSE;
+  }
+
+  /* Only allow redirects determined by the same source type, otherwise
+   * we would start mixing URIs when multiple sources message them */
+  src_type = G_OBJECT_TYPE (redirect_src);
+
+  if (self->redirects_src_type == 0) {
+    self->redirects_src_type = src_type;
+  } else if (self->redirects_src_type != src_type) {
+    GST_LOG_OBJECT (self, "Ignoring redirection from different source: %s",
+        G_OBJECT_TYPE_NAME (redirect_src));
     return FALSE;
   }
 
