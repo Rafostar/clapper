@@ -29,6 +29,7 @@
 #include "clapper-stream-private.h"
 #include "clapper-stream-list-private.h"
 #include "gst/clapper-extractable-src-private.h"
+#include "gst/clapper-playlist-demux-private.h"
 
 #define GST_CAT_DEFAULT clapper_playbin_bus_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -812,20 +813,28 @@ clapper_playbin_bus_post_user_message (GstBus *bus, GstMessage *msg)
 static inline void
 _on_playlist_parsed_msg (GstMessage *msg, ClapperPlayer *player)
 {
+  GstObject *src = GST_MESSAGE_SRC (msg);
   ClapperMediaItem *playlist_item = NULL;
   GListStore *playlist = NULL;
-  const GstStructure *structure = gst_message_get_structure (msg);
+  const GstStructure *structure;
   guint n_items;
+
+  if (G_UNLIKELY (!src)) {
+    GST_WARNING_OBJECT (player, "Ignoring playlist parsed message without a source");
+    return;
+  }
+
+  structure = gst_message_get_structure (msg);
 
   /* If message contains item, use that.
    * Otherwise assume pending item was parsed. */
   if (gst_structure_has_field (structure, "item")) {
     gst_structure_get (structure,
         "item", CLAPPER_TYPE_MEDIA_ITEM, &playlist_item, NULL);
-  } else {
+  } else if (CLAPPER_IS_PLAYLIST_DEMUX (src)) {
     GST_OBJECT_LOCK (player);
 
-    /* Playlist is always parsed before playback starts */
+    /* Playlist from demuxer is always parsed before playback starts */
     if (player->pending_item)
       playlist_item = gst_object_ref (player->pending_item);
 
@@ -846,26 +855,12 @@ _on_playlist_parsed_msg (GstMessage *msg, ClapperPlayer *player)
   n_items = g_list_model_get_n_items (G_LIST_MODEL (playlist));
 
   if (G_LIKELY (n_items > 0)) {
-    ClapperMediaItem *active_item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
     gboolean updated;
 
     /* Update redirect URI (must be done from player thread) */
-    updated = clapper_media_item_update_from_item (playlist_item, active_item, player);
-    gst_object_unref (active_item);
+    updated = clapper_media_item_update_from_parsed_playlist (playlist_item, playlist, src, player);
 
-    if (!updated) {
-      GstMessage *msg;
-      GError *error;
-
-      error = g_error_new (GST_RESOURCE_ERROR, GST_RESOURCE_ERROR_FAILED,
-          "Detected infinite redirection in playlist");
-      msg = gst_message_new_error (GST_OBJECT (player), error, NULL);
-
-      _handle_error_msg (msg, player);
-
-      g_error_free (error);
-      gst_message_unref (msg);
-    } else if (n_items > 1) {
+    if (updated && n_items > 1) {
       /* Forward to append remaining items (must be done from main thread) */
       clapper_app_bus_post_insert_playlist (player->app_bus,
           GST_OBJECT_CAST (player),

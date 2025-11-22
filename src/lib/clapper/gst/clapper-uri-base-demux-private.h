@@ -41,6 +41,8 @@ struct _ClapperUriBaseDemuxClass
   void (* handle_caps) (ClapperUriBaseDemux *uri_bd, GstCaps *caps);
 
   void (* handle_custom_event) (ClapperUriBaseDemux *uri_bd, GstEvent *event);
+
+  gboolean (* handle_custom_query) (ClapperUriBaseDemux *uri_bd, GstQuery *query);
 };
 
 gboolean clapper_uri_base_demux_set_uri (ClapperUriBaseDemux *uri_bd, const gchar *uri, const gchar *blacklisted_el);

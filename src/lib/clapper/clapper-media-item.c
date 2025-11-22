@@ -54,7 +54,7 @@ struct _ClapperMediaItem
   /* Whether using title from URI */
   gboolean title_is_parsed;
 
-  GSList *redirects;
+  gchar *redirect_uri;
   gchar *cache_uri;
 
   /* For shuffle */
@@ -203,8 +203,8 @@ clapper_media_item_get_id (ClapperMediaItem *self)
 }
 
 /* FIXME: 1.0:
- * Consider change to be transfer-full and just return latest data from redirects
- * list (alternatively expose redirect URI). This should make it possible to work
+ * Consider change to be transfer-full and just return latest redirect URI
+ * (alternatively expose redirect URI). This should make it possible to work
  * with enhancers that would benefit from knowledge about URI changes
  * (e.g "Recall" could read actual media instead of playlist file).
  */
@@ -681,26 +681,41 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
 
 /* XXX: Must be set from player thread */
 static inline gboolean
-clapper_media_item_set_redirect_uri (ClapperMediaItem *self, const gchar *redirect_uri)
+clapper_media_item_set_redirect_uri (ClapperMediaItem *self, const gchar *redirect_uri,
+    GstObject *redirect_src)
 {
-  /* Check if we did not already redirect into that URI (prevent endless loop) */
-  if (!redirect_uri || g_slist_find_custom (self->redirects, redirect_uri, (GCompareFunc) strcmp))
+  /* Safety checks */
+  if (G_UNLIKELY (!redirect_uri)) {
+    GST_ERROR_OBJECT (self, "Received redirect request without an URI set");
     return FALSE;
+  }
+  if (G_UNLIKELY (!redirect_src)) {
+    GST_ERROR_OBJECT (self, "Received redirect request without source object set");
+    return FALSE;
+  }
 
-  self->redirects = g_slist_prepend (self->redirects, g_strdup (redirect_uri));
-  GST_DEBUG_OBJECT (self, "Set redirect URI: \"%s\"", (gchar *) self->redirects->data);
+  g_set_str (&self->redirect_uri, redirect_uri);
+  GST_DEBUG_OBJECT (self, "Set redirect URI: \"%s\", source: %s",
+      self->redirect_uri, G_OBJECT_TYPE_NAME (redirect_src));
 
   return TRUE;
 }
 
 gboolean
-clapper_media_item_update_from_item (ClapperMediaItem *self, ClapperMediaItem *other_item,
-    ClapperPlayer *player)
+clapper_media_item_update_from_parsed_playlist (ClapperMediaItem *self, GListStore *playlist,
+    GstObject *playlist_src, ClapperPlayer *player)
 {
+  ClapperMediaItem *other_item;
+  const gchar *redirect_uri;
   gboolean title_changed = FALSE;
 
-  if (!clapper_media_item_set_redirect_uri (self, clapper_media_item_get_uri (other_item)))
+  other_item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
+  redirect_uri = clapper_media_item_get_uri (other_item);
+
+  if (!clapper_media_item_set_redirect_uri (self, redirect_uri, playlist_src)) {
+    gst_object_unref (other_item);
     return FALSE;
+  }
 
   GST_OBJECT_LOCK (other_item);
 
@@ -730,6 +745,8 @@ clapper_media_item_update_from_item (ClapperMediaItem *self, ClapperMediaItem *o
     if ((features_manager = clapper_player_get_features_manager (player)))
       clapper_features_manager_trigger_item_updated (features_manager, self);
   }
+
+  gst_object_unref (other_item);
 
   return TRUE;
 }
@@ -768,8 +785,8 @@ clapper_media_item_get_playback_uri (ClapperMediaItem *self)
     clapper_media_item_set_cache_location (self, NULL);
   }
 
-  if (self->redirects)
-    return self->redirects->data;
+  if (self->redirect_uri)
+    return self->redirect_uri;
 
   return self->uri;
 }
@@ -835,7 +852,7 @@ clapper_media_item_finalize (GObject *object)
   gst_object_unparent (GST_OBJECT_CAST (self->timeline));
   gst_object_unref (self->timeline);
 
-  g_slist_free_full (self->redirects, g_free);
+  g_free (self->redirect_uri);
   g_free (self->cache_uri);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);

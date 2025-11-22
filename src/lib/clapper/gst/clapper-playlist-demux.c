@@ -30,6 +30,10 @@
 #define URI_LIST_MEDIA_TYPE "text/uri-list"
 #define DATA_CHUNK_SIZE 4096
 
+#define NTH_REDIRECT_STRUCTURE_NAME "ClapperQueryNthRedirect"
+#define NTH_REDIRECT_FIELD "nth-redirect"
+#define MAX_REDIRECTS 10
+
 #define GST_CAT_DEFAULT clapper_playlist_demux_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
 
@@ -348,6 +352,50 @@ _handle_playlist (ClapperPlaylistDemux *self, GListStore *playlist, GCancellable
   return TRUE;
 }
 
+static void
+_query_parse_nth_redirect (GstQuery *query, guint *nth_redirect)
+{
+  const GstStructure *structure = gst_query_get_structure (query);
+  *nth_redirect = g_value_get_uint (gst_structure_get_value (structure, NTH_REDIRECT_FIELD));
+}
+
+static void
+_query_set_nth_redirect (GstQuery *query, guint nth_redirect)
+{
+  GstStructure *structure = gst_query_writable_structure (query);
+  gst_structure_set (structure, NTH_REDIRECT_FIELD, G_TYPE_UINT, nth_redirect, NULL);
+}
+
+static gboolean
+clapper_playlist_demux_handle_custom_query (ClapperUriBaseDemux *uri_bd, GstQuery *query)
+{
+  ClapperPlaylistDemux *self = CLAPPER_PLAYLIST_DEMUX_CAST (uri_bd);
+  const GstStructure *structure = gst_query_get_structure (query);
+
+  if (gst_structure_has_name (structure, NTH_REDIRECT_STRUCTURE_NAME)) {
+    GstPad *sink_pad;
+
+    GST_LOG_OBJECT (self, "Received custom query: " NTH_REDIRECT_STRUCTURE_NAME);
+
+    sink_pad = gst_element_get_static_pad (GST_ELEMENT_CAST (self), "sink");
+    gst_pad_peer_query (sink_pad, query);
+    gst_object_unref (sink_pad);
+
+    if (G_LIKELY (gst_query_is_writable (query))) {
+      guint nth_redirect = 0;
+
+      _query_parse_nth_redirect (query, &nth_redirect);
+      _query_set_nth_redirect (query, ++nth_redirect);
+    } else {
+      GST_ERROR_OBJECT (self, "Unwritable custom query: " NTH_REDIRECT_STRUCTURE_NAME);
+    }
+
+    return TRUE;
+  }
+
+  return FALSE;
+}
+
 static gboolean
 clapper_playlist_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
     GstBuffer *buffer, GCancellable *cancellable)
@@ -355,9 +403,11 @@ clapper_playlist_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
   ClapperPlaylistDemux *self = CLAPPER_PLAYLIST_DEMUX_CAST (uri_bd);
   GstPad *sink_pad;
   GstQuery *query;
+  GstStructure *query_structure;
   GUri *uri = NULL;
   GListStore *playlist;
   GError *error = NULL;
+  guint nth_redirect = 0;
   gboolean handled;
 
   sink_pad = gst_element_get_static_pad (GST_ELEMENT_CAST (self), "sink");
@@ -376,10 +426,27 @@ clapper_playlist_demux_process_buffer (ClapperUriBaseDemux *uri_bd,
   }
 
   gst_query_unref (query);
+
+  query_structure = gst_structure_new (NTH_REDIRECT_STRUCTURE_NAME,
+      NTH_REDIRECT_FIELD, G_TYPE_UINT, 0, NULL);
+  query = gst_query_new_custom (GST_QUERY_CUSTOM, query_structure);
+
+  if (gst_pad_peer_query (sink_pad, query))
+    _query_parse_nth_redirect (query, &nth_redirect);
+
+  GST_DEBUG_OBJECT (self, "Current number of redirects: %u", nth_redirect);
+
+  gst_query_unref (query);
   gst_object_unref (sink_pad);
 
   if (G_UNLIKELY (uri == NULL)) {
-    GST_ERROR_OBJECT (self, "Could not query source URI");
+    GST_ELEMENT_ERROR (self, RESOURCE, FAILED,
+        ("Could not query source URI"), (NULL));
+    return FALSE;
+  }
+  if (G_UNLIKELY (nth_redirect > MAX_REDIRECTS)) {
+    GST_ELEMENT_ERROR (self, RESOURCE, FAILED,
+        ("Too many nested playlists"), (NULL));
     return FALSE;
   }
 
@@ -506,6 +573,7 @@ clapper_playlist_demux_class_init (ClapperPlaylistDemuxClass *klass)
   gobject_class->finalize = clapper_playlist_demux_finalize;
 
   clapperuribd_class->handle_caps = clapper_playlist_demux_handle_caps;
+  clapperuribd_class->handle_custom_query = clapper_playlist_demux_handle_custom_query;
   clapperuribd_class->process_buffer = clapper_playlist_demux_process_buffer;
 
   param_specs[PROP_ENHANCER_PROXIES] = g_param_spec_object ("enhancer-proxies",
