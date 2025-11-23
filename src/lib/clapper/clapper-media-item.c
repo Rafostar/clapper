@@ -770,6 +770,9 @@ clapper_media_item_update_from_parsed_playlist (ClapperMediaItem *self, GListSto
 void
 clapper_media_item_set_cache_location (ClapperMediaItem *self, const gchar *location)
 {
+  if (!self->cache_uri && !location)
+    return; // No change (called during construction)
+
   g_clear_pointer (&self->cache_uri, g_free);
 
   if (location)
