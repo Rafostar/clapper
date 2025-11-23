@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Reactable.queue_append_sync</title>
+  <title>Clapper.Reactable.message_received</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Reactable.queue_append_sync"/>
-  <meta priority="og:description" content="Reference for Clapper.Reactable.queue_append_sync"/>
-  <meta name="twitter:title" content="Clapper.Reactable.queue_append_sync"/>
-  <meta name="twitter:description" content="Reference for Clapper.Reactable.queue_append_sync"/>
+  <meta property="og:title" content="Clapper.Reactable.message_received"/>
+  <meta property="og:description" content="Reference for Clapper.Reactable.message_received"/>
+  <meta name="twitter:title" content="Clapper.Reactable.message_received"/>
+  <meta name="twitter:description" content="Reference for Clapper.Reactable.message_received"/>
 
 
   
@@ -86,18 +86,34 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   </div>
 </div>
 <div class="section">
-  <h5>Methods</h5>
+  <h5>Virtual methods</h5>
   <div class="links">
   
-    <a class="method" href="method.Reactable.get_player.html">get_player</a>
+    <a class="method" href="vfunc.Reactable.item_updated.html">item_updated</a>
   
-    <a class="method current" href="method.Reactable.queue_append_sync.html">queue_append_sync</a>
+    <a class="method current" href="vfunc.Reactable.message_received.html">message_received</a>
   
-    <a class="method" href="method.Reactable.queue_clear_sync.html">queue_clear_sync</a>
+    <a class="method" href="vfunc.Reactable.mute_changed.html">mute_changed</a>
   
-    <a class="method" href="method.Reactable.queue_insert_sync.html">queue_insert_sync</a>
+    <a class="method" href="vfunc.Reactable.played_item_changed.html">played_item_changed</a>
   
-    <a class="method" href="method.Reactable.queue_remove_sync.html">queue_remove_sync</a>
+    <a class="method" href="vfunc.Reactable.position_changed.html">position_changed</a>
+  
+    <a class="method" href="vfunc.Reactable.queue_cleared.html">queue_cleared</a>
+  
+    <a class="method" href="vfunc.Reactable.queue_item_added.html">queue_item_added</a>
+  
+    <a class="method" href="vfunc.Reactable.queue_item_removed.html">queue_item_removed</a>
+  
+    <a class="method" href="vfunc.Reactable.queue_item_repositioned.html">queue_item_repositioned</a>
+  
+    <a class="method" href="vfunc.Reactable.queue_progression_changed.html">queue_progression_changed</a>
+  
+    <a class="method" href="vfunc.Reactable.speed_changed.html">speed_changed</a>
+  
+    <a class="method" href="vfunc.Reactable.state_changed.html">state_changed</a>
+  
+    <a class="method" href="vfunc.Reactable.volume_changed.html">volume_changed</a>
   
   </div>
 </div>
@@ -112,29 +128,29 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="iface.Reactable.html">Reactable</a><span class="sep"></span>queue_append_sync</h1>
+    <h3>Virtual Method</h3>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="iface.Reactable.html">Reactable</a><span class="sep"></span>message_received</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+      <p><span class="emblem available-next" title="This virtual functionwill be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
-      <h4 style="display:flex;" id="declaration">
+      <h4 id="declaration">
         Declaration
-        <a class="anchor" href="#declaration"></a>
+        <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L228">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L218">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">clapper_reactable_queue_append_sync</span><span class="w"> </span><span class="p">(</span>
+<span class="n">message_received</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">ClapperReactable</span><span class="o">*</span><span class="w"> </span><span class="n">reactable</span><span class="p">,</span>
-<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span>
+<span class="w">  </span><span class="n">GstMessage</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -142,32 +158,21 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 style="display:flex;" id="description">
+      <h4 id="description">
         Description
-        <a class="anchor" href="#description"></a>
+        <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.c#L81">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L209">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>A convenience function that within application main thread synchronously appends
-an <code>item</code> to the playback queue of the player that <code>reactable</code> belongs&nbsp;to.</p>
-<p>Reactable enhancers should only modify the queue from the application
-main thread, switching thread either themselves or using this convenience
-function that does&nbsp;so.</p>
-<p>Note that this function will do no operation if called when there is no player
-set yet (e.g. inside enhancer construction) or if enhancer outlived the parent
-instance somehow. Both cases are considered to be implementation&nbsp;bug.</p>
+        <p>Custom message from user was received on reactables&nbsp;bus.</p>
       </div>
 
       <div class="docblock">
         
         <p>Available since: 0.10</p>
-        
-        
-        
-        
         
       </div>
 
@@ -184,12 +189,10 @@ instance somehow. Both cases are considered to be implementation&nbsp;bug.</p>
       <div class="docblock">
         <dl class="arguments">
           
-
-          
-          <dt class="arg-name"><code>item</code></dt>
+          <dt class="arg-name"><code>msg</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
-            <p>A <code>ClapperMediaItem</code>.</p>
+            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="struct.Message.html" data-namespace="Gst" class="external"><code>GstMessage</code></a></p>
+            <p>A <code>GstMessage</code>.</p>
             <table>
             
             

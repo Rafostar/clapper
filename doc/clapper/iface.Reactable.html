@@ -126,6 +126,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="vfunc.Reactable.item_updated.html">item_updated</a>
   
+    <a class="method" href="vfunc.Reactable.message_received.html">message_received</a>
+  
     <a class="method" href="vfunc.Reactable.mute_changed.html">mute_changed</a>
   
     <a class="method" href="vfunc.Reactable.played_item_changed.html">played_item_changed</a>
@@ -351,6 +353,10 @@ an <code>item</code> from the playback queue of the player that <code>reactable<
     ClapperReactable* reactable,
     ClapperQueueProgressionMode mode
   );
+  void (* message_received) (
+    ClapperReactable* reactable,
+    GstMessage* msg
+  );
   
 }</code></pre>
       </div>
@@ -508,6 +514,17 @@ an <code>item</code> from the playback queue of the player that <code>reactable<
           <td>&nbsp;</td><td style="vertical-align:top"><p>Progression mode of the queue was&nbsp;changed.</p></td>
         </tr>
         
+        <tr>
+          <td style="vertical-align:top"><code>message_received</code></td>
+          <td style="vertical-align:top"><pre><code>void (* message_received) (
+    ClapperReactable* reactable,
+    GstMessage* msg
+  )</code></pre></td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td><td style="vertical-align:top"><p>No description available.</p></td>
+        </tr>
+        
         </table>
       </div>
       
@@ -529,6 +546,16 @@ an <code>item</code> from the playback queue of the player that <code>reactable<
           <h6 id="vfunc-item_updated"><a href="vfunc.Reactable.item_updated.html">Clapper.Reactable.item_updated</a></h6>
           <div class="docblock">
             <p>An item in queue got&nbsp;updated.</p>
+          </div>
+          <div class="docblock">
+            <p><span class="emblem available-next" title="This virtual method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+          </div>
+        </div>
+      
+        <div class="">
+          <h6 id="vfunc-message_received"><a href="vfunc.Reactable.message_received.html">Clapper.Reactable.message_received</a></h6>
+          <div class="docblock">
+            <p>Custom message from user was received on reactables&nbsp;bus.</p>
           </div>
           <div class="docblock">
             <p><span class="emblem available-next" title="This virtual method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>

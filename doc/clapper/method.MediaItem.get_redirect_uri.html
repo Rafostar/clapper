@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Reactable.queue_append_sync</title>
+  <title>Clapper.MediaItem.get_redirect_uri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Reactable.queue_append_sync"/>
-  <meta priority="og:description" content="Reference for Clapper.Reactable.queue_append_sync"/>
-  <meta name="twitter:title" content="Clapper.Reactable.queue_append_sync"/>
-  <meta name="twitter:description" content="Reference for Clapper.Reactable.queue_append_sync"/>
+  <meta priority="og:title" content="Clapper.MediaItem.get_redirect_uri"/>
+  <meta priority="og:description" content="Reference for Clapper.MediaItem.get_redirect_uri"/>
+  <meta name="twitter:title" content="Clapper.MediaItem.get_redirect_uri"/>
+  <meta name="twitter:description" content="Reference for Clapper.MediaItem.get_redirect_uri"/>
 
 
   
@@ -82,22 +82,36 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="iface.Reactable.html">Reactable</a>
+    <a href="class.MediaItem.html">MediaItem</a>
   </div>
 </div>
 <div class="section">
   <h5>Methods</h5>
   <div class="links">
   
-    <a class="method" href="method.Reactable.get_player.html">get_player</a>
+    <a class="method" href="method.MediaItem.get_cache_location.html">get_cache_location</a>
   
-    <a class="method current" href="method.Reactable.queue_append_sync.html">queue_append_sync</a>
+    <a class="method" href="method.MediaItem.get_container_format.html">get_container_format</a>
   
-    <a class="method" href="method.Reactable.queue_clear_sync.html">queue_clear_sync</a>
+    <a class="method" href="method.MediaItem.get_duration.html">get_duration</a>
   
-    <a class="method" href="method.Reactable.queue_insert_sync.html">queue_insert_sync</a>
+    <a class="method" href="method.MediaItem.get_id.html">get_id</a>
   
-    <a class="method" href="method.Reactable.queue_remove_sync.html">queue_remove_sync</a>
+    <a class="method current" href="method.MediaItem.get_redirect_uri.html">get_redirect_uri</a>
+  
+    <a class="method" href="method.MediaItem.get_suburi.html">get_suburi</a>
+  
+    <a class="method" href="method.MediaItem.get_tags.html">get_tags</a>
+  
+    <a class="method" href="method.MediaItem.get_timeline.html">get_timeline</a>
+  
+    <a class="method" href="method.MediaItem.get_title.html">get_title</a>
+  
+    <a class="method" href="method.MediaItem.get_uri.html">get_uri</a>
+  
+    <a class="method" href="method.MediaItem.populate_tags.html">populate_tags</a>
+  
+    <a class="method" href="method.MediaItem.set_suburi.html">set_suburi</a>
   
   </div>
 </div>
@@ -113,7 +127,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="iface.Reactable.html">Reactable</a><span class="sep"></span>queue_append_sync</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a><span class="sep"></span>get_redirect_uri</h1>
   </header>
 
   <section>
@@ -126,14 +140,13 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L228">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.h#L64">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">clapper_reactable_queue_append_sync</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperReactable</span><span class="o">*</span><span class="w"> </span><span class="n">reactable</span><span class="p">,</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">gchar</span><span class="o">*</span>
+<span class="n">clapper_media_item_get_redirect_uri</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span>
 <span class="p">)</span>
 </pre></div>
@@ -146,19 +159,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.c#L81">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L276">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>A convenience function that within application main thread synchronously appends
-an <code>item</code> to the playback queue of the player that <code>reactable</code> belongs&nbsp;to.</p>
-<p>Reactable enhancers should only modify the queue from the application
-main thread, switching thread either themselves or using this convenience
-function that does&nbsp;so.</p>
-<p>Note that this function will do no operation if called when there is no player
-set yet (e.g. inside enhancer construction) or if enhancer outlived the parent
-instance somehow. Both cases are considered to be implementation&nbsp;bug.</p>
+        <p>Get permanent redirect <span class="caps">URI</span> of <code>ClapperMediaItem</code>.</p>
       </div>
 
       <div class="docblock">
@@ -172,44 +178,44 @@ instance somehow. Both cases are considered to be implementation&nbsp;bug.</p>
       </div>
 
       
+      <div class="docblock">
+        <table>
+        
+          <tr><td>Gets property</td><td><a href="property.MediaItem.redirect-uri.html"><code>Clapper.MediaItem:redirect-uri</code></a></td></tr>
+        
+        </table>
+      </div>
+      
     </div>
 
     
-    <div class="parameters toggle-wrapper">
-      <h4 id="parameters">
-        Parameters
-        <a href="#parameters" class="anchor"></a>
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <dl class="arguments">
-          
-
-          
-          <dt class="arg-name"><code>item</code></dt>
-          <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
-            <p>A <code>ClapperMediaItem</code>.</p>
+        <div class="returns">
+          <div class="arg-description">
+            <p><em>Type:</em>&nbsp;<code>gchar*</code></p>
+            <p>A redirected <span class="caps">URI</span> of <code>ClapperMediaItem</code>.</p>
+          </div>
+          <div>
             <table>
             
             
             
-            
-            
-            
-            
-            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
-            
+            <tr><td title="transfer: full">The caller of the method takes ownership of the returned data, and is responsible for freeing it.</td></tr>
+            <tr><td>The return value can be <code>NULL</code>.</td></tr>
+            <tr><td>The value is a NUL terminated UTF-8 string.</td></tr>
             </table>
-          </dd>
-          
-
-          
-        </dl>
+          </div>
+        </div>
       </div>
     </div>
-    
-
     
 
   </section>

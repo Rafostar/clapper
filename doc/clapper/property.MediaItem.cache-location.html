@@ -97,6 +97,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="property"href="property.MediaItem.id.html">id</a>
   
+    <a class="property"href="property.MediaItem.redirect-uri.html">redirect-uri</a>
+  
     <a class="property"href="property.MediaItem.suburi.html">suburi</a>
   
     <a class="property"href="property.MediaItem.tags.html">tags</a>
@@ -135,7 +137,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property cache-location: utf8 [ write, construct-only ]</code></pre>
+        <pre><code>property cache-location: utf8 [ read, write, construct-only ]</code></pre>
       </div>
     </div>
 
@@ -144,12 +146,17 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L943">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L1075">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <p>Media downloaded cache file&nbsp;location.</p>
+<p>This can be either set for newly created media items or
+it will be updated after download is completed if
+<a href="property.Player.download-enabled.html"><code>ClapperPlayer:download-enabled</code></a> is&nbsp;set.</p>
+<p><span class="caps">NOTE</span>: This property was added in 0.8 as write at construct only.
+It can also be read only since Clapper&nbsp;0.10.</p>
       </div>
 
       <div class="docblock">
@@ -166,6 +173,8 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
           <tr><td>Default value</td><td>NULL</td></tr>
         
+          <tr><td>Getter method</td><td><a href="method.MediaItem.get_cache_location.html"><code>clapper_media_item_get_cache_location()</code></a></td></tr>
+        
         </table>
       </div>
       
@@ -179,7 +188,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 
       <div class="docblock">
       <table>
-        <tr><td>Readable</td><td><b>no</b></td></tr>
+        <tr><td>Readable</td><td><b>yes</b></td></tr>
         <tr><td>Writable</td><td><b>yes</b></td></tr>
         <tr><td>Construct</td><td><b>no</b></td></tr>
         <tr><td>Construct only</td><td><b>yes</b></td></tr>

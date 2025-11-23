@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Player.get_video_enabled</title>
+  <title>Clapper.Player.post_message</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Player.get_video_enabled"/>
-  <meta priority="og:description" content="Reference for Clapper.Player.get_video_enabled"/>
-  <meta name="twitter:title" content="Clapper.Player.get_video_enabled"/>
-  <meta name="twitter:description" content="Reference for Clapper.Player.get_video_enabled"/>
+  <meta priority="og:title" content="Clapper.Player.post_message"/>
+  <meta priority="og:description" content="Reference for Clapper.Player.post_message"/>
+  <meta name="twitter:title" content="Clapper.Player.post_message"/>
+  <meta name="twitter:description" content="Reference for Clapper.Player.post_message"/>
 
 
   
@@ -139,7 +139,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.get_subtitles_enabled.html">get_subtitles_enabled</a>
   
-    <a class="method current" href="method.Player.get_video_enabled.html">get_video_enabled</a>
+    <a class="method" href="method.Player.get_video_enabled.html">get_video_enabled</a>
   
     <a class="method" href="method.Player.get_video_filter.html">get_video_filter</a>
   
@@ -155,7 +155,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Player.play.html">play</a>
   
-    <a class="method" href="method.Player.post_message.html">post_message</a>
+    <a class="method current" href="method.Player.post_message.html">post_message</a>
   
     <a class="method" href="method.Player.seek.html">seek</a>
   
@@ -215,12 +215,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a><span class="sep"></span>get_video_enabled</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Player.html">Player</a><span class="sep"></span>post_message</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
@@ -228,14 +228,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.h#L127">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.h#L214">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">gboolean</span>
-<span class="n">clapper_player_get_video_enabled</span><span class="w"> </span><span class="p">(</span>
-<span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">player</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="n">clapper_player_post_message</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="n">ClapperPlayer</span><span class="o">*</span><span class="w"> </span><span class="n">player</span><span class="p">,</span>
+<span class="w">  </span><span class="n">GstMessage</span><span class="o">*</span><span class="w"> </span><span class="n">msg</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ClapperPlayerMessageDestination</span><span class="w"> </span><span class="n">destination</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -247,17 +249,25 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L1582">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-player.c#L2248">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get whether video stream is&nbsp;enabled.</p>
+        <p>Allows sending custom messages to the desired <code>destination</code>.</p>
+<p>This functionality can be used for communication with enhancers implementing
+<a href="iface.Reactable.html"><code>ClapperReactable</code></a> interface. Useful for applications to send custom messages
+to enhacers that can react to them and/or for enhancers development to send events
+from them to the applications. It can also be used for sending specific messages
+from application or enhancers to the player&nbsp;itself.</p>
+<p>Messages send to the application can be received by connecting a
+<a href="signal.Player.message.html"><code>ClapperPlayer::message</code></a> signal handler. Inspection of message source
+object can be done to determine who send given&nbsp;message.</p>
       </div>
 
       <div class="docblock">
         
-        
+        <p>Available since: 0.10</p>
         
         
         
@@ -265,33 +275,25 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         
       </div>
 
-      
-      <div class="docblock">
-        <table>
-        
-          <tr><td>Gets property</td><td><a href="property.Player.video-enabled.html"><code>Clapper.Player:video-enabled</code></a></td></tr>
-        
-        </table>
-      </div>
       
     </div>
 
     
-
-    
-    <div class="return-value toggle-wrapper">
-      <h4 id="return-value">
-        Return value
-        <a href="#return-value" class="anchor"></a>
+    <div class="parameters toggle-wrapper">
+      <h4 id="parameters">
+        Parameters
+        <a href="#parameters" class="anchor"></a>
       </h4>
 
       <div class="docblock">
-        <div class="returns">
-          <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>gboolean</code></p>
-            <p><code>TRUE</code> if enabled, <code>FALSE</code> otherwise.</p>
-          </div>
-          <div>
+        <dl class="arguments">
+          
+
+          
+          <dt class="arg-name"><code>msg</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<a href="javascript:void(0)" data-link="struct.Message.html" data-namespace="Gst" class="external"><code>GstMessage</code></a></p>
+            <p>A <code>GstMessage</code>.</p>
             <table>
             
             
@@ -299,11 +301,36 @@ SPDX-License-Identifier: LGPL-2.1-or-later
             
             
             
+            
+            <tr><td title="transfer: full">The instance takes ownership of the data, and is responsible for freeing it.</td></tr>
+            
             </table>
-          </div>
-        </div>
+          </dd>
+          
+          <dt class="arg-name"><code>destination</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<a href="enum.PlayerMessageDestination.html"><code>ClapperPlayerMessageDestination</code></a></p>
+            <p>A <code>ClapperPlayerMessageDestination</code>.</p>
+            <table>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            </table>
+          </dd>
+          
+
+          
+        </dl>
       </div>
     </div>
+    
+
     
 
   </section>

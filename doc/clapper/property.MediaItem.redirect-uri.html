@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Discoverer:discovery-mode</title>
+  <title>Clapper.MediaItem:redirect-uri</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.Discoverer:discovery-mode"/>
-  <meta property="og:description" content="Reference for property Clapper.Discoverer:discovery-mode"/>
-  <meta name="twitter:title" content="Clapper.Discoverer:discovery-mode"/>
-  <meta name="twitter:description" content="Reference for property Clapper.Discoverer:discovery-mode"/>
+  <meta property="og:title" content="Clapper.MediaItem:redirect-uri"/>
+  <meta property="og:description" content="Reference for property Clapper.MediaItem:redirect-uri"/>
+  <meta name="twitter:title" content="Clapper.MediaItem:redirect-uri"/>
+  <meta name="twitter:description" content="Reference for property Clapper.MediaItem:redirect-uri"/>
 
 
   
@@ -82,14 +82,32 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="class.Discoverer.html">Discoverer</a>
+    <a href="class.MediaItem.html">MediaItem</a>
   </div>
 </div>
 <div class="section">
   <h5>Properties</h5>
   <div class="links">
   
-    <a class="property current"href="property.Discoverer.discovery-mode.html">discovery-mode</a>
+    <a class="property"href="property.MediaItem.cache-location.html">cache-location</a>
+  
+    <a class="property"href="property.MediaItem.container-format.html">container-format</a>
+  
+    <a class="property"href="property.MediaItem.duration.html">duration</a>
+  
+    <a class="property"href="property.MediaItem.id.html">id</a>
+  
+    <a class="property current"href="property.MediaItem.redirect-uri.html">redirect-uri</a>
+  
+    <a class="property"href="property.MediaItem.suburi.html">suburi</a>
+  
+    <a class="property"href="property.MediaItem.tags.html">tags</a>
+  
+    <a class="property"href="property.MediaItem.timeline.html">timeline</a>
+  
+    <a class="property"href="property.MediaItem.title.html">title</a>
+  
+    <a class="property"href="property.MediaItem.uri.html">uri</a>
   
   </div>
 </div>
@@ -105,12 +123,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Property</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Discoverer.html">Discoverer</a>:discovery-mode</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.MediaItem.html">MediaItem</a>:redirect-uri</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p><span class="emblem deprecated">deprecated: 0.10</span>&nbsp;</p>
+      <p></p>
     </div>
     <div class="declaration toggle-wrapper">
       <h4 id="declaration">
@@ -119,7 +137,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>property discovery-mode: Clapper.DiscovererDiscoveryMode [ read, write ]</code></pre>
+        <pre><code>property redirect-uri: utf8 [ read ]</code></pre>
       </div>
     </div>
 
@@ -128,32 +146,35 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/features/discoverer/clapper-discoverer.c#L505">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-media-item.c#L1058">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Discoverer discovery&nbsp;mode.</p>
+        <p>Media permanent redirect <span class="caps">URI</span>.</p>
+<p>Changes when player determines a new redirect for given media item.
+This will also happen when item <span class="caps">URI</span> leads to a playlist. Once playlist
+is parsed, item is merged with the first item on that playlist and the
+remaining items are appended to the playback queue after that item&nbsp;position.</p>
+<p>Once redirect <span class="caps">URI</span> in item is present, player will use that <span class="caps">URI</span> instead
+of the default one. Cache location takes precedence over both URIs&nbsp;through.</p>
       </div>
 
       <div class="docblock">
         <p>
-          Type:<a href="enum.DiscovererDiscoveryMode.html"><code>ClapperDiscovererDiscoveryMode</code></a></p>
+          Type:<code>gchar*</code></p>
         
         
-        <div class="admonition deprecation">
-          <p class="admonition-title">Deprecated since: 0.10</p><p>Use Media Scanner from <code>clapper-enhancers</code> repo&nbsp;instead.</p></div>
+        
       </div>
 
       
       <div class="docblock">
         <table>
         
-          <tr><td>Default value</td><td>CLAPPER_DISCOVERER_DISCOVERY_NONCURRENT</td></tr>
+          <tr><td>Default value</td><td>NULL</td></tr>
         
-          <tr><td>Getter method</td><td><a href="method.Discoverer.get_discovery_mode.html"><code>clapper_discoverer_get_discovery_mode()</code></a></td></tr>
-        
-          <tr><td>Setter method</td><td><a href="method.Discoverer.set_discovery_mode.html"><code>clapper_discoverer_set_discovery_mode()</code></a></td></tr>
+          <tr><td>Getter method</td><td><a href="method.MediaItem.get_redirect_uri.html"><code>clapper_media_item_get_redirect_uri()</code></a></td></tr>
         
         </table>
       </div>
@@ -169,7 +190,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       <div class="docblock">
       <table>
         <tr><td>Readable</td><td><b>yes</b></td></tr>
-        <tr><td>Writable</td><td><b>yes</b></td></tr>
+        <tr><td>Writable</td><td><b>no</b></td></tr>
         <tr><td>Construct</td><td><b>no</b></td></tr>
         <tr><td>Construct only</td><td><b>no</b></td></tr>
       </table>

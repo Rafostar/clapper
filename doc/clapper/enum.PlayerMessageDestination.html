@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.EnhancerParamFlags</title>
+  <title>Clapper.PlayerMessageDestination</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.EnhancerParamFlags"/>
-  <meta property="og:description" content="Reference for Clapper.EnhancerParamFlags"/>
-  <meta name="twitter:title" content="Clapper.EnhancerParamFlags"/>
-  <meta name="twitter:description" content="Reference for Clapper.EnhancerParamFlags"/>
+  <meta property="og:title" content="Clapper.PlayerMessageDestination"/>
+  <meta property="og:description" content="Reference for Clapper.PlayerMessageDestination"/>
+  <meta name="twitter:title" content="Clapper.PlayerMessageDestination"/>
+  <meta name="twitter:description" content="Reference for Clapper.PlayerMessageDestination"/>
 
 
   
@@ -82,7 +82,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a class="current" href="flags.EnhancerParamFlags.html">EnhancerParamFlags</a>
+    <a class="current" href="enum.PlayerMessageDestination.html">PlayerMessageDestination</a>
   </div>
 </div>
 
@@ -100,7 +100,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Enumeration</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span>EnhancerParamFlags</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span>PlayerMessageDestination</h1>
   </header>
 
   <section>
@@ -116,7 +116,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
       </h4>
 
       <div class="docblock">
-        <pre><code>flags Clapper.EnhancerParamFlags</code></pre>
+        <pre><code>enum Clapper.PlayerMessageDestination</code></pre>
       </div>
     </div>
 
@@ -125,12 +125,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-enums.h#L147">[src]</a>
-        
       </h4>
 
       <div class="docblock">
-      <p>Additional <a href="javascript:void(0)" data-namespace="GObject" data-link="flags.ParamFlags.html" class="external"><code>GParamFlags</code></a> to be set in enhancer plugins&nbsp;implementations.</p>
+      <p>No description available.</p>
       </div>
 
       <div class="docblock">
@@ -154,56 +152,39 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         <dl class="enum-members">
         
           <dt>
-            <code id="global">CLAPPER_ENHANCER_PARAM_GLOBAL</code>
-            <a class="anchor" href="#global"></a>
+            <code id="player">CLAPPER_PLAYER_MESSAGE_DESTINATION_PLAYER</code>
+            <a class="anchor" href="#player"></a>
           </dt>
           <dd>
-            <div><p>Use this flag for enhancer properties that should have global access scope.
-  Such are meant for application <code>USER</code> to&nbsp;configure.</p></div>
+            <div><p>Messaging from application or reactable enhancers to the player&nbsp;itself.</p></div>
             <ul>
-              <li>Value: <code>131072</code></li>
+              <li>Value: <code>0</code></li>
               
               <li>Available since: 0.10</li>
             </ul>
           </dd>
         
           <dt>
-            <code id="local">CLAPPER_ENHANCER_PARAM_LOCAL</code>
-            <a class="anchor" href="#local"></a>
+            <code id="reactables">CLAPPER_PLAYER_MESSAGE_DESTINATION_REACTABLES</code>
+            <a class="anchor" href="#reactables"></a>
           </dt>
           <dd>
-            <div><p>Use this flag for enhancer properties that should have local access scope.
-  Such are meant for <code>APPLICATION</code> to&nbsp;configure.</p></div>
+            <div><p>Messaging from application to the reactable&nbsp;enhancers.</p></div>
             <ul>
-              <li>Value: <code>262144</code></li>
+              <li>Value: <code>1</code></li>
               
               <li>Available since: 0.10</li>
             </ul>
           </dd>
         
           <dt>
-            <code id="filepath">CLAPPER_ENHANCER_PARAM_FILEPATH</code>
-            <a class="anchor" href="#filepath"></a>
+            <code id="application">CLAPPER_PLAYER_MESSAGE_DESTINATION_APPLICATION</code>
+            <a class="anchor" href="#application"></a>
           </dt>
           <dd>
-            <div><p>Use this flag for enhancer properties that store string with a file path.
-  Applications can use this as a hint to show file selection instead of a text&nbsp;entry.</p></div>
+            <div><p>Messaging from reactable enhancers to the&nbsp;application.</p></div>
             <ul>
-              <li>Value: <code>524288</code></li>
-              
-              <li>Available since: 0.10</li>
-            </ul>
-          </dd>
-        
-          <dt>
-            <code id="dirpath">CLAPPER_ENHANCER_PARAM_DIRPATH</code>
-            <a class="anchor" href="#dirpath"></a>
-          </dt>
-          <dd>
-            <div><p>Use this flag for enhancer properties that store string with a directory path.
-  Applications can use this as a hint to show directory selection instead of a text&nbsp;entry.</p></div>
-            <ul>
-              <li>Value: <code>1048576</code></li>
+              <li>Value: <code>2</code></li>
               
               <li>Available since: 0.10</li>
             </ul>
