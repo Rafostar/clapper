@@ -55,6 +55,21 @@ typedef enum
 } ClapperPlayerSeekMethod;
 
 /**
+ * ClapperPlayerMessageDestination:
+ * @CLAPPER_PLAYER_MESSAGE_DESTINATION_PLAYER: Messaging from application or reactable enhancers to the player itself.
+ * @CLAPPER_PLAYER_MESSAGE_DESTINATION_REACTABLES: Messaging from application to the reactable enhancers.
+ * @CLAPPER_PLAYER_MESSAGE_DESTINATION_APPLICATION: Messaging from reactable enhancers to the application.
+ *
+ * Since: 0.10
+ */
+typedef enum
+{
+  CLAPPER_PLAYER_MESSAGE_DESTINATION_PLAYER = 0,
+  CLAPPER_PLAYER_MESSAGE_DESTINATION_REACTABLES,
+  CLAPPER_PLAYER_MESSAGE_DESTINATION_APPLICATION,
+} ClapperPlayerMessageDestination;
+
+/**
  * ClapperQueueProgressionMode:
  * @CLAPPER_QUEUE_PROGRESSION_NONE: Queue will not change current item after playback finishes.
  * @CLAPPER_QUEUE_PROGRESSION_CONSECUTIVE: Queue selects items one after another until the end.
@@ -119,6 +134,8 @@ typedef enum
  * @CLAPPER_DISCOVERER_DISCOVERY_NONCURRENT: Only run discovery on an item if it is not a currently selected item in [class@Clapper.Queue].
  *   This mode is optimal when application always plays (or at least goes into paused) after selecting item from queue.
  *   It will skip discovery of such items since they will be discovered by [class@Clapper.Player] anyway.
+ *
+ * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
  */
 typedef enum
 {
@@ -156,6 +173,8 @@ typedef enum
  * @CLAPPER_REACTABLE_ITEM_UPDATED_DURATION: Media item duration was updated.
  * @CLAPPER_REACTABLE_ITEM_UPDATED_TIMELINE: Media item timeline was updated.
  * @CLAPPER_REACTABLE_ITEM_UPDATED_TAGS: Media item tags were updated.
+ * @CLAPPER_REACTABLE_ITEM_UPDATED_REDIRECT_URI: Media item redirect URI was updated.
+ * @CLAPPER_REACTABLE_ITEM_UPDATED_CACHE_LOCATION: Media item cache location was updated.
  *
  * Flags informing which properties were updated within [class@Clapper.MediaItem].
  *
@@ -167,6 +186,8 @@ typedef enum
   CLAPPER_REACTABLE_ITEM_UPDATED_DURATION = 1 << 1,
   CLAPPER_REACTABLE_ITEM_UPDATED_TIMELINE = 1 << 2,
   CLAPPER_REACTABLE_ITEM_UPDATED_TAGS = 1 << 3,
+  CLAPPER_REACTABLE_ITEM_UPDATED_REDIRECT_URI = 1 << 4,
+  CLAPPER_REACTABLE_ITEM_UPDATED_CACHE_LOCATION = 1 << 5,
 } ClapperReactableItemUpdatedFlags;
 
 G_END_DECLS

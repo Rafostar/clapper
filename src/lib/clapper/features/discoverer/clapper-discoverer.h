@@ -33,16 +33,16 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_DISCOVERER (clapper_discoverer_get_type())
 #define CLAPPER_DISCOVERER_CAST(obj) ((ClapperDiscoverer *)(obj))
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 G_DECLARE_FINAL_TYPE (ClapperDiscoverer, clapper_discoverer, CLAPPER, DISCOVERER, ClapperFeature)
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 ClapperDiscoverer * clapper_discoverer_new (void);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 void clapper_discoverer_set_discovery_mode (ClapperDiscoverer *discoverer, ClapperDiscovererDiscoveryMode mode);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 ClapperDiscovererDiscoveryMode clapper_discoverer_get_discovery_mode (ClapperDiscoverer *discoverer);
 
 G_END_DECLS

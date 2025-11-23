@@ -36,6 +36,8 @@
  *
  * Use [const@Clapper.HAVE_DISCOVERER] macro to check if Clapper API
  * was compiled with this feature.
+ *
+ * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
  */
 
 #include <gst/gst.h>
@@ -369,6 +371,8 @@ clapper_discoverer_unprepare (ClapperFeature *feature)
  * Creates a new #ClapperDiscoverer instance.
  *
  * Returns: (transfer full): a new #ClapperDiscoverer instance.
+ *
+ * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
  */
 ClapperDiscoverer *
 clapper_discoverer_new (void)
@@ -385,6 +389,8 @@ clapper_discoverer_new (void)
  * @mode: a #ClapperDiscovererDiscoveryMode
  *
  * Set the [enum@Clapper.DiscovererDiscoveryMode] of @discoverer.
+ *
+ * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
  */
 void
 clapper_discoverer_set_discovery_mode (ClapperDiscoverer *self, ClapperDiscovererDiscoveryMode mode)
@@ -409,6 +415,8 @@ clapper_discoverer_set_discovery_mode (ClapperDiscoverer *self, ClapperDiscovere
  * Get the [enum@Clapper.DiscovererDiscoveryMode] of @discoverer.
  *
  * Returns: a currently set #ClapperDiscovererDiscoveryMode.
+ *
+ * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
  */
 ClapperDiscovererDiscoveryMode
 clapper_discoverer_get_discovery_mode (ClapperDiscoverer *self)
@@ -498,6 +506,8 @@ clapper_discoverer_class_init (ClapperDiscovererClass *klass)
    * ClapperDiscoverer:discovery-mode:
    *
    * Discoverer discovery mode.
+   *
+   * Deprecated: 0.10: Use Media Scanner from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_DISCOVERY_MODE] = g_param_spec_enum ("discovery-mode",
       NULL, NULL, CLAPPER_TYPE_DISCOVERER_DISCOVERY_MODE, DEFAULT_DISCOVERY_MODE,

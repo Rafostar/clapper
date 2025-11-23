@@ -49,4 +49,6 @@ void clapper_playbin_bus_post_current_item_change (GstBus *bus, ClapperMediaItem
 
 void clapper_playbin_bus_post_item_suburi_change (GstBus *bus, ClapperMediaItem *item);
 
+void clapper_playbin_bus_post_user_message (GstBus *bus, GstMessage *msg);
+
 G_END_DECLS

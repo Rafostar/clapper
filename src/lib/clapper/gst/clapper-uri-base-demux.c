@@ -189,6 +189,20 @@ _make_handler_for_uri (ClapperUriBaseDemux *self, const gchar *uri, const gchar 
   return element;
 }
 
+static gboolean
+_src_pad_query_func (GstPad *pad, GstObject *parent, GstQuery *query)
+{
+  if (GST_QUERY_TYPE (query) == GST_QUERY_CUSTOM) {
+    ClapperUriBaseDemux *self = CLAPPER_URI_BASE_DEMUX_CAST (parent);
+    ClapperUriBaseDemuxClass *uri_bd_class = CLAPPER_URI_BASE_DEMUX_GET_CLASS (self);
+
+    if (uri_bd_class->handle_custom_query && uri_bd_class->handle_custom_query (self, query))
+      return TRUE;
+  }
+
+  return gst_pad_query_default (pad, parent, query);
+}
+
 gboolean
 clapper_uri_base_demux_set_uri (ClapperUriBaseDemux *self, const gchar *uri, const gchar *blacklisted_el)
 {
@@ -254,6 +268,7 @@ clapper_uri_base_demux_set_uri (ClapperUriBaseDemux *self, const gchar *uri, con
 
     src_ghostpad = gst_ghost_pad_new_from_template ("src", priv->typefind_src,
         gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (self), "src"));
+    gst_pad_set_query_function (src_ghostpad, (GstPadQueryFunction) _src_pad_query_func);
 
     gst_pad_set_active (src_ghostpad, TRUE);
 

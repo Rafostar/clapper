@@ -54,7 +54,8 @@ struct _ClapperMediaItem
   /* Whether using title from URI */
   gboolean title_is_parsed;
 
-  GSList *redirects;
+  GType redirects_src_type;
+  gchar *redirect_uri;
   gchar *cache_uri;
 
   /* For shuffle */
@@ -74,6 +75,7 @@ enum
   PROP_ID,
   PROP_URI,
   PROP_SUBURI,
+  PROP_REDIRECT_URI,
   PROP_CACHE_LOCATION,
   PROP_TAGS,
   PROP_TITLE,
@@ -202,12 +204,6 @@ clapper_media_item_get_id (ClapperMediaItem *self)
   return self->id;
 }
 
-/* FIXME: 1.0:
- * Consider change to be transfer-full and just return latest data from redirects
- * list (alternatively expose redirect URI). This should make it possible to work
- * with enhancers that would benefit from knowledge about URI changes
- * (e.g "Recall" could read actual media instead of playlist file).
- */
 /**
  * clapper_media_item_get_uri:
  * @item: a #ClapperMediaItem
@@ -275,6 +271,55 @@ clapper_media_item_get_suburi (ClapperMediaItem *self)
   GST_OBJECT_UNLOCK (self);
 
   return suburi;
+}
+
+/**
+ * clapper_media_item_get_redirect_uri:
+ * @item: a #ClapperMediaItem
+ *
+ * Get permanent redirect URI of #ClapperMediaItem.
+ *
+ * Returns: (transfer full) (nullable): a redirected URI of #ClapperMediaItem.
+ *
+ * Since: 0.10
+ */
+gchar *
+clapper_media_item_get_redirect_uri (ClapperMediaItem *self)
+{
+  gchar *redirect_uri;
+
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), NULL);
+
+  GST_OBJECT_LOCK (self);
+  redirect_uri = g_strdup (self->redirect_uri);
+  GST_OBJECT_UNLOCK (self);
+
+  return redirect_uri;
+}
+
+/**
+ * clapper_media_item_get_cache_location:
+ * @item: a #ClapperMediaItem
+ *
+ * Get downloaded cache file location of #ClapperMediaItem.
+ *
+ * Returns: (transfer full) (type filename) (nullable): a cache file location of #ClapperMediaItem.
+ *
+ * Since: 0.10
+ */
+gchar *
+clapper_media_item_get_cache_location (ClapperMediaItem *self)
+{
+  gchar *cache_location = NULL;
+
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), NULL);
+
+  GST_OBJECT_LOCK (self);
+  if (self->cache_uri)
+    cache_location = g_filename_from_uri (self->cache_uri, NULL, NULL);
+  GST_OBJECT_UNLOCK (self);
+
+  return cache_location;
 }
 
 /**
@@ -681,49 +726,85 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
 
 /* XXX: Must be set from player thread */
 static inline gboolean
-clapper_media_item_set_redirect_uri (ClapperMediaItem *self, const gchar *redirect_uri)
+clapper_media_item_set_redirect_uri (ClapperMediaItem *self, const gchar *redirect_uri,
+    GstObject *redirect_src)
 {
-  /* Check if we did not already redirect into that URI (prevent endless loop) */
-  if (!redirect_uri || g_slist_find_custom (self->redirects, redirect_uri, (GCompareFunc) strcmp))
+  GType src_type;
+  gboolean changed;
+
+  /* Safety checks */
+  if (G_UNLIKELY (!redirect_uri)) {
+    GST_ERROR_OBJECT (self, "Received redirect request without an URI set");
     return FALSE;
+  }
+  if (G_UNLIKELY (!redirect_src)) {
+    GST_ERROR_OBJECT (self, "Received redirect request without source object set");
+    return FALSE;
+  }
 
-  self->redirects = g_slist_prepend (self->redirects, g_strdup (redirect_uri));
-  GST_DEBUG_OBJECT (self, "Set redirect URI: \"%s\"", (gchar *) self->redirects->data);
+  /* Only allow redirects determined by the same source type, otherwise
+   * we would start mixing URIs when multiple sources message them */
+  src_type = G_OBJECT_TYPE (redirect_src);
 
-  return TRUE;
+  if (self->redirects_src_type == 0) {
+    self->redirects_src_type = src_type;
+  } else if (self->redirects_src_type != src_type) {
+    GST_LOG_OBJECT (self, "Ignoring redirection from different source: %s",
+        G_OBJECT_TYPE_NAME (redirect_src));
+    return FALSE;
+  }
+
+  GST_OBJECT_LOCK (self);
+  changed = g_set_str (&self->redirect_uri, redirect_uri);
+  GST_OBJECT_UNLOCK (self);
+
+  GST_DEBUG_OBJECT (self, "Set redirect URI: \"%s\", source: %s",
+      redirect_uri, G_OBJECT_TYPE_NAME (redirect_src));
+
+  return changed;
 }
 
 gboolean
-clapper_media_item_update_from_item (ClapperMediaItem *self, ClapperMediaItem *other_item,
-    ClapperPlayer *player)
+clapper_media_item_update_from_parsed_playlist (ClapperMediaItem *self, GListStore *playlist,
+    GstObject *playlist_src, ClapperPlayer *player)
 {
-  gboolean title_changed = FALSE;
+  ClapperMediaItem *other_item;
+  const gchar *redirect_uri;
+  gboolean success, title_changed = FALSE;
 
-  if (!clapper_media_item_set_redirect_uri (self, clapper_media_item_get_uri (other_item)))
-    return FALSE;
+  /* First playlist item URI becomes a redirect URI for item to be updated */
+  other_item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
+  redirect_uri = clapper_media_item_get_uri (other_item);
 
-  GST_OBJECT_LOCK (other_item);
-
-  if (other_item->tags)
-    clapper_media_item_update_from_tag_list (self, other_item->tags, player);
-
-  /* Since its redirect now, we have to update title to describe new file instead of
-   * being a playlist title. If other item had parsed title, it also means that tags
-   * did not contain it, thus we have to manually update it and notify. */
-  if (other_item->title_is_parsed) {
-    GST_OBJECT_LOCK (self);
-    title_changed = g_set_str (&self->title, other_item->title);
-    self->title_is_parsed = TRUE;
-    GST_OBJECT_UNLOCK (self);
-  }
-
-  GST_OBJECT_UNLOCK (other_item);
-
-  if (title_changed) {
-    ClapperReactableItemUpdatedFlags flags = CLAPPER_REACTABLE_ITEM_UPDATED_TITLE;
+  if ((success = clapper_media_item_set_redirect_uri (self, redirect_uri, playlist_src))) {
     ClapperFeaturesManager *features_manager;
+    ClapperReactableItemUpdatedFlags flags = CLAPPER_REACTABLE_ITEM_UPDATED_REDIRECT_URI;
 
-    clapper_app_bus_post_prop_notify (player->app_bus, GST_OBJECT_CAST (self), param_specs[PROP_TITLE]);
+    /* Notify about URI change before other properties */
+    clapper_app_bus_post_prop_notify (player->app_bus, GST_OBJECT_CAST (self),
+        param_specs[PROP_REDIRECT_URI]);
+
+    GST_OBJECT_LOCK (other_item);
+
+    if (other_item->tags)
+      clapper_media_item_update_from_tag_list (self, other_item->tags, player);
+
+    /* Since its redirect now, we have to update title to describe new file instead of
+     * being a playlist title. If other item had parsed title, it also means that tags
+     * did not contain it, thus we have to manually update it and notify. */
+    if (other_item->title_is_parsed) {
+      GST_OBJECT_LOCK (self);
+      title_changed = g_set_str (&self->title, other_item->title);
+      self->title_is_parsed = TRUE;
+      GST_OBJECT_UNLOCK (self);
+    }
+
+    GST_OBJECT_UNLOCK (other_item);
+
+    if (title_changed) {
+      flags |= CLAPPER_REACTABLE_ITEM_UPDATED_TITLE;
+      clapper_app_bus_post_prop_notify (player->app_bus, GST_OBJECT_CAST (self), param_specs[PROP_TITLE]);
+    }
 
     if (player->reactables_manager)
       clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self, flags);
@@ -731,20 +812,51 @@ clapper_media_item_update_from_item (ClapperMediaItem *self, ClapperMediaItem *o
       clapper_features_manager_trigger_item_updated (features_manager, self);
   }
 
-  return TRUE;
+  gst_object_unref (other_item);
+
+  return success;
 }
 
 /* XXX: Must be set from player thread or upon construction */
 void
 clapper_media_item_set_cache_location (ClapperMediaItem *self, const gchar *location)
 {
-  g_clear_pointer (&self->cache_uri, g_free);
+  gboolean changed;
 
-  if (location)
-    self->cache_uri = g_filename_to_uri (location, NULL, NULL);
+  GST_OBJECT_LOCK (self);
 
-  GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"",
-      GST_STR_NULL (self->cache_uri));
+  /* Skip if both are NULL (no change - called during construction) */
+  if ((changed = (self->cache_uri || location))) {
+    g_clear_pointer (&self->cache_uri, g_free);
+
+    if (location)
+      self->cache_uri = g_filename_to_uri (location, NULL, NULL);
+
+    GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"",
+        GST_STR_NULL (self->cache_uri));
+  }
+
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    ClapperPlayer *player;
+
+    if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self)))) {
+      ClapperFeaturesManager *features_manager;
+
+      clapper_app_bus_post_prop_notify (player->app_bus,
+          GST_OBJECT_CAST (self), param_specs[PROP_CACHE_LOCATION]);
+
+      if (player->reactables_manager) {
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self,
+            CLAPPER_REACTABLE_ITEM_UPDATED_CACHE_LOCATION);
+      }
+      if ((features_manager = clapper_player_get_features_manager (player)))
+        clapper_features_manager_trigger_item_updated (features_manager, self);
+
+      gst_object_unref (player);
+    }
+  }
 }
 
 /* XXX: Can only be read from player thread.
@@ -763,13 +875,10 @@ clapper_media_item_get_playback_uri (ClapperMediaItem *self)
 
     if (exists)
       return self->cache_uri;
-
-    /* Do not test file existence next time */
-    clapper_media_item_set_cache_location (self, NULL);
   }
 
-  if (self->redirects)
-    return self->redirects->data;
+  if (self->redirect_uri)
+    return self->redirect_uri;
 
   return self->uri;
 }
@@ -814,7 +923,7 @@ clapper_media_item_constructed (GObject *object)
     self->uri = g_strdup ("file://");
 
   self->title = clapper_utils_title_from_uri (self->uri);
-  self->title_is_parsed = (self->title != NULL);
+  self->title_is_parsed = TRUE;
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
 }
@@ -835,7 +944,7 @@ clapper_media_item_finalize (GObject *object)
   gst_object_unparent (GST_OBJECT_CAST (self->timeline));
   gst_object_unref (self->timeline);
 
-  g_slist_free_full (self->redirects, g_free);
+  g_free (self->redirect_uri);
   g_free (self->cache_uri);
 
   G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -878,6 +987,12 @@ clapper_media_item_get_property (GObject *object, guint prop_id,
       break;
     case PROP_SUBURI:
       g_value_take_string (value, clapper_media_item_get_suburi (self));
+      break;
+    case PROP_REDIRECT_URI:
+      g_value_take_string (value, clapper_media_item_get_redirect_uri (self));
+      break;
+    case PROP_CACHE_LOCATION:
+      g_value_take_string (value, clapper_media_item_get_cache_location (self));
       break;
     case PROP_TAGS:
       g_value_take_boxed (value, clapper_media_item_get_tags (self));
@@ -941,15 +1056,39 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
       G_PARAM_READWRITE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
+   * ClapperMediaItem:redirect-uri:
+   *
+   * Media permanent redirect URI.
+   *
+   * Changes when player determines a new redirect for given media item.
+   * This will also happen when item URI leads to a playlist. Once playlist
+   * is parsed, item is merged with the first item on that playlist and the
+   * remaining items are appended to the playback queue after that item position.
+   *
+   * Once redirect URI in item is present, player will use that URI instead
+   * of the default one. Cache location takes precedence over both URIs through.
+   */
+  param_specs[PROP_REDIRECT_URI] = g_param_spec_string ("redirect-uri",
+      NULL, NULL, NULL,
+      G_PARAM_READABLE | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+
+  /**
    * ClapperMediaItem:cache-location:
    *
    * Media downloaded cache file location.
+   *
+   * This can be either set for newly created media items or
+   * it will be updated after download is completed if
+   * [property@Clapper.Player:download-enabled] is set.
+   *
+   * NOTE: This property was added in 0.8 as write at construct only.
+   * It can also be read only since Clapper 0.10.
    *
    * Since: 0.8
    */
   param_specs[PROP_CACHE_LOCATION] = g_param_spec_string ("cache-location",
       NULL, NULL, NULL,
-      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperMediaItem:tags:

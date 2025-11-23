@@ -78,6 +78,7 @@ enum
 {
   CLAPPER_REACTABLES_MANAGER_QUARK_CONFIGURE = 0,
   CLAPPER_REACTABLES_MANAGER_QUARK_EVENT,
+  CLAPPER_REACTABLES_MANAGER_QUARK_USER_MESSAGE,
   CLAPPER_REACTABLES_MANAGER_QUARK_VALUE,
   CLAPPER_REACTABLES_MANAGER_QUARK_EXTRA_VALUE
 };
@@ -85,6 +86,7 @@ enum
 static ClapperBusQuark _quarks[] = {
   {"configure", 0},
   {"event", 0},
+  {"user-message", 0},
   {"value", 0},
   {"extra-value", 0},
   {NULL, 0}
@@ -308,6 +310,23 @@ clapper_reactables_manager_handle_event (ClapperReactablesManager *self, const G
   }
 }
 
+static inline void
+clapper_reactables_manager_handle_user_message (ClapperReactablesManager *self, const GstStructure *structure)
+{
+  const GValue *value = gst_structure_id_get_value (structure, _QUARK (VALUE));
+  guint i;
+
+  for (i = 0; i < self->array->len; ++i) {
+    ClapperReactableManagerData *data = g_ptr_array_index (self->array, i);
+    ClapperReactableInterface *reactable_iface = CLAPPER_REACTABLE_GET_IFACE (data->reactable);
+
+    if (reactable_iface->message_received) {
+      reactable_iface->message_received (data->reactable,
+          GST_MESSAGE_CAST (g_value_get_boxed (value)));
+    }
+  }
+}
+
 static gboolean
 _bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G_GNUC_UNUSED)
 {
@@ -324,6 +343,8 @@ _bus_message_func (GstBus *bus, GstMessage *msg, gpointer user_data G_GNUC_UNUSE
       clapper_reactables_manager_handle_event (self, structure);
     } else if (quark == _QUARK (CONFIGURE)) {
       clapper_reactables_manager_handle_configure (self, structure);
+    } else if (quark == _QUARK (USER_MESSAGE)) {
+      clapper_reactables_manager_handle_user_message (self, structure);
     } else {
       GST_ERROR_OBJECT (self, "Received invalid quark on reactables bus!");
     }
@@ -363,6 +384,21 @@ clapper_reactables_manager_new (void)
   gst_object_ref_sink (reactables_manager);
 
   return reactables_manager;
+}
+
+void
+clapper_reactables_manager_post_message (ClapperReactablesManager *self, GstMessage *msg)
+{
+  GstStructure *structure = gst_structure_new_id_empty (_QUARK (USER_MESSAGE));
+  GValue value = G_VALUE_INIT;
+
+  g_value_init (&value, GST_TYPE_MESSAGE);
+  g_value_take_boxed (&value, msg);
+
+  gst_structure_id_take_value (structure, _QUARK (VALUE), &value);
+
+  gst_bus_post (self->bus, gst_message_new_application (
+      GST_OBJECT_CAST (self), structure));
 }
 
 void

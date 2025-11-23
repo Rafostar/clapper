@@ -206,6 +206,17 @@ struct _ClapperReactableInterface
    */
   void (* queue_progression_changed) (ClapperReactable *reactable, ClapperQueueProgressionMode mode);
 
+  /**
+   * ClapperReactableInterface::message_received:
+   * @reactable: a #ClapperReactable
+   * @msg: a #GstMessage
+   *
+   * Custom message from user was received on reactables bus.
+   *
+   * Since: 0.10
+   */
+  void (* message_received) (ClapperReactable *reactable, GstMessage *msg);
+
   /*< private >*/
   gpointer padding[8];
 };

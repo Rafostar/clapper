@@ -1292,9 +1292,13 @@ clapper_app_window_constructed (GObject *object)
 #endif
 
 #if CLAPPER_HAVE_DISCOVERER
-  feature = CLAPPER_FEATURE (clapper_discoverer_new ());
-  clapper_player_add_feature (player, feature);
-  gst_object_unref (feature);
+  if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (proxies, "clapper-media-scanner"))) {
+    gst_object_unref (proxy);
+  } else {
+    feature = CLAPPER_FEATURE (clapper_discoverer_new ());
+    clapper_player_add_feature (player, feature);
+    gst_object_unref (feature);
+  }
 #endif
 
   /* FIXME: Allow setting sink/filter elements from prefs window

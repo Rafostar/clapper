@@ -29,6 +29,7 @@
 #include "clapper-stream-private.h"
 #include "clapper-stream-list-private.h"
 #include "gst/clapper-extractable-src-private.h"
+#include "gst/clapper-playlist-demux-private.h"
 
 #define GST_CAT_DEFAULT clapper_playbin_bus_debug
 GST_DEBUG_CATEGORY_STATIC (GST_CAT_DEFAULT);
@@ -42,7 +43,8 @@ enum
   CLAPPER_PLAYBIN_BUS_STRUCTURE_RATE_CHANGE,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_STREAM_CHANGE,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_CURRENT_ITEM_CHANGE,
-  CLAPPER_PLAYBIN_BUS_STRUCTURE_ITEM_SUBURI_CHANGE
+  CLAPPER_PLAYBIN_BUS_STRUCTURE_ITEM_SUBURI_CHANGE,
+  CLAPPER_PLAYBIN_BUS_STRUCTURE_USER_MESSAGE
 };
 
 static ClapperBusQuark _structure_quarks[] = {
@@ -54,6 +56,7 @@ static ClapperBusQuark _structure_quarks[] = {
   {"stream-change", 0},
   {"current-item-change", 0},
   {"item-suburi-change", 0},
+  {"user-message", 0},
   {NULL, 0}
 };
 
@@ -325,7 +328,7 @@ clapper_playbin_bus_post_set_play_flag (GstBus *bus,
     ClapperPlayerPlayFlags flag, gboolean enabled)
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (SET_PLAY_FLAG),
-      _FIELD_QUARK (FLAG), G_TYPE_FLAGS, flag,
+      _FIELD_QUARK (FLAG), G_TYPE_UINT, flag,
       _FIELD_QUARK (VALUE), G_TYPE_BOOLEAN, enabled,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
@@ -336,10 +339,10 @@ _handle_set_play_flag_msg (GstMessage *msg, const GstStructure *structure, Clapp
 {
   ClapperPlayerPlayFlags flag = 0;
   gboolean enabled, enable = FALSE;
-  gint flags = 0;
+  guint flags = 0;
 
   gst_structure_id_get (structure,
-      _FIELD_QUARK (FLAG), G_TYPE_FLAGS, &flag,
+      _FIELD_QUARK (FLAG), G_TYPE_UINT, &flag,
       _FIELD_QUARK (VALUE), G_TYPE_BOOLEAN, &enable,
       NULL);
 
@@ -402,7 +405,7 @@ clapper_playbin_bus_post_seek (GstBus *bus, gdouble position, ClapperPlayerSeekM
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (SEEK),
       _FIELD_QUARK (POSITION), G_TYPE_INT64, (gint64) (position * GST_SECOND),
-      _FIELD_QUARK (SEEK_METHOD), G_TYPE_ENUM, seek_method,
+      _FIELD_QUARK (SEEK_METHOD), G_TYPE_INT, seek_method,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
 }
@@ -422,7 +425,7 @@ _handle_seek_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer 
 
   gst_structure_id_get (structure,
       _FIELD_QUARK (POSITION), G_TYPE_INT64, &position,
-      _FIELD_QUARK (SEEK_METHOD), G_TYPE_ENUM, &seek_method,
+      _FIELD_QUARK (SEEK_METHOD), G_TYPE_INT, &seek_method,
       NULL);
 
   /* If we are starting playback, do a seek after preroll */
@@ -646,7 +649,7 @@ clapper_playbin_bus_post_current_item_change (GstBus *bus, ClapperMediaItem *cur
 {
   GstStructure *structure = gst_structure_new_id (_STRUCTURE_QUARK (CURRENT_ITEM_CHANGE),
       _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, current_item,
-      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_ENUM, mode,
+      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_INT, mode,
       NULL);
   gst_bus_post (bus, gst_message_new_application (NULL, structure));
 }
@@ -659,7 +662,7 @@ _handle_current_item_change_msg (GstMessage *msg, const GstStructure *structure,
 
   gst_structure_id_get (structure,
       _FIELD_QUARK (MEDIA_ITEM), CLAPPER_TYPE_MEDIA_ITEM, &current_item,
-      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_ENUM, &mode,
+      _FIELD_QUARK (ITEM_CHANGE_MODE), G_TYPE_INT, &mode,
       NULL);
 
   player->pending_position = 0; // We store pending position for played item, so reset
@@ -793,6 +796,100 @@ _handle_stream_change_msg (GstMessage *msg,
   }
 }
 
+void
+clapper_playbin_bus_post_user_message (GstBus *bus, GstMessage *msg)
+{
+  GstStructure *structure = gst_structure_new_id_empty (_STRUCTURE_QUARK (USER_MESSAGE));
+  GValue value = G_VALUE_INIT;
+
+  g_value_init (&value, GST_TYPE_MESSAGE);
+  g_value_take_boxed (&value, msg);
+
+  gst_structure_id_take_value (structure, _FIELD_QUARK (VALUE), &value);
+
+  gst_bus_post (bus, gst_message_new_application (NULL, structure));
+}
+
+static inline void
+_on_playlist_parsed_msg (GstMessage *msg, ClapperPlayer *player)
+{
+  GstObject *src = GST_MESSAGE_SRC (msg);
+  ClapperMediaItem *playlist_item = NULL;
+  GListStore *playlist = NULL;
+  const GstStructure *structure;
+  guint n_items;
+
+  if (G_UNLIKELY (!src)) {
+    GST_WARNING_OBJECT (player, "Ignoring playlist parsed message without a source");
+    return;
+  }
+
+  structure = gst_message_get_structure (msg);
+
+  /* If message contains item, use that.
+   * Otherwise assume pending item was parsed. */
+  if (gst_structure_has_field (structure, "item")) {
+    gst_structure_get (structure,
+        "item", CLAPPER_TYPE_MEDIA_ITEM, &playlist_item, NULL);
+  } else if (CLAPPER_IS_PLAYLIST_DEMUX (src)) {
+    GST_OBJECT_LOCK (player);
+
+    /* Playlist from demuxer is always parsed before playback starts */
+    if (player->pending_item)
+      playlist_item = gst_object_ref (player->pending_item);
+
+    GST_OBJECT_UNLOCK (player);
+  }
+
+  if (G_UNLIKELY (playlist_item == NULL)) {
+    GST_WARNING_OBJECT (player, "Playlist parsed without media item set");
+    return;
+  }
+
+  GST_INFO_OBJECT (player, "Received parsed playlist of %" GST_PTR_FORMAT
+      "(%s)", playlist_item, clapper_media_item_get_uri (playlist_item));
+
+  gst_structure_get (structure,
+      "playlist", G_TYPE_LIST_STORE, &playlist, NULL);
+
+  n_items = g_list_model_get_n_items (G_LIST_MODEL (playlist));
+
+  if (G_LIKELY (n_items > 0)) {
+    gboolean updated;
+
+    /* Update redirect URI (must be done from player thread) */
+    updated = clapper_media_item_update_from_parsed_playlist (playlist_item, playlist, src, player);
+
+    if (updated && n_items > 1) {
+      /* Forward to append remaining items (must be done from main thread) */
+      clapper_app_bus_post_insert_playlist (player->app_bus,
+          GST_OBJECT_CAST (player),
+          GST_OBJECT_CAST (playlist_item),
+          G_OBJECT (playlist));
+    }
+  }
+
+  gst_object_unref (playlist_item);
+  g_object_unref (playlist);
+}
+
+static inline void
+_handle_user_message_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer *player)
+{
+  GstMessage *user_message = NULL;
+
+  gst_structure_id_get (structure,
+      _FIELD_QUARK (VALUE), GST_TYPE_MESSAGE, &user_message,
+      NULL);
+
+  GST_DEBUG_OBJECT (player, "Received user message: %" GST_PTR_FORMAT, user_message);
+
+  if (gst_message_has_name (user_message, "ClapperPlaylistParsed"))
+    _on_playlist_parsed_msg (user_message, player);
+
+  gst_message_unref (user_message);
+}
+
 static inline void
 _handle_app_msg (GstMessage *msg, ClapperPlayer *player)
 {
@@ -813,6 +910,8 @@ _handle_app_msg (GstMessage *msg, ClapperPlayer *player)
     _handle_current_item_change_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (ITEM_SUBURI_CHANGE))
     _handle_item_suburi_change_msg (msg, structure, player);
+  else if (quark == _STRUCTURE_QUARK (USER_MESSAGE))
+    _handle_user_message_msg (msg, structure, player);
 }
 
 static inline void
@@ -832,70 +931,7 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
     g_free (name);
     g_free (details);
   } else if (gst_message_has_name (msg, "ClapperPlaylistParsed")) {
-    ClapperMediaItem *playlist_item = NULL;
-    GListStore *playlist = NULL;
-    const GstStructure *structure = gst_message_get_structure (msg);
-    guint n_items;
-
-    /* If message contains item, use that.
-     * Otherwise assume pending item was parsed. */
-    if (gst_structure_has_field (structure, "item")) {
-      gst_structure_get (structure,
-          "item", CLAPPER_TYPE_MEDIA_ITEM, &playlist_item, NULL);
-    } else {
-      GST_OBJECT_LOCK (player);
-
-      /* Playlist is always parsed before playback starts */
-      if (player->pending_item)
-        playlist_item = gst_object_ref (player->pending_item);
-
-      GST_OBJECT_UNLOCK (player);
-    }
-
-    if (G_UNLIKELY (playlist_item == NULL)) {
-      GST_WARNING_OBJECT (player, "Playlist parsed without media item set");
-      return;
-    }
-
-    GST_INFO_OBJECT (player, "Received parsed playlist of %" GST_PTR_FORMAT
-        "(%s)", playlist_item, clapper_media_item_get_uri (playlist_item));
-
-    gst_structure_get (structure,
-        "playlist", G_TYPE_LIST_STORE, &playlist, NULL);
-
-    n_items = g_list_model_get_n_items (G_LIST_MODEL (playlist));
-
-    if (G_LIKELY (n_items > 0)) {
-      ClapperMediaItem *active_item = g_list_model_get_item (G_LIST_MODEL (playlist), 0);
-      gboolean updated;
-
-      /* Update redirect URI (must be done from player thread) */
-      updated = clapper_media_item_update_from_item (playlist_item, active_item, player);
-      gst_object_unref (active_item);
-
-      if (!updated) {
-        GstMessage *msg;
-        GError *error;
-
-        error = g_error_new (GST_RESOURCE_ERROR, GST_RESOURCE_ERROR_FAILED,
-            "Detected infinite redirection in playlist");
-        msg = gst_message_new_error (GST_OBJECT (player), error, NULL);
-
-        _handle_error_msg (msg, player);
-
-        g_error_free (error);
-        gst_message_unref (msg);
-      } else if (n_items > 1) {
-        /* Forward to append remaining items (must be done from main thread) */
-        clapper_app_bus_post_insert_playlist (player->app_bus,
-            GST_OBJECT_CAST (player),
-            GST_OBJECT_CAST (playlist_item),
-            G_OBJECT (playlist));
-      }
-    }
-
-    gst_object_unref (playlist_item);
-    g_object_unref (playlist);
+    _on_playlist_parsed_msg (msg, player);
   } else if (gst_message_has_name (msg, "GstCacheDownloadComplete")) {
     ClapperMediaItem *downloaded_item = NULL;
     const GstStructure *structure;
@@ -921,6 +957,8 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
     location = gst_structure_get_string (structure, "location");
     signal_id = g_signal_lookup ("download-complete", CLAPPER_TYPE_PLAYER);
 
+    /* Set cache location before "download-complete" signal emit,
+     * so it can also be read directly from item */
     GST_INFO_OBJECT (player, "Download of %" GST_PTR_FORMAT
         " complete: %s", downloaded_item, location);
     clapper_media_item_set_cache_location (downloaded_item, location);
