@@ -957,6 +957,8 @@ _handle_element_msg (GstMessage *msg, ClapperPlayer *player)
     location = gst_structure_get_string (structure, "location");
     signal_id = g_signal_lookup ("download-complete", CLAPPER_TYPE_PLAYER);
 
+    /* Set cache location before "download-complete" signal emit,
+     * so it can also be read directly from item */
     GST_INFO_OBJECT (player, "Download of %" GST_PTR_FORMAT
         " complete: %s", downloaded_item, location);
     clapper_media_item_set_cache_location (downloaded_item, location);

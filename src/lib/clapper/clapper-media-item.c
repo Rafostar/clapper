@@ -279,6 +279,31 @@ clapper_media_item_get_suburi (ClapperMediaItem *self)
 }
 
 /**
+ * clapper_media_item_get_cache_location:
+ * @item: a #ClapperMediaItem
+ *
+ * Get downloaded cache file location of #ClapperMediaItem.
+ *
+ * Returns: (transfer full) (type filename) (nullable): a cache file location of #ClapperMediaItem.
+ *
+ * Since: 0.10
+ */
+gchar *
+clapper_media_item_get_cache_location (ClapperMediaItem *self)
+{
+  gchar *cache_location = NULL;
+
+  g_return_val_if_fail (CLAPPER_IS_MEDIA_ITEM (self), NULL);
+
+  GST_OBJECT_LOCK (self);
+  if (self->cache_uri)
+    cache_location = g_filename_from_uri (self->cache_uri, NULL, NULL);
+  GST_OBJECT_UNLOCK (self);
+
+  return cache_location;
+}
+
+/**
  * clapper_media_item_get_title:
  * @item: a #ClapperMediaItem
  *
@@ -770,16 +795,42 @@ clapper_media_item_update_from_parsed_playlist (ClapperMediaItem *self, GListSto
 void
 clapper_media_item_set_cache_location (ClapperMediaItem *self, const gchar *location)
 {
-  if (!self->cache_uri && !location)
-    return; // No change (called during construction)
+  gboolean changed;
 
-  g_clear_pointer (&self->cache_uri, g_free);
+  GST_OBJECT_LOCK (self);
 
-  if (location)
-    self->cache_uri = g_filename_to_uri (location, NULL, NULL);
+  /* Skip if both are NULL (no change - called during construction) */
+  if ((changed = (self->cache_uri || location))) {
+    g_clear_pointer (&self->cache_uri, g_free);
 
-  GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"",
-      GST_STR_NULL (self->cache_uri));
+    if (location)
+      self->cache_uri = g_filename_to_uri (location, NULL, NULL);
+
+    GST_DEBUG_OBJECT (self, "Set cache URI: \"%s\"",
+        GST_STR_NULL (self->cache_uri));
+  }
+
+  GST_OBJECT_UNLOCK (self);
+
+  if (changed) {
+    ClapperPlayer *player;
+
+    if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self)))) {
+      ClapperFeaturesManager *features_manager;
+
+      clapper_app_bus_post_prop_notify (player->app_bus,
+          GST_OBJECT_CAST (self), param_specs[PROP_CACHE_LOCATION]);
+
+      if (player->reactables_manager) {
+        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self,
+            CLAPPER_REACTABLE_ITEM_UPDATED_CACHE_LOCATION);
+      }
+      if ((features_manager = clapper_player_get_features_manager (player)))
+        clapper_features_manager_trigger_item_updated (features_manager, self);
+
+      gst_object_unref (player);
+    }
+  }
 }
 
 /* XXX: Can only be read from player thread.
@@ -798,9 +849,6 @@ clapper_media_item_get_playback_uri (ClapperMediaItem *self)
 
     if (exists)
       return self->cache_uri;
-
-    /* Do not test file existence next time */
-    clapper_media_item_set_cache_location (self, NULL);
   }
 
   if (self->redirect_uri)
@@ -914,6 +962,9 @@ clapper_media_item_get_property (GObject *object, guint prop_id,
     case PROP_SUBURI:
       g_value_take_string (value, clapper_media_item_get_suburi (self));
       break;
+    case PROP_CACHE_LOCATION:
+      g_value_take_string (value, clapper_media_item_get_cache_location (self));
+      break;
     case PROP_TAGS:
       g_value_take_boxed (value, clapper_media_item_get_tags (self));
       break;
@@ -980,11 +1031,18 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
    *
    * Media downloaded cache file location.
    *
+   * This can be either set for newly created media items or
+   * it will be updated after download is completed if
+   * [property@Clapper.Player:download-enabled] is set.
+   *
+   * NOTE: This property was added in 0.8 as write at construct only.
+   * It can also be read only since Clapper 0.10.
+   *
    * Since: 0.8
    */
   param_specs[PROP_CACHE_LOCATION] = g_param_spec_string ("cache-location",
       NULL, NULL, NULL,
-      G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_EXPLICIT_NOTIFY | G_PARAM_STATIC_STRINGS);
 
   /**
    * ClapperMediaItem:tags:

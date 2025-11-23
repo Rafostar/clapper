@@ -173,6 +173,7 @@ typedef enum
  * @CLAPPER_REACTABLE_ITEM_UPDATED_DURATION: Media item duration was updated.
  * @CLAPPER_REACTABLE_ITEM_UPDATED_TIMELINE: Media item timeline was updated.
  * @CLAPPER_REACTABLE_ITEM_UPDATED_TAGS: Media item tags were updated.
+ * @CLAPPER_REACTABLE_ITEM_UPDATED_CACHE_LOCATION: Media item cache location was updated.
  *
  * Flags informing which properties were updated within [class@Clapper.MediaItem].
  *
@@ -184,6 +185,7 @@ typedef enum
   CLAPPER_REACTABLE_ITEM_UPDATED_DURATION = 1 << 1,
   CLAPPER_REACTABLE_ITEM_UPDATED_TIMELINE = 1 << 2,
   CLAPPER_REACTABLE_ITEM_UPDATED_TAGS = 1 << 3,
+  CLAPPER_REACTABLE_ITEM_UPDATED_CACHE_LOCATION = 1 << 4,
 } ClapperReactableItemUpdatedFlags;
 
 G_END_DECLS

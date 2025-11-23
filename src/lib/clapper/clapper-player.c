@@ -3012,6 +3012,9 @@ clapper_player_class_init (ClapperPlayerClass *klass)
    * be only emitted when progressive download buffering is enabled by
    * setting [property@Clapper.Player:download-enabled] property to %TRUE.
    *
+   * Download cache file location can also be read directly from @item
+   * through its [property@Clapper.MediaItem:cache-location] property.
+   *
    * Since: 0.8
    */
   signals[SIGNAL_DOWNLOAD_COMPLETE] = g_signal_new ("download-complete",

@@ -61,6 +61,9 @@ CLAPPER_API
 gchar * clapper_media_item_get_suburi (ClapperMediaItem *item);
 
 CLAPPER_API
+gchar * clapper_media_item_get_cache_location (ClapperMediaItem *item);
+
+CLAPPER_API
 gchar * clapper_media_item_get_title (ClapperMediaItem *item);
 
 CLAPPER_DEPRECATED_FOR(clapper_media_item_get_tags)
