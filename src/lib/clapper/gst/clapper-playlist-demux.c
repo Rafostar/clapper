@@ -260,8 +260,10 @@ _parse_uri_list (ClapperPlaylistDemux *self, GUri *uri, GstBuffer *buffer,
       break;
     }
 
-    if (G_LIKELY (item != NULL))
+    if (G_LIKELY (item != NULL)) {
       g_list_store_append (playlist, (GObject *) item);
+      gst_object_unref (item);
+    }
 
     /* Advance to the next line */
     ptr = nl ? (nl + 1) : end;
