@@ -56,9 +56,6 @@ G_GNUC_INTERNAL
 void clapper_utils_prop_notify_on_main_sync (GObject *object, GParamSpec *pspec);
 
 G_GNUC_INTERNAL
-gchar * clapper_utils_uri_from_file (GFile *file);
-
-G_GNUC_INTERNAL
 gchar * clapper_utils_title_from_uri (const gchar *uri);
 
 G_GNUC_INTERNAL

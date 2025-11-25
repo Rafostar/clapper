@@ -142,12 +142,19 @@ clapper_media_item_new_from_file (GFile *file)
 {
   ClapperMediaItem *item;
   gchar *uri;
+  gsize length;
 
   g_return_val_if_fail (G_IS_FILE (file), NULL);
 
-  uri = clapper_utils_uri_from_file (file);
-  item = clapper_media_item_new (uri);
+  uri = g_file_get_uri (file);
+  length = strlen (uri);
 
+  /* GFile might incorrectly append "/" at the end of an URI,
+   * remove it to make it work with GStreamer URI handling */
+  if (uri[length - 1] == '/')
+    uri[length - 1] = '\0';
+
+  item = clapper_media_item_new (uri);
   g_free (uri);
 
   return item;

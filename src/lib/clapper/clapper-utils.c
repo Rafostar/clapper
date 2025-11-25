@@ -249,28 +249,6 @@ clapper_utils_prop_notify_on_main_sync (GObject *object, GParamSpec *pspec)
 }
 
 gchar *
-clapper_utils_uri_from_file (GFile *file)
-{
-  gchar *uri = g_file_get_uri (file);
-  gsize length = strlen (uri);
-
-  /* GFile might incorrectly append "/" at the end of an URI,
-   * remove it to make it work with GStreamer URI handling */
-  if (uri[length - 1] == '/') {
-    gchar *fixed_uri;
-
-    /* NULL terminated copy without last character */
-    fixed_uri = g_new0 (gchar, length);
-    memcpy (fixed_uri, uri, length - 1);
-
-    g_free (uri);
-    uri = fixed_uri;
-  }
-
-  return uri;
-}
-
-gchar *
 clapper_utils_title_from_uri (const gchar *uri)
 {
   gchar *proto, *title = NULL;
