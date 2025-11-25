@@ -116,14 +116,8 @@ clapper_media_item_new (const gchar *uri)
   g_return_val_if_fail (uri != NULL, NULL);
 
   item = g_object_new (CLAPPER_TYPE_MEDIA_ITEM, "uri", uri, NULL);
-  gst_object_ref_sink (item);
 
-  item->id = (guint) g_atomic_int_add (&_item_id, 1);
-
-  GST_TRACE_OBJECT (item, "New media item, ID: %u, URI: \"%s\", title: \"%s\"",
-      item->id, item->uri, GST_STR_NULL (item->title));
-
-  return item;
+  return gst_object_ref_sink (item);
 }
 
 /**
@@ -154,10 +148,10 @@ clapper_media_item_new_from_file (GFile *file)
   if (uri[length - 1] == '/')
     uri[length - 1] = '\0';
 
-  item = clapper_media_item_new (uri);
+  item = g_object_new (CLAPPER_TYPE_MEDIA_ITEM, "uri", uri, NULL);
   g_free (uri);
 
-  return item;
+  return gst_object_ref_sink (item);
 }
 
 /**
@@ -181,12 +175,14 @@ clapper_media_item_new_from_file (GFile *file)
 ClapperMediaItem *
 clapper_media_item_new_cached (const gchar *uri, const gchar *location)
 {
-  ClapperMediaItem *item = clapper_media_item_new (uri);
+  ClapperMediaItem *item;
 
-  if (location && G_LIKELY (item != NULL))
-    clapper_media_item_set_cache_location (item, location);
+  g_return_val_if_fail (uri != NULL, NULL);
 
-  return item;
+  item = g_object_new (CLAPPER_TYPE_MEDIA_ITEM,
+      "uri", uri, "cache-location", location, NULL);
+
+  return gst_object_ref_sink (item);
 }
 
 /**
@@ -907,6 +903,8 @@ clapper_media_item_get_used (ClapperMediaItem *self)
 static void
 clapper_media_item_init (ClapperMediaItem *self)
 {
+  self->id = (guint) g_atomic_int_add (&_item_id, 1);
+
   self->tags = gst_tag_list_new_empty ();
   gst_tag_list_set_scope (self->tags, GST_TAG_SCOPE_GLOBAL);
 
@@ -927,6 +925,9 @@ clapper_media_item_constructed (GObject *object)
   self->title_is_parsed = TRUE;
 
   G_OBJECT_CLASS (parent_class)->constructed (object);
+
+  GST_TRACE_OBJECT (self, "New media item, ID: %u, URI: \"%s\", title: \"%s\"",
+      self->id, self->uri, GST_STR_NULL (self->title));
 }
 
 static void
