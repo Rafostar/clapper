@@ -88,8 +88,7 @@ enum
 #define parent_class clapper_media_item_parent_class
 G_DEFINE_TYPE (ClapperMediaItem, clapper_media_item, GST_TYPE_OBJECT);
 
-static guint _item_id = 0;
-static GMutex id_lock;
+static gint _item_id = 0;
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 
 /**
@@ -119,12 +118,7 @@ clapper_media_item_new (const gchar *uri)
   item = g_object_new (CLAPPER_TYPE_MEDIA_ITEM, "uri", uri, NULL);
   gst_object_ref_sink (item);
 
-  g_mutex_lock (&id_lock);
-  item->id = _item_id;
-  _item_id++;
-  g_mutex_unlock (&id_lock);
-
-  /* FIXME: Set initial container format from file extension parsing */
+  item->id = (guint) g_atomic_int_add (&_item_id, 1);
 
   GST_TRACE_OBJECT (item, "New media item, ID: %u, URI: \"%s\", title: \"%s\"",
       item->id, item->uri, GST_STR_NULL (item->title));
