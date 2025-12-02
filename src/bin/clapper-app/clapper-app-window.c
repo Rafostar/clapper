@@ -1282,14 +1282,20 @@ clapper_app_window_constructed (GObject *object)
 #endif
   }
 
+  if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (proxies, "clapper-control-hub"))) {
+    clapper_enhancer_proxy_set_locally (proxy,
+        "queue-controllable", TRUE, NULL);
+    gst_object_unref (proxy);
+  } else {
 #if CLAPPER_HAVE_SERVER
-  feature = CLAPPER_FEATURE (clapper_server_new ());
-  clapper_server_set_queue_controllable (CLAPPER_SERVER (feature), TRUE);
-  g_settings_bind (self->settings, "server-enabled",
-      feature, "enabled", G_SETTINGS_BIND_GET);
-  clapper_player_add_feature (player, feature);
-  gst_object_unref (feature);
+    feature = CLAPPER_FEATURE (clapper_server_new ());
+    clapper_server_set_queue_controllable (CLAPPER_SERVER (feature), TRUE);
+    g_settings_bind (self->settings, "server-enabled",
+        feature, "enabled", G_SETTINGS_BIND_GET);
+    clapper_player_add_feature (player, feature);
+    gst_object_unref (feature);
 #endif
+  }
 
 #if CLAPPER_HAVE_DISCOVERER
   if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (proxies, "clapper-media-scanner"))) {

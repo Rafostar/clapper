@@ -36,6 +36,8 @@ struct _ClapperAppPreferencesWindow
   AdwComboRow *seek_method_combo_row;
   AdwComboRow *seek_unit_combo_row;
   AdwSpinRow *seek_value_spin_row;
+
+  AdwPreferencesGroup *features_group;
   AdwSwitchRow *server_switch_row;
 
   AdwSpinRow *audio_offset_spin_row;
@@ -863,6 +865,10 @@ clapper_app_preferences_window_new (GtkApplication *gtk_app)
 static void
 clapper_app_preferences_window_init (ClapperAppPreferencesWindow *self)
 {
+#if CLAPPER_HAVE_SERVER
+  ClapperEnhancerProxy *proxy;
+#endif
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
   self->rank_rows = g_ptr_array_new ();
@@ -877,10 +883,15 @@ clapper_app_preferences_window_init (ClapperAppPreferencesWindow *self)
       self->seek_value_spin_row, "value", G_SETTINGS_BIND_DEFAULT);
 
 #if CLAPPER_HAVE_SERVER
-  g_settings_bind (self->settings, "server-enabled",
-      self->server_switch_row, "active", G_SETTINGS_BIND_DEFAULT);
-#else
-  gtk_widget_set_sensitive (GTK_WIDGET (self->server_switch_row), FALSE);
+  /* When both are available, prefer enhancer over deprecated feature */
+  if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (
+      clapper_get_global_enhancer_proxies (), "clapper-control-hub"))) {
+    gst_object_unref (proxy);
+  } else {
+    g_settings_bind (self->settings, "server-enabled",
+        self->server_switch_row, "active", G_SETTINGS_BIND_DEFAULT);
+    gtk_widget_set_visible (GTK_WIDGET (self->features_group), TRUE);
+  }
 #endif
 
   g_settings_bind (self->settings, "audio-offset",
@@ -964,6 +975,8 @@ clapper_app_preferences_window_class_init (ClapperAppPreferencesWindowClass *kla
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_method_combo_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_unit_combo_row);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, seek_value_spin_row);
+
+  gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, features_group);
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, server_switch_row);
 
   gtk_widget_class_bind_template_child (widget_class, ClapperAppPreferencesWindow, audio_offset_spin_row);
