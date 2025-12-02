@@ -53,6 +53,7 @@ G_DECLARE_INTERFACE (ClapperReactable, clapper_reactable, CLAPPER, REACTABLE, Gs
  * @queue_item_repositioned: An item changed position within queue.
  * @queue_cleared: All items were removed from queue.
  * @queue_progression_changed: Progression mode of the queue was changed.
+ * @message_received: Custom message from user was received on reactables bus.
  */
 struct _ClapperReactableInterface
 {
