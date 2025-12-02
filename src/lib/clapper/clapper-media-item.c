@@ -1069,6 +1069,8 @@ clapper_media_item_class_init (ClapperMediaItemClass *klass)
    *
    * Once redirect URI in item is present, player will use that URI instead
    * of the default one. Cache location takes precedence over both URIs through.
+   *
+   * Since: 0.10
    */
   param_specs[PROP_REDIRECT_URI] = g_param_spec_string ("redirect-uri",
       NULL, NULL, NULL,
