@@ -27,6 +27,8 @@
  *
  * Use [const@Clapper.HAVE_SERVER] macro to check if Clapper API
  * was compiled with this feature.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 
 #include <gst/gst.h>
@@ -814,6 +816,8 @@ clapper_server_property_changed (ClapperFeature *feature, GParamSpec *pspec)
  * Creates a new #ClapperServer instance.
  *
  * Returns: (transfer full): a new #ClapperServer instance.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 ClapperServer *
 clapper_server_new (void)
@@ -837,6 +841,8 @@ clapper_server_new (void)
  *
  * To be notified when server is actually running/stopped after being enabled/disabled,
  * you can listen for changes to [property@Clapper.Server:running] property.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 void
 clapper_server_set_enabled (ClapperServer *self, gboolean enabled)
@@ -858,6 +864,8 @@ clapper_server_set_enabled (ClapperServer *self, gboolean enabled)
  * Get whether #ClapperServer is set to be running.
  *
  * Returns: %TRUE if enabled, %FALSE otherwise.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 gboolean
 clapper_server_get_enabled (ClapperServer *self)
@@ -874,6 +882,8 @@ clapper_server_get_enabled (ClapperServer *self)
  * Get whether #ClapperServer is currently running.
  *
  * Returns: %TRUE if running, %FALSE otherwise.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 gboolean
 clapper_server_get_running (ClapperServer *self)
@@ -895,6 +905,8 @@ clapper_server_get_running (ClapperServer *self)
  * @port: a port number or 0 for random free port
  *
  * Set server listening port.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 void
 clapper_server_set_port (ClapperServer *self, guint port)
@@ -923,6 +935,8 @@ clapper_server_set_port (ClapperServer *self, guint port)
  * use [method@Clapper.Server.get_current_port] instead.
  *
  * Returns: Requested listening port or 0 when using random port.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 guint
 clapper_server_get_port (ClapperServer *self)
@@ -945,6 +959,8 @@ clapper_server_get_port (ClapperServer *self)
  * Get port on which server is currently listening on.
  *
  * Returns: Current listening port or 0 if server is not listening.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 guint
 clapper_server_get_current_port (ClapperServer *self)
@@ -972,6 +988,8 @@ clapper_server_get_current_port (ClapperServer *self)
  *
  * You probably want to keep this disabled if your application
  * is supposed to manage what is played now and not WebSocket client.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 void
 clapper_server_set_queue_controllable (ClapperServer *self, gboolean controllable)
@@ -993,6 +1011,8 @@ clapper_server_set_queue_controllable (ClapperServer *self, gboolean controllabl
  * Get whether remote @server clients can control [class@Clapper.Queue].
  *
  * Returns: %TRUE if control over #ClapperQueue is allowed, %FALSE otherwise.
+ *
+ * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
  */
 gboolean
 clapper_server_get_queue_controllable (ClapperServer *self)
@@ -1126,6 +1146,8 @@ clapper_server_class_init (ClapperServerClass *klass)
    * ClapperServer:enabled:
    *
    * Whether server is enabled.
+   *
+   * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_ENABLED] = g_param_spec_boolean ("enabled",
       NULL, NULL, DEFAULT_ENABLED,
@@ -1135,6 +1157,8 @@ clapper_server_class_init (ClapperServerClass *klass)
    * ClapperServer:running:
    *
    * Whether server is currently running.
+   *
+   * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_RUNNING] = g_param_spec_boolean ("running",
       NULL, NULL, FALSE,
@@ -1144,6 +1168,8 @@ clapper_server_class_init (ClapperServerClass *klass)
    * ClapperServer:port:
    *
    * Port to listen on or 0 for using random unused port.
+   *
+   * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_PORT] = g_param_spec_uint ("port",
       NULL, NULL, 0, PORT_MAX, 0,
@@ -1153,6 +1179,8 @@ clapper_server_class_init (ClapperServerClass *klass)
    * ClapperServer:current-port:
    *
    * Port on which server is currently listening on or 0 if not listening.
+   *
+   * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_CURRENT_PORT] = g_param_spec_uint ("current-port",
       NULL, NULL, 0, PORT_MAX, 0,
@@ -1162,6 +1190,8 @@ clapper_server_class_init (ClapperServerClass *klass)
    * ClapperServer:queue-controllable:
    *
    * Whether remote server clients can control #ClapperQueue.
+   *
+   * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
    */
   param_specs[PROP_QUEUE_CONTROLLABLE] = g_param_spec_boolean ("queue-controllable",
       NULL, NULL, DEFAULT_QUEUE_CONTROLLABLE,
@@ -1174,6 +1204,8 @@ clapper_server_class_init (ClapperServerClass *klass)
    *
    * Error signal when server could not start.
    * This will be emitted from application main thread.
+   *
+   * Deprecated: 0.10: Use Control Hub from `clapper-enhancers` repo instead.
    */
   signals[SIGNAL_ERROR] = g_signal_new ("error",
       G_TYPE_FROM_CLASS (klass), G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,

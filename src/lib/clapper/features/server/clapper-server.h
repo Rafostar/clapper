@@ -33,34 +33,34 @@ G_BEGIN_DECLS
 #define CLAPPER_TYPE_SERVER (clapper_server_get_type())
 #define CLAPPER_SERVER_CAST(obj) ((ClapperServer *)(obj))
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 G_DECLARE_FINAL_TYPE (ClapperServer, clapper_server, CLAPPER, SERVER, ClapperFeature)
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 ClapperServer * clapper_server_new (void);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 void clapper_server_set_enabled (ClapperServer *server, gboolean enabled);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 gboolean clapper_server_get_enabled (ClapperServer *server);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 gboolean clapper_server_get_running (ClapperServer *server);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 void clapper_server_set_port (ClapperServer *server, guint port);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 guint clapper_server_get_port (ClapperServer *server);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 guint clapper_server_get_current_port (ClapperServer *server);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 void clapper_server_set_queue_controllable (ClapperServer *server, gboolean controllable);
 
-CLAPPER_API
+CLAPPER_DEPRECATED
 gboolean clapper_server_get_queue_controllable (ClapperServer *server);
 
 G_END_DECLS
