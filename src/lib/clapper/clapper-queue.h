@@ -52,6 +52,9 @@ CLAPPER_API
 void clapper_queue_insert_item (ClapperQueue *queue, ClapperMediaItem *item, gint index);
 
 CLAPPER_API
+void clapper_queue_insert_item_after (ClapperQueue *queue, ClapperMediaItem *item, ClapperMediaItem *after_item);
+
+CLAPPER_API
 void clapper_queue_reposition_item (ClapperQueue *queue, ClapperMediaItem *item, gint index);
 
 CLAPPER_API
