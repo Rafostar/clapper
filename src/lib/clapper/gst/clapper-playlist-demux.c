@@ -67,7 +67,7 @@ static GstStaticCaps clapper_claps_caps = GST_STATIC_CAPS (CLAPPER_CLAPS_MEDIA_T
 static void
 clapper_playlist_type_find (GstTypeFind *tf, ClapperEnhancerProxy *proxy)
 {
-  const gchar *prefix, *contains, *regex, *module_name;
+  const gchar *prefix, *contains, *excludes, *regex, *module_name;
 
   if (!clapper_enhancer_proxy_get_target_creation_allowed (proxy))
     return;
@@ -81,9 +81,10 @@ clapper_playlist_type_find (GstTypeFind *tf, ClapperEnhancerProxy *proxy)
   }
 
   contains = clapper_enhancer_proxy_get_extra_data (proxy, "X-Data-Contains");
+  excludes = clapper_enhancer_proxy_get_extra_data (proxy, "X-Data-Excludes");
   regex = clapper_enhancer_proxy_get_extra_data (proxy, "X-Data-Regex");
 
-  if (contains || regex) {
+  if (contains || excludes || regex) {
     const gchar *data;
     guint data_size = DATA_CHUNK_SIZE;
 
@@ -101,7 +102,8 @@ clapper_playlist_type_find (GstTypeFind *tf, ClapperEnhancerProxy *proxy)
       return;
     }
 
-    if (contains && !g_strstr_len (data, data_size, contains))
+    if ((contains && !g_strstr_len (data, data_size, contains))
+        || (excludes && g_strstr_len (data, data_size, excludes)))
       return;
 
     if (regex) {
@@ -180,6 +182,8 @@ type_find_register (GstPlugin *plugin)
   for (i = 0; i < n_proxies; ++i) {
     ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_peek_proxy (global_proxies, i);
 
+    /* No "X-Data-Excludes" check here, because it can not be
+     * used alone to determine whether data is a playlist */
     if (clapper_enhancer_proxy_target_has_interface (proxy, CLAPPER_TYPE_PLAYLISTABLE)
         && (clapper_enhancer_proxy_get_extra_data (proxy, "X-Data-Prefix")
         || clapper_enhancer_proxy_get_extra_data (proxy, "X-Data-Contains")
