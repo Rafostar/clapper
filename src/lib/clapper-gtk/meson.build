@@ -139,6 +139,7 @@ clappergtk_sources = [
 clappergtk_c_args = [
   '-DG_LOG_DOMAIN="ClapperGtk"',
   '-DCLAPPER_GTK_COMPILATION',
+  '-DCLAPPER_DISABLE_DEPRECATION_WARNINGS',
   '-DGST_USE_UNSTABLE_API',
 ]
 
