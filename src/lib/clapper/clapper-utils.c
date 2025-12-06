@@ -136,11 +136,11 @@ clapper_utils_list_alter_on_main (ClapperUtilsListAlterData *data)
       clapper_queue_clear (CLAPPER_QUEUE_CAST (data->list));
       break;
     case CLAPPER_UTILS_LIST_ALTER_TIMELINE_INSERT:
-      clapper_timeline_insert_marker_internal (CLAPPER_TIMELINE_CAST (data->list),
+      clapper_timeline_insert_marker (CLAPPER_TIMELINE_CAST (data->list),
           CLAPPER_MARKER_CAST (data->item));
       break;
     case CLAPPER_UTILS_LIST_ALTER_TIMELINE_REMOVE:
-      clapper_timeline_remove_marker_internal (CLAPPER_TIMELINE_CAST (data->list),
+      clapper_timeline_remove_marker (CLAPPER_TIMELINE_CAST (data->list),
           CLAPPER_MARKER_CAST (data->item));
       break;
     default:

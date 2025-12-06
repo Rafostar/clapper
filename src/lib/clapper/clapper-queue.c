@@ -549,6 +549,51 @@ clapper_queue_insert_item (ClapperQueue *self, ClapperMediaItem *item, gint inde
 }
 
 /**
+ * clapper_queue_insert_item_after:
+ * @queue: a #ClapperQueue
+ * @item: a #ClapperMediaItem
+ * @after_item: (nullable): a #ClapperMediaItem after which to
+ *   insert @item or %NULL to prepend
+ *
+ * Insert another #ClapperMediaItem after some other item position.
+ *
+ * If @after_item is %NULL, item will be prepended. When set but
+ * not found however, item will be appended at the end of queue.
+ *
+ * If item is already in queue, this function will do nothing,
+ * so it is safe to call multiple times if unsure.
+ *
+ * Since: 0.10
+ */
+void
+clapper_queue_insert_item_after (ClapperQueue *self, ClapperMediaItem *item,
+    ClapperMediaItem *after_item)
+{
+  g_return_if_fail (CLAPPER_IS_QUEUE (self));
+  g_return_if_fail (CLAPPER_IS_MEDIA_ITEM (item));
+  g_return_if_fail (after_item == NULL || CLAPPER_IS_MEDIA_ITEM (after_item));
+
+  CLAPPER_QUEUE_REC_LOCK (self);
+
+  if (!g_ptr_array_find (self->items, item, NULL)) {
+    guint index;
+
+    if (after_item) {
+      if (g_ptr_array_find (self->items, after_item, &index))
+        index++;
+      else
+        index = self->items->len; // Append if not found
+    } else {
+      index = 0;
+    }
+
+    _take_item_unlocked (self, gst_object_ref (item), index);
+  }
+
+  CLAPPER_QUEUE_REC_UNLOCK (self);
+}
+
+/**
  * clapper_queue_reposition_item:
  * @queue: a #ClapperQueue
  * @item: a #ClapperMediaItem

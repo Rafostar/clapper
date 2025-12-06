@@ -206,3 +206,55 @@ clapper_reactable_queue_clear_sync (ClapperReactable *self)
     clapper_utils_queue_clear_on_main_sync (queue);
   });
 }
+
+/**
+ * clapper_reactable_timeline_insert_sync:
+ * @reactable: a #ClapperReactable
+ * @timeline: a #ClapperTimeline
+ * @marker: a #ClapperMarker
+ *
+ * A convenience function that within application main thread synchronously
+ * inserts @marker into @timeline.
+ *
+ * Reactable enhancers should only modify timeline of an item that is already
+ * in queue from the application main thread, switching thread either themselves
+ * or using this convenience function that does so.
+ *
+ * Since: 0.10
+ */
+void
+clapper_reactable_timeline_insert_sync (ClapperReactable *self,
+    ClapperTimeline *timeline, ClapperMarker *marker)
+{
+  g_return_if_fail (CLAPPER_IS_REACTABLE (self));
+  g_return_if_fail (CLAPPER_IS_TIMELINE (timeline));
+  g_return_if_fail (CLAPPER_IS_MARKER (marker));
+
+  clapper_utils_timeline_insert_on_main_sync (timeline, marker);
+}
+
+/**
+ * clapper_reactable_timeline_remove_sync:
+ * @reactable: a #ClapperReactable
+ * @timeline: a #ClapperTimeline
+ * @marker: a #ClapperMarker
+ *
+ * A convenience function that within application main thread synchronously
+ * removes @marker from @timeline.
+ *
+ * Reactable enhancers should only modify timeline of an item that is already
+ * in queue from the application main thread, switching thread either themselves
+ * or using this convenience function that does so.
+ *
+ * Since: 0.10
+ */
+void
+clapper_reactable_timeline_remove_sync (ClapperReactable *self,
+    ClapperTimeline *timeline, ClapperMarker *marker)
+{
+  g_return_if_fail (CLAPPER_IS_REACTABLE (self));
+  g_return_if_fail (CLAPPER_IS_TIMELINE (timeline));
+  g_return_if_fail (CLAPPER_IS_MARKER (marker));
+
+  clapper_utils_timeline_remove_on_main_sync (timeline, marker);
+}

@@ -188,11 +188,21 @@ _take_marker_unlocked (ClapperTimeline *self, ClapperMarker *marker)
   return g_sequence_iter_get_position (iter);
 }
 
+/**
+ * clapper_timeline_insert_marker:
+ * @timeline: a #ClapperTimeline
+ * @marker: a #ClapperMarker
+ *
+ * Insert the #ClapperMarker into @timeline.
+ */
 void
-clapper_timeline_insert_marker_internal (ClapperTimeline *self, ClapperMarker *marker)
+clapper_timeline_insert_marker (ClapperTimeline *self, ClapperMarker *marker)
 {
   gboolean success;
   gint position = 0;
+
+  g_return_if_fail (CLAPPER_IS_TIMELINE (self));
+  g_return_if_fail (CLAPPER_IS_MARKER (marker));
 
   GST_OBJECT_LOCK (self);
 
@@ -211,30 +221,21 @@ clapper_timeline_insert_marker_internal (ClapperTimeline *self, ClapperMarker *m
 }
 
 /**
- * clapper_timeline_insert_marker:
+ * clapper_timeline_remove_marker:
  * @timeline: a #ClapperTimeline
  * @marker: a #ClapperMarker
  *
- * Insert the #ClapperMarker into @timeline.
+ * Removes #ClapperMarker from the timeline if present.
  */
 void
-clapper_timeline_insert_marker (ClapperTimeline *self, ClapperMarker *marker)
-{
-  g_return_if_fail (CLAPPER_IS_TIMELINE (self));
-  g_return_if_fail (CLAPPER_IS_MARKER (marker));
-
-  if (g_main_context_is_owner (g_main_context_default ()))
-    clapper_timeline_insert_marker_internal (self, marker);
-  else
-    clapper_utils_timeline_insert_on_main_sync (self, marker);
-}
-
-void
-clapper_timeline_remove_marker_internal (ClapperTimeline *self, ClapperMarker *marker)
+clapper_timeline_remove_marker (ClapperTimeline *self, ClapperMarker *marker)
 {
   GSequenceIter *iter;
   gint position = 0;
   gboolean success = FALSE;
+
+  g_return_if_fail (CLAPPER_IS_TIMELINE (self));
+  g_return_if_fail (CLAPPER_IS_MARKER (marker));
 
   GST_OBJECT_LOCK (self);
 
@@ -254,25 +255,6 @@ clapper_timeline_remove_marker_internal (ClapperTimeline *self, ClapperMarker *m
 
     clapper_timeline_post_item_updated (self);
   }
-}
-
-/**
- * clapper_timeline_remove_marker:
- * @timeline: a #ClapperTimeline
- * @marker: a #ClapperMarker
- *
- * Removes #ClapperMarker from the timeline if present.
- */
-void
-clapper_timeline_remove_marker (ClapperTimeline *self, ClapperMarker *marker)
-{
-  g_return_if_fail (CLAPPER_IS_TIMELINE (self));
-  g_return_if_fail (CLAPPER_IS_MARKER (marker));
-
-  if (g_main_context_is_owner (g_main_context_default ()))
-    clapper_timeline_remove_marker_internal (self, marker);
-  else
-    clapper_utils_timeline_remove_on_main_sync (self, marker);
 }
 
 /**
