@@ -24,6 +24,7 @@ Additional fields for `.plugin` info file:
 
 * `X-Data-Prefix` - describe text that data should start with
 * `X-Data-Contains` - data must contain given phrase
+* `X-Data-Excludes` - data must not contain given phrase
 * `X-Data-Regex` - regular expression to run on data
 
 These are used by `typefinder` to determine whether given data is a playlist for
