@@ -28,6 +28,9 @@
 
 #include <clapper/clapper-visibility.h>
 #include <clapper/clapper-player.h>
+#include <clapper/clapper-media-item.h>
+#include <clapper/clapper-timeline.h>
+#include <clapper/clapper-marker.h>
 #include <clapper/clapper-enums.h>
 
 G_BEGIN_DECLS
@@ -236,5 +239,11 @@ void clapper_reactable_queue_remove_sync (ClapperReactable *reactable, ClapperMe
 
 CLAPPER_API
 void clapper_reactable_queue_clear_sync (ClapperReactable *reactable);
+
+CLAPPER_API
+void clapper_reactable_timeline_insert_sync (ClapperReactable *reactable, ClapperTimeline *timeline, ClapperMarker *marker);
+
+CLAPPER_API
+void clapper_reactable_timeline_remove_sync (ClapperReactable *reactable, ClapperTimeline *timeline, ClapperMarker *marker);
 
 G_END_DECLS
