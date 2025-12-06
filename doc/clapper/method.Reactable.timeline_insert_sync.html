@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Reactable.item_updated</title>
+  <title>Clapper.Reactable.timeline_insert_sync</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta property="og:title" content="Clapper.Reactable.item_updated"/>
-  <meta property="og:description" content="Reference for Clapper.Reactable.item_updated"/>
-  <meta name="twitter:title" content="Clapper.Reactable.item_updated"/>
-  <meta name="twitter:description" content="Reference for Clapper.Reactable.item_updated"/>
+  <meta priority="og:title" content="Clapper.Reactable.timeline_insert_sync"/>
+  <meta priority="og:description" content="Reference for Clapper.Reactable.timeline_insert_sync"/>
+  <meta name="twitter:title" content="Clapper.Reactable.timeline_insert_sync"/>
+  <meta name="twitter:description" content="Reference for Clapper.Reactable.timeline_insert_sync"/>
 
 
   
@@ -86,34 +86,22 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   </div>
 </div>
 <div class="section">
-  <h5>Virtual methods</h5>
+  <h5>Methods</h5>
   <div class="links">
   
-    <a class="method current" href="vfunc.Reactable.item_updated.html">item_updated</a>
+    <a class="method" href="method.Reactable.get_player.html">get_player</a>
   
-    <a class="method" href="vfunc.Reactable.message_received.html">message_received</a>
+    <a class="method" href="method.Reactable.queue_append_sync.html">queue_append_sync</a>
   
-    <a class="method" href="vfunc.Reactable.mute_changed.html">mute_changed</a>
+    <a class="method" href="method.Reactable.queue_clear_sync.html">queue_clear_sync</a>
   
-    <a class="method" href="vfunc.Reactable.played_item_changed.html">played_item_changed</a>
+    <a class="method" href="method.Reactable.queue_insert_sync.html">queue_insert_sync</a>
   
-    <a class="method" href="vfunc.Reactable.position_changed.html">position_changed</a>
+    <a class="method" href="method.Reactable.queue_remove_sync.html">queue_remove_sync</a>
   
-    <a class="method" href="vfunc.Reactable.queue_cleared.html">queue_cleared</a>
+    <a class="method current" href="method.Reactable.timeline_insert_sync.html">timeline_insert_sync</a>
   
-    <a class="method" href="vfunc.Reactable.queue_item_added.html">queue_item_added</a>
-  
-    <a class="method" href="vfunc.Reactable.queue_item_removed.html">queue_item_removed</a>
-  
-    <a class="method" href="vfunc.Reactable.queue_item_repositioned.html">queue_item_repositioned</a>
-  
-    <a class="method" href="vfunc.Reactable.queue_progression_changed.html">queue_progression_changed</a>
-  
-    <a class="method" href="vfunc.Reactable.speed_changed.html">speed_changed</a>
-  
-    <a class="method" href="vfunc.Reactable.state_changed.html">state_changed</a>
-  
-    <a class="method" href="vfunc.Reactable.volume_changed.html">volume_changed</a>
+    <a class="method" href="method.Reactable.timeline_remove_sync.html">timeline_remove_sync</a>
   
   </div>
 </div>
@@ -128,30 +116,30 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Virtual Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="iface.Reactable.html">Reactable</a><span class="sep"></span>item_updated</h1>
+    <h3>Method</h3>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="iface.Reactable.html">Reactable</a><span class="sep"></span>timeline_insert_sync</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p><span class="emblem available-next" title="This virtual functionwill be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
-      <h4 id="declaration">
+      <h4 style="display:flex;" id="declaration">
         Declaration
-        <a href="#declaration" class="anchor"></a>
+        <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L147">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L244">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="n">item_updated</span><span class="w"> </span><span class="p">(</span>
+<span class="n">clapper_reactable_timeline_insert_sync</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">ClapperReactable</span><span class="o">*</span><span class="w"> </span><span class="n">reactable</span><span class="p">,</span>
-<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span><span class="p">,</span>
-<span class="w">  </span><span class="n">ClapperReactableItemUpdatedFlags</span><span class="w"> </span><span class="n">flags</span>
+<span class="w">  </span><span class="n">ClapperTimeline</span><span class="o">*</span><span class="w"> </span><span class="n">timeline</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ClapperMarker</span><span class="o">*</span><span class="w"> </span><span class="n">marker</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -159,25 +147,29 @@ SPDX-License-Identifier: LGPL-2.1-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 id="description">
+      <h4 style="display:flex;" id="description">
         Description
-        <a href="#description" class="anchor"></a>
+        <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.h#L132">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-reactable.c#L210">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>An item in queue got&nbsp;updated.</p>
-<p>This might be (or not) currently played item.
-Implementations can compare it against the last item from
-<a href="vfunc.Reactable.played_item_changed.html"><code>Clapper.ReactableInterface.played_item_changed</code></a> if they
-need to know&nbsp;that.</p>
+        <p>A convenience function that within application main thread synchronously
+inserts <code>marker</code> into <code>timeline</code>.</p>
+<p>Reactable enhancers should only modify timeline of an item that is already
+in queue from the application main thread, switching thread either themselves
+or using this convenience function that does&nbsp;so.</p>
       </div>
 
       <div class="docblock">
         
         <p>Available since: 0.10</p>
+        
+        
+        
+        
         
       </div>
 
@@ -194,10 +186,12 @@ need to know&nbsp;that.</p>
       <div class="docblock">
         <dl class="arguments">
           
-          <dt class="arg-name"><code>item</code></dt>
+
+          
+          <dt class="arg-name"><code>timeline</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
-            <p>A <code>ClapperMediaItem</code> that was&nbsp;updated.</p>
+            <p><em>Type:</em>&nbsp;<a href="class.Timeline.html"><code>ClapperTimeline</code></a></p>
+            <p>A <code>ClapperTimeline</code>.</p>
             <table>
             
             
@@ -211,10 +205,10 @@ need to know&nbsp;that.</p>
             </table>
           </dd>
           
-          <dt class="arg-name"><code>flags</code></dt>
+          <dt class="arg-name"><code>marker</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="flags.ReactableItemUpdatedFlags.html"><code>ClapperReactableItemUpdatedFlags</code></a></p>
-            <p>Flags informing which properties were&nbsp;updated.</p>
+            <p><em>Type:</em>&nbsp;<a href="class.Marker.html"><code>ClapperMarker</code></a></p>
+            <p>A <code>ClapperMarker</code>.</p>
             <table>
             
             
@@ -223,7 +217,7 @@ need to know&nbsp;that.</p>
             
             
             
-            
+            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
             
             </table>
           </dd>

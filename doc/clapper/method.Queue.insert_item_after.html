@@ -7,7 +7,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Clapper.Queue.get_item</title>
+  <title>Clapper.Queue.insert_item_after</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -23,10 +23,10 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
 
   
-  <meta priority="og:title" content="Clapper.Queue.get_item"/>
-  <meta priority="og:description" content="Reference for Clapper.Queue.get_item"/>
-  <meta name="twitter:title" content="Clapper.Queue.get_item"/>
-  <meta name="twitter:description" content="Reference for Clapper.Queue.get_item"/>
+  <meta priority="og:title" content="Clapper.Queue.insert_item_after"/>
+  <meta priority="og:description" content="Reference for Clapper.Queue.insert_item_after"/>
+  <meta name="twitter:title" content="Clapper.Queue.insert_item_after"/>
+  <meta name="twitter:description" content="Reference for Clapper.Queue.insert_item_after"/>
 
 
   
@@ -103,7 +103,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Queue.get_instant.html">get_instant</a>
   
-    <a class="method current" href="method.Queue.get_item.html">get_item</a>
+    <a class="method" href="method.Queue.get_item.html">get_item</a>
   
     <a class="method" href="method.Queue.get_n_items.html">get_n_items</a>
   
@@ -111,7 +111,7 @@ SPDX-License-Identifier: LGPL-2.1-or-later
   
     <a class="method" href="method.Queue.insert_item.html">insert_item</a>
   
-    <a class="method" href="method.Queue.insert_item_after.html">insert_item_after</a>
+    <a class="method current" href="method.Queue.insert_item_after.html">insert_item_after</a>
   
     <a class="method" href="method.Queue.item_is_current.html">item_is_current</a>
   
@@ -151,12 +151,12 @@ SPDX-License-Identifier: LGPL-2.1-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Queue.html">Queue</a><span class="sep"></span>get_item</h1>
+    <h1><a href="index.html">Clapper</a><span class="sep"></span><a href="class.Queue.html">Queue</a><span class="sep"></span>insert_item_after</h1>
   </header>
 
   <section>
     <div class="docblock">
-      <p></p>
+      <p><span class="emblem available-next" title="This method will be available in the next stable release">unstable</span>&nbsp;<span class="emblem available">since: 0.10</span></p>
     </div>
 
     <div class="declaration toggle-wrapper">
@@ -164,15 +164,16 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.h#L85">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.h#L55">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">ClapperMediaItem</span><span class="o">*</span>
-<span class="n">clapper_queue_get_item</span><span class="w"> </span><span class="p">(</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="n">clapper_queue_insert_item_after</span><span class="w"> </span><span class="p">(</span>
 <span class="w">  </span><span class="n">ClapperQueue</span><span class="o">*</span><span class="w"> </span><span class="n">queue</span><span class="p">,</span>
-<span class="w">  </span><span class="n">guint</span><span class="w"> </span><span class="n">index</span>
+<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">item</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ClapperMediaItem</span><span class="o">*</span><span class="w"> </span><span class="n">after_item</span>
 <span class="p">)</span>
 </pre></div>
 </code></pre>
@@ -184,24 +185,24 @@ SPDX-License-Identifier: LGPL-2.1-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.c#L897">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/Rafostar/clapper/tree/master/src/lib/clapper/clapper-queue.c#L551">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Get the <code>ClapperMediaItem</code> at&nbsp;index.</p>
-<p>This behaves the same as <a href="javascript:void(0)" data-namespace="Gio" data-link="method.ListModel.get_item.html" class="external"><code>g_list_model_get_item()</code></a>, and is here
-for code uniformity and convenience to avoid type casting by&nbsp;user.</p>
-<p>This function is not available in bindings as they already
-inherit <code>get_item()</code> method from <a href="javascript:void(0)" data-namespace="Gio" data-link="iface.ListModel.html" class="external"><code>GListModel</code></a>&nbsp;interface.</p>
+        <p>Insert another <code>ClapperMediaItem</code> after some other item&nbsp;position.</p>
+<p>If <code>after_item</code> is <code>NULL</code>, item will be prepended. When set but
+not found however, item will be appended at the end of&nbsp;queue.</p>
+<p>If item is already in queue, this function will do nothing,
+so it is safe to call multiple times if&nbsp;unsure.</p>
       </div>
 
       <div class="docblock">
         
+        <p>Available since: 0.10</p>
         
         
         
-        <p>This method is not directly available to language bindings.</p>
         
         
       </div>
@@ -221,10 +222,10 @@ inherit <code>get_item()</code> method from <a href="javascript:void(0)" data-na
           
 
           
-          <dt class="arg-name"><code>index</code></dt>
+          <dt class="arg-name"><code>item</code></dt>
           <dd class="arg-description">
-            <p><em>Type:</em>&nbsp;<code>guint</code></p>
-            <p>An item&nbsp;index.</p>
+            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
+            <p>A <code>ClapperMediaItem</code>.</p>
             <table>
             
             
@@ -233,7 +234,25 @@ inherit <code>get_item()</code> method from <a href="javascript:void(0)" data-na
             
             
             
+            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
             
+            </table>
+          </dd>
+          
+          <dt class="arg-name"><code>after_item</code></dt>
+          <dd class="arg-description">
+            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
+            <p>A <code>ClapperMediaItem</code> after which to
+  insert <code>item</code> or <code>NULL</code> to&nbsp;prepend.</p>
+            <table>
+            
+            <tr><td>The argument can be <code>NULL</code>.</td></tr>
+            
+            
+            
+            
+            
+            <tr><td title="transfer: none">The data is owned by the caller of the method.</td></tr>
             
             </table>
           </dd>
@@ -245,32 +264,6 @@ inherit <code>get_item()</code> method from <a href="javascript:void(0)" data-na
     </div>
     
 
-    
-    <div class="return-value toggle-wrapper">
-      <h4 id="return-value">
-        Return value
-        <a href="#return-value" class="anchor"></a>
-      </h4>
-
-      <div class="docblock">
-        <div class="returns">
-          <div class="arg-description">
-            <p><em>Type:</em>&nbsp;<a href="class.MediaItem.html"><code>ClapperMediaItem</code></a></p>
-            <p>The <code>ClapperMediaItem</code> at <code>index</code>.</p>
-          </div>
-          <div>
-            <table>
-            
-            
-            
-            <tr><td title="transfer: full">The caller of the method takes ownership of the returned data, and is responsible for freeing it.</td></tr>
-            <tr><td>The return value can be <code>NULL</code>.</td></tr>
-            
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
     
 
   </section>
