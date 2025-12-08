@@ -50,6 +50,12 @@ is passed as this function argument. Implementation is responsible for filling i
 data (see [method@Clapper.Harvest.fill]) that can be played. Such content can be either
 a resolved URI to actual media file or some streaming manifest (like `HLS` or `DASH`).
 
+Supported media types for single item include:
+
+* `application/dash+xml` - DASH manifest
+* `application/x-hls` - HLS manifest
+* `text/x-uri` - direct media URI
+
 During extract function, implementation might optionally add media tags such as title
 (which will be merged with tags of [class@Clapper.MediaItem]) and extra HTTP request
 headers if any are required to access this content.
@@ -61,8 +67,8 @@ Examples being playlists, search queries, related videos, etc.
 
 This can be handled in two ways, depending on set media type:
 
-1. `text/uri-list`
-2. `application/clapper-playlist`
+* `text/uri-list` - playlist of URIs
+* `application/clapper-playlist` - custom playlist format
 
 If you use the first option, harvest should be filled with idividual URIs one per line.
 Clapper will use its built-in URI list parser to create a media item for each URI and
