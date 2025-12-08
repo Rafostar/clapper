@@ -50,8 +50,9 @@ struct _ClapperExtractableInterface
    * ClapperExtractableInterface::extract:
    * @extractable: a #ClapperExtractable
    * @uri: a #GUri
-   * @cancellable: a #GCancellable object
-   * @error: a #GError
+   * @harvest: a #ClapperHarvest to be filled
+   * @cancellable: (not nullable): a #GCancellable object
+   * @error: (not nullable): a #GError
    *
    * Extract data and fill harvest.
    *
