@@ -280,7 +280,7 @@
                         <property name="vexpand">true</property>
                         <property name="hexpand">true</property>
                         <property name="icon-name">edit-find-symbolic</property>
-                        <property name="title" translatable="yes">No Clapper Enhancers Found</property>
+                        <property name="title" translatable="yes">No Enhancers Found</property>
                         <property name="description" translatable="yes">Install some to add more cool functionalities to the player!</property>
                       </object>
                     </child>
