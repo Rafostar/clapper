@@ -283,11 +283,12 @@ scale_css_classes_changed_cb (GtkWidget *widget,
     self->position_signal_id = 0;
   }
 
-  /* We should be ALWAYS doing normal seeks if dropped at marker position */
+  /* We should not do keyframe seeks if dropped at marker position */
   if (self->has_markers
       && G_APPROX_VALUE (self->curr_marker_start, value, FLT_EPSILON)) {
     GST_DEBUG ("Seeking to marker");
-    clapper_player_seek (self->player, value);
+    clapper_player_seek_custom (self->player, value,
+        MIN (self->seek_method, CLAPPER_PLAYER_SEEK_METHOD_NORMAL));
   } else {
     clapper_player_seek_custom (self->player, value, self->seek_method);
   }
