@@ -51,8 +51,8 @@ struct _ClapperPlaylistableInterface
    * @uri: a source #GUri
    * @bytes: a #GBytes
    * @playlist: a #GListStore for media items
-   * @cancellable: a #GCancellable object
-   * @error: a #GError
+   * @cancellable: (not nullable): a #GCancellable object
+   * @error: (not nullable): a #GError
    *
    * Parse @bytes and fill @playlist with [class@Clapper.MediaItem] objects.
    *
