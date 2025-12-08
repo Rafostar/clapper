@@ -135,6 +135,12 @@ says to use this&nbsp;module.</p>
 is passed as this function argument. Implementation is responsible for filling it with
 data (see <a href="method.Harvest.fill.html"><code>clapper_harvest_fill()</code></a>) that can be played. Such content can be either
 a resolved <span class="caps">URI</span> to actual media file or some streaming manifest (like <code>HLS</code> or <code>DASH</code>).</p>
+<p>Supported media types for single item&nbsp;include:</p>
+<ul>
+<li><code>application/dash+xml</code> - <span class="caps">DASH</span>&nbsp;manifest</li>
+<li><code>application/x-hls</code> - <span class="caps">HLS</span>&nbsp;manifest</li>
+<li><code>text/x-uri</code> - direct media <span class="caps">URI</span></li>
+</ul>
 <p>During extract function, implementation might optionally add media tags such as title
 (which will be merged with tags of <a href="class.MediaItem.html"><code>ClapperMediaItem</code></a>) and extra <span class="caps">HTTP</span> request
 headers if any are required to access this&nbsp;content.</p>
@@ -142,10 +148,10 @@ headers if any are required to access this&nbsp;content.</p>
 <p>It is possible to handle URIs which would normally return more than one media item to play.
 Examples being playlists, search queries, related videos,&nbsp;etc.</p>
 <p>This can be handled in two ways, depending on set media&nbsp;type:</p>
-<ol>
-<li><code>text/uri-list</code></li>
-<li><code>application/clapper-playlist</code></li>
-</ol>
+<ul>
+<li><code>text/uri-list</code> - playlist of&nbsp;URIs</li>
+<li><code>application/clapper-playlist</code> - custom playlist&nbsp;format</li>
+</ul>
 <p>If you use the first option, harvest should be filled with idividual URIs one per line.
 Clapper will use its built-in <span class="caps">URI</span> list parser to create a media item for each <span class="caps">URI</span> and
 place them in its playback queue. This is equivalent of creating <a href="class.MediaItem.html"><code>ClapperMediaItem</code></a>
