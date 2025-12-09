@@ -2196,6 +2196,24 @@ clapper_player_seek_custom (ClapperPlayer *self, gdouble position, ClapperPlayer
 }
 
 /**
+ * clapper_player_advance_frame:
+ * @player: a #ClapperPlayer
+ *
+ * Request the player to perform a frame step operation.
+ *
+ * Note that this will pause playback automatically.
+ *
+ * Since: 0.10
+ */
+void
+clapper_player_advance_frame (ClapperPlayer *self)
+{
+  g_return_if_fail (CLAPPER_IS_PLAYER (self));
+
+  clapper_playbin_bus_post_advance_frame (self->bus);
+}
+
+/**
  * clapper_player_add_feature:
  * @player: a #ClapperPlayer
  * @feature: a #ClapperFeature

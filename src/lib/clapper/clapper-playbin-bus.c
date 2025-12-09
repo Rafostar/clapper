@@ -41,6 +41,7 @@ enum
   CLAPPER_PLAYBIN_BUS_STRUCTURE_SET_PLAY_FLAG,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_SEEK,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_RATE_CHANGE,
+  CLAPPER_PLAYBIN_BUS_STRUCTURE_ADVANCE_FRAME,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_STREAM_CHANGE,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_CURRENT_ITEM_CHANGE,
   CLAPPER_PLAYBIN_BUS_STRUCTURE_ITEM_SUBURI_CHANGE,
@@ -53,6 +54,7 @@ static ClapperBusQuark _structure_quarks[] = {
   {"set-play-flag", 0},
   {"seek", 0},
   {"rate-change", 0},
+  {"advance-frame", 0},
   {"stream-change", 0},
   {"current-item-change", 0},
   {"item-suburi-change", 0},
@@ -568,6 +570,42 @@ _handle_rate_change_msg (GstMessage *msg, const GstStructure *structure, Clapper
   }
 }
 
+void
+clapper_playbin_bus_post_advance_frame (GstBus *bus)
+{
+  GstStructure *structure = gst_structure_new_id_empty (_STRUCTURE_QUARK (ADVANCE_FRAME));
+  gst_bus_post (bus, gst_message_new_application (NULL, structure));
+}
+
+static inline void
+_handle_advance_frame_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer *player)
+{
+  GstEvent *step_event;
+
+  /* If we are starting playback or pipeline is going
+   * to be stopped, ignore advance frame operation */
+  if (player->current_state < GST_STATE_PAUSED
+      || player->target_state < GST_STATE_PAUSED)
+    return;
+
+  /* Pause playback for frame stepping */
+  if (player->target_state != GST_STATE_PAUSED) {
+    player->target_state = GST_STATE_PAUSED;
+    gst_element_set_state (player->playbin, player->target_state);
+  }
+
+  step_event = gst_event_new_step (GST_FORMAT_BUFFERS, 1, 1.0, TRUE, FALSE);
+  GST_DEBUG_OBJECT (player, "Advancing frame");
+
+  clapper_player_remove_tick_source (player);
+
+  if (!(player->stepping = gst_element_send_event (player->playbin, step_event))) {
+    /* FIXME: Should we maybe call _handle_error_msg with
+     * some error here? Or will playbin post such message for us? */
+    GST_ERROR_OBJECT (player, "Could not advance frame");
+  }
+}
+
 static inline void
 _handle_state_changed_msg (GstMessage *msg, ClapperPlayer *player)
 {
@@ -904,6 +942,8 @@ _handle_app_msg (GstMessage *msg, ClapperPlayer *player)
     _handle_seek_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (RATE_CHANGE))
     _handle_rate_change_msg (msg, structure, player);
+  else if (quark == _STRUCTURE_QUARK (ADVANCE_FRAME))
+    _handle_advance_frame_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (STREAM_CHANGE))
     _handle_stream_change_msg (msg, structure, player);
   else if (quark == _STRUCTURE_QUARK (CURRENT_ITEM_CHANGE))
@@ -1215,6 +1255,11 @@ _handle_async_done_msg (GstMessage *msg G_GNUC_UNUSED, ClapperPlayer *player)
     clapper_player_refresh_position (player);
     clapper_app_bus_post_simple_signal (player->app_bus,
         GST_OBJECT_CAST (player), signal_id);
+  }
+  if (player->stepping) {
+    player->stepping = FALSE;
+    GST_DEBUG_OBJECT (player, "Frame advanced");
+    clapper_player_refresh_position (player);
   }
   if (player->speed_changing) {
     if (player->pending_speed != 0) {

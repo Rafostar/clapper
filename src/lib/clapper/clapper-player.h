@@ -205,6 +205,9 @@ CLAPPER_API
 void clapper_player_seek_custom (ClapperPlayer *player, gdouble position, ClapperPlayerSeekMethod method);
 
 CLAPPER_API
+void clapper_player_advance_frame (ClapperPlayer *player);
+
+CLAPPER_API
 void clapper_player_add_feature (ClapperPlayer *player, ClapperFeature *feature);
 
 CLAPPER_API
