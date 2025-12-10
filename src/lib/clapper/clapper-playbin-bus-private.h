@@ -43,6 +43,8 @@ void clapper_playbin_bus_post_seek (GstBus *bus, gdouble position, ClapperPlayer
 
 void clapper_playbin_bus_post_rate_change (GstBus *bus, gdouble rate);
 
+void clapper_playbin_bus_post_advance_frame (GstBus *bus);
+
 void clapper_playbin_bus_post_stream_change (GstBus *bus);
 
 void clapper_playbin_bus_post_current_item_change (GstBus *bus, ClapperMediaItem *current_item, ClapperQueueItemChangeMode mode);

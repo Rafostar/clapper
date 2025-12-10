@@ -883,6 +883,18 @@ _handle_speed_key_press (ClapperAppWindow *self, gboolean forward)
       (forward) ? "av.speed-up" : "av.speed-down", NULL);
 }
 
+static void
+_handle_advance_frame_key_press (ClapperAppWindow *self)
+{
+  ClapperPlayer *player = clapper_gtk_av_get_player (
+      CLAPPER_GTK_AV_CAST (self->video));
+  ClapperPlayerState state = clapper_player_get_state (player);
+
+  /* Do not try to advance frame when stopped or buffering */
+  if (state >= CLAPPER_PLAYER_STATE_PAUSED)
+    clapper_player_advance_frame (player);
+}
+
 static inline void
 _handle_progression_key_press (ClapperAppWindow *self)
 {
@@ -938,6 +950,10 @@ key_pressed_cb (GtkEventControllerKey *controller, guint keyval,
     case GDK_KEY_l:
       if ((state & GDK_MODIFIER_MASK) == 0)
         _handle_seek_key_press (self, TRUE);
+      break;
+    case GDK_KEY_e:
+      if ((state & GDK_MODIFIER_MASK) == 0)
+        _handle_advance_frame_key_press (self);
       break;
     case GDK_KEY_space:
     case GDK_KEY_k:

@@ -192,6 +192,16 @@
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
+                <property name="title" translatable="yes">Advance frame</property>
+                <property name="accelerator">e</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkShortcutsGroup">
+            <child>
+              <object class="GtkShortcutsShortcut">
                 <property name="direction">ltr</property>
                 <property name="title" translatable="yes">Next chapter</property>
                 <property name="accelerator">&lt;Shift&gt;Right</property>

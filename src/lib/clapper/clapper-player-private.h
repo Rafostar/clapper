@@ -87,6 +87,7 @@ struct _ClapperPlayer
   gboolean use_playbin3; // when using playbin3
   gboolean had_error; // so we do not do stuff after error
   gboolean seeking; // during seek operation
+  gboolean stepping; // during frame step operation
   gboolean speed_changing; // during rate change operation
   gboolean pending_eos; // when pausing due to EOS
   gboolean pending_flush; // after another stream selection
