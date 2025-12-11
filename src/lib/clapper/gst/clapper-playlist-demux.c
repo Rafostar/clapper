@@ -134,6 +134,40 @@ clapper_playlist_type_find (GstTypeFind *tf, ClapperEnhancerProxy *proxy)
       CLAPPER_PLAYLIST_MEDIA_TYPE, "enhancer", G_TYPE_STRING, module_name, NULL);
 }
 
+static gboolean
+_is_claps_possible (const guint8 *data, gsize len)
+{
+  gboolean possible = FALSE;
+
+  /* Linux file path */
+  if (len >= 2)
+    possible = (data[0] == '/' && g_ascii_isalnum (data[1]));
+
+#ifdef G_OS_WIN32
+  /* Windows file path ("C:\..." or "D:/...") */
+  if (!possible && len >= 3) {
+    possible = (g_ascii_isalpha (data[0]) && data[1] == ':' && (data[2] == '\\' || data[2] == '/'));
+
+    /* Windows UNC path */
+    if (!possible)
+      possible = (data[0] == '\\' && data[1] == '\\' && g_ascii_isalnum (data[2]));
+  }
+#endif
+
+  /* Check for URI (at least 3 characters before colon) */
+  if (!possible && len > 3) {
+    guint i = 0, end = MIN (len, 16);
+
+    while (i < end && g_ascii_isalpha (data[i]))
+      ++i;
+
+    if (i >= 3 && i < end)
+      possible = (data[i] == ':');
+  }
+
+  return possible;
+}
+
 /* Finds text file of full file paths. Claps file might also use URIs,
  * but in that case lets GStreamer built-in type finders find that as
  * "text/uri-list" and we will handle it with this element too. */
@@ -141,26 +175,54 @@ static void
 clapper_claps_type_find (GstTypeFind *tf, gpointer user_data G_GNUC_UNUSED)
 {
   const guint8 *data;
+  guint64 data_size = 16;
 
-  if ((data = gst_type_find_peek (tf, 0, 3))) {
-    gboolean possible;
+  if (!(data = gst_type_find_peek (tf, 0, data_size))) {
+    if ((data_size = gst_type_find_get_length (tf)) > 0)
+      data = gst_type_find_peek (tf, 0, data_size);
 
-    /* Linux file path */
-    possible = (data[0] == '/' && g_ascii_isalnum (data[1]));
+    if (!data)
+      return;
+  }
 
-#ifdef G_OS_WIN32
-    /* Windows file path ("C:\..." or "D:/...") */
-    if (!possible)
-      possible = (g_ascii_isalpha (data[0]) && data[1] == ':' && (data[2] == '\\' || data[2] == '/'));
+  /* Continue parsing only if start looks like
+   * file path, otherwise reject data early */
+  if (_is_claps_possible (data, data_size)) {
+    guint probability = GST_TYPE_FIND_POSSIBLE;
+    data_size = 1024;
 
-    /* Windows UNC Path */
-    if (!possible)
-      possible = (data[0] == '\\' && data[1] == '\\' && g_ascii_isalnum (data[2]));
-#endif
+    if (!(data = gst_type_find_peek (tf, 0, data_size)))
+      if ((data_size = gst_type_find_get_length (tf)) > 0)
+        data = gst_type_find_peek (tf, 0, data_size);
 
-    if (possible) {
-      GST_INFO ("Suggesting possible type: " CLAPPER_CLAPS_MEDIA_TYPE);
-      gst_type_find_suggest_empty_simple (tf, GST_TYPE_FIND_POSSIBLE, CLAPPER_CLAPS_MEDIA_TYPE);
+    if (data) {
+      const guint8 *line_start = data;
+      const guint8 *end = data + data_size;
+      guint pathlike = 0, total = 0;
+
+      while (line_start < end) {
+        const guint8 *newline = memchr (line_start, '\n', end - line_start);
+        gsize len = newline ? (newline - line_start) : (end - line_start);
+
+        if (len > 0) {
+          ++total;
+          if (_is_claps_possible (line_start, len))
+            ++pathlike;
+        }
+
+        if (!newline)
+          break;
+
+        line_start = newline + 1;
+      }
+
+      /* Multiple lines and most of them looks like a file path */
+      if (total > 1 && pathlike >= MAX (2, total * 3 / 4))
+        probability = GST_TYPE_FIND_LIKELY;
+
+      GST_INFO ("Suggesting %s type: " CLAPPER_CLAPS_MEDIA_TYPE,
+          (probability >= GST_TYPE_FIND_LIKELY) ? "likely" : "possible");
+      gst_type_find_suggest_empty_simple (tf, probability, CLAPPER_CLAPS_MEDIA_TYPE);
     }
   }
 }
