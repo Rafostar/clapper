@@ -117,6 +117,7 @@ clapper_enhancers_loader_initialize (ClapperEnhancerProxyList *proxies)
    * to just enable them all here (even if not installed) */
   peas_engine_enable_loader (_engine, "python");
   peas_engine_enable_loader (_engine, "gjs");
+  peas_engine_enable_loader (_engine, "lua5.1");
 
   _import_enhancers (enhancers_path);
 
