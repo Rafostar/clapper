@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-15 12:47+0100\n"
-"PO-Revision-Date: 2025-04-11 18:29\n"
+"POT-Creation-Date: 2025-12-12 21:55+0100\n"
+"PO-Revision-Date: 2025-12-12 22:25\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -18,24 +18,24 @@ msgstr ""
 "X-Crowdin-File-ID: 48\n"
 
 #. Translators: Do NOT translate app name!
-#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:3
 msgid "Clapper"
 msgstr "Clapper"
 
-#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Multimedia Player"
 msgstr "Multimedia Wiedergabe"
 
-#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:6
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Play videos and music"
 msgstr "Gebe Videos uns Musik wieder"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
-#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:16
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:15
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
 msgstr ""
 
-#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:22
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:21
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
 msgstr "Neues Fenster"
@@ -101,132 +101,140 @@ msgid "Show shortcuts"
 msgstr "Tastenkombinationen zeigen"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
+msgid "Show pipeline"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:37
 msgid "Toggle fullscreen"
 msgstr "In Vollbildmodus wechseln"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:32
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Double tap | Double click"
 msgstr "Doppelt tippen bzw. klicken"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Unfullscreen"
 msgstr "Vollbildmodus deaktivieren"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:50
 msgid "Auto window resize"
 msgstr "Automatische Größenanpassung des Fensters"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:45
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Middle click"
 msgstr "Mittlere Maustaste"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Quit"
 msgstr "Clapper beenden"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:59
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:65
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
 msgstr "Medien"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:62
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
 msgstr "Dateien hinzufügen…"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:74
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
 msgstr "URI hinzufügen…"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:76
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
 msgid "Queue"
 msgstr "Warteschlange"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:80
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:87
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:86
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:93
 msgid "Next item"
 msgstr "Nächster Titel"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:94
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:101
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 msgid "Previous item"
 msgstr "Vorheriger Titel"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:113
 msgid "Change progression mode"
 msgstr "Wiedergabemodus wechseln"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:115
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:76
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:121
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:77
 msgid "Playback"
 msgstr "Wiedergabe"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:118
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Toggle play"
 msgstr "Wiedergabe umschalten"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:119
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:125
 msgid "Tap | Left click"
 msgstr "Tippen | Linke Maustaste"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:126
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:134
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:140
 msgid "Seek forward"
 msgstr "Vorwärts springen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:127
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:151
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:133
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Double tap (right side) | Scroll right"
 msgstr "Doppelt auf die rechte Seite tippen | Nach rechts scrollen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:135
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:143
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:141
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:149
 msgid "Double tap (left side) | Scroll left"
 msgstr "Doppelt auf die linke Seite tippen | Nach links scrollen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:142
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:150
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:148
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:156
 msgid "Seek backward"
 msgstr "Rückwärts springen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:163
 msgid "Volume up"
 msgstr "Lautstärke erhöhen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:158
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Scroll up"
 msgstr "Hochscrollen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:170
 msgid "Volume down"
 msgstr "Lautstärke verringern"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:165
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Scroll down"
 msgstr "Runterscrollen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Toggle mute"
 msgstr "Stummschaltung umschalten"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:183
 msgid "Speed up"
 msgstr "Geschwindigkeit erhöhen"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:183
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:189
 msgid "Speed down"
 msgstr "Geschwindigkeit verringern"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:190
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:197
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:195
+msgid "Advance frame"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:206
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:213
 msgid "Next chapter"
 msgstr "Nächstes Kapitel"
 
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:204
-#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:211
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:220
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:227
 msgid "Previous chapter"
 msgstr "Vorheriges Kapitel"
 
@@ -257,13 +265,13 @@ msgid "Video"
 msgstr "Video"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:107
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:80
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:81
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:39
 msgid "Audio"
 msgstr "Audio"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:130
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:100
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:101
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:42
 msgid "Subtitles"
 msgstr "Untertitel"
@@ -291,15 +299,19 @@ msgstr "Ausgabeziel"
 msgid "Audio Playback"
 msgstr "Audiowiedergabe"
 
-#: src/bin/clapper-app/ui/clapper-app-info-window.ui:247
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:238
+msgid "Show Pipeline"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:258
 msgid "Video Streams"
 msgstr "Videospuren"
 
-#: src/bin/clapper-app/ui/clapper-app-info-window.ui:290
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:301
 msgid "Audio Streams"
 msgstr "Audiospuren"
 
-#: src/bin/clapper-app/ui/clapper-app-info-window.ui:333
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:344
 msgid "Subtitle Streams"
 msgstr "Untertitelspuren"
 
@@ -351,77 +363,129 @@ msgstr "Prozentsatz"
 msgid "Features"
 msgstr "Erweiterungen"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:66
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Server"
 msgstr "Server"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:68
 msgid "Control player remotely"
 msgstr "Clapper fernsteuern"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:83
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:103
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Offset"
 msgstr "Versetzung"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:85
 msgid "Synchronisation offset in seconds between the audio and video streams"
 msgstr "Versatz zwischen der Audio- und Videospur (in Sekunden)"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:105
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
 msgstr "Versatz zwischen der Untertitel- und Videospur (in Sekunden)"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:118
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Default font"
 msgstr "Standardschriftart"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:120
 msgid "Text font used for subtitles when media does not explicitly specify one"
 msgstr "Schriftart, welche für Untertitel verwendet wird, falls das Medium selbst keine vorgibt"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:137
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:138
 msgid "Tweaks"
 msgstr "Optimierungen"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:144
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
+msgid "Enhancers"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:146
+msgid "Browse and configure properties of available enhancers"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:163
 msgid "Plugin ranking"
 msgstr "Plugin-Reihenfolge"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
 msgid "Alter default ranks of GStreamer plugins"
 msgstr "Standard GStreamer Plugin Reihenfolge verändern"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
+msgid "Clapper Enhancers"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:203
+msgid "Available enhancers"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
+msgid "Select an enhancer plugin to view its information and properties to configure."
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
+msgid "Enhancer"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:227
+msgid "Information"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:230
+msgid "Module"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:243
+msgid "Description"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:256
+msgid "Version"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:271
+msgid "Properties"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:283
+msgid "No Enhancers Found"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
+msgid "Install some to add more cool functionalities to the player!"
+msgstr ""
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
 msgid "Plugin Ranking"
 msgstr "Pluginreihenfolge"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:182
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:319
 msgid "Available plugins"
 msgstr "Verfügbare Plugins"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:320
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
 msgstr "Wähle ein Plugin und seine Funktion für welches sie die Position der Reihenfolge überschreiben möchten. Falls mehrere Plugins ähnliche Fähigkeiten besitzen, wird dasjenige mit dem höchsten Rang bevorzugt."
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:186
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:323
 msgid "Plugin"
 msgstr "Plugin"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:195
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:332
 msgid "Plugin feature"
 msgstr "Pluginfunktion"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:213
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:350
 msgid "Add override"
 msgstr "Hinzufügen"
 
-#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:229
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:366
 msgid "Rank overrides"
 msgstr "Funktionsrangliste"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
-#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:30
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -433,19 +497,19 @@ msgstr "Warteschlangenwiedergabe"
 msgid "Clear Queue"
 msgstr "Warteschlange leeren"
 
-#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:6
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:4
 msgid "Add URI"
 msgstr "URI hinzufügen"
 
-#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:7
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:5
 msgid "Insert an URI to be added to playback queue"
 msgstr "Geben sie eine URI an, welche zur Wiedergabewarteschlange hinzugefügt werden soll"
 
-#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:18
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
 msgid "Enter or drop URI here"
 msgstr "URI hier einfügen"
 
-#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:22
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:29
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -462,95 +526,107 @@ msgid "Pixel Format"
 msgstr "Pixelformat"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
-#: src/bin/clapper-app/clapper-app-about-window.c:47
+#: src/bin/clapper-app/clapper-app-about-dialog.c:42
 msgid "translator-credits"
 msgstr "Florian \"sp1rit\" <sp1rit@disroot.org>"
 
-#: src/bin/clapper-app/clapper-app-application.c:696
+#: src/bin/clapper-app/clapper-app-application.c:333
+msgid "Close"
+msgstr ""
+
+#: src/bin/clapper-app/clapper-app-application.c:753
 msgid "Create a new window"
 msgstr "Erstelle ein neues Fenster"
 
-#: src/bin/clapper-app/clapper-app-application.c:697
+#: src/bin/clapper-app/clapper-app-application.c:754
 msgid "Add media to queue in primary application instance"
 msgstr "Füge ein Medium zur Warteschlange der primären Anwendungsinstanz hinzu"
 
-#: src/bin/clapper-app/clapper-app-application.c:698
+#: src/bin/clapper-app/clapper-app-application.c:755
 msgid "Audio volume to set (0 - 2.0 range)"
 msgstr "Wiedergabelautstärke ändern (zwischen 0 - 2.0)"
 
-#: src/bin/clapper-app/clapper-app-application.c:699
+#: src/bin/clapper-app/clapper-app-application.c:756
 msgid "Playback speed to set (0.05 - 2.0 range)"
 msgstr "Wiedergabelautstärke ändern (zwischen 0.05 - 2.0)"
 
-#: src/bin/clapper-app/clapper-app-application.c:700
+#: src/bin/clapper-app/clapper-app-application.c:757
 msgid "Initial bitrate for adaptive streaming"
 msgstr "Initiale Bitrate für adaptives Streaming"
 
-#: src/bin/clapper-app/clapper-app-application.c:701
+#: src/bin/clapper-app/clapper-app-application.c:758
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
 msgstr "Initialer Warteschlangenfortschrittsmodus (0=keiner, 1=fortlaufend, 2=element wiederholen, 3=karussell, 4=zufällig)"
 
-#: src/bin/clapper-app/clapper-app-application.c:702
+#: src/bin/clapper-app/clapper-app-application.c:759
 msgid "Set window to be fullscreen"
 msgstr "In den Vollbildmodus wechseln"
 
-#: src/bin/clapper-app/clapper-app-application.c:703
+#: src/bin/clapper-app/clapper-app-application.c:760
 msgid "Video filter to use (\"none\" to disable)"
 msgstr "Zu verwendender Videofilter (\"none\" für keinen)"
 
-#: src/bin/clapper-app/clapper-app-application.c:704
+#: src/bin/clapper-app/clapper-app-application.c:761
 msgid "Audio filter to use (\"none\" to disable)"
 msgstr "Zu verwendender Audiofilter (\"none\" für keinen)"
 
-#: src/bin/clapper-app/clapper-app-application.c:705
+#: src/bin/clapper-app/clapper-app-application.c:762
 msgid "Video sink to use"
 msgstr "Zu verwendender Videoabfuss"
 
-#: src/bin/clapper-app/clapper-app-application.c:706
+#: src/bin/clapper-app/clapper-app-application.c:763
 msgid "Audio sink to use"
 msgstr "Zu verwendender Audioabfuss"
 
-#: src/bin/clapper-app/clapper-app-info-window.c:86
+#: src/bin/clapper-app/clapper-app-info-window.c:88
 msgid "Hardware"
 msgstr "Hardware"
 
-#: src/bin/clapper-app/clapper-app-info-window.c:86
+#: src/bin/clapper-app/clapper-app-info-window.c:88
 msgid "Software"
 msgstr "Software"
 
-#: src/bin/clapper-app/clapper-app-preferences-window.c:441
+#: src/bin/clapper-app/clapper-app-preferences-window.c:315
+msgid "Restore default"
+msgstr ""
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:418
+msgid "No configurable properties"
+msgstr ""
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:814
 msgid "Accurate"
 msgstr "Genau"
 
-#: src/bin/clapper-app/clapper-app-preferences-window.c:443
+#: src/bin/clapper-app/clapper-app-preferences-window.c:816
 msgid "Normal"
 msgstr "Normal"
 
-#: src/bin/clapper-app/clapper-app-preferences-window.c:445
+#: src/bin/clapper-app/clapper-app-preferences-window.c:818
 msgid "Fast"
 msgstr "Schnell"
 
-#: src/bin/clapper-app/clapper-app-utils.c:207
+#: src/bin/clapper-app/clapper-app-utils.c:212
 msgid "No progression"
 msgstr "Kein Fortschritt"
 
-#: src/bin/clapper-app/clapper-app-utils.c:208
+#: src/bin/clapper-app/clapper-app-utils.c:213
 msgid "Consecutive"
 msgstr "Fortlaufend"
 
-#: src/bin/clapper-app/clapper-app-utils.c:209
+#: src/bin/clapper-app/clapper-app-utils.c:214
 msgid "Repeat item"
 msgstr "Wiederholen"
 
-#: src/bin/clapper-app/clapper-app-utils.c:210
+#: src/bin/clapper-app/clapper-app-utils.c:215
 msgid "Carousel"
 msgstr "Kreislauf"
 
-#: src/bin/clapper-app/clapper-app-utils.c:211
+#: src/bin/clapper-app/clapper-app-utils.c:216
 msgid "Shuffle"
 msgstr "Zufallswiedergabe"
 
-#: src/bin/clapper-app/clapper-app-window.c:1036
+#: src/bin/clapper-app/clapper-app-window.c:1049
 msgid "Drop on title bar to play now or anywhere else to enqueue."
 msgstr "Zur direkten Wiedergabe legen Sie die Datei auf der Titelleiste ab, andernfalls wird die Datei der Warteschlange hinzugefügt."
 
