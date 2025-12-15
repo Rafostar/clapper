@@ -66,7 +66,7 @@ typedef struct
 {
   ClapperMediaItem *item;
   gboolean changed;
-  gboolean from_user;
+  gboolean allow_overwrite;
 } ClapperMediaItemTagIterData;
 
 enum
@@ -476,8 +476,8 @@ _tags_replace_func (const GstTagList *tags, const gchar *tag, ClapperMediaItemTa
       break;
     }
 
-    /* Users can only set non-existing tags */
-    if (data->from_user)
+    /* No overwrites allowed (e.g. user tags) */
+    if (!data->allow_overwrite)
       break;
 
     /* Check with tolerance for doubles */
@@ -522,7 +522,7 @@ _tags_replace_func (const GstTagList *tags, const gchar *tag, ClapperMediaItemTa
 
 static gboolean
 clapper_media_item_insert_tags_internal (ClapperMediaItem *self, const GstTagList *tags,
-    ClapperAppBus *app_bus, gboolean from_user, ClapperReactableItemUpdatedFlags *flags)
+    ClapperAppBus *app_bus, gboolean allow_overwrite, ClapperReactableItemUpdatedFlags *flags)
 {
   ClapperMediaItemTagIterData data;
   gboolean title_changed = FALSE, cont_changed = FALSE;
@@ -531,7 +531,7 @@ clapper_media_item_insert_tags_internal (ClapperMediaItem *self, const GstTagLis
 
   data.item = self;
   data.changed = FALSE;
-  data.from_user = from_user;
+  data.allow_overwrite = allow_overwrite;
 
   if (G_LIKELY (tags != self->tags))
     gst_tag_list_foreach (tags, (GstTagForeachFunc) _tags_replace_func, &data);
@@ -540,12 +540,12 @@ clapper_media_item_insert_tags_internal (ClapperMediaItem *self, const GstTagLis
     *flags |= CLAPPER_REACTABLE_ITEM_UPDATED_TAGS;
 
     if ((title_changed = _refresh_tag_prop_unlocked (self, GST_TAG_TITLE,
-        (!from_user || self->title_is_parsed), &self->title))) {
+        (allow_overwrite || self->title_is_parsed), &self->title))) {
       self->title_is_parsed = FALSE;
       *flags |= CLAPPER_REACTABLE_ITEM_UPDATED_TITLE;
     }
     cont_changed = _refresh_tag_prop_unlocked (self, GST_TAG_CONTAINER_FORMAT,
-        !from_user, &self->container_format);
+        allow_overwrite, &self->container_format);
   }
 
   GST_OBJECT_UNLOCK (self);
@@ -618,7 +618,7 @@ clapper_media_item_populate_tags (ClapperMediaItem *self, const GstTagList *tags
   if ((player = clapper_player_get_from_ancestor (GST_OBJECT_CAST (self))))
     app_bus = player->app_bus;
 
-  changed = clapper_media_item_insert_tags_internal (self, tags, app_bus, TRUE, &flags);
+  changed = clapper_media_item_insert_tags_internal (self, tags, app_bus, FALSE, &flags);
 
   if (changed && player) {
     ClapperFeaturesManager *features_manager;
@@ -658,7 +658,7 @@ clapper_media_item_update_from_tag_list (ClapperMediaItem *self, const GstTagLis
 
   if (scope == GST_TAG_SCOPE_GLOBAL) {
     ClapperReactableItemUpdatedFlags flags = 0;
-    gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE, &flags);
+    gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, TRUE, &flags);
 
     if (changed) {
       ClapperFeaturesManager *features_manager;
@@ -693,7 +693,7 @@ clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDisco
       GstDiscovererContainerInfo *cinfo = (GstDiscovererContainerInfo *) sinfo;
 
       if ((tags = gst_discoverer_container_info_get_tags (cinfo)))
-        changed |= clapper_media_item_insert_tags_internal (self, tags, player->app_bus, FALSE, &flags);
+        changed |= clapper_media_item_insert_tags_internal (self, tags, player->app_bus, TRUE, &flags);
     }
     gst_discoverer_stream_info_unref (sinfo);
   }
