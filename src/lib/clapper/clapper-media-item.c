@@ -652,22 +652,18 @@ clapper_media_item_get_timeline (ClapperMediaItem *self)
 
 void
 clapper_media_item_update_from_tag_list (ClapperMediaItem *self, const GstTagList *tags,
-    ClapperPlayer *player)
+    gboolean allow_overwrite, ClapperPlayer *player)
 {
-  GstTagScope scope = gst_tag_list_get_scope (tags);
+  ClapperReactableItemUpdatedFlags flags = 0;
+  gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, allow_overwrite, &flags);
 
-  if (scope == GST_TAG_SCOPE_GLOBAL) {
-    ClapperReactableItemUpdatedFlags flags = 0;
-    gboolean changed = clapper_media_item_insert_tags_internal (self, tags, player->app_bus, TRUE, &flags);
+  if (changed) {
+    ClapperFeaturesManager *features_manager;
 
-    if (changed) {
-      ClapperFeaturesManager *features_manager;
-
-      if (player->reactables_manager)
-        clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self, flags);
-      if ((features_manager = clapper_player_get_features_manager (player)))
-        clapper_features_manager_trigger_item_updated (features_manager, self);
-    }
+    if (player->reactables_manager)
+      clapper_reactables_manager_trigger_item_updated (player->reactables_manager, self, flags);
+    if ((features_manager = clapper_player_get_features_manager (player)))
+      clapper_features_manager_trigger_item_updated (features_manager, self);
   }
 }
 
@@ -783,8 +779,8 @@ clapper_media_item_update_from_parsed_playlist (ClapperMediaItem *self, GListSto
 
     GST_OBJECT_LOCK (other_item);
 
-    if (other_item->tags)
-      clapper_media_item_update_from_tag_list (self, other_item->tags, player);
+    if (other_item->tags) // Tags are always GLOBAL here
+      clapper_media_item_update_from_tag_list (self, other_item->tags, TRUE, player);
 
     /* Since its redirect now, we have to update title to describe new file instead of
      * being a playlist title. If other item had parsed title, it also means that tags

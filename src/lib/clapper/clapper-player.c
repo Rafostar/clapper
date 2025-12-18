@@ -780,6 +780,7 @@ clapper_player_reset (ClapperPlayer *self, gboolean pending_dispose)
 
   GST_OBJECT_UNLOCK (self);
 
+  self->stream_tags_allowed = FALSE;
   gst_clear_tag_list (&self->pending_tags);
 
   if (self->pending_toc) {
