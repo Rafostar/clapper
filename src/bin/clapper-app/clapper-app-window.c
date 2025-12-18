@@ -1283,6 +1283,7 @@ clapper_app_window_constructed (GObject *object)
 
   if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (proxies, "clapper-mpris"))) {
     clapper_enhancer_proxy_set_locally (proxy,
+        "app-id", CLAPPER_APP_ID,
         "own-name", mpris_name,
         "identity", CLAPPER_APP_NAME,
         "desktop-entry", CLAPPER_APP_ID,
