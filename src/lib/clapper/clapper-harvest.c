@@ -239,7 +239,6 @@ clapper_harvest_fill_from_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
   g_free (filename);
 
   if (!mapped_file) {
-    /* No error if cache disabled or version mismatch */
     if (error) {
       if (error->domain == G_FILE_ERROR && error->code == G_FILE_ERROR_NOENT)
         GST_DEBUG_OBJECT (self, "No cached harvest found");
@@ -247,6 +246,9 @@ clapper_harvest_fill_from_cache (ClapperHarvest *self, ClapperEnhancerProxy *pro
         GST_ERROR_OBJECT (self, "Could not use cached harvest, reason: %s", error->message);
 
       g_error_free (error);
+    } else {
+      /* No error if cache disabled or version mismatch */
+      GST_DEBUG_OBJECT (self, "Import skipped");
     }
 
     return FALSE;
