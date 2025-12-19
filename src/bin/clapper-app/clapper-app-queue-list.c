@@ -284,6 +284,27 @@ queue_drop_cb (GtkDropTarget *drop_target, const GValue *value,
           success = TRUE;
         }
       }
+    } else { // Drop from another window
+      GtkWidget *drop_widget = GTK_WIDGET (g_value_get_object (value));
+
+      if (G_LIKELY (CLAPPER_APP_IS_MEDIA_ITEM_BOX (drop_widget))) {
+        ClapperMediaItem *drop_item;
+        ClapperQueue *src_queue;
+
+        drop_item = clapper_app_media_item_box_get_media_item (
+            CLAPPER_APP_MEDIA_ITEM_BOX_CAST (drop_widget));
+
+        if ((src_queue = CLAPPER_QUEUE (gst_object_get_parent (GST_OBJECT (drop_item))))) {
+          gst_object_ref (drop_item); // Ref so it survives queue removal
+
+          clapper_queue_remove_item (src_queue, drop_item);
+          clapper_queue_insert_item (queue, drop_item, drop_index);
+          success = TRUE;
+
+          gst_object_unref (drop_item); // Unref after placed in new queue
+          gst_object_unref (src_queue);
+        }
+      }
     }
   } else {
     GFile **files = NULL;
