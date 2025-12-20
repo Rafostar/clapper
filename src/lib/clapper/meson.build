@@ -171,6 +171,7 @@ clapper_sources = [
 clapper_c_args = [
   '-DG_LOG_DOMAIN="Clapper"',
   '-DCLAPPER_COMPILATION',
+  '-DCLAPPER_DISABLE_DEPRECATION_WARNINGS',
   '-DGST_USE_UNSTABLE_API',
   '-DG_SETTINGS_ENABLE_BACKEND',
 ]

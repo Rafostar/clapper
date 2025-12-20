@@ -91,6 +91,7 @@ clapperapp_sources = [
 clapperapp_c_args = [
   '-DG_LOG_DOMAIN="ClapperApp"',
   '-DCLAPPER_APP_INTERNAL_COMPILATION',
+  '-DCLAPPER_DISABLE_DEPRECATION_WARNINGS',
   '-DGST_USE_UNSTABLE_API',
 ]
 

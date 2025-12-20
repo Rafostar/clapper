@@ -1038,7 +1038,9 @@ _handle_tag_msg (GstMessage *msg, ClapperPlayer *player)
     }
     player->pending_tags = gst_tag_list_ref (tags);
   } else if (G_LIKELY (player->played_item != NULL)) {
-    clapper_media_item_update_from_tag_list (player->played_item, tags, player);
+    gboolean is_global = (gst_tag_list_get_scope (tags) == GST_TAG_SCOPE_GLOBAL);
+    if (is_global || player->stream_tags_allowed)
+      clapper_media_item_update_from_tag_list (player->played_item, tags, is_global, player);
   }
 
   gst_tag_list_unref (tags);
@@ -1116,10 +1118,28 @@ static inline void
 _handle_stream_collection_msg (GstMessage *msg, ClapperPlayer *player)
 {
   GstStreamCollection *collection = NULL;
+  guint i, n_streams, n_video = 0, n_audio = 0, n_text = 0;
 
   GST_INFO_OBJECT (player, "Stream collection");
 
   gst_message_parse_stream_collection (msg, &collection);
+  n_streams = gst_stream_collection_get_size (collection);
+
+  for (i = 0; i < n_streams; ++i) {
+    GstStream *stream = gst_stream_collection_get_stream (collection, i);
+    GstStreamType stream_type = gst_stream_get_stream_type (stream);
+
+    if ((stream_type & GST_STREAM_TYPE_VIDEO) == GST_STREAM_TYPE_VIDEO)
+      n_video++;
+    else if ((stream_type & GST_STREAM_TYPE_AUDIO) == GST_STREAM_TYPE_AUDIO)
+      n_audio++;
+    else if ((stream_type & GST_STREAM_TYPE_TEXT) == GST_STREAM_TYPE_TEXT)
+      n_text++;
+  }
+
+  player->stream_tags_allowed = (n_video + n_audio + n_text == 1);
+  GST_DEBUG_OBJECT (player, "Stream tags allowed: %s", (player->stream_tags_allowed) ? "yes" : "no");
+
   clapper_player_take_stream_collection (player, collection);
 }
 
@@ -1214,9 +1234,10 @@ _handle_stream_start_msg (GstMessage *msg, ClapperPlayer *player)
     clapper_player_playbin_update_current_decoders (player);
 
   if (player->pending_tags) {
-    if (G_LIKELY (player->played_item != NULL))
-      clapper_media_item_update_from_tag_list (player->played_item, player->pending_tags, player);
-
+    if (G_LIKELY (player->played_item != NULL)) {
+      /* Pending tags come from "extractablesrc" and are always GLOBAL (preferred) */
+      clapper_media_item_update_from_tag_list (player->played_item, player->pending_tags, TRUE, player);
+    }
     gst_clear_tag_list (&player->pending_tags);
   }
   if (player->pending_toc) {

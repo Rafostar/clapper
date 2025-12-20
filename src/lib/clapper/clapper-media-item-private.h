@@ -28,7 +28,7 @@
 G_BEGIN_DECLS
 
 G_GNUC_INTERNAL
-void clapper_media_item_update_from_tag_list (ClapperMediaItem *item, const GstTagList *tags, ClapperPlayer *player);
+void clapper_media_item_update_from_tag_list (ClapperMediaItem *item, const GstTagList *tags, gboolean allow_overwrite, ClapperPlayer *player);
 
 G_GNUC_INTERNAL
 void clapper_media_item_update_from_discoverer_info (ClapperMediaItem *self, GstDiscovererInfo *info);

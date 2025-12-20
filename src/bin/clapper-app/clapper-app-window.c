@@ -335,37 +335,36 @@ _resize_tick (GtkWidget *widget, GdkFrameClock *frame_clock,
   return G_SOURCE_CONTINUE;
 }
 
+static gint
+_get_gcd (gint width, gint height)
+{
+  return (height > 0)
+      ? _get_gcd (height, width % height)
+      : width;
+}
+
 static void
 _calculate_win_resize (gint win_w, gint win_h,
     gint vid_w, gint vid_h, gint *dest_w, gint *dest_h)
 {
-  gdouble win_aspect = (gdouble) win_w / win_h;
-  gdouble vid_aspect = (gdouble) vid_w / vid_h;
+  /* Get the smallest integer ratio (e.g. 1920x1080 becomes 16x9) */
+  gint gcd = _get_gcd (vid_w, vid_h);
+  gint min_w = vid_w / gcd;
+  gint min_h = vid_h / gcd;
 
-  if (win_aspect < vid_aspect) {
-    while (!G_APPROX_VALUE (fmod (win_w, vid_aspect), 0, FLT_EPSILON))
-      win_w++;
+  /* Find the scale multiplier that best fits video */
+  gint scale_fit = MIN (win_w / min_w, win_h / min_h);
 
-    win_h = round ((gdouble) win_w / vid_aspect);
+  /* Calculate minimal allowed scale for video (-1 for ceil) */
+  gint scale_min = MAX (
+      (MIN_WINDOW_WIDTH + min_w - 1) / min_w,
+      (MIN_WINDOW_HEIGHT + min_h - 1) / min_h);
 
-    if (win_h < MIN_WINDOW_HEIGHT) {
-      _calculate_win_resize (G_MAXINT, MIN_WINDOW_HEIGHT, vid_w, vid_h, dest_w, dest_h);
-      return;
-    }
-  } else {
-    while (!G_APPROX_VALUE (fmod (win_h * vid_aspect, 1.0), 0, FLT_EPSILON))
-      win_h++;
+  /* Select best allowed scale multiplier */
+  gint scale = MAX (scale_fit, scale_min);
 
-    win_w = round ((gdouble) win_h * vid_aspect);
-
-    if (win_w < MIN_WINDOW_WIDTH) {
-      _calculate_win_resize (MIN_WINDOW_WIDTH, G_MAXINT, vid_w, vid_h, dest_w, dest_h);
-      return;
-    }
-  }
-
-  *dest_w = win_w;
-  *dest_h = win_h;
+  *dest_w = min_w * scale;
+  *dest_h = min_h * scale;
 }
 
 static void
@@ -1283,6 +1282,7 @@ clapper_app_window_constructed (GObject *object)
 
   if ((proxy = clapper_enhancer_proxy_list_get_proxy_by_module (proxies, "clapper-mpris"))) {
     clapper_enhancer_proxy_set_locally (proxy,
+        "app-id", CLAPPER_APP_ID,
         "own-name", mpris_name,
         "identity", CLAPPER_APP_NAME,
         "desktop-entry", CLAPPER_APP_ID,

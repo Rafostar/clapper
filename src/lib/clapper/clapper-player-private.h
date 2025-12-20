@@ -61,6 +61,7 @@ struct _ClapperPlayer
 
   /* Pending tags/toc that arrive before stream start.
    * To be applied to "played_item", thus no lock needed. */
+  gboolean stream_tags_allowed;
   GstTagList *pending_tags;
   GstToc *pending_toc;
 

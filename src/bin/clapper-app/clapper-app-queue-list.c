@@ -89,7 +89,7 @@ drag_item_prepare_cb (GtkDragSource *drag_source, gdouble x, gdouble y, ClapperA
 
   paintable = gtk_widget_paintable_new (list_widget);
 
-  drag_data = g_new0 (ClapperAppQueueListDragData, 1);
+  drag_data = g_new (ClapperAppQueueListDragData, 1);
   drag_data->item = gst_object_ref (item);
   drag_data->widget = g_object_ref_sink (pickup);
   drag_data->paintable = gdk_paintable_get_current_image (paintable);
@@ -150,8 +150,12 @@ queue_drop_value_notify_cb (GtkDropTarget *drop_target,
 {
   const GValue *value = gtk_drop_target_get_value (drop_target);
 
-  if (value && !clapper_app_utils_value_for_item_is_valid (value))
-    gtk_drop_target_reject (drop_target);
+  if (value) {
+    if (!clapper_app_utils_value_for_item_is_valid (value))
+      gtk_drop_target_reject (drop_target);
+  } else {
+    self->list_target = NULL; // Reset when value is lost
+  }
 }
 
 static GdkDragAction
@@ -223,6 +227,7 @@ queue_drop_leave_cb (GtkDropTarget *drop_target, ClapperAppQueueList *self)
   if (self->list_target) {
     gtk_widget_set_margin_top (self->list_target, 0);
     gtk_widget_set_margin_bottom (self->list_target, 0);
+    self->list_target = NULL;
   }
 }
 
@@ -230,38 +235,33 @@ static gboolean
 queue_drop_cb (GtkDropTarget *drop_target, const GValue *value,
     gdouble x, gdouble y, ClapperAppQueueList *self)
 {
-  ClapperQueue *queue;
-  ClapperMediaItem *item;
-  GtkWidget *pickup;
+  ClapperPlayer *player = clapper_gtk_get_player_from_ancestor (GTK_WIDGET (self));
+  ClapperQueue *queue = clapper_player_get_queue (player);
+  ClapperMediaItem *item = NULL;
   guint drop_index = 0;
   gboolean success = FALSE;
 
-  if (G_UNLIKELY (self->list_target == NULL))
-    return FALSE;
+  if (self->list_target) {
+    GtkWidget *pickup = gtk_widget_get_first_child (self->list_target);
 
-  pickup = gtk_widget_get_first_child (self->list_target);
+    /* Reset margins on drop */
+    gtk_widget_set_margin_top (self->list_target, 0);
+    gtk_widget_set_margin_bottom (self->list_target, 0);
+    self->list_target = NULL;
 
-  /* Reset margins on drop */
-  gtk_widget_set_margin_top (self->list_target, 0);
-  gtk_widget_set_margin_bottom (self->list_target, 0);
-  self->list_target = NULL;
+    if (G_UNLIKELY (pickup == NULL) || !CLAPPER_APP_IS_MEDIA_ITEM_BOX (pickup))
+      return FALSE;
 
-  if (G_UNLIKELY (pickup == NULL) || !CLAPPER_APP_IS_MEDIA_ITEM_BOX (pickup))
-    return FALSE;
+    item = clapper_app_media_item_box_get_media_item (CLAPPER_APP_MEDIA_ITEM_BOX_CAST (pickup));
 
-  item = clapper_app_media_item_box_get_media_item (CLAPPER_APP_MEDIA_ITEM_BOX_CAST (pickup));
-  queue = CLAPPER_QUEUE (gst_object_get_parent (GST_OBJECT (item)));
+    if (!clapper_queue_find_item (queue, item, &drop_index))
+      return FALSE;
 
-  if (G_UNLIKELY (queue == NULL))
-    return FALSE;
-
-  if (!clapper_queue_find_item (queue, item, &drop_index)) {
-    gst_object_unref (queue);
-    return FALSE;
+    if (self->drop_after)
+      drop_index++;
+  } else {
+    drop_index = clapper_queue_get_n_items (queue); // Append
   }
-
-  if (self->drop_after)
-    drop_index++;
 
   /* Moving item with widget */
   if (G_VALUE_HOLDS (value, GTK_TYPE_WIDGET)) {
@@ -269,16 +269,41 @@ queue_drop_cb (GtkDropTarget *drop_target, const GValue *value,
 
     drag_data = (ClapperAppQueueListDragData *) g_object_get_data (G_OBJECT (self), "drag-data");
 
-    /* Insert at different place */
-    if (item != drag_data->item) {
-      guint index = 0;
+    /* When user drops a widget and drag data is present, it means
+     * that it is an item drop within the same window */
+    if (drag_data) {
+      /* Insert at different place */
+      if (item != drag_data->item) {
+        guint index = 0;
 
-      if (clapper_queue_find_item (queue, drag_data->item, &index)) {
-        if (drop_index > index)
-          drop_index--;
+        if (clapper_queue_find_item (queue, drag_data->item, &index)) {
+          if (drop_index > index)
+            drop_index--;
 
-        clapper_queue_reposition_item (queue, drag_data->item, drop_index);
-        success = TRUE;
+          clapper_queue_reposition_item (queue, drag_data->item, drop_index);
+          success = TRUE;
+        }
+      }
+    } else { // Drop from another window
+      GtkWidget *drop_widget = GTK_WIDGET (g_value_get_object (value));
+
+      if (G_LIKELY (CLAPPER_APP_IS_MEDIA_ITEM_BOX (drop_widget))) {
+        ClapperMediaItem *drop_item;
+        ClapperQueue *src_queue;
+
+        drop_item = clapper_app_media_item_box_get_media_item (
+            CLAPPER_APP_MEDIA_ITEM_BOX_CAST (drop_widget));
+
+        if ((src_queue = CLAPPER_QUEUE (gst_object_get_parent (GST_OBJECT (drop_item))))) {
+          gst_object_ref (drop_item); // Ref so it survives queue removal
+
+          clapper_queue_remove_item (src_queue, drop_item);
+          clapper_queue_insert_item (queue, drop_item, drop_index);
+          success = TRUE;
+
+          gst_object_unref (drop_item); // Unref after placed in new queue
+          gst_object_unref (src_queue);
+        }
       }
     }
   } else {
@@ -299,8 +324,6 @@ queue_drop_cb (GtkDropTarget *drop_target, const GValue *value,
       success = TRUE;
     }
   }
-
-  gst_object_unref (queue);
 
   return success;
 }
