@@ -10,6 +10,11 @@
     <file preprocess="xml-stripblanks">ui/clapper-gtk-title-header.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-video.ui</file>
     <file preprocess="xml-stripblanks">ui/clapper-gtk-video-placeholder.ui</file>
+    <file preprocess="xml-stripblanks">icons/scalable/status/clapper-gtk-speed-normal-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/status/clapper-gtk-speed-slow-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/scalable/status/clapper-gtk-speed-fast-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="icons/scalable/status/clapper-gtk-speed-slow-symbolic-rtl.svg">icons/scalable/status/clapper-gtk-speed-fast-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="icons/scalable/status/clapper-gtk-speed-fast-symbolic-rtl.svg">icons/scalable/status/clapper-gtk-speed-slow-symbolic.svg</file>
     <file compressed="true">css/styles.css</file>
   </gresource>
 </gresources>

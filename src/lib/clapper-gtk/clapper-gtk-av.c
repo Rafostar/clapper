@@ -85,7 +85,7 @@ enum
   PROP_LAST
 };
 
-static gboolean provider_added = FALSE;
+static gboolean resources_added = FALSE;
 static GParamSpec *param_specs[PROP_LAST] = { NULL, };
 
 static void
@@ -290,25 +290,30 @@ select_item_action_cb (GtkWidget *widget, const gchar *action_name, GVariant *pa
 }
 
 static void
-_ensure_css_provider (void)
+_ensure_resources (void)
 {
   GdkDisplay *display;
 
-  if (provider_added)
+  if (resources_added)
     return;
 
   display = gdk_display_get_default ();
 
   if (G_LIKELY (display != NULL)) {
-    GtkCssProvider *provider = gtk_css_provider_new ();
+    GtkCssProvider *provider;
+    GtkIconTheme *icon_theme;
+
+    provider = gtk_css_provider_new ();
     gtk_css_provider_load_from_resource (provider,
         CLAPPER_GTK_RESOURCE_PREFIX "/css/styles.css");
-
     gtk_style_context_add_provider_for_display (display,
         (GtkStyleProvider *) provider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION - 1);
     g_object_unref (provider);
 
-    provider_added = TRUE;
+    icon_theme = gtk_icon_theme_get_for_display (display);
+    gtk_icon_theme_add_resource_path (icon_theme, CLAPPER_GTK_RESOURCE_PREFIX "/icons");
+
+    resources_added = TRUE;
   }
 }
 
@@ -472,7 +477,7 @@ clapper_gtk_av_root (GtkWidget *widget)
   ClapperGtkAv *self = CLAPPER_GTK_AV_CAST (widget);
   ClapperGtkAvPrivate *priv = clapper_gtk_av_get_instance_private (self);
 
-  _ensure_css_provider ();
+  _ensure_resources ();
 
   GTK_WIDGET_CLASS (parent_class)->root (widget);
 

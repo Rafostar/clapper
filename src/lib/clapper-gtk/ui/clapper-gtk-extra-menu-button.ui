@@ -113,7 +113,7 @@
                           <object class="GtkButton" id="speed_button">
                             <property name="halign">center</property>
                             <property name="valign">center</property>
-                            <property name="icon-name">power-profile-balanced-symbolic</property>
+                            <property name="icon-name">clapper-gtk-speed-normal-symbolic</property>
                             <property name="action-name">video.set-speed</property>
                             <property name="action-target">1.0</property>
                             <property name="tooltip-text" translatable="yes">Reset</property>

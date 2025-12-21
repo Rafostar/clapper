@@ -92,8 +92,8 @@ const gchar *
 clapper_gtk_get_icon_name_for_speed (gfloat speed)
 {
   return (speed < 1.0f)
-      ? "power-profile-power-saver-symbolic"
+      ? "clapper-gtk-speed-slow-symbolic"
       : (speed == 1.0f)
-      ? "power-profile-balanced-symbolic"
-      : "power-profile-performance-symbolic";
+      ? "clapper-gtk-speed-normal-symbolic"
+      : "clapper-gtk-speed-fast-symbolic";
 }
