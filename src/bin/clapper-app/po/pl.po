@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2025-12-21 20:53\n"
+"PO-Revision-Date: 2025-12-21 21:59\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -422,7 +422,7 @@ msgstr "Dostępne ulepszacze"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
 msgid "Select an enhancer plugin to view its information and properties to configure."
-msgstr "Wybierz plugin ulepszający, aby wyświetlić informacje o nim wraz z opcjami do skonfigurowania."
+msgstr "Wybierz plugin ulepszający, aby wyświetlić informacje o nim wraz z właściwościami do skonfigurowania."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
 msgid "Enhancer"
@@ -454,7 +454,7 @@ msgstr "Nie znaleziono ulepszaczy"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
 msgid "Install some to add more cool functionalities to the player!"
-msgstr ""
+msgstr "Zainstaluj jakiś aby dodać więcej fajnych funkcji do odtwarzacza!"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
 msgid "Plugin Ranking"
@@ -532,7 +532,7 @@ msgstr "Rafał Dzięgiel <rafostar.github@gmail.com>"
 
 #: src/bin/clapper-app/clapper-app-application.c:333
 msgid "Close"
-msgstr ""
+msgstr "Zamknij"
 
 #: src/bin/clapper-app/clapper-app-application.c:753
 msgid "Create a new window"
@@ -588,11 +588,11 @@ msgstr "Programowy"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:315
 msgid "Restore default"
-msgstr ""
+msgstr "Przywróć domyślne"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:418
 msgid "No configurable properties"
-msgstr ""
+msgstr "Brak konfigurowalnych właściwości"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:814
 msgid "Accurate"
