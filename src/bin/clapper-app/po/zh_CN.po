@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2025-12-22 14:01\n"
+"PO-Revision-Date: 2025-12-22 15:43\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -534,7 +534,7 @@ msgstr "刘韬\n"
 
 #: src/bin/clapper-app/clapper-app-application.c:333
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: src/bin/clapper-app/clapper-app-application.c:753
 msgid "Create a new window"
@@ -590,7 +590,7 @@ msgstr "软件"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:315
 msgid "Restore default"
-msgstr ""
+msgstr "重置为默认"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:418
 msgid "No configurable properties"
