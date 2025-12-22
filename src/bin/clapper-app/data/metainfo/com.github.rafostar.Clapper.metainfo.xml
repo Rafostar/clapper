@@ -59,6 +59,28 @@
     <category>Video</category>
   </categories>
   <releases>
+    <release version="0.10.0" date="2025-12-22">
+      <description>
+        <p>
+          This release includes new Enhancer plugins that are enabled by default.
+          Some of them have options that can be changed. Check application Tweaks
+          tab in preferences window to browse and configure them.
+        </p>
+        <ul>
+          <li>Ability to load and parse various playlists</li>
+          <li>Added option in info dialog to preview GStreamer pipeline and a keyboard shortcut for it</li>
+          <li>Added advance frame (frame step) with E keyboard shortcut</li>
+          <li>Slightly wider URI dialog text entry</li>
+          <li>Evolvement of enhancers plugin system with added new plugins</li>
+          <li>Removed some keywords to lower app priority as a music player</li>
+          <li>Fixed crash with auto resize for some video resolutions</li>
+          <li>Fixed crash on drag and drop into empty queue</li>
+          <li>Support for drag and drop of items between lists in different windows</li>
+          <li>Bundled custom speed icons</li>
+          <li>Other various improvements and bug fixes</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.8.0" date="2025-01-20">
       <description>
         <p>Changes:</p>
