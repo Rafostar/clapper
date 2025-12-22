@@ -32,6 +32,7 @@ ClapperEnhancerProxy *proxy = clapper_enhancer_proxy_list_get_proxy_by_module (p
 
 if (proxy) {
   clapper_enhancer_proxy_set_locally (proxy,
+      "app-id", APP_ID,
       "own-name", mpris_name,
       "identity", APP_NAME,
       "desktop-entry", APP_ID, NULL);
