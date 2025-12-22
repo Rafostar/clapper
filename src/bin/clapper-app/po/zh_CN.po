@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2025-12-12 22:25\n"
+"PO-Revision-Date: 2025-12-22 14:01\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -102,7 +102,7 @@ msgstr "显示快捷键"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Show pipeline"
-msgstr ""
+msgstr "显示管道"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:37
 msgid "Toggle fullscreen"
@@ -301,7 +301,7 @@ msgstr "音频回放"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:238
 msgid "Show Pipeline"
-msgstr ""
+msgstr "显示管道"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:258
 msgid "Video Streams"
