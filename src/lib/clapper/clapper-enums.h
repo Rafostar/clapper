@@ -46,12 +46,14 @@ typedef enum
  * @CLAPPER_PLAYER_SEEK_METHOD_ACCURATE: Seek to exact position (slow).
  * @CLAPPER_PLAYER_SEEK_METHOD_NORMAL: Seek to approximated position.
  * @CLAPPER_PLAYER_SEEK_METHOD_FAST: Seek to position of nearest keyframe (fast).
+ * @CLAPPER_PLAYER_SEEK_METHOD_NONFLUSH: Seek without flushing buffers (for devices do not support flush).
  */
 typedef enum
 {
   CLAPPER_PLAYER_SEEK_METHOD_ACCURATE = 0,
   CLAPPER_PLAYER_SEEK_METHOD_NORMAL,
   CLAPPER_PLAYER_SEEK_METHOD_FAST,
+  CLAPPER_PLAYER_SEEK_METHOD_NONFLUSH,
 } ClapperPlayerSeekMethod;
 
 /**

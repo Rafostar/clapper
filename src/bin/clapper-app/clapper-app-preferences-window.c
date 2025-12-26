@@ -816,6 +816,8 @@ seek_method_name_closure (AdwEnumListItem *list_item, gpointer *user_data G_GNUC
       return g_strdup (_("Normal"));
     case CLAPPER_PLAYER_SEEK_METHOD_FAST:
       return g_strdup (_("Fast"));
+    case CLAPPER_PLAYER_SEEK_METHOD_NONFLUSH:
+      return g_strdup (_("Non-flush"));
     default:
       return NULL;
   }

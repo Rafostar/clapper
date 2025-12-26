@@ -436,6 +436,12 @@ _handle_seek_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer 
     return;
   }
 
+  if (seek_method == CLAPPER_PLAYER_SEEK_METHOD_NONFLUSH && player->current_state != GST_STATE_PLAYING) {
+    /* Cannot do non-flush seek when not playing
+     * Resume playing first */
+    gst_element_set_state(player->playbin, GST_STATE_PLAYING);
+  }
+
   switch (seek_method) {
     case CLAPPER_PLAYER_SEEK_METHOD_FAST:
       flags |= (GST_SEEK_FLAG_KEY_UNIT | GST_SEEK_FLAG_SNAP_NEAREST);
@@ -444,6 +450,9 @@ _handle_seek_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer 
       break;
     case CLAPPER_PLAYER_SEEK_METHOD_ACCURATE:
       flags |= GST_SEEK_FLAG_ACCURATE;
+      break;
+    case CLAPPER_PLAYER_SEEK_METHOD_NONFLUSH:
+      flags = GST_SEEK_FLAG_NONE;
       break;
     default:
       g_assert_not_reached ();
@@ -465,13 +474,24 @@ _handle_seek_msg (GstMessage *msg, const GstStructure *structure, ClapperPlayer 
 
   GST_DEBUG ("Seeking with rate %.2lf to: %" GST_TIME_FORMAT,
       rate, GST_TIME_ARGS (position));
-
-  clapper_player_remove_tick_source (player);
-
-  if (!(player->seeking = gst_element_send_event (player->playbin, seek_event))) {
-    /* FIXME: Should we maybe call _handle_error_msg with
-     * some error here? Or will playbin post such message for us? */
-    GST_ERROR ("Could not seek");
+  if (flags == GST_SEEK_FLAG_NONE) {
+    if (!gst_element_send_event (player->playbin, seek_event)) {
+      GST_ERROR ("Could not seek");
+    }
+    /* Immediately post seek-done signal
+     * NOTE: Non-flush seek does not change player state.
+     * And there is no callback available for non-flush seek,
+     * therefore the best we can do is to immediately finish. */
+    clapper_app_bus_post_simple_signal (player->app_bus,
+        GST_OBJECT_CAST (player), g_signal_lookup ("seek-done", CLAPPER_TYPE_PLAYER));
+  } else {
+    clapper_player_remove_tick_source (player);
+  
+    if (!(player->seeking = gst_element_send_event (player->playbin, seek_event))) {
+      /* FIXME: Should we maybe call _handle_error_msg with
+       * some error here? Or will playbin post such message for us? */
+      GST_ERROR ("Could not seek");
+    }
   }
 }
 
