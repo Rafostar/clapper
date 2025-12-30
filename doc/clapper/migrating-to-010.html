@@ -132,6 +132,32 @@ their availability at runtime instead of compile time like&nbsp;before.</p>
 
 <p>For more information how to use enhancers and how to write your own,
 see <a href="clapper-enhancers.html">Clapper Enhancers</a>&nbsp;documentation.</p>
+<p>If you still want to support both deprecated and new enhancer based implementations for the time being,
+you can always add an <code>else</code> code block for when <code>proxy</code> is not found and move your old logic&nbsp;there.</p>
+<h3 id="enhancers-within-flatpak">Enhancers within Flatpak<a class="md-anchor" href="#enhancers-within-flatpak" title="Permanent link"></a></h3>
+<p>If you are developing/maintaining a Flatpak application, it is recommended to build Clapper without above 3 deprecated
+features (disable them through <code>meson</code>) as you can get enhancer plugins in the form of an extension. If you have not
+done that already, check out <a href="https://github.com/flathub/com.github.rafostar.Clapper">Clapper Flathub repo</a> for info
+how to add them to your application&nbsp;manifest.</p>
+<h3 id="checking-enhancers">Checking Enhancers<a class="md-anchor" href="#checking-enhancers" title="Permanent link"></a></h3>
+<p>The <a href="func.enhancer_check.html"><code>clapper_enhancer_check()</code></a> function gets deprecated. It was originally designed when only <code>Extractable</code> enhancers
+existed. Now with more robust plugin system that simply allows more then just handling certain <code>scheme</code> and <code>host</code> this
+function does not fit in it, hence its&nbsp;deprecation.</p>
+<p>In most cases, applications should follow normal workflow, that is play something and if it does not work, handle an error
+(with possible fallback action). For cases where an app wants to inspect available enhancers and their capabilities, it can
+iterate (or get by module name) from <a href="class.EnhancerProxyList.html"><code>ClapperEnhancerProxyList</code></a> proxies (either from player or global list) and inspect
+its plugin info using given proxy&nbsp;object.</p>
+<p>An easy to use replacement for <a href="func.enhancer_check.html"><code>clapper_enhancer_check()</code></a> with proxies that implement <a href="iface.Extractable.html"><code>ClapperExtractable</code></a> interface,
+would be <a href="method.EnhancerProxy.extra_data_lists_value.html"><code>clapper_enhancer_proxy_extra_data_lists_value()</code></a> with <code>X-Schemes</code> and <code>X-Hosts</code> as&nbsp;keys.</p>
+<h3 id="tags-injection-alternative">Tags Injection Alternative<a class="md-anchor" href="#tags-injection-alternative" title="Permanent link"></a></h3>
+<p>This version adds a <a href="method.MediaItem.populate_tags.html"><code>clapper_media_item_populate_tags()</code></a> which allows to set an item tag list initially.
+Useful for applications that know additional media item metadata that may not be inside its container or
+if they want to set some initial values to be displayed in <span class="caps">UI</span> before player will update&nbsp;them.</p>
+<p>Previously the sole method to do something like that was to use <code>taginject</code> element in pipeline (e.g. as player
+<code>video-filter</code>). That method is still valid and supported, but trickier to perform as it requires app to synchronize
+values for another media item at the right moment (stop, change item, set new tag list,&nbsp;play).</p>
+<p>Basically, use <code>taginject</code> if you want to force override for tags of media item. If you want to just set some
+initial values to ensure they never are empty, use <a href="method.MediaItem.populate_tags.html"><code>clapper_media_item_populate_tags()</code></a>&nbsp;instead.</p>
     </div>
   </section>
 </section>
@@ -143,6 +169,18 @@ see <a href="clapper-enhancers.html">Clapper Enhancers</a>&nbsp;documentation.</
     <p id="toc-title">Content</p>
     <ul class="toc-list">
       
+        
+        <li class="toc-list-item"><a href="#replace-features-with-enhancers"><span class="link-text">Replace Features with Enhancers</span></a></li>
+          
+        
+        <li class="toc-list-item"><a href="#enhancers-within-flatpak"><span class="link-text">Enhancers within Flatpak</span></a></li>
+          
+        
+        <li class="toc-list-item"><a href="#checking-enhancers"><span class="link-text">Checking Enhancers</span></a></li>
+          
+        
+        <li class="toc-list-item"><a href="#tags-injection-alternative"><span class="link-text">Tags Injection Alternative</span></a></li>
+          
         
       
     </ul>
