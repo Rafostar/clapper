@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2025-12-12 22:25\n"
+"PO-Revision-Date: 2026-01-05 21:06\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -20,15 +20,15 @@ msgstr ""
 #. Translators: Do NOT translate app name!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:3
 msgid "Clapper"
-msgstr ""
+msgstr "Clapper"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
 msgid "Multimedia Player"
-msgstr ""
+msgstr "Riproduttore multimediale"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
 msgid "Play videos and music"
-msgstr ""
+msgstr "Riproduci audio e video"
 
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:15
@@ -38,12 +38,12 @@ msgstr ""
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:21
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
 msgid "New Window"
-msgstr ""
+msgstr "Nuova finestra"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
 msgid "Codec"
-msgstr ""
+msgstr "Codec"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
 msgid "Channels"
@@ -65,7 +65,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
 msgid "Language"
-msgstr ""
+msgstr "Lingua"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:189
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
@@ -75,7 +75,7 @@ msgstr "Preferenze"
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:193
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Scorciatoie da tastiera"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
@@ -90,11 +90,11 @@ msgstr "Generale"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "Nuova finestra"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
-msgstr ""
+msgstr "Apri Impostazioni"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Show shortcuts"
@@ -114,15 +114,15 @@ msgstr "Doppio tocco | Doppio click"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Unfullscreen"
-msgstr ""
+msgstr "Esci da schermo intero"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:50
 msgid "Auto window resize"
-msgstr ""
+msgstr "Ridimensionamento automatico della finestra"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Middle click"
-msgstr ""
+msgstr "Click centrale"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Quit"
@@ -137,17 +137,17 @@ msgstr "Media"
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
-msgstr ""
+msgstr "Aggiungi file…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:74
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
-msgstr ""
+msgstr "Aggiungi URI…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
 msgid "Queue"
-msgstr ""
+msgstr "Coda"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:86
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:93
@@ -262,7 +262,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:36
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:107
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:81
