@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-01-06 09:26\n"
+"PO-Revision-Date: 2026-01-10 00:58\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -33,7 +33,7 @@ msgstr "Riproduci audio e video"
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:15
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
-msgstr ""
+msgstr "Video;Film;Film;Filmato;Serie;Riproduttore;Playlist;DVD;TV;Disco;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:21
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
@@ -161,7 +161,7 @@ msgstr "Elemento precedente"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:113
 msgid "Change progression mode"
-msgstr ""
+msgstr "Cambia ordine di riproduzione"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:121
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:77
@@ -374,15 +374,15 @@ msgstr "Controlla la riproduzione da remoto"
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Offset"
-msgstr ""
+msgstr "Ritardo"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:85
 msgid "Synchronisation offset in seconds between the audio and video streams"
-msgstr ""
+msgstr "Ritardo in secondi nella sincronizzazione tra le tracce audio e video"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:105
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
-msgstr ""
+msgstr "Ritardo in secondi nella sincronizzazione tra le tracce sottotitoli e video"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Default font"
@@ -390,7 +390,7 @@ msgstr "Carattere predefinito"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:120
 msgid "Text font used for subtitles when media does not explicitly specify one"
-msgstr ""
+msgstr "Carattere usato per i sottotitoli quando non specificato dal supporto"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:138
 msgid "Tweaks"
@@ -398,11 +398,11 @@ msgstr "Aggiustamenti"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Enhancers"
-msgstr ""
+msgstr "Estensioni"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:146
 msgid "Browse and configure properties of available enhancers"
-msgstr ""
+msgstr "Esplora e configura le proprietà delle estensioni disponibili"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:163
 msgid "Plugin ranking"
@@ -414,96 +414,96 @@ msgstr "Altera l'ordine predefinito dei plugin di GStreamer"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Clapper Enhancers"
-msgstr ""
+msgstr "Estensioni per Clapper"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:203
 msgid "Available enhancers"
-msgstr ""
+msgstr "Estensioni disponibili"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
 msgid "Select an enhancer plugin to view its information and properties to configure."
-msgstr ""
+msgstr "Seleziona un estensione per vederne informazioni e proprietà configurabili."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
 msgid "Enhancer"
-msgstr ""
+msgstr "Estensione"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:227
 msgid "Information"
-msgstr ""
+msgstr "Informazioni"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:230
 msgid "Module"
-msgstr ""
+msgstr "Modulo"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:243
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:256
 msgid "Version"
-msgstr ""
+msgstr "Versione"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:271
 msgid "Properties"
-msgstr ""
+msgstr "Proprietà"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:283
 msgid "No Enhancers Found"
-msgstr ""
+msgstr "Nessuna estensione trovata"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
 msgid "Install some to add more cool functionalities to the player!"
-msgstr ""
+msgstr "Installane alcune per aggiungere nuove funzionalità al riproduttore!"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
 msgid "Plugin Ranking"
-msgstr ""
+msgstr "Valutazione del plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:319
 msgid "Available plugins"
-msgstr ""
+msgstr "Plugin disponibili"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:320
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
+msgstr "Seleziona un plugin e le sue funzionalità per sovrascriverne la valutazione. Quando più elementi hanno funzioni simili, quello con la valutazione maggiore è preferito."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:323
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:332
 msgid "Plugin feature"
-msgstr ""
+msgstr "Funzionalità del plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:350
 msgid "Add override"
-msgstr ""
+msgstr "Aggiungi sostituti"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:366
 msgid "Rank overrides"
-msgstr ""
+msgstr "Valuta sostituti"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:30
 msgid "Add"
-msgstr ""
+msgstr "Aggiungi"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr ""
+msgstr "Ordine di riproduzione"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "Svuota la coda"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:4
 msgid "Add URI"
-msgstr ""
+msgstr "Aggiungi URI"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:5
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
+msgstr "Incolla un URI da aggiungere alla coda di riproduzione"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
 msgid "Enter or drop URI here"
@@ -515,15 +515,15 @@ msgstr "Cancella"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr ""
+msgstr "Risoluzione"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr ""
+msgstr "Frequenza Fotogrammi"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr ""
+msgstr "Formato Pixel"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-dialog.c:42
@@ -532,67 +532,67 @@ msgstr "Uniformbuffer"
 
 #: src/bin/clapper-app/clapper-app-application.c:333
 msgid "Close"
-msgstr ""
+msgstr "Chiudi"
 
 #: src/bin/clapper-app/clapper-app-application.c:753
 msgid "Create a new window"
-msgstr ""
+msgstr "Crea una nuova finestra"
 
 #: src/bin/clapper-app/clapper-app-application.c:754
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "Aggiungi file multimediali alla coda nell'istanza esistente"
 
 #: src/bin/clapper-app/clapper-app-application.c:755
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr ""
+msgstr "Volume audio da impostare (0 - 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:756
 msgid "Playback speed to set (0.05 - 2.0 range)"
-msgstr ""
+msgstr "Velocità di riproduzione da impostare (0.05 - 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:757
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "Bitrate iniziale per lo streaming adattivo"
 
 #: src/bin/clapper-app/clapper-app-application.c:758
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "Ordine di riproduzione iniziale della coda (0=none, 1=consecutivo, 2=ripeti-elemento, 3=carosello, 4=casuale)"
 
 #: src/bin/clapper-app/clapper-app-application.c:759
 msgid "Set window to be fullscreen"
-msgstr ""
+msgstr "Imposta la finestra a schermo intero"
 
 #: src/bin/clapper-app/clapper-app-application.c:760
 msgid "Video filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Filtro video da usare (\"none\" per disabilitare)"
 
 #: src/bin/clapper-app/clapper-app-application.c:761
 msgid "Audio filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Filtro audio da usare (\"none\" per disabilitare)"
 
 #: src/bin/clapper-app/clapper-app-application.c:762
 msgid "Video sink to use"
-msgstr ""
+msgstr "Uscita video da usare"
 
 #: src/bin/clapper-app/clapper-app-application.c:763
 msgid "Audio sink to use"
-msgstr ""
+msgstr "Uscita audio da usare"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:88
 msgid "Hardware"
-msgstr ""
+msgstr "Hardware"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:88
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:315
 msgid "Restore default"
-msgstr ""
+msgstr "Ripristina predefinite"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:418
 msgid "No configurable properties"
-msgstr ""
+msgstr "Nessuna proprietà configurabile"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:814
 msgid "Accurate"
@@ -608,25 +608,25 @@ msgstr "Veloce"
 
 #: src/bin/clapper-app/clapper-app-utils.c:212
 msgid "No progression"
-msgstr ""
+msgstr "Nessun ordine"
 
 #: src/bin/clapper-app/clapper-app-utils.c:213
 msgid "Consecutive"
-msgstr ""
+msgstr "Consecutivo"
 
 #: src/bin/clapper-app/clapper-app-utils.c:214
 msgid "Repeat item"
-msgstr ""
+msgstr "Ripeti elemento"
 
 #: src/bin/clapper-app/clapper-app-utils.c:215
 msgid "Carousel"
-msgstr ""
+msgstr "Carosello"
 
 #: src/bin/clapper-app/clapper-app-utils.c:216
 msgid "Shuffle"
-msgstr ""
+msgstr "Casuale"
 
 #: src/bin/clapper-app/clapper-app-window.c:1049
 msgid "Drop on title bar to play now or anywhere else to enqueue."
-msgstr ""
+msgstr "Rilascia sulla barra del titolo per riprodurre ora o altrove per aggiungere alla coda."
 
