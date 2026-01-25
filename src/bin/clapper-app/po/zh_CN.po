@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2025-12-22 15:43\n"
+"PO-Revision-Date: 2026-01-25 15:52\n"
 "Last-Translator: \n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -398,11 +398,11 @@ msgstr "调整"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Enhancers"
-msgstr ""
+msgstr "增强器"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:146
 msgid "Browse and configure properties of available enhancers"
-msgstr ""
+msgstr "浏览并配置可用增强器的参数"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:163
 msgid "Plugin ranking"
@@ -414,47 +414,47 @@ msgstr "更改 GStreamer 插件的默认等级"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Clapper Enhancers"
-msgstr ""
+msgstr "Clapper增强器"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:203
 msgid "Available enhancers"
-msgstr ""
+msgstr "可用增强器"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
 msgid "Select an enhancer plugin to view its information and properties to configure."
-msgstr ""
+msgstr "选择一个增强插件，浏览信息及配置参数。"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
 msgid "Enhancer"
-msgstr ""
+msgstr "增强器"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:227
 msgid "Information"
-msgstr ""
+msgstr "信息"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:230
 msgid "Module"
-msgstr ""
+msgstr "模块"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:243
 msgid "Description"
-msgstr ""
+msgstr "说明"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:256
 msgid "Version"
-msgstr ""
+msgstr "版本"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:271
 msgid "Properties"
-msgstr ""
+msgstr "参数"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:283
 msgid "No Enhancers Found"
-msgstr ""
+msgstr "未发现任何增强器"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
 msgid "Install some to add more cool functionalities to the player!"
-msgstr ""
+msgstr "安装增强器，为播放器添加更多酷炫的功能！"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
 msgid "Plugin Ranking"
@@ -594,7 +594,7 @@ msgstr "重置为默认"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:418
 msgid "No configurable properties"
-msgstr ""
+msgstr "无可配置参数"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:814
 msgid "Accurate"
