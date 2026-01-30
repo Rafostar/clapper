@@ -26,12 +26,14 @@ Clapper's codebase consists of 2 libraries using which main application is built
 * [Clapper](https://rafostar.github.io/clapper/doc/clapper/) - a playback library
 * [ClapperGtk](https://rafostar.github.io/clapper/doc/clapper-gtk/) - a GTK integration library
 
-Both libraries support *GObject Introspection* bindings. A simple application example can be found [here](https://github.com/Rafostar/clapper-vala-test).
+Both libraries support *GObject Introspection* bindings. Check `examples` directory in this repo for usage.
 
 Above libraries are licensed under `LGPL-2.1-or-later`. You are free to use them in your own projects as long as you comply with license terms.
 Please note that until version 1.0 they should be considered as an unstable API (some things may change without prior notice).
 
-Clapper `Vala` bindings are part of this repo, while `Rust` bindings can be found [here](https://gitlab.gnome.org/JanGernert/clapper-rs).
+Other bindings:
+  * `Vala` - part of this repo
+  * `Rust` - maintained [here](https://gitlab.gnome.org/JanGernert/clapper-rs) and available on `crates.io` for [clapper](https://crates.io/crates/clapper-player) and [clapper-gtk](https://crates.io/crates/clapper-player-gtk) libraries
 
 ## Installation from Flatpak
 The `Flatpak` package includes all required dependencies and codecs.
@@ -43,7 +45,9 @@ List of patches used in this version can be found [here](https://github.com/Rafo
 </a>
 
 ## Packages in Linux Distributions
-[![Packaging status](https://repology.org/badge/vertical-allrepos/clapper.svg)](https://repology.org/project/clapper/versions)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/clapper.svg?exclude_unsupported=1&columns=2)](https://repology.org/project/clapper/versions)
+
+Unofficial `AppImage` can be found [here](https://github.com/pkgforge-dev/Clapper-AppImage).
 
 Pre-built RPM packages are also available in [my repo](https://software.opensuse.org//download.html?project=home%3ARafostar&package=clapper) ([see status](https://build.opensuse.org/package/show/home:Rafostar/clapper)).<br>
 Those are automatically built on each git commit, thus are considered unstable.
