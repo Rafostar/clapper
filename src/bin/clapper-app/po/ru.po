@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2025-12-12 22:25\n"
+"PO-Revision-Date: 2026-01-31 13:51\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -33,7 +33,7 @@ msgstr "Воспроизведение видео и музыки"
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:15
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
-msgstr "Видео;Фильм;Фильм;Клип;Серий;Плейлист;DVD;ТВ;Диск;"
+msgstr "Видео;Кино;Фильм;Клип;Сериал;Плейлист;DVD;ТВ;Диск;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:21
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
