@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-07 19:03+0100\n"
-"PO-Revision-Date: 2025-01-07 18:31\n"
+"PO-Revision-Date: 2026-01-06 09:26\n"
 "Last-Translator: \n"
 "Language-Team: Italian\n"
 "Language: it_IT\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
@@ -34,41 +34,41 @@ msgstr "Sottotitoli"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
 msgid "Show Subtitles"
-msgstr ""
+msgstr "Mostra sottotitoli"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
-msgstr ""
+msgstr "Apri…"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
 msgid "Mute"
-msgstr ""
+msgstr "Silenzia"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Ripristina"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
 msgid "External video output"
-msgstr ""
+msgstr "Uscita video esterna"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
 msgid "Used video sink cannot be embedded within application window"
-msgstr ""
+msgstr "Impossibile incorporare l'uscita video nella finestra dell'applicazione"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
-msgstr ""
+msgstr "Contenuto non riproducibile"
 
 #. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
 #: src/lib/clapper-gtk/clapper-gtk-status.c:89
 #, c-format
 msgid "Your GStreamer installation is missing a plugin: %s"
-msgstr ""
+msgstr "La tua installazione di GStreamer manca di un estensione: %s"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:90
 msgid "Missing Plugin"
-msgstr ""
+msgstr "Estensione mancante"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
@@ -81,9 +81,9 @@ msgstr "Canali"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Nessun supporto"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
+msgstr "Titolo sconosciuto"
 
