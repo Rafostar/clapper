@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-03-14 05:20\n"
+"PO-Revision-Date: 2026-03-14 06:17\n"
 "Last-Translator: \n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -51,209 +51,209 @@ msgstr "Kênh"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:36
 msgid "Sample Format"
-msgstr ""
+msgstr "Mẫu định dạng"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:46
 msgid "Sample Rate"
-msgstr ""
+msgstr "Tần số lấy mẫu"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:58
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:51
 msgid "Bitrate"
-msgstr ""
+msgstr "Tốc độ bit"
 
 #: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
 msgid "Language"
-msgstr ""
+msgstr "Ngôn ngữ"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:189
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
 msgid "Preferences"
-msgstr ""
+msgstr "Tuỳ chỉnh"
 
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:193
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
 msgid "Keyboard Shortcuts"
-msgstr ""
+msgstr "Phím tắt"
 
 #. TRANSLATORS: Please do not translate application name
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
 msgid "About Clapper"
-msgstr ""
+msgstr "Về Clapper"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
 msgid "General"
-msgstr ""
+msgstr "Chung"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
 msgid "New window"
-msgstr ""
+msgstr "Cửa sổ mới"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
-msgstr ""
+msgstr "Tùy chỉnh"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Show shortcuts"
-msgstr ""
+msgstr "Phím tắt"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Show pipeline"
-msgstr ""
+msgstr "Hiện quy trình"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:37
 msgid "Toggle fullscreen"
-msgstr ""
+msgstr "Toàn màn hình"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Double tap | Double click"
-msgstr ""
+msgstr "Bấm hai lần"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Unfullscreen"
-msgstr ""
+msgstr "Thoát toàn màn hình"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:50
 msgid "Auto window resize"
-msgstr ""
+msgstr "Tự động thay đổi kích thước cửa sổ"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Middle click"
-msgstr ""
+msgstr "Chuột giữa"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Quit"
-msgstr ""
+msgstr "Thoát"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:65
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
 msgid "Media"
-msgstr ""
+msgstr "Nội dung"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
 msgid "Add Files…"
-msgstr ""
+msgstr "Thêm tệp…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:74
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
 msgid "Add URI…"
-msgstr ""
+msgstr "Thêm URL…"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
 msgid "Queue"
-msgstr ""
+msgstr "Hàng chờ"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:86
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:93
 msgid "Next item"
-msgstr ""
+msgstr "Mục kế tiếp"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
 msgid "Previous item"
-msgstr ""
+msgstr "Mục trước"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:113
 msgid "Change progression mode"
-msgstr ""
+msgstr "Chuyển chế độ phát"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:121
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:77
 msgid "Playback"
-msgstr ""
+msgstr "Phát"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
 msgid "Toggle play"
-msgstr ""
+msgstr "Phát"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:125
 msgid "Tap | Left click"
-msgstr ""
+msgstr "Bấm | Chuột trái"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:140
 msgid "Seek forward"
-msgstr ""
+msgstr "Tua đi"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:133
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Double tap (right side) | Scroll right"
-msgstr ""
+msgstr "Bấm hai lần (phải) | Cuộn phải"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:141
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:149
 msgid "Double tap (left side) | Scroll left"
-msgstr ""
+msgstr "Bấm hai lần (trái) | Cuộn trái"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:148
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:156
 msgid "Seek backward"
-msgstr ""
+msgstr "Tua lại"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:163
 msgid "Volume up"
-msgstr ""
+msgstr "Tăng âm lượng"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Scroll up"
-msgstr ""
+msgstr "Cuộn lên"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:170
 msgid "Volume down"
-msgstr ""
+msgstr "Giảm âm lượng"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Scroll down"
-msgstr ""
+msgstr "Cuộn xuống"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Toggle mute"
-msgstr ""
+msgstr "Tắt tiếng"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:183
 msgid "Speed up"
-msgstr ""
+msgstr "Tăng tốc"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:189
 msgid "Speed down"
-msgstr ""
+msgstr "Giảm tốc"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:195
 msgid "Advance frame"
-msgstr ""
+msgstr "Khung hình tiếp theo"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:206
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:213
 msgid "Next chapter"
-msgstr ""
+msgstr "Chương kế tiếp"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:220
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:227
 msgid "Previous chapter"
-msgstr ""
+msgstr "Chương trước"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
-msgstr ""
+msgstr "Thông tin"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
 msgid "Title"
-msgstr ""
+msgstr "Tiêu đề"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
 msgid "Container Format"
-msgstr ""
+msgstr "Định dạng container"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:63
 msgid "Duration"
-msgstr ""
+msgstr "Thời lượng"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:81
 msgid "Streams"
