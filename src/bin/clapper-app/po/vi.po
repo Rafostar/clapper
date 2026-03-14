@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-03-14 06:17\n"
+"PO-Revision-Date: 2026-03-14 07:15\n"
 "Last-Translator: \n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -102,7 +102,7 @@ msgstr "Phím tắt"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Show pipeline"
-msgstr "Hiện quy trình"
+msgstr "Pipeline"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:37
 msgid "Toggle fullscreen"
@@ -257,7 +257,7 @@ msgstr "Thời lượng"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:81
 msgid "Streams"
-msgstr ""
+msgstr "Luồng"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
 #: src/bin/clapper-app/clapper-app-list-item-utils.c:36
@@ -278,281 +278,282 @@ msgstr "Phụ đề"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
 msgid "Video Playback"
-msgstr ""
+msgstr "Phát video"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:158
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:199
 msgid "Decoder"
-msgstr ""
+msgstr "Giải mã"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:170
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:211
 msgid "Filter"
-msgstr ""
+msgstr "Bộ lọc"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
 msgid "Sink"
-msgstr ""
+msgstr "Đầu ra"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
 msgid "Audio Playback"
-msgstr ""
+msgstr "Phát âm thanh"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:238
 msgid "Show Pipeline"
-msgstr ""
+msgstr "Pipeline"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:258
 msgid "Video Streams"
-msgstr ""
+msgstr "Luồng video"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:301
 msgid "Audio Streams"
-msgstr ""
+msgstr "Luồng âm thanh"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:344
 msgid "Subtitle Streams"
-msgstr ""
+msgstr "Luồng phụ đề"
 
 #: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
 msgid "Start by adding media to playback queue"
-msgstr ""
+msgstr "Hãy thêm nội dung vào hàng đợi để bắt đầu"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
 msgid "Seeking"
-msgstr ""
+msgstr "Tua"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
 msgid "Method"
-msgstr ""
+msgstr "Phương thức"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr ""
+msgstr "Phương thức ưu tiên dùng để tua"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
-msgstr ""
+msgstr "Giá trị"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
-msgstr ""
+msgstr "Giá trị dùng khi tua đi tua lại"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
-msgstr ""
+msgstr "Đơn vị"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
-msgstr ""
+msgstr "Đơn vị cho giá trị tua đi tua lại"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
-msgstr ""
+msgstr "Giây"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:52
 msgid "Minute"
-msgstr ""
+msgstr "Phút"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:53
 msgid "Percentage"
-msgstr ""
+msgstr "Phần trăm"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
 msgid "Features"
-msgstr ""
+msgstr "Tính năng"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
 msgid "Server"
-msgstr ""
+msgstr "Máy chủ"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:68
 msgid "Control player remotely"
-msgstr ""
+msgstr "Điều khiển trình phát từ xa"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
 msgid "Offset"
-msgstr ""
+msgstr "Độ lệch"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:85
 msgid "Synchronisation offset in seconds between the audio and video streams"
-msgstr ""
+msgstr "Độ lệch đồng bộ (giây) giữa luồng âm thanh và video"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:105
 msgid "Synchronisation offset in seconds between the subtitle and video streams"
-msgstr ""
+msgstr "Độ lệch đồng bộ (giây) giữa luồng phụ đề và video"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
 msgid "Default font"
-msgstr ""
+msgstr "Phông mặc định"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:120
 msgid "Text font used for subtitles when media does not explicitly specify one"
-msgstr ""
+msgstr "Phông chữ phụ đề mặc định khi video không chỉ định phông"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:138
 msgid "Tweaks"
-msgstr ""
+msgstr "Tinh chỉnh"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Enhancers"
-msgstr ""
+msgstr "Bộ tăng cường"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:146
 msgid "Browse and configure properties of available enhancers"
-msgstr ""
+msgstr "Duyệt và cấu hình các bộ tăng cường"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:163
 msgid "Plugin ranking"
-msgstr ""
+msgstr "Xếp hạng plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
 msgid "Alter default ranks of GStreamer plugins"
-msgstr ""
+msgstr "Thay đổi xếp hạng mặc định của các plugin GStreamer"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Clapper Enhancers"
-msgstr ""
+msgstr "Bộ tăng cường Clapper"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:203
 msgid "Available enhancers"
-msgstr ""
+msgstr "Bộ tăng cường sẵn có"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
 msgid "Select an enhancer plugin to view its information and properties to configure."
-msgstr ""
+msgstr "Chọn một plugin tăng cường để xem thông tin và cấu hình."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
 msgid "Enhancer"
-msgstr ""
+msgstr "Bộ tăng cường"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:227
 msgid "Information"
-msgstr ""
+msgstr "Thông tin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:230
 msgid "Module"
-msgstr ""
+msgstr "Mô-đun"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:243
 msgid "Description"
-msgstr ""
+msgstr "Mô tả"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:256
 msgid "Version"
-msgstr ""
+msgstr "Bhiên bản"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:271
 msgid "Properties"
-msgstr ""
+msgstr "Thuộc tính"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:283
 msgid "No Enhancers Found"
-msgstr ""
+msgstr "Không tìm thấy bộ tăng cường nào"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
 msgid "Install some to add more cool functionalities to the player!"
-msgstr ""
+msgstr "Cài thêm để mở khóa nhiều tính năng thú vị cho trình phát!"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
 msgid "Plugin Ranking"
-msgstr ""
+msgstr "Xếp hạng plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:319
 msgid "Available plugins"
-msgstr ""
+msgstr "Plugin có sẵn"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:320
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
+msgstr "Chọn plugin và tính năng của nó để ghi đè thứ hạng.\n"
+"Khi nhiều phần tử có khả năng tương tự, phần tử có giá trị cao nhất sẽ được ưu tiên."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:323
 msgid "Plugin"
-msgstr ""
+msgstr "Plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:332
 msgid "Plugin feature"
-msgstr ""
+msgstr "Tính năng plugin"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:350
 msgid "Add override"
-msgstr ""
+msgstr "Thêm ghi đè"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:366
 msgid "Rank overrides"
-msgstr ""
+msgstr "Ghi đè thứ hạng"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:30
 msgid "Add"
-msgstr ""
+msgstr "Thêm"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
-msgstr ""
+msgstr "Chế độ chuyển hàng đợi"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
 msgid "Clear Queue"
-msgstr ""
+msgstr "Xoá hàng chờ"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:4
 msgid "Add URI"
-msgstr ""
+msgstr "Thêm URL"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:5
 msgid "Insert an URI to be added to playback queue"
-msgstr ""
+msgstr "Nhập URL để thêm vào hàng chờ"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
 msgid "Enter or drop URI here"
-msgstr ""
+msgstr "Nhập hoặc thả URL tại đây"
 
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:29
 msgid "Cancel"
-msgstr ""
+msgstr "Thôi"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
 msgid "Resolution"
-msgstr ""
+msgstr "Độ phân giải"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
 msgid "Framerate"
-msgstr ""
+msgstr "Tốc độ khung hình"
 
 #: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
 msgid "Pixel Format"
-msgstr ""
+msgstr "Định dạng điểm ảnh"
 
 #. TRANSLATORS: Put your name(s) here for credits or leave untranslated
 #: src/bin/clapper-app/clapper-app-about-dialog.c:42
 msgid "translator-credits"
-msgstr ""
+msgstr "Phạm Ngọc Vũ <ann9cht@proton.me>"
 
 #: src/bin/clapper-app/clapper-app-application.c:333
 msgid "Close"
-msgstr ""
+msgstr "Đóng"
 
 #: src/bin/clapper-app/clapper-app-application.c:753
 msgid "Create a new window"
-msgstr ""
+msgstr "Tạo một cửa sổ mới"
 
 #: src/bin/clapper-app/clapper-app-application.c:754
 msgid "Add media to queue in primary application instance"
-msgstr ""
+msgstr "Thêm nội dung vào hàng đợi trong phiên bản ứng dụng chính"
 
 #: src/bin/clapper-app/clapper-app-application.c:755
 msgid "Audio volume to set (0 - 2.0 range)"
-msgstr ""
+msgstr "Đặt âm lượng (từ 0 đến 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:756
 msgid "Playback speed to set (0.05 - 2.0 range)"
-msgstr ""
+msgstr "Đặt tốc độ phát (từ 0.05 đến 2.0)"
 
 #: src/bin/clapper-app/clapper-app-application.c:757
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "Tốc độ bit ban đầu cho phát trực tuyến thích ứng"
 
 #: src/bin/clapper-app/clapper-app-application.c:758
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
