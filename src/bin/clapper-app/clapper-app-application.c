@@ -670,16 +670,93 @@ add_item_with_subtitles (GFile *media_file,
   g_free (suburi);
 }
 
+typedef struct {
+  ClapperAppApplication *app;
+  gchar *hint;
+} OpenCallbackData;
+
+static void
+open_callback_data_free (OpenCallbackData *data)
+{
+  g_free (data->hint);
+  g_free (data);
+}
+
+static void
+_open_expand_cb (GObject *source G_GNUC_UNUSED, GAsyncResult *res, gpointer user_data)
+{
+  OpenCallbackData *cb_data = (OpenCallbackData *) user_data;
+  ClapperAppApplication *self = cb_data->app;
+  GFile **expanded_files = NULL;
+  gint n_expanded = 0;
+  GError *error = NULL;
+
+  if (clapper_app_utils_expand_files_finish (res, &expanded_files, &n_expanded, &error)) {
+    GtkWindow *window;
+    ClapperPlayer *player;
+    ClapperQueue *queue;
+    guint n_before;
+    gboolean add_only, handled = FALSE;
+
+    window = gtk_application_get_active_window (GTK_APPLICATION (self));
+    while (window && !CLAPPER_APP_IS_WINDOW (window))
+      window = gtk_window_get_transient_for (window);
+
+    if (window) {
+      clapper_app_window_ensure_no_initial_state (CLAPPER_APP_WINDOW (window));
+
+      player = clapper_app_window_get_player (CLAPPER_APP_WINDOW (window));
+      queue = clapper_player_get_queue (player);
+
+      n_before = clapper_queue_get_n_items (queue);
+
+      /* Special path for opening video with subtitles at once */
+      if (n_expanded == 2) {
+        gboolean first_subs, second_subs;
+
+        first_subs = clapper_app_utils_is_subtitles_file (expanded_files[0]);
+        second_subs = clapper_app_utils_is_subtitles_file (expanded_files[1]);
+
+        if ((handled = first_subs != second_subs)) {
+          guint media_index, subs_index;
+
+          media_index = (second_subs) ? 0 : 1;
+          subs_index = (media_index + 1) % 2;
+
+          add_item_with_subtitles (
+              expanded_files[media_index], expanded_files[subs_index], queue);
+        }
+      }
+
+      if (!handled) {
+        gint i;
+        for (i = 0; i < n_expanded; ++i)
+          add_item_from_file (expanded_files[i], queue);
+      }
+
+      add_only = (g_strcmp0 (cb_data->hint, "add-only") == 0);
+
+      /* Select first thing from added item to play (behave like "open" should),
+       * when queue was empty first item is automatically selected */
+      if (!add_only && n_before > 0)
+        clapper_queue_select_index (queue, n_before);
+    }
+
+    clapper_app_utils_files_free (expanded_files);
+  } else {
+    g_warning ("Could not expand files: %s", error ? error->message : "Unknown error");
+    g_clear_error (&error);
+  }
+
+  g_application_unmark_busy (G_APPLICATION (self));
+  open_callback_data_free (cb_data);
+}
+
 static void
 clapper_app_application_open (GApplication *app,
     GFile **files, gint n_files, const gchar *hint)
 {
   ClapperAppApplication *self = CLAPPER_APP_APPLICATION_CAST (app);
-  GtkWindow *window;
-  ClapperPlayer *player;
-  ClapperQueue *queue;
-  guint n_before;
-  gboolean add_only, handled = FALSE;
 
   GST_INFO ("Open");
 
@@ -690,50 +767,11 @@ clapper_app_application_open (GApplication *app,
   g_application_activate (app);
   g_application_mark_busy (app);
 
-  window = gtk_application_get_active_window (GTK_APPLICATION (app));
-  while (window && !CLAPPER_APP_IS_WINDOW (window))
-    window = gtk_window_get_transient_for (window);
+  OpenCallbackData *cb_data = g_new0 (OpenCallbackData, 1);
+  cb_data->app = self;
+  cb_data->hint = g_strdup (hint);
 
-  clapper_app_window_ensure_no_initial_state (CLAPPER_APP_WINDOW (window));
-
-  player = clapper_app_window_get_player (CLAPPER_APP_WINDOW (window));
-  queue = clapper_player_get_queue (player);
-
-  n_before = clapper_queue_get_n_items (queue);
-
-  /* Special path for opening video with subtitles at once */
-  if (n_files == 2) {
-    gboolean first_subs, second_subs;
-
-    first_subs = clapper_app_utils_is_subtitles_file (files[0]);
-    second_subs = clapper_app_utils_is_subtitles_file (files[1]);
-
-    if ((handled = first_subs != second_subs)) {
-      guint media_index, subs_index;
-
-      media_index = (second_subs) ? 0 : 1;
-      subs_index = (media_index + 1) % 2;
-
-      add_item_with_subtitles (
-          files[media_index], files[subs_index], queue);
-    }
-  }
-
-  if (!handled) {
-    gint i;
-
-    for (i = 0; i < n_files; ++i)
-      add_item_from_file (files[i], queue);
-  }
-
-  add_only = (g_strcmp0 (hint, "add-only") == 0);
-
-  /* Select first thing from added item to play (behave like "open" should),
-   * when queue was empty first item is automatically selected */
-  if (!add_only && n_before > 0)
-    clapper_queue_select_index (queue, n_before);
-
-  g_application_unmark_busy (app);
+  clapper_app_utils_expand_files_async (files, n_files, NULL, _open_expand_cb, cb_data);
 }
 
 static void

@@ -1049,6 +1049,48 @@ drop_value_notify_cb (GtkDropTarget *drop_target,
   }
 }
 
+typedef struct {
+  ClapperAppWindow *window;
+  GtkApplication *app;
+} WindowDropCallbackData;
+
+static void
+_window_drop_expand_cb (GObject *source G_GNUC_UNUSED, GAsyncResult *res, gpointer user_data)
+{
+  WindowDropCallbackData *cb_data = (WindowDropCallbackData *) user_data;
+  ClapperAppWindow *self = cb_data->window;
+  GFile **expanded_files = NULL;
+  gint n_expanded = 0;
+  GError *error = NULL;
+
+  if (clapper_app_utils_expand_files_finish (res, &expanded_files, &n_expanded, &error)) {
+    ClapperPlayer *player = clapper_app_window_get_player (self);
+    ClapperQueue *queue = clapper_player_get_queue (player);
+    gint i;
+
+    clapper_app_window_ensure_no_initial_state (self);
+
+    for (i = 0; i < n_expanded; ++i) {
+      ClapperMediaItem *item = clapper_media_item_new_from_file (expanded_files[i]);
+
+      clapper_queue_add_item (queue, item);
+      gst_object_unref (item);
+    }
+
+    clapper_app_utils_files_free (expanded_files);
+  } else {
+    g_warning ("Could not expand dropped files: %s", error ? error->message : "Unknown error");
+    g_clear_error (&error);
+  }
+
+  if (cb_data->app)
+    g_application_unmark_busy (G_APPLICATION (cb_data->app));
+
+  g_object_unref (self);
+  g_clear_object (&cb_data->app);
+  g_free (cb_data);
+}
+
 static gboolean
 drop_cb (GtkDropTarget *drop_target, const GValue *value,
     gdouble x, gdouble y, ClapperAppWindow *self)
@@ -1058,19 +1100,15 @@ drop_cb (GtkDropTarget *drop_target, const GValue *value,
   gboolean success = FALSE;
 
   if (clapper_app_utils_files_from_value (value, &files, &n_files)) {
-    ClapperPlayer *player = clapper_app_window_get_player (self);
-    ClapperQueue *queue = clapper_player_get_queue (player);
-    gint i;
+    GtkApplication *app = gtk_window_get_application (GTK_WINDOW (self));
+    WindowDropCallbackData *cb_data = g_new0 (WindowDropCallbackData, 1);
+    cb_data->window = g_object_ref (self);
+    cb_data->app = app ? g_object_ref (app) : NULL;
 
-    clapper_app_window_ensure_no_initial_state (self);
+    if (cb_data->app)
+      g_application_mark_busy (G_APPLICATION (cb_data->app));
 
-    for (i = 0; i < n_files; ++i) {
-      ClapperMediaItem *item = clapper_media_item_new_from_file (files[i]);
-
-      clapper_queue_add_item (queue, item);
-      gst_object_unref (item);
-    }
-
+    clapper_app_utils_expand_files_async (files, n_files, NULL, _window_drop_expand_cb, cb_data);
     clapper_app_utils_files_free (files);
     success = TRUE;
   }

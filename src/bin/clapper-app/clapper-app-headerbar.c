@@ -93,6 +93,52 @@ drop_value_notify_cb (GtkDropTarget *drop_target,
     gtk_drop_target_reject (drop_target);
 }
 
+typedef struct {
+  ClapperAppHeaderbar *headerbar;
+  GtkApplication *app;
+} HeaderbarDropCallbackData;
+
+static void
+_headerbar_drop_expand_cb (GObject *source G_GNUC_UNUSED, GAsyncResult *res, gpointer user_data)
+{
+  HeaderbarDropCallbackData *cb_data = (HeaderbarDropCallbackData *) user_data;
+  ClapperAppHeaderbar *self = cb_data->headerbar;
+  GFile **expanded_files = NULL;
+  gint n_expanded = 0;
+  GError *error = NULL;
+
+  if (clapper_app_utils_expand_files_finish (res, &expanded_files, &n_expanded, &error)) {
+    ClapperPlayer *player;
+
+    if ((player = clapper_gtk_get_player_from_ancestor (GTK_WIDGET (self)))) {
+      ClapperQueue *queue = clapper_player_get_queue (player);
+      gint i;
+
+      for (i = 0; i < n_expanded; ++i) {
+        ClapperMediaItem *item = clapper_media_item_new_from_file (expanded_files[i]);
+
+        clapper_queue_add_item (queue, item);
+        if (i == 0) // Select first added item for playback
+          clapper_queue_select_item (queue, item);
+
+        gst_object_unref (item);
+      }
+    }
+
+    clapper_app_utils_files_free (expanded_files);
+  } else {
+    g_warning ("Could not expand dropped files on headerbar: %s", error ? error->message : "Unknown error");
+    g_clear_error (&error);
+  }
+
+  if (cb_data->app)
+    g_application_unmark_busy (G_APPLICATION (cb_data->app));
+
+  g_object_unref (self);
+  g_clear_object (&cb_data->app);
+  g_free (cb_data);
+}
+
 static gboolean
 drop_cb (GtkDropTarget *drop_target, const GValue *value,
     gdouble x, gdouble y, ClapperAppHeaderbar *self)
@@ -102,26 +148,18 @@ drop_cb (GtkDropTarget *drop_target, const GValue *value,
   gboolean success = FALSE;
 
   if (clapper_app_utils_files_from_value (value, &files, &n_files)) {
-    ClapperPlayer *player;
+    GtkRoot *root = gtk_widget_get_root (GTK_WIDGET (self));
+    GtkApplication *app = root ? gtk_window_get_application (GTK_WINDOW (root)) : NULL;
+    HeaderbarDropCallbackData *cb_data = g_new0 (HeaderbarDropCallbackData, 1);
+    cb_data->headerbar = g_object_ref (self);
+    cb_data->app = app ? g_object_ref (app) : NULL;
 
-    if ((player = clapper_gtk_get_player_from_ancestor (GTK_WIDGET (self)))) {
-      ClapperQueue *queue = clapper_player_get_queue (player);
-      gint i;
+    if (cb_data->app)
+      g_application_mark_busy (G_APPLICATION (cb_data->app));
 
-      for (i = 0; i < n_files; ++i) {
-        ClapperMediaItem *item = clapper_media_item_new_from_file (files[i]);
-
-        clapper_queue_add_item (queue, item);
-        if (i == 0) // Select first added item for playback
-          clapper_queue_select_item (queue, item);
-
-        gst_object_unref (item);
-      }
-
-      success = TRUE;
-    }
-
+    clapper_app_utils_expand_files_async (files, n_files, NULL, _headerbar_drop_expand_cb, cb_data);
     clapper_app_utils_files_free (files);
+    success = TRUE;
   }
 
   return success;

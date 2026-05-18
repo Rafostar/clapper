@@ -254,6 +254,330 @@ clapper_app_utils_is_subtitles_file (GFile *file)
 }
 
 gboolean
+clapper_app_utils_is_media_file (GFile *file)
+{
+  GFileInfo *info;
+  gboolean is_media = FALSE;
+
+  if ((info = g_file_query_info (file,
+      G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE ","
+      G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE,
+      G_FILE_QUERY_INFO_NONE,
+      NULL, NULL))) {
+    const gchar *content_type = NULL;
+
+    if (g_file_info_has_attribute (info,
+        G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE)) {
+      content_type = g_file_info_get_content_type (info);
+    } else if (g_file_info_has_attribute (info,
+        G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE)) {
+      content_type = g_file_info_get_attribute_string (info,
+          G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
+    }
+
+    if (content_type) {
+      if (g_str_has_prefix (content_type, "video/") ||
+          g_str_has_prefix (content_type, "audio/") ||
+          g_strcmp0 (content_type, "application/claps") == 0) {
+        is_media = TRUE;
+      }
+    }
+
+    g_object_unref (info);
+  }
+
+  return is_media;
+}
+
+gboolean
+clapper_app_utils_has_directory (GFile **files, gint n_files)
+{
+  gint i;
+  for (i = 0; i < n_files; ++i) {
+    if (files[i]) {
+      GFileType type = g_file_query_file_type (files[i], G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, NULL);
+      if (type == G_FILE_TYPE_DIRECTORY) {
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
+}
+
+typedef struct {
+  GFile **files;
+  gint n_files;
+} ExpandData;
+
+static void
+expand_data_free (ExpandData *data)
+{
+  if (data->files) {
+    for (gint i = 0; i < data->n_files; ++i) {
+      g_clear_object (&data->files[i]);
+    }
+    g_free (data->files);
+  }
+  g_free (data);
+}
+
+static gint
+_natural_compare (const gchar *s1, const gchar *s2)
+{
+  if (!s1 && !s2) return 0;
+  if (!s1) return -1;
+  if (!s2) return 1;
+
+  while (*s1 && *s2) {
+    if (g_ascii_isdigit (*s1) && g_ascii_isdigit (*s2)) {
+      /* Skip leading zeros but keep track of them */
+      const gchar *start1 = s1;
+      const gchar *start2 = s2;
+      const gchar *digits1;
+      const gchar *digits2;
+      gint len1;
+      gint len2;
+      const gchar *p1;
+      const gchar *p2;
+      gint zeros1;
+      gint zeros2;
+
+      while (*s1 == '0') s1++;
+      while (*s2 == '0') s2++;
+
+      /* Count number of remaining digits */
+      digits1 = s1;
+      digits2 = s2;
+      while (g_ascii_isdigit (*s1)) s1++;
+      while (g_ascii_isdigit (*s2)) s2++;
+
+      len1 = s1 - digits1;
+      len2 = s2 - digits2;
+
+      /* If lengths are different, the one with more digits is larger */
+      if (len1 != len2) {
+        return (len1 < len2) ? -1 : 1;
+      }
+
+      /* If lengths are the same, compare them lexicographically (digit by digit) */
+      p1 = digits1;
+      p2 = digits2;
+      while (p1 < s1) {
+        if (*p1 != *p2) {
+          return (*p1 < *p2) ? -1 : 1;
+        }
+        p1++;
+        p2++;
+      }
+
+      /* If the numeric parts are equal, we compare the number of leading zeros.
+       * The one with fewer leading zeros is sorted first. */
+      zeros1 = digits1 - start1;
+      zeros2 = digits2 - start2;
+      if (zeros1 != zeros2) {
+        return (zeros1 < zeros2) ? -1 : 1;
+      }
+    } else {
+      gunichar c1 = g_utf8_get_char (s1);
+      gunichar c2 = g_utf8_get_char (s2);
+
+      if (c1 != c2) {
+        gunichar fold1 = g_unichar_tolower (c1);
+        gunichar fold2 = g_unichar_tolower (c2);
+        if (fold1 != fold2) {
+          return (fold1 < fold2) ? -1 : 1;
+        }
+      }
+      s1 = g_utf8_next_char (s1);
+      s2 = g_utf8_next_char (s2);
+    }
+  }
+
+  if (*s1) return 1;
+  if (*s2) return -1;
+  return 0;
+}
+
+static gint
+_compare_files_list (gconstpointer a, gconstpointer b)
+{
+  GFile *file_a = G_FILE (a);
+  GFile *file_b = G_FILE (b);
+  gchar *name_a = g_file_get_basename (file_a);
+  gchar *name_b = g_file_get_basename (file_b);
+  gint res = 0;
+
+  if (name_a && name_b) {
+    res = _natural_compare (name_a, name_b);
+  } else if (name_a) {
+    res = 1;
+  } else if (name_b) {
+    res = -1;
+  }
+
+  g_free (name_a);
+  g_free (name_b);
+
+  return res;
+}
+
+static void
+_scan_directory_recursive (GFile *dir, GPtrArray *out_files, GHashTable *seen_uris, GCancellable *cancellable)
+{
+  GFileEnumerator *enumerator;
+  GError *error = NULL;
+
+  if (g_cancellable_is_cancelled (cancellable))
+    return;
+
+  enumerator = g_file_enumerate_children (dir,
+      G_FILE_ATTRIBUTE_STANDARD_NAME ","
+      G_FILE_ATTRIBUTE_STANDARD_TYPE,
+      G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+      cancellable, &error);
+
+  if (error) {
+    g_warning ("Failed to enumerate directory: %s", error->message);
+    g_error_free (error);
+    return;
+  }
+
+  if (enumerator) {
+    GList *dir_files = NULL;
+    GFileInfo *info;
+
+    while ((info = g_file_enumerator_next_file (enumerator, cancellable, NULL)) != NULL) {
+      GFile *child = g_file_enumerator_get_child (enumerator, info);
+      GFileType type = g_file_info_get_file_type (info);
+
+      if (type == G_FILE_TYPE_DIRECTORY) {
+        _scan_directory_recursive (child, out_files, seen_uris, cancellable);
+        g_object_unref (child);
+      } else {
+        dir_files = g_list_prepend (dir_files, child);
+      }
+      g_object_unref (info);
+    }
+    g_object_unref (enumerator);
+
+    /* Sort the files found in this specific directory naturally */
+    dir_files = g_list_sort (dir_files, (GCompareFunc) _compare_files_list);
+
+    for (GList *l = dir_files; l != NULL; l = l->next) {
+      GFile *file = G_FILE (l->data);
+      gchar *uri = g_file_get_uri (file);
+
+      if (uri && !g_hash_table_contains (seen_uris, uri)) {
+        if (clapper_app_utils_is_media_file (file)) {
+          g_hash_table_add (seen_uris, g_strdup (uri));
+          g_ptr_array_add (out_files, g_object_ref (file));
+        }
+      }
+      g_free (uri);
+    }
+    g_list_free_full (dir_files, g_object_unref);
+  }
+}
+
+static void
+_expand_files_thread (GTask *task, gpointer source_object, gpointer task_data, GCancellable *cancellable)
+{
+  ExpandData *data = (ExpandData *) task_data;
+  GPtrArray *out_files = g_ptr_array_new_with_free_func (g_object_unref);
+  GHashTable *seen_uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+  gint i;
+
+  for (i = 0; i < data->n_files; ++i) {
+    GFile *file;
+    GFileType type;
+
+    if (g_cancellable_is_cancelled (cancellable))
+      break;
+
+    file = data->files[i];
+    if (!file)
+      continue;
+
+    type = g_file_query_file_type (file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, cancellable);
+    if (type == G_FILE_TYPE_DIRECTORY) {
+      _scan_directory_recursive (file, out_files, seen_uris, cancellable);
+    } else {
+      gchar *uri = g_file_get_uri (file);
+      if (uri && !g_hash_table_contains (seen_uris, uri)) {
+        if (clapper_app_utils_is_media_file (file) || clapper_app_utils_is_subtitles_file (file)) {
+          g_hash_table_add (seen_uris, g_strdup (uri));
+          g_ptr_array_add (out_files, g_object_ref (file));
+        }
+      }
+      g_free (uri);
+    }
+  }
+
+  g_hash_table_destroy (seen_uris);
+
+  if (g_cancellable_is_cancelled (cancellable)) {
+    g_ptr_array_free (out_files, TRUE);
+    g_task_return_new_error (task, G_IO_ERROR, G_IO_ERROR_CANCELLED, "File expansion cancelled");
+  } else {
+    g_task_return_pointer (task, out_files, (GDestroyNotify) g_ptr_array_unref);
+  }
+}
+
+void
+clapper_app_utils_expand_files_async (GFile **files, gint n_files,
+    GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+  GTask *task = g_task_new (NULL, cancellable, callback, user_data);
+  ExpandData *data = g_new0 (ExpandData, 1);
+  gint i;
+
+  data->n_files = n_files;
+  data->files = g_new (GFile *, n_files);
+  for (i = 0; i < n_files; ++i) {
+    data->files[i] = g_object_ref (files[i]);
+  }
+
+  g_task_set_task_data (task, data, (GDestroyNotify) expand_data_free);
+  g_task_run_in_thread (task, _expand_files_thread);
+  g_object_unref (task);
+}
+
+gboolean
+clapper_app_utils_expand_files_finish (GAsyncResult *result,
+    GFile ***out_files, gint *out_n_files, GError **error)
+{
+  GTask *task = G_TASK (result);
+  GPtrArray *arr = g_task_propagate_pointer (task, error);
+  GFile **files;
+  gint len;
+  gint i;
+
+  if (!arr) {
+    if (out_files)
+      *out_files = NULL;
+    if (out_n_files)
+      *out_n_files = 0;
+    return FALSE;
+  }
+
+  len = arr->len;
+  files = g_new (GFile *, len + 1);
+  for (i = 0; i < len; ++i) {
+    files[i] = g_object_ref (g_ptr_array_index (arr, i));
+  }
+  files[len] = NULL;
+
+  g_ptr_array_unref (arr);
+
+  if (out_files)
+    *out_files = files;
+  if (out_n_files)
+    *out_n_files = len;
+
+  return TRUE;
+}
+
+gboolean
 clapper_app_utils_value_for_item_is_valid (const GValue *value)
 {
   if (G_VALUE_HOLDS (value, GTK_TYPE_WIDGET))

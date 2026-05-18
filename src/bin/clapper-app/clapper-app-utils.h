@@ -58,6 +58,20 @@ G_GNUC_INTERNAL
 gboolean clapper_app_utils_is_subtitles_file (GFile *file);
 
 G_GNUC_INTERNAL
+gboolean clapper_app_utils_is_media_file (GFile *file);
+
+G_GNUC_INTERNAL
+gboolean clapper_app_utils_has_directory (GFile **files, gint n_files);
+
+G_GNUC_INTERNAL
+void clapper_app_utils_expand_files_async (GFile **files, gint n_files,
+    GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+
+G_GNUC_INTERNAL
+gboolean clapper_app_utils_expand_files_finish (GAsyncResult *result,
+    GFile ***out_files, gint *out_n_files, GError **error);
+
+G_GNUC_INTERNAL
 gboolean clapper_app_utils_value_for_item_is_valid (const GValue *value);
 
 G_GNUC_INTERNAL
