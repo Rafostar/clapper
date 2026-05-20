@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-05-20 18:31\n"
+"PO-Revision-Date: 2026-05-20 19:48\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -98,7 +98,7 @@ msgstr "Открыть настройки"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Show shortcuts"
-msgstr "Комбинации клавиш"
+msgstr "Показать комбинации клавиш"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Show pipeline"
@@ -110,7 +110,7 @@ msgstr "Включить полноэкранный режим"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Double tap | Double click"
-msgstr "Двойное нажатие | Двойной клик"
+msgstr "Двойное нажатие | Двойной щелчок"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Unfullscreen"
@@ -122,7 +122,7 @@ msgstr "Автоматически изменять размер окна"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Middle click"
-msgstr "Клик колёсиком"
+msgstr "Щелчок средней кнопкой"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Quit"
@@ -179,17 +179,17 @@ msgstr "Тап | Левая кнопка мыши"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:140
 msgid "Seek forward"
-msgstr "Перемотка вперед"
+msgstr "Перемотка вперёд"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:133
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Double tap (right side) | Scroll right"
-msgstr "Двойной тап (правая сторона) | Скролл вправо"
+msgstr "Двойное нажатие (правая сторона) | Прокрутка вправо"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:141
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:149
 msgid "Double tap (left side) | Scroll left"
-msgstr "Двойной тап (левая сторона) | Скролл влево"
+msgstr "Двойное нажатие (левая сторона) | Прокрутка влево"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:148
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:156
@@ -202,7 +202,7 @@ msgstr "Увеличить громкость"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Scroll up"
-msgstr "Скролл вверх"
+msgstr "Прокрутка вверх"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:170
 msgid "Volume down"
@@ -210,7 +210,7 @@ msgstr "Уменьшить громкость"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Scroll down"
-msgstr "Скролл вниз"
+msgstr "Прокрутка вниз"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Toggle mute"
@@ -329,7 +329,7 @@ msgstr "Метод"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr "Предпочтительный метод, используемый для поиска"
+msgstr "Предпочтительный метод для перемотки"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
@@ -337,15 +337,15 @@ msgstr "Значение"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
-msgstr "Значение, используемое для поиска вперед/назад"
+msgstr "Значение для перемотки вперёд/назад"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
-msgstr "Ед. изм"
+msgstr "Единица измерения"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
-msgstr "Единица поиска вперёд/назад"
+msgstr "Единица значения перемотки вперёд/назад"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
@@ -369,7 +369,7 @@ msgstr "Сервер"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:68
 msgid "Control player remotely"
-msgstr "Удаленное управление плеером"
+msgstr "Удалённое управление плеером"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
@@ -394,7 +394,7 @@ msgstr "Шрифт, используемый для субтитров, если
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:138
 msgid "Tweaks"
-msgstr "Твики"
+msgstr "Настройки"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Enhancers"
