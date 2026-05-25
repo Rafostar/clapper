@@ -16,8 +16,10 @@ For the basics about writing enhancers see [Clapper Enhancers](clapper-enhancers
 
 ### Requirements
 
-Additional fields for `.plugin` info file: `X-Schemes` and `X-Hosts`. The former one should
-hold the `;` separated list of supported URI schemes, while the latter is for hostnames.
+Additional fields for `.plugin` info file: `X-Schemes`, `X-Hosts`, `X-Use-Cache`.
+The former one is required and should hold the `;` separated list of supported URI schemes,
+while the second is for hostnames and the last one is also optional (set to `false` in order
+skip trying to restore harvested data from cache if enhancer never caches any data).
 
 Example:
 

@@ -89,25 +89,39 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
     ClapperEnhancerProxy *proxy = CLAPPER_ENHANCER_PROXY_CAST (el->data);
     ClapperExtractable *extractable = NULL;
     GstStructure *config;
+    const gchar *extra_data;
+    gboolean cache_disabled;
 
-    /* Ensures that we do not start extraction of the same URI concurrently.
-     * If given job is already running, blocks here until finished.
-     * Afterwards we try to read extracted data from cache. */
-    clapper_enhancer_proxy_await_job_start (proxy, job_id);
+    /* Skip cache IO if extractable explicitly says
+     * it is not supported in it (enabled by default) */
+    extra_data = clapper_enhancer_proxy_get_extra_data (proxy, "X-Use-Cache");
+    cache_disabled = (extra_data && g_ascii_strcasecmp (extra_data, "false") == 0);
 
-    /* Cancelled during waiting for usage access */
-    if (g_cancellable_is_cancelled (data->cancellable)) {
-      clapper_enhancer_proxy_remove_job (proxy, job_id);
-      break;
+    if (!cache_disabled) {
+      /* Ensures that we do not start extraction of the same URI concurrently.
+       * If given job is already running, blocks here until finished.
+       * Afterwards we try to read extracted data from cache. */
+      clapper_enhancer_proxy_await_job_start (proxy, job_id);
+
+      /* Cancelled during waiting for usage access */
+      if (g_cancellable_is_cancelled (data->cancellable)) {
+        clapper_enhancer_proxy_remove_job (proxy, job_id);
+        break;
+      }
     }
 
     harvest = clapper_harvest_new (); // fresh harvest for each iteration
     config = clapper_enhancer_proxy_make_current_config (proxy);
 
-    if ((success = clapper_harvest_fill_from_cache (harvest, proxy, config, data->uri))
-        || g_cancellable_is_cancelled (data->cancellable)) { // Check before extract
+    success = (!cache_disabled
+        && clapper_harvest_fill_from_cache (harvest, proxy, config, data->uri));
+
+    /* Skip extraction if restored from cache or cancelled */
+    if (success || g_cancellable_is_cancelled (data->cancellable)) {
       gst_clear_structure (&config);
-      clapper_enhancer_proxy_remove_job (proxy, job_id);
+      if (!cache_disabled)
+        clapper_enhancer_proxy_remove_job (proxy, job_id);
+
       break;
     }
 
@@ -131,12 +145,15 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
           clapper_harvest_export_to_cache (harvest, proxy, config, data->uri);
         }
         gst_clear_structure (&config);
-        clapper_enhancer_proxy_remove_job (proxy, job_id);
+        if (!cache_disabled)
+          clapper_enhancer_proxy_remove_job (proxy, job_id);
+
         break;
       }
     }
 
-    clapper_enhancer_proxy_remove_job (proxy, job_id);
+    if (!cache_disabled)
+      clapper_enhancer_proxy_remove_job (proxy, job_id);
 
     /* Cleanup to try again with next enhancer */
     g_clear_object (&harvest);
