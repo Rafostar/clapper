@@ -22,7 +22,7 @@
 
 @font-face {
   font-family: "Red Hat Display";
-  src: local('RedHatDisplay-RegularItalic');
+  src: local('RedHatDisplay-Italic');
   font-style: italic;
   font-weight: 400;
   font-display: fallback;
