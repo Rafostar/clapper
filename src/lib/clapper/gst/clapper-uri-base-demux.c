@@ -183,9 +183,6 @@ _make_handler_for_uri (ClapperUriBaseDemux *self, const gchar *uri, const gchar 
 
   gst_plugin_feature_list_free (factories);
 
-  GST_DEBUG_OBJECT (self, "Created URI handler: %s",
-      GST_OBJECT_NAME (element));
-
   return element;
 }
 
@@ -238,9 +235,11 @@ clapper_uri_base_demux_set_uri (ClapperUriBaseDemux *self, const gchar *uri, con
 
     priv->uri_handler = _make_handler_for_uri (self, uri, blacklisted_el);
 
-    if (G_UNLIKELY (!priv->uri_handler)) {
+    if (G_LIKELY (priv->uri_handler != NULL)) {
+      GST_DEBUG_OBJECT (self, "Created URI handler: %s",
+          GST_OBJECT_NAME (priv->uri_handler));
+    } else {
       GST_ERROR_OBJECT (self, "Could not create URI handler element");
-
       GST_ELEMENT_ERROR (self, CORE, MISSING_PLUGIN,
           ("Missing plugin to handle URI: %s", uri), (NULL));
 
