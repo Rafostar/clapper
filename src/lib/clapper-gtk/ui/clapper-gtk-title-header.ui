@@ -15,6 +15,7 @@
         <property name="valign">center</property>
         <style>
           <class name="heading"/>
+          <class name="numeric"/>
         </style>
       </object>
     </child>

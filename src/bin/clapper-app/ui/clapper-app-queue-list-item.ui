@@ -30,6 +30,7 @@
             </binding>
             <style>
               <class name="heading"/>
+              <class name="numeric"/>
             </style>
           </object>
         </child>
