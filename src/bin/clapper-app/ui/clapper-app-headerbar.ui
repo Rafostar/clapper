@@ -86,6 +86,7 @@
                         <property name="fallback-to-uri">true</property>
                         <style>
                           <class name="heading"/>
+                          <class name="numeric"/>
                           <class name="titlelabel"/>
                         </style>
                       </object>
