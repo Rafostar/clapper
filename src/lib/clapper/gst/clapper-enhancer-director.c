@@ -76,7 +76,7 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
 
   /* Cancelled during thread switching */
   if (g_cancellable_is_cancelled (data->cancellable))
-    return NULL;
+    goto finish;
 
   uri_str = g_uri_to_string (data->uri);
   job_id = g_str_hash (uri_str);
@@ -164,6 +164,7 @@ clapper_enhancer_director_extract_in_thread (ClapperEnhancerDirectorData *data)
   if (g_cancellable_is_cancelled (data->cancellable))
     success = FALSE;
 
+finish:
   if (!success) {
     gst_clear_object (&harvest);
 
@@ -197,7 +198,7 @@ clapper_enhancer_director_parse_in_thread (ClapperEnhancerDirectorData *data)
 
   /* Cancelled during thread switching */
   if (g_cancellable_is_cancelled (data->cancellable))
-    return NULL;
+    goto finish;
 
   GST_DEBUG_OBJECT (self, "Enhancer proxies for buffer: %u",
       g_list_length (data->filtered_proxies));
@@ -259,6 +260,7 @@ clapper_enhancer_director_parse_in_thread (ClapperEnhancerDirectorData *data)
   if (g_cancellable_is_cancelled (data->cancellable))
     success = FALSE;
 
+finish:
   if (!success) {
     g_clear_object (&playlist);
 
