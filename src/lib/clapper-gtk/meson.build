@@ -246,3 +246,4 @@ clappergtk_dep = declare_dependency(
     clappergtk_enums[1],
   ],
 )
+meson.override_dependency(clappergtk_api_name, clappergtk_dep)
