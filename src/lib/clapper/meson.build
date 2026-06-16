@@ -289,7 +289,7 @@ if build_vapi
 endif
 
 clapper_pkgconfig_variables = [
-  'enhancersdir=${libdir}/' + clapper_api_name + '/enhancers',
+  'enhancersdir=' + clapper_enhancers_dir,
   'features=' + ' '.join(clapper_available_features),
   'functionalities=' + ' '.join(clapper_available_functionalities),
 ]
@@ -314,4 +314,6 @@ clapper_dep = declare_dependency(
     clapper_features_availability_header,
     clapper_enums[1],
   ],
+  variables: clapper_pkgconfig_variables,
 )
+meson.override_dependency(clapper_api_name, clapper_dep)
