@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-01-31 13:51\n"
+"PO-Revision-Date: 2026-05-20 19:48\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -33,7 +33,7 @@ msgstr "Воспроизведение видео и музыки"
 #. Translators: Search terms to find this application. Do NOT translate the semicolons!
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:15
 msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
-msgstr "Видео;Кино;Фильм;Клип;Сериал;Плейлист;DVD;ТВ;Диск;"
+msgstr "Видео;Кино;Фильм;Клип;Сериал;Плеер;Проигрыватель;Плейлист;Список воспроизведения;ТВ;Диск;Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
 
 #: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:21
 #: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
@@ -98,11 +98,11 @@ msgstr "Открыть настройки"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Show shortcuts"
-msgstr "Комбинации клавиш"
+msgstr "Показать комбинации клавиш"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
 msgid "Show pipeline"
-msgstr ""
+msgstr "Показать конвейер"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:37
 msgid "Toggle fullscreen"
@@ -110,7 +110,7 @@ msgstr "Включить полноэкранный режим"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
 msgid "Double tap | Double click"
-msgstr "Двойное нажатие | Двойной клик"
+msgstr "Двойное нажатие | Двойной щелчок"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
 msgid "Unfullscreen"
@@ -122,7 +122,7 @@ msgstr "Автоматически изменять размер окна"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
 msgid "Middle click"
-msgstr "Клик колёсиком"
+msgstr "Щелчок средней кнопкой"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Quit"
@@ -179,17 +179,17 @@ msgstr "Тап | Левая кнопка мыши"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:140
 msgid "Seek forward"
-msgstr "Перемотка вперед"
+msgstr "Перемотка вперёд"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:133
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
 msgid "Double tap (right side) | Scroll right"
-msgstr "Двойной тап (правая сторона) | Скролл вправо"
+msgstr "Двойное нажатие (правая сторона) | Прокрутка вправо"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:141
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:149
 msgid "Double tap (left side) | Scroll left"
-msgstr "Двойной тап (левая сторона) | Скролл влево"
+msgstr "Двойное нажатие (левая сторона) | Прокрутка влево"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:148
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:156
@@ -202,7 +202,7 @@ msgstr "Увеличить громкость"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
 msgid "Scroll up"
-msgstr "Скролл вверх"
+msgstr "Прокрутка вверх"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:170
 msgid "Volume down"
@@ -210,7 +210,7 @@ msgstr "Уменьшить громкость"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
 msgid "Scroll down"
-msgstr "Скролл вниз"
+msgstr "Прокрутка вниз"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
 msgid "Toggle mute"
@@ -226,7 +226,7 @@ msgstr "Замедлить"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:195
 msgid "Advance frame"
-msgstr ""
+msgstr "Продвинутый кадр"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:206
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:213
@@ -301,7 +301,7 @@ msgstr "Воспроизведение звука"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:238
 msgid "Show Pipeline"
-msgstr ""
+msgstr "Показать конвейер"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:258
 msgid "Video Streams"
@@ -329,7 +329,7 @@ msgstr "Метод"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
 msgid "A preferred method used for seeking"
-msgstr "Предпочтительный метод, используемый для поиска"
+msgstr "Предпочтительный метод для перемотки"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
 msgid "Value"
@@ -337,15 +337,15 @@ msgstr "Значение"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
 msgid "Value used for seeking forward/backward"
-msgstr "Значение, используемое для поиска вперед/назад"
+msgstr "Значение для перемотки вперёд/назад"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
 msgid "Unit"
-msgstr "Ед. изм"
+msgstr "Единица измерения"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
 msgid "An unit of a seek forward/backward value"
-msgstr "Единица поиска вперёд/назад"
+msgstr "Единица значения перемотки вперёд/назад"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
 msgid "Second"
@@ -369,7 +369,7 @@ msgstr "Сервер"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:68
 msgid "Control player remotely"
-msgstr "Удаленное управление плеером"
+msgstr "Удалённое управление плеером"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
@@ -394,15 +394,15 @@ msgstr "Шрифт, используемый для субтитров, если
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:138
 msgid "Tweaks"
-msgstr "Твики"
+msgstr "Настройки"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
 msgid "Enhancers"
-msgstr ""
+msgstr "Улучшатели"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:146
 msgid "Browse and configure properties of available enhancers"
-msgstr ""
+msgstr "Просмотр и настройка свойств доступных улучшателей"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:163
 msgid "Plugin ranking"
@@ -414,47 +414,47 @@ msgstr "Изменить ранги плагинов GStreamer по умолча
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
 msgid "Clapper Enhancers"
-msgstr ""
+msgstr "Улучшатели Clapper"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:203
 msgid "Available enhancers"
-msgstr ""
+msgstr "Доступные улучшатели"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
 msgid "Select an enhancer plugin to view its information and properties to configure."
-msgstr ""
+msgstr "Выберите плагин улучшателя, чтобы просмотреть его информацию и настраиваемые свойства."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
 msgid "Enhancer"
-msgstr ""
+msgstr "Улучшатель"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:227
 msgid "Information"
-msgstr ""
+msgstr "Информация"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:230
 msgid "Module"
-msgstr ""
+msgstr "Модуль"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:243
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:256
 msgid "Version"
-msgstr ""
+msgstr "Версия"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:271
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:283
 msgid "No Enhancers Found"
-msgstr ""
+msgstr "Улучшатели не найдены"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
 msgid "Install some to add more cool functionalities to the player!"
-msgstr ""
+msgstr "Установите их, чтобы добавить в проигрыватель ещё больше интересных возможностей!"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
 msgid "Plugin Ranking"
@@ -532,7 +532,7 @@ msgstr "Игорь Дятлов"
 
 #: src/bin/clapper-app/clapper-app-application.c:333
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #: src/bin/clapper-app/clapper-app-application.c:753
 msgid "Create a new window"
@@ -552,11 +552,11 @@ msgstr "Установить скорость воспроизведения (д
 
 #: src/bin/clapper-app/clapper-app-application.c:757
 msgid "Initial bitrate for adaptive streaming"
-msgstr ""
+msgstr "Начальный битрейт для адаптивной трансляции"
 
 #: src/bin/clapper-app/clapper-app-application.c:758
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "Начальный режим продвижения по очереди (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
 
 #: src/bin/clapper-app/clapper-app-application.c:759
 msgid "Set window to be fullscreen"
@@ -564,19 +564,19 @@ msgstr "Запустить в полноэкранном окне"
 
 #: src/bin/clapper-app/clapper-app-application.c:760
 msgid "Video filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Фильтр видео для использования («none» для отключения)"
 
 #: src/bin/clapper-app/clapper-app-application.c:761
 msgid "Audio filter to use (\"none\" to disable)"
-msgstr ""
+msgstr "Фильтр аудио для использования («none» для отключения)"
 
 #: src/bin/clapper-app/clapper-app-application.c:762
 msgid "Video sink to use"
-msgstr ""
+msgstr "Используемый видеовыход"
 
 #: src/bin/clapper-app/clapper-app-application.c:763
 msgid "Audio sink to use"
-msgstr ""
+msgstr "Используемый аудиоовыход"
 
 #: src/bin/clapper-app/clapper-app-info-window.c:88
 msgid "Hardware"
@@ -588,11 +588,11 @@ msgstr "Программное"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:315
 msgid "Restore default"
-msgstr ""
+msgstr "Сброс настроек"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:418
 msgid "No configurable properties"
-msgstr ""
+msgstr "Нет настраиваемых свойств"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:814
 msgid "Accurate"

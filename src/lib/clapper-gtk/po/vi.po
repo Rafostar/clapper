@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-07 19:03+0100\n"
-"PO-Revision-Date: 2025-01-07 18:32\n"
+"PO-Revision-Date: 2026-03-14 05:20\n"
 "Last-Translator: \n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -20,70 +20,70 @@ msgstr ""
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:9
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:228
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:17
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:229
 msgid "Audio"
-msgstr ""
+msgstr "Âm thanh"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:25
 #: src/lib/clapper-gtk/clapper-gtk-extra-menu-button.c:230
 msgid "Subtitles"
-msgstr ""
+msgstr "Phụ đề"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:28
 msgid "Show Subtitles"
-msgstr ""
+msgstr "Hiện phụ đề"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:32
 msgid "Open…"
-msgstr ""
+msgstr "Mở…"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:75
 msgid "Mute"
-msgstr ""
+msgstr "Tắt tiếng"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-extra-menu-button.ui:119
 msgid "Reset"
-msgstr ""
+msgstr "Đặt lại"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
 msgid "External video output"
-msgstr ""
+msgstr "Video đang hiển thị trên màn hình khác"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
 msgid "Used video sink cannot be embedded within application window"
-msgstr ""
+msgstr "Bộ xuất video hiện tại không thể hiển thị bên trong cửa sổ ứng dụng"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
-msgstr ""
+msgstr "Không thể phát nội dung"
 
 #. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
 #: src/lib/clapper-gtk/clapper-gtk-status.c:89
 #, c-format
 msgid "Your GStreamer installation is missing a plugin: %s"
-msgstr ""
+msgstr "GStreamer của bạn đang thiếu plugin: %s"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:90
 msgid "Missing Plugin"
-msgstr ""
+msgstr "Thiếu plugin"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:126
 msgid "Undetermined"
-msgstr ""
+msgstr "Chưa xác định"
 
 #: src/lib/clapper-gtk/clapper-gtk-stream-check-button.c:82
 msgid "Channels"
-msgstr ""
+msgstr "Kênh"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:91
 msgid "No media"
-msgstr ""
+msgstr "Không có nội dung"
 
 #: src/lib/clapper-gtk/clapper-gtk-title-label.c:103
 msgid "Unknown title"
-msgstr ""
+msgstr "Chưa rõ tên"
 
