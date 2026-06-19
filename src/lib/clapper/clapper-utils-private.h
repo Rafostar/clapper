@@ -59,6 +59,6 @@ G_GNUC_INTERNAL
 gchar * clapper_utils_title_from_uri (const gchar *uri);
 
 G_GNUC_INTERNAL
-gboolean clapper_utils_set_value_from_variant (GValue *value, GVariant *variant);
+gboolean clapper_utils_set_value_for_enhancer (GValue *value, GParamSpec *pspec, GSettings *settings, GVariant *variant);
 
 G_END_DECLS

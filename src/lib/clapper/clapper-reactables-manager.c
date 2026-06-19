@@ -127,15 +127,21 @@ _settings_changed_cb (GSettings *settings, const gchar *key, ClapperReactableMan
   /* Local settings are applied through bus events, so all that is
    * needed here is a check to not overwrite locally set setting */
   if (!clapper_enhancer_proxy_has_locally_set (data->proxy, key)) {
-    GVariant *variant = g_settings_get_value (settings, key);
-    GValue value = G_VALUE_INIT;
+    GParamSpec *pspec = clapper_enhancer_proxy_find_target_pspec_by_name (data->proxy, key);
 
-    if (G_LIKELY (clapper_utils_set_value_from_variant (&value, variant))) {
-      g_object_set_property (G_OBJECT (data->reactable), key, &value);
-      g_value_unset (&value);
+    if (G_LIKELY (pspec != NULL)) {
+      GVariant *variant = g_settings_get_value (settings, key);
+      GValue value = G_VALUE_INIT;
+
+      if (G_LIKELY (clapper_utils_set_value_for_enhancer (&value, pspec, settings, variant))) {
+        g_object_set_property (G_OBJECT (data->reactable), key, &value);
+        g_value_unset (&value);
+      }
+
+      g_variant_unref (variant);
+    } else {
+      GST_ERROR_OBJECT (data->reactable, "Changed setting of non-existing property: %s", key);
     }
-
-    g_variant_unref (variant);
   }
 }
 

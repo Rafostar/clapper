@@ -45,6 +45,9 @@ G_GNUC_INTERNAL
 GObject * clapper_enhancer_proxy_get_peas_info (ClapperEnhancerProxy *proxy);
 
 G_GNUC_INTERNAL
+GParamSpec * clapper_enhancer_proxy_find_target_pspec_by_name (ClapperEnhancerProxy *proxy, const gchar *name);
+
+G_GNUC_INTERNAL
 gboolean clapper_enhancer_proxy_has_locally_set (ClapperEnhancerProxy *proxy, const gchar *property_name);
 
 G_GNUC_INTERNAL

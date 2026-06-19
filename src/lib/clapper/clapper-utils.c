@@ -287,7 +287,7 @@ clapper_utils_title_from_uri (const gchar *uri)
 }
 
 gboolean
-clapper_utils_set_value_from_variant (GValue *value, GVariant *variant)
+clapper_utils_set_value_for_enhancer (GValue *value, GParamSpec *pspec, GSettings *settings, GVariant *variant)
 {
   const gchar *var_type = g_variant_get_type_string (variant);
   GType val_type;
@@ -306,7 +306,10 @@ clapper_utils_set_value_from_variant (GValue *value, GVariant *variant)
       val_type = G_TYPE_DOUBLE;
       break;
     case 's':
-      val_type = G_TYPE_STRING;
+      if (G_IS_PARAM_SPEC_ENUM (pspec) || G_IS_PARAM_SPEC_FLAGS (pspec))
+        val_type = pspec->value_type;
+      else
+        val_type = G_TYPE_STRING;
       break;
     default:
       goto error;
@@ -331,7 +334,12 @@ clapper_utils_set_value_from_variant (GValue *value, GVariant *variant)
       g_value_set_string (value, g_variant_get_string (variant, NULL));
       break;
     default:
-      g_assert_not_reached ();
+      if (G_IS_PARAM_SPEC_ENUM (pspec))
+        g_value_set_enum (value, g_settings_get_enum (settings, pspec->name));
+      else if (G_IS_PARAM_SPEC_FLAGS (pspec))
+        g_value_set_flags (value, g_settings_get_flags (settings, pspec->name));
+      else
+        g_assert_not_reached ();
       break;
   }
 
