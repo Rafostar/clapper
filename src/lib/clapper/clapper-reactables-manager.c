@@ -170,30 +170,43 @@ clapper_reactables_manager_handle_prepare (ClapperReactablesManager *self)
 #endif
 
       if (reactable) {
-        ClapperReactableManagerData *data;
-        GstStructure *config;
+        ClapperReactableInterface *reactable_iface;
+        gboolean prepared = TRUE;
 
         if (g_object_is_floating (reactable))
           gst_object_ref_sink (reactable);
 
-        data = g_new (ClapperReactableManagerData, 1);
-        data->reactable = reactable;
-        data->proxy = gst_object_ref (proxy);
-        data->settings = clapper_enhancer_proxy_get_settings (proxy);
+        gst_object_set_parent (GST_OBJECT_CAST (reactable), GST_OBJECT_CAST (player));
+        reactable_iface = CLAPPER_REACTABLE_GET_IFACE (reactable);
+        if (reactable_iface->prepare)
+          prepared = reactable_iface->prepare (data->reactable);
 
-        GST_TRACE_OBJECT (self, "Created data for reactable: %" GST_PTR_FORMAT, data->reactable);
+        if (G_LIKELY (prepared)) {
+          ClapperReactableManagerData *data;
+          GstStructure *config;
 
-        /* Settings are stored in data in order for this signal to keep working */
-        if (data->settings)
-          g_signal_connect (data->settings, "changed", G_CALLBACK (_settings_changed_cb), data);
+          data = g_new (ClapperReactableManagerData, 1);
+          data->reactable = reactable;
+          data->proxy = gst_object_ref (proxy);
+          data->settings = clapper_enhancer_proxy_get_settings (proxy);
 
-        if ((config = clapper_enhancer_proxy_make_current_config (proxy))) {
-          clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) reactable);
-          gst_structure_free (config);
+          GST_TRACE_OBJECT (self, "Created data for reactable: %" GST_PTR_FORMAT, data->reactable);
+
+          /* Settings are stored in data in order for this signal to keep working */
+          if (data->settings)
+            g_signal_connect (data->settings, "changed", G_CALLBACK (_settings_changed_cb), data);
+
+          if ((config = clapper_enhancer_proxy_make_current_config (proxy))) {
+            clapper_enhancer_proxy_apply_config_to_enhancer (proxy, config, (GObject *) data->reactable);
+            gst_structure_free (config);
+          }
+
+          g_ptr_array_add (self->array, data);
+        } else {
+          GST_ERROR_OBJECT (self, "Failed to prepare reactable: %" GST_PTR_FORMAT, reactable);
+          gst_object_unparent (GST_OBJECT_CAST (reactable));
+          gst_object_unref (reactable);
         }
-
-        g_ptr_array_add (self->array, data);
-        gst_object_set_parent (GST_OBJECT_CAST (data->reactable), GST_OBJECT_CAST (player));
       }
     }
 
@@ -530,6 +543,20 @@ clapper_reactables_manager_thread_stop (ClapperThreadedObject *threaded_object)
   ClapperReactablesManager *self = CLAPPER_REACTABLES_MANAGER_CAST (threaded_object);
 
   GST_TRACE_OBJECT (self, "Reactables manager thread stop");
+
+  /* Thread is stopping, if we prepared enhancers, call uprepare
+   * before they are going to be removed from the player */
+  if (self->prepare_called) {
+    guint i;
+
+    for (i = 0; i < self->array->len; ++i) {
+      ClapperReactableManagerData *data = g_ptr_array_index (self->array, i);
+      ClapperReactableInterface *reactable_iface = CLAPPER_REACTABLE_GET_IFACE (data->reactable);
+
+      if (reactable_iface->unprepare)
+        reactable_iface->unprepare (data->reactable);
+    }
+  }
 
   gst_bus_set_flushing (self->bus, TRUE);
   gst_bus_remove_watch (self->bus);

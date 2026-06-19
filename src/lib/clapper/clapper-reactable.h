@@ -57,6 +57,8 @@ G_DECLARE_INTERFACE (ClapperReactable, clapper_reactable, CLAPPER, REACTABLE, Gs
  * @queue_cleared: All items were removed from queue.
  * @queue_progression_changed: Progression mode of the queue was changed.
  * @message_received: Custom message from user was received on reactables bus.
+ * @prepare: Prepare a reactable that was just created and added to the player.
+ * @unprepare: Revert things done in prepare and stop any ongoing tasks.
  */
 struct _ClapperReactableInterface
 {
@@ -221,8 +223,39 @@ struct _ClapperReactableInterface
    */
   void (* message_received) (ClapperReactable *reactable, GstMessage *msg);
 
+  /**
+   * ClapperReactableInterface::prepare:
+   * @reactable: a #ClapperReactable
+   *
+   * Called right after created reactable instance is added to the player.
+   *
+   * At this point it is possible to access [class@Clapper.Player] from
+   * the enhancer. Can also be used to send some custom messages to the
+   * player or application such as suggesting keyboard shortcuts.
+   *
+   * Returns: Whether prepared successfully. On failure, reactable
+   *   will be discarded and not used further.
+   *
+   * Since: 0.12
+   */
+  void (* prepare) (ClapperReactable *reactable);
+
+  /**
+   * ClapperReactableInterface::unprepare:
+   * @reactable: a #ClapperReactable
+   *
+   * Called right before enhancer is removed from the player.
+   *
+   * Implementations can use it to revert things done in
+   * [vfunc@Clapper.Reactable.prepare] and/or cancel any
+   * ongoing tasks.
+   *
+   * Since: 0.12
+   */
+  void (* unprepare) (ClapperReactable *reactable);
+
   /*< private >*/
-  gpointer padding[8];
+  gpointer padding[6];
 };
 
 CLAPPER_API
