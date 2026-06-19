@@ -520,6 +520,26 @@ clapper_enhancer_proxy_get_peas_info (ClapperEnhancerProxy *self)
   return self->peas_info;
 }
 
+GParamSpec *
+clapper_enhancer_proxy_find_target_pspec_by_name (ClapperEnhancerProxy *self, const gchar *name)
+{
+  guint i;
+
+  name = g_intern_string (name);
+  for (i = 0; i < self->n_pspecs; ++i) {
+    GParamSpec *pspec = self->pspecs[i];
+
+    /* GParamSpec names are always interned */
+    if (pspec->name == name)
+      return pspec;
+  }
+
+  g_warning ("No property \"%s\" in target of \"%s\" (%s)",
+      name, self->friendly_name, self->module_name);
+
+  return NULL;
+}
+
 gboolean
 clapper_enhancer_proxy_has_locally_set (ClapperEnhancerProxy *self, const gchar *property_name)
 {
@@ -575,7 +595,7 @@ clapper_enhancer_proxy_make_current_config (ClapperEnhancerProxy *self)
       if (!g_variant_equal (val, def)) {
         GValue value = G_VALUE_INIT;
 
-        if (G_LIKELY (clapper_utils_set_value_from_variant (&value, val))) {
+        if (G_LIKELY (clapper_utils_set_value_for_enhancer (&value, pspec, settings, val))) {
           if (!merged_config)
             merged_config = gst_structure_new_empty (CONFIG_STRUCTURE_NAME);
 
@@ -986,26 +1006,6 @@ clapper_enhancer_proxy_get_settings (ClapperEnhancerProxy *self)
   return settings;
 }
 
-static GParamSpec *
-_find_target_pspec_by_name (ClapperEnhancerProxy *self, const gchar *name)
-{
-  guint i;
-
-  name = g_intern_string (name);
-  for (i = 0; i < self->n_pspecs; ++i) {
-    GParamSpec *pspec = self->pspecs[i];
-
-    /* GParamSpec names are always interned */
-    if (pspec->name == name)
-      return pspec;
-  }
-
-  g_warning ("No property \"%s\" in target of \"%s\" (%s)",
-      name, self->friendly_name, self->module_name);
-
-  return NULL;
-}
-
 static gboolean
 _structure_take_value_by_pspec (ClapperEnhancerProxy *self,
     GstStructure *structure, GParamSpec *pspec, GValue *value)
@@ -1080,7 +1080,7 @@ clapper_enhancer_proxy_set_locally (ClapperEnhancerProxy *self, const gchar *fir
   name = first_property_name;
 
   while (name) {
-    GParamSpec *pspec = _find_target_pspec_by_name (self, name);
+    GParamSpec *pspec = clapper_enhancer_proxy_find_target_pspec_by_name (self, name);
 
     if (G_LIKELY (pspec != NULL)) {
       GValue value = G_VALUE_INIT;
@@ -1148,7 +1148,7 @@ clapper_enhancer_proxy_set_locally_with_table (ClapperEnhancerProxy *self, GHash
   g_hash_table_iter_init (&iter, table);
   while (g_hash_table_iter_next (&iter, &key_ptr, &val_ptr)) {
     const gchar *name = (const gchar *) key_ptr;
-    GParamSpec *pspec = _find_target_pspec_by_name (self, name);
+    GParamSpec *pspec = clapper_enhancer_proxy_find_target_pspec_by_name (self, name);
 
     if (G_LIKELY (pspec != NULL)) {
       GValue value_copy = G_VALUE_INIT;
