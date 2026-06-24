@@ -1,16 +1,9 @@
 {
     "app-id": "com.github.rafostar.Clapper",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "47",
+    "runtime-version": "49",
     "sdk": "org.gnome.Sdk",
     "add-extensions": {
-        "org.freedesktop.Platform.ffmpeg-full": {
-            "version": "24.08",
-            "directory": "lib/ffmpeg",
-            "add-ld-path": ".",
-            "no-autodownload": false,
-            "autodelete": false
-        },
         "com.github.rafostar.Clapper.Enhancers": {
             "versions": "stable;test;master",
             "directory": "extensions/clapper/enhancers",
@@ -42,12 +35,56 @@
         "flathub/shared-modules/gudev/gudev.json",
         "flathub/lib/liba52.json",
         "flathub/lib/libmpeg2.json",
-        "flathub/lib/libdv.json",
+        {
+            "name": "libdv",
+            "config-opts": [
+                "--enable-shared",
+                "--disable-static"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://downloads.sourceforge.net/libdv/libdv-1.0.0.tar.gz",
+                    "sha256": "a305734033a9c25541a59e8dd1c254409953269ea7c710c39e540bd8853389ba"
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                        "cp -fp /usr/share/automake-*/config.{sub,guess} ."
+                    ]
+                },
+                {
+                    "type": "script",
+                    "commands": [
+                        "autoreconf -fiv"
+                    ],
+                    "dest-filename": "autogen.sh"
+                }
+            ]
+        },
         "flathub/lib/libdvdcss.json",
         "flathub/lib/libdvdread.json",
         "flathub/lib/libdvdnav.json",
         "flathub/lib/libass.json",
-        "flathub/lib/uchardet.json",
+        {
+            "name": "uchardet",
+            "buildsystem": "cmake",
+            "builddir": true,
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_INSTALL_LIBDIR=lib",
+                "-DBUILD_STATIC=OFF",
+                "-DBUILD_BINARY=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.freedesktop.org/uchardet/uchardet",
+                    "branch": "master",
+                    "commit": "06029ec3340cdf6bf9a6a537dafb3f39eda0560e"
+                }
+            ]
+        },
         "flathub/lib/libmicrodns.json",
         "flathub/lib/libpeas.json",
         "flathub/gstreamer-1.0/gstreamer.json",
@@ -64,7 +101,6 @@
         }
     ],
     "cleanup-commands": [
-        "mkdir -p /app/lib/ffmpeg",
         "mkdir -p /app/extensions/clapper/enhancers",
         "ln -s /lib/$FLATPAK_ARCH-linux-*/gstreamer-1.0/libgstpipewire.so /app/lib/gstreamer-1.0/"
     ]
