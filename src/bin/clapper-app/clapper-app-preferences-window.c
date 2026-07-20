@@ -255,6 +255,8 @@ _add_enhancer_config_row (ClapperAppPreferencesWindow *self, GParamSpec *pspec,
 
         g_signal_connect (row, "activated",
             G_CALLBACK (file_selection_row_activated_cb), pspec);
+      } else if (pspec->flags & (CLAPPER_ENHANCER_PARAM_SECRET)) {
+        row = adw_password_entry_row_new ();
       } else {
         row = adw_entry_row_new ();
       }
@@ -401,7 +403,7 @@ selected_enhancer_changed_cb (AdwComboRow *combo_row,
       guint i;
 
       for (i = 0; i < n_pspecs; ++i) {
-        if (pspecs[i]->flags & CLAPPER_ENHANCER_PARAM_GLOBAL) {
+        if (pspecs[i]->flags & CLAPPER_ENHANCER_PARAM_USER_SETS) {
           if (!enhancer_settings)
             enhancer_settings = clapper_enhancer_proxy_get_settings (proxy);
           if (enhancer_settings)

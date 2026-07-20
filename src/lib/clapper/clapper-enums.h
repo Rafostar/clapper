@@ -147,13 +147,17 @@ typedef enum
 /**
  * ClapperEnhancerParamFlags:
  * @CLAPPER_ENHANCER_PARAM_GLOBAL: Use this flag for enhancer properties that should have global access scope.
- *   Such are meant for application `USER` to configure.
+ *   Global param values can be shared between different applications.
  * @CLAPPER_ENHANCER_PARAM_LOCAL: Use this flag for enhancer properties that should have local access scope.
- *   Such are meant for `APPLICATION` to configure.
+ *   Local param values never leave the app. Useful for app specific settings and user secrets.
  * @CLAPPER_ENHANCER_PARAM_FILEPATH: Use this flag for enhancer properties that store string with a file path.
  *   Applications can use this as a hint to show file selection instead of a text entry.
  * @CLAPPER_ENHANCER_PARAM_DIRPATH: Use this flag for enhancer properties that store string with a directory path.
  *   Applications can use this as a hint to show directory selection instead of a text entry.
+ * @CLAPPER_ENHANCER_PARAM_SECRET: Since: 0.12: Use this flag for enhancer properties that store private strings.
+ *   Applications can use this as a hint to show dedicated entry with a hidden value (e.g. passwords).
+ * @CLAPPER_ENHANCER_PARAM_USER_SETS: Since: 0.12: Use this flag for enhancer properties that are meant for
+ *   application `USER` to configure. Apps can use this to expose them in their preferences UI.
  *
  * Additional [flags@GObject.ParamFlags] to be set in enhancer plugins implementations.
  *
@@ -165,6 +169,8 @@ typedef enum
   CLAPPER_ENHANCER_PARAM_LOCAL = 1 << 18,
   CLAPPER_ENHANCER_PARAM_FILEPATH = 1 << 19,
   CLAPPER_ENHANCER_PARAM_DIRPATH = 1 << 20,
+  CLAPPER_ENHANCER_PARAM_SECRET = 1 << 21,
+  CLAPPER_ENHANCER_PARAM_USER_SETS = 1 << 22,
 } ClapperEnhancerParamFlags;
 
 /**
