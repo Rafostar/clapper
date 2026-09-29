@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-09-29 16:30\n"
+"PO-Revision-Date: 2026-09-29 19:58\n"
 "Last-Translator: \n"
 "Language-Team: Georgian\n"
 "Language: ka_GE\n"
@@ -126,7 +126,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
 msgid "Quit"
-msgstr ""
+msgstr "გასვლა"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:65
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
@@ -240,7 +240,7 @@ msgstr ""
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
-msgstr ""
+msgstr "ინფორმაცია"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
 #: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
@@ -487,7 +487,7 @@ msgstr ""
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
 #: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:30
 msgid "Add"
-msgstr ""
+msgstr "დამატება"
 
 #: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
 msgid "Queue progression"
