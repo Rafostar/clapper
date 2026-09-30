@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-07 19:03+0100\n"
-"PO-Revision-Date: 2026-09-29 21:20\n"
+"PO-Revision-Date: 2026-09-30 10:40\n"
 "Last-Translator: \n"
 "Language-Team: Georgian\n"
 "Language: ka_GE\n"
@@ -50,21 +50,21 @@ msgstr "ჩამოყრა"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:25
 msgid "External video output"
-msgstr ""
+msgstr "გარე ვიდეოს გამოტანა"
 
 #: src/lib/clapper-gtk/ui/clapper-gtk-video-placeholder.ui:37
 msgid "Used video sink cannot be embedded within application window"
-msgstr ""
+msgstr "გამოყენებული ვიდეოს გამოტანის წერტილის აპლიკაციის ფანჯარაში ჩაშენება შეუძლებელია"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:79
 msgid "Unplayable Content"
-msgstr ""
+msgstr "შემცველობის დაკვრა შეუძლებელია"
 
 #. TRANSLATORS: Please do not try to translate "GStreamer" (it is a library name).
 #: src/lib/clapper-gtk/clapper-gtk-status.c:89
 #, c-format
 msgid "Your GStreamer installation is missing a plugin: %s"
-msgstr ""
+msgstr "GStreamer-ის თქვენს დაყენებულ ვერსიას აკლია დამატება: %s"
 
 #: src/lib/clapper-gtk/clapper-gtk-status.c:90
 msgid "Missing Plugin"
