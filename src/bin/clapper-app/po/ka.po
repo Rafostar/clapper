@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-09-29 21:20\n"
+"PO-Revision-Date: 2026-09-30 08:54\n"
 "Last-Translator: \n"
 "Language-Team: Georgian\n"
 "Language: ka_GE\n"
@@ -94,7 +94,7 @@ msgstr "ახალი ფანჯარა"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
 msgid "Open preferences"
-msgstr ""
+msgstr "მორგების ფანჯრის გახსნა"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
 msgid "Show shortcuts"
@@ -174,7 +174,7 @@ msgstr "დაკვრის გადართვა"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:125
 msgid "Tap | Left click"
-msgstr ""
+msgstr "დატყაპუნება | მარცხენა წკაპი"
 
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:140
@@ -236,7 +236,7 @@ msgstr "შემდეგი თავი"
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:220
 #: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:227
 msgid "Previous chapter"
-msgstr ""
+msgstr "წინა თავი"
 
 #: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
 msgid "Info"
@@ -588,7 +588,7 @@ msgstr "პროგრამული უზრუნველყოფა"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:315
 msgid "Restore default"
-msgstr ""
+msgstr "ნაგულისხმევის აღდგენა"
 
 #: src/bin/clapper-app/clapper-app-preferences-window.c:418
 msgid "No configurable properties"
@@ -608,7 +608,7 @@ msgstr "სწრაფი"
 
 #: src/bin/clapper-app/clapper-app-utils.c:212
 msgid "No progression"
-msgstr ""
+msgstr "მიმდინარეობის გარეშე"
 
 #: src/bin/clapper-app/clapper-app-utils.c:213
 msgid "Consecutive"
