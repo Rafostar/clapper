@@ -1,0 +1,632 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: clapper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-12 21:55+0100\n"
+"PO-Revision-Date: 2026-09-30 11:54\n"
+"Last-Translator: \n"
+"Language-Team: Georgian\n"
+"Language: ka_GE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: clapper\n"
+"X-Crowdin-Project-ID: 473374\n"
+"X-Crowdin-Language: ka\n"
+"X-Crowdin-File: /master/src/bin/clapper-app/po/clapper-app.pot\n"
+"X-Crowdin-File-ID: 48\n"
+
+#. Translators: Do NOT translate app name!
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:3
+msgid "Clapper"
+msgstr "Clapper"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:4
+msgid "Multimedia Player"
+msgstr "მულტიმედიის დამკვრელი"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:5
+msgid "Play videos and music"
+msgstr "ვიდეოებისა და მუსიკის დაკვრა"
+
+#. Translators: Search terms to find this application. Do NOT translate the semicolons!
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:15
+msgid "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;"
+msgstr "Video;Movie;Film;Clip;Series;Player;Playlist;DVD;TV;Disc;ვიდეო;ფილმი;კლიპი;სერიალი;დაკვრა;დისკი;"
+
+#: src/bin/clapper-app/data/applications/com.github.rafostar.Clapper.desktop.in:21
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:183
+msgid "New Window"
+msgstr "ახალი ფანჯარა"
+
+#: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:14
+#: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:14
+msgid "Codec"
+msgstr "კოდეკი"
+
+#: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:24
+msgid "Channels"
+msgstr "არხები"
+
+#: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:36
+msgid "Sample Format"
+msgstr "სინჯის ფორმატი"
+
+#: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:46
+msgid "Sample Rate"
+msgstr "დისკრეტული სიხშირე"
+
+#: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:58
+#: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:51
+msgid "Bitrate"
+msgstr "ბიტური სიხშირე"
+
+#: src/bin/clapper-app/ui/clapper-app-audio-stream-list-item.ui:70
+#: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:24
+msgid "Language"
+msgstr "ენა"
+
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:189
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:80
+msgid "Preferences"
+msgstr "მორგება"
+
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:193
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:84
+msgid "Keyboard Shortcuts"
+msgstr "კლავიატურის მალსახმობები"
+
+#. TRANSLATORS: Please do not translate application name
+#: src/bin/clapper-app/ui/clapper-app-headerbar.ui:200
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:91
+msgid "About Clapper"
+msgstr "Clapper-ის შესახებ"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:10
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:11
+msgid "General"
+msgstr "ზოგადი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:13
+msgid "New window"
+msgstr "ახალი ფანჯარა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:19
+msgid "Open preferences"
+msgstr "მორგების ფანჯრის გახსნა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:25
+msgid "Show shortcuts"
+msgstr "მალსახმობების ჩვენება"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:31
+msgid "Show pipeline"
+msgstr "კონვეიერის ჩვენება"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:37
+msgid "Toggle fullscreen"
+msgstr "სრულეკრანიანი რეჟიმის გადართვა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:38
+msgid "Double tap | Double click"
+msgstr "ორმაგი ტყაპი | ორმაგი წკაპი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:44
+msgid "Unfullscreen"
+msgstr "სრულეკრანიანი რეჟიმიდან გასვლა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:50
+msgid "Auto window resize"
+msgstr "ფანჯრის ზომის ავტომატური შეცვლა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:51
+msgid "Middle click"
+msgstr "შუა წკაპი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:57
+msgid "Quit"
+msgstr "გასვლა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:65
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:32
+msgid "Media"
+msgstr "მედია"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:68
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:55
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:178
+msgid "Add Files…"
+msgstr "ფაილების დამატება…"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:74
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:65
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:182
+msgid "Add URI…"
+msgstr "URI-ის დამატება…"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:82
+msgid "Queue"
+msgstr "რიგი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:86
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:93
+msgid "Next item"
+msgstr "შემდეგი ელემენტი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:100
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:107
+msgid "Previous item"
+msgstr "წინა ელემენტი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:113
+msgid "Change progression mode"
+msgstr "მიმდინარეობის რეჟიმის შეცვლა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:121
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:77
+msgid "Playback"
+msgstr "დაკვრა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:124
+msgid "Toggle play"
+msgstr "დაკვრის გადართვა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:125
+msgid "Tap | Left click"
+msgstr "დატყაპუნება | მარცხენა წკაპი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:132
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:140
+msgid "Seek forward"
+msgstr "წინ გადახვევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:133
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:157
+msgid "Double tap (right side) | Scroll right"
+msgstr "ორმაგი დატყაპუნება (მარჯვნა მხარეს) | მარჯვნივ გადახვევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:141
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:149
+msgid "Double tap (left side) | Scroll left"
+msgstr "ორმაგი დატყაპუნება (მარცხენა მხარეს) | მარცხნივ გადახვევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:148
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:156
+msgid "Seek backward"
+msgstr "უკან გადახვევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:163
+msgid "Volume up"
+msgstr "ხმის აწევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:164
+msgid "Scroll up"
+msgstr "მაღლა აქაჩვა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:170
+msgid "Volume down"
+msgstr "ხმის დაწევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:171
+msgid "Scroll down"
+msgstr "ჩამოხვევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:177
+msgid "Toggle mute"
+msgstr "დადუმების გადართვა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:183
+msgid "Speed up"
+msgstr "აჩქარება"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:189
+msgid "Speed down"
+msgstr "შენელება"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:195
+msgid "Advance frame"
+msgstr "კადრის წინ წაწევა"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:206
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:213
+msgid "Next chapter"
+msgstr "შემდეგი თავი"
+
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:220
+#: src/bin/clapper-app/ui/clapper-app-help-overlay.ui:227
+msgid "Previous chapter"
+msgstr "წინა თავი"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:13
+msgid "Info"
+msgstr "ინფორმაცია"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:35
+#: src/bin/clapper-app/ui/clapper-app-subtitle-stream-list-item.ui:14
+msgid "Title"
+msgstr "სათაური"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:49
+msgid "Container Format"
+msgstr "კონტაინერის ფორმატი"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:63
+msgid "Duration"
+msgstr "ხანგრძლივობა"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:81
+msgid "Streams"
+msgstr "ნაკადები"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:84
+#: src/bin/clapper-app/clapper-app-list-item-utils.c:36
+msgid "Video"
+msgstr "ვიდეო"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:107
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:81
+#: src/bin/clapper-app/clapper-app-list-item-utils.c:39
+msgid "Audio"
+msgstr "აუდიო"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:130
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:101
+#: src/bin/clapper-app/clapper-app-list-item-utils.c:42
+msgid "Subtitles"
+msgstr "სუბტიტრები"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:155
+msgid "Video Playback"
+msgstr "ვიდეოს დაკვრა"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:158
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:199
+msgid "Decoder"
+msgstr "დეკოდერი"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:170
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:211
+msgid "Filter"
+msgstr "ფილტრი"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:182
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:223
+msgid "Sink"
+msgstr "ხმის გამოსავალი"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:196
+msgid "Audio Playback"
+msgstr "აუდიოს დაკვრა"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:238
+msgid "Show Pipeline"
+msgstr "კონვეიერის ჩვენება"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:258
+msgid "Video Streams"
+msgstr "ვიდეოკანადები"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:301
+msgid "Audio Streams"
+msgstr "აუდიონაკადები"
+
+#: src/bin/clapper-app/ui/clapper-app-info-window.ui:344
+msgid "Subtitle Streams"
+msgstr "სუბტიტრის ნაკადები"
+
+#: src/bin/clapper-app/ui/clapper-app-initial-state.ui:46
+msgid "Start by adding media to playback queue"
+msgstr "დაიწყეთ მედიის დაკვრის რიგში დამატებით"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:15
+msgid "Seeking"
+msgstr "გადახვევა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:18
+msgid "Method"
+msgstr "მეთოდი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:19
+msgid "A preferred method used for seeking"
+msgstr "სასურველი მეთოდი გადახვევისთვის"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:32
+msgid "Value"
+msgstr "მნიშვნელობა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:33
+msgid "Value used for seeking forward/backward"
+msgstr "მნიშვნელობა, რომელიც გამოიყენება წინ/უკან გადახვევისთვის"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:46
+msgid "Unit"
+msgstr "საზომი ერთეული"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:47
+msgid "An unit of a seek forward/backward value"
+msgstr "ერთეული წინ/უკან გადახვევის მნიშვნელობისთვის"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:51
+msgid "Second"
+msgstr "წამი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:52
+msgid "Minute"
+msgstr "წუთი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:53
+msgid "Percentage"
+msgstr "პროცენტულობა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:63
+msgid "Features"
+msgstr "თვისებები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:67
+msgid "Server"
+msgstr "სერვერი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:68
+msgid "Control player remotely"
+msgstr "დამკვრელის დაშორებული მართვა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:84
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:104
+msgid "Offset"
+msgstr "წანაცვლება"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:85
+msgid "Synchronisation offset in seconds between the audio and video streams"
+msgstr "სინქრონიზაციის წანაცვლება წამებში აუდიო და ვიდეონაკადებს შორის"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:105
+msgid "Synchronisation offset in seconds between the subtitle and video streams"
+msgstr "სინქრონიზაციის წანაცვლება წამებში სუბტიტრებსა და ვიდეონაკადს შორის"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:119
+msgid "Default font"
+msgstr "ნაგულისხმევი ფონტი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:120
+msgid "Text font used for subtitles when media does not explicitly specify one"
+msgstr "ტექსტის ფონტი სუბტიტრებისთვის, როცა ის მედიაში აშკარად მითითებული არაა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:138
+msgid "Tweaks"
+msgstr "შესწორებები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:145
+msgid "Enhancers"
+msgstr "გამაუმჯობესებლები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:146
+msgid "Browse and configure properties of available enhancers"
+msgstr "ხელმისაწვდომი გამაუმჯობესებლების მოძებნა და მორგება"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:163
+msgid "Plugin ranking"
+msgstr "დამატების რეიტინგი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:164
+msgid "Alter default ranks of GStreamer plugins"
+msgstr "GStreamer-ის დამატებების ნაგულისხმევი რანგების შეცვლა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:183
+msgid "Clapper Enhancers"
+msgstr "Clapper-ის გამაუმჯობესებლები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:203
+msgid "Available enhancers"
+msgstr "ხელმისაწვდომი გამაუმჯობესებლები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
+msgid "Select an enhancer plugin to view its information and properties to configure."
+msgstr "მონიშნეთ გამაუმჯობესებელი დამატება მისი ინფორმაციის სანახავად და თვისებების მოსარგებად."
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
+msgid "Enhancer"
+msgstr "გამაუმჯობესებელი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:227
+msgid "Information"
+msgstr "ინფორმაცია"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:230
+msgid "Module"
+msgstr "მოდული"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:243
+msgid "Description"
+msgstr "აღწერა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:256
+msgid "Version"
+msgstr "ვერსია"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:271
+msgid "Properties"
+msgstr "თვისებები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:283
+msgid "No Enhancers Found"
+msgstr "გამაუმჯობესებლები აღმოჩენილი არაა"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:284
+msgid "Install some to add more cool functionalities to the player!"
+msgstr "დააყენეთ რამდენიმე დამკვრელისთვის ფუნქციონალის დასამატებლად!"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:301
+msgid "Plugin Ranking"
+msgstr "დამატების რეიტინგი"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:319
+msgid "Available plugins"
+msgstr "ხელმისაწვდომი დამატებები"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:320
+msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
+msgstr "მონიშნეთ დამატება და მისი თვისებები, რომლების რეიტინგის გადაფარვაც მოხდება. როცა მსგავსი შესაძლებლობები ერთზე მეტ ელემენტს აქვს, გამოყენებული იქნება უდიდესი მნიშვნელობის მქონე."
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:323
+msgid "Plugin"
+msgstr "დამატება"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:332
+msgid "Plugin feature"
+msgstr "დამატების ფუნქცია"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:350
+msgid "Add override"
+msgstr "გადაფარვის დამატება"
+
+#: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:366
+msgid "Rank overrides"
+msgstr "რეიტინგის გადაფარვა"
+
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:60
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:30
+msgid "Add"
+msgstr "დამატება"
+
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:87
+msgid "Queue progression"
+msgstr "რიგის მიმდინარეობა"
+
+#: src/bin/clapper-app/ui/clapper-app-queue-list.ui:188
+msgid "Clear Queue"
+msgstr "რიგის გასუფთავება"
+
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:4
+msgid "Add URI"
+msgstr "URI-ის დამატება"
+
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:5
+msgid "Insert an URI to be added to playback queue"
+msgstr "ჩასვით დაკვრის რიგში ჩასამატებელი URI"
+
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:23
+msgid "Enter or drop URI here"
+msgstr "შეიყვანთ, ან დაადგეთ URI აქ"
+
+#: src/bin/clapper-app/ui/clapper-app-uri-dialog.ui:29
+msgid "Cancel"
+msgstr "გაუქმება"
+
+#: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:24
+msgid "Resolution"
+msgstr "გარჩევადობა"
+
+#: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:39
+msgid "Framerate"
+msgstr "კადრების სიხშირე"
+
+#: src/bin/clapper-app/ui/clapper-app-video-stream-list-item.ui:63
+msgid "Pixel Format"
+msgstr "პიქსელის ფორმატი"
+
+#. TRANSLATORS: Put your name(s) here for credits or leave untranslated
+#: src/bin/clapper-app/clapper-app-about-dialog.c:42
+msgid "translator-credits"
+msgstr "თემური დოღონაძე"
+
+#: src/bin/clapper-app/clapper-app-application.c:333
+msgid "Close"
+msgstr "დახურვა"
+
+#: src/bin/clapper-app/clapper-app-application.c:753
+msgid "Create a new window"
+msgstr "ახალი ფანჯრის შექმნა"
+
+#: src/bin/clapper-app/clapper-app-application.c:754
+msgid "Add media to queue in primary application instance"
+msgstr "მედიის დამატება აპლიკაციის ძირითადი გაშვებული ასლის რიგში"
+
+#: src/bin/clapper-app/clapper-app-application.c:755
+msgid "Audio volume to set (0 - 2.0 range)"
+msgstr "ხმის დონის დაყენება (შუალედიდან 0 - 2.0)"
+
+#: src/bin/clapper-app/clapper-app-application.c:756
+msgid "Playback speed to set (0.05 - 2.0 range)"
+msgstr "დაკვრის სიჩქარის დაყენება (შუალედიდან 0.05-2.0)"
+
+#: src/bin/clapper-app/clapper-app-application.c:757
+msgid "Initial bitrate for adaptive streaming"
+msgstr "საწყისი დისკრეტიზაციის სიხშირე ადაპტიური სტრიმინგისთვის"
+
+#: src/bin/clapper-app/clapper-app-application.c:758
+msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
+msgstr "საწყისი რიგის მიმდინარეობის რეჟიმი (0 = არცერთი, 1=შემდეგი, 2=ელემენტის გამეორება, 3=კარუსელი, 4=შემთხვევით)"
+
+#: src/bin/clapper-app/clapper-app-application.c:759
+msgid "Set window to be fullscreen"
+msgstr "ფანჯრის სრულეკრანიანი რეჟიმი"
+
+#: src/bin/clapper-app/clapper-app-application.c:760
+msgid "Video filter to use (\"none\" to disable)"
+msgstr "ვიდეოფილტრი (\"none\" გასათიშად)"
+
+#: src/bin/clapper-app/clapper-app-application.c:761
+msgid "Audio filter to use (\"none\" to disable)"
+msgstr "აუდიოფილტრი (\"none\" გასათიშად)"
+
+#: src/bin/clapper-app/clapper-app-application.c:762
+msgid "Video sink to use"
+msgstr "ვიდეოს გამოტანა"
+
+#: src/bin/clapper-app/clapper-app-application.c:763
+msgid "Audio sink to use"
+msgstr "აუდიოს გამოტანა"
+
+#: src/bin/clapper-app/clapper-app-info-window.c:88
+msgid "Hardware"
+msgstr "აპარატურა"
+
+#: src/bin/clapper-app/clapper-app-info-window.c:88
+msgid "Software"
+msgstr "პროგრამული უზრუნველყოფა"
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:315
+msgid "Restore default"
+msgstr "ნაგულისხმევის აღდგენა"
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:418
+msgid "No configurable properties"
+msgstr "მორგებადი თვისებების გარეშე"
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:814
+msgid "Accurate"
+msgstr "ზუსტი"
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:816
+msgid "Normal"
+msgstr "ნორმალური"
+
+#: src/bin/clapper-app/clapper-app-preferences-window.c:818
+msgid "Fast"
+msgstr "სწრაფი"
+
+#: src/bin/clapper-app/clapper-app-utils.c:212
+msgid "No progression"
+msgstr "მიმდინარეობის გარეშე"
+
+#: src/bin/clapper-app/clapper-app-utils.c:213
+msgid "Consecutive"
+msgstr "მომდევნო"
+
+#: src/bin/clapper-app/clapper-app-utils.c:214
+msgid "Repeat item"
+msgstr "ელემენტის გამეორება"
+
+#: src/bin/clapper-app/clapper-app-utils.c:215
+msgid "Carousel"
+msgstr "კარუსელი"
+
+#: src/bin/clapper-app/clapper-app-utils.c:216
+msgid "Shuffle"
+msgstr "არევა"
+
+#: src/bin/clapper-app/clapper-app-window.c:1049
+msgid "Drop on title bar to play now or anywhere else to enqueue."
+msgstr "დააგდეთ სათაურის ზოლზე ახლავე დასაკრავად და ნებისმიერ სხვა ადგილას რიგში ჩასამატებლად."
+
