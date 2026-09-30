@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: clapper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-12 21:55+0100\n"
-"PO-Revision-Date: 2026-09-30 10:40\n"
+"PO-Revision-Date: 2026-09-30 11:54\n"
 "Last-Translator: \n"
 "Language-Team: Georgian\n"
 "Language: ka_GE\n"
@@ -422,7 +422,7 @@ msgstr "ხელმისაწვდომი გამაუმჯობე�
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:204
 msgid "Select an enhancer plugin to view its information and properties to configure."
-msgstr ""
+msgstr "მონიშნეთ გამაუმჯობესებელი დამატება მისი ინფორმაციის სანახავად და თვისებების მოსარგებად."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:207
 msgid "Enhancer"
@@ -466,7 +466,7 @@ msgstr "ხელმისაწვდომი დამატებები"
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:320
 msgid "Select a plugin and its feature to override rank for. When multiple elements have similiar capabilities, the one with highest value is preferred."
-msgstr ""
+msgstr "მონიშნეთ დამატება და მისი თვისებები, რომლების რეიტინგის გადაფარვაც მოხდება. როცა მსგავსი შესაძლებლობები ერთზე მეტ ელემენტს აქვს, გამოყენებული იქნება უდიდესი მნიშვნელობის მქონე."
 
 #: src/bin/clapper-app/ui/clapper-app-preferences-window.ui:323
 msgid "Plugin"
@@ -556,7 +556,7 @@ msgstr "საწყისი დისკრეტიზაციის სი�
 
 #: src/bin/clapper-app/clapper-app-application.c:758
 msgid "Initial queue progression mode (0=none, 1=consecutive, 2=repeat-item, 3=carousel, 4=shuffle)"
-msgstr ""
+msgstr "საწყისი რიგის მიმდინარეობის რეჟიმი (0 = არცერთი, 1=შემდეგი, 2=ელემენტის გამეორება, 3=კარუსელი, 4=შემთხვევით)"
 
 #: src/bin/clapper-app/clapper-app-application.c:759
 msgid "Set window to be fullscreen"
