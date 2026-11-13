@@ -1190,6 +1190,26 @@ clapper_gtk_video_init (ClapperGtkVideo *self)
   gtk_gesture_group (self->touch_gesture, self->click_gesture);
 }
 
+static gboolean
+_is_gl_available (void)
+{
+  GdkDisplay *display = gdk_display_get_default ();
+  GError *error = NULL;
+  gboolean available;
+
+  if (display == NULL)
+    return FALSE;
+
+  available = gdk_display_prepare_gl (display, &error);
+
+  if (error) {
+    GST_DEBUG ("Could not prepare GL: %s", error->message);
+    g_error_free (error);
+  }
+
+  return available;
+}
+
 static void
 clapper_gtk_video_constructed (GObject *object)
 {
@@ -1216,7 +1236,7 @@ clapper_gtk_video_constructed (GObject *object)
     guint major = 0, minor = 0, micro = 0, nano = 0;
 
     gst_version (&major, &minor, &micro, &nano);
-    if (major == 1 && minor >= 24) {
+    if (major == 1 && minor >= 24 && _is_gl_available ()) {
       GstElement *bin;
 
       if ((bin = gst_element_factory_make ("glsinkbin", NULL))) {
